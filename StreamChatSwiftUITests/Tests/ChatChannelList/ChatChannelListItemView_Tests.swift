@@ -449,7 +449,7 @@ import XCTest
         .frame(width: defaultScreenSize.width)
 
         // Then
-        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
+        AssertSnapshot(view)
     }
 
     func test_channelListItem_voiceRecordingMessage() throws {
@@ -466,7 +466,7 @@ import XCTest
         .frame(width: defaultScreenSize.width)
 
         // Then
-        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
+        AssertSnapshot(view)
     }
 
     func test_channelListItem_groupChannel_authorNamePrefix() throws {
@@ -496,7 +496,7 @@ import XCTest
         .frame(width: defaultScreenSize.width)
 
         // Then
-        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
+        AssertSnapshot(view)
     }
 
     func test_channelListItem_groupChannel_youPrefix() throws {
@@ -526,7 +526,7 @@ import XCTest
         .frame(width: defaultScreenSize.width)
 
         // Then
-        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
+        AssertSnapshot(view)
     }
 
     func test_channelListItem_dmChannel_noAuthorPrefix() throws {
@@ -556,7 +556,7 @@ import XCTest
         .frame(width: defaultScreenSize.width)
 
         // Then
-        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
+        AssertSnapshot(view)
     }
 
     func test_channelListItem_groupChannel_imageAttachmentPreview() throws {
@@ -577,7 +577,7 @@ import XCTest
         .frame(width: defaultScreenSize.width)
 
         // Then
-        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
+        AssertSnapshot(view)
     }
 
     // MARK: - private
