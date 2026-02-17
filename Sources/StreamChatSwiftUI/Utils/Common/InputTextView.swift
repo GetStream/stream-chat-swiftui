@@ -118,6 +118,7 @@ class InputTextView: UITextView, AccessibilityView {
         NSLayoutConstraint.activate([
             placeholderLabel.leadingAnchor.pin(equalTo: leadingAnchor, constant: directionalLayoutMargins.leading),
             placeholderLabel.trailingAnchor.pin(equalTo: trailingAnchor, constant: -directionalLayoutMargins.trailing),
+            placeholderLabel.widthAnchor.pin(equalTo: layoutMarginsGuide.widthAnchor),
             placeholderLabel.topAnchor.pin(equalTo: topAnchor),
             placeholderLabel.bottomAnchor.pin(lessThanOrEqualTo: bottomAnchor),
             placeholderLabel.centerYAnchor.pin(equalTo: centerYAnchor)
