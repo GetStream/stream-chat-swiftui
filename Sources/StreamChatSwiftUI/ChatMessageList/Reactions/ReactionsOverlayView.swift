@@ -46,7 +46,7 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
     var onActionExecuted: (MessageActionInfo) -> Void
 
     private let paddingValue: CGFloat = 16
-    private let minOriginY: CGFloat
+    private let topOffset: CGFloat
 
     // MARK: - Init
 
@@ -55,7 +55,7 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
         channel: ChatChannel,
         currentSnapshot: UIImage,
         messageDisplayInfo: MessageDisplayInfo,
-        minOriginY: CGFloat = 100,
+        topOffset: CGFloat = 0,
         bottomOffset: CGFloat = 0,
         onBackgroundTap: @escaping () -> Void,
         onActionExecuted: @escaping (MessageActionInfo) -> Void,
@@ -76,7 +76,7 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
         self.channel = channel
         self.factory = factory
         self.currentSnapshot = currentSnapshot
-        self.minOriginY = minOriginY
+        self.topOffset = topOffset
         self.bottomOffset = bottomOffset
         self.messageDisplayInfo = messageDisplayInfo
         self.onBackgroundTap = onBackgroundTap
@@ -98,6 +98,7 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
                     messageAndTimestampView(reader: reader)
                     messageActionsView(reader: reader)
                 }
+                .frame(height: measuredTotalContentHeight > 0 ? min(measuredTotalContentHeight, allowedTotalContentHeight) : nil)
                 .background(
                     GeometryReader { proxy in
                         Color.clear.preference(
@@ -237,7 +238,7 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
 
             VStack(alignment: isRightAligned ? .trailing : .leading, spacing: tokens.spacingXxs) {
                 Group {
-                    if messageDisplayInfo.frame.height > messageContainerHeight {
+                    if usesScrollView {
                         ScrollView {
                             messageView
                         }
@@ -261,8 +262,7 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
                 .scaleEffect(popIn || willPopOut ? 1 : 0.95)
                 .animation(willPopOut ? .easeInOut : popInAnimation, value: popIn)
                 .frame(
-                    width: messageDisplayInfo.frame.width,
-                    height: messageContainerHeight
+                    width: messageDisplayInfo.frame.width
                 )
                 .padding(
                     .top,
@@ -292,7 +292,6 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
                     .padding(.bottom, tokens.spacingXxs)
                 }
             }
-
             if !isRightAligned { Spacer() }
         }
         .padding(.leading, !isRightAligned ? paddingValue / 2 : 0)
@@ -419,34 +418,30 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
 
     // MARK: - Origin Y
 
-    /// The Y offset for the entire content VStack.
-    /// Animates from the message's original position to a computed position
-    /// that ensures all content (reactions + message + actions) fits on screen.
-    ///
-    /// The VStack contains reactions picker above the message, so we subtract
-    /// the reactions area height so the **message bubble** (not the VStack top)
-    /// aligns with its original position during pop-in/pop-out animations.
+    private var usesScrollView: Bool {
+        guard measuredTotalContentHeight > 0 else { return false }
+        return measuredTotalContentHeight >= allowedTotalContentHeight
+    }
+    
+    private var allowedTotalContentHeight: CGFloat { screenHeight - topContentSpacing - bottomContentSpacing }
+    
+    private var topContentSpacing: CGFloat { topSafeArea + topOffset + spacing }
+    private var bottomContentSpacing: CGFloat { bottomSafeArea + bottomOffset }
+    
     private var contentOffsetY: CGFloat {
+        let originalMessageMatchingOffsetY = messageDisplayInfo.frame.origin.y - spacing - topReactionsWithPickerHeight
         if !popIn {
-            return messageDisplayInfo.frame.origin.y - spacing - reactionsAreaOffset
+            return originalMessageMatchingOffsetY
         }
-        return originY
+        let maxOrigin = originalMessageMatchingOffsetY + measuredTotalContentHeight
+        let bottomClippingAvoidingOffset = min(screenHeight - bottomContentSpacing - maxOrigin, 0)
+        return max(topContentSpacing, originalMessageMatchingOffsetY + bottomClippingAvoidingOffset)
     }
 
-    private var originY: CGFloat {
-        var originY = messageDisplayInfo.frame.origin.y - reactionsAreaOffset
-        let maxOrigin = screenHeight - measuredTotalContentHeight - minOriginY - bottomOffset
-        if originY < minOriginY {
-            originY = minOriginY
-        } else if originY > maxOrigin {
-            originY = maxOrigin
-        }
-        return max(0, originY - spacing)
-    }
-
-    private var reactionsAreaOffset: CGFloat {
+    private var topReactionsWithPickerHeight: CGFloat {
         guard channel.config.reactionsEnabled, !messageDisplayInfo.message.isBounced else { return 0 }
-        return measuredReactionsPickerHeight + tokens.spacingXs
+        let messageReactions = topReactionsShown ? tokens.spacingLg : 0
+        return measuredReactionsPickerHeight + tokens.spacingXs + messageReactions
     }
 
     private var overlayOffsetY: CGFloat {
