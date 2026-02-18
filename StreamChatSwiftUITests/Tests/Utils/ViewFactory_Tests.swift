@@ -318,8 +318,8 @@ import XCTest
         let viewFactory = DefaultViewFactory.shared
 
         // When
-        let view = viewFactory.makeCameraPickerView(
-            options: CameraPickerViewOptions(
+        let view = viewFactory.makeAttachmentCameraPickerView(
+            options: AttachmentCameraPickerViewOptions(
                 selected: .constant(.photos),
                 cameraPickerShown: .constant(false),
                 cameraImageAdded: { _ in }
@@ -327,7 +327,7 @@ import XCTest
         )
 
         // Then
-        XCTAssert(view is CameraPickerDisplayView)
+        XCTAssert(view is AttachmentCameraPickerView)
     }
 
     func test_viewFactory_makeAssetsAccessPermissionView() {

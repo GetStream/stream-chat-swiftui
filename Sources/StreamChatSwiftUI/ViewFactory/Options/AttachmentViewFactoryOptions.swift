@@ -499,7 +499,7 @@ public final class FilePickerViewOptions: Sendable {
 }
 
 /// Options for creating the camera picker view.
-public final class CameraPickerViewOptions: Sendable {
+public final class AttachmentCameraPickerViewOptions: Sendable {
     /// Binding to the selected picker state.
     public let selected: Binding<AttachmentPickerState>
     /// Binding to whether the camera picker is shown.

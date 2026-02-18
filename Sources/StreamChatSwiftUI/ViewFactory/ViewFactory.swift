@@ -413,7 +413,7 @@ import SwiftUI
     /// Creates the camera picker view.
     /// - Parameter options: the options for creating the camera picker view.
     /// - Returns: view displayed in the camera picker slot.
-    func makeCameraPickerView(options: CameraPickerViewOptions) -> CameraPickerViewType
+    func makeAttachmentCameraPickerView(options: AttachmentCameraPickerViewOptions) -> CameraPickerViewType
 
     associatedtype CustomComposerAttachmentViewType: View
     /// Creates a custom attachment view shown in the message composer.

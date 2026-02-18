@@ -686,10 +686,10 @@ extension ViewFactory {
         )
     }
     
-    public func makeCameraPickerView(
-        options: CameraPickerViewOptions
+    public func makeAttachmentCameraPickerView(
+        options: AttachmentCameraPickerViewOptions
     ) -> some View {
-        CameraPickerDisplayView(
+        AttachmentCameraPickerView(
             selectedPickerState: options.selected,
             cameraPickerShown: options.cameraPickerShown,
             cameraImageAdded: options.cameraImageAdded
