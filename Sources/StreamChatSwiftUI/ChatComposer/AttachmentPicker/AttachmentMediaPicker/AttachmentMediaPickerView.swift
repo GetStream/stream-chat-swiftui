@@ -11,7 +11,7 @@ public struct AttachmentMediaPickerView: View {
     @Injected(\.colors) private var colors
     @Injected(\.tokens) private var tokens
     
-    @StateObject var assetLoader = PhotoAssetLoader()
+    @StateObject var assetLoader: PhotoAssetLoader
     
     var assets: PHFetchResultCollection
     var onImageTap: (AddedAsset) -> Void
@@ -26,11 +26,13 @@ public struct AttachmentMediaPickerView: View {
     let columns = Array(repeating: GridItem(.flexible(), spacing: 2), count: 3)
 
     public init(
+        assetLoader: PhotoAssetLoader = PhotoAssetLoader(),
         assets: PHFetchResultCollection,
         onImageTap: @escaping (AddedAsset) -> Void,
         imageSelected: @escaping (String) -> Bool,
         selectedAssetIds: [String]? = nil
     ) {
+        _assetLoader = StateObject(wrappedValue: assetLoader)
         self.assets = assets
         self.onImageTap = onImageTap
         self.imageSelected = imageSelected

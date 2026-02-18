@@ -450,45 +450,71 @@ import XCTest
         )
         let coordinator = ComposerTextInputView.Coordinator(textInput: view, maxMessageLength: nil)
         let viewWithSize = view.applyDefaultSize()
-
+        
         // When
         inputView.scrollToBottom()
         coordinator.updateHeight(inputView, shouldAnimate: true)
         coordinator.updateHeight(inputView, shouldAnimate: false)
-
+        
         // Then
         assertSnapshot(matching: viewWithSize, as: .image(perceptualPrecision: precision))
         XCTAssert(coordinator.textInput.height == 100)
     }
 
-    func test_attachmentMediaPickerItemView_loadingResource() {
+    func test_attachmentPickerView_mediaSelected_snapshot() {
         // Given
-        let asset = PHAsset()
-        let loader = PhotoAssetLoader()
-        let itemView = AttachmentMediaPickerItemView(
-            assetLoader: loader,
-            asset: asset,
-            onImageTap: { _ in },
-            imageSelected: { _ in
-                false
+        let itemColors: [UIColor] = [
+            .systemBlue, .systemGreen, .systemOrange,
+            .systemPurple, .systemRed, .systemTeal,
+            .systemPink, .systemYellow, .systemIndigo
+        ]
+        let mockAssets: [PHAsset] = (0..<9).map { index in
+            if index == 3 || index == 7 {
+                return MockPHAsset(
+                    mockId: "asset-\(index)",
+                    mockMediaType: .video,
+                    mockDuration: index == 3 ? 15.5 : 125
+                )
             }
-        )
+            return MockPHAsset(mockId: "asset-\(index)")
+        }
 
-        // When
-        _ = itemView.onAppear()
-        _ = itemView.onDisappear()
-        let newRequestId = itemView.requestId
+        let fetchResult = MockPHFetchResult(mockAssets: mockAssets)
 
-        // Then
-        XCTAssert(newRequestId == nil)
-    }
-    
-    func test_attachmentMediaPickerView_snapshot() {
-        // Given
-        let view = AttachmentMediaPickerView(
-            assets: .init(fetchResult: .init()),
-            onImageTap: { _ in },
-            imageSelected: { _ in true }
+        let loader = PhotoAssetLoader()
+        let imageSize = CGSize(width: 200, height: 200)
+        for (index, asset) in mockAssets.enumerated() {
+            loader.loadedImages[asset.localIdentifier] = UIImage.make(
+                color: itemColors[index],
+                size: imageSize
+            )
+        }
+
+        let factory = MockMediaPickerViewFactory(assetLoader: loader)
+        let channelController = ChatChannelTestHelpers.makeChannelController(chatClient: chatClient)
+
+        let view = AttachmentPickerView(
+            viewFactory: factory,
+            selectedPickerState: .constant(.photos),
+            filePickerShown: .constant(false),
+            cameraPickerShown: .constant(false),
+            onFilesPicked: { _ in },
+            onPickerStateChange: { _ in },
+            photoLibraryAssets: fetchResult,
+            onAssetTap: { _ in },
+            onCustomAttachmentTap: { _ in },
+            isAssetSelected: { _ in false },
+            addedCustomAttachments: [],
+            cameraImageAdded: { _ in },
+            askForAssetsAccessPermissions: {},
+            isDisplayed: true,
+            height: defaultScreenSize.height,
+            selectedAssetIds: ["asset-0", "asset-5"],
+            channelController: channelController,
+            messageController: nil,
+            canSendPoll: true,
+            instantCommands: [],
+            onCommandSelected: { _ in }
         )
         .applyDefaultSize()
 
@@ -1068,5 +1094,89 @@ class SynchronousAttachmentsConverter: MessageAttachmentsConverter {
         completion: @escaping @Sendable @MainActor (TotalAddedAssets) -> Void
     ) {
         super.attachmentsToAssets(attachments, with: nil, completion: completion)
+    }
+}
+
+// MARK: - Mock View Factory
+
+private class MockMediaPickerViewFactory: ViewFactory {
+    @Injected(\.chatClient) var chatClient: ChatClient
+
+    var styles = RegularStyles()
+
+    private let assetLoader: PhotoAssetLoader
+
+    init(assetLoader: PhotoAssetLoader) {
+        self.assetLoader = assetLoader
+    }
+
+    func makeAttachmentMediaPickerView(
+        options: AttachmentMediaPickerViewOptions
+    ) -> some View {
+        AttachmentMediaPickerView(
+            assetLoader: assetLoader,
+            assets: options.assets,
+            onImageTap: options.onAssetTap,
+            imageSelected: options.isAssetSelected,
+            selectedAssetIds: options.selectedAssetIds
+        )
+    }
+}
+
+// MARK: - Photos Framework Mocks
+
+private class MockPHAsset: PHAsset, @unchecked Sendable {
+    private let _mockId: String
+    private let _mockMediaType: PHAssetMediaType
+    private let _mockDuration: TimeInterval
+
+    init(
+        mockId: String,
+        mockMediaType: PHAssetMediaType = .image,
+        mockDuration: TimeInterval = 0
+    ) {
+        self._mockId = mockId
+        self._mockMediaType = mockMediaType
+        self._mockDuration = mockDuration
+        super.init()
+    }
+
+    override var localIdentifier: String { _mockId }
+    override var mediaType: PHAssetMediaType { _mockMediaType }
+    override var duration: TimeInterval { _mockDuration }
+
+    override func requestContentEditingInput(
+        with options: PHContentEditingInputRequestOptions?,
+        completionHandler: @escaping (PHContentEditingInput?, [AnyHashable: Any]) -> Void
+    ) -> PHContentEditingInputRequestID {
+        completionHandler(nil, [:])
+        return 0
+    }
+
+    override func cancelContentEditingInputRequest(_ requestID: PHContentEditingInputRequestID) {}
+}
+
+private class MockPHFetchResult: PHFetchResult<PHAsset>, @unchecked Sendable {
+    private let _mockAssets: [PHAsset]
+
+    init(mockAssets: [PHAsset]) {
+        self._mockAssets = mockAssets
+        super.init()
+    }
+
+    override var count: Int { _mockAssets.count }
+
+    override func object(at index: Int) -> PHAsset {
+        _mockAssets[index]
+    }
+}
+
+private extension UIImage {
+    static func make(color: UIColor, size: CGSize) -> UIImage {
+        let renderer = UIGraphicsImageRenderer(size: size)
+        return renderer.image { context in
+            color.setFill()
+            context.fill(CGRect(origin: .zero, size: size))
+        }
     }
 }
