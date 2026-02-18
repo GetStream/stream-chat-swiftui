@@ -157,6 +157,7 @@
 				"Infrastructure/Shared/XCTestCase+MockJSON.swift",
 				Infrastructure/TestTools/ChatClient_Mock.swift,
 				Infrastructure/TestTools/ViewFrameUtils.swift,
+				Tests/ChatChannel/AttachmentCommandsPickerView_Tests.swift,
 				Tests/ChatChannel/ChannelControllerFactory_Tests.swift,
 				Tests/ChatChannel/ChannelInfo/AddUsersView_Tests.swift,
 				Tests/ChatChannel/ChannelInfo/AddUsersViewModel_Tests.swift,
