@@ -192,20 +192,15 @@ public struct ChatChannelListItem<Factory: ViewFactory>: View {
 
     private var subtitleAuthorName: String? {
         guard let previewMessage = channel.previewMessage,
-              previewMessage.poll == nil else {
+              previewMessage.poll == nil,
+              injectedChannelInfo?.subtitle == nil,
+              !(channel.isDirectMessageChannel && channel.memberCount == 2) else {
             return nil
         }
         if previewMessage.isSentByCurrentUser {
-            let youPrefix = "\(L10n.Channel.Item.you): "
-            guard subtitleText.hasPrefix(youPrefix) else { return nil }
             return L10n.Channel.Item.you
         }
-        let authorName = previewMessage.author.name ?? previewMessage.author.id
-        let prefix = "\(authorName): "
-        guard subtitleText.hasPrefix(prefix) else {
-            return nil
-        }
-        return authorName
+        return previewMessage.author.name ?? previewMessage.author.id
     }
 
     private var subtitleText: String {
