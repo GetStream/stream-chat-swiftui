@@ -497,20 +497,12 @@ public final class AttachmentFilePickerViewOptions: Sendable {
 
 /// Options for creating the camera picker view.
 public final class AttachmentCameraPickerViewOptions: Sendable {
-    /// Binding to the selected picker state.
-    public let selected: Binding<AttachmentPickerState>
-    /// Binding to whether the camera picker is shown.
-    public let cameraPickerShown: Binding<Bool>
     /// Callback when a camera image is added.
     public let cameraImageAdded: @MainActor (AddedAsset) -> Void
     
     public init(
-        selected: Binding<AttachmentPickerState>,
-        cameraPickerShown: Binding<Bool>,
         cameraImageAdded: @escaping @MainActor (AddedAsset) -> Void
     ) {
-        self.selected = selected
-        self.cameraPickerShown = cameraPickerShown
         self.cameraImageAdded = cameraImageAdded
     }
 }

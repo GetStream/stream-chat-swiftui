@@ -7,11 +7,12 @@ import SwiftUI
 
 /// Prompt view displayed when the file tab is selected,
 /// allowing the user to open the native file picker.
-struct FileOpenPromptView: View {
+struct FileOpenPromptView<Factory: ViewFactory>: View {
     @Injected(\.images) private var images
 
+    var factory: Factory
     @Binding var filePickerShown: Bool
-    var onFilesPicked: ([URL]) -> Void
+    @MainActor var onFilesPicked: ([URL]) -> Void
 
     var body: some View {
         AttachmentPickerPromptView(
@@ -23,7 +24,11 @@ struct FileOpenPromptView: View {
             }
         )
         .sheet(isPresented: $filePickerShown) {
-            AttachmentFilePickerView(onFilesPicked: onFilesPicked)
+            factory.makeAttachmentFilePickerView(
+                options: .init(onFilesPicked: { urls in
+                    onFilesPicked(urls)
+                })
+            )
         }
     }
 }

@@ -687,8 +687,6 @@ extension ViewFactory {
         options: AttachmentCameraPickerViewOptions
     ) -> some View {
         AttachmentCameraPickerView(
-            selectedPickerState: options.selected,
-            cameraPickerShown: options.cameraPickerShown,
             cameraImageAdded: options.cameraImageAdded
         )
     }
@@ -699,6 +697,7 @@ extension ViewFactory {
 
     public func makeCameraOpenPromptView(options: CameraOpenPromptViewOptions) -> some View {
         CameraOpenPromptView(
+            factory: self,
             cameraPickerShown: options.cameraPickerShown,
             cameraImageAdded: options.cameraImageAdded
         )
@@ -710,8 +709,13 @@ extension ViewFactory {
 
     public func makeFileOpenPromptView(options: FileOpenPromptViewOptions) -> some View {
         FileOpenPromptView(
+            factory: self,
             filePickerShown: options.filePickerShown,
-            onFilesPicked: options.onFilesPicked
+            onFilesPicked: { urls in
+                Task { @MainActor in
+                    options.onFilesPicked(urls)
+                }
+            }
         )
     }
 

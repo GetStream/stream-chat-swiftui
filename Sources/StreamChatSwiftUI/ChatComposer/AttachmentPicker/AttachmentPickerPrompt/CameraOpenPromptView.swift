@@ -8,11 +8,13 @@ import SwiftUI
 
 /// Prompt view displayed when the camera tab is selected,
 /// allowing the user to open the camera.
-struct CameraOpenPromptView: View {
+struct CameraOpenPromptView<Factory: ViewFactory>: View {
     @Injected(\.images) private var images
 
+    var factory: Factory
+
     @Binding var cameraPickerShown: Bool
-    var cameraImageAdded: (AddedAsset) -> Void
+    var cameraImageAdded: @MainActor (AddedAsset) -> Void
 
     var body: some View {
         AttachmentPickerPromptView(
@@ -24,10 +26,11 @@ struct CameraOpenPromptView: View {
             }
         )
         .fullScreenCover(isPresented: $cameraPickerShown) {
-            AttachmentImagePickerView(sourceType: .camera) { addedImage in
-                cameraImageAdded(addedImage)
-            }
-            .edgesIgnoringSafeArea(.all)
+            factory.makeAttachmentCameraPickerView(
+                options: .init(
+                    cameraImageAdded: cameraImageAdded
+                )
+            )
         }
     }
 
