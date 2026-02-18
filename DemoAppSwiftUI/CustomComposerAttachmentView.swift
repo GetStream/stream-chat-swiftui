@@ -52,11 +52,11 @@ class CustomAttachmentsFactory: ViewFactory {
         )
     ]
 
-    func makeAttachmentSourcePickerView(
+    func makeAttachmentTypePickerView(
         selected: AttachmentPickerState,
         onPickerStateChange: @escaping @MainActor (AttachmentPickerState) -> Void
     ) -> some View {
-        CustomAttachmentSourcePickerView(
+        CustomAttachmentTypePickerView(
             selected: selected,
             onTap: onPickerStateChange
         )
@@ -116,7 +116,7 @@ class CustomMessageTypeResolver: MessageTypeResolving {
     }
 }
 
-struct CustomAttachmentSourcePickerView: View {
+struct CustomAttachmentTypePickerView: View {
     @Injected(\.colors) var colors
     @Injected(\.images) var images
 

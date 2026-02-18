@@ -656,10 +656,10 @@ extension ViewFactory {
         EmptyView()
     }
     
-    public func makeAttachmentSourcePickerView(
-        options: AttachmentSourcePickerViewOptions
+    public func makeAttachmentTypePickerView(
+        options: AttachmentTypePickerViewOptions
     ) -> some View {
-        AttachmentSourcePickerView(
+        AttachmentTypePickerView(
             selected: options.selected,
             canSendPoll: options.canSendPoll,
             onTap: options.onPickerStateChange

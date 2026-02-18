@@ -441,8 +441,8 @@ public final class AttachmentCommandsPickerViewOptions: Sendable {
     }
 }
 
-/// Options for creating the attachment source picker view.
-public final class AttachmentSourcePickerViewOptions: Sendable {
+/// Options for creating the attachment type picker view.
+public final class AttachmentTypePickerViewOptions: Sendable {
     /// The currently selected picker state.
     public let selected: AttachmentPickerState
     /// Whether sending polls is allowed.

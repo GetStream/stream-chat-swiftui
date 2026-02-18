@@ -36,9 +36,9 @@ import XCTest
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
 
-    func test_attachmentSourcePickerView_commands_snapshot() {
+    func test_attachmentTypePickerView_commands_snapshot() {
         // Given
-        let view = AttachmentSourcePickerView(
+        let view = AttachmentTypePickerView(
             selected: .commands,
             canSendPoll: true,
             onTap: { _ in }
