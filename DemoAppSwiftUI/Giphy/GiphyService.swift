@@ -48,14 +48,17 @@ enum GiphyService {
     static func search(query: String, limit: Int = 24) async throws -> [GiphyItem] {
         let q = query.trimmingCharacters(in: .whitespacesAndNewlines)
         let useTrending = q.isEmpty || q.lowercased() == "trending"
-        let endpoint: String
-        if useTrending {
-            endpoint = "https://api.giphy.com/v1/gifs/trending?api_key=\(apiKey)&limit=\(limit)"
-        } else {
-            let encoded = q.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? q
-            endpoint = "https://api.giphy.com/v1/gifs/search?api_key=\(apiKey)&q=\(encoded)&limit=\(limit)"
+        let path = useTrending ? "/v1/gifs/trending" : "/v1/gifs/search"
+        var components = URLComponents(string: "https://api.giphy.com")!
+        components.path = path
+        components.queryItems = [
+            URLQueryItem(name: "api_key", value: apiKey),
+            URLQueryItem(name: "limit", value: String(limit))
+        ]
+        if !useTrending {
+            components.queryItems?.append(URLQueryItem(name: "q", value: q))
         }
-        guard let url = URL(string: endpoint) else { return [] }
+        guard let url = components.url else { return [] }
         let (data, response) = try await URLSession.shared.data(from: url)
         if let http = response as? HTTPURLResponse, http.statusCode != 200 {
             throw NSError(domain: "GiphyService", code: http.statusCode, userInfo: [NSLocalizedDescriptionKey: "HTTP \(http.statusCode)"])

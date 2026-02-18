@@ -9,6 +9,7 @@ import SwiftUI
 /// Demo app commands container: when GIF grid is enabled and user selected Giphy, shows horizontally scrollable GIF grid; otherwise default commands (mentions, instant commands).
 struct DemoAppCommandsContainerView<Factory: ViewFactory>: View {
     @EnvironmentObject private var viewModel: MessageComposerViewModel
+    @State private var isSubmitting = false
 
     var factory: Factory
     var suggestions: [String: Any]
@@ -20,6 +21,7 @@ struct DemoAppCommandsContainerView<Factory: ViewFactory>: View {
                viewModel.composerCommand?.id == "/giphy" {
                 GiphyGridView(
                     searchQuery: $viewModel.text,
+                    isSelectionDisabled: isSubmitting,
                     onSelect: { item in
                         addGiphyAndDismiss(item: item)
                     },
@@ -40,7 +42,9 @@ struct DemoAppCommandsContainerView<Factory: ViewFactory>: View {
     }
 
     private func addGiphyAndDismiss(item: GiphyService.GiphyItem) {
+        guard !isSubmitting else { return }
         guard let url = item.fullURL ?? item.previewURL else { return }
+        isSubmitting = true
         let payload = CustomGiphyAttachmentPayload(
             title: item.title ?? "GIF",
             previewURL: url
@@ -56,6 +60,7 @@ struct DemoAppCommandsContainerView<Factory: ViewFactory>: View {
             editedMessage: nil
         ) {
             viewModel.quotedMessage?.wrappedValue = nil
+            isSubmitting = false
         }
     }
 }

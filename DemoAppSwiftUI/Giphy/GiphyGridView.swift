@@ -5,7 +5,6 @@
 import StreamChat
 import StreamChatSwiftUI
 import SwiftUI
-import WebKit
 
 /// Horizontally scrollable grid of Giphy GIFs. Query is driven by composer text; selecting a GIF adds it as a giphy attachment and triggers send.
 struct GiphyGridView: View {
@@ -13,6 +12,7 @@ struct GiphyGridView: View {
     @Injected(\.fonts) private var fonts
 
     @Binding var searchQuery: String
+    var isSelectionDisabled: Bool = false
     var onSelect: (GiphyService.GiphyItem) -> Void
     var onBack: () -> Void
 
@@ -54,8 +54,12 @@ struct GiphyGridView: View {
                         ForEach(items, id: \.id) { item in
                             GiphyCell(item: item, size: cellSize)
                                 .contentShape(Rectangle())
+                                .opacity(isSelectionDisabled ? 0.6 : 1)
+                                .allowsHitTesting(!isSelectionDisabled)
                                 .highPriorityGesture(
-                                    TapGesture().onEnded { _ in onSelect(item) }
+                                    TapGesture().onEnded { _ in
+                                        if !isSelectionDisabled { onSelect(item) }
+                                    }
                                 )
                         }
                     }
@@ -79,7 +83,10 @@ struct GiphyGridView: View {
         }
         .onAppear {
             // Load immediately on appear (no debounce) so grid isn't empty
-            Task { await performSearch(query: normalizedQuery(searchQuery)) }
+            task = Task { await performSearch(query: normalizedQuery(searchQuery)) }
+        }
+        .onDisappear {
+            task?.cancel()
         }
     }
 
@@ -131,30 +138,5 @@ private struct GiphyCell: View {
         .frame(width: size, height: size)
         .clipped()
         .cornerRadius(8)
-    }
-}
-
-/// Displays a GIF URL with animation via WKWebView (SwiftUI AsyncImage only shows the first frame).
-private struct AnimatedGifView: UIViewRepresentable {
-    let gifURL: URL
-
-    func makeUIView(context: Context) -> WKWebView {
-        let webView = WKWebView()
-        webView.isOpaque = false
-        webView.backgroundColor = .clear
-        webView.scrollView.isScrollEnabled = false
-        webView.scrollView.backgroundColor = .clear
-        webView.isUserInteractionEnabled = false // let taps pass through to the cell's onTapGesture
-        return webView
-    }
-
-    func updateUIView(_ webView: WKWebView, context: Context) {
-        let html = """
-        <html><head><meta name="viewport" content="width=device-width,initial-scale=1"/></head>
-        <body style="margin:0;background:transparent;">
-        <img src="\(gifURL.absoluteString)" style="width:100%;height:100%;object-fit:cover;display:block;" />
-        </body></html>
-        """
-        webView.loadHTMLString(html, baseURL: gifURL)
     }
 }

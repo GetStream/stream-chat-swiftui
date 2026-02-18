@@ -6,7 +6,6 @@ import Foundation
 import StreamChat
 import StreamChatSwiftUI
 import SwiftUI
-import WebKit
 
 /// Custom attachment type for GIFs picked from the demo's Giphy grid (keeps built-in .giphy untouched).
 extension AttachmentType {
@@ -53,33 +52,8 @@ private struct CustomGiphyAttachmentMessageCell: View {
     private static let aspectRatio: CGFloat = 1
 
     var body: some View {
-        AnimatedGifMessageView(gifURL: payload.previewURL)
+        AnimatedGifView(gifURL: payload.previewURL)
             .frame(width: width, height: width * Self.aspectRatio)
             .clipped()
-    }
-}
-
-/// Displays an animated GIF in the message list (reuses same approach as grid).
-private struct AnimatedGifMessageView: UIViewRepresentable {
-    let gifURL: URL
-
-    func makeUIView(context: Context) -> WKWebView {
-        let webView = WKWebView()
-        webView.isOpaque = false
-        webView.backgroundColor = .clear
-        webView.isUserInteractionEnabled = false
-        webView.scrollView.isScrollEnabled = false
-        webView.scrollView.backgroundColor = .clear
-        return webView
-    }
-
-    func updateUIView(_ webView: WKWebView, context: Context) {
-        let html = """
-        <html><head><meta name="viewport" content="width=device-width,initial-scale=1"/></head>
-        <body style="margin:0;background:transparent;width:100%;height:100%;">
-        <img src="\(gifURL.absoluteString)" style="width:100%;height:100%;object-fit:cover;display:block;" />
-        </body></html>
-        """
-        webView.loadHTMLString(html, baseURL: gifURL)
     }
 }
