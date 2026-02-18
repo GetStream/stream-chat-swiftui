@@ -6,7 +6,7 @@ import StreamChatCommonUI
 import SwiftUI
 
 /// A circular selection indicator for gallery view items.
-public struct GallerySelectionBadgeView: View {
+public struct SelectionBadgeView: View {
     @Injected(\.colors) private var colors
     @Injected(\.images) private var images
 
@@ -24,7 +24,7 @@ public struct GallerySelectionBadgeView: View {
                     .overlay(
                         borderView
                     )
-                Image(uiImage: images.gallerySelectionBadgeIcon)
+                Image(uiImage: images.selectionBadgeIcon)
                     .renderingMode(.template)
                     .foregroundColor(Color(colors.controlRadiocheckIconSelected))
             } else {
@@ -41,10 +41,8 @@ public struct GallerySelectionBadgeView: View {
     }
 }
 
-// TODO: Move to common module
-
 extension Appearance.Images {
-    var gallerySelectionBadgeIcon: UIImage {
+    var selectionBadgeIcon: UIImage {
         UIImage(
             systemName: "checkmark",
             withConfiguration: UIImage.SymbolConfiguration(pointSize: 12, weight: .bold)

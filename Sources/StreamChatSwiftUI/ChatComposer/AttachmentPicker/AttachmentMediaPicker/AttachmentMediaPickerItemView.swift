@@ -110,7 +110,7 @@ public struct AttachmentMediaPickerItemView: View {
                 }
 
                 // Selection indicator (top-right)
-                GallerySelectionBadgeView(isSelected: selected)
+                SelectionBadgeView(isSelected: selected)
                     .padding(tokens.spacingXs)
                     .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topTrailing)
 
