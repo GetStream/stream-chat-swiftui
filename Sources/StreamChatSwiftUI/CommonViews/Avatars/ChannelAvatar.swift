@@ -175,8 +175,6 @@ private extension ChannelAvatar {
         var body: some View {
             Group {
                 switch memberCount {
-                case 0:
-                    EmptyView()
                 case 1 where users.count >= 1:
                     singleMemberLayout
                 case 2 where users.count >= 2:
@@ -186,7 +184,7 @@ private extension ChannelAvatar {
                 case 4 where users.count >= 4:
                     fourMemberLayout
                 default:
-                    if users.count >= 2 {
+                    if users.count >= 2, memberCount >= 5 {
                         overflowLayout
                     } else {
                         PlaceholderView(size: size)
