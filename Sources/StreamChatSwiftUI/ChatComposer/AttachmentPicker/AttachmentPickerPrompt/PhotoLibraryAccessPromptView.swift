@@ -5,12 +5,12 @@
 import StreamChat
 import SwiftUI
 
-/// View displayed when there's no access permission to the photo library.
-struct AssetsAccessPermissionView: View {
+/// Prompt view displayed when the user has not granted access to the photo library.
+struct PhotoLibraryAccessPromptView: View {
     @Injected(\.images) private var images
 
     var body: some View {
-        AttachmentAccessPermissionView(
+        AttachmentPickerPromptView(
             image: Image(uiImage: images.attachmentPickerPhotosIcon),
             text: L10n.Composer.Images.noAccessLibrary,
             onTap: {

@@ -5,9 +5,8 @@
 import StreamChatCommonUI
 import SwiftUI
 
-/// A reusable view displayed when the user has not granted access
-/// to a resource required by an attachment picker (e.g. photo library, camera).
-public struct AttachmentAccessPermissionView: View {
+/// A reusable view to prompt the user of any action in the attachment picker.
+public struct AttachmentPickerPromptView: View {
     @Injected(\.colors) private var colors
     @Injected(\.fonts) private var fonts
     @Injected(\.tokens) private var tokens
@@ -63,6 +62,6 @@ public struct AttachmentAccessPermissionView: View {
         .padding(.bottom, tokens.spacing3xl)
         .background(Color(colors.backgroundElevationElevation1))
         .accessibilityElement(children: .contain)
-        .accessibilityIdentifier("AttachmentAccessPermissionView")
+        .accessibilityIdentifier("AttachmentPickerPromptView")
     }
 }

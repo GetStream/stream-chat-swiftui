@@ -124,7 +124,7 @@ public struct AttachmentPickerView<Factory: ViewFactory>: View {
                         )
                         .edgesIgnoringSafeArea(.bottom)
                     } else {
-                        viewFactory.makeAssetsAccessPermissionView(options: AssetsAccessPermissionViewOptions())
+                        viewFactory.makePhotoLibraryAccessPromptView(options: PhotoLibraryAccessPromptViewOptions())
                     }
                 } else {
                     LoadingView()

@@ -77,8 +77,8 @@ public final class ComposerViewModifierOptions: Sendable {
     public init() {}
 }
 
-/// Options for creating the assets access permission view.
-public final class AssetsAccessPermissionViewOptions: Sendable {
+/// Options for creating the photo library access prompt view.
+public final class PhotoLibraryAccessPromptViewOptions: Sendable {
     public init() {}
 }
 

@@ -696,8 +696,8 @@ extension ViewFactory {
         )
     }
     
-    public func makeAssetsAccessPermissionView(options: AssetsAccessPermissionViewOptions) -> some View {
-        AssetsAccessPermissionView()
+    public func makePhotoLibraryAccessPromptView(options: PhotoLibraryAccessPromptViewOptions) -> some View {
+        PhotoLibraryAccessPromptView()
     }
     
     public func makeSendInChannelView(

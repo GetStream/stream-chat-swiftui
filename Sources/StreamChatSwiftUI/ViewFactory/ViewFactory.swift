@@ -427,9 +427,9 @@ import SwiftUI
     /// - Returns: view shown in the preview slot for custom composer input.
     func makeCustomAttachmentPreviewView(options: CustomAttachmentPreviewViewOptions) -> CustomAttachmentPreviewViewType
 
-    associatedtype AssetsAccessPermissionViewType: View
-    /// Creates the assets access permission view.
-    func makeAssetsAccessPermissionView(options: AssetsAccessPermissionViewOptions) -> AssetsAccessPermissionViewType
+    associatedtype PhotoLibraryAccessPromptViewType: View
+    /// Creates the photo library access prompt view.
+    func makePhotoLibraryAccessPromptView(options: PhotoLibraryAccessPromptViewOptions) -> PhotoLibraryAccessPromptViewType
 
     associatedtype SendInChannelViewType: View
     /// Creates the view that allows thread messages to be sent in a channel.
