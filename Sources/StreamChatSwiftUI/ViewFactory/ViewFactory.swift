@@ -439,6 +439,14 @@ import SwiftUI
     /// Creates the prompt view displayed when camera access is denied.
     func makeCameraAccessDeniedPromptView(options: CameraAccessDeniedPromptViewOptions) -> CameraAccessDeniedPromptViewType
 
+    associatedtype FileOpenPromptViewType: View
+    /// Creates the prompt view displayed when the file tab is selected.
+    func makeFileOpenPromptView(options: FileOpenPromptViewOptions) -> FileOpenPromptViewType
+
+    associatedtype PollCreatePromptViewType: View
+    /// Creates the prompt view displayed when the poll tab is selected.
+    func makePollCreatePromptView(options: PollCreatePromptViewOptions) -> PollCreatePromptViewType
+
     associatedtype SendInChannelViewType: View
     /// Creates the view that allows thread messages to be sent in a channel.
     /// - Parameter options: the options for creating the send in channel view.

@@ -139,6 +139,9 @@
 "composer.camera.open-camera" = "Open Camera";
 "composer.camera.access-settings" = "Change in Settings";
 "composer.camera.no-access" = "You have not granted access to your camera";
+"composer.files.select-files" = "Select files to share";
+"composer.files.open-files" = "Open Files";
+"composer.polls.create-poll-description" = "Create a poll and share";
 "composer.quoted.dismiss" = "Dismiss quote";
 "composer.quoted.replyTo" = "Reply to %@";
 "composer.quoted.photo" = "Photo";

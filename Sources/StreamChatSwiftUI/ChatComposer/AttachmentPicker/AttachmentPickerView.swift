@@ -132,8 +132,8 @@ public struct AttachmentPickerView<Factory: ViewFactory>: View {
                 }
 
             } else if selectedPickerState == .files {
-                viewFactory.makeFilePickerView(
-                    options: FilePickerViewOptions(
+                viewFactory.makeFileOpenPromptView(
+                    options: FileOpenPromptViewOptions(
                         filePickerShown: $filePickerShown,
                         onFilesPicked: onFilesPicked
                     )
@@ -153,8 +153,8 @@ public struct AttachmentPickerView<Factory: ViewFactory>: View {
                     )
                 }
             } else if selectedPickerState == .polls {
-                viewFactory.makeComposerPollView(
-                    options: ComposerPollViewOptions(
+                viewFactory.makePollCreatePromptView(
+                    options: PollCreatePromptViewOptions(
                         channelController: channelController,
                         messageController: messageController
                     )

@@ -710,6 +710,20 @@ extension ViewFactory {
     public func makeCameraAccessDeniedPromptView(options: CameraAccessDeniedPromptViewOptions) -> some View {
         CameraAccessDeniedPromptView()
     }
+
+    public func makeFileOpenPromptView(options: FileOpenPromptViewOptions) -> some View {
+        FileOpenPromptView(
+            filePickerShown: options.filePickerShown,
+            onFilesPicked: options.onFilesPicked
+        )
+    }
+
+    public func makePollCreatePromptView(options: PollCreatePromptViewOptions) -> some View {
+        PollCreatePromptView(
+            channelController: options.channelController,
+            messageController: options.messageController
+        )
+    }
     
     public func makeSendInChannelView(
         options: SendInChannelViewOptions

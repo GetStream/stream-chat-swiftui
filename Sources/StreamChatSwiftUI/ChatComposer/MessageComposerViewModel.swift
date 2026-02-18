@@ -23,15 +23,7 @@ import SwiftUI
         }
     }
 
-    @Published public var pickerState: AttachmentPickerState = .photos {
-        didSet {
-            if pickerState == .files {
-                withAnimation {
-                    filePickerShown = true
-                }
-            }
-        }
-    }
+    @Published public var pickerState: AttachmentPickerState = .photos
     
     @Published public private(set) var imageAssets: PHFetchResult<PHAsset>?
 

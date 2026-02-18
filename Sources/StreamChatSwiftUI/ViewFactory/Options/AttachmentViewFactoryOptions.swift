@@ -533,3 +533,19 @@ public final class CameraOpenPromptViewOptions: Sendable {
         self.cameraImageAdded = cameraImageAdded
     }
 }
+
+/// Options for creating the file open prompt view.
+public final class FileOpenPromptViewOptions: Sendable {
+    /// Binding to whether the file picker is shown.
+    public let filePickerShown: Binding<Bool>
+    /// Callback when files are picked.
+    public let onFilesPicked: @MainActor ([URL]) -> Void
+
+    public init(
+        filePickerShown: Binding<Bool>,
+        onFilesPicked: @escaping @MainActor ([URL]) -> Void
+    ) {
+        self.filePickerShown = filePickerShown
+        self.onFilesPicked = onFilesPicked
+    }
+}
