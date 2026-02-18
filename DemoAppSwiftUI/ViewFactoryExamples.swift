@@ -92,6 +92,20 @@ class DemoAppFactory: ViewFactory {
         )
     }
 
+    func makeCustomAttachmentViewType(
+        for message: ChatMessage,
+        isFirst: Bool,
+        availableWidth: CGFloat,
+        scrolledId: Binding<String?>
+    ) -> some View {
+        CustomGiphyMessageView(
+            message: message,
+            isFirst: isFirst,
+            availableWidth: availableWidth,
+            scrolledId: scrolledId
+        )
+    }
+
     private func archiveChannelAction(
         for channel: ChatChannel,
         onDismiss: @escaping () -> Void,

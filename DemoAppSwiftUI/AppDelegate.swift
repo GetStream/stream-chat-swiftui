@@ -70,6 +70,7 @@ class AppDelegate: NSObject, UIApplicationDelegate {
         }
         
         let utils = Utils(
+            messageTypeResolver: DemoAppMessageTypeResolver(),
             channelListConfig: ChannelListConfig(
                 messageRelativeDateFormatEnabled: true,
                 channelItemMutedStyle: .afterChannelName

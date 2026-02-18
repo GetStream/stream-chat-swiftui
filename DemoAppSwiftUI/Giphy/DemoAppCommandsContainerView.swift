@@ -41,10 +41,9 @@ struct DemoAppCommandsContainerView<Factory: ViewFactory>: View {
 
     private func addGiphyAndDismiss(item: GiphyService.GiphyItem) {
         guard let url = item.fullURL ?? item.previewURL else { return }
-        let payload = GiphyAttachmentPayload(
+        let payload = CustomGiphyAttachmentPayload(
             title: item.title ?? "GIF",
-            previewURL: url,
-            actions: []
+            previewURL: url
         )
         let anyPayload = AnyAttachmentPayload(payload: payload)
         let custom = CustomAttachment(id: item.id, content: anyPayload)
