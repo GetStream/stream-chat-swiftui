@@ -64,7 +64,7 @@ public struct MediaBadge: View {
             icon
                 .frame(height: tokens.iconSizeXs)
             Text(durationText)
-                .font(.system(size: 10, weight: .bold))
+                .font(.system(size: 12, weight: .bold))
         }
         .foregroundColor(Color(colors.badgeTextInverse))
         .padding(.horizontal, tokens.spacingXs)

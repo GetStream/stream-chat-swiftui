@@ -169,7 +169,7 @@ public struct AttachmentPickerView<Factory: ViewFactory>: View {
             }
         }
         .frame(height: height)
-        .background(Color(colors.background1))
+        .background(Color(colors.backgroundElevationElevation1))
         .onChange(of: isDisplayed) { newValue in
             if newValue {
                 askForAssetsAccessPermissions()
@@ -199,7 +199,7 @@ extension Appearance.Images {
 
     var attachmentPickerDocumentIcon: UIImage {
         UIImage(
-            systemName: "camera",
+            systemName: "doc",
             withConfiguration: UIImage.SymbolConfiguration(pointSize: 14)
         )!
     }
@@ -250,6 +250,14 @@ public struct AttachmentSourcePickerView: View {
             .accessibilityIdentifier("attachmentPickerPhotos")
 
             AttachmentTypePickerButton(
+                icon: images.attachmentPickerCameraIcon,
+                pickerType: .camera,
+                isSelected: selected == .camera,
+                onTap: onTap
+            )
+            .accessibilityIdentifier("attachmentPickerCamera")
+
+            AttachmentTypePickerButton(
                 icon: images.attachmentPickerDocumentIcon,
                 pickerType: .files,
                 isSelected: selected == .files,
@@ -258,14 +266,6 @@ public struct AttachmentSourcePickerView: View {
             .accessibilityLabel(L10n.Composer.Picker.file)
             .accessibilityIdentifier("attachmentPickerFiles")
 
-            AttachmentTypePickerButton(
-                icon: images.attachmentPickerCameraIcon,
-                pickerType: .camera,
-                isSelected: selected == .camera,
-                onTap: onTap
-            )
-            .accessibilityIdentifier("attachmentPickerCamera")
-            
             if canSendPoll {
                 AttachmentTypePickerButton(
                     icon: images.attachmentPickerPollIcon,
