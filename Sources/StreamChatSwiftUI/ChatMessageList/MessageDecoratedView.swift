@@ -7,13 +7,6 @@ import SwiftUI
 
 /// A view that renders a fully decorated message: avatar, bubble, reactions,
 /// thread replies, translated-text footer and delivery-status metadata.
-///
-/// It is extracted from `MessageContainerView` so it can be reused as a
-/// standalone view (e.g. inside `ReactionsOverlayView`) without carrying
-/// gesture handling, highlighted-message background or outer list padding.
-///
-/// `isInThread` and `isPinned` are injected from outside so the parent can
-/// control them independently of the message model.
 struct MessageDecoratedView<Factory: ViewFactory>: View {
     @StateObject var messageViewModel: MessageViewModel
 
@@ -34,6 +27,20 @@ struct MessageDecoratedView<Factory: ViewFactory>: View {
     var onReactionTap: @MainActor () -> Void = {}
     var onReactionLongPress: @MainActor () -> Void = {}
 
+    /// Creates a decorated message view.
+    /// - Parameters:
+    ///   - factory: The view factory for creating sub-views.
+    ///   - channel: The channel the message belongs to.
+    ///   - message: The message to render.
+    ///   - contentWidth: Maximum width available for the message content.
+    ///   - isFirst: Whether this is the first (bottom-most) message in a group, showing full metadata.
+    ///   - isInThread: Whether the message is displayed inside a thread (hides thread reply indicators).
+    ///   - isLast: Whether this is the last (top-most) message in the list.
+    ///   - isPinned: Whether the message is pinned (shows pin details).
+    ///   - scrolledId: Binding used to scroll to a specific message.
+    ///   - viewModel: An existing view model to reuse; creates a new one if `nil`.
+    ///   - onReactionTap: Called when a reaction is tapped (defaults to no-op).
+    ///   - onReactionLongPress: Called when a reaction is long-pressed (defaults to no-op).
     init(
         factory: Factory,
         channel: ChatChannel,
