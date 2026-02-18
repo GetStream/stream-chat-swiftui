@@ -125,6 +125,7 @@ struct StreamButtonStyle: ButtonStyle {
     private func regularBody(configuration: Configuration) -> some View {
         baseContent(configuration: configuration)
             .clipShape(Capsule())
+            .contentShape(Capsule())
             .overlay(Capsule().stroke(Color(borderColor), lineWidth: hasBorder ? borderWidth : 0))
     }
 
