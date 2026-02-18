@@ -6,7 +6,7 @@ import StreamChat
 import SwiftUI
 
 /// View displayed when the camera picker is shown.
-struct CameraPickerDisplayView: View {
+struct AttachmentCameraPickerView: View {
     @Binding var selectedPickerState: AttachmentPickerState
     @Binding var cameraPickerShown: Bool
 
