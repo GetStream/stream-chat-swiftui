@@ -9,6 +9,7 @@ import SwiftUI
 /// View for the photo attachment picker.
 public struct PhotoAttachmentPickerView: View {
     @Injected(\.colors) private var colors
+    @Injected(\.tokens) private var tokens
     
     @StateObject var assetLoader = PhotoAssetLoader()
     
@@ -22,8 +23,8 @@ public struct PhotoAttachmentPickerView: View {
         return Set(selectedAssetIds)
     }
     
-    let columns = [GridItem(.adaptive(minimum: 120), spacing: 2)]
-    
+    let columns = Array(repeating: GridItem(.flexible(), spacing: 2), count: 3)
+
     public init(
         assets: PHFetchResultCollection,
         onImageTap: @escaping (AddedAsset) -> Void,
@@ -49,7 +50,6 @@ public struct PhotoAttachmentPickerView: View {
                     )
                 }
             }
-            .padding(.horizontal, 2)
             .animation(nil)
         }
     }
@@ -60,6 +60,8 @@ public struct PhotoAttachmentCell: View {
     @Injected(\.colors) private var colors
     @Injected(\.images) private var images
     @Injected(\.fonts) private var fonts
+    @Injected(\.tokens) private var tokens
+    @Injected(\.utils) private var utils
     
     @ObservedObject var assetLoader: PhotoAssetLoader
     
@@ -95,6 +97,7 @@ public struct PhotoAttachmentCell: View {
     }
  
     public var body: some View {
+        let selected = isAssetSelected(asset.localIdentifier)
         ZStack {
             if let image = assetLoader.loadedImages[asset.localIdentifier] {
                 GeometryReader { reader in
@@ -115,15 +118,15 @@ public struct PhotoAttachmentCell: View {
                             .allowsHitTesting(true)
                             .onTapGesture {
                                 withAnimation {
-                                    if let assetURL = asset.mediaType == .image ? assetJpgURL() : assetURL {
+                                    let resolvedURL = asset.mediaType == .image ? assetJpgURL() : assetURL
+                                    if let url = resolvedURL {
                                         onImageTap(
                                             AddedAsset(
                                                 image: image,
                                                 id: asset.localIdentifier,
-                                                url: assetURL,
+                                                url: url,
                                                 type: assetType,
-                                                extraData: asset
-                                                    .mediaType == .video ? ["duration": .number(asset.duration)] : [:]
+                                                extraData: asset.mediaType == .video ? ["duration": .number(asset.duration)] : [:]
                                             )
                                         )
                                     }
@@ -136,35 +139,39 @@ public struct PhotoAttachmentCell: View {
                     )
                 }
             } else {
-                Color(colors.background1)
+                Color(colors.backgroundCoreSurface)
                     .aspectRatio(1, contentMode: .fill)
                 
                 Image(uiImage: images.imagePlaceholder)
                     .customizable()
                     .frame(height: 56)
-                    .foregroundColor(Color(colors.background2))
+                    .foregroundColor(Color(colors.textTertiary))
             }
         }
         .aspectRatio(1, contentMode: .fill)
+        .clipShape(RoundedRectangle(cornerRadius: tokens.radiusXxs))
         .overlay(
             ZStack {
-                if isAssetSelected(asset.localIdentifier) {
-                    TopRightView {
-                        Image(uiImage: images.checkmarkFilled)
-                            .renderingMode(.template)
-                            .scaledToFit()
-                            .applyDefaultIconOverlayStyle()
-                    }
+                // Selected dimming overlay
+                if selected {
+                    RoundedRectangle(cornerRadius: tokens.radiusXxs)
+                        .fill(Color(colors.backgroundCoreSelected))
                 }
-                
+
+                // Selection indicator (top-right)
+                GallerySelectionIndicator(isSelected: selected)
+                    .frame(width: 24, height: 24)
+                    .padding(tokens.spacingXs)
+                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topTrailing)
+
+                // Video duration badge (bottom-left)
                 if asset.mediaType == .video {
-                    VideoIndicatorView()
-                    
-                    VideoDurationIndicatorView(
-                        duration: asset.durationString
-                    )
+                    VideoMediaBadge(durationText: utils.videoDurationFormatter.format(asset.duration) ?? "0:00")
+                        .padding(tokens.spacingXs)
+                        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottomLeading)
                 }
             }
+            .allowsHitTesting(false)
             .id(idOverlay)
         )
         .onAppear {
@@ -221,6 +228,41 @@ public struct PhotoAttachmentCell: View {
             return selectedAssetIds.contains(id)
         }
         return imageSelected(id)
+    }
+}
+
+/// A circular selection indicator for gallery items.
+///
+/// - Unselected: A 24×24 hollow circle with a 2px white border.
+/// - Selected: A 24×24 filled primary-blue circle with a white checkmark.
+public struct GallerySelectionIndicator: View {
+    @Injected(\.colors) private var colors
+
+    public let isSelected: Bool
+
+    public init(isSelected: Bool) {
+        self.isSelected = isSelected
+    }
+
+    public var body: some View {
+        ZStack {
+            if isSelected {
+                Circle()
+                    .fill(Color(colors.accentPrimary))
+                    .overlay(
+                        Circle()
+                            .strokeBorder(Color.white, lineWidth: 2)
+                    )
+                Image(systemName: "checkmark")
+                    .font(.system(size: 12, weight: .bold))
+                    .foregroundColor(.white)
+            } else {
+                Circle()
+                    .strokeBorder(Color.white, lineWidth: 2)
+            }
+        }
+        .shadow(color: .black.opacity(0.15), radius: 2, x: 0, y: 1)
+        .accessibilityLabel(isSelected ? "Selected" : "Not selected")
     }
 }
 
