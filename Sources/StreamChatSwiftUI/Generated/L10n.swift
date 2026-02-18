@@ -211,6 +211,8 @@ internal enum L10n {
       internal static var stop: String { L10n.tr("Localizable", "composer.audio-recording.stop") }
     }
     internal enum Camera {
+      /// Change in Settings
+      internal static var accessSettings: String { L10n.tr("Localizable", "composer.camera.access-settings") }
       /// You have not granted access to your camera
       internal static var noAccess: String { L10n.tr("Localizable", "composer.camera.no-access") }
       /// Open Camera

@@ -137,6 +137,7 @@
 "composer.images.access-settings" = "Change in Settings";
 "composer.camera.take-photo" = "Take a photo and share";
 "composer.camera.open-camera" = "Open Camera";
+"composer.camera.access-settings" = "Change in Settings";
 "composer.camera.no-access" = "You have not granted access to your camera";
 "composer.quoted.dismiss" = "Dismiss quote";
 "composer.quoted.replyTo" = "Reply to %@";

@@ -13,7 +13,7 @@ struct CameraAccessDeniedPromptView: View {
         AttachmentPickerPromptView(
             image: Image(uiImage: images.attachmentPickerCameraIcon),
             description: L10n.Composer.Camera.noAccess,
-            buttonText: L10n.Composer.Camera.openCamera,
+            buttonText: L10n.Composer.Camera.accessSettings,
             onTap: {
                 openSettings()
             }

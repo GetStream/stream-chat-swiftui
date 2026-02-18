@@ -11,29 +11,23 @@ import SwiftUI
 struct CameraOpenPromptView: View {
     @Injected(\.images) private var images
 
-    @State private var permissionDenied = false
-
     @Binding var cameraPickerShown: Bool
     var cameraImageAdded: (AddedAsset) -> Void
 
     var body: some View {
-        if permissionDenied {
-            CameraAccessDeniedPromptView()
-        } else {
-            AttachmentPickerPromptView(
-                image: Image(uiImage: images.attachmentPickerCameraIcon),
-                description: L10n.Composer.Camera.takePhoto,
-                buttonText: L10n.Composer.Camera.openCamera,
-                onTap: {
-                    openCamera()
-                }
-            )
-            .fullScreenCover(isPresented: $cameraPickerShown) {
-                ImagePickerView(sourceType: .camera) { addedImage in
-                    cameraImageAdded(addedImage)
-                }
-                .edgesIgnoringSafeArea(.all)
+        AttachmentPickerPromptView(
+            image: Image(uiImage: images.attachmentPickerCameraIcon),
+            description: L10n.Composer.Camera.takePhoto,
+            buttonText: L10n.Composer.Camera.openCamera,
+            onTap: {
+                openCamera()
             }
+        )
+        .fullScreenCover(isPresented: $cameraPickerShown) {
+            ImagePickerView(sourceType: .camera) { addedImage in
+                cameraImageAdded(addedImage)
+            }
+            .edgesIgnoringSafeArea(.all)
         }
     }
 
@@ -44,11 +38,9 @@ struct CameraOpenPromptView: View {
             cameraPickerShown = true
         case .notDetermined:
             AVCaptureDevice.requestAccess(for: .video) { granted in
-                DispatchQueue.main.async {
-                    if granted {
+                if granted {
+                    DispatchQueue.main.async {
                         cameraPickerShown = true
-                    } else {
-                        permissionDenied = true
                     }
                 }
             }
