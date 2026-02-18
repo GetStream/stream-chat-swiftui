@@ -24,7 +24,7 @@ struct CameraOpenPromptView: View {
             }
         )
         .fullScreenCover(isPresented: $cameraPickerShown) {
-            ImagePickerView(sourceType: .camera) { addedImage in
+            AttachmentImagePickerView(sourceType: .camera) { addedImage in
                 cameraImageAdded(addedImage)
             }
             .edgesIgnoringSafeArea(.all)

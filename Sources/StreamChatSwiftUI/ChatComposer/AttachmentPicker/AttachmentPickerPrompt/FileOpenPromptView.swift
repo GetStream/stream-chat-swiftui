@@ -23,7 +23,7 @@ struct FileOpenPromptView: View {
             }
         )
         .sheet(isPresented: $filePickerShown) {
-            FilePickerView(onFilesPicked: onFilesPicked)
+            AttachmentFilePickerView(onFilesPicked: onFilesPicked)
         }
     }
 }

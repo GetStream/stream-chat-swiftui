@@ -6,7 +6,7 @@ import SwiftUI
 import UniformTypeIdentifiers
 
 /// SwiftUI wrapper for picking files from the device.
-public struct FilePickerView: UIViewControllerRepresentable {
+public struct AttachmentFilePickerView: UIViewControllerRepresentable {
     @Injected(\.chatClient) var client
     var onFilesPicked: ([URL]) -> Void
     
@@ -31,8 +31,8 @@ public struct FilePickerView: UIViewControllerRepresentable {
         // We don't need handling updates of the VC at the moment.
     }
 
-    public func makeCoordinator() -> FilePickerView.Coordinator {
-        FilePickerView.Coordinator(onFilesPicked: onFilesPicked)
+    public func makeCoordinator() -> AttachmentFilePickerView.Coordinator {
+        AttachmentFilePickerView.Coordinator(onFilesPicked: onFilesPicked)
     }
 
     public class Coordinator: NSObject, UIDocumentPickerDelegate {

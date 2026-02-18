@@ -61,7 +61,7 @@ import XCTest
 
     func test_fileAttachmentsPickerView_snapshot() {
         // Given
-        let view = FilePickerView(onFilesPicked: { _ in })
+        let view = AttachmentFilePickerView(onFilesPicked: { _ in })
             .applyDefaultSize()
 
         // Then

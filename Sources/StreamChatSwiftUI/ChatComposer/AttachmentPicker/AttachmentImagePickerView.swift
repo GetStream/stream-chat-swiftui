@@ -7,7 +7,7 @@ import StreamChat
 import SwiftUI
 
 /// Image picker for loading images.
-struct ImagePickerView: UIViewControllerRepresentable {
+struct AttachmentImagePickerView: UIViewControllerRepresentable {
     @Injected(\.utils) var utils
     
     let sourceType: UIImagePickerController.SourceType
@@ -44,9 +44,9 @@ struct ImagePickerView: UIViewControllerRepresentable {
 }
 
 final class ImagePickerCoordinator: NSObject, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
-    var parent: ImagePickerView
+    var parent: AttachmentImagePickerView
 
-    init(_ control: ImagePickerView) {
+    init(_ control: AttachmentImagePickerView) {
         parent = control
     }
 

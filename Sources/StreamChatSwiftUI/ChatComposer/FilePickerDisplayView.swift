@@ -25,7 +25,7 @@ struct FilePickerDisplayView: View {
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .foregroundColor(Color(colors.highlightedAccentBackground))
         .sheet(isPresented: $filePickerShown) {
-            FilePickerView(onFilesPicked: onFilesPicked)
+            AttachmentFilePickerView(onFilesPicked: onFilesPicked)
         }
     }
 }

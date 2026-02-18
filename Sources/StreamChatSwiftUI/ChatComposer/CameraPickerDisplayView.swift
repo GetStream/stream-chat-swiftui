@@ -17,7 +17,7 @@ struct CameraPickerDisplayView: View {
             .fullScreenCover(isPresented: $cameraPickerShown, onDismiss: {
                 selectedPickerState = .photos
             }) {
-                ImagePickerView(sourceType: .camera) { addedImage in
+                AttachmentImagePickerView(sourceType: .camera) { addedImage in
                     cameraImageAdded(addedImage)
                 }
                 .edgesIgnoringSafeArea(.all)
