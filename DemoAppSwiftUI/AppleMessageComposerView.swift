@@ -158,6 +158,7 @@ struct AppleMessageComposerView<Factory: ViewFactory>: View, KeyboardReadable {
                         )
                     }
                 )
+                .environmentObject(viewModel)
                 .offset(y: -composerHeight)
                 .animation(nil) : nil,
             alignment: .bottom

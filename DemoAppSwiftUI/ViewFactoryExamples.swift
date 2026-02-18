@@ -80,7 +80,18 @@ class DemoAppFactory: ViewFactory {
     public func makeMessageViewModifier(for messageModifierInfo: MessageModifierInfo) -> some ViewModifier {
         ShowProfileModifier(messageModifierInfo: messageModifierInfo, mentionsHandler: mentionsHandler)
     }
-    
+
+    func makeCommandsContainerView(
+        suggestions: [String: Any],
+        handleCommand: @escaping ([String: Any]) -> Void
+    ) -> some View {
+        DemoAppCommandsContainerView(
+            factory: self,
+            suggestions: suggestions,
+            handleCommand: handleCommand
+        )
+    }
+
     private func archiveChannelAction(
         for channel: ChatChannel,
         onDismiss: @escaping () -> Void,

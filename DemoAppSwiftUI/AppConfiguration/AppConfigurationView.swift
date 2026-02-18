@@ -18,6 +18,12 @@ struct AppConfigurationView: View {
         AppConfiguration.default.forceRTL = newValue
     }
 
+    var giphyGridEnabled: Binding<Bool> = Binding {
+        AppConfiguration.default.isGiphyGridEnabled
+    } set: { newValue in
+        AppConfiguration.default.isGiphyGridEnabled = newValue
+    }
+
     var body: some View {
         NavigationView {
             List {
@@ -29,6 +35,9 @@ struct AppConfigurationView: View {
                 }
                 Section("Layout") {
                     Toggle("Force RTL (preview)", isOn: forceRTL)
+                }
+                Section("Composer") {
+                    Toggle("GIF grid (Giphy picker)", isOn: giphyGridEnabled)
                 }
             }
             .navigationBarTitleDisplayMode(.inline)

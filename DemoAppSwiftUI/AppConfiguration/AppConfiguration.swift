@@ -16,4 +16,6 @@ final class AppConfiguration: ObservableObject {
     @Published var isChannelPinningFeatureEnabled = false
     /// Force RTL layout for preview (e.g. demo app).
     @Published var forceRTL = false
+    /// When enabled, tapping Giphy in Instant Commands shows a horizontally scrollable GIF grid; composer text drives the search query.
+    @Published var isGiphyGridEnabled = false
 }
