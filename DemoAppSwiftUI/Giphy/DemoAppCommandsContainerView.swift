@@ -24,9 +24,6 @@ struct DemoAppCommandsContainerView<Factory: ViewFactory>: View {
                     isSelectionDisabled: isSubmitting,
                     onSelect: { item in
                         addGiphyAndDismiss(item: item)
-                    },
-                    onBack: {
-                        viewModel.composerCommand = nil
                     }
                 )
                 .accessibilityIdentifier("GiphyGridView")
@@ -60,6 +57,8 @@ struct DemoAppCommandsContainerView<Factory: ViewFactory>: View {
             editedMessage: nil
         ) {
             viewModel.quotedMessage?.wrappedValue = nil
+            isSubmitting = false
+        } onError: { _ in
             isSubmitting = false
         }
     }

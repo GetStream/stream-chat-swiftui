@@ -14,7 +14,6 @@ struct GiphyGridView: View {
     @Binding var searchQuery: String
     var isSelectionDisabled: Bool = false
     var onSelect: (GiphyService.GiphyItem) -> Void
-    var onBack: () -> Void
 
     @State private var items: [GiphyService.GiphyItem] = []
     @State private var loading = false
