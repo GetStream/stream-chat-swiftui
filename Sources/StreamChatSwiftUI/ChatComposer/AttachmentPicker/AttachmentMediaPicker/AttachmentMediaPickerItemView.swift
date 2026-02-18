@@ -6,57 +6,8 @@ import Photos
 import StreamChatCommonUI
 import SwiftUI
 
-/// View for the photo attachment picker.
-public struct PhotoAttachmentPickerView: View {
-    @Injected(\.colors) private var colors
-    @Injected(\.tokens) private var tokens
-    
-    @StateObject var assetLoader = PhotoAssetLoader()
-    
-    var assets: PHFetchResultCollection
-    var onImageTap: (AddedAsset) -> Void
-    var imageSelected: (String) -> Bool
-    var selectedAssetIds: [String]?
-    
-    private var selectedAssetIdsSet: Set<String>? {
-        guard let selectedAssetIds else { return nil }
-        return Set(selectedAssetIds)
-    }
-    
-    let columns = Array(repeating: GridItem(.flexible(), spacing: 2), count: 3)
-
-    public init(
-        assets: PHFetchResultCollection,
-        onImageTap: @escaping (AddedAsset) -> Void,
-        imageSelected: @escaping (String) -> Bool,
-        selectedAssetIds: [String]? = nil
-    ) {
-        self.assets = assets
-        self.onImageTap = onImageTap
-        self.imageSelected = imageSelected
-        self.selectedAssetIds = selectedAssetIds
-    }
-    
-    public var body: some View {
-        ScrollView {
-            LazyVGrid(columns: columns, spacing: 2) {
-                ForEach(assets) { asset in
-                    PhotoAttachmentCell(
-                        assetLoader: assetLoader,
-                        asset: asset,
-                        onImageTap: onImageTap,
-                        imageSelected: imageSelected,
-                        selectedAssetIds: selectedAssetIdsSet
-                    )
-                }
-            }
-            .animation(nil)
-        }
-    }
-}
-
-/// Photo cell displayed in the picker view.
-public struct PhotoAttachmentCell: View {
+/// Media item displayed in the attachment picker view.
+public struct AttachmentMediaPickerItemView: View {
     @Injected(\.colors) private var colors
     @Injected(\.images) private var images
     @Injected(\.fonts) private var fonts

@@ -114,8 +114,8 @@ public struct AttachmentPickerView<Factory: ViewFactory>: View {
                 if let assets = photoLibraryAssets {
                     let collection = PHFetchResultCollection(fetchResult: assets)
                     if !collection.isEmpty {
-                        viewFactory.makePhotoAttachmentPickerView(
-                            options: PhotoAttachmentPickerViewOptions(
+                        viewFactory.makeAttachmentMediaPickerView(
+                            options: AttachmentMediaPickerViewOptions(
                                 assets: collection,
                                 onAssetTap: onAssetTap,
                                 isAssetSelected: isAssetSelected,

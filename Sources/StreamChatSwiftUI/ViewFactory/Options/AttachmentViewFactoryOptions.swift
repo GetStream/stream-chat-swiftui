@@ -461,8 +461,8 @@ public final class AttachmentSourcePickerViewOptions: Sendable {
     }
 }
 
-/// Options for creating the photo attachment picker view.
-public final class PhotoAttachmentPickerViewOptions: Sendable {
+/// Options for creating the media attachment picker view.
+public final class AttachmentMediaPickerViewOptions: Sendable {
     /// The assets to display in the picker.
     public let assets: PHFetchResultCollection
     /// Callback when an asset is tapped.

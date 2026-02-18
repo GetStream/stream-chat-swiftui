@@ -397,11 +397,11 @@ import SwiftUI
     /// - Returns: view displayed in the attachment source picker slot.
     func makeAttachmentSourcePickerView(options: AttachmentSourcePickerViewOptions) -> AttachmentSourcePickerViewType
 
-    associatedtype PhotoAttachmentPickerViewType: View
-    /// Creates the photo attachment picker view.
-    /// - Parameter options: the options for creating the photo attachment picker view.
-    /// - Returns: view displayed in the photo attachment picker slot.
-    func makePhotoAttachmentPickerView(options: PhotoAttachmentPickerViewOptions) -> PhotoAttachmentPickerViewType
+    associatedtype AttachmentMediaPickerViewType: View
+    /// Creates the media attachment picker view.
+    /// - Parameter options: the options for creating the media attachment picker view.
+    /// - Returns: view displayed in the media attachment picker slot.
+    func makeAttachmentMediaPickerView(options: AttachmentMediaPickerViewOptions) -> AttachmentMediaPickerViewType
 
     associatedtype FilePickerViewType: View
     /// Creates the file picker view.

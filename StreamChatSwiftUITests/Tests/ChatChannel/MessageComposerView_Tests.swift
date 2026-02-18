@@ -461,11 +461,11 @@ import XCTest
         XCTAssert(coordinator.textInput.height == 100)
     }
 
-    func test_photoAttachmentCell_loadingResource() {
+    func test_attachmentMediaPickerItemView_loadingResource() {
         // Given
         let asset = PHAsset()
         let loader = PhotoAssetLoader()
-        let cell = PhotoAttachmentCell(
+        let itemView = AttachmentMediaPickerItemView(
             assetLoader: loader,
             asset: asset,
             onImageTap: { _ in },
@@ -475,17 +475,17 @@ import XCTest
         )
 
         // When
-        _ = cell.onAppear()
-        _ = cell.onDisappear()
-        let newRequestId = cell.requestId
+        _ = itemView.onAppear()
+        _ = itemView.onDisappear()
+        let newRequestId = itemView.requestId
 
         // Then
         XCTAssert(newRequestId == nil)
     }
     
-    func test_photosPickerView_snapshot() {
+    func test_attachmentMediaPickerView_snapshot() {
         // Given
-        let view = PhotoAttachmentPickerView(
+        let view = AttachmentMediaPickerView(
             assets: .init(fetchResult: .init()),
             onImageTap: { _ in },
             imageSelected: { _ in true }
