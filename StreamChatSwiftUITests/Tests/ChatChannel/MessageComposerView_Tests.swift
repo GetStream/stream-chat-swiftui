@@ -251,6 +251,66 @@ import XCTest
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
 
+    // MARK: - Attachment Picker Prompt Views
+
+    func test_attachmentPickerPromptView_snapshot() {
+        let view = AttachmentPickerPromptView(
+            image: Image(systemName: "camera"),
+            description: "Test prompt description",
+            buttonText: "Test Action",
+            onTap: {}
+        )
+        .frame(width: composerWidth, height: 300)
+
+        AssertSnapshot(view)
+    }
+
+    func test_photoLibraryAccessPromptView_snapshot() {
+        let view = PhotoLibraryAccessPromptView()
+            .frame(width: composerWidth, height: 300)
+
+        AssertSnapshot(view)
+    }
+
+    func test_cameraOpenPromptView_snapshot() {
+        let view = CameraOpenPromptView(
+            cameraPickerShown: .constant(false),
+            cameraImageAdded: { _ in }
+        )
+        .frame(width: composerWidth, height: 300)
+
+        AssertSnapshot(view)
+    }
+
+    func test_cameraAccessDeniedPromptView_snapshot() {
+        let view = CameraAccessDeniedPromptView()
+            .frame(width: composerWidth, height: 300)
+
+        AssertSnapshot(view)
+    }
+
+    func test_fileOpenPromptView_snapshot() {
+        let view = FileOpenPromptView(
+            filePickerShown: .constant(false),
+            onFilesPicked: { _ in }
+        )
+        .frame(width: composerWidth, height: 300)
+
+        AssertSnapshot(view)
+    }
+
+    func test_pollCreatePromptView_snapshot() {
+        let channelController = ChatChannelTestHelpers.makeChannelController(chatClient: chatClient)
+
+        let view = PollCreatePromptView(
+            channelController: channelController,
+            messageController: nil
+        )
+        .frame(width: composerWidth, height: 300)
+
+        AssertSnapshot(view)
+    }
+
     // MARK: - Frozen Channel Tests
 
     func test_messageComposerView_frozenChannel() {

@@ -335,10 +335,10 @@ import XCTest
         let viewFactory = DefaultViewFactory.shared
 
         // When
-        let view = viewFactory.makeAssetsAccessPermissionView(options: AssetsAccessPermissionViewOptions())
+        let view = viewFactory.makePhotoLibraryAccessPromptView(options: .init())
 
         // Then
-        XCTAssert(view is AssetsAccessPermissionView)
+        XCTAssert(view is PhotoLibraryAccessPromptView)
     }
 
     func test_viewFactory_makeMessageActionsView() {
