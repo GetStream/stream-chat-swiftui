@@ -159,14 +159,13 @@ public struct PhotoAttachmentCell: View {
                 }
 
                 // Selection indicator (top-right)
-                GallerySelectionIndicator(isSelected: selected)
-                    .frame(width: 24, height: 24)
+                GallerySelectionBadgeView(isSelected: selected)
                     .padding(tokens.spacingXs)
                     .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topTrailing)
 
                 // Video duration badge (bottom-left)
                 if asset.mediaType == .video {
-                    VideoMediaBadge(durationText: utils.videoDurationFormatter.format(asset.duration) ?? "0:00")
+                    VideoMediaBadge(durationText: assetDurationText)
                         .padding(tokens.spacingXs)
                         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottomLeading)
                 }
@@ -214,6 +213,10 @@ public struct PhotoAttachmentCell: View {
         }
     }
 
+    private var assetDurationText: String {
+        utils.mediaBadgeDurationFormatter.format(asset.duration)
+    }
+
     /// The original photo is usually in HEIC format.
     /// This makes sure that the photo is converted to JPG.
     /// This way it is more compatible with other platforms.
@@ -228,41 +231,6 @@ public struct PhotoAttachmentCell: View {
             return selectedAssetIds.contains(id)
         }
         return imageSelected(id)
-    }
-}
-
-/// A circular selection indicator for gallery items.
-///
-/// - Unselected: A 24×24 hollow circle with a 2px white border.
-/// - Selected: A 24×24 filled primary-blue circle with a white checkmark.
-public struct GallerySelectionIndicator: View {
-    @Injected(\.colors) private var colors
-
-    public let isSelected: Bool
-
-    public init(isSelected: Bool) {
-        self.isSelected = isSelected
-    }
-
-    public var body: some View {
-        ZStack {
-            if isSelected {
-                Circle()
-                    .fill(Color(colors.accentPrimary))
-                    .overlay(
-                        Circle()
-                            .strokeBorder(Color.white, lineWidth: 2)
-                    )
-                Image(systemName: "checkmark")
-                    .font(.system(size: 12, weight: .bold))
-                    .foregroundColor(.white)
-            } else {
-                Circle()
-                    .strokeBorder(Color.white, lineWidth: 2)
-            }
-        }
-        .shadow(color: .black.opacity(0.15), radius: 2, x: 0, y: 1)
-        .accessibilityLabel(isSelected ? "Selected" : "Not selected")
     }
 }
 
