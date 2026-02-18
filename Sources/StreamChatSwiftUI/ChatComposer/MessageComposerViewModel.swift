@@ -25,11 +25,7 @@ import SwiftUI
 
     @Published public var pickerState: AttachmentPickerState = .photos {
         didSet {
-            if pickerState == .camera {
-                withAnimation {
-                    cameraPickerShown = true
-                }
-            } else if pickerState == .files {
+            if pickerState == .files {
                 withAnimation {
                     filePickerShown = true
                 }

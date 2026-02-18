@@ -699,6 +699,17 @@ extension ViewFactory {
     public func makePhotoLibraryAccessPromptView(options: PhotoLibraryAccessPromptViewOptions) -> some View {
         PhotoLibraryAccessPromptView()
     }
+
+    public func makeCameraOpenPromptView(options: CameraOpenPromptViewOptions) -> some View {
+        CameraOpenPromptView(
+            cameraPickerShown: options.cameraPickerShown,
+            cameraImageAdded: options.cameraImageAdded
+        )
+    }
+
+    public func makeCameraAccessDeniedPromptView(options: CameraAccessDeniedPromptViewOptions) -> some View {
+        CameraAccessDeniedPromptView()
+    }
     
     public func makeSendInChannelView(
         options: SendInChannelViewOptions

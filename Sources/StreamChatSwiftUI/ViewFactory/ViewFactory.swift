@@ -431,6 +431,14 @@ import SwiftUI
     /// Creates the photo library access prompt view.
     func makePhotoLibraryAccessPromptView(options: PhotoLibraryAccessPromptViewOptions) -> PhotoLibraryAccessPromptViewType
 
+    associatedtype CameraOpenPromptViewType: View
+    /// Creates the prompt view displayed when the camera tab is selected.
+    func makeCameraOpenPromptView(options: CameraOpenPromptViewOptions) -> CameraOpenPromptViewType
+
+    associatedtype CameraAccessDeniedPromptViewType: View
+    /// Creates the prompt view displayed when camera access is denied.
+    func makeCameraAccessDeniedPromptView(options: CameraAccessDeniedPromptViewOptions) -> CameraAccessDeniedPromptViewType
+
     associatedtype SendInChannelViewType: View
     /// Creates the view that allows thread messages to be sent in a channel.
     /// - Parameter options: the options for creating the send in channel view.

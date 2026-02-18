@@ -210,6 +210,14 @@ internal enum L10n {
       /// Stop recording audio message
       internal static var stop: String { L10n.tr("Localizable", "composer.audio-recording.stop") }
     }
+    internal enum Camera {
+      /// You have not granted access to your camera
+      internal static var noAccess: String { L10n.tr("Localizable", "composer.camera.no-access") }
+      /// Open Camera
+      internal static var openCamera: String { L10n.tr("Localizable", "composer.camera.open-camera") }
+      /// Take a photo and share
+      internal static var takePhoto: String { L10n.tr("Localizable", "composer.camera.take-photo") }
+    }
     internal enum Checkmark {
       /// Also send in channel
       internal static var channelReply: String { L10n.tr("Localizable", "composer.checkmark.channel-reply") }

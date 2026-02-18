@@ -13,15 +13,18 @@ public struct AttachmentPickerPromptView: View {
 
     private let image: Image
     private let text: String
+    private let buttonText: String
     private let onTap: () -> Void
 
     public init(
         image: Image,
-        text: String,
+        description: String,
+        buttonText: String,
         onTap: @escaping () -> Void
     ) {
         self.image = image
-        self.text = text
+        self.text = description
+        self.buttonText = buttonText
         self.onTap = onTap
     }
 
@@ -44,7 +47,7 @@ public struct AttachmentPickerPromptView: View {
             .frame(maxWidth: .infinity, maxHeight: .infinity)
 
             Button(action: onTap) {
-                Text(L10n.Composer.Images.accessSettings)
+                Text(buttonText)
                     .frame(maxWidth: .infinity)
             }
             .buttonStyle(

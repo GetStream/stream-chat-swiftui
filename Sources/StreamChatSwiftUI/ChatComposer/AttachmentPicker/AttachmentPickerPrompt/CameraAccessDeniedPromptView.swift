@@ -5,15 +5,15 @@
 import StreamChat
 import SwiftUI
 
-/// Prompt view displayed when the user has not granted access to the photo library.
-struct PhotoLibraryAccessPromptView: View {
+/// Prompt view displayed when the user has not granted access to the camera.
+struct CameraAccessDeniedPromptView: View {
     @Injected(\.images) private var images
 
     var body: some View {
         AttachmentPickerPromptView(
-            image: Image(uiImage: images.attachmentPickerPhotosIcon),
-            description: L10n.Composer.Images.noAccessLibrary,
-            buttonText: L10n.Composer.Images.accessSettings,
+            image: Image(uiImage: images.attachmentPickerCameraIcon),
+            description: L10n.Composer.Camera.noAccess,
+            buttonText: L10n.Composer.Camera.openCamera,
             onTap: {
                 openSettings()
             }

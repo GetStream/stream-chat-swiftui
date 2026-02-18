@@ -517,3 +517,19 @@ public final class CameraPickerViewOptions: Sendable {
         self.cameraImageAdded = cameraImageAdded
     }
 }
+
+/// Options for creating the camera open prompt view.
+public final class CameraOpenPromptViewOptions: Sendable {
+    /// Binding to whether the camera picker is shown.
+    public let cameraPickerShown: Binding<Bool>
+    /// Callback when a camera image is added.
+    public let cameraImageAdded: @MainActor (AddedAsset) -> Void
+
+    public init(
+        cameraPickerShown: Binding<Bool>,
+        cameraImageAdded: @escaping @MainActor (AddedAsset) -> Void
+    ) {
+        self.cameraPickerShown = cameraPickerShown
+        self.cameraImageAdded = cameraImageAdded
+    }
+}
