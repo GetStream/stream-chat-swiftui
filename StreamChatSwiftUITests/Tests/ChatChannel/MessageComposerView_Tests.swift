@@ -576,10 +576,9 @@ import XCTest
             instantCommands: [],
             onCommandSelected: { _ in }
         )
-        .applyDefaultSize()
 
         // Then
-        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
+        AssertSnapshot(view, variants: [.defaultLight, .defaultDark])
     }
 
     func test_composerInputView_command() {
