@@ -16,11 +16,16 @@ class ReactionsIconProvider {
            let emojiImage = image(from: emoji, useLargeIcons: useLargeIcons) {
             return emojiImage
         }
+        if let dictionary = images.availableEmojis.first(where: { $0["key"] == reaction.rawValue }),
+           let emoji = dictionary["value"],
+           let emojiImage = image(from: emoji, useLargeIcons: useLargeIcons) {
+            return emojiImage
+        }
         var icon: UIImage?
         if useLargeIcons {
-            icon = images.availableReactions[reaction]?.largeIcon
+            icon = images.defaultReactions[reaction]?.largeIcon
         } else {
-            icon = images.availableReactions[reaction]?.smallIcon
+            icon = images.defaultReactions[reaction]?.smallIcon
         }
         if let icon {
             return icon
