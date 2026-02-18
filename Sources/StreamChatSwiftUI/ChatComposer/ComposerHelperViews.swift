@@ -92,33 +92,23 @@ struct CameraPickerDisplayView: View {
 
 /// View displayed when there's no access permission to the photo library.
 struct AssetsAccessPermissionView: View {
-    @Injected(\.colors) private var colors
-    @Injected(\.fonts) private var fonts
+    @Injected(\.images) private var images
 
     var body: some View {
-        VStack(alignment: .center, spacing: 8) {
-            Text(L10n.Composer.Images.noAccessLibrary)
-                .font(fonts.body)
-            Button {
-                openAppPrivacySettings()
-            } label: {
-                Text(L10n.Composer.Images.accessSettings)
-                    .font(fonts.bodyBold)
-                    .multilineTextAlignment(.center)
-                    .foregroundColor(Color(colors.highlightedAccentBackground))
+        AttachmentAccessPermissionView(
+            image: Image(uiImage: images.attachmentPickerPhotosIcon),
+            text: L10n.Composer.Images.noAccessLibrary,
+            onTap: {
+                openSettings()
             }
-            Spacer()
-        }
-        .padding(.all, 8)
-        .accessibilityIdentifier("AssetsAccessPermissionView")
+        )
     }
 
-    func openAppPrivacySettings() {
+    private func openSettings() {
         guard let url = URL(string: UIApplication.openSettingsURLString),
               UIApplication.shared.canOpenURL(url) else {
             return
         }
-
         UIApplication.shared.open(url, options: [:], completionHandler: nil)
     }
 }

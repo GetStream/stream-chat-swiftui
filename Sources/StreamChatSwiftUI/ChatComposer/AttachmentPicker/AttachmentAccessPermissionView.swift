@@ -1,0 +1,68 @@
+//
+// Copyright © 2026 Stream.io Inc. All rights reserved.
+//
+
+import StreamChatCommonUI
+import SwiftUI
+
+/// A reusable view displayed when the user has not granted access
+/// to a resource required by an attachment picker (e.g. photo library, camera).
+public struct AttachmentAccessPermissionView: View {
+    @Injected(\.colors) private var colors
+    @Injected(\.fonts) private var fonts
+    @Injected(\.tokens) private var tokens
+
+    private let image: Image
+    private let text: String
+    private let onTap: () -> Void
+
+    public init(
+        image: Image,
+        text: String,
+        onTap: @escaping () -> Void
+    ) {
+        self.image = image
+        self.text = text
+        self.onTap = onTap
+    }
+
+    public var body: some View {
+        VStack(spacing: tokens.spacingXs) {
+            VStack(spacing: tokens.spacingXs) {
+                image
+                    .renderingMode(.template)
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 22, height: 22)
+                    .foregroundColor(Color(colors.textTertiary))
+
+                Text(text)
+                    .font(fonts.body)
+                    .multilineTextAlignment(.center)
+                    .foregroundColor(Color(colors.textTertiary))
+                    .frame(width: 200)
+            }
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+
+            Button(action: onTap) {
+                Text(L10n.Composer.Images.accessSettings)
+                    .frame(maxWidth: .infinity)
+            }
+            .buttonStyle(
+                StreamButtonStyle(
+                    role: .secondary,
+                    style: .outline,
+                    size: .large,
+                    isIconOnly: false
+                )
+            )
+            .frame(maxWidth: .infinity, minHeight: 48, maxHeight: 48, alignment: .center)
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .padding(.horizontal, tokens.spacing2xl)
+        .padding(.bottom, tokens.spacing3xl)
+        .background(Color(colors.backgroundElevationElevation1))
+        .accessibilityElement(children: .contain)
+        .accessibilityIdentifier("AttachmentAccessPermissionView")
+    }
+}
