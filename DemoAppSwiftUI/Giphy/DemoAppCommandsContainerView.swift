@@ -58,8 +58,6 @@ struct DemoAppCommandsContainerView<Factory: ViewFactory>: View {
         ) {
             viewModel.quotedMessage?.wrappedValue = nil
             isSubmitting = false
-        } onError: { _ in
-            isSubmitting = false
         }
     }
 }
