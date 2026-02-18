@@ -804,6 +804,7 @@ extension ViewFactory {
         ChatQuotedMessageView(
             factory: self,
             quotedMessage: options.quotedMessage,
+            parentMessage: options.parentMessage,
             scrolledId: options.scrolledId
         )
     }
@@ -815,7 +816,9 @@ extension ViewFactory {
             factory: self,
             viewModel: QuotedMessageViewModel(
                 message: options.quotedMessage,
-                currentUser: chatClient.currentUserController().currentUser
+                currentUser: chatClient.currentUserController().currentUser,
+                quotedByCurrentUser: options.quotedByCurrentUser,
+                shownInMessageList: options.shownInMessageList
             ),
             padding: options.padding
         )

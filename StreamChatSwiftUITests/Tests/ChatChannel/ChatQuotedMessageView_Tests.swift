@@ -15,11 +15,17 @@ import XCTest
 
     func test_chatQuotedMessageView_outgoing() {
         // Given
-        let message = ChatMessage.mock(
+        let quotedMessage = ChatMessage.mock(
             id: .unique,
             cid: .unique,
             text: "Sounds good!",
-            author: author,
+            author: author
+        )
+        let parentMessage = ChatMessage.mock(
+            id: .unique,
+            cid: .unique,
+            text: "Reply",
+            author: .mock(id: "current"),
             isSentByCurrentUser: true
         )
         
@@ -27,7 +33,8 @@ import XCTest
         let view = containerView {
             ChatQuotedMessageView(
                 factory: DefaultViewFactory.shared,
-                quotedMessage: message,
+                quotedMessage: quotedMessage,
+                parentMessage: parentMessage,
                 scrolledId: .constant(nil)
             )
         }
@@ -38,11 +45,17 @@ import XCTest
     
     func test_chatQuotedMessageView_incoming() {
         // Given
-        let message = ChatMessage.mock(
+        let quotedMessage = ChatMessage.mock(
             id: .unique,
             cid: .unique,
             text: "Sounds good!",
-            author: author,
+            author: author
+        )
+        let parentMessage = ChatMessage.mock(
+            id: .unique,
+            cid: .unique,
+            text: "Reply",
+            author: .mock(id: "other"),
             isSentByCurrentUser: false
         )
         
@@ -50,7 +63,8 @@ import XCTest
         let view = containerView {
             ChatQuotedMessageView(
                 factory: DefaultViewFactory.shared,
-                quotedMessage: message,
+                quotedMessage: quotedMessage,
+                parentMessage: parentMessage,
                 scrolledId: .constant(nil)
             )
         }
@@ -61,7 +75,7 @@ import XCTest
     
     func test_chatQuotedMessageView_withAttachment() {
         // Given
-        let message = ChatMessage.mock(
+        let quotedMessage = ChatMessage.mock(
             id: .unique,
             cid: .unique,
             text: "Check this out!",
@@ -71,7 +85,13 @@ import XCTest
                     id: .unique,
                     imageURL: .localYodaImage
                 ).asAnyAttachment
-            ],
+            ]
+        )
+        let parentMessage = ChatMessage.mock(
+            id: .unique,
+            cid: .unique,
+            text: "Reply",
+            author: .mock(id: "other"),
             isSentByCurrentUser: false
         )
         
@@ -79,7 +99,8 @@ import XCTest
         let view = containerView {
             ChatQuotedMessageView(
                 factory: DefaultViewFactory.shared,
-                quotedMessage: message,
+                quotedMessage: quotedMessage,
+                parentMessage: parentMessage,
                 scrolledId: .constant(nil)
             )
         }

@@ -2,19 +2,15 @@
 // Copyright © 2026 Stream.io Inc. All rights reserved.
 //
 
-import AVKit
 import StreamChat
 import SwiftUI
 
 public struct MessageContainerView<Factory: ViewFactory>: View {
     @StateObject var messageViewModel: MessageViewModel
-    @Environment(\.channelTranslationLanguage) var translationLanguage
     @Environment(\.highlightedMessageId) var highlightedMessageId
 
-    @Injected(\.fonts) private var fonts
     @Injected(\.colors) private var colors
     @Injected(\.images) private var images
-    @Injected(\.chatClient) private var chatClient
     @Injected(\.utils) private var utils
 
     var factory: Factory
@@ -31,17 +27,9 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
     @State private var frame: CGRect = .zero
     @State private var computeFrame = false
     @State private var offsetX: CGFloat = 0
-    @State private var offsetYAvatar: CGFloat = 0
     @GestureState private var offset: CGSize = .zero
 
     private let replyThreshold: CGFloat = 60
-    private var paddingValue: CGFloat {
-        utils.messageListConfig.messagePaddings.singleBottom
-    }
-    
-    private var groupMessageInterItemSpacing: CGFloat {
-        utils.messageListConfig.messagePaddings.groupBottom
-    }
 
     public init(
         factory: Factory,
@@ -79,210 +67,75 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
             if messageViewModel.systemMessageShown {
                 factory.makeSystemMessageView(options: SystemMessageViewOptions(message: message))
             } else {
-                if messageViewModel.isRightAligned {
-                    MessageSpacer(spacerWidth: spacerWidth)
-                } else {
-                    if let messageAuthor = messageViewModel.messageAuthor {
-                        factory.makeUserAvatarView(
-                            options: UserAvatarViewOptions(
-                                user: messageAuthor,
-                                size: AvatarSize.medium,
-                                showsIndicator: false
-                            )
-                        )
-                        .opacity(showsAllInfo ? 1 : 0)
-                        .offset(y: bottomReactionsShown ? offsetYAvatar : 0)
-                        .animation(nil)
+                MessageDecoratedView(
+                    factory: factory,
+                    channel: channel,
+                    message: message,
+                    contentWidth: contentWidth,
+                    isFirst: showsAllInfo,
+                    isInThread: isInThread,
+                    isLast: isLast,
+                    isPinned: messageViewModel.isPinned,
+                    scrolledId: $scrolledId,
+                    viewModel: messageViewModel,
+                    onReactionTap: {
+                        handleGestureForMessage(showsMessageActions: false)
+                    },
+                    onReactionLongPress: {
+                        handleGestureForMessage(showsMessageActions: false)
+                    }
+                )
+                .background(
+                    GeometryReader { proxy in
+                        Rectangle().fill(Color.clear)
+                            .onChange(of: computeFrame, perform: { _ in
+                                frame = proxy.frame(in: .global)
+                            })
+                    }
+                )
+                .onTapGesture(count: 2) {
+                    if messageListConfig.doubleTapOverlayEnabled {
+                        handleGestureForMessage(showsMessageActions: true)
                     }
                 }
-
-                VStack(alignment: messageViewModel.isRightAligned ? .trailing : .leading) {
-                    if messageViewModel.isPinned {
-                        MessagePinDetailsView(
-                            message: message,
-                            reactionsShown: topReactionsShown
-                        )
-                    }
-
-                    MessageView(
-                        factory: factory,
-                        message: message,
-                        contentWidth: contentWidth,
-                        isFirst: showsAllInfo,
-                        scrolledId: $scrolledId
+                .onLongPressGesture(perform: {
+                    handleGestureForMessage(showsMessageActions: true)
+                })
+                .offset(x: min(offsetX, maximumHorizontalSwipeDisplacement))
+                .simultaneousGesture(
+                    DragGesture(
+                        minimumDistance: minimumSwipeDistance,
+                        coordinateSpace: .local
                     )
-                    .overlay(
-                        topReactionsShown ?
-                            factory.makeMessageReactionView(
-                                options: MessageReactionViewOptions(
-                                    message: message,
-                                    onTapGesture: {
-                                        handleGestureForMessage(showsMessageActions: false)
-                                    },
-                                    onLongPressGesture: {
-                                        handleGestureForMessage(showsMessageActions: false)
-                                    }
-                                )
-                            ) : nil,
-                        alignment: messageViewModel.isRightAligned ? .trailing : .leading
-                    )
-                    .overlay(
-                        messageViewModel.failureIndicatorShown ? SendFailureIndicator() : nil
-                    )
-                    .background(
-                        GeometryReader { proxy in
-                            Rectangle().fill(Color.clear)
-                                .onChange(of: computeFrame, perform: { _ in
-                                    frame = proxy.frame(in: .global)
-                                })
-                        }
-                    )
-                    .onTapGesture(count: 2) {
-                        if messageListConfig.doubleTapOverlayEnabled {
-                            handleGestureForMessage(showsMessageActions: true)
-                        }
-                    }
-                    .onLongPressGesture(perform: {
-                        handleGestureForMessage(showsMessageActions: true)
-                    })
-                    .offset(x: min(offsetX, maximumHorizontalSwipeDisplacement))
-                    .simultaneousGesture(
-                        DragGesture(
-                            minimumDistance: minimumSwipeDistance,
-                            coordinateSpace: .local
-                        )
-                        .updating($offset) { (value, gestureState, _) in
-                            guard messageViewModel.isSwipeToQuoteReplyPossible else {
-                                return
-                            }
-                            // Using updating since onEnded is not called if the gesture is canceled.
-                            let diff = CGSize(
-                                width: value.location.x - value.startLocation.x,
-                                height: value.location.y - value.startLocation.y
-                            )
-
-                            if diff == .zero {
-                                gestureState = .zero
-                            } else {
-                                gestureState = value.translation
-                            }
-                        }
-                    )
-                    .onChange(of: offset, perform: { _ in
-                        if !channel.config.quotesEnabled {
+                    .updating($offset) { (value, gestureState, _) in
+                        guard messageViewModel.isSwipeToQuoteReplyPossible else {
                             return
                         }
+                        // Using updating since onEnded is not called if the gesture is canceled.
+                        let diff = CGSize(
+                            width: value.location.x - value.startLocation.x,
+                            height: value.location.y - value.startLocation.y
+                        )
 
-                        if offset == .zero {
-                            // gesture ended or cancelled
-                            setOffsetX(value: 0)
+                        if diff == .zero {
+                            gestureState = .zero
                         } else {
-                            dragChanged(to: offset.width)
-                        }
-                    })
-                    .accessibilityElement(children: .contain)
-                    .accessibilityIdentifier("MessageView")
-
-                    if !isInThread {
-                        if message.replyCount > 0 {
-                            factory.makeMessageRepliesView(
-                                options: MessageRepliesViewOptions(
-                                    channel: channel,
-                                    message: message,
-                                    replyCount: message.replyCount
-                                )
-                            )
-                            .accessibilityElement(children: .contain)
-                            .accessibility(identifier: "MessageRepliesView")
-                        } else if message.showReplyInChannel,
-                                  let parentId = message.parentMessageId,
-                                  let controller = utils.channelControllerFactory.currentChannelController,
-                                  let parentMessage = controller.dataStore.message(id: parentId) {
-                            factory.makeMessageRepliesShownInChannelView(
-                                options: MessageRepliesShownInChannelViewOptions(
-                                    channel: channel,
-                                    message: message,
-                                    parentMessage: parentMessage,
-                                    replyCount: parentMessage.replyCount
-                                )
-                            )
-                            .accessibilityElement(children: .contain)
-                            .accessibility(identifier: "MessageRepliesView")
-                        } else if message.showReplyInChannel, let parentId = message.parentMessageId {
-                            /// In case the parent message is not available in the local cache, we need to fetch it from the remote server.
-                            /// The lazy view uses the `factory.makeMessageRepliesShownInChannelView` internally once the parent message is fetched.
-                            LazyMessageRepliesView(
-                                factory: factory,
-                                channel: channel,
-                                message: message,
-                                parentMessageController: chatClient.messageController(
-                                    cid: channel.cid,
-                                    messageId: parentId
-                                )
-                            )
-                            .accessibilityElement(children: .contain)
-                            .accessibility(identifier: "MessageRepliesView")
+                            gestureState = value.translation
                         }
                     }
-                    
-                    if bottomReactionsShown {
-                        factory.makeBottomReactionsView(
-                            options: ReactionsBottomViewOptions(
-                                message: message,
-                                showsAllInfo: showsAllInfo,
-                                onTap: {
-                                    handleGestureForMessage(
-                                        showsMessageActions: false
-                                    )
-                                },
-                                onLongPress: {
-                                    handleGestureForMessage(showsMessageActions: false)
-                                }
-                            )
-                        )
-                        .background(
-                            GeometryReader { proxy in
-                                let frame = proxy.frame(in: .local)
-                                let height = frame.height
-                                Color.clear.preference(key: HeightPreferenceKey.self, value: height)
-                            }
-                        )
-                        .onPreferenceChange(HeightPreferenceKey.self) { value in
-                            if value != 0 {
-                                offsetYAvatar = -(value ?? 0)
-                            }
-                        }
+                )
+                .onChange(of: offset, perform: { _ in
+                    if !channel.config.quotesEnabled {
+                        return
                     }
 
-                    if messageViewModel.translatedText != nil {
-                        factory.makeMessageTranslationFooterView(
-                            options: MessageTranslationFooterViewOptions(
-                                messageViewModel: messageViewModel
-                            )
-                        )
+                    if offset == .zero {
+                        // gesture ended or cancelled
+                        setOffsetX(value: 0)
+                    } else {
+                        dragChanged(to: offset.width)
                     }
-
-                    if showsAllInfo && !message.isDeleted {
-                        if message.isSentByCurrentUser && channel.config.readEventsEnabled {
-                            HStack(spacing: 4) {
-                                factory.makeMessageReadIndicatorView(
-                                    options: MessageReadIndicatorViewOptions(
-                                        channel: channel,
-                                        message: message
-                                    )
-                                )
-
-                                if messageViewModel.messageDateShown {
-                                    factory.makeMessageDateView(options: MessageDateViewOptions(message: message))
-                                }
-                            }
-                        } else if messageViewModel.authorAndDateShown {
-                            factory.makeMessageAuthorAndDateView(options: MessageAuthorAndDateViewOptions(message: message))
-                        } else if messageViewModel.messageDateShown {
-                            factory.makeMessageDateView(options: MessageDateViewOptions(message: message))
-                        }
-                    }
-                }
+                })
                 .overlay(
                     offsetX > 0 ?
                         TopLeftView {
@@ -291,20 +144,8 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
                         .offset(x: -32)
                         : nil
                 )
-
-                if !messageViewModel.isRightAligned {
-                    MessageSpacer(spacerWidth: spacerWidth)
-                }
             }
         }
-        .padding(
-            .top,
-            topReactionsShown && !messageViewModel.isPinned ? messageListConfig.messageDisplayOptions
-                .reactionsTopPadding(message) : 0
-        )
-        .padding(.horizontal, messageListConfig.messagePaddings.horizontal)
-        .padding(.bottom, showsAllInfo || messageViewModel.isPinned ? paddingValue : groupMessageInterItemSpacing)
-        .padding(.top, isLast ? paddingValue : 0)
         .background(
             Group {
                 if utils.messageListConfig.highlightMessageWhenJumping,
@@ -316,7 +157,6 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
                 }
             }
         )
-        .padding(.bottom, messageViewModel.isPinned ? paddingValue / 2 : 0)
         .transition(
             message.isSentByCurrentUser ?
                 messageListConfig.messageDisplayOptions.currentUserMessageTransition :
@@ -324,11 +164,6 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
         )
         .accessibilityElement(children: .contain)
         .accessibilityIdentifier("MessageContainerView")
-        // This is needed for the LinkDetectionTextView to work properly.
-        // TODO: This should be refactored on v5 so the TextView does not depend directly on the view model.
-        .environment(\.messageViewModel, messageViewModel)
-        .onChange(of: message, perform: { message in messageViewModel.message = message })
-        .onChange(of: channel) { channel in messageViewModel.channel = channel }
     }
 
     private var maximumHorizontalSwipeDisplacement: CGFloat {
@@ -340,8 +175,7 @@ public struct MessageContainerView<Factory: ViewFactory>: View {
         let minimumWidth: CGFloat = 240
         let available = max(minimumWidth, (width ?? 0) - spacerWidth) - 2 * padding
         let avatarSize: CGFloat = AvatarSize.medium + padding
-        let totalWidth = messageViewModel.isRightAligned ? available : available - avatarSize
-        return totalWidth
+        return available - avatarSize
     }
 
     private var spacerWidth: CGFloat {

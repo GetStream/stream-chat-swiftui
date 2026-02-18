@@ -7,6 +7,7 @@ import SwiftUI
 
 /// A view that shows a preview of the message that is being edited.
 public struct EditedMessageView<Factory: ViewFactory>: View {
+    @Injected(\.colors) private var colors
     @Injected(\.tokens) private var tokens
 
     private let factory: Factory
@@ -32,7 +33,7 @@ public struct EditedMessageView<Factory: ViewFactory>: View {
         referenceMessageView
             .padding(tokens.spacingXs)
             .modifier(ReferenceMessageViewBackgroundModifier(
-                isSentByCurrentUser: true
+                backgroundColor: colors.chatBackgroundOutgoing.toColor
             ))
             .modifier(DismissButtonOverlayModifier(onDismiss: onDismiss))
             .frame(height: 56)

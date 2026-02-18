@@ -151,10 +151,10 @@ public final class MessagePaddings {
     public let groupBottom: CGFloat
 
     public init(
-        horizontal: CGFloat = 8,
-        quotedViewPadding: CGFloat = 8,
+        horizontal: CGFloat = 16,
+        quotedViewPadding: CGFloat = 16,
         singleBottom: CGFloat = 8,
-        groupBottom: CGFloat = 2
+        groupBottom: CGFloat = 4
     ) {
         self.horizontal = horizontal
         self.quotedViewPadding = quotedViewPadding
@@ -271,7 +271,7 @@ public final class MessageDisplayOptions {
     }
     
     public static var defaultReactionsTopPadding: (ChatMessage) -> CGFloat {
-        { _ in 24 }
+        { _ in 20 }
     }
 }
 

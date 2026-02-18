@@ -4,6 +4,7 @@
 
 import Foundation
 import StreamChat
+import UIKit
 
 /// A view model that provides display data for a quoted message.
 @MainActor
@@ -20,6 +21,9 @@ open class QuotedMessageViewModel {
     private lazy var attachmentPreviewResolver: MessageAttachmentPreviewResolver = {
         MessageAttachmentPreviewResolver(message: message)
     }()
+    
+    let quotedByCurrentUser: Bool
+    let shownInMessageList: Bool
 
     // MARK: - Init
 
@@ -29,10 +33,14 @@ open class QuotedMessageViewModel {
     ///   - currentUser: The current logged-in user.
     public init(
         message: ChatMessage,
-        currentUser: CurrentChatUser?
+        currentUser: CurrentChatUser?,
+        quotedByCurrentUser: Bool,
+        shownInMessageList: Bool
     ) {
         self.message = message
         self.currentUser = currentUser
+        self.quotedByCurrentUser = quotedByCurrentUser
+        self.shownInMessageList = shownInMessageList
     }
     
     // MARK: - Display Properties

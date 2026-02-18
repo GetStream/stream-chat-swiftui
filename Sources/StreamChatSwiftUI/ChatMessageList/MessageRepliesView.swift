@@ -16,6 +16,7 @@ enum MessageRepliesConstants {
 public struct MessageRepliesView<Factory: ViewFactory>: View {
     @Injected(\.fonts) private var fonts
     @Injected(\.colors) private var colors
+    @Injected(\.tokens) private var tokens
 
     var factory: Factory
     var channel: ChatChannel
@@ -59,7 +60,7 @@ public struct MessageRepliesView<Factory: ViewFactory>: View {
                 userInfo: userInfo
             )
         } label: {
-            HStack {
+            HStack(spacing: tokens.spacingXs) {
                 if !isRightAligned {
                     messageAvatarView
                 }
@@ -69,34 +70,33 @@ public struct MessageRepliesView<Factory: ViewFactory>: View {
                     messageAvatarView
                 }
             }
-            .padding(.horizontal, 16)
+            .padding(.horizontal, 16 + tokens.spacingXs)
+            .padding(.top, tokens.spacingXxs)
             .overlay(
                 Path { path in
-                    let corner: CGFloat = 16
-                    let height: CGFloat = 2 * corner
-                    let startX: CGFloat = 0
-                    let endX = startX + corner
-
-                    path.move(to: CGPoint(x: startX, y: 0))
-                    path.addLine(to: CGPoint(x: startX, y: height - corner))
-                    path.addQuadCurve(
-                        to: CGPoint(x: endX, y: height),
-                        control: CGPoint(x: startX, y: height)
+                    path.move(to: CGPoint(x: 0.5, y: 0))
+                    path.addLine(to: CGPoint(x: 0.5, y: 20.5))
+                    path.addCurve(
+                        to: CGPoint(x: 16, y: 36),
+                        control1: CGPoint(x: 0.5, y: 29.0604),
+                        control2: CGPoint(x: 7.43959, y: 36)
                     )
                 }
                 .stroke(
-                    Color(message.isSentByCurrentUser ? colors.chatThreadConnectorOutgoing : colors.chatThreadConnectorIncoming),
+                    Color(message.isSentByCurrentUser ? colors.chatBackgroundOutgoing : colors.chatBackgroundIncoming),
                     style: StrokeStyle(
                         lineWidth: 1.0,
                         lineCap: .round,
                         lineJoin: .round
                     )
                 )
-                .offset(y: -22)
+                .frame(width: 16, height: 48)
+                .offset(y: -10)
                 .rotation3DEffect(
                     .degrees(isRightAligned ? 180 : 0),
                     axis: (x: 0, y: 1, z: 0)
-                )
+                ),
+                alignment: isRightAligned ? .trailing : .leading
             )
             .foregroundColor(colors.textPrimary.toColor)
         }

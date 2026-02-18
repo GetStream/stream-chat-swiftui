@@ -12,6 +12,7 @@ public struct ChatQuotedMessageView<Factory: ViewFactory>: View {
     
     private let factory: Factory
     private let quotedMessage: ChatMessage
+    private let parentMessageSentByCurrentUser: Bool
     @Binding private var scrolledId: String?
 
     /// Creates a chat quoted message view.
@@ -22,17 +23,21 @@ public struct ChatQuotedMessageView<Factory: ViewFactory>: View {
     public init(
         factory: Factory,
         quotedMessage: ChatMessage,
+        parentMessage: ChatMessage,
         scrolledId: Binding<String?>
     ) {
         self.factory = factory
         self.quotedMessage = quotedMessage
+        parentMessageSentByCurrentUser = parentMessage.isSentByCurrentUser
         self._scrolledId = scrolledId
     }
 
     public var body: some View {
         factory.makeQuotedMessageView(
             options: QuotedMessageViewOptions(
-                quotedMessage: quotedMessage
+                quotedMessage: quotedMessage,
+                quotedByCurrentUser: parentMessageSentByCurrentUser,
+                shownInMessageList: true
             )
         )
         .padding(tokens.spacingXs)

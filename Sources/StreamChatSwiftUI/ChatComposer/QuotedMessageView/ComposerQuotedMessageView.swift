@@ -37,6 +37,8 @@ public struct ComposerQuotedMessageView<Factory: ViewFactory>: View {
         factory.makeQuotedMessageView(
             options: QuotedMessageViewOptions(
                 quotedMessage: quotedMessage,
+                quotedByCurrentUser: true,
+                shownInMessageList: false,
                 padding: .init(
                     top: tokens.spacingXs,
                     leading: tokens.spacingXs,

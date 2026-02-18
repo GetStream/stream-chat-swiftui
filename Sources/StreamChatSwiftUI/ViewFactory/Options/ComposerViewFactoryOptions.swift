@@ -319,15 +319,23 @@ public final class ComposerQuotedMessageViewOptions: Sendable {
 public final class QuotedMessageViewOptions: Sendable {
     /// The quoted message to display.
     public let quotedMessage: ChatMessage
+    /// True, if the message is quoted by the current user, otherwise false.
+    public let quotedByCurrentUser: Bool
+    /// True, if quoted message appears in the message list, otherwise false.
+    public let shownInMessageList: Bool
     /// The padding to apply around the quoted message view.
     public let padding: EdgeInsets?
     
     public init(
         quotedMessage: ChatMessage,
+        quotedByCurrentUser: Bool,
+        shownInMessageList: Bool,
         padding: EdgeInsets? = nil
     ) {
         self.quotedMessage = quotedMessage
+        self.quotedByCurrentUser = quotedByCurrentUser
         self.padding = padding
+        self.shownInMessageList = shownInMessageList
     }
 }
 
@@ -335,14 +343,18 @@ public final class QuotedMessageViewOptions: Sendable {
 public final class ChatQuotedMessageViewOptions: Sendable {
     /// The quoted message to display.
     public let quotedMessage: ChatMessage
+    /// The parent message which is quoting another message.
+    public let parentMessage: ChatMessage
     /// Binding to the currently scrolled message ID.
     public let scrolledId: Binding<String?>
     
     public init(
         quotedMessage: ChatMessage,
+        parentMessage: ChatMessage,
         scrolledId: Binding<String?>
     ) {
         self.quotedMessage = quotedMessage
+        self.parentMessage = parentMessage
         self.scrolledId = scrolledId
     }
 }
