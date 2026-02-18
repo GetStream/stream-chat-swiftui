@@ -302,15 +302,14 @@ import XCTest
         let viewFactory = DefaultViewFactory.shared
 
         // When
-        let view = viewFactory.makeFilePickerView(
-            options: FilePickerViewOptions(
-                filePickerShown: .constant(true),
+        let view = viewFactory.makeAttachmentFilePickerView(
+            options: AttachmentFilePickerViewOptions(
                 onFilesPicked: { _ in }
             )
         )
 
         // Then
-        XCTAssert(view is FilePickerDisplayView)
+        XCTAssert(view is AttachmentFilePickerView)
     }
 
     func test_viewFactory_makeCameraPickerView() {
@@ -320,8 +319,6 @@ import XCTest
         // When
         let view = viewFactory.makeAttachmentCameraPickerView(
             options: AttachmentCameraPickerViewOptions(
-                selected: .constant(.photos),
-                cameraPickerShown: .constant(false),
                 cameraImageAdded: { _ in }
             )
         )

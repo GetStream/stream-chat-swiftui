@@ -274,6 +274,7 @@ import XCTest
 
     func test_cameraOpenPromptView_snapshot() {
         let view = CameraOpenPromptView(
+            factory: DefaultViewFactory.shared,
             cameraPickerShown: .constant(false),
             cameraImageAdded: { _ in }
         )
@@ -291,6 +292,7 @@ import XCTest
 
     func test_fileOpenPromptView_snapshot() {
         let view = FileOpenPromptView(
+            factory: DefaultViewFactory.shared,
             filePickerShown: .constant(false),
             onFilesPicked: { _ in }
         )
