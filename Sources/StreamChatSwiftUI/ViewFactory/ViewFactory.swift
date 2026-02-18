@@ -407,7 +407,7 @@ import SwiftUI
     /// Creates the file picker view.
     /// - Parameter options: the options for creating the file picker view.
     /// - Returns: view displayed in the file picker slot.
-    func makeFilePickerView(options: FilePickerViewOptions) -> FilePickerViewType
+    func makeAttachmentFilePickerView(options: AttachmentFilePickerViewOptions) -> FilePickerViewType
 
     associatedtype CameraPickerViewType: View
     /// Creates the camera picker view.

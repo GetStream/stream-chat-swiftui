@@ -677,13 +677,10 @@ extension ViewFactory {
         )
     }
     
-    public func makeFilePickerView(
-        options: FilePickerViewOptions
+    public func makeAttachmentFilePickerView(
+        options: AttachmentFilePickerViewOptions
     ) -> some View {
-        FilePickerDisplayView(
-            filePickerShown: options.filePickerShown,
-            onFilesPicked: options.onFilesPicked
-        )
+        AttachmentFilePickerView(onFilesPicked: options.onFilesPicked)
     }
     
     public func makeAttachmentCameraPickerView(

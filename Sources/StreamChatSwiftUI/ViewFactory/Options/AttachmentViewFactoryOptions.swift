@@ -486,14 +486,11 @@ public final class AttachmentMediaPickerViewOptions: Sendable {
 }
 
 /// Options for creating the file picker view.
-public final class FilePickerViewOptions: Sendable {
-    /// Binding to whether the file picker is shown.
-    public let filePickerShown: Binding<Bool>
+public final class AttachmentFilePickerViewOptions: Sendable {
     /// Callback invoked with the URLs of newly picked files.
     public let onFilesPicked: @MainActor ([URL]) -> Void
     
-    public init(filePickerShown: Binding<Bool>, onFilesPicked: @escaping @MainActor ([URL]) -> Void) {
-        self.filePickerShown = filePickerShown
+    public init(onFilesPicked: @escaping @MainActor ([URL]) -> Void) {
         self.onFilesPicked = onFilesPicked
     }
 }
