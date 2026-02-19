@@ -135,9 +135,12 @@ public final class MessageTextViewOptions: Sendable {
 public final class MessageDateViewOptions: Sendable {
     /// The message to display the date for.
     public let message: ChatMessage
+    /// If nil, default color is used, otherwise the specified color.
+    public let textColor: Color?
     
-    public init(message: ChatMessage) {
+    public init(message: ChatMessage, textColor: Color? = nil) {
         self.message = message
+        self.textColor = textColor
     }
 }
 

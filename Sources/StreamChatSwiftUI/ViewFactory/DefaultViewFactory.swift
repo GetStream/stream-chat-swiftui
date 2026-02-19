@@ -261,7 +261,7 @@ extension ViewFactory {
     }
     
     public func makeMessageDateView(options: MessageDateViewOptions) -> some View {
-        MessageDateView(message: options.message)
+        MessageDateView(message: options.message, textColor: options.textColor)
     }
     
     public func makeMessageAuthorAndDateView(options: MessageAuthorAndDateViewOptions) -> some View {
