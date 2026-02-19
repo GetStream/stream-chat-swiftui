@@ -151,7 +151,7 @@ public struct ChatChannelListItem<Factory: ViewFactory>: View {
                 .lineLimit(1)
                 .font(fonts.subheadline)
                 .foregroundColor(Color(colors.textSecondary))
-            } else if previewAttachmentIcon != nil {
+            } else if previewAttachmentIconImage != nil {
                 HStack(spacing: tokens.spacingXxs) {
                     attachmentIconView
                     Text(subtitleText)
@@ -174,24 +174,20 @@ public struct ChatChannelListItem<Factory: ViewFactory>: View {
         return channel.typingIndicatorString(currentUserId: chatClient.currentUserId)
     }
 
-    private var previewAttachmentIcon: AttachmentIcon? {
+    private var previewAttachmentIconImage: UIImage? {
         guard let previewMessage = channel.previewMessage else { return nil }
-        return utils.messagePreviewFormatter.attachmentIcon(for: previewMessage)
+        let resolver = MessageAttachmentPreviewResolver(message: previewMessage)
+        guard let previewIcon = resolver.previewIcon else { return nil }
+        return utils.messageAttachmentPreviewIconProvider.image(for: previewIcon)
     }
 
     @ViewBuilder
     private var attachmentIconView: some View {
-        if let icon = previewAttachmentIcon {
-            if icon.isSystemImage {
-                Image(systemName: icon.name)
-                    .font(fonts.subheadline)
-                    .accessibilityHidden(true)
-            } else {
-                Image(icon.name, bundle: .streamChatCommonUI)
-                    .customizable()
-                    .frame(maxHeight: 16)
-                    .accessibilityHidden(true)
-            }
+        if let iconImage = previewAttachmentIconImage {
+            Image(uiImage: iconImage)
+                .customizable()
+                .frame(maxHeight: 14)
+                .accessibilityHidden(true)
         }
     }
 

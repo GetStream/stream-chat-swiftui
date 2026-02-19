@@ -26,6 +26,7 @@ import StreamChatCommonUI
     public var chatUserNamer: ChatUserNamer
     public var messageTypeResolver: MessageTypeResolving
     public var messageActionsResolver: MessageActionsResolving
+    public var messageAttachmentPreviewIconProvider: MessageAttachmentPreviewIconProvider
     public var messagePreviewFormatter: MessagePreviewFormatter
     public var commandsConfig: CommandsConfig
     public var channelListConfig: ChannelListConfig
@@ -87,6 +88,7 @@ import StreamChatCommonUI
         fileCDN: FileCDN = DefaultFileCDN(),
         messageTypeResolver: MessageTypeResolving = MessageTypeResolver(),
         messageActionResolver: MessageActionsResolving = MessageActionsResolver(),
+        messageAttachmentPreviewIconProvider: MessageAttachmentPreviewIconProvider = DefaultMessageAttachmentPreviewIconProvider(),
         messagePreviewFormatter: MessagePreviewFormatter = MessagePreviewFormatter(),
         commandsConfig: CommandsConfig = DefaultCommandsConfig(),
         channelListConfig: ChannelListConfig = ChannelListConfig(),
@@ -117,6 +119,7 @@ import StreamChatCommonUI
         self.chatUserNamer = chatUserNamer
         self.messageTypeResolver = messageTypeResolver
         messageActionsResolver = messageActionResolver
+        self.messageAttachmentPreviewIconProvider = messageAttachmentPreviewIconProvider
         self.messagePreviewFormatter = messagePreviewFormatter
         self.commandsConfig = commandsConfig
         self.channelListConfig = channelListConfig

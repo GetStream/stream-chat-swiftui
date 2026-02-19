@@ -151,23 +151,19 @@ struct PinnedMessageView<Factory: ViewFactory>: View {
         .padding(.all, 8)
     }
 
-    private var previewAttachmentIcon: AttachmentIcon? {
-        utils.messagePreviewFormatter.attachmentIcon(for: message)
+    private var previewAttachmentIconImage: UIImage? {
+        let resolver = MessageAttachmentPreviewResolver(message: message)
+        guard let previewIcon = resolver.previewIcon else { return nil }
+        return utils.messageAttachmentPreviewIconProvider.image(for: previewIcon)
     }
 
     @ViewBuilder
     private var attachmentIconView: some View {
-        if let icon = previewAttachmentIcon {
-            if icon.isSystemImage {
-                Image(systemName: icon.name)
-                    .font(fonts.footnote)
-                    .accessibilityHidden(true)
-            } else {
-                Image(icon.name, bundle: .streamChatCommonUI)
-                    .customizable()
-                    .frame(maxHeight: 12)
-                    .accessibilityHidden(true)
-            }
+        if let iconImage = previewAttachmentIconImage {
+            Image(uiImage: iconImage)
+                .customizable()
+                .frame(maxHeight: 12)
+                .accessibilityHidden(true)
         }
     }
 

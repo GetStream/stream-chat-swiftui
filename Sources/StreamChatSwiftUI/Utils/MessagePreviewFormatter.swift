@@ -5,19 +5,6 @@
 import StreamChat
 import SwiftUI
 
-/// Represents an icon used for attachment previews.
-public struct AttachmentIcon: Equatable, Sendable {
-    /// The name of the icon.
-    public let name: String
-    /// Whether the icon is an SF Symbol (system image) or a bundled asset.
-    public let isSystemImage: Bool
-
-    public init(name: String, isSystemImage: Bool = true) {
-        self.name = name
-        self.isSystemImage = isSystemImage
-    }
-}
-
 /// A formatter that converts a message to a text preview representation.
 /// By default it is used to show message previews in the Channel List and Thread List.
 @MainActor open class MessagePreviewFormatter {
@@ -52,32 +39,6 @@ public struct AttachmentIcon: Equatable, Sendable {
             return textContent
         }
         return previewMessage.adjustedText
-    }
-
-    /// Returns the icon for the attachment preview of the given message.
-    open func attachmentIcon(for previewMessage: ChatMessage) -> AttachmentIcon? {
-        if previewMessage.poll != nil {
-            return AttachmentIcon(name: "attachment_picker_polls", isSystemImage: false)
-        }
-        guard let attachment = previewMessage.allAttachments.first, !previewMessage.isDeleted else {
-            return nil
-        }
-        switch attachment.type {
-        case .audio:
-            return AttachmentIcon(name: "headphones")
-        case .file:
-            return AttachmentIcon(name: "doc")
-        case .image:
-            return AttachmentIcon(name: "camera")
-        case .video:
-            return AttachmentIcon(name: "video")
-        case .voiceRecording:
-            return AttachmentIcon(name: "mic")
-        case .linkPreview:
-            return AttachmentIcon(name: "link")
-        default:
-            return nil
-        }
     }
 
     /// Formats only the attachment content of the message in case it contains attachments.

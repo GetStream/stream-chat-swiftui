@@ -842,9 +842,8 @@ extension ViewFactory {
     public func makeMessageAttachmentPreviewIconView(
         options: MessageAttachmentPreviewIconViewOptions
     ) -> some View {
-        let provider = DefaultMessageAttachmentPreviewIconProvider()
-        return MessageAttachmentPreviewIconView(
-            iconImage: provider.image(for: options.icon)
+        MessageAttachmentPreviewIconView(
+            iconImage: InjectedValues[\.utils].messageAttachmentPreviewIconProvider.image(for: options.icon)
         )
     }
     
