@@ -6,6 +6,7 @@ import SwiftUI
 
 struct MoreReactionsView: View {
     @Injected(\.colors) private var colors
+    @Injected(\.images) private var images
 
     private let columns: [GridItem] = Array(
         repeating: GridItem(.fixed(56), spacing: 12, alignment: .center),
@@ -24,18 +25,16 @@ struct MoreReactionsView: View {
         VStack(alignment: .leading, spacing: 16) {
             ScrollView(.vertical, showsIndicators: false) {
                 LazyVGrid(columns: columns, spacing: 12) {
-                    ForEach(Self.orderedEmojiKeys, id: \.self) { key in
-                        if let emoji = Self.emojiMap[key] {
-                            Button {
-                                onEmojiTap(key)
-                            } label: {
-                                Text(emoji)
-                                    .font(.system(size: 30))
-                                    .frame(width: emojiSize, height: emojiSize)
-                            }
-                            .buttonStyle(.plain)
-                            .accessibilityLabel(emoji)
+                    ForEach(availableEmojis, id: \.key) { entry in
+                        Button {
+                            onEmojiTap(entry.key)
+                        } label: {
+                            Text(entry.value)
+                                .font(.system(size: 30))
+                                .frame(width: emojiSize, height: emojiSize)
                         }
+                        .buttonStyle(.plain)
+                        .accessibilityLabel(entry.value)
                     }
                 }
                 .padding(.vertical, 8)
@@ -49,25 +48,15 @@ struct MoreReactionsView: View {
 }
 
 extension MoreReactionsView {
-    static var emojiValues: [String] {
-        InjectedValues[\.images].availableEmojis
-    }
-    
-    private static let emojiMap: [String: String] = {
-        var map: [String: String] = [:]
-        for emoji in emojiValues {
-            map[apiIdentifier(for: emoji)] = emoji
+    private var availableEmojis: [AvailableEmoji] {
+        images.availableEmojis.compactMap { dictionary in
+            guard let key = dictionary["key"], let value = dictionary["value"] else { return nil }
+            return AvailableEmoji(key: key, value: value)
         }
-        return map
-    }()
-
-    private static let orderedEmojiKeys: [String] = emojiValues.map { apiIdentifier(for: $0) }
-
-    private static func apiIdentifier(for emoji: String) -> String {
-        emoji.unicodeScalars
-            .map { scalar in
-                String(format: "u%04X", scalar.value)
-            }
-            .joined(separator: "-")
     }
+}
+
+struct AvailableEmoji: Sendable {
+    let key: String
+    let value: String
 }
