@@ -32,7 +32,6 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
     @State private var screenHeight = UIScreen.main.bounds.size.height
     @State private var orientationChanged = false
     @State private var moreReactionsShown = false
-    @State private var measuredReactionsPickerHeight: CGFloat = 0
     @State private var measuredTotalContentHeight: CGFloat = 0
 
     // MARK: - Properties
@@ -113,11 +112,6 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
         .onPreferenceChange(HeightPreferenceKey.self) { value in
             if let value, value != screenHeight {
                 screenHeight = value
-            }
-        }
-        .onPreferenceChange(OverlayReactionsPickerHeightKey.self) { value in
-            if value > 0 {
-                measuredReactionsPickerHeight = value
             }
         }
         .onPreferenceChange(OverlayContentHeightKey.self) { value in
@@ -207,14 +201,6 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
             }
             .padding(.leading, !isRightAligned ? messageBubbleLeadingX : 0)
             .padding(.trailing, isRightAligned ? paddingValue / 2 : 0)
-            .background(
-                GeometryReader { proxy in
-                    Color.clear.preference(
-                        key: OverlayReactionsPickerHeightKey.self,
-                        value: proxy.size.height
-                    )
-                }
-            )
         }
     }
 
@@ -259,8 +245,6 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
                     alignment: isRightAligned ? .trailing : .leading
                 )
                 .environment(\.channelTranslationLanguage, channel.membership?.language)
-                .scaleEffect(popIn || willPopOut ? 1 : 0.95)
-                .animation(willPopOut ? .easeInOut : popInAnimation, value: popIn)
                 .frame(
                     width: messageDisplayInfo.frame.width
                 )
@@ -296,6 +280,8 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
         }
         .padding(.leading, !isRightAligned ? paddingValue / 2 : 0)
         .padding(.trailing, isRightAligned ? paddingValue / 2 : 0)
+        .scaleEffect(popIn || willPopOut ? 1 : 0.95)
+        .animation(willPopOut ? .easeInOut : popInAnimation, value: popIn)
     }
 
     // MARK: - Message Actions
@@ -396,12 +382,6 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
         return paddingValue / 2
     }
 
-    private var messageContainerHeight: CGFloat {
-        let maxAllowed = screenHeight / 2 - topSafeArea
-        let containerHeight = messageDisplayInfo.frame.height
-        return containerHeight > maxAllowed ? maxAllowed : containerHeight
-    }
-
     private var messageActionsWidth: CGFloat {
         var width = messageDisplayInfo.contentWidth + 2 * paddingValue
         if isRightAligned {
@@ -441,7 +421,7 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
     private var topReactionsWithPickerHeight: CGFloat {
         guard channel.config.reactionsEnabled, !messageDisplayInfo.message.isBounced else { return 0 }
         let messageReactions = topReactionsShown ? tokens.spacingLg : 0
-        return measuredReactionsPickerHeight + tokens.spacingXs + messageReactions
+        return 48 + tokens.spacingXs + messageReactions
     }
 
     private var overlayOffsetY: CGFloat {
@@ -459,13 +439,6 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
 }
 
 // MARK: - Preference Keys
-
-private struct OverlayReactionsPickerHeightKey: PreferenceKey {
-    static let defaultValue: CGFloat = 0
-    static func reduce(value: inout CGFloat, nextValue: () -> CGFloat) {
-        value = max(value, nextValue())
-    }
-}
 
 private struct OverlayContentHeightKey: PreferenceKey {
     static let defaultValue: CGFloat = 0
