@@ -28,7 +28,7 @@ public struct AttachmentTypePickerView: View {
     public var body: some View {
         HStack(alignment: .center, spacing: tokens.spacingXxxs) {
             AttachmentTypePickerButton(
-                icon: images.attachmentPickerPhotosIcon,
+                icon: images.attachmentPhotosIcon,
                 pickerType: .photos,
                 isSelected: selected == .photos,
                 onTap: onTap
@@ -36,7 +36,7 @@ public struct AttachmentTypePickerView: View {
             .accessibilityIdentifier("attachmentPickerPhotos")
 
             AttachmentTypePickerButton(
-                icon: images.attachmentPickerCameraIcon,
+                icon: images.attachmentCameraIcon,
                 pickerType: .camera,
                 isSelected: selected == .camera,
                 onTap: onTap
@@ -44,7 +44,7 @@ public struct AttachmentTypePickerView: View {
             .accessibilityIdentifier("attachmentPickerCamera")
 
             AttachmentTypePickerButton(
-                icon: images.attachmentPickerDocumentIcon,
+                icon: images.attachmentDocumentIcon,
                 pickerType: .files,
                 isSelected: selected == .files,
                 onTap: onTap
@@ -54,7 +54,7 @@ public struct AttachmentTypePickerView: View {
 
             if canSendPoll {
                 AttachmentTypePickerButton(
-                    icon: images.attachmentPickerPollIcon,
+                    icon: images.attachmentPollIcon,
                     pickerType: .polls,
                     isSelected: selected == .polls,
                     onTap: onTap
@@ -64,7 +64,7 @@ public struct AttachmentTypePickerView: View {
             }
 
             AttachmentTypePickerButton(
-                icon: images.attachmentPickerCommandIcon,
+                icon: images.attachmentCommandIcon,
                 pickerType: .commands,
                 isSelected: selected == .commands,
                 onTap: onTap
@@ -113,8 +113,7 @@ public struct AttachmentTypePickerButton: View {
             action: { onTap(pickerType) }
         ) {
             Image(uiImage: icon)
-                .renderingMode(.template)
-                .font(.system(size: tokens.iconSizeMd))
+                .customizable()
                 .frame(width: tokens.iconSizeMd, height: tokens.iconSizeMd)
         }
     }

@@ -9,6 +9,7 @@ import SwiftUI
 public struct SelectionBadgeView: View {
     @Injected(\.colors) private var colors
     @Injected(\.images) private var images
+    @Injected(\.tokens) private var tokens
 
     public let isSelected: Bool
 
@@ -25,7 +26,8 @@ public struct SelectionBadgeView: View {
                         borderView
                     )
                 Image(uiImage: images.selectionBadgeIcon)
-                    .renderingMode(.template)
+                    .customizable()
+                    .frame(width: tokens.iconSizeXs, height: tokens.iconSizeXs)
                     .foregroundColor(Color(colors.controlRadiocheckIconSelected))
             } else {
                 borderView
@@ -41,11 +43,13 @@ public struct SelectionBadgeView: View {
     }
 }
 
+// TODO: Move to common module
+
 extension Appearance.Images {
     var selectionBadgeIcon: UIImage {
         UIImage(
             systemName: "checkmark",
-            withConfiguration: UIImage.SymbolConfiguration(pointSize: 12, weight: .bold)
+            withConfiguration: UIImage.SymbolConfiguration(weight: .bold)
         )!
     }
 }

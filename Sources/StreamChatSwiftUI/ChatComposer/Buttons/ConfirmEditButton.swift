@@ -25,8 +25,7 @@ public struct ConfirmEditButton: View {
             action: onTap
         ) {
             Image(uiImage: images.whiteCheckmark)
-                .renderingMode(.template)
-                .font(.system(size: tokens.iconSizeMd))
+                .customizable()
                 .frame(width: tokens.iconSizeMd, height: tokens.iconSizeMd)
         }
         .disabled(!enabled)

@@ -42,7 +42,7 @@ public struct FileOpenPromptView: View {
 
     public var body: some View {
         AttachmentPickerPromptView(
-            image: Image(uiImage: images.attachmentPickerDocumentIcon),
+            image: Image(uiImage: images.attachmentDocumentIcon),
             description: L10n.Composer.Files.selectFiles,
             buttonText: L10n.Composer.Files.openFiles,
             onTap: onTap

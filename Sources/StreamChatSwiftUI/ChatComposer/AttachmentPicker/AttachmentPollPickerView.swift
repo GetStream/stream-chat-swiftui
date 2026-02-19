@@ -44,7 +44,7 @@ public struct PollCreatePromptView: View {
 
     public var body: some View {
         AttachmentPickerPromptView(
-            image: Image(uiImage: images.attachmentPickerPollIcon),
+            image: Image(uiImage: images.attachmentPollIcon),
             description: L10n.Composer.Polls.createPollDescription,
             buttonText: L10n.Composer.Polls.createPoll,
             onTap: onTap

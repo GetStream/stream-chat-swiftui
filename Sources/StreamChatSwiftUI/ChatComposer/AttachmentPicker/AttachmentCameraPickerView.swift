@@ -80,7 +80,7 @@ public struct CameraOpenPromptView: View {
 
     public var body: some View {
         AttachmentPickerPromptView(
-            image: Image(uiImage: images.attachmentPickerCameraIcon),
+            image: Image(uiImage: images.attachmentCameraIcon),
             description: L10n.Composer.Camera.takePhoto,
             buttonText: L10n.Composer.Camera.openCamera,
             onTap: onTap
@@ -96,7 +96,7 @@ public struct CameraAccessDeniedPromptView: View {
 
     public var body: some View {
         AttachmentPickerPromptView(
-            image: Image(uiImage: images.attachmentPickerCameraIcon),
+            image: Image(uiImage: images.attachmentCameraIcon),
             description: L10n.Composer.Camera.noAccess,
             buttonText: L10n.Composer.Camera.accessSettings,
             onTap: {

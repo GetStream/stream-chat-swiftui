@@ -32,10 +32,8 @@ public struct AttachmentPickerPromptView: View {
         VStack(spacing: tokens.spacingXs) {
             VStack(spacing: tokens.spacingXs) {
                 image
-                    .renderingMode(.template)
-                    .resizable()
-                    .scaledToFit()
-                    .frame(width: 22, height: 22)
+                    .customizable()
+                    .frame(width: 32, height: 32)
                     .foregroundColor(Color(colors.textTertiary))
 
                 Text(text)

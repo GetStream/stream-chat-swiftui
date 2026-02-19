@@ -172,38 +172,33 @@ public struct AttachmentPickerView<Factory: ViewFactory>: View {
 // TODO: Move to Common Module
 
 extension Appearance.Images {
-    var attachmentPickerPhotosIcon: UIImage {
+    var attachmentPhotosIcon: UIImage {
         UIImage(
-            systemName: "photo",
-            withConfiguration: UIImage.SymbolConfiguration(pointSize: 14)
+            systemName: "photo"
         )!
     }
 
-    var attachmentPickerCameraIcon: UIImage {
+    var attachmentCameraIcon: UIImage {
         UIImage(
-            systemName: "camera",
-            withConfiguration: UIImage.SymbolConfiguration(pointSize: 14)
+            systemName: "camera"
         )!
     }
 
-    var attachmentPickerDocumentIcon: UIImage {
+    var attachmentDocumentIcon: UIImage {
         UIImage(
-            systemName: "doc",
-            withConfiguration: UIImage.SymbolConfiguration(pointSize: 14)
+            systemName: "doc"
         )!
     }
 
-    var attachmentPickerPollIcon: UIImage {
+    var attachmentPollIcon: UIImage {
         UIImage(
-            systemName: "chart.bar",
-            withConfiguration: UIImage.SymbolConfiguration(pointSize: 14)
+            systemName: "chart.bar"
         )!
     }
 
-    var attachmentPickerCommandIcon: UIImage {
+    var attachmentCommandIcon: UIImage {
         UIImage(
-            systemName: "chevron.left.forwardslash.chevron.right",
-            withConfiguration: UIImage.SymbolConfiguration(pointSize: 14)
+            systemName: "chevron.left.forwardslash.chevron.right"
         )!
     }
 }

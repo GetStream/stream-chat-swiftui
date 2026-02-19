@@ -261,14 +261,14 @@ import XCTest
     }
 
     func test_fileOpenPromptView_snapshot() {
-        let view = FileOpenPromptView()
+        let view = FileOpenPromptView(onTap: {})
             .frame(width: composerWidth, height: 300)
 
         AssertSnapshot(view)
     }
 
     func test_cameraOpenPromptView_snapshot() {
-        let view = CameraOpenPromptView()
+        let view = CameraOpenPromptView(onTap: {})
             .frame(width: composerWidth, height: 300)
 
         AssertSnapshot(view)
@@ -282,7 +282,7 @@ import XCTest
     }
 
     func test_pollCreatePromptView_snapshot() {
-        let view = PollCreatePromptView()
+        let view = PollCreatePromptView(onTap: {})
             .frame(width: composerWidth, height: 300)
 
         AssertSnapshot(view)

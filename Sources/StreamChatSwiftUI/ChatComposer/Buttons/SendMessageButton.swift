@@ -26,7 +26,6 @@ public struct SendMessageButton: View {
         ) {
             Image(uiImage: images.composerSend)
                 .renderingMode(.template)
-                .font(.system(size: tokens.iconSizeMd))
                 .frame(width: tokens.iconSizeMd, height: tokens.iconSizeMd)
         }
         .disabled(!enabled)
