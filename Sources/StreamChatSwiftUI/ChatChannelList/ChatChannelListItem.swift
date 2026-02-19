@@ -131,7 +131,7 @@ public struct ChatChannelListItem<Factory: ViewFactory>: View {
                 SubtitleText(text: typingText)
             } else if utils.messageListConfig.draftMessagesEnabled, let draftText = channel.draftMessageText {
                 HStack(spacing: 2) {
-                    Text("\(L10n.Message.Preview.draft):")
+                    Text("\(L10n.Message.Preview.draft): ")
                         .font(fonts.subheadline).fontWeight(.semibold)
                         .foregroundColor(Color(colors.accentPrimary))
                     SubtitleText(text: draftText)
@@ -234,6 +234,9 @@ public struct ChatChannelListItem<Factory: ViewFactory>: View {
 
     private var shouldShowReadEvents: Bool {
         if channel.shouldShowTypingIndicator || lastMessageFailedToSend {
+            return false
+        }
+        if utils.messageListConfig.draftMessagesEnabled && channel.draftMessageText != nil {
             return false
         }
         if let message = channel.previewMessage,
