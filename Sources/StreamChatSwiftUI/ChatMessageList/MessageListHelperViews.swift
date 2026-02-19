@@ -8,19 +8,22 @@ import SwiftUI
 /// View that displays the message author and the date of sending.
 public struct MessageAuthorAndDateView: View {
     @Injected(\.utils) private var utils
+    @Injected(\.colors) private var colors
     
     var message: ChatMessage
+    var textColor: UIColor?
     
-    public init(message: ChatMessage) {
+    public init(message: ChatMessage, textColor: UIColor? = nil) {
         self.message = message
+        self.textColor = textColor
     }
     
     public var body: some View {
         HStack {
-            MessageAuthorView(message: message)
+            MessageAuthorView(message: message, textColor: textColor)
                 .accessibilityIdentifier("MessageAuthorView")
             if utils.messageListConfig.messageDisplayOptions.showMessageDate {
-                MessageDateView(message: message)
+                MessageDateView(message: message, textColor: textColor)
                     .accessibilityIdentifier("MessageDateView")
             }
             Spacer()
@@ -36,9 +39,11 @@ public struct MessageAuthorView: View {
     @Injected(\.colors) private var colors
     
     var message: ChatMessage
+    var textColor: UIColor?
     
-    public init(message: ChatMessage) {
+    public init(message: ChatMessage, textColor: UIColor? = nil) {
         self.message = message
+        self.textColor = textColor
     }
     
     var authorName: String {
@@ -49,7 +54,7 @@ public struct MessageAuthorView: View {
         Text(authorName)
             .lineLimit(1)
             .font(fonts.footnoteBold)
-            .foregroundColor(colors.chatTextUsername.toColor)
+            .foregroundColor(textColor?.toColor ?? colors.chatTextUsername.toColor)
     }
 }
 
@@ -64,7 +69,7 @@ struct MessageDateView: View {
     }
     
     let message: ChatMessage
-    var textColor: Color?
+    var textColor: UIColor?
     
     var text: String {
         var text = dateFormatter.string(from: message.createdAt)
@@ -86,7 +91,7 @@ struct MessageDateView: View {
     var body: some View {
         Text(text)
             .font(fonts.footnote)
-            .foregroundColor(textColor ?? colors.chatTextTimestamp.toColor)
+            .foregroundColor(textColor?.toColor ?? colors.chatTextTimestamp.toColor)
             .animation(nil)
             .accessibilityLabel(Text(accessibilityLabel))
             .accessibilityIdentifier("MessageDateView")
@@ -103,17 +108,20 @@ public struct MessageReadIndicatorView: View {
     var showReadCount: Bool
     var showDelivered: Bool
     var localState: LocalMessageState?
+    var textColor: UIColor?
     
     public init(
         readUsers: [ChatUser],
         showReadCount: Bool,
         showDelivered: Bool = false,
-        localState: LocalMessageState? = nil
+        localState: LocalMessageState? = nil,
+        textColor: UIColor? = nil
     ) {
         self.readUsers = readUsers
         self.showReadCount = showReadCount
         self.showDelivered = showDelivered
         self.localState = localState
+        self.textColor = textColor
     }
     
     public var body: some View {
@@ -121,14 +129,14 @@ public struct MessageReadIndicatorView: View {
             if showReadCount && shouldShowReads {
                 Text("\(readUsers.count)")
                     .font(fonts.footnoteBold)
-                    .foregroundColor(colors.textPrimary.toColor)
+                    .foregroundColor(textColor?.toColor ?? colors.textPrimary.toColor)
                     .accessibilityIdentifier("readIndicatorCount")
             }
             Image(
                 uiImage: image
             )
             .customizable()
-            .foregroundColor(shouldShowReads ? Color(colors.accentPrimary) : colors.chatTextTimestamp.toColor)
+            .foregroundColor(textColor?.toColor ?? (shouldShowReads ? Color(colors.accentPrimary) : colors.chatTextTimestamp.toColor))
             .frame(height: 16)
             .opacity(localState == .sendingFailed || localState == .syncingFailed ? 0.0 : 1)
             .accessibilityLabel(

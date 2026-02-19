@@ -12,10 +12,18 @@ public struct MessageTranslationFooterView: View {
     @Injected(\.colors) private var colors
     @Injected(\.utils) private var utils
 
+    var textColor: UIColor?
+
     public init(
-        messageViewModel: MessageViewModel
+        messageViewModel: MessageViewModel,
+        textColor: UIColor? = nil
     ) {
         self.messageViewModel = messageViewModel
+        self.textColor = textColor
+    }
+
+    private var resolvedTextColor: Color {
+        textColor?.toColor ?? colors.chatTextTimestamp.toColor
     }
 
     public var body: some View {
@@ -35,13 +43,13 @@ public struct MessageTranslationFooterView: View {
     private var translatedToView: some View {
         Text(messageViewModel.translatedLanguageText ?? "")
             .font(fonts.footnote)
-            .foregroundColor(colors.chatTextTimestamp.toColor)
+            .foregroundColor(resolvedTextColor)
     }
 
     private var separatorView: some View {
         Text("•")
             .font(fonts.footnote)
-            .foregroundColor(colors.chatTextTimestamp.toColor)
+            .foregroundColor(resolvedTextColor)
     }
 
     private var showOriginalButton: some View {
@@ -56,7 +64,7 @@ public struct MessageTranslationFooterView: View {
             label: {
                 Text(messageViewModel.originalTranslationButtonText)
                     .font(fonts.footnote)
-                    .foregroundColor(colors.chatTextTimestamp.toColor)
+                    .foregroundColor(resolvedTextColor)
             }
         )
     }

@@ -12,6 +12,8 @@ import SwiftUI
 import XCTest
 
 @MainActor class MessageItemView_Tests: StreamChatTestCase {
+    @Injected(\.colors) private var colors
+
     func test_messageContainerViewSentThisUser_snapshot() {
         // Given
         let message = ChatMessage.mock(
@@ -622,11 +624,100 @@ import XCTest
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
 
+    // MARK: - shownAsPreview
+
+    func test_messagePreview_threadReplies_snapshot() {
+        // Given
+        let message = ChatMessage.mock(
+            id: .unique,
+            cid: .unique,
+            text: "Message with thread replies",
+            author: .mock(id: .unique, name: "Martin"),
+            replyCount: 3
+        )
+
+        // When
+        let view = testMessageViewContainer(message: message, shownAsPreview: true)
+            .background(Color(colors.backgroundCoreScrim))
+
+        // Then
+        AssertSnapshot(view, size: CGSize(width: 375, height: 200))
+    }
+
+    func test_messagePreview_timestampOnly_snapshot() {
+        // Given
+        let message = ChatMessage.mock(
+            id: .unique,
+            cid: .unique,
+            text: "Message with timestamp",
+            author: .mock(id: .unique, name: "Martin")
+        )
+
+        // When
+        let view = testMessageViewContainer(message: message, shownAsPreview: true)
+            .background(Color(colors.backgroundCoreScrim))
+
+        // Then
+        AssertSnapshot(view, size: CGSize(width: 375, height: 200))
+    }
+
+    func test_messagePreview_authorAndTimestamp_snapshot() {
+        // Given
+        let message = ChatMessage.mock(
+            id: .unique,
+            cid: .unique,
+            text: "Message with author and timestamp",
+            author: .mock(id: .unique, name: "Martin")
+        )
+        let channel = ChatChannel.mockNonDMChannel(memberCount: 5)
+
+        // When
+        let view = testMessageViewContainer(
+            message: message,
+            channel: channel,
+            shownAsPreview: true
+        )
+        .background(Color(colors.backgroundCoreScrim))
+
+        // Then
+        AssertSnapshot(view, size: CGSize(width: 375, height: 200))
+    }
+
+    func test_messagePreview_translatedText_snapshot() {
+        // Given
+        let channel = ChatChannel.mock(
+            cid: .unique,
+            membership: .mock(id: .unique, language: .spanish)
+        )
+        let message = ChatMessage.mock(
+            id: .unique,
+            cid: .unique,
+            text: "Hello",
+            author: .mock(id: .unique, name: "Martin"),
+            translations: [
+                .spanish: "Hola"
+            ]
+        )
+
+        // When
+        let view = testMessageViewContainer(
+            message: message,
+            channel: channel,
+            shownAsPreview: true
+        )
+        .background(Color(colors.backgroundCoreScrim))
+        .environment(\.channelTranslationLanguage, .spanish)
+
+        // Then
+        AssertSnapshot(view, size: CGSize(width: 375, height: 200))
+    }
+
     // MARK: - private
 
     func testMessageViewContainer(
         message: ChatMessage,
         channel: ChatChannel? = nil,
+        shownAsPreview: Bool = false,
         messageViewModel: MessageViewModel? = nil,
         highlightedMessageId: String? = nil
     ) -> some View {
@@ -636,6 +727,7 @@ import XCTest
             message: message,
             width: defaultScreenSize.width,
             showsAllInfo: true,
+            shownAsPreview: shownAsPreview,
             isInThread: false,
             isLast: false,
             scrolledId: .constant(nil),

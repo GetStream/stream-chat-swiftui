@@ -24,7 +24,8 @@ public struct MessageRepliesView<Factory: ViewFactory>: View {
     var replyCount: Int
     var isRightAligned: Bool
     var showReplyCount: Bool
-    var threadReplyMessage: ChatMessage? // The actual reply message (for showReplyInChannel messages)
+    var textColor: UIColor?
+    var threadReplyMessage: ChatMessage?
 
     public init(
         factory: Factory,
@@ -33,6 +34,7 @@ public struct MessageRepliesView<Factory: ViewFactory>: View {
         replyCount: Int,
         showReplyCount: Bool = true,
         isRightAligned: Bool? = nil,
+        textColor: UIColor? = nil,
         threadReplyMessage: ChatMessage? = nil
     ) {
         self.factory = factory
@@ -41,6 +43,7 @@ public struct MessageRepliesView<Factory: ViewFactory>: View {
         self.replyCount = replyCount
         self.isRightAligned = isRightAligned ?? message.isRightAligned
         self.showReplyCount = showReplyCount
+        self.textColor = textColor
         self.threadReplyMessage = threadReplyMessage
     }
 
@@ -98,7 +101,7 @@ public struct MessageRepliesView<Factory: ViewFactory>: View {
                 ),
                 alignment: isRightAligned ? .trailing : .leading
             )
-            .foregroundColor(colors.textPrimary.toColor)
+            .foregroundColor(textColor?.toColor ?? colors.textPrimary.toColor)
         }
     }
     
@@ -142,17 +145,20 @@ struct LazyMessageRepliesView<Factory: ViewFactory>: View {
     var factory: Factory
     var channel: ChatChannel
     var message: ChatMessage
+    var textColor: UIColor?
 
     init(
         factory: Factory,
         channel: ChatChannel,
         message: ChatMessage,
-        parentMessageController: ChatMessageController
+        parentMessageController: ChatMessageController,
+        textColor: UIColor? = nil
     ) {
         _parentMessageObserver = StateObject(wrappedValue: parentMessageController.observableObject)
         self.factory = factory
         self.channel = channel
         self.message = message
+        self.textColor = textColor
     }
 
     var body: some View {
@@ -163,7 +169,8 @@ struct LazyMessageRepliesView<Factory: ViewFactory>: View {
                         channel: channel,
                         message: message,
                         parentMessage: parentMessage,
-                        replyCount: parentMessage.replyCount
+                        replyCount: parentMessage.replyCount,
+                        textColor: textColor
                     )
                 )
             } else {

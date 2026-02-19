@@ -12,6 +12,7 @@ import StreamChat
 
     @Published public internal(set) var message: ChatMessage
     @Published public internal(set) var channel: ChatChannel?
+    @Published public var usesScrollView: Bool = false
     private var cancellables = Set<AnyCancellable>()
 
     public init(

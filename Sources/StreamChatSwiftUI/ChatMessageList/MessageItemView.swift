@@ -22,11 +22,16 @@ public struct MessageItemView<Factory: ViewFactory>: View {
     let message: ChatMessage
     var width: CGFloat?
     var showsAllInfo: Bool
+    var shownAsPreview: Bool
     var isInThread: Bool
     var isLast: Bool
     @Binding var scrolledId: String?
     @Binding var quotedMessage: ChatMessage?
     var onLongPress: (MessageDisplayInfo) -> Void
+
+    private var previewTextColor: UIColor? {
+        shownAsPreview ? colors.textOnAccent : nil
+    }
 
     @State private var frame: CGRect = .zero
     @State private var computeFrame = false
@@ -37,6 +42,7 @@ public struct MessageItemView<Factory: ViewFactory>: View {
         message: ChatMessage,
         width: CGFloat? = nil,
         showsAllInfo: Bool,
+        shownAsPreview: Bool = false,
         isInThread: Bool,
         isLast: Bool,
         scrolledId: Binding<String?>,
@@ -49,6 +55,7 @@ public struct MessageItemView<Factory: ViewFactory>: View {
         self.message = message
         self.width = width
         self.showsAllInfo = showsAllInfo
+        self.shownAsPreview = shownAsPreview
         self.isInThread = isInThread
         self.isLast = isLast
         self.onLongPress = onLongPress
@@ -87,7 +94,7 @@ public struct MessageItemView<Factory: ViewFactory>: View {
                     .modifier(SwipeToReplyModifier(
                         message: message,
                         channel: channel,
-                        isSwipeToQuoteReplyPossible: messageViewModel.isSwipeToQuoteReplyPossible,
+                        isSwipeToQuoteReplyPossible: !shownAsPreview && messageViewModel.isSwipeToQuoteReplyPossible,
                         quotedMessage: $quotedMessage
                     ))
             }
@@ -133,36 +140,9 @@ public struct MessageItemView<Factory: ViewFactory>: View {
                     )
                 }
 
-                MessageView(
-                    factory: factory,
-                    message: message,
-                    contentWidth: contentWidth,
-                    isFirst: showsAllInfo,
-                    scrolledId: $scrolledId
-                )
-                .overlay(
-                    topReactionsShown ?
-                        factory.makeMessageReactionView(
-                            options: MessageReactionViewOptions(
-                                message: message,
-                                onTapGesture: {
-                                    handleGestureForMessage(showsMessageActions: false)
-                                },
-                                onLongPressGesture: {
-                                    handleGestureForMessage(showsMessageActions: false)
-                                }
-                            )
-                        )
-                        .offset(x: messageViewModel.isRightAligned ? -tokens.spacingXs : tokens.spacingXs)
-                        : nil,
-                    alignment: messageViewModel.isRightAligned ? .trailing : .leading
-                )
-                .overlay(
-                    messageViewModel.failureIndicatorShown ? SendFailureIndicator() : nil
-                )
-                .frame(maxWidth: contentWidth, alignment: messageViewModel.isRightAligned ? .trailing : .leading)
-                .accessibilityElement(children: .contain)
-                .accessibilityIdentifier("MessageView")
+                messageBubbleContent
+                    .accessibilityElement(children: .contain)
+                    .accessibilityIdentifier("MessageView")
 
                 if !isInThread {
                     threadRepliesView
@@ -186,7 +166,8 @@ public struct MessageItemView<Factory: ViewFactory>: View {
                 if messageViewModel.translatedText != nil {
                     factory.makeMessageTranslationFooterView(
                         options: MessageTranslationFooterViewOptions(
-                            messageViewModel: messageViewModel
+                            messageViewModel: messageViewModel,
+                            textColor: previewTextColor
                         )
                     )
                 }
@@ -214,6 +195,52 @@ public struct MessageItemView<Factory: ViewFactory>: View {
     // MARK: - Sub-views
 
     @ViewBuilder
+    private var messageBubbleContent: some View {
+        Group {
+            if messageViewModel.usesScrollView {
+                ScrollView {
+                    MessageView(
+                        factory: factory,
+                        message: message,
+                        contentWidth: contentWidth,
+                        isFirst: showsAllInfo,
+                        scrolledId: $scrolledId
+                    )
+                }
+            } else {
+                MessageView(
+                    factory: factory,
+                    message: message,
+                    contentWidth: contentWidth,
+                    isFirst: showsAllInfo,
+                    scrolledId: $scrolledId
+                )
+            }
+        }
+        .overlay(
+            topReactionsShown ?
+                factory.makeMessageReactionView(
+                    options: MessageReactionViewOptions(
+                        message: message,
+                        onTapGesture: {
+                            handleGestureForMessage(showsMessageActions: false)
+                        },
+                        onLongPressGesture: {
+                            handleGestureForMessage(showsMessageActions: false)
+                        }
+                    )
+                )
+                .offset(x: messageViewModel.isRightAligned ? -tokens.spacingXs : tokens.spacingXs)
+                : nil,
+            alignment: messageViewModel.isRightAligned ? .trailing : .leading
+        )
+        .overlay(
+            messageViewModel.failureIndicatorShown ? SendFailureIndicator() : nil
+        )
+        .frame(maxWidth: contentWidth, alignment: messageViewModel.isRightAligned ? .trailing : .leading)
+    }
+
+    @ViewBuilder
     private var avatarView: some View {
         factory.makeUserAvatarView(
             options: UserAvatarViewOptions(
@@ -232,7 +259,8 @@ public struct MessageItemView<Factory: ViewFactory>: View {
                 options: MessageRepliesViewOptions(
                     channel: channel,
                     message: message,
-                    replyCount: message.replyCount
+                    replyCount: message.replyCount,
+                    textColor: previewTextColor
                 )
             )
             .accessibilityElement(children: .contain)
@@ -246,7 +274,8 @@ public struct MessageItemView<Factory: ViewFactory>: View {
                     channel: channel,
                     message: message,
                     parentMessage: parentMessage,
-                    replyCount: parentMessage.replyCount
+                    replyCount: parentMessage.replyCount,
+                    textColor: previewTextColor
                 )
             )
             .accessibilityElement(children: .contain)
@@ -259,7 +288,8 @@ public struct MessageItemView<Factory: ViewFactory>: View {
                 parentMessageController: chatClient.messageController(
                     cid: channel.cid,
                     messageId: parentId
-                )
+                ),
+                textColor: previewTextColor
             )
             .accessibilityElement(children: .contain)
             .accessibility(identifier: "MessageRepliesView")
@@ -273,25 +303,26 @@ public struct MessageItemView<Factory: ViewFactory>: View {
                 factory.makeMessageReadIndicatorView(
                     options: MessageReadIndicatorViewOptions(
                         channel: channel,
-                        message: message
+                        message: message,
+                        textColor: previewTextColor
                     )
                 )
 
                 if messageViewModel.messageDateShown {
                     factory.makeMessageDateView(
-                        options: MessageDateViewOptions(message: message)
+                        options: MessageDateViewOptions(message: message, textColor: previewTextColor)
                     )
                 }
             }
             .padding(.bottom, tokens.spacingXxs)
         } else if messageViewModel.authorAndDateShown {
             factory.makeMessageAuthorAndDateView(
-                options: MessageAuthorAndDateViewOptions(message: message)
+                options: MessageAuthorAndDateViewOptions(message: message, textColor: previewTextColor)
             )
             .padding(.bottom, tokens.spacingXxs)
         } else if messageViewModel.messageDateShown {
             factory.makeMessageDateView(
-                options: MessageDateViewOptions(message: message)
+                options: MessageDateViewOptions(message: message, textColor: previewTextColor)
             )
             .padding(.bottom, tokens.spacingXxs)
         }

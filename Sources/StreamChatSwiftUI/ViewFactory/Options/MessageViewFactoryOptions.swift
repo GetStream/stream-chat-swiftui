@@ -69,6 +69,8 @@ public final class MessageItemViewOptions: Sendable {
     public let width: CGFloat?
     /// Whether to show all message information.
     public let showsAllInfo: Bool
+    /// Whether the message is shown as a preview (e.g. in the reactions overlay).
+    public let shownAsPreview: Bool
     /// Whether the view is in a thread.
     public let isInThread: Bool
     /// Binding to the currently scrolled message ID.
@@ -79,27 +81,33 @@ public final class MessageItemViewOptions: Sendable {
     public let onLongPress: @MainActor (MessageDisplayInfo) -> Void
     /// Whether this is the last message.
     public let isLast: Bool
+    /// An optional pre-existing view model to reuse instead of creating a new one.
+    public let viewModel: MessageViewModel?
     
     public init(
         channel: ChatChannel,
         message: ChatMessage,
         width: CGFloat?,
         showsAllInfo: Bool,
+        shownAsPreview: Bool = false,
         isInThread: Bool,
         scrolledId: Binding<String?>,
         quotedMessage: Binding<ChatMessage?>,
         onLongPress: @escaping @MainActor (MessageDisplayInfo) -> Void,
-        isLast: Bool
+        isLast: Bool,
+        viewModel: MessageViewModel? = nil
     ) {
         self.channel = channel
         self.message = message
         self.width = width
         self.showsAllInfo = showsAllInfo
+        self.shownAsPreview = shownAsPreview
         self.isInThread = isInThread
         self.scrolledId = scrolledId
         self.quotedMessage = quotedMessage
         self.onLongPress = onLongPress
         self.isLast = isLast
+        self.viewModel = viewModel
     }
 }
 
@@ -135,10 +143,10 @@ public final class MessageTextViewOptions: Sendable {
 public final class MessageDateViewOptions: Sendable {
     /// The message to display the date for.
     public let message: ChatMessage
-    /// If nil, default color is used, otherwise the specified color.
-    public let textColor: Color?
+    /// Optional text color override.
+    public let textColor: UIColor?
     
-    public init(message: ChatMessage, textColor: Color? = nil) {
+    public init(message: ChatMessage, textColor: UIColor? = nil) {
         self.message = message
         self.textColor = textColor
     }
@@ -148,9 +156,12 @@ public final class MessageDateViewOptions: Sendable {
 public final class MessageAuthorAndDateViewOptions: Sendable {
     /// The message to display the author and date for.
     public let message: ChatMessage
+    /// Optional text color override.
+    public let textColor: UIColor?
     
-    public init(message: ChatMessage) {
+    public init(message: ChatMessage, textColor: UIColor? = nil) {
         self.message = message
+        self.textColor = textColor
     }
 }
 
@@ -158,9 +169,12 @@ public final class MessageAuthorAndDateViewOptions: Sendable {
 public final class MessageTranslationFooterViewOptions: Sendable {
     /// The view model for the message.
     public let messageViewModel: MessageViewModel
+    /// Optional text color override.
+    public let textColor: UIColor?
     
-    public init(messageViewModel: MessageViewModel) {
+    public init(messageViewModel: MessageViewModel, textColor: UIColor? = nil) {
         self.messageViewModel = messageViewModel
+        self.textColor = textColor
     }
 }
 
@@ -276,11 +290,14 @@ public final class MessageRepliesViewOptions: Sendable {
     public let message: ChatMessage
     /// The number of replies.
     public let replyCount: Int
+    /// Optional text color override.
+    public let textColor: UIColor?
     
-    public init(channel: ChatChannel, message: ChatMessage, replyCount: Int) {
+    public init(channel: ChatChannel, message: ChatMessage, replyCount: Int, textColor: UIColor? = nil) {
         self.channel = channel
         self.message = message
         self.replyCount = replyCount
+        self.textColor = textColor
     }
 }
 
@@ -294,17 +311,21 @@ public final class MessageRepliesShownInChannelViewOptions: Sendable {
     public let parentMessage: ChatMessage
     /// The number of replies.
     public let replyCount: Int
+    /// Optional text color override.
+    public let textColor: UIColor?
     
     public init(
         channel: ChatChannel,
         message: ChatMessage,
         parentMessage: ChatMessage,
-        replyCount: Int
+        replyCount: Int,
+        textColor: UIColor? = nil
     ) {
         self.channel = channel
         self.message = message
         self.parentMessage = parentMessage
         self.replyCount = replyCount
+        self.textColor = textColor
     }
 }
 
@@ -366,10 +387,13 @@ public final class MessageReadIndicatorViewOptions: Sendable {
     public let channel: ChatChannel
     /// The message to show read indicators for.
     public let message: ChatMessage
+    /// Optional text color override.
+    public let textColor: UIColor?
     
-    public init(channel: ChatChannel, message: ChatMessage) {
+    public init(channel: ChatChannel, message: ChatMessage, textColor: UIColor? = nil) {
         self.channel = channel
         self.message = message
+        self.textColor = textColor
     }
 }
 
