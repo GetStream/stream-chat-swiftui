@@ -30,5 +30,8 @@ struct FileOpenPromptView<Factory: ViewFactory>: View {
                 })
             )
         }
+        .onAppear {
+            filePickerShown = true
+        }
     }
 }

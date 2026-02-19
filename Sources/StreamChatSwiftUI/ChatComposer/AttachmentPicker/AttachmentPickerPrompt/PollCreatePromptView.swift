@@ -30,5 +30,8 @@ struct PollCreatePromptView: View {
                 messageController: messageController
             )
         }
+        .onAppear {
+            showsCreatePoll = true
+        }
     }
 }

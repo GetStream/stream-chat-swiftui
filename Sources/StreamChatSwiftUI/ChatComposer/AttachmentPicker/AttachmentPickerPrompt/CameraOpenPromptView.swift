@@ -32,6 +32,9 @@ struct CameraOpenPromptView<Factory: ViewFactory>: View {
                 )
             )
         }
+        .onAppear {
+            openCamera()
+        }
     }
 
     private func openCamera() {
