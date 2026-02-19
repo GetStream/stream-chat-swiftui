@@ -108,6 +108,7 @@ struct PinnedMessageView<Factory: ViewFactory>: View {
     @Injected(\.fonts) private var fonts
     @Injected(\.colors) private var colors
     @Injected(\.utils) private var utils
+    @Injected(\.tokens) private var tokens
 
     private let avatarSize: CGFloat = AvatarSize.large
 
@@ -125,13 +126,13 @@ struct PinnedMessageView<Factory: ViewFactory>: View {
                 )
             )
 
-            VStack(alignment: .leading, spacing: 4) {
+            VStack(alignment: .leading, spacing: tokens.spacingXxs) {
                 Text(message.author.name ?? message.author.id)
                     .font(fonts.bodyBold)
                     .foregroundColor(Color(colors.text))
 
                 HStack {
-                    HStack(spacing: 4) {
+                    HStack(spacing: tokens.spacingXxs) {
                         attachmentIconView
                         Text(pinnedMessageSubtitle)
                     }
@@ -160,10 +161,12 @@ struct PinnedMessageView<Factory: ViewFactory>: View {
             if icon.isSystemImage {
                 Image(systemName: icon.name)
                     .font(fonts.footnote)
+                    .accessibilityHidden(true)
             } else {
                 Image(icon.name, bundle: .streamChatCommonUI)
                     .customizable()
                     .frame(maxHeight: 12)
+                    .accessibilityHidden(true)
             }
         }
     }

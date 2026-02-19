@@ -75,6 +75,7 @@ public struct ChatChannelListItem<Factory: ViewFactory>: View {
                                     .customizable()
                                     .frame(width: 16, height: 16)
                                     .foregroundColor(Color(colors.badgeBackgroundError))
+                                    .accessibilityHidden(true)
                             }
                         }
                         
@@ -136,9 +137,11 @@ public struct ChatChannelListItem<Factory: ViewFactory>: View {
                     SubtitleText(text: draftText)
                 }
             } else if let authorName = subtitleAuthorName {
-                let contentString = String(subtitleText.dropFirst(authorName.count + 2))
+                let contentString = channel.previewMessage.map {
+                    utils.messagePreviewFormatter.formatContent(for: $0, in: channel)
+                } ?? subtitleText
                 HStack(spacing: tokens.spacingXxs) {
-                    Text("\(authorName): ")
+                    Text("\(authorName):")
                         .font(fonts.subheadline)
                         .fontWeight(.semibold)
                         .foregroundColor(Color(colors.textTertiary))
@@ -182,10 +185,12 @@ public struct ChatChannelListItem<Factory: ViewFactory>: View {
             if icon.isSystemImage {
                 Image(systemName: icon.name)
                     .font(fonts.subheadline)
+                    .accessibilityHidden(true)
             } else {
                 Image(icon.name, bundle: .streamChatCommonUI)
                     .customizable()
                     .frame(maxHeight: 16)
+                    .accessibilityHidden(true)
             }
         }
     }
@@ -351,7 +356,7 @@ public final class ChannelItemMutedLayoutStyle: Hashable, Sendable {
         self.identifier = identifier
     }
 
-    /// This style shows the muted icon at the top right corner of the channel item.
+    /// This style shows the muted icon at the bottom right corner of the channel item.
     /// The subtitle text shows the last message preview text.
     public static let bottomRightCorner: ChannelItemMutedLayoutStyle = .init("bottomRightCorner")
 
