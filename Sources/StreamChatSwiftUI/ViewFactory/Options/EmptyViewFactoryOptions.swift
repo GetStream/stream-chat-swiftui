@@ -82,11 +82,6 @@ public final class PhotoLibraryAccessPromptViewOptions: Sendable {
     public init() {}
 }
 
-/// Options for creating the camera access denied prompt view.
-public final class CameraAccessDeniedPromptViewOptions: Sendable {
-    public init() {}
-}
-
 /// Options for creating the thread destination.
 public final class ThreadDestinationOptions: Sendable {
     public init() {}

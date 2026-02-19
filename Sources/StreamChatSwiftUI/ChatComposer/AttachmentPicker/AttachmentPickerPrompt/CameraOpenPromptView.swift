@@ -6,8 +6,9 @@ import AVFoundation
 import StreamChat
 import SwiftUI
 
-/// Prompt view displayed when the camera tab is selected,
-/// allowing the user to open the camera.
+/// Prompt view for the camera tab. Displays either the
+/// "open camera" UI or the "access denied" UI depending on the
+/// current authorization status.
 struct CameraOpenPromptView<Factory: ViewFactory>: View {
     @Injected(\.images) private var images
 
@@ -16,7 +17,44 @@ struct CameraOpenPromptView<Factory: ViewFactory>: View {
     @Binding var cameraPickerShown: Bool
     var cameraImageAdded: @MainActor (AddedAsset) -> Void
 
+    @State private var cameraStatus: AVAuthorizationStatus
+
+    init(
+        factory: Factory,
+        cameraPickerShown: Binding<Bool>,
+        cameraImageAdded: @escaping @MainActor (AddedAsset) -> Void,
+        initialCameraStatus: AVAuthorizationStatus = AVCaptureDevice.authorizationStatus(for: .video)
+    ) {
+        self.factory = factory
+        _cameraPickerShown = cameraPickerShown
+        self.cameraImageAdded = cameraImageAdded
+        _cameraStatus = State(initialValue: initialCameraStatus)
+    }
+
     var body: some View {
+        Group {
+            if cameraStatus == .denied || cameraStatus == .restricted {
+                accessDeniedContent
+            } else {
+                openCameraContent
+            }
+        }
+    }
+
+    // MARK: - Private
+
+    private var accessDeniedContent: some View {
+        AttachmentPickerPromptView(
+            image: Image(uiImage: images.attachmentPickerCameraIcon),
+            description: L10n.Composer.Camera.noAccess,
+            buttonText: L10n.Composer.Camera.accessSettings,
+            onTap: {
+                openSettings()
+            }
+        )
+    }
+
+    private var openCameraContent: some View {
         AttachmentPickerPromptView(
             image: Image(uiImage: images.attachmentPickerCameraIcon),
             description: L10n.Composer.Camera.takePhoto,
@@ -44,9 +82,11 @@ struct CameraOpenPromptView<Factory: ViewFactory>: View {
             cameraPickerShown = true
         case .notDetermined:
             AVCaptureDevice.requestAccess(for: .video) { granted in
-                if granted {
-                    DispatchQueue.main.async {
+                DispatchQueue.main.async {
+                    if granted {
                         cameraPickerShown = true
+                    } else {
+                        cameraStatus = .denied
                     }
                 }
             }

@@ -703,10 +703,6 @@ extension ViewFactory {
         )
     }
 
-    public func makeCameraAccessDeniedPromptView(options: CameraAccessDeniedPromptViewOptions) -> some View {
-        CameraAccessDeniedPromptView()
-    }
-
     public func makeFileOpenPromptView(options: FileOpenPromptViewOptions) -> some View {
         FileOpenPromptView(
             factory: self,

@@ -272,29 +272,24 @@ import XCTest
         AssertSnapshot(view)
     }
 
-    func test_cameraOpenPromptView_snapshot() {
+    func test_cameraOpenPromptView_openState_snapshot() {
         let view = CameraOpenPromptView(
             factory: DefaultViewFactory.shared,
             cameraPickerShown: .constant(false),
-            cameraImageAdded: { _ in }
+            cameraImageAdded: { _ in },
+            initialCameraStatus: .authorized
         )
         .frame(width: composerWidth, height: 300)
 
         AssertSnapshot(view)
     }
 
-    func test_cameraAccessDeniedPromptView_snapshot() {
-        let view = CameraAccessDeniedPromptView()
-            .frame(width: composerWidth, height: 300)
-
-        AssertSnapshot(view)
-    }
-
-    func test_fileOpenPromptView_snapshot() {
-        let view = FileOpenPromptView(
+    func test_cameraOpenPromptView_accessDenied_snapshot() {
+        let view = CameraOpenPromptView(
             factory: DefaultViewFactory.shared,
-            filePickerShown: .constant(false),
-            onFilesPicked: { _ in }
+            cameraPickerShown: .constant(false),
+            cameraImageAdded: { _ in },
+            initialCameraStatus: .denied
         )
         .frame(width: composerWidth, height: 300)
 

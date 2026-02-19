@@ -433,11 +433,8 @@ import SwiftUI
 
     associatedtype CameraOpenPromptViewType: View
     /// Creates the prompt view displayed when the camera tab is selected.
+    /// The view handles both the "open camera" and "access denied" states internally.
     func makeCameraOpenPromptView(options: CameraOpenPromptViewOptions) -> CameraOpenPromptViewType
-
-    associatedtype CameraAccessDeniedPromptViewType: View
-    /// Creates the prompt view displayed when camera access is denied.
-    func makeCameraAccessDeniedPromptView(options: CameraAccessDeniedPromptViewOptions) -> CameraAccessDeniedPromptViewType
 
     associatedtype FileOpenPromptViewType: View
     /// Creates the prompt view displayed when the file tab is selected.

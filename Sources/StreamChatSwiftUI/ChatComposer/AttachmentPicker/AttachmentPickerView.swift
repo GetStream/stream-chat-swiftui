@@ -2,7 +2,6 @@
 // Copyright © 2026 Stream.io Inc. All rights reserved.
 //
 
-import AVFoundation
 import Photos
 import StreamChat
 import StreamChatCommonUI
@@ -139,19 +138,12 @@ public struct AttachmentPickerView<Factory: ViewFactory>: View {
                     )
                 )
             } else if selectedPickerState == .camera {
-                let cameraStatus = AVCaptureDevice.authorizationStatus(for: .video)
-                if cameraStatus == .denied || cameraStatus == .restricted {
-                    viewFactory.makeCameraAccessDeniedPromptView(
-                        options: CameraAccessDeniedPromptViewOptions()
+                viewFactory.makeCameraOpenPromptView(
+                    options: CameraOpenPromptViewOptions(
+                        cameraPickerShown: $cameraPickerShown,
+                        cameraImageAdded: cameraImageAdded
                     )
-                } else {
-                    viewFactory.makeCameraOpenPromptView(
-                        options: CameraOpenPromptViewOptions(
-                            cameraPickerShown: $cameraPickerShown,
-                            cameraImageAdded: cameraImageAdded
-                        )
-                    )
-                }
+                )
             } else if selectedPickerState == .polls {
                 viewFactory.makePollCreatePromptView(
                     options: PollCreatePromptViewOptions(
