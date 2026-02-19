@@ -99,25 +99,24 @@ struct CustomReactionsContainer: View {
         GeometryReader { reader in
             Color.clear
                 .overlay(
-                    ReactionsHStack(message: message) {
-                        CustomMessageReactionView(
-                            message: message,
-                            chunkSize: chunkSize,
-                            useLargeIcons: useLargeIcons,
-                            reactions: reactions,
-                            onReactionTap: { _ in }
-                        )
-                        .onTapGesture {
-                            onTapGesture()
-                        }
-                        .onLongPressGesture {
-                            onLongPressGesture()
-                        }
+                    CustomMessageReactionView(
+                        message: message,
+                        chunkSize: chunkSize,
+                        useLargeIcons: useLargeIcons,
+                        reactions: reactions,
+                        onReactionTap: { _ in }
+                    )
+                    .onTapGesture {
+                        onTapGesture()
+                    }
+                    .onLongPressGesture {
+                        onLongPressGesture()
                     }
                     .offset(
                         x: offsetX,
                         y: (-reader.size.height - offsetY) / 2
-                    )
+                    ),
+                    alignment: message.isSentByCurrentUser ? .leading : .trailing
                 )
         }
         .accessibilityElement(children: .contain)
@@ -220,9 +219,9 @@ struct CustomMessageReactionView: View {
 
     private func iconProvider(for reaction: MessageReactionType) -> UIImage? {
         if useLargeIcons {
-            images.availableReactions[reaction]?.largeIcon
+            images.defaultReactions[reaction]?.largeIcon
         } else {
-            images.availableReactions[reaction]?.smallIcon
+            images.defaultReactions[reaction]?.smallIcon
         }
     }
 

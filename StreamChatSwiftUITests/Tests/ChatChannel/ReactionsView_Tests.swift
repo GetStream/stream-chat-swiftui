@@ -95,6 +95,49 @@ import XCTest
         AssertSnapshot(view, size: size)
     }
 
+    func test_reactionsView_clustered_overflow_snapshot() {
+        // Given
+        let size = CGSize(width: 200, height: 80)
+        configureReactionsStyle(.clustered)
+        let message = messageWithReactions(scores: overflowReactionScores)
+        let visible = Array(reactions(for: message).prefix(4))
+
+        // When
+        let view = ReactionsView(
+            message: message,
+            reactionsStyle: .clustered,
+            reactions: visible
+        )
+        .frame(width: size.width, height: size.height)
+
+        // Then
+        AssertSnapshot(view, size: size)
+    }
+
+    func test_reactionsView_segmented_overflow_snapshot() {
+        // Given
+        let size = CGSize(width: 350, height: 80)
+        configureReactionsStyle(.segmented)
+        let allReactions = overflowReactionScores
+        let message = messageWithReactions(scores: allReactions)
+        let sorted = reactions(for: message)
+        let visible = Array(sorted.prefix(4))
+        let overflowCount = sorted.dropFirst(4)
+            .reduce(0) { $0 + (message.reactionCounts[$1] ?? 0) }
+
+        // When
+        let view = ReactionsView(
+            message: message,
+            reactionsStyle: .segmented,
+            reactions: visible,
+            overflowCount: overflowCount
+        )
+        .frame(width: size.width, height: size.height)
+
+        // Then
+        AssertSnapshot(view, size: size)
+    }
+
     private func configureReactionsStyle(_ style: ReactionsStyle) {
         let messageDisplayOptions = MessageDisplayOptions(reactionsStyle: style)
         let utils = Utils(messageListConfig: MessageListConfig(messageDisplayOptions: messageDisplayOptions))
@@ -124,5 +167,15 @@ import XCTest
             (message.reactionScores[reactionType] ?? 0) > 0
         }
         .sorted(by: utils.sortReactions)
+    }
+
+    private var overflowReactionScores: [MessageReactionType: Int] {
+        [
+            .init(rawValue: "love"): 5,
+            .init(rawValue: "like"): 3,
+            .init(rawValue: "haha"): 2,
+            .init(rawValue: "wow"): 4,
+            .init(rawValue: "sad"): 7
+        ]
     }
 }

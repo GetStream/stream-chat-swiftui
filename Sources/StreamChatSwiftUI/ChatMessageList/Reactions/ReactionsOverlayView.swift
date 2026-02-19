@@ -5,21 +5,36 @@
 import StreamChat
 import SwiftUI
 
+/// A reactions overlay view that shows reactions, message and actions.
+///
+/// Layout (top to bottom):
+/// - Reactions picker (emoji row with + button)
+/// - Message bubble (with avatar for incoming messages)
+/// - Message actions menu
+///
+/// The message animates from its original position in the message list
+/// to a computed position that fits all content on screen.
 public struct ReactionsOverlayView<Factory: ViewFactory>: View {
     @Injected(\.utils) private var utils
     @Injected(\.colors) private var colors
-    
+    @Injected(\.tokens) private var tokens
+
     @StateObject var viewModel: ReactionsOverlayViewModel
     @StateObject var messageViewModel: MessageViewModel
 
+    // MARK: - Animation State
+
     @State private var popIn = false
     @State private var willPopOut = false
+
+    // MARK: - Layout State
+
     @State private var screenHeight = UIScreen.main.bounds.size.height
-    @State private var screenWidth: CGFloat?
-    @State private var initialWidth: CGFloat?
     @State private var orientationChanged = false
-    @State private var initialOrigin: CGFloat?
     @State private var moreReactionsShown = false
+    @State private var measuredTotalContentHeight: CGFloat = 0
+
+    // MARK: - Properties
 
     var factory: Factory
     var channel: ChatChannel
@@ -29,20 +44,17 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
     var onBackgroundTap: () -> Void
     var onActionExecuted: (MessageActionInfo) -> Void
 
-    private var messageActionsCount: Int
     private let paddingValue: CGFloat = 16
-    private let messageItemSize: CGFloat = 40
-    private let minOriginY: CGFloat
-    private var maxMessageActionsSize: CGFloat {
-        screenHeight / 3
-    }
+    private let topOffset: CGFloat
+
+    // MARK: - Init
 
     public init(
         factory: Factory,
         channel: ChatChannel,
         currentSnapshot: UIImage,
         messageDisplayInfo: MessageDisplayInfo,
-        minOriginY: CGFloat = 100,
+        topOffset: CGFloat = 0,
         bottomOffset: CGFloat = 0,
         onBackgroundTap: @escaping () -> Void,
         onActionExecuted: @escaping (MessageActionInfo) -> Void,
@@ -63,144 +75,38 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
         self.channel = channel
         self.factory = factory
         self.currentSnapshot = currentSnapshot
-        self.minOriginY = minOriginY
+        self.topOffset = topOffset
         self.bottomOffset = bottomOffset
         self.messageDisplayInfo = messageDisplayInfo
         self.onBackgroundTap = onBackgroundTap
         self.onActionExecuted = onActionExecuted
-        messageActionsCount = InjectedValues[\.utils].messageListConfig.supportedMessageActions(
-            .init(
-                message: messageDisplayInfo.message,
-                channel: channel,
-                onFinish: { _ in /* No handling needed. */ },
-                onError: { _ in /* No handling needed. */ }
-            )
-        ).count
     }
+
+    // MARK: - Body
 
     public var body: some View {
         ZStack(alignment: .topLeading) {
-            ZStack {
-                if !orientationChanged {
-                    factory.makeReactionsBackgroundView(
-                        options: .init(
-                            currentSnapshot: currentSnapshot,
-                            popInAnimationInProgress: !popIn
-                        )
-                    )
-                    .offset(y: overlayOffsetY)
-                } else {
-                    Color.gray.opacity(0.4)
-                }
-            }
-            .transition(.opacity)
-            .onTapGesture {
-                dismissReactionsOverlay { /* No additional handling. */ }
-            }
-            .edgesIgnoringSafeArea(.all)
-            .alert(isPresented: $viewModel.errorShown) {
-                Alert.defaultErrorAlert
-            }
-
-            if !messageDisplayInfo.message.isRightAligned &&
-                utils.messageListConfig.messageDisplayOptions.showAvatars(for: channel) {
-                factory.makeUserAvatarView(
-                    options: .init(
-                        user: messageDisplayInfo.message.author,
-                        size: AvatarSize.medium,
-                        showsIndicator: false
-                    )
-                )
-                .offset(
-                    x: paddingValue / 2,
-                    y: originY + messageContainerHeight - paddingValue + 2
-                )
-                .opacity(willPopOut ? 0 : 1)
-            }
+            backgroundView
 
             GeometryReader { reader in
-                let frame = reader.frame(in: .local)
-                let height = frame.height
-                let width = frame.width
+                let height = reader.frame(in: .local).height
                 Color.clear.preference(key: HeightPreferenceKey.self, value: height)
-                Color.clear.preference(key: WidthPreferenceKey.self, value: width)
-                
-                VStack(alignment: .leading) {
-                    Group {
-                        if messageDisplayInfo.frame.height > messageContainerHeight {
-                            ScrollView {
-                                messageView
-                            }
-                        } else {
-                            messageView
-                        }
-                    }
-                    .environment(\.channelTranslationLanguage, channel.membership?.language)
-                    .scaleEffect(popIn || willPopOut ? 1 : 0.95)
-                    .animation(willPopOut ? .easeInOut : popInAnimation, value: popIn)
-                    .offset(
-                        x: messageOriginX(proxy: reader)
-                    )
-                    .overlay(
-                        (channel.config.reactionsEnabled && !messageDisplayInfo.message.isBounced) ?
-                            factory.makeReactionsContentView(
-                                options: ReactionsContentViewOptions(
-                                    message: viewModel.message,
-                                    contentRect: messageDisplayInfo.frame,
-                                    onReactionTap: { reaction in
-                                        dismissReactionsOverlay {
-                                            viewModel.reactionTapped(reaction)
-                                        }
-                                    },
-                                    onMoreReactionsTap: {
-                                        moreReactionsShown.toggle()
-                                    }
-                                )
-                            )
-                            .scaleEffect(popIn ? 1 : 0)
-                            .opacity(willPopOut ? 0 : 1)
-                            .animation(willPopOut ? .easeInOut : popInAnimation, value: popIn)
-                            .offset(
-                                x: messageOriginX(proxy: reader),
-                                y: popIn ? -24 : -messageContainerHeight / 2
-                            )
-                            .accessibilityElement(children: .contain)
-                            : nil
-                    )
-                    .frame(
-                        width: messageDisplayInfo.frame.width,
-                        height: messageContainerHeight
-                    )
-                    .accessibilityIdentifier("ReactionsMessageView")
 
-                    if messageDisplayInfo.showsMessageActions {
-                        factory.makeMessageActionsView(
-                            options: MessageActionsViewOptions(
-                                message: messageDisplayInfo.message,
-                                channel: channel,
-                                onFinish: { actionInfo in
-                                    onActionExecuted(actionInfo)
-                                },
-                                onError: { _ in
-                                    viewModel.errorShown = true
-                                }
-                            )
+                VStack(alignment: isRightAligned ? .trailing : .leading, spacing: tokens.spacingXs) {
+                    reactionsPickerView(reader: reader)
+                    messageAndTimestampView(reader: reader)
+                    messageActionsView(reader: reader)
+                }
+                .frame(height: measuredTotalContentHeight > 0 ? min(measuredTotalContentHeight, allowedTotalContentHeight) : nil)
+                .background(
+                    GeometryReader { proxy in
+                        Color.clear.preference(
+                            key: OverlayContentHeightKey.self,
+                            value: proxy.size.height
                         )
-                        .frame(width: messageActionsWidth)
-                        .offset(
-                            x: messageActionsOffsetX(reader: reader),
-                            y: popIn ? 0 : -messageActionsSize / 2
-                        )
-                        .padding(.top, paddingValue)
-                        .opacity(willPopOut ? 0 : 1)
-                        .scaleEffect(popIn ? 1 : (willPopOut ? 0.4 : 0))
-                        .animation(willPopOut ? .easeInOut : popInAnimation, value: popIn)
                     }
-                }
-                .offset(y: !popIn ? (messageDisplayInfo.frame.origin.y - spacing) : originY)
-                .onAppear {
-                    initialOrigin = messageDisplayInfo.frame.origin.x - diffWidth(proxy: reader)
-                }
+                )
+                .offset(y: contentOffsetY)
             }
         }
         .onPreferenceChange(HeightPreferenceKey.self) { value in
@@ -208,11 +114,10 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
                 screenHeight = value
             }
         }
-        .onPreferenceChange(WidthPreferenceKey.self) { value in
-            if initialWidth == nil {
-                initialWidth = value
+        .onPreferenceChange(OverlayContentHeightKey.self) { value in
+            if value > 0 {
+                measuredTotalContentHeight = value
             }
-            screenWidth = value
         }
         .edgesIgnoringSafeArea(.all)
         .background(orientationChanged ? nil : Color(colors.background))
@@ -240,6 +145,177 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
         }
     }
 
+    // MARK: - Background
+
+    @ViewBuilder
+    private var backgroundView: some View {
+        ZStack {
+            if !orientationChanged {
+                Image(uiImage: currentSnapshot)
+                    .overlay(
+                        Color(colors.backgroundCoreScrim)
+                            .opacity(popIn ? 1 : 0)
+                    )
+                    .blur(radius: popIn ? 4 : 0)
+                    .offset(y: overlayOffsetY)
+            } else {
+                Color(colors.backgroundCoreScrim)
+            }
+        }
+        .transition(.opacity)
+        .onTapGesture {
+            dismissReactionsOverlay { /* No additional handling. */ }
+        }
+        .edgesIgnoringSafeArea(.all)
+        .alert(isPresented: $viewModel.errorShown) {
+            Alert.defaultErrorAlert
+        }
+    }
+
+    // MARK: - Reactions Picker
+
+    @ViewBuilder
+    private func reactionsPickerView(reader: GeometryProxy) -> some View {
+        if channel.config.reactionsEnabled && !messageDisplayInfo.message.isBounced {
+            HStack(spacing: 0) {
+                if isRightAligned { Spacer() }
+                factory.makeReactionsContentView(
+                    options: ReactionsContentViewOptions(
+                        message: viewModel.message,
+                        contentRect: messageDisplayInfo.frame,
+                        onReactionTap: { reaction in
+                            dismissReactionsOverlay {
+                                viewModel.reactionTapped(reaction)
+                            }
+                        },
+                        onMoreReactionsTap: {
+                            moreReactionsShown.toggle()
+                        }
+                    )
+                )
+                .scaleEffect(popIn ? 1 : 0)
+                .opacity(willPopOut ? 0 : 1)
+                .animation(willPopOut ? .easeInOut : popInAnimation, value: popIn)
+                .accessibilityElement(children: .contain)
+                if !isRightAligned { Spacer() }
+            }
+            .padding(.leading, !isRightAligned ? messageBubbleLeadingX : 0)
+            .padding(.trailing, isRightAligned ? paddingValue / 2 : 0)
+        }
+    }
+
+    // MARK: - Message + Timestamp (with avatar aligned to timestamp)
+
+    @ViewBuilder
+    private func messageAndTimestampView(reader: GeometryProxy) -> some View {
+        HStack(alignment: .bottom, spacing: tokens.spacingXs) {
+            if isRightAligned { Spacer() }
+
+            if !isRightAligned && showAvatars {
+                factory.makeUserAvatarView(
+                    options: .init(
+                        user: messageDisplayInfo.message.author,
+                        size: AvatarSize.medium,
+                        showsIndicator: false
+                    )
+                )
+                .opacity(willPopOut ? 0 : 1)
+            }
+
+            VStack(alignment: isRightAligned ? .trailing : .leading, spacing: tokens.spacingXxs) {
+                Group {
+                    if usesScrollView {
+                        ScrollView {
+                            messageView
+                        }
+                    } else {
+                        messageView
+                    }
+                }
+                .overlay(
+                    topReactionsShown
+                        ? factory.makeMessageReactionView(
+                            options: MessageReactionViewOptions(
+                                message: messageDisplayInfo.message,
+                                onTapGesture: {},
+                                onLongPressGesture: {}
+                            )
+                        )
+                        : nil,
+                    alignment: isRightAligned ? .trailing : .leading
+                )
+                .environment(\.channelTranslationLanguage, channel.membership?.language)
+                .frame(
+                    width: messageDisplayInfo.frame.width
+                )
+                .padding(
+                    .top,
+                    topReactionsShown ? tokens.spacingLg : 0
+                )
+                .accessibilityIdentifier("ReactionsMessageView")
+
+                if bottomReactionsShown {
+                    factory.makeBottomReactionsView(
+                        options: ReactionsBottomViewOptions(
+                            message: messageDisplayInfo.message,
+                            showsAllInfo: messageDisplayInfo.isFirst,
+                            onTap: {},
+                            onLongPress: {}
+                        )
+                    )
+                }
+
+                if messageViewModel.messageDateShown {
+                    factory.makeMessageDateView(
+                        options: MessageDateViewOptions(
+                            message: messageDisplayInfo.message,
+                            textColor: colors.textOnAccent.toColor
+                        )
+                    )
+                    .opacity(willPopOut ? 0 : 1)
+                    .padding(.bottom, tokens.spacingXxs)
+                }
+            }
+            if !isRightAligned { Spacer() }
+        }
+        .padding(.leading, !isRightAligned ? paddingValue / 2 : 0)
+        .padding(.trailing, isRightAligned ? paddingValue / 2 : 0)
+        .scaleEffect(popIn || willPopOut ? 1 : 0.95)
+        .animation(willPopOut ? .easeInOut : popInAnimation, value: popIn)
+    }
+
+    // MARK: - Message Actions
+
+    @ViewBuilder
+    private func messageActionsView(reader: GeometryProxy) -> some View {
+        if messageDisplayInfo.showsMessageActions {
+            HStack(spacing: 0) {
+                if isRightAligned { Spacer() }
+                factory.makeMessageActionsView(
+                    options: MessageActionsViewOptions(
+                        message: messageDisplayInfo.message,
+                        channel: channel,
+                        onFinish: { actionInfo in
+                            onActionExecuted(actionInfo)
+                        },
+                        onError: { _ in
+                            viewModel.errorShown = true
+                        }
+                    )
+                )
+                .frame(width: messageActionsWidth)
+                .opacity(willPopOut ? 0 : 1)
+                .scaleEffect(popIn ? 1 : (willPopOut ? 0.4 : 0))
+                .animation(willPopOut ? .easeInOut : popInAnimation, value: popIn)
+                if !isRightAligned { Spacer() }
+            }
+            .padding(.leading, !isRightAligned ? messageBubbleLeadingX : 0)
+            .padding(.trailing, isRightAligned ? paddingValue / 2 : 0)
+        }
+    }
+
+    // MARK: - Message View
+
     private var messageView: some View {
         MessageView(
             factory: factory,
@@ -253,6 +329,8 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
         .environment(\.messageViewModel, messageViewModel)
     }
 
+    // MARK: - Dismiss
+
     private func dismissReactionsOverlay(completion: @escaping () -> Void) {
         withAnimation {
             willPopOut = true
@@ -264,64 +342,92 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
         }
     }
 
-    private func messageActionsOffsetX(reader: GeometryProxy) -> CGFloat {
-        let originX = messageActionsOriginX(availableWidth: reader.size.width)
-        if popIn {
-            return originX
-        } else if willPopOut {
-            return messageOriginX(proxy: reader)
-        } else {
-            return messageDisplayInfo.message.isRightAligned ? messageActionsWidth : 0
-        }
-    }
-        
-    private func messageOriginX(proxy: GeometryProxy) -> CGFloat {
-        let origin = messageDisplayInfo.frame.origin.x - diffWidth(proxy: proxy)
-        if let initialWidth, let initialOrigin, let screenWidth, abs(initialWidth - screenWidth) > 5 {
-            let diff = initialWidth - initialOrigin
-            let newOrigin = screenWidth - diff
-            return newOrigin
-        }
-        return initialOrigin ?? origin
+    // MARK: - Layout Helpers
+
+    private var isRightAligned: Bool {
+        messageDisplayInfo.message.isRightAligned
     }
 
-    private var messageContainerHeight: CGFloat {
-        let maxAllowed = screenHeight / 2 - topSafeArea
-        let containerHeight = messageDisplayInfo.frame.height
-        return containerHeight > maxAllowed ? maxAllowed : containerHeight
+    private var showAvatars: Bool {
+        utils.messageListConfig.messageDisplayOptions.showAvatars(for: channel)
     }
+
+    // MARK: - Message Reactions (badges on message)
+
+    private var topReactionsShown: Bool {
+        if utils.messageListConfig.messageDisplayOptions.reactionsPlacement == .bottom {
+            return false
+        }
+        return messageReactionsShown
+    }
+
+    private var bottomReactionsShown: Bool {
+        if utils.messageListConfig.messageDisplayOptions.reactionsPlacement == .top {
+            return false
+        }
+        return messageReactionsShown
+    }
+
+    private var messageReactionsShown: Bool {
+        let message = messageDisplayInfo.message
+        return !message.reactionScores.isEmpty
+            && !message.isDeleted
+            && channel.config.reactionsEnabled
+    }
+
+    /// The leading X position where the message bubble starts (after avatar + spacing).
+    /// Used to align the reactions picker and actions with the message bubble.
+    private var messageBubbleLeadingX: CGFloat {
+        if showAvatars {
+            return paddingValue / 2 + AvatarSize.medium + tokens.spacingXs
+        }
+        return paddingValue / 2
+    }
+
+    private var messageActionsWidth: CGFloat {
+        var width = messageDisplayInfo.contentWidth + 2 * paddingValue
+        if isRightAligned {
+            width -= 2 * paddingValue
+        }
+        return width
+    }
+
+    // MARK: - Animation
 
     private var popInAnimation: Animation {
         .spring(response: 0.2, dampingFraction: 0.7, blendDuration: 0.2)
     }
 
-    private var userReactionsHeight: CGFloat {
-        let reactionsCount = viewModel.message.latestReactions.count
-        if reactionsCount > 4 {
-            return 280
-        } else {
-            return 140
+    // MARK: - Origin Y
+
+    private var usesScrollView: Bool {
+        guard measuredTotalContentHeight > 0 else { return false }
+        return measuredTotalContentHeight >= allowedTotalContentHeight
+    }
+    
+    private var allowedTotalContentHeight: CGFloat { screenHeight - topContentSpacing - bottomContentSpacing }
+    
+    private var topContentSpacing: CGFloat { topSafeArea + topOffset + spacing }
+    private var bottomContentSpacing: CGFloat { bottomSafeArea + bottomOffset }
+    
+    private var contentOffsetY: CGFloat {
+        let originalMessageMatchingOffsetY = messageDisplayInfo.frame.origin.y - spacing - topReactionsWithPickerHeight
+        if !popIn {
+            return originalMessageMatchingOffsetY
         }
+        let maxOrigin = originalMessageMatchingOffsetY + measuredTotalContentHeight
+        let bottomClippingAvoidingOffset = min(screenHeight - bottomContentSpacing - maxOrigin, 0)
+        return max(topContentSpacing, originalMessageMatchingOffsetY + bottomClippingAvoidingOffset)
     }
 
-    private var originY: CGFloat {
-        let bottomPopupOffset =
-            messageDisplayInfo.showsMessageActions ? messageActionsSize : userReactionsPopupHeight
-        var originY = messageDisplayInfo.frame.origin.y
-        let maxOrigin: CGFloat = screenHeight - messageContainerHeight - bottomPopupOffset - minOriginY - bottomOffset
-        if originY < minOriginY {
-            originY = minOriginY
-        } else if originY > maxOrigin {
-            originY = maxOrigin
-        }
-        
-        return originY - spacing
+    private var topReactionsWithPickerHeight: CGFloat {
+        guard channel.config.reactionsEnabled, !messageDisplayInfo.message.isBounced else { return 0 }
+        let messageReactions = topReactionsShown ? tokens.spacingLg : 0
+        return 48 + tokens.spacingXs + messageReactions
     }
 
     private var overlayOffsetY: CGFloat {
         if isIPad && UITabBar.appearance().isHidden == false {
-            // When using iPad with TabBar, this hard coded value makes
-            // sure that the overlay is in the correct position.
             return 20
         }
         return spacing > 0 ? screenHeight - currentSnapshot.size.height : 0
@@ -332,54 +438,14 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
         let spacing = (UIScreen.main.bounds.height - screenHeight) / divider
         return spacing > 0 ? spacing : 0
     }
+}
 
-    private var messageActionsSize: CGFloat {
-        var messageActionsSize = messageItemSize * CGFloat(messageActionsCount)
-        if messageActionsSize > maxMessageActionsSize {
-            messageActionsSize = maxMessageActionsSize
-        }
-        return messageActionsSize
-    }
+// MARK: - Preference Keys
 
-    private var userReactionsPopupHeight: CGFloat {
-        userReactionsHeight + 3 * paddingValue
-    }
-
-    private func diffWidth(proxy: GeometryProxy) -> CGFloat {
-        if UIDevice.current.userInterfaceIdiom == .pad {
-            proxy.frame(in: .global).minX
-        } else {
-            0
-        }
-    }
-
-    private func maxUserReactionsWidth(availableWidth: CGFloat) -> CGFloat {
-        availableWidth - 2 * paddingValue
-    }
-
-    private func messageActionsOriginX(availableWidth: CGFloat) -> CGFloat {
-        if messageDisplayInfo.message.isRightAligned {
-            availableWidth - messageActionsWidth - paddingValue / 2
-        } else {
-            AvatarSize.medium + paddingValue
-        }
-    }
-
-    private func userReactionsOriginX(availableWidth: CGFloat) -> CGFloat {
-        if messageDisplayInfo.message.isRightAligned {
-            availableWidth - maxUserReactionsWidth(availableWidth: availableWidth) - paddingValue / 2
-        } else {
-            paddingValue
-        }
-    }
-
-    private var messageActionsWidth: CGFloat {
-        var width = messageDisplayInfo.contentWidth + 2 * paddingValue
-        if messageDisplayInfo.message.isRightAligned {
-            width -= 2 * paddingValue
-        }
-
-        return width
+private struct OverlayContentHeightKey: PreferenceKey {
+    static let defaultValue: CGFloat = 0
+    static func reduce(value: inout CGFloat, nextValue: () -> CGFloat) {
+        value = max(value, nextValue())
     }
 }
 

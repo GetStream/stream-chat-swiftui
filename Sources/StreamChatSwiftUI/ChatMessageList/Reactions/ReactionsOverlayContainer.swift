@@ -30,25 +30,14 @@ struct ReactionsOverlayContainer: View {
 
     var body: some View {
         VStack {
-            ReactionsHStack(message: message) {
-                ReactionsAnimatableView(
-                    message: message,
-                    useLargeIcons: true,
-                    reactions: reactions,
-                    onReactionTap: onReactionTap,
-                    onMoreReactionsTap: onMoreReactionsTap
-                )
-            }
-
-            Spacer()
+            ReactionsAnimatableView(
+                message: message,
+                useLargeIcons: true,
+                reactions: reactions,
+                onReactionTap: onReactionTap,
+                onMoreReactionsTap: onMoreReactionsTap
+            )
         }
-        .offset(
-            x: message.reactionOffsetX(
-                for: contentRect,
-                reactionsSize: reactionsSize
-            ),
-            y: -20
-        )
     }
 
     private var reactions: [MessageReactionType] {
@@ -61,30 +50,6 @@ struct ReactionsOverlayContainer: View {
         let entrySize = ButtonSize.large
         let spacing = tokens.spacingXxxs * CGFloat(max(0, reactions.count - 1))
         return CGFloat(reactions.count + 1) * entrySize + spacing + tokens.spacingXxs
-    }
-}
-
-public extension ChatMessage {
-    @MainActor func reactionOffsetX(
-        for contentRect: CGRect,
-        availableWidth: CGFloat = UIScreen.main.bounds.width,
-        reactionsSize: CGFloat
-    ) -> CGFloat {
-        if isRightAligned {
-            var originX = contentRect.origin.x - reactionsSize / 2
-            let total = originX + reactionsSize
-            if total > availableWidth {
-                originX = availableWidth - reactionsSize
-            }
-            return -(contentRect.origin.x - originX)
-        } else {
-            if contentRect.width < reactionsSize {
-                return (reactionsSize - contentRect.width) / 2
-            }
-
-            let originX = contentRect.origin.x - reactionsSize / 2
-            return contentRect.origin.x - originX
-        }
     }
 }
 
