@@ -1528,8 +1528,8 @@
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/GetStream/stream-chat-swift.git";
 			requirement = {
-				branch = "v5-emoji-map";
-				kind = branch;
+				kind = revision;
+				revision = f7a42a969947c7c7ec0a1f8bea571d16765bc56e;
 			};
 		};
 		E3A1C01A282BAC66002D1E26 /* XCRemoteSwiftPackageReference "sentry-cocoa" */ = {
