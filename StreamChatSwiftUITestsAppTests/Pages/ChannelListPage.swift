@@ -49,10 +49,13 @@ enum ChannelListPage {
             for i in 0..<subtitleElements.count {
                 let element = subtitleElements.element(boundBy: i)
                 if element.exists {
-                    combinedText += " \(element.label)"
+                    combinedText += element.label
                 }
             }
             return combinedText
+                .components(separatedBy: .whitespaces)
+                .filter { !$0.isEmpty }
+                .joined(separator: " ")
         }
 
         static func avatar(in cell: XCUIElement) -> XCUIElement {
