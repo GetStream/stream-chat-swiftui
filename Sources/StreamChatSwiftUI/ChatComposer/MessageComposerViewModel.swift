@@ -975,7 +975,7 @@ final class FileAddedAsset {
         with group: DispatchGroup?,
         completion: @escaping @MainActor (TotalAddedAssets) -> Void
     ) {
-        nonisolated(unsafe) var addedAssets = TotalAddedAssets()
+        nonisolated(unsafe) let addedAssets = TotalAddedAssets()
 
         for attachment in attachments {
             group?.enter()

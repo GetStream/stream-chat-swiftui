@@ -36,9 +36,9 @@ struct AttachmentPollPickerView: View {
 public struct PollCreatePromptView: View {
     @Injected(\.images) private var images
 
-    var onTap: () -> Void
+    var onTap: @MainActor () -> Void
 
-    public init(onTap: @escaping () -> Void = {}) {
+    public init(onTap: @escaping @MainActor () -> Void) {
         self.onTap = onTap
     }
 
