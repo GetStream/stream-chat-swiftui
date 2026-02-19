@@ -202,8 +202,8 @@ public final class CustomAttachmentViewTypeOptions: Sendable {
     }
 }
 
-/// Options for creating the custom composer attachment view.
-public final class CustomComposerAttachmentViewOptions: Sendable {
+/// Options for creating the custom attachment picker view.
+public final class CustomAttachmentPickerViewOptions: Sendable {
     /// The added custom attachments.
     public let addedCustomAttachments: [CustomAttachment]
     /// Callback when a custom attachment is tapped.
@@ -485,56 +485,34 @@ public final class AttachmentMediaPickerViewOptions: Sendable {
     }
 }
 
-/// Options for creating the file picker view.
+/// Options for creating the file attachment picker view.
 public final class AttachmentFilePickerViewOptions: Sendable {
+    /// Binding to whether the file picker is shown.
+    public let filePickerShown: Binding<Bool>
     /// Callback invoked with the URLs of newly picked files.
     public let onFilesPicked: @MainActor ([URL]) -> Void
     
-    public init(onFilesPicked: @escaping @MainActor ([URL]) -> Void) {
-        self.onFilesPicked = onFilesPicked
-    }
-}
-
-/// Options for creating the camera picker view.
-public final class AttachmentCameraPickerViewOptions: Sendable {
-    /// Callback when a camera image is added.
-    public let cameraImageAdded: @MainActor (AddedAsset) -> Void
-    
-    public init(
-        cameraImageAdded: @escaping @MainActor (AddedAsset) -> Void
-    ) {
-        self.cameraImageAdded = cameraImageAdded
-    }
-}
-
-/// Options for creating the camera open prompt view.
-public final class CameraOpenPromptViewOptions: Sendable {
-    /// Binding to whether the camera picker is shown.
-    public let cameraPickerShown: Binding<Bool>
-    /// Callback when a camera image is added.
-    public let cameraImageAdded: @MainActor (AddedAsset) -> Void
-
-    public init(
-        cameraPickerShown: Binding<Bool>,
-        cameraImageAdded: @escaping @MainActor (AddedAsset) -> Void
-    ) {
-        self.cameraPickerShown = cameraPickerShown
-        self.cameraImageAdded = cameraImageAdded
-    }
-}
-
-/// Options for creating the file open prompt view.
-public final class FileOpenPromptViewOptions: Sendable {
-    /// Binding to whether the file picker is shown.
-    public let filePickerShown: Binding<Bool>
-    /// Callback when files are picked.
-    public let onFilesPicked: @MainActor ([URL]) -> Void
-
     public init(
         filePickerShown: Binding<Bool>,
         onFilesPicked: @escaping @MainActor ([URL]) -> Void
     ) {
         self.filePickerShown = filePickerShown
         self.onFilesPicked = onFilesPicked
+    }
+}
+
+/// Options for creating the camera attachment picker view.
+public final class AttachmentCameraPickerViewOptions: Sendable {
+    /// Binding to whether the camera picker is shown.
+    public let cameraPickerShown: Binding<Bool>
+    /// Callback when a camera image is added.
+    public let cameraImageAdded: @MainActor (AddedAsset) -> Void
+    
+    public init(
+        cameraPickerShown: Binding<Bool>,
+        cameraImageAdded: @escaping @MainActor (AddedAsset) -> Void
+    ) {
+        self.cameraPickerShown = cameraPickerShown
+        self.cameraImageAdded = cameraImageAdded
     }
 }

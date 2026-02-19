@@ -644,8 +644,8 @@ extension ViewFactory {
         )
     }
     
-    public func makeCustomAttachmentView(
-        options: CustomComposerAttachmentViewOptions
+    public func makeCustomAttachmentPickerView(
+        options: CustomAttachmentPickerViewOptions
     ) -> some View {
         EmptyView()
     }
@@ -680,39 +680,23 @@ extension ViewFactory {
     public func makeAttachmentFilePickerView(
         options: AttachmentFilePickerViewOptions
     ) -> some View {
-        AttachmentFilePickerView(onFilesPicked: options.onFilesPicked)
+        AttachmentFilePickerView(
+            filePickerShown: options.filePickerShown,
+            onFilesPicked: options.onFilesPicked
+        )
     }
     
     public func makeAttachmentCameraPickerView(
         options: AttachmentCameraPickerViewOptions
     ) -> some View {
         AttachmentCameraPickerView(
-            cameraImageAdded: options.cameraImageAdded
-        )
-    }
-    
-    public func makeCameraOpenPromptView(options: CameraOpenPromptViewOptions) -> some View {
-        CameraOpenPromptView(
-            factory: self,
             cameraPickerShown: options.cameraPickerShown,
             cameraImageAdded: options.cameraImageAdded
         )
     }
 
-    public func makeFileOpenPromptView(options: FileOpenPromptViewOptions) -> some View {
-        FileOpenPromptView(
-            factory: self,
-            filePickerShown: options.filePickerShown,
-            onFilesPicked: { urls in
-                Task { @MainActor in
-                    options.onFilesPicked(urls)
-                }
-            }
-        )
-    }
-
-    public func makePollCreatePromptView(options: PollCreatePromptViewOptions) -> some View {
-        PollCreatePromptView(
+    public func makeAttachmentPollPickerView(options: AttachmentPollPickerViewOptions) -> some View {
+        AttachmentPollPickerView(
             channelController: options.channelController,
             messageController: options.messageController
         )

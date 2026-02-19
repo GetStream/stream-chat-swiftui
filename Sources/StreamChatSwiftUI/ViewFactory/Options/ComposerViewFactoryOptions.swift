@@ -422,8 +422,8 @@ public final class ComposerPollViewOptions: Sendable {
     }
 }
 
-/// Options for creating the poll create prompt view.
-public final class PollCreatePromptViewOptions: Sendable {
+/// Options for creating the poll attachment picker view.
+public final class AttachmentPollPickerViewOptions: Sendable {
     /// The channel controller for the poll.
     public let channelController: ChatChannelController
     /// The message controller for editing messages.

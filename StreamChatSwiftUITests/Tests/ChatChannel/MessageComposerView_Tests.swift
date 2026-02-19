@@ -253,18 +253,6 @@ import XCTest
 
     // MARK: - Attachment Picker Prompt Views
 
-    func test_attachmentPickerPromptView_snapshot() {
-        let view = AttachmentPickerPromptView(
-            image: Image(systemName: "camera"),
-            description: "Test prompt description",
-            buttonText: "Test Action",
-            onTap: {}
-        )
-        .frame(width: composerWidth, height: 300)
-
-        AssertSnapshot(view)
-    }
-
     func test_photoLibraryAccessPromptView_snapshot() {
         let view = PhotoLibraryAccessPromptView()
             .frame(width: composerWidth, height: 300)
@@ -272,38 +260,30 @@ import XCTest
         AssertSnapshot(view)
     }
 
-    func test_cameraOpenPromptView_openState_snapshot() {
-        let view = CameraOpenPromptView(
-            factory: DefaultViewFactory.shared,
-            cameraPickerShown: .constant(false),
-            cameraImageAdded: { _ in },
-            initialCameraStatus: .authorized
-        )
-        .frame(width: composerWidth, height: 300)
+    func test_fileOpenPromptView_snapshot() {
+        let view = FileOpenPromptView()
+            .frame(width: composerWidth, height: 300)
 
         AssertSnapshot(view)
     }
 
-    func test_cameraOpenPromptView_accessDenied_snapshot() {
-        let view = CameraOpenPromptView(
-            factory: DefaultViewFactory.shared,
-            cameraPickerShown: .constant(false),
-            cameraImageAdded: { _ in },
-            initialCameraStatus: .denied
-        )
-        .frame(width: composerWidth, height: 300)
+    func test_cameraOpenPromptView_snapshot() {
+        let view = CameraOpenPromptView()
+            .frame(width: composerWidth, height: 300)
+
+        AssertSnapshot(view)
+    }
+
+    func test_cameraAccessDeniedPromptView_snapshot() {
+        let view = CameraAccessDeniedPromptView()
+            .frame(width: composerWidth, height: 300)
 
         AssertSnapshot(view)
     }
 
     func test_pollCreatePromptView_snapshot() {
-        let channelController = ChatChannelTestHelpers.makeChannelController(chatClient: chatClient)
-
-        let view = PollCreatePromptView(
-            channelController: channelController,
-            messageController: nil
-        )
-        .frame(width: composerWidth, height: 300)
+        let view = PollCreatePromptView()
+            .frame(width: composerWidth, height: 300)
 
         AssertSnapshot(view)
     }

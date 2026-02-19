@@ -6,8 +6,110 @@ import AVFoundation
 import StreamChat
 import SwiftUI
 
-/// View displayed when the camera picker is shown.
+/// View for the camera attachment picker.
+/// Displays either the "open camera" prompt or the "access denied"
+/// prompt depending on the current authorization status.
 struct AttachmentCameraPickerView: View {
+    @Binding var cameraPickerShown: Bool
+    var cameraImageAdded: @MainActor (AddedAsset) -> Void
+
+    @State private var cameraStatus: AVAuthorizationStatus
+
+    init(
+        cameraPickerShown: Binding<Bool>,
+        cameraImageAdded: @escaping @MainActor (AddedAsset) -> Void,
+        initialCameraStatus: AVAuthorizationStatus = AVCaptureDevice.authorizationStatus(for: .video)
+    ) {
+        _cameraPickerShown = cameraPickerShown
+        self.cameraImageAdded = cameraImageAdded
+        _cameraStatus = State(initialValue: initialCameraStatus)
+    }
+
+    var body: some View {
+        Group {
+            if cameraStatus == .denied || cameraStatus == .restricted {
+                CameraAccessDeniedPromptView()
+            } else {
+                CameraOpenPromptView(onTap: {
+                    openCamera()
+                })
+                .fullScreenCover(isPresented: $cameraPickerShown) {
+                    CameraImagePickerView(cameraImageAdded: cameraImageAdded)
+                }
+                .onAppear {
+                    openCamera()
+                }
+            }
+        }
+    }
+
+    // MARK: - Private
+
+    private func openCamera() {
+        let status = AVCaptureDevice.authorizationStatus(for: .video)
+        switch status {
+        case .authorized:
+            cameraPickerShown = true
+        case .notDetermined:
+            AVCaptureDevice.requestAccess(for: .video) { granted in
+                DispatchQueue.main.async {
+                    if granted {
+                        cameraPickerShown = true
+                    } else {
+                        cameraStatus = .denied
+                    }
+                }
+            }
+        default:
+            break
+        }
+    }
+}
+
+// MARK: - Prompt Views
+
+/// Prompt view displayed when the camera tab is selected and access is granted.
+public struct CameraOpenPromptView: View {
+    @Injected(\.images) private var images
+
+    var onTap: () -> Void
+
+    public init(onTap: @escaping () -> Void = {}) {
+        self.onTap = onTap
+    }
+
+    public var body: some View {
+        AttachmentPickerPromptView(
+            image: Image(uiImage: images.attachmentPickerCameraIcon),
+            description: L10n.Composer.Camera.takePhoto,
+            buttonText: L10n.Composer.Camera.openCamera,
+            onTap: onTap
+        )
+    }
+}
+
+/// Prompt view displayed when camera access has been denied or restricted.
+public struct CameraAccessDeniedPromptView: View {
+    @Injected(\.images) private var images
+
+    public init() {}
+
+    public var body: some View {
+        AttachmentPickerPromptView(
+            image: Image(uiImage: images.attachmentPickerCameraIcon),
+            description: L10n.Composer.Camera.noAccess,
+            buttonText: L10n.Composer.Camera.accessSettings,
+            onTap: {
+                openSettings()
+            }
+        )
+    }
+}
+
+// MARK: - Camera Image Picker
+
+/// View presented in a full-screen cover to capture photos/videos.
+struct CameraImagePickerView: View {
     var cameraImageAdded: (AddedAsset) -> Void
 
     var body: some View {

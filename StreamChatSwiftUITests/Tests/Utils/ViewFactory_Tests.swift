@@ -265,13 +265,13 @@ import XCTest
         XCTAssert(view is GiphyBadgeView)
     }
 
-    func test_viewFactory_makeCustomAttachmentView() {
+    func test_viewFactory_makeCustomAttachmentPickerView() {
         // Given
         let viewFactory = DefaultViewFactory.shared
 
         // When
-        let view = viewFactory.makeCustomAttachmentView(
-            options: CustomComposerAttachmentViewOptions(
+        let view = viewFactory.makeCustomAttachmentPickerView(
+            options: CustomAttachmentPickerViewOptions(
                 addedCustomAttachments: [],
                 onCustomAttachmentTap: { _ in }
             )
@@ -304,6 +304,7 @@ import XCTest
         // When
         let view = viewFactory.makeAttachmentFilePickerView(
             options: AttachmentFilePickerViewOptions(
+                filePickerShown: .constant(false),
                 onFilesPicked: { _ in }
             )
         )
@@ -319,6 +320,7 @@ import XCTest
         // When
         let view = viewFactory.makeAttachmentCameraPickerView(
             options: AttachmentCameraPickerViewOptions(
+                cameraPickerShown: .constant(false),
                 cameraImageAdded: { _ in }
             )
         )

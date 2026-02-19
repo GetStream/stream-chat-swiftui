@@ -121,22 +121,22 @@ public struct AttachmentPickerView<Factory: ViewFactory>: View {
                 )
 
             } else if selectedPickerState == .files {
-                viewFactory.makeFileOpenPromptView(
-                    options: FileOpenPromptViewOptions(
+                viewFactory.makeAttachmentFilePickerView(
+                    options: AttachmentFilePickerViewOptions(
                         filePickerShown: $filePickerShown,
                         onFilesPicked: onFilesPicked
                     )
                 )
             } else if selectedPickerState == .camera {
-                viewFactory.makeCameraOpenPromptView(
-                    options: CameraOpenPromptViewOptions(
+                viewFactory.makeAttachmentCameraPickerView(
+                    options: AttachmentCameraPickerViewOptions(
                         cameraPickerShown: $cameraPickerShown,
                         cameraImageAdded: cameraImageAdded
                     )
                 )
             } else if selectedPickerState == .polls {
-                viewFactory.makePollCreatePromptView(
-                    options: PollCreatePromptViewOptions(
+                viewFactory.makeAttachmentPollPickerView(
+                    options: AttachmentPollPickerViewOptions(
                         channelController: channelController,
                         messageController: messageController
                     )
@@ -149,8 +149,8 @@ public struct AttachmentPickerView<Factory: ViewFactory>: View {
                     )
                 )
             } else if selectedPickerState == .custom {
-                viewFactory.makeCustomAttachmentView(
-                    options: CustomComposerAttachmentViewOptions(
+                viewFactory.makeCustomAttachmentPickerView(
+                    options: CustomAttachmentPickerViewOptions(
                         addedCustomAttachments: addedCustomAttachments,
                         onCustomAttachmentTap: onCustomAttachmentTap
                     )
