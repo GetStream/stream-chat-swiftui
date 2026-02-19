@@ -1171,7 +1171,7 @@ private class MockMediaPickerViewFactory: ViewFactory {
     ) -> some View {
         AttachmentMediaPickerView(
             assetLoader: assetLoader,
-            assets: options.assets,
+            photoLibraryAssets: options.photoLibraryAssets,
             onImageTap: options.onAssetTap,
             imageSelected: options.isAssetSelected,
             selectedAssetIds: options.selectedAssetIds

@@ -327,17 +327,6 @@ import XCTest
         XCTAssert(view is AttachmentCameraPickerView)
     }
 
-    func test_viewFactory_makeAssetsAccessPermissionView() {
-        // Given
-        let viewFactory = DefaultViewFactory.shared
-
-        // When
-        let view = viewFactory.makePhotoLibraryAccessPromptView(options: .init())
-
-        // Then
-        XCTAssert(view is PhotoLibraryAccessPromptView)
-    }
-
     func test_viewFactory_makeMessageActionsView() {
         // Given
         let viewFactory = DefaultViewFactory.shared

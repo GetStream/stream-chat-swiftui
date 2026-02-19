@@ -463,8 +463,8 @@ public final class AttachmentTypePickerViewOptions: Sendable {
 
 /// Options for creating the media attachment picker view.
 public final class AttachmentMediaPickerViewOptions: Sendable {
-    /// The assets to display in the picker.
-    public let assets: PHFetchResultCollection
+    /// The photo library fetch result, or `nil` while still loading.
+    public let photoLibraryAssets: PHFetchResult<PHAsset>?
     /// Callback when an asset is tapped.
     public let onAssetTap: @MainActor (AddedAsset) -> Void
     /// Function to check if an asset is selected.
@@ -473,12 +473,12 @@ public final class AttachmentMediaPickerViewOptions: Sendable {
     public let selectedAssetIds: [String]?
     
     public init(
-        assets: PHFetchResultCollection,
+        photoLibraryAssets: PHFetchResult<PHAsset>?,
         onAssetTap: @escaping @MainActor (AddedAsset) -> Void,
         isAssetSelected: @escaping @MainActor (String) -> Bool,
         selectedAssetIds: [String]? = nil
     ) {
-        self.assets = assets
+        self.photoLibraryAssets = photoLibraryAssets
         self.onAssetTap = onAssetTap
         self.isAssetSelected = isAssetSelected
         self.selectedAssetIds = selectedAssetIds

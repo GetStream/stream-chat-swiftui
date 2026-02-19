@@ -427,10 +427,6 @@ import SwiftUI
     /// - Returns: view shown in the preview slot for custom composer input.
     func makeCustomAttachmentPreviewView(options: CustomAttachmentPreviewViewOptions) -> CustomAttachmentPreviewViewType
 
-    associatedtype PhotoLibraryAccessPromptViewType: View
-    /// Creates the photo library access prompt view.
-    func makePhotoLibraryAccessPromptView(options: PhotoLibraryAccessPromptViewOptions) -> PhotoLibraryAccessPromptViewType
-
     associatedtype CameraOpenPromptViewType: View
     /// Creates the prompt view displayed when the camera tab is selected.
     /// The view handles both the "open camera" and "access denied" states internally.

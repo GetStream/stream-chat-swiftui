@@ -111,24 +111,14 @@ public struct AttachmentPickerView<Factory: ViewFactory>: View {
             )
 
             if selectedPickerState == .photos {
-                if let assets = photoLibraryAssets {
-                    let collection = PHFetchResultCollection(fetchResult: assets)
-                    if !collection.isEmpty {
-                        viewFactory.makeAttachmentMediaPickerView(
-                            options: AttachmentMediaPickerViewOptions(
-                                assets: collection,
-                                onAssetTap: onAssetTap,
-                                isAssetSelected: isAssetSelected,
-                                selectedAssetIds: selectedAssetIds
-                            )
-                        )
-                        .edgesIgnoringSafeArea(.bottom)
-                    } else {
-                        viewFactory.makePhotoLibraryAccessPromptView(options: PhotoLibraryAccessPromptViewOptions())
-                    }
-                } else {
-                    LoadingView()
-                }
+                viewFactory.makeAttachmentMediaPickerView(
+                    options: AttachmentMediaPickerViewOptions(
+                        photoLibraryAssets: photoLibraryAssets,
+                        onAssetTap: onAssetTap,
+                        isAssetSelected: isAssetSelected,
+                        selectedAssetIds: selectedAssetIds
+                    )
+                )
 
             } else if selectedPickerState == .files {
                 viewFactory.makeFileOpenPromptView(

@@ -3,17 +3,21 @@
 //
 
 import Photos
+import StreamChat
 import StreamChatCommonUI
 import SwiftUI
 
 /// View for the media attachment picker.
+/// Handles three states: loading (assets not yet fetched),
+/// access denied / empty library, and the asset grid.
 public struct AttachmentMediaPickerView: View {
     @Injected(\.colors) private var colors
+    @Injected(\.images) private var images
     @Injected(\.tokens) private var tokens
     
     @StateObject var assetLoader: PhotoAssetLoader
     
-    var assets: PHFetchResultCollection
+    var photoLibraryAssets: PHFetchResult<PHAsset>?
     var onImageTap: (AddedAsset) -> Void
     var imageSelected: (String) -> Bool
     var selectedAssetIds: [String]?
@@ -27,22 +31,39 @@ public struct AttachmentMediaPickerView: View {
 
     public init(
         assetLoader: PhotoAssetLoader = PhotoAssetLoader(),
-        assets: PHFetchResultCollection,
+        photoLibraryAssets: PHFetchResult<PHAsset>?,
         onImageTap: @escaping (AddedAsset) -> Void,
         imageSelected: @escaping (String) -> Bool,
         selectedAssetIds: [String]? = nil
     ) {
         _assetLoader = StateObject(wrappedValue: assetLoader)
-        self.assets = assets
+        self.photoLibraryAssets = photoLibraryAssets
         self.onImageTap = onImageTap
         self.imageSelected = imageSelected
         self.selectedAssetIds = selectedAssetIds
     }
     
     public var body: some View {
+        Group {
+            if let fetchResult = photoLibraryAssets {
+                let collection = PHFetchResultCollection(fetchResult: fetchResult)
+                if !collection.isEmpty {
+                    assetGridContent(collection: collection)
+                } else {
+                    accessDeniedContent
+                }
+            } else {
+                LoadingView()
+            }
+        }
+    }
+
+    // MARK: - Private
+
+    private func assetGridContent(collection: PHFetchResultCollection) -> some View {
         ScrollView {
             LazyVGrid(columns: columns, spacing: 2) {
-                ForEach(assets) { asset in
+                ForEach(collection) { asset in
                     AttachmentMediaPickerItemView(
                         assetLoader: assetLoader,
                         asset: asset,
@@ -54,5 +75,28 @@ public struct AttachmentMediaPickerView: View {
             }
             .animation(nil)
         }
+        .edgesIgnoringSafeArea(.bottom)
+    }
+
+    private var accessDeniedContent: some View {
+        PhotoLibraryAccessPromptView()
+    }
+}
+
+/// Prompt view displayed when the user has not granted access to the photo library.
+public struct PhotoLibraryAccessPromptView: View {
+    @Injected(\.images) private var images
+
+    public init() {}
+
+    public var body: some View {
+        AttachmentPickerPromptView(
+            image: Image(uiImage: images.attachmentPickerPhotosIcon),
+            description: L10n.Composer.Images.noAccessLibrary,
+            buttonText: L10n.Composer.Images.accessSettings,
+            onTap: {
+                openSettings()
+            }
+        )
     }
 }

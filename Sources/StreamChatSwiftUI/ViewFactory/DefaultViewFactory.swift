@@ -670,7 +670,7 @@ extension ViewFactory {
         options: AttachmentMediaPickerViewOptions
     ) -> some View {
         AttachmentMediaPickerView(
-            assets: options.assets,
+            photoLibraryAssets: options.photoLibraryAssets,
             onImageTap: options.onAssetTap,
             imageSelected: options.isAssetSelected,
             selectedAssetIds: options.selectedAssetIds
@@ -691,10 +691,6 @@ extension ViewFactory {
         )
     }
     
-    public func makePhotoLibraryAccessPromptView(options: PhotoLibraryAccessPromptViewOptions) -> some View {
-        PhotoLibraryAccessPromptView()
-    }
-
     public func makeCameraOpenPromptView(options: CameraOpenPromptViewOptions) -> some View {
         CameraOpenPromptView(
             factory: self,
