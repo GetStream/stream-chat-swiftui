@@ -46,18 +46,15 @@ public struct AttachmentPickerPromptView: View {
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
 
-            Button(action: onTap) {
+            StreamTextButton(
+                role: .secondary,
+                style: .outline,
+                size: .large,
+                action: onTap
+            ) {
                 Text(buttonText)
                     .frame(maxWidth: .infinity)
             }
-            .buttonStyle(
-                StreamButtonStyle(
-                    role: .secondary,
-                    style: .outline,
-                    size: .large,
-                    isIconOnly: false
-                )
-            )
             .frame(maxWidth: .infinity, minHeight: 48, maxHeight: 48, alignment: .center)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)

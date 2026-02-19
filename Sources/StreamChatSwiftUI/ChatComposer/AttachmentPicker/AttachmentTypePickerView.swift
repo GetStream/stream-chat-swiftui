@@ -105,15 +105,17 @@ public struct AttachmentTypePickerButton: View {
     }
 
     public var body: some View {
-        StreamButton(
-            icon: Image(uiImage: icon).renderingMode(.template),
-            text: nil,
+        StreamIconButton(
             role: .secondary,
             style: .ghost,
             size: .large,
-            isSelected: isSelected
+            isSelected: isSelected,
+            action: { onTap(pickerType) }
         ) {
-            onTap(pickerType)
+            Image(uiImage: icon)
+                .renderingMode(.template)
+                .font(.system(size: tokens.iconSizeMd))
+                .frame(width: tokens.iconSizeMd, height: tokens.iconSizeMd)
         }
     }
 }

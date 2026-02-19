@@ -7,6 +7,7 @@ import SwiftUI
 /// The button for sending messages.
 public struct SendMessageButton: View {
     @Injected(\.images) private var images
+    @Injected(\.tokens) private var tokens
 
     var enabled: Bool
     var onTap: () -> Void
@@ -17,14 +18,17 @@ public struct SendMessageButton: View {
     }
 
     public var body: some View {
-        StreamButton(
-            icon: Image(uiImage: images.composerSend).renderingMode(.template),
-            text: nil,
+        StreamIconButton(
             role: .primary,
             style: .solid,
             size: .small,
             action: onTap
-        )
+        ) {
+            Image(uiImage: images.composerSend)
+                .renderingMode(.template)
+                .font(.system(size: tokens.iconSizeMd))
+                .frame(width: tokens.iconSizeMd, height: tokens.iconSizeMd)
+        }
         .disabled(!enabled)
         .accessibilityLabel(Text(L10n.Composer.Placeholder.message))
         .accessibilityIdentifier("SendMessageButton")

@@ -5,11 +5,11 @@
 import StreamChatCommonUI
 import SwiftUI
 
-struct StreamButton: View {
+struct StreamButton<Icon: View, TextContent: View>: View {
     @Injected(\.tokens) private var tokens
 
-    private let icon: Image
-    private let text: String?
+    private let icon: Icon
+    private let text: TextContent
     private let role: StreamButtonRole
     private let style: StreamButtonVisualStyle
     private let size: StreamButtonSize
@@ -17,32 +17,34 @@ struct StreamButton: View {
     private let action: () -> Void
 
     init(
-        icon: Image,
-        text: String?,
         role: StreamButtonRole = .primary,
         style: StreamButtonVisualStyle = .solid,
         size: StreamButtonSize = .medium,
         isSelected: Bool = false,
-        action: @escaping () -> Void
+        action: @escaping () -> Void,
+        @ViewBuilder icon: () -> Icon,
+        @ViewBuilder text: () -> TextContent
     ) {
         self.role = role
         self.style = style
         self.size = size
         self.isSelected = isSelected
-        self.icon = icon
-        self.text = text
+        self.icon = icon()
+        self.text = text()
         self.action = action
     }
 
     var body: some View {
         Button(action: action) {
-            if let text {
-                HStack(spacing: tokens.spacingXs) {
-                    iconView
-                    Text(text)
-                }
-            } else {
-                iconView
+            HStack(spacing: tokens.spacingXs) {
+                icon
+                    .if(Icon.self == EmptyView.self) {
+                        $0.hidden()
+                    }
+                text
+                    .if(TextContent.self == EmptyView.self) {
+                        $0.hidden()
+                    }
             }
         }
         .buttonStyle(
@@ -50,16 +52,92 @@ struct StreamButton: View {
                 role: role,
                 style: style,
                 size: size,
-                isIconOnly: text == nil,
+                isIconOnly: TextContent.self == EmptyView.self,
                 isSelected: isSelected
             )
         )
     }
+}
 
-    private var iconView: some View {
-        icon
-            .font(.system(size: tokens.iconSizeMd))
-            .frame(width: tokens.iconSizeMd, height: tokens.iconSizeMd)
+// MARK: - StreamIconButton
+
+struct StreamIconButton<Icon: View>: View {
+    private let role: StreamButtonRole
+    private let style: StreamButtonVisualStyle
+    private let size: StreamButtonSize
+    private let isSelected: Bool
+    private let action: () -> Void
+    private let icon: Icon
+
+    init(
+        role: StreamButtonRole = .primary,
+        style: StreamButtonVisualStyle = .solid,
+        size: StreamButtonSize = .medium,
+        isSelected: Bool = false,
+        action: @escaping () -> Void,
+        @ViewBuilder icon: () -> Icon
+    ) {
+        self.role = role
+        self.style = style
+        self.size = size
+        self.isSelected = isSelected
+        self.action = action
+        self.icon = icon()
+    }
+
+    var body: some View {
+        StreamButton(
+            role: role,
+            style: style,
+            size: size,
+            isSelected: isSelected,
+            action: action
+        ) {
+            icon
+        } text: {
+            EmptyView()
+        }
+    }
+}
+
+// MARK: - StreamTextButton
+
+struct StreamTextButton<TextContent: View>: View {
+    private let role: StreamButtonRole
+    private let style: StreamButtonVisualStyle
+    private let size: StreamButtonSize
+    private let isSelected: Bool
+    private let action: () -> Void
+    private let text: TextContent
+
+    init(
+        role: StreamButtonRole = .primary,
+        style: StreamButtonVisualStyle = .solid,
+        size: StreamButtonSize = .medium,
+        isSelected: Bool = false,
+        action: @escaping () -> Void,
+        @ViewBuilder text: () -> TextContent
+    ) {
+        self.role = role
+        self.style = style
+        self.size = size
+        self.isSelected = isSelected
+        self.action = action
+        self.text = text()
+    }
+
+    var body: some View {
+        StreamButton(
+            role: role,
+            style: style,
+            size: size,
+            isSelected: isSelected,
+            action: action
+        ) {
+            EmptyView()
+        } text: {
+            text
+        }
     }
 }
 
