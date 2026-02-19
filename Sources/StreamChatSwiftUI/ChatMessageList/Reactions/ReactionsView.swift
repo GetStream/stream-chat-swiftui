@@ -14,6 +14,8 @@ struct ReactionsContainer: View {
     var onTapGesture: () -> Void
     var onLongPressGesture: () -> Void
 
+    private let maxVisibleSegmentedReactions = 4
+
     var body: some View {
         VStack {
             HStack(spacing: 0) {
@@ -24,7 +26,8 @@ struct ReactionsContainer: View {
                     message: message,
                     reactionsStyle: reactionsStyle,
                     useLargeIcons: useLargeIcons,
-                    reactions: reactions
+                    reactions: visibleReactions,
+                    overflowCount: overflowCount
                 )
                 .onTapGesture {
                     onTapGesture()
@@ -66,20 +69,33 @@ struct ReactionsContainer: View {
         .sorted(by: utils.sortReactions)
     }
 
-    private var reactionsSize: CGFloat {
-        let entrySize = 32
-        return CGFloat(message.reactionScores.count * entrySize)
-    }
-
     private var offsetX: CGFloat {
-        if message.shouldRenderAsJumbomoji, topPlacement {
-            return message.isRightAligned ? -tokens.spacingMd : tokens.spacingMd
+        if topPlacement {
+            return message.isRightAligned ? -tokens.spacingXs : tokens.spacingXs
         }
         return 0
     }
     
     private var reactionsStyle: ReactionsStyle {
         utils.messageListConfig.messageDisplayOptions.reactionsStyle
+    }
+
+    // MARK: - Overflow
+
+    private var visibleReactions: [MessageReactionType] {
+        guard reactions.count > maxVisibleSegmentedReactions else {
+            return reactions
+        }
+        return Array(reactions.prefix(maxVisibleSegmentedReactions))
+    }
+
+    private var overflowCount: Int {
+        guard reactions.count > maxVisibleSegmentedReactions else {
+            return 0
+        }
+        return reactions
+            .dropFirst(maxVisibleSegmentedReactions)
+            .reduce(0) { $0 + (message.reactionCounts[$1] ?? 0) }
     }
 }
 
@@ -92,9 +108,10 @@ struct ReactionsView: View {
     let reactionsStyle: ReactionsStyle
     var useLargeIcons = false
     var reactions: [MessageReactionType]
+    var overflowCount = 0
     
     var body: some View {
-        HStack(spacing: tokens.spacingXxs) {
+        Group {
             switch reactionsStyle {
             case .clustered:
                 clusteredContent
@@ -116,9 +133,7 @@ struct ReactionsView: View {
                 reactionCountText(message.totalReactionsCount)
             }
         }
-        .padding(.horizontal, tokens.spacingXs)
-        .padding(.vertical, tokens.spacingXxs)
-        .reactionsBubble(for: message)
+        .reactionPill(for: message)
     }
     
     private var segmentedContent: some View {
@@ -132,12 +147,20 @@ struct ReactionsView: View {
                             reactionCountText(count)
                         }
                     }
-                    .padding(.horizontal, tokens.spacingXs)
-                    .padding(.vertical, tokens.spacingXxs)
-                    .reactionsBubble(for: message)
+                    .reactionPill(for: message)
                     .accessibilityIdentifier("reaction-\(reaction.id)")
                 }
             }
+            overflowPill
+        }
+    }
+
+    @ViewBuilder
+    private var overflowPill: some View {
+        if overflowCount > 0 {
+            reactionCountText(overflowCount, prefixed: true)
+                .reactionPill(for: message)
+                .accessibilityIdentifier("reaction-overflow")
         }
     }
     
@@ -156,8 +179,8 @@ struct ReactionsView: View {
         .frame(width: useLargeIcons ? 25 : 20, height: useLargeIcons ? 27 : 20)
     }
     
-    private func reactionCountText(_ count: Int) -> some View {
-        Text(verbatim: "\(count)")
+    private func reactionCountText(_ count: Int, prefixed: Bool = false) -> some View {
+        Text(verbatim: prefixed ? "+\(count)" : "\(count)")
             .font(fonts.footnoteBold)
             .foregroundColor(colors.reactionText.toColor)
             .fixedSize(horizontal: true, vertical: false)
@@ -170,6 +193,26 @@ struct ReactionsView: View {
     
     private var userReactionIDs: Set<MessageReactionType> {
         Set(message.currentUserReactions.map(\.type))
+    }
+}
+
+// MARK: - Reaction Pill Modifier
+
+private struct ReactionPillModifier: ViewModifier {
+    @Injected(\.tokens) private var tokens
+    let message: ChatMessage
+
+    func body(content: Content) -> some View {
+        content
+            .padding(.horizontal, tokens.spacingXs)
+            .frame(height: 24)
+            .reactionsBubble(for: message)
+    }
+}
+
+private extension View {
+    func reactionPill(for message: ChatMessage) -> some View {
+        modifier(ReactionPillModifier(message: message))
     }
 }
 
