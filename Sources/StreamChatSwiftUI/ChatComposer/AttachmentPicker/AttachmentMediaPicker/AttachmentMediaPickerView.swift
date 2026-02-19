@@ -91,7 +91,7 @@ public struct PhotoLibraryAccessPromptView: View {
 
     public var body: some View {
         AttachmentPickerPromptView(
-            image: Image(uiImage: images.attachmentPhotosIcon),
+            image: Image(uiImage: images.attachmentPhotoIcon),
             description: L10n.Composer.Images.noAccessLibrary,
             buttonText: L10n.Composer.Images.accessSettings,
             onTap: {

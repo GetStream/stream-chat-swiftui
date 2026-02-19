@@ -42,14 +42,3 @@ public struct SelectionBadgeView: View {
             .strokeBorder(Color(colors.borderCoreOnAccent), lineWidth: 2)
     }
 }
-
-// TODO: Move to common module
-
-extension Appearance.Images {
-    var selectionBadgeIcon: UIImage {
-        UIImage(
-            systemName: "checkmark",
-            withConfiguration: UIImage.SymbolConfiguration(weight: .bold)
-        )!
-    }
-}

@@ -28,7 +28,7 @@ public struct AttachmentTypePickerView: View {
     public var body: some View {
         HStack(alignment: .center, spacing: tokens.spacingXxxs) {
             AttachmentTypePickerButton(
-                icon: images.attachmentPhotosIcon,
+                icon: images.attachmentPhotoIcon,
                 pickerType: .photos,
                 isSelected: selected == .photos,
                 onTap: onTap

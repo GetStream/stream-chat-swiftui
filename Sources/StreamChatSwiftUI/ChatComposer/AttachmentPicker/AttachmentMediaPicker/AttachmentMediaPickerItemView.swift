@@ -165,7 +165,7 @@ public struct AttachmentMediaPickerItemView: View {
     }
 
     private var assetDurationText: String {
-        utils.mediaBadgeDurationFormatter.format(asset.duration)
+        utils.mediaBadgeDurationFormatter.longFormat(asset.duration)
     }
 
     /// The original photo is usually in HEIC format.

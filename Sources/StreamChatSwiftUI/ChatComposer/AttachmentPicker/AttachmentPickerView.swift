@@ -168,37 +168,3 @@ public struct AttachmentPickerView<Factory: ViewFactory>: View {
         .accessibilityIdentifier("AttachmentPickerView")
     }
 }
-
-// TODO: Move to Common Module
-
-extension Appearance.Images {
-    var attachmentPhotosIcon: UIImage {
-        UIImage(
-            systemName: "photo"
-        )!
-    }
-
-    var attachmentCameraIcon: UIImage {
-        UIImage(
-            systemName: "camera"
-        )!
-    }
-
-    var attachmentDocumentIcon: UIImage {
-        UIImage(
-            systemName: "doc"
-        )!
-    }
-
-    var attachmentPollIcon: UIImage {
-        UIImage(
-            systemName: "chart.bar"
-        )!
-    }
-
-    var attachmentCommandIcon: UIImage {
-        UIImage(
-            systemName: "chevron.left.forwardslash.chevron.right"
-        )!
-    }
-}
