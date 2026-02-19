@@ -58,9 +58,9 @@ public struct DefaultMessageAttachmentPreviewIconProvider: MessageAttachmentPrev
         case .link:
             return images.attachmentLinkIcon
         case .document, .audio, .mixed:
-            return images.attachmentDocIcon
+            return images.attachmentDocumentIcon
         default:
-            return images.attachmentDocIcon
+            return images.attachmentDocumentIcon
         }
     }
 }

@@ -157,6 +157,8 @@
 				"Infrastructure/Shared/XCTestCase+MockJSON.swift",
 				Infrastructure/TestTools/ChatClient_Mock.swift,
 				Infrastructure/TestTools/ViewFrameUtils.swift,
+				Tests/ChatChannel/AttachmentCommandsPickerView_Tests.swift,
+				Tests/ChatChannel/AttachmentFilePickerView_Tests.swift,
 				Tests/ChatChannel/ChannelControllerFactory_Tests.swift,
 				Tests/ChatChannel/ChannelInfo/AddUsersView_Tests.swift,
 				Tests/ChatChannel/ChannelInfo/AddUsersViewModel_Tests.swift,
@@ -185,7 +187,6 @@
 				Tests/ChatChannel/CreatePollViewModel_Tests.swift,
 				Tests/ChatChannel/EditedMessageView_Tests.swift,
 				Tests/ChatChannel/FileAttachmentView_Tests.swift,
-				Tests/ChatChannel/FilePickerView_Tests.swift,
 				Tests/ChatChannel/GalleryView_Tests.swift,
 				Tests/ChatChannel/LazyImageExtensions_Tests.swift,
 				Tests/ChatChannel/MessageActions_Tests.swift,
@@ -1530,7 +1531,7 @@
 			repositoryURL = "https://github.com/GetStream/stream-chat-swift.git";
 			requirement = {
 				kind = revision;
-				revision = f7a42a969947c7c7ec0a1f8bea571d16765bc56e;
+				revision = eb6314ea7563829dafe45b2d1e78a904f9bda183;
 			};
 		};
 		E3A1C01A282BAC66002D1E26 /* XCRemoteSwiftPackageReference "sentry-cocoa" */ = {

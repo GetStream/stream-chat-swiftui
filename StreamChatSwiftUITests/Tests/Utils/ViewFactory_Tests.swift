@@ -265,13 +265,13 @@ import XCTest
         XCTAssert(view is GiphyBadgeView)
     }
 
-    func test_viewFactory_makeCustomAttachmentView() {
+    func test_viewFactory_makeCustomAttachmentPickerView() {
         // Given
         let viewFactory = DefaultViewFactory.shared
 
         // When
-        let view = viewFactory.makeCustomAttachmentView(
-            options: CustomComposerAttachmentViewOptions(
+        let view = viewFactory.makeCustomAttachmentPickerView(
+            options: CustomAttachmentPickerViewOptions(
                 addedCustomAttachments: [],
                 onCustomAttachmentTap: { _ in }
             )
@@ -302,15 +302,15 @@ import XCTest
         let viewFactory = DefaultViewFactory.shared
 
         // When
-        let view = viewFactory.makeFilePickerView(
-            options: FilePickerViewOptions(
-                filePickerShown: .constant(true),
+        let view = viewFactory.makeAttachmentFilePickerView(
+            options: AttachmentFilePickerViewOptions(
+                filePickerShown: .constant(false),
                 onFilesPicked: { _ in }
             )
         )
 
         // Then
-        XCTAssert(view is FilePickerDisplayView)
+        XCTAssert(view is AttachmentFilePickerView)
     }
 
     func test_viewFactory_makeCameraPickerView() {
@@ -318,27 +318,15 @@ import XCTest
         let viewFactory = DefaultViewFactory.shared
 
         // When
-        let view = viewFactory.makeCameraPickerView(
-            options: CameraPickerViewOptions(
-                selected: .constant(.photos),
+        let view = viewFactory.makeAttachmentCameraPickerView(
+            options: AttachmentCameraPickerViewOptions(
                 cameraPickerShown: .constant(false),
                 cameraImageAdded: { _ in }
             )
         )
 
         // Then
-        XCTAssert(view is CameraPickerDisplayView)
-    }
-
-    func test_viewFactory_makeAssetsAccessPermissionView() {
-        // Given
-        let viewFactory = DefaultViewFactory.shared
-
-        // When
-        let view = viewFactory.makeAssetsAccessPermissionView(options: AssetsAccessPermissionViewOptions())
-
-        // Then
-        XCTAssert(view is AssetsAccessPermissionView)
+        XCTAssert(view is AttachmentCameraPickerView)
     }
 
     func test_viewFactory_makeMessageActionsView() {

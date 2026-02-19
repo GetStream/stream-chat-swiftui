@@ -5,41 +5,40 @@
 import StreamChatCommonUI
 import SwiftUI
 
-struct StreamButton: View {
+struct StreamButton<Icon: View, TextContent: View>: View {
     @Injected(\.tokens) private var tokens
 
-    private let icon: Image
-    private let text: String?
+    private let icon: Icon
+    private let text: TextContent
     private let role: StreamButtonRole
     private let style: StreamButtonVisualStyle
     private let size: StreamButtonSize
+    private let isSelected: Bool
     private let action: () -> Void
 
     init(
-        icon: Image,
-        text: String?,
         role: StreamButtonRole = .primary,
         style: StreamButtonVisualStyle = .solid,
         size: StreamButtonSize = .medium,
-        action: @escaping () -> Void
+        isSelected: Bool = false,
+        action: @escaping () -> Void,
+        @ViewBuilder icon: () -> Icon,
+        @ViewBuilder text: () -> TextContent
     ) {
         self.role = role
         self.style = style
         self.size = size
-        self.icon = icon
-        self.text = text
+        self.isSelected = isSelected
+        self.icon = icon()
+        self.text = text()
         self.action = action
     }
 
     var body: some View {
         Button(action: action) {
-            if let text {
-                HStack(spacing: tokens.spacingXs) {
-                    iconView
-                    Text(text)
-                }
-            } else {
-                iconView
+            HStack(spacing: tokens.spacingXs) {
+                icon
+                text
             }
         }
         .buttonStyle(
@@ -47,15 +46,98 @@ struct StreamButton: View {
                 role: role,
                 style: style,
                 size: size,
-                isIconOnly: text == nil
+                isIconOnly: false,
+                isSelected: isSelected
             )
         )
     }
+}
 
-    private var iconView: some View {
-        icon
-            .font(.system(size: tokens.iconSizeMd))
-            .frame(width: tokens.iconSizeMd, height: tokens.iconSizeMd)
+// MARK: - StreamIconButton
+
+struct StreamIconButton<Icon: View>: View {
+    @Injected(\.tokens) private var tokens
+
+    private let icon: Icon
+    private let role: StreamButtonRole
+    private let style: StreamButtonVisualStyle
+    private let size: StreamButtonSize
+    private let isSelected: Bool
+    private let action: () -> Void
+
+    init(
+        role: StreamButtonRole = .primary,
+        style: StreamButtonVisualStyle = .solid,
+        size: StreamButtonSize = .medium,
+        isSelected: Bool = false,
+        action: @escaping () -> Void,
+        @ViewBuilder icon: () -> Icon
+    ) {
+        self.role = role
+        self.style = style
+        self.size = size
+        self.isSelected = isSelected
+        self.icon = icon()
+        self.action = action
+    }
+
+    var body: some View {
+        Button(action: action) {
+            icon
+        }
+        .buttonStyle(
+            StreamButtonStyle(
+                role: role,
+                style: style,
+                size: size,
+                isIconOnly: true,
+                isSelected: isSelected
+            )
+        )
+    }
+}
+
+// MARK: - StreamTextButton
+
+struct StreamTextButton<TextContent: View>: View {
+    @Injected(\.tokens) private var tokens
+
+    private let text: TextContent
+    private let role: StreamButtonRole
+    private let style: StreamButtonVisualStyle
+    private let size: StreamButtonSize
+    private let isSelected: Bool
+    private let action: () -> Void
+
+    init(
+        role: StreamButtonRole = .primary,
+        style: StreamButtonVisualStyle = .solid,
+        size: StreamButtonSize = .medium,
+        isSelected: Bool = false,
+        action: @escaping () -> Void,
+        @ViewBuilder text: () -> TextContent
+    ) {
+        self.role = role
+        self.style = style
+        self.size = size
+        self.isSelected = isSelected
+        self.text = text()
+        self.action = action
+    }
+
+    var body: some View {
+        Button(action: action) {
+            text
+        }
+        .buttonStyle(
+            StreamButtonStyle(
+                role: role,
+                style: style,
+                size: size,
+                isIconOnly: false,
+                isSelected: isSelected
+            )
+        )
     }
 }
 
@@ -72,17 +154,20 @@ struct StreamButtonStyle: ButtonStyle {
     let style: StreamButtonVisualStyle
     let size: StreamButtonSize
     let isIconOnly: Bool
+    let isSelected: Bool
 
     init(
         role: StreamButtonRole = .primary,
         style: StreamButtonVisualStyle = .solid,
         size: StreamButtonSize = .medium,
-        isIconOnly: Bool
+        isIconOnly: Bool,
+        isSelected: Bool = false
     ) {
         self.role = role
         self.style = style
         self.size = size
         self.isIconOnly = isIconOnly
+        self.isSelected = isSelected
     }
 
     func makeBody(configuration: Configuration) -> some View {
@@ -95,11 +180,11 @@ struct StreamButtonStyle: ButtonStyle {
         }
         .animation(.easeInOut(duration: 0.15), value: configuration.isPressed)
         .animation(.easeInOut(duration: 0.15), value: isEnabled)
+        .animation(.easeInOut(duration: 0.15), value: isSelected)
     }
 
     private func baseContent(configuration: Configuration) -> some View {
         configuration.label
-            .font(fonts.bodyBold)
             .foregroundColor(Color(foregroundColor))
             .lineLimit(1)
             .padding(.horizontal, isIconOnly ? sizeMetrics.horizontalPaddingIconOnly : sizeMetrics.horizontalPaddingWithLabel)
@@ -117,6 +202,7 @@ struct StreamButtonStyle: ButtonStyle {
     private func regularBody(configuration: Configuration) -> some View {
         baseContent(configuration: configuration)
             .clipShape(Capsule())
+            .contentShape(Capsule())
             .overlay(Capsule().stroke(Color(borderColor), lineWidth: hasBorder ? borderWidth : 0))
     }
 
@@ -169,6 +255,7 @@ struct StreamButtonStyle: ButtonStyle {
     private func interactionOverlayColor(isPressed: Bool) -> UIColor? {
         guard isEnabled else { return nil }
         if isPressed { return colors.backgroundCorePressed }
+        if isSelected { return colors.backgroundCoreSelected }
         return nil
     }
 

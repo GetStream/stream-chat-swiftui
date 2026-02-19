@@ -202,8 +202,8 @@ public final class CustomAttachmentViewTypeOptions: Sendable {
     }
 }
 
-/// Options for creating the custom composer attachment view.
-public final class CustomComposerAttachmentViewOptions: Sendable {
+/// Options for creating the custom attachment picker view.
+public final class CustomAttachmentPickerViewOptions: Sendable {
     /// The added custom attachments.
     public let addedCustomAttachments: [CustomAttachment]
     /// Callback when a custom attachment is tapped.
@@ -441,8 +441,8 @@ public final class AttachmentCommandsPickerViewOptions: Sendable {
     }
 }
 
-/// Options for creating the attachment source picker view.
-public final class AttachmentSourcePickerViewOptions: Sendable {
+/// Options for creating the attachment type picker view.
+public final class AttachmentTypePickerViewOptions: Sendable {
     /// The currently selected picker state.
     public let selected: AttachmentPickerState
     /// Whether sending polls is allowed.
@@ -461,10 +461,10 @@ public final class AttachmentSourcePickerViewOptions: Sendable {
     }
 }
 
-/// Options for creating the photo attachment picker view.
-public final class PhotoAttachmentPickerViewOptions: Sendable {
-    /// The assets to display in the picker.
-    public let assets: PHFetchResultCollection
+/// Options for creating the media attachment picker view.
+public final class AttachmentMediaPickerViewOptions: Sendable {
+    /// The photo library fetch result, or `nil` while still loading.
+    public let photoLibraryAssets: PHFetchResult<PHAsset>?
     /// Callback when an asset is tapped.
     public let onAssetTap: @MainActor (AddedAsset) -> Void
     /// Function to check if an asset is selected.
@@ -473,46 +473,45 @@ public final class PhotoAttachmentPickerViewOptions: Sendable {
     public let selectedAssetIds: [String]?
     
     public init(
-        assets: PHFetchResultCollection,
+        photoLibraryAssets: PHFetchResult<PHAsset>?,
         onAssetTap: @escaping @MainActor (AddedAsset) -> Void,
         isAssetSelected: @escaping @MainActor (String) -> Bool,
         selectedAssetIds: [String]? = nil
     ) {
-        self.assets = assets
+        self.photoLibraryAssets = photoLibraryAssets
         self.onAssetTap = onAssetTap
         self.isAssetSelected = isAssetSelected
         self.selectedAssetIds = selectedAssetIds
     }
 }
 
-/// Options for creating the file picker view.
-public final class FilePickerViewOptions: Sendable {
+/// Options for creating the file attachment picker view.
+public final class AttachmentFilePickerViewOptions: Sendable {
     /// Binding to whether the file picker is shown.
     public let filePickerShown: Binding<Bool>
     /// Callback invoked with the URLs of newly picked files.
     public let onFilesPicked: @MainActor ([URL]) -> Void
     
-    public init(filePickerShown: Binding<Bool>, onFilesPicked: @escaping @MainActor ([URL]) -> Void) {
+    public init(
+        filePickerShown: Binding<Bool>,
+        onFilesPicked: @escaping @MainActor ([URL]) -> Void
+    ) {
         self.filePickerShown = filePickerShown
         self.onFilesPicked = onFilesPicked
     }
 }
 
-/// Options for creating the camera picker view.
-public final class CameraPickerViewOptions: Sendable {
-    /// Binding to the selected picker state.
-    public let selected: Binding<AttachmentPickerState>
+/// Options for creating the camera attachment picker view.
+public final class AttachmentCameraPickerViewOptions: Sendable {
     /// Binding to whether the camera picker is shown.
     public let cameraPickerShown: Binding<Bool>
     /// Callback when a camera image is added.
     public let cameraImageAdded: @MainActor (AddedAsset) -> Void
     
     public init(
-        selected: Binding<AttachmentPickerState>,
         cameraPickerShown: Binding<Bool>,
         cameraImageAdded: @escaping @MainActor (AddedAsset) -> Void
     ) {
-        self.selected = selected
         self.cameraPickerShown = cameraPickerShown
         self.cameraImageAdded = cameraImageAdded
     }
