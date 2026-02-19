@@ -114,7 +114,7 @@ public struct AttachmentTypePickerButton: View {
         ) {
             Image(uiImage: icon)
                 .customizable()
-                .frame(width: tokens.iconSizeMd, height: tokens.iconSizeMd)
+                .frame(width: 18, height: 18)
         }
     }
 }
