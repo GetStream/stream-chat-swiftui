@@ -38,13 +38,7 @@ struct StreamButton<Icon: View, TextContent: View>: View {
         Button(action: action) {
             HStack(spacing: tokens.spacingXs) {
                 icon
-                    .if(Icon.self == EmptyView.self) {
-                        $0.hidden()
-                    }
                 text
-                    .if(TextContent.self == EmptyView.self) {
-                        $0.hidden()
-                    }
             }
         }
         .buttonStyle(
@@ -52,7 +46,7 @@ struct StreamButton<Icon: View, TextContent: View>: View {
                 role: role,
                 style: style,
                 size: size,
-                isIconOnly: TextContent.self == EmptyView.self,
+                isIconOnly: false,
                 isSelected: isSelected
             )
         )
@@ -62,12 +56,14 @@ struct StreamButton<Icon: View, TextContent: View>: View {
 // MARK: - StreamIconButton
 
 struct StreamIconButton<Icon: View>: View {
+    @Injected(\.tokens) private var tokens
+
+    private let icon: Icon
     private let role: StreamButtonRole
     private let style: StreamButtonVisualStyle
     private let size: StreamButtonSize
     private let isSelected: Bool
     private let action: () -> Void
-    private let icon: Icon
 
     init(
         role: StreamButtonRole = .primary,
@@ -81,34 +77,37 @@ struct StreamIconButton<Icon: View>: View {
         self.style = style
         self.size = size
         self.isSelected = isSelected
-        self.action = action
         self.icon = icon()
+        self.action = action
     }
 
     var body: some View {
-        StreamButton(
-            role: role,
-            style: style,
-            size: size,
-            isSelected: isSelected,
-            action: action
-        ) {
+        Button(action: action) {
             icon
-        } text: {
-            EmptyView()
         }
+        .buttonStyle(
+            StreamButtonStyle(
+                role: role,
+                style: style,
+                size: size,
+                isIconOnly: true,
+                isSelected: isSelected
+            )
+        )
     }
 }
 
 // MARK: - StreamTextButton
 
 struct StreamTextButton<TextContent: View>: View {
+    @Injected(\.tokens) private var tokens
+
+    private let text: TextContent
     private let role: StreamButtonRole
     private let style: StreamButtonVisualStyle
     private let size: StreamButtonSize
     private let isSelected: Bool
     private let action: () -> Void
-    private let text: TextContent
 
     init(
         role: StreamButtonRole = .primary,
@@ -122,22 +121,23 @@ struct StreamTextButton<TextContent: View>: View {
         self.style = style
         self.size = size
         self.isSelected = isSelected
-        self.action = action
         self.text = text()
+        self.action = action
     }
 
     var body: some View {
-        StreamButton(
-            role: role,
-            style: style,
-            size: size,
-            isSelected: isSelected,
-            action: action
-        ) {
-            EmptyView()
-        } text: {
+        Button(action: action) {
             text
         }
+        .buttonStyle(
+            StreamButtonStyle(
+                role: role,
+                style: style,
+                size: size,
+                isIconOnly: false,
+                isSelected: isSelected
+            )
+        )
     }
 }
 
@@ -185,7 +185,6 @@ struct StreamButtonStyle: ButtonStyle {
 
     private func baseContent(configuration: Configuration) -> some View {
         configuration.label
-            .font(fonts.bodyBold)
             .foregroundColor(Color(foregroundColor))
             .lineLimit(1)
             .padding(.horizontal, isIconOnly ? sizeMetrics.horizontalPaddingIconOnly : sizeMetrics.horizontalPaddingWithLabel)

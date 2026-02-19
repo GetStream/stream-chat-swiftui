@@ -51,6 +51,7 @@ public struct AttachmentPickerPromptView: View {
                 action: onTap
             ) {
                 Text(buttonText)
+                    .font(fonts.bodyBold)
                     .frame(maxWidth: .infinity)
             }
             .frame(maxWidth: .infinity, minHeight: 48, maxHeight: 48, alignment: .center)

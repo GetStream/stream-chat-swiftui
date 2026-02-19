@@ -105,9 +105,9 @@ private struct StreamButtonVariationsView: View {
                     size: size,
                     action: {}
                 ) {
-                    Image(systemName: "plus")
-                        .font(.system(size: 20))
-                        .frame(width: 20, height: 20)
+                    Image(uiImage: plusImage)
+                        .customizable()
+                        .frame(width: 16, height: 16)
 
                 } text: {
                     Text(style.rawValue)
@@ -119,12 +119,16 @@ private struct StreamButtonVariationsView: View {
                     size: size,
                     action: {}
                 ) {
-                    Image(systemName: "plus")
-                        .font(.system(size: 20))
-                        .frame(width: 20, height: 20)
+                    Image(uiImage: plusImage)
+                        .customizable()
+                        .frame(width: 16, height: 16)
                 }
             }
         }
         .disabled(state == .disabled)
+    }
+
+    private var plusImage: UIImage {
+        UIImage(systemName: "plus", withConfiguration: UIImage.SymbolConfiguration(weight: .light))!
     }
 }
