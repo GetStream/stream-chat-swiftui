@@ -46,7 +46,7 @@ import XCTest
         let channel = ChatChannel.mockDMChannel()
         
         // When
-        let view = MessageContainerView(
+        let view = MessageItemView(
             factory: viewFactory,
             channel: channel,
             message: message,

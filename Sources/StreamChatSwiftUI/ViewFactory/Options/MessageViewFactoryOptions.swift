@@ -57,10 +57,10 @@ public final class MessageThreadHeaderViewModifierOptions: Sendable {
     public init() {}
 }
 
-// MARK: - Message Container Options
+// MARK: - Message Item Options
 
-/// Options for creating the message container view.
-public final class MessageContainerViewOptions: Sendable {
+/// Options for creating the message item view.
+public final class MessageItemViewOptions: Sendable {
     /// The channel containing the message.
     public let channel: ChatChannel
     /// The message to display.

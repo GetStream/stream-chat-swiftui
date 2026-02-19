@@ -265,7 +265,7 @@ public final class MessageDisplayOptions {
             if isIPad && availableWidth > 500 {
                 2 * availableWidth / 3
             } else {
-                availableWidth / 4
+                82
             }
         }
     }

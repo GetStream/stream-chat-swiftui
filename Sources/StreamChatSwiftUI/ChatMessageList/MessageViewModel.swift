@@ -85,6 +85,14 @@ import StreamChat
         return message.author
     }
 
+    public func isHighlighted(messageId: String?) -> Bool {
+        messageListConfig.highlightMessageWhenJumping && messageId == message.messageId
+    }
+
+    public var isDoubleTapOverlayEnabled: Bool {
+        messageListConfig.doubleTapOverlayEnabled
+    }
+
     open var isSwipeToQuoteReplyPossible: Bool {
         message.isInteractionEnabled && channel?.config.quotesEnabled == true
     }

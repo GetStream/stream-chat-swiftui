@@ -232,10 +232,10 @@ extension ViewFactory {
         Color(InjectedValues[\.colors].background)
     }
     
-    public func makeMessageContainerView(
-        options: MessageContainerViewOptions
+    public func makeMessageItemView(
+        options: MessageItemViewOptions
     ) -> some View {
-        MessageContainerView(
+        MessageItemView(
             factory: self,
             channel: options.channel,
             message: options.message,

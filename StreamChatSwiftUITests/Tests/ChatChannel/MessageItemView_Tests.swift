@@ -11,7 +11,7 @@ import StreamSwiftTestHelpers
 import SwiftUI
 import XCTest
 
-@MainActor class MessageContainerView_Tests: StreamChatTestCase {
+@MainActor class MessageItemView_Tests: StreamChatTestCase {
     func test_messageContainerViewSentThisUser_snapshot() {
         // Given
         let message = ChatMessage.mock(
@@ -381,7 +381,7 @@ import XCTest
         )
 
         let exp = expectation(description: "Long press triggered")
-        let view = MessageContainerView(
+        let view = MessageItemView(
             factory: DefaultViewFactory.shared,
             channel: .mockDMChannel(),
             message: message,
@@ -415,7 +415,7 @@ import XCTest
 
         let exp = expectation(description: "Long press should not be triggered")
         exp.isInverted = true
-        let view = MessageContainerView(
+        let view = MessageItemView(
             factory: DefaultViewFactory.shared,
             channel: .mockDMChannel(),
             message: message,
@@ -630,7 +630,7 @@ import XCTest
         messageViewModel: MessageViewModel? = nil,
         highlightedMessageId: String? = nil
     ) -> some View {
-        MessageContainerView(
+        MessageItemView(
             factory: DefaultViewFactory.shared,
             channel: channel ?? .mockDMChannel(),
             message: message,

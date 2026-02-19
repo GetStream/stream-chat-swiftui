@@ -181,8 +181,8 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
                                 messageIsFirstUnread &&
                                 !isMessageThread
                             let showsLastInGroupInfo = showsLastInGroupInfo(for: message, channel: channel)
-                            factory.makeMessageContainerView(
-                                options: MessageContainerViewOptions(
+                            factory.makeMessageItemView(
+                                options: MessageItemViewOptions(
                                     channel: channel,
                                     message: message,
                                     width: width,
