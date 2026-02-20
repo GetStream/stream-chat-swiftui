@@ -107,7 +107,6 @@ struct LazyGiphyView: View {
             if let imageContainer = state.imageContainer {
                 if imageContainer.type == .gif {
                     AnimatedGifView(imageContainer: imageContainer)
-                        .frame(width: width)
                 } else {
                     state.image
                 }
@@ -124,6 +123,7 @@ struct LazyGiphyView: View {
         .processors([ImageProcessors.Resize(width: width)])
         .priority(.high)
         .aspectRatio(contentMode: .fit)
+        .frame(width: width)
     }
 }
 

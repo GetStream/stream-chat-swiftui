@@ -34,17 +34,13 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
     @State private var moreReactionsShown = false
     @State private var measuredTotalContentHeight: CGFloat = 0
 
-    // MARK: - Properties
-
-    var factory: Factory
-    var channel: ChatChannel
-    var currentSnapshot: UIImage
-    var bottomOffset: CGFloat
-    var messageDisplayInfo: MessageDisplayInfo
-    var onBackgroundTap: () -> Void
-    var onActionExecuted: (MessageActionInfo) -> Void
-
-    private let topOffset: CGFloat
+    private let factory: Factory
+    private let channel: ChatChannel
+    private let currentSnapshot: UIImage
+    private let verticalInset: CGFloat
+    private let messageDisplayInfo: MessageDisplayInfo
+    private let onBackgroundTap: () -> Void
+    private let onActionExecuted: (MessageActionInfo) -> Void
 
     // MARK: - Init
 
@@ -53,8 +49,7 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
         channel: ChatChannel,
         currentSnapshot: UIImage,
         messageDisplayInfo: MessageDisplayInfo,
-        topOffset: CGFloat = 0,
-        bottomOffset: CGFloat = 0,
+        verticalInset: CGFloat = 40,
         onBackgroundTap: @escaping () -> Void,
         onActionExecuted: @escaping (MessageActionInfo) -> Void,
         viewModel: ReactionsOverlayViewModel? = nil,
@@ -74,8 +69,7 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
         self.channel = channel
         self.factory = factory
         self.currentSnapshot = currentSnapshot
-        self.topOffset = topOffset
-        self.bottomOffset = bottomOffset
+        self.verticalInset = verticalInset
         self.messageDisplayInfo = messageDisplayInfo
         self.onBackgroundTap = onBackgroundTap
         self.onActionExecuted = onActionExecuted
@@ -108,6 +102,8 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
                             viewModel: messageViewModel
                         )
                     )
+                    .frame(width: messageDisplayInfo.frame.width)
+                    .frame(maxHeight: messageDisplayInfo.frame.height)
                     .environment(\.channelTranslationLanguage, channel.membership?.language)
                     .scaleEffect(popIn || willPopOut ? 1 : 0.95)
                     .animation(willPopOut ? .easeInOut : popInAnimation, value: popIn)
@@ -315,8 +311,8 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
     
     private var allowedTotalContentHeight: CGFloat { screenHeight - topContentSpacing - bottomContentSpacing }
     
-    private var topContentSpacing: CGFloat { topSafeArea + topOffset + spacing }
-    private var bottomContentSpacing: CGFloat { bottomSafeArea + bottomOffset }
+    private var topContentSpacing: CGFloat { topSafeArea + verticalInset + spacing }
+    private var bottomContentSpacing: CGFloat { bottomSafeArea + verticalInset }
     
     private var contentOffsetY: CGFloat {
         let originalMessageMatchingOffsetY = messageDisplayInfo.frame.origin.y - spacing - topReactionsWithPickerHeight
