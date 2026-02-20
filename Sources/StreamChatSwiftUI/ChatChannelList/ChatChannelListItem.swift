@@ -3,6 +3,7 @@
 //
 
 import StreamChat
+import StreamChatCommonUI
 import SwiftUI
 
 /// View for the channel list item.
@@ -12,6 +13,7 @@ public struct ChatChannelListItem<Factory: ViewFactory>: View {
     @Injected(\.utils) private var utils
     @Injected(\.images) private var images
     @Injected(\.chatClient) private var chatClient
+    @Injected(\.tokens) private var tokens
 
     var factory: Factory
     var channel: ChatChannel
@@ -40,15 +42,15 @@ public struct ChatChannelListItem<Factory: ViewFactory>: View {
         Button {
             onItemTap(channel)
         } label: {
-            HStack {
+            HStack(spacing: tokens.spacingMd) {
                 factory.makeChannelAvatarView(
                     options: ChannelAvatarViewOptions(
                         channel: channel,
-                        size: AvatarSize.large
+                        size: AvatarSize.extraLarge
                     )
                 )
 
-                VStack(alignment: .leading, spacing: 4) {
+                VStack(alignment: .leading, spacing: tokens.spacingXxs) {
                     HStack {
                         HStack(spacing: 6) {
                             ChatTitleView(name: channelName)
@@ -60,10 +62,23 @@ public struct ChatChannelListItem<Factory: ViewFactory>: View {
                         }
 
                         Spacer()
+                        
+                        HStack(spacing: tokens.spacingXs) {
+                            SubtitleText(
+                                text: injectedChannelInfo?.timestamp ?? channel.timestampText,
+                                color: Color(colors.textTertiary)
+                            )
+                            .accessibilityIdentifier("timestampView")
 
-                        if channel.isMuted, mutedLayoutStyle == .topRightCorner {
-                            mutedIcon
+                            if lastMessageFailedToSend {
+                                Image(uiImage: images.messageListErrorIndicator)
+                                    .customizable()
+                                    .frame(width: 16, height: 16)
+                                    .foregroundColor(Color(colors.badgeBackgroundError))
+                                    .accessibilityHidden(true)
+                            }
                         }
+                        
                         if injectedChannelInfo == nil && channel.unreadCount != .noUnread {
                             UnreadIndicatorView(
                                 unreadCount: channel.unreadCount.messages
@@ -71,29 +86,29 @@ public struct ChatChannelListItem<Factory: ViewFactory>: View {
                         }
                     }
 
-                    HStack {
+                    HStack(spacing: tokens.spacingXxxs) {
+                        if shouldShowReadEvents {
+                            MessageReadIndicatorView(
+                                readUsers: channel.readUsers(
+                                    currentUserId: chatClient.currentUserId,
+                                    message: channel.previewMessage
+                                ),
+                                showReadCount: false,
+                                showDelivered: channel.previewMessage?.deliveryStatus(for: channel) == .delivered
+                            )
+                        }
+                        
                         subtitleView
 
                         Spacer()
-
-                        HStack(spacing: 4) {
-                            if shouldShowReadEvents {
-                                MessageReadIndicatorView(
-                                    readUsers: channel.readUsers(
-                                        currentUserId: chatClient.currentUserId,
-                                        message: channel.previewMessage
-                                    ),
-                                    showReadCount: false,
-                                    showDelivered: channel.previewMessage?.deliveryStatus(for: channel) == .delivered
-                                )
-                            }
-                            SubtitleText(text: injectedChannelInfo?.timestamp ?? channel.timestampText)
-                                .accessibilityIdentifier("timestampView")
+                        
+                        if channel.isMuted, mutedLayoutStyle == .bottomRightCorner {
+                            mutedIcon
                         }
                     }
                 }
             }
-            .padding(.all, 8)
+            .padding(.all, tokens.spacingMd)
         }
         .foregroundColor(.black)
         .disabled(disabled)
@@ -106,20 +121,44 @@ public struct ChatChannelListItem<Factory: ViewFactory>: View {
 
     private var subtitleView: some View {
         HStack(spacing: 4) {
-            if channel.isMuted, mutedLayoutStyle == .default {
-                mutedIcon
-            } else {
-                if channel.shouldShowTypingIndicator {
-                    TypingIndicatorView()
-                }
-            }
-            if utils.messageListConfig.draftMessagesEnabled, let draftText = channel.draftMessageText {
+            if lastMessageFailedToSend {
+                Text(L10n.Channel.Item.messageFailedToSend)
+                    .font(fonts.subheadline)
+                    .foregroundColor(Color(colors.accentError))
+                    .lineLimit(1)
+            } else if channel.shouldShowTypingIndicator {
+                TypingIndicatorView()
+                SubtitleText(text: typingText)
+            } else if utils.messageListConfig.draftMessagesEnabled, let draftText = channel.draftMessageText {
                 HStack(spacing: 2) {
-                    Text("\(L10n.Message.Preview.draft):")
-                        .font(fonts.caption1).bold()
-                        .foregroundColor(Color(colors.highlightedAccentBackground))
+                    Text("\(L10n.Message.Preview.draft): ")
+                        .font(fonts.subheadline).fontWeight(.semibold)
+                        .foregroundColor(Color(colors.accentPrimary))
                     SubtitleText(text: draftText)
                 }
+            } else if let authorName = subtitleAuthorName {
+                let contentString = channel.previewMessage.map {
+                    utils.messagePreviewFormatter.formatContent(for: $0, in: channel)
+                } ?? subtitleText
+                HStack(spacing: tokens.spacingXxs) {
+                    Text("\(authorName):")
+                        .font(fonts.subheadline)
+                        .fontWeight(.semibold)
+                        .foregroundColor(Color(colors.textTertiary))
+                    attachmentIconView
+                    Text(contentString)
+                }
+                .lineLimit(1)
+                .font(fonts.subheadline)
+                .foregroundColor(Color(colors.textSecondary))
+            } else if previewAttachmentIconImage != nil {
+                HStack(spacing: tokens.spacingXxs) {
+                    attachmentIconView
+                    Text(subtitleText)
+                }
+                .lineLimit(1)
+                .font(fonts.subheadline)
+                .foregroundColor(Color(colors.textSecondary))
             } else {
                 SubtitleText(text: subtitleText)
             }
@@ -128,12 +167,46 @@ public struct ChatChannelListItem<Factory: ViewFactory>: View {
         .accessibilityIdentifier("subtitleView")
     }
 
+    private var typingText: String {
+        if channel.isDirectMessageChannel && channel.memberCount == 2 {
+            return L10n.Channel.Item.typing
+        }
+        return channel.typingIndicatorString(currentUserId: chatClient.currentUserId)
+    }
+
+    private var previewAttachmentIconImage: UIImage? {
+        guard let previewMessage = channel.previewMessage else { return nil }
+        let resolver = MessageAttachmentPreviewResolver(message: previewMessage)
+        guard let previewIcon = resolver.previewIcon else { return nil }
+        return utils.messageAttachmentPreviewIconProvider.image(for: previewIcon)
+    }
+
+    @ViewBuilder
+    private var attachmentIconView: some View {
+        if let iconImage = previewAttachmentIconImage {
+            Image(uiImage: iconImage)
+                .customizable()
+                .frame(maxHeight: 14)
+                .accessibilityHidden(true)
+        }
+    }
+
+    private var subtitleAuthorName: String? {
+        guard let previewMessage = channel.previewMessage,
+              previewMessage.poll == nil,
+              injectedChannelInfo?.subtitle == nil,
+              !(channel.isDirectMessageChannel && channel.memberCount == 2) else {
+            return nil
+        }
+        if previewMessage.isSentByCurrentUser {
+            return L10n.Channel.Item.you
+        }
+        return previewMessage.author.name ?? previewMessage.author.id
+    }
+
     private var subtitleText: String {
         if let injectedSubtitle = injectedChannelInfo?.subtitle {
             return injectedSubtitle
-        }
-        if mutedLayoutStyle != .default {
-            return channelSubtitleText
         }
         return channel.subtitleText
     }
@@ -155,7 +228,17 @@ public struct ChatChannelListItem<Factory: ViewFactory>: View {
             .foregroundColor(Color(colors.subtitleText))
     }
 
+    private var lastMessageFailedToSend: Bool {
+        channel.previewMessage?.localState == .sendingFailed
+    }
+
     private var shouldShowReadEvents: Bool {
+        if channel.shouldShowTypingIndicator || lastMessageFailedToSend {
+            return false
+        }
+        if utils.messageListConfig.draftMessagesEnabled && channel.draftMessageText != nil {
+            return false
+        }
         if let message = channel.previewMessage,
            message.isSentByCurrentUser {
             return channel.config.readEventsEnabled
@@ -187,10 +270,10 @@ public struct UnreadIndicatorView: View {
         Text("\(unreadCount)")
             .lineLimit(1)
             .font(fonts.footnoteBold)
-            .foregroundColor(Color(colors.staticColorText))
+            .foregroundColor(Color(colors.badgeTextOnAccent))
             .frame(width: unreadCount < 10 ? 18 : nil, height: 18)
             .padding(.horizontal, unreadCount < 10 ? 0 : 6)
-            .background(Color(colors.alert))
+            .background(Color(colors.badgeBackgroundPrimary))
             .cornerRadius(9)
             .accessibilityIdentifier("UnreadIndicatorView")
     }
@@ -244,9 +327,7 @@ extension ChatChannel {
     }
 
     @MainActor public var subtitleText: String {
-        if isMuted {
-            L10n.Channel.Item.muted
-        } else if shouldShowTypingIndicator {
+        if shouldShowTypingIndicator {
             typingIndicatorString(currentUserId: InjectedValues[\.chatClient].currentUserId)
         } else if let previewMessageText {
             previewMessageText
@@ -274,12 +355,9 @@ public final class ChannelItemMutedLayoutStyle: Hashable, Sendable {
         self.identifier = identifier
     }
 
-    /// The default style shows the muted icon and the text "channel is muted" as the subtitle text.
-    public static let `default`: ChannelItemMutedLayoutStyle = .init("default")
-
-    /// This style shows the muted icon at the top right corner of the channel item.
+    /// This style shows the muted icon at the bottom right corner of the channel item.
     /// The subtitle text shows the last message preview text.
-    public static let topRightCorner: ChannelItemMutedLayoutStyle = .init("topRightCorner")
+    public static let bottomRightCorner: ChannelItemMutedLayoutStyle = .init("bottomRightCorner")
 
     /// This style shows the muted icon after the channel name.
     /// The subtitle text shows the last message preview text.

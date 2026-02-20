@@ -10,16 +10,18 @@ public struct SubtitleText: View {
     @Injected(\.colors) private var colors
 
     var text: String
+    var color: Color?
 
-    public init(text: String) {
+    public init(text: String, color: Color? = nil) {
         self.text = text
+        self.color = color
     }
 
     public var body: some View {
         Text(text)
             .lineLimit(1)
-            .font(fonts.caption1)
-            .foregroundColor(Color(colors.subtitleText))
+            .font(fonts.subheadline)
+            .foregroundColor(color ?? Color(colors.textSecondary))
     }
 }
 
@@ -73,8 +75,8 @@ public struct ChatTitleView: View {
     public var body: some View {
         Text(name)
             .lineLimit(1)
-            .font(fonts.bodyBold)
-            .foregroundColor(Color(colors.text))
+            .font(fonts.headline)
+            .foregroundColor(Color(colors.textPrimary))
             .accessibilityIdentifier("ChatTitleView")
     }
 }

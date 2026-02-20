@@ -44,15 +44,17 @@ public protocol MessageAttachmentPreviewIconProvider {
 @MainActor
 public struct DefaultMessageAttachmentPreviewIconProvider: MessageAttachmentPreviewIconProvider {
     @Injected(\.images) var images
+    
+    public init() {}
 
     public func image(for icon: MessageAttachmentPreviewIcon) -> UIImage {
         switch icon {
         case .poll:
-            return images.attachmentPollIcon
+            return images.attachmentPickerPolls
         case .voiceRecording:
             return images.attachmentVoiceIcon
         case .photo:
-            return images.attachmentPhotoIcon
+            return images.attachmentPickerCamera
         case .video:
             return images.attachmentVideoIcon
         case .link:

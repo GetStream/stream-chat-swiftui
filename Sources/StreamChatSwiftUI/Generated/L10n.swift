@@ -87,6 +87,8 @@ internal enum L10n {
       internal static var audio: String { L10n.tr("Localizable", "channel.item.audio") }
       /// No messages
       internal static var emptyMessages: String { L10n.tr("Localizable", "channel.item.empty-messages") }
+      /// Message failed to send
+      internal static var messageFailedToSend: String { L10n.tr("Localizable", "channel.item.message-failed-to-send") }
       /// Mute
       internal static var mute: String { L10n.tr("Localizable", "channel.item.mute") }
       /// Channel is muted
@@ -117,6 +119,8 @@ internal enum L10n {
       internal static var removeUserConfirmationTitle: String { L10n.tr("Localizable", "channel.item.remove-user-confirmation-title") }
       /// Send Direct Message
       internal static var sendDirectMessage: String { L10n.tr("Localizable", "channel.item.send-direct-message") }
+      /// Typing
+      internal static var typing: String { L10n.tr("Localizable", "channel.item.typing") }
       /// are typing ...
       internal static var typingPlural: String { L10n.tr("Localizable", "channel.item.typing-plural") }
       /// is typing ...
@@ -127,6 +131,8 @@ internal enum L10n {
       internal static var video: String { L10n.tr("Localizable", "channel.item.video") }
       /// Voice Message
       internal static var voiceMessage: String { L10n.tr("Localizable", "channel.item.voice-message") }
+      /// You
+      internal static var you: String { L10n.tr("Localizable", "channel.item.you") }
     }
     internal enum List {
       internal enum ScrollToBottom {

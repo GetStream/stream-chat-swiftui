@@ -8,7 +8,7 @@ import SwiftUI
 /// A configuration for channel lists.
 @MainActor public final class ChannelListConfig {
     public init(
-        channelItemMutedStyle: ChannelItemMutedLayoutStyle = .default,
+        channelItemMutedStyle: ChannelItemMutedLayoutStyle = .bottomRightCorner,
         navigationBarDisplayMode: NavigationBarItem.TitleDisplayMode = .inline,
         showChannelListDividerOnLastItem: Bool = true,
         supportedMoreChannelActions: @escaping @MainActor (SupportedMoreChannelActionsOptions) -> [ChannelAction] = ChannelAction.defaultActions(for:)
@@ -29,7 +29,7 @@ import SwiftUI
     public var showChannelListDividerOnLastItem: Bool
 
     /// The style for the channel item when it is muted.
-    public var channelItemMutedStyle: ChannelItemMutedLayoutStyle = .default
+    public var channelItemMutedStyle: ChannelItemMutedLayoutStyle = .bottomRightCorner
     
     /// Returns the supported channel actions.
     /// - Parameter options: the options for getting supported channel actions.

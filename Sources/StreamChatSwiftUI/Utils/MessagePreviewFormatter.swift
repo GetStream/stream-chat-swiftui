@@ -17,7 +17,17 @@ import SwiftUI
         if let poll = previewMessage.poll {
             return formatPoll(poll)
         }
-        return "\(previewMessage.author.name ?? previewMessage.author.id): \(formatContent(for: previewMessage, in: channel))"
+        let content = formatContent(for: previewMessage, in: channel)
+        if channel.isDirectMessageChannel && channel.memberCount == 2 {
+            return content
+        }
+        let authorName: String
+        if previewMessage.isSentByCurrentUser {
+            authorName = L10n.Channel.Item.you
+        } else {
+            authorName = previewMessage.author.name ?? previewMessage.author.id
+        }
+        return "\(authorName): \(content)"
     }
     
     /// Formats only the content of the message without the author's name.
@@ -34,7 +44,7 @@ import SwiftUI
     /// Formats only the attachment content of the message in case it contains attachments.
     open func formatAttachmentContent(for previewMessage: ChatMessage, in channel: ChatChannel) -> String? {
         if let poll = previewMessage.poll {
-            return "📊 \(poll.name)"
+            return poll.name
         }
         guard let attachment = previewMessage.allAttachments.first, !previewMessage.isDeleted else {
             return nil
@@ -43,24 +53,29 @@ import SwiftUI
         switch attachment.type {
         case .audio:
             let defaultAudioText = L10n.Channel.Item.audio
-            return "🎧 \(text.isEmpty ? defaultAudioText : text)"
+            return text.isEmpty ? defaultAudioText : text
         case .file:
             guard let fileAttachment = previewMessage.fileAttachments.first else {
                 return nil
             }
             let title = fileAttachment.payload.title
-            return "📄 \(title ?? text)"
+            return title ?? text
         case .image:
             let defaultPhotoText = L10n.Channel.Item.photo
-            return "📷 \(text.isEmpty ? defaultPhotoText : text)"
+            return text.isEmpty ? defaultPhotoText : text
         case .video:
             let defaultVideoText = L10n.Channel.Item.video
-            return "📹 \(text.isEmpty ? defaultVideoText : text)"
+            return text.isEmpty ? defaultVideoText : text
         case .giphy:
             return "/giphy"
         case .voiceRecording:
             let defaultVoiceMessageText = L10n.Channel.Item.voiceMessage
-            return "🎧 \(text.isEmpty ? defaultVoiceMessageText : text)"
+            return text.isEmpty ? defaultVoiceMessageText : text
+        case .linkPreview:
+            if let linkAttachment = previewMessage.linkAttachments.first {
+                return linkAttachment.originalURL.absoluteString
+            }
+            return text
         default:
             return nil
         }
@@ -68,7 +83,7 @@ import SwiftUI
 
     /// Formats the poll, including the author's name.
     private func formatPoll(_ poll: Poll) -> String {
-        var components = ["📊"]
+        var components = [String]()
         if let latestVoter = poll.latestVotes.first?.user {
             if latestVoter.id == chatClient.currentUserId {
                 components.append(L10n.Channel.Item.pollYouVoted)

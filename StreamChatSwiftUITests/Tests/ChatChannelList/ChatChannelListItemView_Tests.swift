@@ -129,9 +129,9 @@ import XCTest
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
 
-    func test_channelListItem_muted_topRightCornerStyle() throws {
+    func test_channelListItem_muted_bottomRightCornerStyle() throws {
         // Given
-        streamChat?.utils.channelListConfig.channelItemMutedStyle = .topRightCorner
+        streamChat?.utils.channelListConfig.channelItemMutedStyle = .bottomRightCorner
         let message = try mockPollMessage(isSentByCurrentUser: false)
         let channel = ChatChannel.mock(
             cid: .unique,
@@ -423,8 +423,191 @@ import XCTest
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
 
+    func test_channelListItem_messageFailedToSend() throws {
+        // Given
+        let message = ChatMessage.mock(
+            id: .unique,
+            cid: .unique,
+            text: "Hello there",
+            author: .mock(id: Self.currentUserId, name: "You"),
+            createdAt: Date(timeIntervalSince1970: 100),
+            localState: .sendingFailed,
+            isSentByCurrentUser: true
+        )
+        let channel = ChatChannel.mock(
+            cid: .unique,
+            latestMessages: [message],
+            previewMessage: message
+        )
+
+        // When
+        let view = ChatChannelListItem(
+            channel: channel,
+            channelName: "Test",
+            onItemTap: { _ in }
+        )
+        .frame(width: defaultScreenSize.width)
+
+        // Then
+        AssertSnapshot(view)
+    }
+
+    func test_channelListItem_voiceRecordingMessage() throws {
+        // Given
+        let message = try mockVoiceRecordingMessage(text: "", isSentByCurrentUser: true)
+        let channel = ChatChannel.mock(cid: .unique, latestMessages: [message], previewMessage: message)
+
+        // When
+        let view = ChatChannelListItem(
+            channel: channel,
+            channelName: "Test",
+            onItemTap: { _ in }
+        )
+        .frame(width: defaultScreenSize.width)
+
+        // Then
+        AssertSnapshot(view)
+    }
+
+    func test_channelListItem_groupChannel_authorNamePrefix() throws {
+        // Given
+        let message = ChatMessage.mock(
+            id: .unique,
+            cid: .unique,
+            text: "Hey everyone!",
+            type: .regular,
+            author: .mock(id: "other-user", name: "John"),
+            createdAt: Date(timeIntervalSince1970: 100),
+            localState: nil,
+            isSentByCurrentUser: false
+        )
+        let channel = ChatChannel.mockNonDMChannel(
+            name: "Group Chat",
+            latestMessages: [message],
+            previewMessage: message
+        )
+
+        // When
+        let view = ChatChannelListItem(
+            channel: channel,
+            channelName: "Group Chat",
+            onItemTap: { _ in }
+        )
+        .frame(width: defaultScreenSize.width)
+
+        // Then
+        AssertSnapshot(view)
+    }
+
+    func test_channelListItem_groupChannel_youPrefix() throws {
+        // Given
+        let message = ChatMessage.mock(
+            id: .unique,
+            cid: .unique,
+            text: "Hey everyone!",
+            type: .regular,
+            author: .mock(id: Self.currentUserId, name: "Me"),
+            createdAt: Date(timeIntervalSince1970: 100),
+            localState: nil,
+            isSentByCurrentUser: true
+        )
+        let channel = ChatChannel.mockNonDMChannel(
+            name: "Group Chat",
+            latestMessages: [message],
+            previewMessage: message
+        )
+
+        // When
+        let view = ChatChannelListItem(
+            channel: channel,
+            channelName: "Group Chat",
+            onItemTap: { _ in }
+        )
+        .frame(width: defaultScreenSize.width)
+
+        // Then
+        AssertSnapshot(view)
+    }
+
+    func test_channelListItem_dmChannel_noAuthorPrefix() throws {
+        // Given
+        let message = ChatMessage.mock(
+            id: .unique,
+            cid: .unique,
+            text: "Hello!",
+            type: .regular,
+            author: .mock(id: "other-user", name: "John"),
+            createdAt: Date(timeIntervalSince1970: 100),
+            localState: nil,
+            isSentByCurrentUser: false
+        )
+        let channel = ChatChannel.mockDMChannel(
+            memberCount: 2,
+            latestMessages: [message],
+            previewMessage: message
+        )
+
+        // When
+        let view = ChatChannelListItem(
+            channel: channel,
+            channelName: "John",
+            onItemTap: { _ in }
+        )
+        .frame(width: defaultScreenSize.width)
+
+        // Then
+        AssertSnapshot(view)
+    }
+
+    func test_channelListItem_groupChannel_imageAttachmentPreview() throws {
+        // Given
+        let message = try mockImageMessage(text: "Check this out", isSentByCurrentUser: false)
+        let channel = ChatChannel.mockNonDMChannel(
+            name: "Group Chat",
+            latestMessages: [message],
+            previewMessage: message
+        )
+
+        // When
+        let view = ChatChannelListItem(
+            channel: channel,
+            channelName: "Group Chat",
+            onItemTap: { _ in }
+        )
+        .frame(width: defaultScreenSize.width)
+
+        // Then
+        AssertSnapshot(view)
+    }
+
     // MARK: - private
-    
+
+    private func mockVoiceRecordingMessage(text: String, isSentByCurrentUser: Bool) throws -> ChatMessage {
+        try .mock(
+            id: .unique,
+            cid: .unique,
+            text: text,
+            type: .regular,
+            author: .mock(id: "user", name: "User"),
+            createdAt: Date(timeIntervalSince1970: 100),
+            attachments: [
+                .dummy(
+                    type: .voiceRecording,
+                    payload: JSONEncoder().encode(VoiceRecordingAttachmentPayload(
+                        title: "Recording",
+                        voiceRecordingRemoteURL: URL(string: "url")!,
+                        file: .init(type: .aac, size: 123, mimeType: nil),
+                        duration: 12,
+                        waveformData: [0, 0.1, 0.5, 1],
+                        extraData: nil
+                    ))
+                )
+            ],
+            localState: nil,
+            isSentByCurrentUser: isSentByCurrentUser
+        )
+    }
+
     private func mockAudioMessage(text: String, isSentByCurrentUser: Bool) throws -> ChatMessage {
         try .mock(
             id: .unique,
