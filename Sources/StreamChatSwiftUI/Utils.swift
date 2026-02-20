@@ -37,7 +37,7 @@ import StreamChatCommonUI
     public var messageIdBuilder: MessageIdBuilder
     public var sortReactions: (MessageReactionType, MessageReactionType) -> Bool
     public var videoDurationFormatter: VideoDurationFormatter
-    public var videoDurationShortFormatter: VideoDurationShortFormatter
+    public var mediaBadgeDurationFormatter: MediaBadgeDurationFormatter
     public var audioRecordingNameFormatter: AudioRecordingNameFormatter
     public var audioPlayerBuilder: () -> AudioPlaying = { StreamAudioPlayer() }
     public var audioPlayer: AudioPlaying {
@@ -98,7 +98,7 @@ import StreamChatCommonUI
         snapshotCreator: SnapshotCreator = DefaultSnapshotCreator(),
         messageIdBuilder: MessageIdBuilder = DefaultMessageIdBuilder(),
         videoDurationFormatter: VideoDurationFormatter = DefaultVideoDurationFormatter(),
-        videoDurationShortFormatter: VideoDurationShortFormatter = DefaultVideoDurationShortFormatter(),
+        mediaBadgeDurationFormatter: MediaBadgeDurationFormatter = DefaultMediaBadgeDurationFormatter(),
         audioRecordingNameFormatter: AudioRecordingNameFormatter = DefaultAudioRecordingNameFormatter(),
         sortReactions: @escaping (MessageReactionType, MessageReactionType) -> Bool = Utils.defaultSortReactions,
         shouldSyncChannelControllerOnAppear: @escaping (ChatChannelController) -> Bool = { _ in true }
@@ -127,7 +127,7 @@ import StreamChatCommonUI
         self.shouldSyncChannelControllerOnAppear = shouldSyncChannelControllerOnAppear
         self.sortReactions = sortReactions
         self.videoDurationFormatter = videoDurationFormatter
-        self.videoDurationShortFormatter = videoDurationShortFormatter
+        self.mediaBadgeDurationFormatter = mediaBadgeDurationFormatter
         self.audioRecordingNameFormatter = audioRecordingNameFormatter
         self.pollsConfig = pollsConfig
         messageListDateUtils = MessageListDateUtils(messageListConfig: messageListConfig)

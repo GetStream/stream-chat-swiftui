@@ -219,9 +219,9 @@ struct CustomMessageReactionView: View {
 
     private func iconProvider(for reaction: MessageReactionType) -> UIImage? {
         if useLargeIcons {
-            images.availableReactions[reaction]?.largeIcon
+            images.defaultReactions[reaction]?.largeIcon
         } else {
-            images.availableReactions[reaction]?.smallIcon
+            images.defaultReactions[reaction]?.smallIcon
         }
     }
 

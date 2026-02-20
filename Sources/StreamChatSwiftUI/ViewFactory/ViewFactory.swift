@@ -391,35 +391,37 @@ import SwiftUI
     /// - Returns: view displayed in the attachment commands picker slot.
     func makeAttachmentCommandsPickerView(options: AttachmentCommandsPickerViewOptions) -> AttachmentCommandsPickerViewType
 
-    associatedtype AttachmentSourcePickerViewType: View
-    /// Creates the attachment source picker view.
-    /// - Parameter options: the options for creating the attachment source picker view.
-    /// - Returns: view displayed in the attachment source picker slot.
-    func makeAttachmentSourcePickerView(options: AttachmentSourcePickerViewOptions) -> AttachmentSourcePickerViewType
+    associatedtype AttachmentTypePickerViewType: View
+    /// Creates the attachment type picker view.
+    /// - Parameter options: the options for creating the attachment type picker view.
+    /// - Returns: view displayed in the attachment type picker slot.
+    func makeAttachmentTypePickerView(options: AttachmentTypePickerViewOptions) -> AttachmentTypePickerViewType
 
-    associatedtype PhotoAttachmentPickerViewType: View
-    /// Creates the photo attachment picker view.
-    /// - Parameter options: the options for creating the photo attachment picker view.
-    /// - Returns: view displayed in the photo attachment picker slot.
-    func makePhotoAttachmentPickerView(options: PhotoAttachmentPickerViewOptions) -> PhotoAttachmentPickerViewType
+    associatedtype AttachmentMediaPickerViewType: View
+    /// Creates the media attachment picker view.
+    /// - Parameter options: the options for creating the media attachment picker view.
+    /// - Returns: view displayed in the media attachment picker slot.
+    func makeAttachmentMediaPickerView(options: AttachmentMediaPickerViewOptions) -> AttachmentMediaPickerViewType
 
-    associatedtype FilePickerViewType: View
-    /// Creates the file picker view.
+    associatedtype AttachmentFilePickerViewType: View
+    /// Creates the file attachment picker view.
+    /// The view handles the prompt and presents the document picker.
     /// - Parameter options: the options for creating the file picker view.
     /// - Returns: view displayed in the file picker slot.
-    func makeFilePickerView(options: FilePickerViewOptions) -> FilePickerViewType
+    func makeAttachmentFilePickerView(options: AttachmentFilePickerViewOptions) -> AttachmentFilePickerViewType
 
-    associatedtype CameraPickerViewType: View
-    /// Creates the camera picker view.
+    associatedtype AttachmentCameraPickerViewType: View
+    /// Creates the camera attachment picker view.
+    /// The view handles the prompt, access denied state, and presents the camera.
     /// - Parameter options: the options for creating the camera picker view.
     /// - Returns: view displayed in the camera picker slot.
-    func makeCameraPickerView(options: CameraPickerViewOptions) -> CameraPickerViewType
+    func makeAttachmentCameraPickerView(options: AttachmentCameraPickerViewOptions) -> AttachmentCameraPickerViewType
 
-    associatedtype CustomComposerAttachmentViewType: View
-    /// Creates a custom attachment view shown in the message composer.
-    /// - Parameter options: the options for creating the custom attachment view.
-    /// - Returns: view shown in the custom slot in the message composer.
-    func makeCustomAttachmentView(options: CustomComposerAttachmentViewOptions) -> CustomComposerAttachmentViewType
+    associatedtype CustomAttachmentPickerViewType: View
+    /// Creates a custom attachment picker view shown in the message composer.
+    /// - Parameter options: the options for creating the custom attachment picker view.
+    /// - Returns: view shown in the custom attachment picker slot.
+    func makeCustomAttachmentPickerView(options: CustomAttachmentPickerViewOptions) -> CustomAttachmentPickerViewType
 
     associatedtype CustomAttachmentPreviewViewType: View
     /// Creates a custom attachment view shown in the preview in the composer input.
@@ -427,9 +429,12 @@ import SwiftUI
     /// - Returns: view shown in the preview slot for custom composer input.
     func makeCustomAttachmentPreviewView(options: CustomAttachmentPreviewViewOptions) -> CustomAttachmentPreviewViewType
 
-    associatedtype AssetsAccessPermissionViewType: View
-    /// Creates the assets access permission view.
-    func makeAssetsAccessPermissionView(options: AssetsAccessPermissionViewOptions) -> AssetsAccessPermissionViewType
+    associatedtype AttachmentPollPickerViewType: View
+    /// Creates the poll attachment picker view.
+    /// The view handles the prompt and presents the poll creation view.
+    /// - Parameter options: the options for creating the poll picker view.
+    /// - Returns: view displayed in the poll picker slot.
+    func makeAttachmentPollPickerView(options: AttachmentPollPickerViewOptions) -> AttachmentPollPickerViewType
 
     associatedtype SendInChannelViewType: View
     /// Creates the view that allows thread messages to be sent in a channel.

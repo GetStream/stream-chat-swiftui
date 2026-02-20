@@ -649,8 +649,8 @@ extension ViewFactory {
         )
     }
     
-    public func makeCustomAttachmentView(
-        options: CustomComposerAttachmentViewOptions
+    public func makeCustomAttachmentPickerView(
+        options: CustomAttachmentPickerViewOptions
     ) -> some View {
         EmptyView()
     }
@@ -661,50 +661,50 @@ extension ViewFactory {
         EmptyView()
     }
     
-    public func makeAttachmentSourcePickerView(
-        options: AttachmentSourcePickerViewOptions
+    public func makeAttachmentTypePickerView(
+        options: AttachmentTypePickerViewOptions
     ) -> some View {
-        AttachmentSourcePickerView(
+        AttachmentTypePickerView(
             selected: options.selected,
             canSendPoll: options.canSendPoll,
             onTap: options.onPickerStateChange
         )
     }
     
-    public func makePhotoAttachmentPickerView(
-        options: PhotoAttachmentPickerViewOptions
+    public func makeAttachmentMediaPickerView(
+        options: AttachmentMediaPickerViewOptions
     ) -> some View {
-        AttachmentTypeContainer {
-            PhotoAttachmentPickerView(
-                assets: options.assets,
-                onImageTap: options.onAssetTap,
-                imageSelected: options.isAssetSelected,
-                selectedAssetIds: options.selectedAssetIds
-            )
-        }
+        AttachmentMediaPickerView(
+            photoLibraryAssets: options.photoLibraryAssets,
+            onImageTap: options.onAssetTap,
+            imageSelected: options.isAssetSelected,
+            selectedAssetIds: options.selectedAssetIds
+        )
     }
     
-    public func makeFilePickerView(
-        options: FilePickerViewOptions
+    public func makeAttachmentFilePickerView(
+        options: AttachmentFilePickerViewOptions
     ) -> some View {
-        FilePickerDisplayView(
+        AttachmentFilePickerView(
             filePickerShown: options.filePickerShown,
             onFilesPicked: options.onFilesPicked
         )
     }
     
-    public func makeCameraPickerView(
-        options: CameraPickerViewOptions
+    public func makeAttachmentCameraPickerView(
+        options: AttachmentCameraPickerViewOptions
     ) -> some View {
-        CameraPickerDisplayView(
-            selectedPickerState: options.selected,
+        AttachmentCameraPickerView(
             cameraPickerShown: options.cameraPickerShown,
             cameraImageAdded: options.cameraImageAdded
         )
     }
-    
-    public func makeAssetsAccessPermissionView(options: AssetsAccessPermissionViewOptions) -> some View {
-        AssetsAccessPermissionView()
+
+    public func makeAttachmentPollPickerView(options: AttachmentPollPickerViewOptions) -> some View {
+        AttachmentPollPickerView(
+            channelController: options.channelController,
+            messageController: options.messageController
+        )
     }
     
     public func makeSendInChannelView(

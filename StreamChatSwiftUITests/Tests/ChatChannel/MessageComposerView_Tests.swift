@@ -251,6 +251,43 @@ import XCTest
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
 
+    // MARK: - Attachment Picker Prompt Views
+
+    func test_photoLibraryAccessPromptView_snapshot() {
+        let view = PhotoLibraryAccessPromptView()
+            .frame(width: composerWidth, height: 300)
+
+        AssertSnapshot(view)
+    }
+
+    func test_fileOpenPromptView_snapshot() {
+        let view = FileOpenPromptView(onTap: {})
+            .frame(width: composerWidth, height: 300)
+
+        AssertSnapshot(view)
+    }
+
+    func test_cameraOpenPromptView_snapshot() {
+        let view = CameraOpenPromptView(onTap: {})
+            .frame(width: composerWidth, height: 300)
+
+        AssertSnapshot(view)
+    }
+
+    func test_cameraAccessDeniedPromptView_snapshot() {
+        let view = CameraAccessDeniedPromptView()
+            .frame(width: composerWidth, height: 300)
+
+        AssertSnapshot(view)
+    }
+
+    func test_pollCreatePromptView_snapshot() {
+        let view = PollCreatePromptView(onTap: {})
+            .frame(width: composerWidth, height: 300)
+
+        AssertSnapshot(view)
+    }
+
     // MARK: - Frozen Channel Tests
 
     func test_messageComposerView_frozenChannel() {
@@ -450,50 +487,75 @@ import XCTest
         )
         let coordinator = ComposerTextInputView.Coordinator(textInput: view, maxMessageLength: nil)
         let viewWithSize = view.applyDefaultSize()
-
+        
         // When
         inputView.scrollToBottom()
         coordinator.updateHeight(inputView, shouldAnimate: true)
         coordinator.updateHeight(inputView, shouldAnimate: false)
-
+        
         // Then
         assertSnapshot(matching: viewWithSize, as: .image(perceptualPrecision: precision))
         XCTAssert(coordinator.textInput.height == 100)
     }
 
-    func test_photoAttachmentCell_loadingResource() {
+    func test_attachmentPickerView_mediaSelected_snapshot() {
         // Given
-        let asset = PHAsset()
-        let loader = PhotoAssetLoader()
-        let cell = PhotoAttachmentCell(
-            assetLoader: loader,
-            asset: asset,
-            onImageTap: { _ in },
-            imageSelected: { _ in
-                false
+        let itemColors: [UIColor] = [
+            .systemBlue, .systemGreen, .systemOrange,
+            .systemPurple, .systemRed, .systemTeal,
+            .systemPink, .systemYellow, .systemIndigo
+        ]
+        let mockAssets: [PHAsset] = (0..<9).map { index in
+            if index == 3 || index == 7 {
+                return MockPHAsset(
+                    mockId: "asset-\(index)",
+                    mockMediaType: .video,
+                    mockDuration: index == 3 ? 15.5 : 125
+                )
             }
+            return MockPHAsset(mockId: "asset-\(index)")
+        }
+
+        let fetchResult = MockPHFetchResult(mockAssets: mockAssets)
+
+        let loader = PhotoAssetLoader()
+        let imageSize = CGSize(width: 200, height: 200)
+        for (index, asset) in mockAssets.enumerated() {
+            loader.loadedImages[asset.localIdentifier] = UIImage.make(
+                color: itemColors[index],
+                size: imageSize
+            )
+        }
+
+        let factory = MockMediaPickerViewFactory(assetLoader: loader)
+        let channelController = ChatChannelTestHelpers.makeChannelController(chatClient: chatClient)
+
+        let view = AttachmentPickerView(
+            viewFactory: factory,
+            selectedPickerState: .constant(.photos),
+            filePickerShown: .constant(false),
+            cameraPickerShown: .constant(false),
+            onFilesPicked: { _ in },
+            onPickerStateChange: { _ in },
+            photoLibraryAssets: fetchResult,
+            onAssetTap: { _ in },
+            onCustomAttachmentTap: { _ in },
+            isAssetSelected: { _ in false },
+            addedCustomAttachments: [],
+            cameraImageAdded: { _ in },
+            askForAssetsAccessPermissions: {},
+            isDisplayed: true,
+            height: defaultScreenSize.height,
+            selectedAssetIds: ["asset-0", "asset-5"],
+            channelController: channelController,
+            messageController: nil,
+            canSendPoll: true,
+            instantCommands: [],
+            onCommandSelected: { _ in }
         )
 
-        // When
-        _ = cell.onAppear()
-        _ = cell.onDisappear()
-        let newRequestId = cell.requestId
-
         // Then
-        XCTAssert(newRequestId == nil)
-    }
-    
-    func test_photosPickerView_snapshot() {
-        // Given
-        let view = PhotoAttachmentPickerView(
-            assets: .init(fetchResult: .init()),
-            onImageTap: { _ in },
-            imageSelected: { _ in true }
-        )
-        .applyDefaultSize()
-
-        // Then
-        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
+        AssertSnapshot(view, variants: [.defaultLight, .defaultDark])
     }
 
     func test_composerInputView_command() {
@@ -1068,5 +1130,89 @@ class SynchronousAttachmentsConverter: MessageAttachmentsConverter {
         completion: @escaping @Sendable @MainActor (TotalAddedAssets) -> Void
     ) {
         super.attachmentsToAssets(attachments, with: nil, completion: completion)
+    }
+}
+
+// MARK: - Mock View Factory
+
+private class MockMediaPickerViewFactory: ViewFactory {
+    @Injected(\.chatClient) var chatClient: ChatClient
+
+    var styles = RegularStyles()
+
+    private let assetLoader: PhotoAssetLoader
+
+    init(assetLoader: PhotoAssetLoader) {
+        self.assetLoader = assetLoader
+    }
+
+    func makeAttachmentMediaPickerView(
+        options: AttachmentMediaPickerViewOptions
+    ) -> some View {
+        AttachmentMediaPickerView(
+            assetLoader: assetLoader,
+            photoLibraryAssets: options.photoLibraryAssets,
+            onImageTap: options.onAssetTap,
+            imageSelected: options.isAssetSelected,
+            selectedAssetIds: options.selectedAssetIds
+        )
+    }
+}
+
+// MARK: - Photos Framework Mocks
+
+private class MockPHAsset: PHAsset, @unchecked Sendable {
+    private let _mockId: String
+    private let _mockMediaType: PHAssetMediaType
+    private let _mockDuration: TimeInterval
+
+    init(
+        mockId: String,
+        mockMediaType: PHAssetMediaType = .image,
+        mockDuration: TimeInterval = 0
+    ) {
+        self._mockId = mockId
+        self._mockMediaType = mockMediaType
+        self._mockDuration = mockDuration
+        super.init()
+    }
+
+    override var localIdentifier: String { _mockId }
+    override var mediaType: PHAssetMediaType { _mockMediaType }
+    override var duration: TimeInterval { _mockDuration }
+
+    override func requestContentEditingInput(
+        with options: PHContentEditingInputRequestOptions?,
+        completionHandler: @escaping (PHContentEditingInput?, [AnyHashable: Any]) -> Void
+    ) -> PHContentEditingInputRequestID {
+        completionHandler(nil, [:])
+        return 0
+    }
+
+    override func cancelContentEditingInputRequest(_ requestID: PHContentEditingInputRequestID) {}
+}
+
+private class MockPHFetchResult: PHFetchResult<PHAsset>, @unchecked Sendable {
+    private let _mockAssets: [PHAsset]
+
+    init(mockAssets: [PHAsset]) {
+        self._mockAssets = mockAssets
+        super.init()
+    }
+
+    override var count: Int { _mockAssets.count }
+
+    override func object(at index: Int) -> PHAsset {
+        _mockAssets[index]
+    }
+}
+
+private extension UIImage {
+    static func make(color: UIColor, size: CGSize) -> UIImage {
+        let renderer = UIGraphicsImageRenderer(size: size)
+        return renderer.image { context in
+            color.setFill()
+            context.fill(CGRect(origin: .zero, size: size))
+        }
     }
 }
