@@ -498,61 +498,26 @@ import XCTest
         XCTAssert(coordinator.textInput.height == 100)
     }
 
-    func test_attachmentPickerView_mediaSelected_snapshot() {
+    func test_messageComposerView_withAttachmentPicker() {
         // Given
-        let itemColors: [UIColor] = [
-            .systemBlue, .systemGreen, .systemOrange,
-            .systemPurple, .systemRed, .systemTeal,
-            .systemPink, .systemYellow, .systemIndigo
-        ]
-        let mockAssets: [PHAsset] = (0..<9).map { index in
-            if index == 3 || index == 7 {
-                return MockPHAsset(
-                    mockId: "asset-\(index)",
-                    mockMediaType: .video,
-                    mockDuration: index == 3 ? 15.5 : 125
-                )
-            }
-            return MockPHAsset(mockId: "asset-\(index)")
-        }
-
-        let fetchResult = MockPHFetchResult(mockAssets: mockAssets)
-
-        let loader = PhotoAssetLoader()
-        let imageSize = CGSize(width: 200, height: 200)
-        for (index, asset) in mockAssets.enumerated() {
-            loader.loadedImages[asset.localIdentifier] = UIImage.make(
-                color: itemColors[index],
-                size: imageSize
-            )
-        }
-
+        let (fetchResult, loader) = makeMockPhotoAssets()
         let factory = MockMediaPickerViewFactory(assetLoader: loader)
+        factory.mockPhotoAssets = fetchResult
         let channelController = ChatChannelTestHelpers.makeChannelController(chatClient: chatClient)
+        let viewModel = MessageComposerViewModel(channelController: channelController, messageController: nil)
+        viewModel.pickerTypeState = .expanded(.media)
 
-        let view = AttachmentPickerView(
+        // When
+        let view = MessageComposerView(
             viewFactory: factory,
-            selectedPickerState: .constant(.photos),
-            filePickerShown: .constant(false),
-            cameraPickerShown: .constant(false),
-            onFilesPicked: { _ in },
-            onPickerStateChange: { _ in },
-            photoLibraryAssets: fetchResult,
-            onAssetTap: { _ in },
-            onCustomAttachmentTap: { _ in },
-            isAssetSelected: { _ in false },
-            addedCustomAttachments: [],
-            cameraImageAdded: { _ in },
-            askForAssetsAccessPermissions: {},
-            isDisplayed: true,
-            height: defaultScreenSize.height,
-            selectedAssetIds: ["asset-0", "asset-5"],
+            viewModel: viewModel,
             channelController: channelController,
             messageController: nil,
-            canSendPoll: true,
-            instantCommands: [],
-            onCommandSelected: { _ in }
+            quotedMessage: .constant(nil),
+            editedMessage: .constant(nil),
+            onMessageSent: {}
         )
+        .frame(width: composerWidth)
 
         // Then
         AssertSnapshot(view, variants: [.defaultLight, .defaultDark])
@@ -1122,6 +1087,116 @@ import XCTest
         // Then
         XCTAssertEqual(viewModel.pickerTypeState, .expanded(.media))
     }
+
+    // MARK: - Liquid Glass Style
+
+    func test_messageComposerView_liquidGlass_snapshot() {
+        // Given
+        let size = CGSize(width: composerWidth, height: 200)
+        let factory = LiquidGlassViewFactory()
+        let channelController = ChatChannelTestHelpers.makeChannelController(chatClient: chatClient)
+
+        // When
+        let view = MessageComposerView(
+            viewFactory: factory,
+            channelController: channelController,
+            messageController: nil,
+            quotedMessage: .constant(nil),
+            editedMessage: .constant(nil),
+            onMessageSent: {}
+        )
+        .frame(width: size.width, height: size.height)
+
+        // Then
+        AssertSnapshot(view, variants: [.defaultLight, .defaultDark], size: size)
+    }
+
+    func test_messageComposerView_liquidGlass_withImageAttachment() {
+        // Given
+        let size = CGSize(width: composerWidth, height: 200)
+        let factory = LiquidGlassViewFactory()
+        let channelController = ChatChannelTestHelpers.makeChannelController(chatClient: chatClient)
+        let viewModel = MessageComposerViewModel(channelController: channelController, messageController: nil)
+        let addedAsset = AddedAsset(
+            image: TestImages.yoda.image,
+            id: .unique,
+            url: TestImages.yoda.url,
+            type: .image
+        )
+        viewModel.updateAddedAssets([addedAsset])
+
+        // When
+        let view = MessageComposerView(
+            viewFactory: factory,
+            viewModel: viewModel,
+            channelController: channelController,
+            quotedMessage: .constant(nil),
+            editedMessage: .constant(nil),
+            onMessageSent: {}
+        )
+        .frame(width: size.width, height: size.height)
+
+        // Then
+        AssertSnapshot(view, variants: [.defaultLight, .defaultDark], size: size)
+    }
+
+    func test_messageComposerView_liquidGlass_withAttachmentPicker() {
+        // Given
+        let (fetchResult, loader) = makeMockPhotoAssets()
+        let factory = MockLiquidGlassMediaPickerViewFactory(assetLoader: loader)
+        factory.mockPhotoAssets = fetchResult
+        let channelController = ChatChannelTestHelpers.makeChannelController(chatClient: chatClient)
+        let viewModel = MessageComposerViewModel(channelController: channelController, messageController: nil)
+        viewModel.pickerTypeState = .expanded(.media)
+
+        // When
+        let view = MessageComposerView(
+            viewFactory: factory,
+            viewModel: viewModel,
+            channelController: channelController,
+            messageController: nil,
+            quotedMessage: .constant(nil),
+            editedMessage: .constant(nil),
+            onMessageSent: {}
+        )
+        .frame(width: composerWidth)
+
+        // Then
+        AssertSnapshot(view, variants: [.defaultLight, .defaultDark])
+    }
+}
+
+// MARK: - Helpers
+
+private extension MessageComposerView_Tests {
+    func makeMockPhotoAssets() -> (fetchResult: MockPHFetchResult, loader: PhotoAssetLoader) {
+        let itemColors: [UIColor] = [
+            .systemBlue, .systemGreen, .systemOrange,
+            .systemPurple, .systemRed, .systemTeal,
+            .systemPink, .systemYellow, .systemIndigo
+        ]
+        let mockAssets: [PHAsset] = (0..<9).map { index in
+            if index == 3 || index == 7 {
+                return MockPHAsset(
+                    mockId: "asset-\(index)",
+                    mockMediaType: .video,
+                    mockDuration: index == 3 ? 15.5 : 125
+                )
+            }
+            return MockPHAsset(mockId: "asset-\(index)")
+        }
+
+        let fetchResult = MockPHFetchResult(mockAssets: mockAssets)
+        let loader = PhotoAssetLoader()
+        let imageSize = CGSize(width: 200, height: 200)
+        for (index, asset) in mockAssets.enumerated() {
+            loader.loadedImages[asset.localIdentifier] = UIImage.make(
+                color: itemColors[index],
+                size: imageSize
+            )
+        }
+        return (fetchResult, loader)
+    }
 }
 
 class SynchronousAttachmentsConverter: MessageAttachmentsConverter {
@@ -1139,6 +1214,7 @@ private class MockMediaPickerViewFactory: ViewFactory {
     @Injected(\.chatClient) var chatClient: ChatClient
 
     var styles = RegularStyles()
+    var mockPhotoAssets: PHFetchResult<PHAsset>?
 
     private let assetLoader: PhotoAssetLoader
 
@@ -1155,6 +1231,87 @@ private class MockMediaPickerViewFactory: ViewFactory {
             onImageTap: options.onAssetTap,
             imageSelected: options.isAssetSelected,
             selectedAssetIds: options.selectedAssetIds
+        )
+    }
+
+    func makeAttachmentPickerView(
+        options: AttachmentPickerViewOptions
+    ) -> some View {
+        AttachmentPickerView(
+            viewFactory: self,
+            selectedPickerState: options.attachmentPickerState,
+            filePickerShown: options.filePickerShown,
+            cameraPickerShown: options.cameraPickerShown,
+            onFilesPicked: options.onFilesPicked,
+            onPickerStateChange: options.onPickerStateChange,
+            photoLibraryAssets: mockPhotoAssets ?? options.photoLibraryAssets,
+            onAssetTap: options.onAssetTap,
+            onCustomAttachmentTap: options.onCustomAttachmentTap,
+            isAssetSelected: options.isAssetSelected,
+            addedCustomAttachments: options.addedCustomAttachments,
+            cameraImageAdded: options.cameraImageAdded,
+            askForAssetsAccessPermissions: options.askForAssetsAccessPermissions,
+            isDisplayed: options.isDisplayed,
+            height: 500,
+            selectedAssetIds: options.selectedAssetIds,
+            channelController: options.channelController,
+            messageController: options.messageController,
+            canSendPoll: options.canSendPoll,
+            instantCommands: options.instantCommands,
+            onCommandSelected: options.onCommandSelected
+        )
+    }
+}
+
+private class MockLiquidGlassMediaPickerViewFactory: ViewFactory {
+    @Injected(\.chatClient) var chatClient: ChatClient
+
+    var styles = LiquidGlassStyles()
+    var mockPhotoAssets: PHFetchResult<PHAsset>?
+
+    private let assetLoader: PhotoAssetLoader
+
+    init(assetLoader: PhotoAssetLoader) {
+        self.assetLoader = assetLoader
+    }
+
+    func makeAttachmentMediaPickerView(
+        options: AttachmentMediaPickerViewOptions
+    ) -> some View {
+        AttachmentMediaPickerView(
+            assetLoader: assetLoader,
+            photoLibraryAssets: options.photoLibraryAssets,
+            onImageTap: options.onAssetTap,
+            imageSelected: options.isAssetSelected,
+            selectedAssetIds: options.selectedAssetIds
+        )
+    }
+
+    func makeAttachmentPickerView(
+        options: AttachmentPickerViewOptions
+    ) -> some View {
+        AttachmentPickerView(
+            viewFactory: self,
+            selectedPickerState: options.attachmentPickerState,
+            filePickerShown: options.filePickerShown,
+            cameraPickerShown: options.cameraPickerShown,
+            onFilesPicked: options.onFilesPicked,
+            onPickerStateChange: options.onPickerStateChange,
+            photoLibraryAssets: mockPhotoAssets ?? options.photoLibraryAssets,
+            onAssetTap: options.onAssetTap,
+            onCustomAttachmentTap: options.onCustomAttachmentTap,
+            isAssetSelected: options.isAssetSelected,
+            addedCustomAttachments: options.addedCustomAttachments,
+            cameraImageAdded: options.cameraImageAdded,
+            askForAssetsAccessPermissions: options.askForAssetsAccessPermissions,
+            isDisplayed: options.isDisplayed,
+            height: 500,
+            selectedAssetIds: options.selectedAssetIds,
+            channelController: options.channelController,
+            messageController: options.messageController,
+            canSendPoll: options.canSendPoll,
+            instantCommands: options.instantCommands,
+            onCommandSelected: options.onCommandSelected
         )
     }
 }
