@@ -39,7 +39,7 @@ final class DraftMessages_Tests: StreamTestCase {
             userRobot.tapOnBackButton()
         }
         THEN("there is no draft message in preview") {
-            userRobot.assertLastMessageInChannelPreview("You: \(firstMessage)")
+            userRobot.assertLastMessageInChannelPreview("You:\(firstMessage)")
         }
         WHEN("user comes back to the channel") {
             userRobot.openChannel()
