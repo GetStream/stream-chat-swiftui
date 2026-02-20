@@ -107,7 +107,8 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
                     Alert.defaultErrorAlert
                 }
             }
-            .padding(.vertical, tokens.spacingMd)
+            .padding(.top, tokens.spacingMd)
+            .padding(.bottom, dynamicBottomPadding)
             .padding(.horizontal, tokens.spacingMd)
             .opacity(viewModel.recordingState.showsComposer ? 1 : 0)
             .overlay(
@@ -276,7 +277,18 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
         .preference(key: FloatingComposerHeightPreferenceKey.self, value: composerHeight)
         .accessibilityElement(children: .contain)
     }
-    
+
+    // In regular styles, when the attachment picker is shown,
+    // we don't want spacing in the composer bottom since the picker already
+    // as the desired top spacing.
+    private var dynamicBottomPadding: CGFloat {
+        if factory.styles.composerPlacement == .docked && viewModel.overlayShown {
+            return 0
+        }
+
+        return tokens.spacingMd
+    }
+
     public func sendMessage() {
         // Calling onMessageSent() before erasing the edited and quoted message
         // so that onMessageSent can use them for state handling.

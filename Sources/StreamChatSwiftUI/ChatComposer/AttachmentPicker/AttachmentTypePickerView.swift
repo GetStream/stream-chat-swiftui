@@ -75,7 +75,7 @@ public struct AttachmentTypePickerView: View {
             Spacer()
         }
         .padding(.horizontal, tokens.spacingMd)
-        .padding(.bottom, tokens.spacingSm)
+        .padding(.vertical, tokens.spacingSm)
         .background(Color(colors.backgroundElevationElevation1))
         .accessibilityElement(children: .contain)
         .accessibilityIdentifier("AttachmentTypePickerView")
