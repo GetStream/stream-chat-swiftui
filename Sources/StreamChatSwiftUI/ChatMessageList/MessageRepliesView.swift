@@ -156,7 +156,8 @@ struct LazyMessageRepliesView<Factory: ViewFactory>: View {
         parentMessageController: ChatMessageController,
         usesInvertedStyle: Bool = false
     ) {
-        _parentMessageObserver = StateObject(wrappedValue: parentMessageController.observableObject)
+        let observer = ChatMessageController.ObservableObject(controller: parentMessageController)
+        _parentMessageObserver = StateObject(wrappedValue: observer)
         self.factory = factory
         self.channel = channel
         self.message = message
