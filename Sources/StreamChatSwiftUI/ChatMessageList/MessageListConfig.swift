@@ -188,7 +188,7 @@ public final class MessageDisplayOptions {
     public let reactionsStyle: ReactionsStyle
     public let showOriginalTranslatedButton: Bool
     public let messageLinkDisplayResolver: @MainActor (ChatMessage) -> [NSAttributedString.Key: Any]
-    public let spacerWidth: (CGFloat) -> CGFloat
+    public let spacerWidth: @MainActor (CGFloat) -> CGFloat
     public let reactionsTopPadding: (ChatMessage) -> CGFloat
     public let dateSeparator: (ChatMessage, ChatMessage) -> Date?
 
@@ -210,7 +210,7 @@ public final class MessageDisplayOptions {
         showOriginalTranslatedButton: Bool = false,
         messageLinkDisplayResolver: @escaping @MainActor (ChatMessage) -> [NSAttributedString.Key: Any] = MessageDisplayOptions
             .defaultLinkDisplay,
-        spacerWidth: @escaping (CGFloat) -> CGFloat = MessageDisplayOptions.defaultSpacerWidth,
+        spacerWidth: @escaping @MainActor (CGFloat) -> CGFloat = MessageDisplayOptions.defaultSpacerWidth,
         reactionsTopPadding: @escaping (ChatMessage) -> CGFloat = MessageDisplayOptions.defaultReactionsTopPadding,
         dateSeparator: @escaping (ChatMessage, ChatMessage) -> Date? = MessageDisplayOptions.defaultDateSeparator
     ) {
@@ -260,12 +260,28 @@ public final class MessageDisplayOptions {
         }
     }
 
-    public static var defaultSpacerWidth: (CGFloat) -> (CGFloat) {
+    /// The spacer is the empty region on the side opposite the avatar.
+    /// It mirrors the avatar side layout plus an extra offset so incoming
+    /// and outgoing bubbles don't start at the same horizontal position.
+    ///
+    /// Incoming message (bubble left-aligned):
+    /// |<-pad->|<-avatar->|<-gap->|<--bubble-->|<------spacer------>|
+    /// |  16   |    32    |   8   |  up to 264 | 16+32+8+26 = 82   |
+    ///
+    /// Outgoing message (bubble right-aligned):
+    /// |<------spacer------>|<--bubble-->|<-gap->|<-avatar->|<-pad->|
+    /// | 16+32+8+26 = 82   | up to 264  |   8   |    32    |  16   |
+    public static var defaultSpacerWidth: @MainActor (CGFloat) -> (CGFloat) {
         { availableWidth in
             if isIPad && availableWidth > 500 {
-                2 * availableWidth / 3
+                return 2 * availableWidth / 3
             } else {
-                82
+                @Injected(\.utils) var utils
+                @Injected(\.tokens) var tokens
+                let padding = utils.messageListConfig.messagePaddings.horizontal
+                let avatarWithSpacing = AvatarSize.medium + tokens.spacingXs
+                let additionalOffset: CGFloat = 26
+                return padding + avatarWithSpacing + additionalOffset
             }
         }
     }
