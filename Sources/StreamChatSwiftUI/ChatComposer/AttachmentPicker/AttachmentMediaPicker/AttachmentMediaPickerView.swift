@@ -56,6 +56,7 @@ public struct AttachmentMediaPickerView: View {
                 LoadingView()
             }
         }
+        background(Color(colors.backgroundElevationElevation1))
     }
 
     // MARK: - Private
@@ -75,7 +76,6 @@ public struct AttachmentMediaPickerView: View {
             }
             .animation(nil)
         }
-        .edgesIgnoringSafeArea(.bottom)
     }
 
     private var accessDeniedContent: some View {

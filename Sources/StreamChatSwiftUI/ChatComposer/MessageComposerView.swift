@@ -61,7 +61,6 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
                         channelConfig: channelConfig
                     )
                 )
-                .environmentObject(viewModel)
 
                 factory.makeComposerInputView(
                     options: ComposerInputViewOptions(
