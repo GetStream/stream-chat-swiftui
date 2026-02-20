@@ -141,11 +141,9 @@ public struct MessageRepliesView<Factory: ViewFactory>: View {
 /// This is needed when the parent message is not available in the local cache.
 /// Changing the `parentMessage` to `nil` in the `MessageRepliesView` would case multiple changes including breaking changes.
 struct LazyMessageRepliesView<Factory: ViewFactory>: View {
-    @StateObject private var parentMessageObserver: ChatMessageController.ObservableObject
+    @StateObject private var viewModel: ViewModel
 
     var factory: Factory
-    var channel: ChatChannel
-    var message: ChatMessage
     /// When true, the `textOnAccent` color is used instead of the default darker text color.
     var usesInvertedStyle: Bool
 
@@ -153,24 +151,25 @@ struct LazyMessageRepliesView<Factory: ViewFactory>: View {
         factory: Factory,
         channel: ChatChannel,
         message: ChatMessage,
-        parentMessageController: ChatMessageController,
+        parentMessageId: MessageId,
         usesInvertedStyle: Bool = false
     ) {
-        let observer = ChatMessageController.ObservableObject(controller: parentMessageController)
-        _parentMessageObserver = StateObject(wrappedValue: observer)
         self.factory = factory
-        self.channel = channel
-        self.message = message
         self.usesInvertedStyle = usesInvertedStyle
+        _viewModel = StateObject(wrappedValue: ViewModel(
+            channel: channel,
+            message: message,
+            parentMessageId: parentMessageId
+        ))
     }
 
     var body: some View {
         VStack {
-            if let parentMessage = parentMessageObserver.message {
+            if let parentMessage = viewModel.parentMessage {
                 factory.makeMessageRepliesShownInChannelView(
                     options: .init(
-                        channel: channel,
-                        message: message,
+                        channel: viewModel.channel,
+                        message: viewModel.message,
                         parentMessage: parentMessage,
                         replyCount: parentMessage.replyCount,
                         usesInvertedStyle: usesInvertedStyle
@@ -179,9 +178,45 @@ struct LazyMessageRepliesView<Factory: ViewFactory>: View {
             } else {
                 EmptyView()
             }
-        }.onAppear {
-            if parentMessageObserver.message == nil {
-                parentMessageObserver.controller.synchronize()
+        }
+        .onAppear {
+            viewModel.loadParentMessage()
+        }
+    }
+    
+    @MainActor
+    final class ViewModel: ObservableObject {
+        @Injected(\.chatClient) private var chatClient
+        @Published private(set) var parentMessage: ChatMessage?
+        
+        let channel: ChatChannel
+        let message: ChatMessage
+        let parentMessageId: MessageId
+        private var parentMessageObserver: ChatMessageController.ObservableObject?
+        
+        init(channel: ChatChannel, message: ChatMessage, parentMessageId: MessageId) {
+            self.channel = channel
+            self.message = message
+            self.parentMessageId = parentMessageId
+        }
+        
+        func loadParentMessage() {
+            guard parentMessageObserver == nil else {
+                if parentMessage == nil {
+                    parentMessageObserver?.controller.synchronize()
+                }
+                return
+            }
+            
+            let controller = chatClient.messageController(cid: channel.cid, messageId: parentMessageId)
+            let observer = ChatMessageController.ObservableObject(controller: controller)
+            parentMessageObserver = observer
+            
+            // Bind the observer's message to our published property
+            observer.$message.assign(to: &$parentMessage)
+            
+            if parentMessage == nil {
+                controller.synchronize()
             }
         }
     }

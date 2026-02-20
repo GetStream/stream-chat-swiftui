@@ -156,7 +156,12 @@ public struct MessageItemView<Factory: ViewFactory>: View {
                     .accessibilityIdentifier("MessageView")
 
                 if !isInThread {
-                    threadRepliesView
+                    ThreadRepliesContainerView(
+                        factory: factory,
+                        channel: channel,
+                        message: message,
+                        shownAsPreview: shownAsPreview
+                    )
                 }
 
                 if bottomReactionsShown {
@@ -261,52 +266,6 @@ public struct MessageItemView<Factory: ViewFactory>: View {
             )
         )
         .opacity(isLast || showsAllInfo ? 1 : 0)
-    }
-
-    @ViewBuilder
-    private var threadRepliesView: some View {
-        if message.replyCount > 0 {
-            factory.makeMessageRepliesView(
-                options: MessageRepliesViewOptions(
-                    channel: channel,
-                    message: message,
-                    replyCount: message.replyCount,
-                    usesInvertedStyle: shownAsPreview
-                )
-            )
-            .accessibilityElement(children: .contain)
-            .accessibility(identifier: "MessageRepliesView")
-        } else if message.showReplyInChannel, let parentId = message.parentMessageId {
-            Group {
-                if let controller = utils.channelControllerFactory.currentChannelController,
-                   let parentMessage = controller.dataStore.message(id: parentId) {
-                    factory.makeMessageRepliesShownInChannelView(
-                        options: MessageRepliesShownInChannelViewOptions(
-                            channel: channel,
-                            message: message,
-                            parentMessage: parentMessage,
-                            replyCount: parentMessage.replyCount,
-                            usesInvertedStyle: shownAsPreview
-                        )
-                    )
-                    .accessibilityElement(children: .contain)
-                    .accessibility(identifier: "MessageRepliesView")
-                } else {
-                    LazyMessageRepliesView(
-                        factory: factory,
-                        channel: channel,
-                        message: message,
-                        parentMessageController: chatClient.messageController(
-                            cid: channel.cid,
-                            messageId: parentId
-                        ),
-                        usesInvertedStyle: shownAsPreview
-                    )
-                    .accessibilityElement(children: .contain)
-                    .accessibility(identifier: "MessageRepliesView")
-                }
-            }
-        }
     }
 
     @ViewBuilder
@@ -540,6 +499,60 @@ struct SendFailureIndicator: View {
         .accessibilityIdentifier("SendFailureIndicator")
     }
 }
+
+// MARK: - Thread Replies Container
+
+private struct ThreadRepliesContainerView<Factory: ViewFactory>: View {
+    @Injected(\.chatClient) private var chatClient
+    @Injected(\.utils) private var utils
+    
+    let factory: Factory
+    let channel: ChatChannel
+    let message: ChatMessage
+    let shownAsPreview: Bool
+    
+    var body: some View {
+        if message.replyCount > 0 {
+            factory.makeMessageRepliesView(
+                options: MessageRepliesViewOptions(
+                    channel: channel,
+                    message: message,
+                    replyCount: message.replyCount,
+                    usesInvertedStyle: shownAsPreview
+                )
+            )
+            .accessibilityElement(children: .contain)
+            .accessibility(identifier: "MessageRepliesView")
+        } else if message.showReplyInChannel, let parentId = message.parentMessageId {
+            if let controller = utils.channelControllerFactory.currentChannelController,
+               let parentMessage = controller.dataStore.message(id: parentId) {
+                factory.makeMessageRepliesShownInChannelView(
+                    options: MessageRepliesShownInChannelViewOptions(
+                        channel: channel,
+                        message: message,
+                        parentMessage: parentMessage,
+                        replyCount: parentMessage.replyCount,
+                        usesInvertedStyle: shownAsPreview
+                    )
+                )
+                .accessibilityElement(children: .contain)
+                .accessibility(identifier: "MessageRepliesView")
+            } else {
+                LazyMessageRepliesView(
+                    factory: factory,
+                    channel: channel,
+                    message: message,
+                    parentMessageId: parentId,
+                    usesInvertedStyle: shownAsPreview
+                )
+                .accessibilityElement(children: .contain)
+                .accessibility(identifier: "MessageRepliesView")
+            }
+        }
+    }
+}
+
+// MARK: - Message Display Info
 
 public final class MessageDisplayInfo: Sendable {
     public let message: ChatMessage
