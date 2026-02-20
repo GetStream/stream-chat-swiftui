@@ -296,8 +296,8 @@ public struct TrailingSwipeActionsView: View {
                         }
                     })
                     .frame(width: buttonWidth)
-                    .foregroundColor(Color(colors.text))
-                    .background(Color(colors.background1))
+                    .foregroundColor(Color(colors.textPrimary))
+                    .background(Color(colors.backgroundCoreSurfaceSubtle))
 
                     if channel.ownCapabilities.contains(.deleteChannel) {
                         ActionItemButton(imageName: "trash", action: {
@@ -306,8 +306,8 @@ public struct TrailingSwipeActionsView: View {
                             }
                         })
                         .frame(width: buttonWidth)
-                        .foregroundColor(Color(colors.textInverted))
-                        .background(Color(colors.alert))
+                        .foregroundColor(Color(colors.textOnAccent))
+                        .background(Color(colors.accentError))
                     }
                 }
             }
