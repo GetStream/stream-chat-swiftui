@@ -29,23 +29,20 @@ import XCTest
 
     func test_attachmentCommandsPickerView_snapshot() {
         // Given
-        let view = AttachmentCommandsPickerView(onCommandSelected: { _ in })
-            .frame(width: defaultScreenSize.width, height: 220)
+        let channelController = ChatChannelTestHelpers.makeChannelController(chatClient: chatClient)
+        let commands: [CommandHandler] = [
+            GiphyCommandHandler(commandSymbol: "/giphy"),
+            MuteCommandHandler(channelController: channelController, commandSymbol: "/mute"),
+            UnmuteCommandHandler(channelController: channelController, commandSymbol: "/unmute")
+        ]
 
-        // Then
-        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
-    }
-
-    func test_attachmentSourcePickerView_commands_snapshot() {
-        // Given
-        let view = AttachmentSourcePickerView(
-            selected: .commands,
-            canSendPoll: true,
-            onTap: { _ in }
+        let view = AttachmentCommandsPickerView(
+            instantCommands: commands,
+            onCommandSelected: { _ in }
         )
-        .frame(width: defaultScreenSize.width, height: 56)
+        .frame(width: defaultScreenSize.width, height: 220)
 
         // Then
-        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
+        AssertSnapshot(view)
     }
 }

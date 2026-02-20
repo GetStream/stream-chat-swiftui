@@ -93,24 +93,6 @@ import SwiftUI
     }
 }
 
-public extension PHAsset {
-    /// Return a formatted duration string of an asset.
-    var durationString: String {
-        let minutes = Int(duration / 60)
-        let seconds = Int(duration.truncatingRemainder(dividingBy: 60))
-        var minutesString = "\(minutes)"
-        var secondsString = "\(seconds)"
-        if minutes < 10 {
-            minutesString = "0" + minutesString
-        }
-        if seconds < 10 {
-            secondsString = "0" + secondsString
-        }
-
-        return "\(minutesString):\(secondsString)"
-    }
-}
-
 extension PHAsset: @retroactive Identifiable {
     public var id: String {
         localIdentifier

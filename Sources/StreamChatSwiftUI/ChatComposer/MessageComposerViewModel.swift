@@ -23,19 +23,7 @@ import SwiftUI
         }
     }
 
-    @Published public var pickerState: AttachmentPickerState = .photos {
-        didSet {
-            if pickerState == .camera {
-                withAnimation {
-                    cameraPickerShown = true
-                }
-            } else if pickerState == .files {
-                withAnimation {
-                    filePickerShown = true
-                }
-            }
-        }
-    }
+    @Published public var pickerState: AttachmentPickerState = .photos
     
     @Published public private(set) var imageAssets: PHFetchResult<PHAsset>?
 
@@ -987,7 +975,7 @@ final class FileAddedAsset {
         with group: DispatchGroup?,
         completion: @escaping @MainActor (TotalAddedAssets) -> Void
     ) {
-        nonisolated(unsafe) var addedAssets = TotalAddedAssets()
+        nonisolated(unsafe) let addedAssets = TotalAddedAssets()
 
         for attachment in attachments {
             group?.enter()

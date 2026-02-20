@@ -255,28 +255,6 @@ import XCTest
         XCTAssert(viewModel.addedCustomAttachments.isEmpty)
     }
     
-    func test_messageComposerVM_cameraPickerShown() {
-        // Given
-        let viewModel = makeComposerViewModel()
-        
-        // When
-        viewModel.pickerState = .camera
-        
-        // Then
-        XCTAssert(viewModel.cameraPickerShown == true)
-    }
-    
-    func test_messageComposerVM_filePickerShown() {
-        // Given
-        let viewModel = makeComposerViewModel()
-        
-        // When
-        viewModel.pickerState = .files
-        
-        // Then
-        XCTAssert(viewModel.filePickerShown == true)
-    }
-    
     func test_messageComposerVM_overlayNotShown() {
         // Given
         let viewModel = makeComposerViewModel()

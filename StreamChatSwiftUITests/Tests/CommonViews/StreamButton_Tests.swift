@@ -88,6 +88,7 @@ private struct StreamButtonVariationsView: View {
         }
     }
 
+    @ViewBuilder
     private func button(
         role: StreamButtonRole,
         style: StreamButtonVisualStyle,
@@ -95,14 +96,39 @@ private struct StreamButtonVariationsView: View {
         mode: StreamButtonSnapshotContentMode,
         state: StreamButtonSnapshotState
     ) -> some View {
-        StreamButton(
-            icon: Image(systemName: "plus"),
-            text: mode == .withText ? style.rawValue : nil,
-            role: role,
-            style: style,
-            size: size,
-            action: {}
-        )
+        Group {
+            switch mode {
+            case .withText:
+                StreamButton(
+                    role: role,
+                    style: style,
+                    size: size,
+                    action: {}
+                ) {
+                    Image(uiImage: plusImage)
+                        .customizable()
+                        .frame(width: 16, height: 16)
+
+                } text: {
+                    Text(style.rawValue)
+                }
+            case .iconOnly:
+                StreamIconButton(
+                    role: role,
+                    style: style,
+                    size: size,
+                    action: {}
+                ) {
+                    Image(uiImage: plusImage)
+                        .customizable()
+                        .frame(width: 16, height: 16)
+                }
+            }
+        }
         .disabled(state == .disabled)
+    }
+
+    private var plusImage: UIImage {
+        UIImage(systemName: "plus", withConfiguration: UIImage.SymbolConfiguration(weight: .light))!
     }
 }

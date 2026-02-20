@@ -4,6 +4,7 @@
 
 import Photos
 import StreamChat
+import StreamChatCommonUI
 import SwiftUI
 
 /// Enum for the picker type state.
@@ -101,8 +102,8 @@ public struct AttachmentPickerView<Factory: ViewFactory>: View {
 
     public var body: some View {
         VStack(spacing: 0) {
-            viewFactory.makeAttachmentSourcePickerView(
-                options: AttachmentSourcePickerViewOptions(
+            viewFactory.makeAttachmentTypePickerView(
+                options: AttachmentTypePickerViewOptions(
                     selected: selectedPickerState,
                     canSendPoll: canSendPoll,
                     onPickerStateChange: onPickerStateChange
@@ -110,43 +111,32 @@ public struct AttachmentPickerView<Factory: ViewFactory>: View {
             )
 
             if selectedPickerState == .photos {
-                if let assets = photoLibraryAssets {
-                    let collection = PHFetchResultCollection(fetchResult: assets)
-                    if !collection.isEmpty {
-                        viewFactory.makePhotoAttachmentPickerView(
-                            options: PhotoAttachmentPickerViewOptions(
-                                assets: collection,
-                                onAssetTap: onAssetTap,
-                                isAssetSelected: isAssetSelected,
-                                selectedAssetIds: selectedAssetIds
-                            )
-                        )
-                        .edgesIgnoringSafeArea(.bottom)
-                    } else {
-                        viewFactory.makeAssetsAccessPermissionView(options: AssetsAccessPermissionViewOptions())
-                    }
-                } else {
-                    LoadingView()
-                }
+                viewFactory.makeAttachmentMediaPickerView(
+                    options: AttachmentMediaPickerViewOptions(
+                        photoLibraryAssets: photoLibraryAssets,
+                        onAssetTap: onAssetTap,
+                        isAssetSelected: isAssetSelected,
+                        selectedAssetIds: selectedAssetIds
+                    )
+                )
 
             } else if selectedPickerState == .files {
-                viewFactory.makeFilePickerView(
-                    options: FilePickerViewOptions(
+                viewFactory.makeAttachmentFilePickerView(
+                    options: AttachmentFilePickerViewOptions(
                         filePickerShown: $filePickerShown,
                         onFilesPicked: onFilesPicked
                     )
                 )
             } else if selectedPickerState == .camera {
-                viewFactory.makeCameraPickerView(
-                    options: CameraPickerViewOptions(
-                        selected: $selectedPickerState,
+                viewFactory.makeAttachmentCameraPickerView(
+                    options: AttachmentCameraPickerViewOptions(
                         cameraPickerShown: $cameraPickerShown,
                         cameraImageAdded: cameraImageAdded
                     )
                 )
             } else if selectedPickerState == .polls {
-                viewFactory.makeComposerPollView(
-                    options: ComposerPollViewOptions(
+                viewFactory.makeAttachmentPollPickerView(
+                    options: AttachmentPollPickerViewOptions(
                         channelController: channelController,
                         messageController: messageController
                     )
@@ -159,8 +149,8 @@ public struct AttachmentPickerView<Factory: ViewFactory>: View {
                     )
                 )
             } else if selectedPickerState == .custom {
-                viewFactory.makeCustomAttachmentView(
-                    options: CustomComposerAttachmentViewOptions(
+                viewFactory.makeCustomAttachmentPickerView(
+                    options: CustomAttachmentPickerViewOptions(
                         addedCustomAttachments: addedCustomAttachments,
                         onCustomAttachmentTap: onCustomAttachmentTap
                     )
@@ -168,7 +158,7 @@ public struct AttachmentPickerView<Factory: ViewFactory>: View {
             }
         }
         .frame(height: height)
-        .background(Color(colors.background1))
+        .background(Color(colors.backgroundElevationElevation1))
         .onChange(of: isDisplayed) { newValue in
             if newValue {
                 askForAssetsAccessPermissions()
@@ -176,117 +166,5 @@ public struct AttachmentPickerView<Factory: ViewFactory>: View {
         }
         .accessibilityElement(children: .contain)
         .accessibilityIdentifier("AttachmentPickerView")
-    }
-}
-
-/// View for picking the source of the attachment (photo, files or camera).
-public struct AttachmentSourcePickerView: View {
-    @Injected(\.colors) private var colors
-    @Injected(\.images) private var images
-
-    var selected: AttachmentPickerState
-    var canSendPoll: Bool
-    var onTap: (AttachmentPickerState) -> Void
-
-    public init(
-        selected: AttachmentPickerState,
-        canSendPoll: Bool,
-        onTap: @escaping (AttachmentPickerState) -> Void
-    ) {
-        self.selected = selected
-        self.onTap = onTap
-        self.canSendPoll = canSendPoll
-    }
-
-    public var body: some View {
-        HStack(alignment: .center, spacing: 24) {
-            AttachmentTypePickerButton(
-                icon: images.attachmentPickerPhotos,
-                pickerType: .photos,
-                isSelected: selected == .photos,
-                onTap: onTap
-            )
-            .accessibilityIdentifier("attachmentPickerPhotos")
-
-            AttachmentTypePickerButton(
-                icon: images.attachmentPickerFolder,
-                pickerType: .files,
-                isSelected: selected == .files,
-                onTap: onTap
-            )
-            .accessibilityLabel(L10n.Composer.Picker.file)
-            .accessibilityIdentifier("attachmentPickerFiles")
-
-            AttachmentTypePickerButton(
-                icon: images.attachmentPickerCamera,
-                pickerType: .camera,
-                isSelected: selected == .camera,
-                onTap: onTap
-            )
-            .accessibilityIdentifier("attachmentPickerCamera")
-            
-            if canSendPoll {
-                AttachmentTypePickerButton(
-                    icon: images.attachmentPickerPolls,
-                    pickerType: .polls,
-                    isSelected: selected == .polls,
-                    onTap: onTap
-                )
-                .accessibilityLabel(L10n.Composer.Polls.createPoll)
-                .accessibilityIdentifier("attachmentPickerPolls")
-            }
-
-            AttachmentTypePickerButton(
-                icon: images.commands,
-                pickerType: .commands,
-                isSelected: selected == .commands,
-                onTap: onTap
-            )
-            .accessibilityLabel(L10n.Composer.Suggestions.Commands.header)
-            .accessibilityIdentifier("attachmentPickerCommands")
-
-            Spacer()
-        }
-        .padding(.horizontal, 16)
-        .frame(height: 56)
-        .background(Color(colors.background1))
-        .accessibilityElement(children: .contain)
-        .accessibilityIdentifier("AttachmentSourcePickerView")
-    }
-}
-
-/// Button used for picking of attachment types.
-public struct AttachmentTypePickerButton: View {
-    @Injected(\.colors) private var colors
-
-    var icon: UIImage
-    var pickerType: AttachmentPickerState
-    var isSelected: Bool
-    var onTap: (AttachmentPickerState) -> Void
-
-    public init(
-        icon: UIImage,
-        pickerType: AttachmentPickerState,
-        isSelected: Bool,
-        onTap: @escaping (AttachmentPickerState) -> Void
-    ) {
-        self.icon = icon
-        self.pickerType = pickerType
-        self.isSelected = isSelected
-        self.onTap = onTap
-    }
-
-    public var body: some View {
-        Button {
-            onTap(pickerType)
-        } label: {
-            Image(uiImage: icon)
-                .customizable()
-                .frame(maxWidth: 20, maxHeight: 20)
-                .foregroundColor(
-                    isSelected ? Color(colors.highlightedAccentBackground)
-                        : Color(colors.textLowEmphasis)
-                )
-        }
     }
 }

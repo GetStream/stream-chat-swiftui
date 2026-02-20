@@ -216,6 +216,16 @@ internal enum L10n {
       /// Stop recording audio message
       internal static var stop: String { L10n.tr("Localizable", "composer.audio-recording.stop") }
     }
+    internal enum Camera {
+      /// Change in Settings
+      internal static var accessSettings: String { L10n.tr("Localizable", "composer.camera.access-settings") }
+      /// You have not granted access to your camera
+      internal static var noAccess: String { L10n.tr("Localizable", "composer.camera.no-access") }
+      /// Open Camera
+      internal static var openCamera: String { L10n.tr("Localizable", "composer.camera.open-camera") }
+      /// Take a photo and share
+      internal static var takePhoto: String { L10n.tr("Localizable", "composer.camera.take-photo") }
+    }
     internal enum Checkmark {
       /// Also send in channel
       internal static var channelReply: String { L10n.tr("Localizable", "composer.checkmark.channel-reply") }
@@ -239,6 +249,10 @@ internal enum L10n {
     internal enum Files {
       /// Add more files
       internal static var addMore: String { L10n.tr("Localizable", "composer.files.add-more") }
+      /// Open Files
+      internal static var openFiles: String { L10n.tr("Localizable", "composer.files.open-files") }
+      /// Select files to share
+      internal static var selectFiles: String { L10n.tr("Localizable", "composer.files.select-files") }
     }
     internal enum Images {
       /// Change in Settings
@@ -283,6 +297,8 @@ internal enum L10n {
       internal static var askQuestion: String { L10n.tr("Localizable", "composer.polls.askQuestion") }
       /// Create Poll
       internal static var createPoll: String { L10n.tr("Localizable", "composer.polls.create-poll") }
+      /// Create a poll and share
+      internal static var createPollDescription: String { L10n.tr("Localizable", "composer.polls.create-poll-description") }
       /// This is already an option
       internal static var duplicateOption: String { L10n.tr("Localizable", "composer.polls.duplicate-option") }
       /// Maximum votes per person
