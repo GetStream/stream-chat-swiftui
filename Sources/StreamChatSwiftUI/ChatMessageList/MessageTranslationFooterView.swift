@@ -12,18 +12,19 @@ public struct MessageTranslationFooterView: View {
     @Injected(\.colors) private var colors
     @Injected(\.utils) private var utils
 
-    var textColor: UIColor?
+    /// When true, the `textOnAccent` color is used instead of the default darker text color.
+    var usesInvertedStyle: Bool
 
     public init(
         messageViewModel: MessageViewModel,
-        textColor: UIColor? = nil
+        usesInvertedStyle: Bool = false
     ) {
         self.messageViewModel = messageViewModel
-        self.textColor = textColor
+        self.usesInvertedStyle = usesInvertedStyle
     }
 
     private var resolvedTextColor: Color {
-        textColor?.toColor ?? colors.chatTextTimestamp.toColor
+        usesInvertedStyle ? colors.textOnAccent.toColor : colors.chatTextTimestamp.toColor
     }
 
     public var body: some View {

@@ -17,25 +17,35 @@ public struct MessageItemView<Factory: ViewFactory>: View {
     @Injected(\.utils) private var utils
     @Injected(\.tokens) private var tokens
 
-    var factory: Factory
+    let factory: Factory
     let channel: ChatChannel
     let message: ChatMessage
-    var width: CGFloat?
-    var showsAllInfo: Bool
-    var shownAsPreview: Bool
-    var isInThread: Bool
-    var isLast: Bool
+    let width: CGFloat?
+    let showsAllInfo: Bool
+    let shownAsPreview: Bool
+    let isInThread: Bool
+    let isLast: Bool
     @Binding var scrolledId: String?
     @Binding var quotedMessage: ChatMessage?
-    var onLongPress: (MessageDisplayInfo) -> Void
-
-    private var previewTextColor: UIColor? {
-        shownAsPreview ? colors.textOnAccent : nil
-    }
+    let onLongPress: (MessageDisplayInfo) -> Void
 
     @State private var frame: CGRect = .zero
     @State private var computeFrame = false
 
+    /// Creates a new message item view.
+    /// - Parameters:
+    ///   - factory: The view factory used to create subviews.
+    ///   - channel: The channel the message belongs to.
+    ///   - message: The message to display.
+    ///   - width: The available width for laying out the message content.
+    ///   - showsAllInfo: Whether to show the full message info (avatar, timestamp, delivery status).
+    ///   - shownAsPreview: Whether the message is rendered as a preview (e.g. on the reactions overlay).
+    ///   - isInThread: Whether the message is displayed inside a thread.
+    ///   - isLast: Whether this is the last (topmost) message in the list.
+    ///   - scrolledId: Binding to the currently scrolled-to message ID.
+    ///   - quotedMessage: Binding to the message being quoted via swipe-to-reply.
+    ///   - onLongPress: Called when the user long-presses or double-taps the message bubble.
+    ///   - viewModel: An optional pre-existing view model; one is created automatically when `nil`.
     public init(
         factory: Factory,
         channel: ChatChannel,
@@ -167,7 +177,7 @@ public struct MessageItemView<Factory: ViewFactory>: View {
                     factory.makeMessageTranslationFooterView(
                         options: MessageTranslationFooterViewOptions(
                             messageViewModel: messageViewModel,
-                            textColor: previewTextColor
+                            usesInvertedStyle: shownAsPreview
                         )
                     )
                 }
@@ -260,7 +270,7 @@ public struct MessageItemView<Factory: ViewFactory>: View {
                     channel: channel,
                     message: message,
                     replyCount: message.replyCount,
-                    textColor: previewTextColor
+                    usesInvertedStyle: shownAsPreview
                 )
             )
             .accessibilityElement(children: .contain)
@@ -275,7 +285,7 @@ public struct MessageItemView<Factory: ViewFactory>: View {
                     message: message,
                     parentMessage: parentMessage,
                     replyCount: parentMessage.replyCount,
-                    textColor: previewTextColor
+                    usesInvertedStyle: shownAsPreview
                 )
             )
             .accessibilityElement(children: .contain)
@@ -289,7 +299,7 @@ public struct MessageItemView<Factory: ViewFactory>: View {
                     cid: channel.cid,
                     messageId: parentId
                 ),
-                textColor: previewTextColor
+                usesInvertedStyle: shownAsPreview
             )
             .accessibilityElement(children: .contain)
             .accessibility(identifier: "MessageRepliesView")
@@ -304,25 +314,25 @@ public struct MessageItemView<Factory: ViewFactory>: View {
                     options: MessageReadIndicatorViewOptions(
                         channel: channel,
                         message: message,
-                        textColor: previewTextColor
+                        usesInvertedStyle: shownAsPreview
                     )
                 )
 
                 if messageViewModel.messageDateShown {
                     factory.makeMessageDateView(
-                        options: MessageDateViewOptions(message: message, textColor: previewTextColor)
+                        options: MessageDateViewOptions(message: message, usesInvertedStyle: shownAsPreview)
                     )
                 }
             }
             .padding(.bottom, tokens.spacingXxs)
         } else if messageViewModel.authorAndDateShown {
             factory.makeMessageAuthorAndDateView(
-                options: MessageAuthorAndDateViewOptions(message: message, textColor: previewTextColor)
+                options: MessageAuthorAndDateViewOptions(message: message, usesInvertedStyle: shownAsPreview)
             )
             .padding(.bottom, tokens.spacingXxs)
         } else if messageViewModel.messageDateShown {
             factory.makeMessageDateView(
-                options: MessageDateViewOptions(message: message, textColor: previewTextColor)
+                options: MessageDateViewOptions(message: message, usesInvertedStyle: shownAsPreview)
             )
             .padding(.bottom, tokens.spacingXxs)
         }

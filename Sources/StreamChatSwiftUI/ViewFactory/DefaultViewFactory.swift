@@ -263,11 +263,11 @@ extension ViewFactory {
     }
     
     public func makeMessageDateView(options: MessageDateViewOptions) -> some View {
-        MessageDateView(message: options.message, textColor: options.textColor)
+        MessageDateView(message: options.message, usesInvertedStyle: options.usesInvertedStyle)
     }
     
     public func makeMessageAuthorAndDateView(options: MessageAuthorAndDateViewOptions) -> some View {
-        MessageAuthorAndDateView(message: options.message, textColor: options.textColor)
+        MessageAuthorAndDateView(message: options.message, usesInvertedStyle: options.usesInvertedStyle)
     }
     
     public func makeLastInGroupHeaderView(options: LastInGroupHeaderViewOptions) -> some View {
@@ -279,7 +279,7 @@ extension ViewFactory {
     ) -> some View {
         MessageTranslationFooterView(
             messageViewModel: options.messageViewModel,
-            textColor: options.textColor
+            usesInvertedStyle: options.usesInvertedStyle
         )
     }
 
@@ -457,7 +457,7 @@ extension ViewFactory {
             channel: options.channel,
             message: options.message,
             replyCount: options.replyCount,
-            textColor: options.textColor
+            usesInvertedStyle: options.usesInvertedStyle
         )
     }
     
@@ -471,7 +471,7 @@ extension ViewFactory {
             replyCount: options.replyCount,
             showReplyCount: false,
             isRightAligned: options.message.isRightAligned,
-            textColor: options.textColor
+            usesInvertedStyle: options.usesInvertedStyle
         )
     }
     
@@ -877,7 +877,7 @@ extension ViewFactory {
             readUsers: readUsers,
             showReadCount: showReadCount,
             localState: options.message.localState,
-            textColor: options.textColor
+            usesInvertedStyle: options.usesInvertedStyle
         )
     }
     

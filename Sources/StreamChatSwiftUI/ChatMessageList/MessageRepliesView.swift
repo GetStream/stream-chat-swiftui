@@ -24,7 +24,8 @@ public struct MessageRepliesView<Factory: ViewFactory>: View {
     var replyCount: Int
     var isRightAligned: Bool
     var showReplyCount: Bool
-    var textColor: UIColor?
+    /// When true, the `textOnAccent` color is used instead of the default darker text color.
+    var usesInvertedStyle: Bool
     var threadReplyMessage: ChatMessage?
 
     public init(
@@ -34,7 +35,7 @@ public struct MessageRepliesView<Factory: ViewFactory>: View {
         replyCount: Int,
         showReplyCount: Bool = true,
         isRightAligned: Bool? = nil,
-        textColor: UIColor? = nil,
+        usesInvertedStyle: Bool = false,
         threadReplyMessage: ChatMessage? = nil
     ) {
         self.factory = factory
@@ -43,7 +44,7 @@ public struct MessageRepliesView<Factory: ViewFactory>: View {
         self.replyCount = replyCount
         self.isRightAligned = isRightAligned ?? message.isRightAligned
         self.showReplyCount = showReplyCount
-        self.textColor = textColor
+        self.usesInvertedStyle = usesInvertedStyle
         self.threadReplyMessage = threadReplyMessage
     }
 
@@ -101,7 +102,7 @@ public struct MessageRepliesView<Factory: ViewFactory>: View {
                 ),
                 alignment: isRightAligned ? .trailing : .leading
             )
-            .foregroundColor(textColor?.toColor ?? colors.textPrimary.toColor)
+            .foregroundColor(usesInvertedStyle ? colors.textOnAccent.toColor : colors.textPrimary.toColor)
         }
     }
     
@@ -145,20 +146,21 @@ struct LazyMessageRepliesView<Factory: ViewFactory>: View {
     var factory: Factory
     var channel: ChatChannel
     var message: ChatMessage
-    var textColor: UIColor?
+    /// When true, the `textOnAccent` color is used instead of the default darker text color.
+    var usesInvertedStyle: Bool
 
     init(
         factory: Factory,
         channel: ChatChannel,
         message: ChatMessage,
         parentMessageController: ChatMessageController,
-        textColor: UIColor? = nil
+        usesInvertedStyle: Bool = false
     ) {
         _parentMessageObserver = StateObject(wrappedValue: parentMessageController.observableObject)
         self.factory = factory
         self.channel = channel
         self.message = message
-        self.textColor = textColor
+        self.usesInvertedStyle = usesInvertedStyle
     }
 
     var body: some View {
@@ -170,7 +172,7 @@ struct LazyMessageRepliesView<Factory: ViewFactory>: View {
                         message: message,
                         parentMessage: parentMessage,
                         replyCount: parentMessage.replyCount,
-                        textColor: textColor
+                        usesInvertedStyle: usesInvertedStyle
                     )
                 )
             } else {

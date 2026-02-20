@@ -143,12 +143,12 @@ public final class MessageTextViewOptions: Sendable {
 public final class MessageDateViewOptions: Sendable {
     /// The message to display the date for.
     public let message: ChatMessage
-    /// Optional text color override.
-    public let textColor: UIColor?
+    /// When true, the `textOnAccent` color is used instead of the default darker text color.
+    public let usesInvertedStyle: Bool
     
-    public init(message: ChatMessage, textColor: UIColor? = nil) {
+    public init(message: ChatMessage, usesInvertedStyle: Bool = false) {
         self.message = message
-        self.textColor = textColor
+        self.usesInvertedStyle = usesInvertedStyle
     }
 }
 
@@ -156,12 +156,12 @@ public final class MessageDateViewOptions: Sendable {
 public final class MessageAuthorAndDateViewOptions: Sendable {
     /// The message to display the author and date for.
     public let message: ChatMessage
-    /// Optional text color override.
-    public let textColor: UIColor?
+    /// When true, the `textOnAccent` color is used instead of the default darker text color.
+    public let usesInvertedStyle: Bool
     
-    public init(message: ChatMessage, textColor: UIColor? = nil) {
+    public init(message: ChatMessage, usesInvertedStyle: Bool = false) {
         self.message = message
-        self.textColor = textColor
+        self.usesInvertedStyle = usesInvertedStyle
     }
 }
 
@@ -169,12 +169,12 @@ public final class MessageAuthorAndDateViewOptions: Sendable {
 public final class MessageTranslationFooterViewOptions: Sendable {
     /// The view model for the message.
     public let messageViewModel: MessageViewModel
-    /// Optional text color override.
-    public let textColor: UIColor?
+    /// When true, the `textOnAccent` color is used instead of the default darker text color.
+    public let usesInvertedStyle: Bool
     
-    public init(messageViewModel: MessageViewModel, textColor: UIColor? = nil) {
+    public init(messageViewModel: MessageViewModel, usesInvertedStyle: Bool = false) {
         self.messageViewModel = messageViewModel
-        self.textColor = textColor
+        self.usesInvertedStyle = usesInvertedStyle
     }
 }
 
@@ -290,14 +290,14 @@ public final class MessageRepliesViewOptions: Sendable {
     public let message: ChatMessage
     /// The number of replies.
     public let replyCount: Int
-    /// Optional text color override.
-    public let textColor: UIColor?
+    /// When true, the `textOnAccent` color is used instead of the default darker text color.
+    public let usesInvertedStyle: Bool
     
-    public init(channel: ChatChannel, message: ChatMessage, replyCount: Int, textColor: UIColor? = nil) {
+    public init(channel: ChatChannel, message: ChatMessage, replyCount: Int, usesInvertedStyle: Bool = false) {
         self.channel = channel
         self.message = message
         self.replyCount = replyCount
-        self.textColor = textColor
+        self.usesInvertedStyle = usesInvertedStyle
     }
 }
 
@@ -311,21 +311,21 @@ public final class MessageRepliesShownInChannelViewOptions: Sendable {
     public let parentMessage: ChatMessage
     /// The number of replies.
     public let replyCount: Int
-    /// Optional text color override.
-    public let textColor: UIColor?
+    /// When true, the `textOnAccent` color is used instead of the default darker text color.
+    public let usesInvertedStyle: Bool
     
     public init(
         channel: ChatChannel,
         message: ChatMessage,
         parentMessage: ChatMessage,
         replyCount: Int,
-        textColor: UIColor? = nil
+        usesInvertedStyle: Bool = false
     ) {
         self.channel = channel
         self.message = message
         self.parentMessage = parentMessage
         self.replyCount = replyCount
-        self.textColor = textColor
+        self.usesInvertedStyle = usesInvertedStyle
     }
 }
 
@@ -387,13 +387,13 @@ public final class MessageReadIndicatorViewOptions: Sendable {
     public let channel: ChatChannel
     /// The message to show read indicators for.
     public let message: ChatMessage
-    /// Optional text color override.
-    public let textColor: UIColor?
+    /// When true, the `textOnAccent` color is used instead of the default darker text color.
+    public let usesInvertedStyle: Bool
     
-    public init(channel: ChatChannel, message: ChatMessage, textColor: UIColor? = nil) {
+    public init(channel: ChatChannel, message: ChatMessage, usesInvertedStyle: Bool = false) {
         self.channel = channel
         self.message = message
-        self.textColor = textColor
+        self.usesInvertedStyle = usesInvertedStyle
     }
 }
 

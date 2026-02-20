@@ -11,19 +11,20 @@ public struct MessageAuthorAndDateView: View {
     @Injected(\.colors) private var colors
     
     var message: ChatMessage
-    var textColor: UIColor?
+    /// When true, the `textOnAccent` color is used instead of the default darker text color.
+    var usesInvertedStyle: Bool
     
-    public init(message: ChatMessage, textColor: UIColor? = nil) {
+    public init(message: ChatMessage, usesInvertedStyle: Bool = false) {
         self.message = message
-        self.textColor = textColor
+        self.usesInvertedStyle = usesInvertedStyle
     }
     
     public var body: some View {
         HStack {
-            MessageAuthorView(message: message, textColor: textColor)
+            MessageAuthorView(message: message, usesInvertedStyle: usesInvertedStyle)
                 .accessibilityIdentifier("MessageAuthorView")
             if utils.messageListConfig.messageDisplayOptions.showMessageDate {
-                MessageDateView(message: message, textColor: textColor)
+                MessageDateView(message: message, usesInvertedStyle: usesInvertedStyle)
                     .accessibilityIdentifier("MessageDateView")
             }
             Spacer()
@@ -39,11 +40,12 @@ public struct MessageAuthorView: View {
     @Injected(\.colors) private var colors
     
     var message: ChatMessage
-    var textColor: UIColor?
+    /// When true, the `textOnAccent` color is used instead of the default darker text color.
+    var usesInvertedStyle: Bool
     
-    public init(message: ChatMessage, textColor: UIColor? = nil) {
+    public init(message: ChatMessage, usesInvertedStyle: Bool = false) {
         self.message = message
-        self.textColor = textColor
+        self.usesInvertedStyle = usesInvertedStyle
     }
     
     var authorName: String {
@@ -54,7 +56,7 @@ public struct MessageAuthorView: View {
         Text(authorName)
             .lineLimit(1)
             .font(fonts.footnoteBold)
-            .foregroundColor(textColor?.toColor ?? colors.chatTextUsername.toColor)
+            .foregroundColor(usesInvertedStyle ? colors.textOnAccent.toColor : colors.chatTextUsername.toColor)
     }
 }
 
@@ -69,7 +71,8 @@ struct MessageDateView: View {
     }
     
     let message: ChatMessage
-    var textColor: UIColor?
+    /// When true, the `textOnAccent` color is used instead of the default darker text color.
+    var usesInvertedStyle: Bool = false
     
     var text: String {
         var text = dateFormatter.string(from: message.createdAt)
@@ -91,7 +94,7 @@ struct MessageDateView: View {
     var body: some View {
         Text(text)
             .font(fonts.footnote)
-            .foregroundColor(textColor?.toColor ?? colors.chatTextTimestamp.toColor)
+            .foregroundColor(usesInvertedStyle ? colors.textOnAccent.toColor : colors.chatTextTimestamp.toColor)
             .animation(nil)
             .accessibilityLabel(Text(accessibilityLabel))
             .accessibilityIdentifier("MessageDateView")
@@ -108,20 +111,21 @@ public struct MessageReadIndicatorView: View {
     var showReadCount: Bool
     var showDelivered: Bool
     var localState: LocalMessageState?
-    var textColor: UIColor?
+    /// When true, the `textOnAccent` color is used instead of the default darker text color.
+    var usesInvertedStyle: Bool
     
     public init(
         readUsers: [ChatUser],
         showReadCount: Bool,
         showDelivered: Bool = false,
         localState: LocalMessageState? = nil,
-        textColor: UIColor? = nil
+        usesInvertedStyle: Bool = false
     ) {
         self.readUsers = readUsers
         self.showReadCount = showReadCount
         self.showDelivered = showDelivered
         self.localState = localState
-        self.textColor = textColor
+        self.usesInvertedStyle = usesInvertedStyle
     }
     
     public var body: some View {
@@ -129,14 +133,14 @@ public struct MessageReadIndicatorView: View {
             if showReadCount && shouldShowReads {
                 Text("\(readUsers.count)")
                     .font(fonts.footnoteBold)
-                    .foregroundColor(textColor?.toColor ?? colors.textPrimary.toColor)
+                    .foregroundColor(usesInvertedStyle ? colors.textOnAccent.toColor : colors.textPrimary.toColor)
                     .accessibilityIdentifier("readIndicatorCount")
             }
             Image(
                 uiImage: image
             )
             .customizable()
-            .foregroundColor(textColor?.toColor ?? (shouldShowReads ? Color(colors.accentPrimary) : colors.chatTextTimestamp.toColor))
+            .foregroundColor(usesInvertedStyle ? colors.textOnAccent.toColor : (shouldShowReads ? Color(colors.accentPrimary) : colors.chatTextTimestamp.toColor))
             .frame(height: 16)
             .opacity(localState == .sendingFailed || localState == .syncingFailed ? 0.0 : 1)
             .accessibilityLabel(
