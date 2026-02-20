@@ -172,7 +172,8 @@ public enum DateIndicatorPlacement {
 
 /// Used to show and hide different helper views around the message.
 public final class MessageDisplayOptions {
-    public let showAvatars: Bool
+    public let showIncomingMessageAvatar: Bool
+    public let showOutgoingMessageAvatar: Bool
     public let showAvatarsInGroups: Bool
     public let showMessageDate: Bool
     public let showAuthorName: Bool
@@ -193,8 +194,9 @@ public final class MessageDisplayOptions {
     public let dateSeparator: (ChatMessage, ChatMessage) -> Date?
 
     public init(
-        showAvatars: Bool = true,
-        showAvatarsInGroups: Bool? = nil,
+        showIncomingMessageAvatar: Bool = true,
+        showOutgoingMessageAvatar: Bool = false,
+        showAvatarsInGroups: Bool = true,
         showMessageDate: Bool = true,
         showAuthorName: Bool = true,
         animateChanges: Bool = true,
@@ -214,7 +216,9 @@ public final class MessageDisplayOptions {
         reactionsTopPadding: @escaping (ChatMessage) -> CGFloat = MessageDisplayOptions.defaultReactionsTopPadding,
         dateSeparator: @escaping (ChatMessage, ChatMessage) -> Date? = MessageDisplayOptions.defaultDateSeparator
     ) {
-        self.showAvatars = showAvatars
+        self.showIncomingMessageAvatar = showIncomingMessageAvatar
+        self.showOutgoingMessageAvatar = showOutgoingMessageAvatar
+        self.showAvatarsInGroups = showAvatarsInGroups
         self.showAuthorName = showAuthorName
         self.showMessageDate = showMessageDate
         self.animateChanges = animateChanges
@@ -226,7 +230,6 @@ public final class MessageDisplayOptions {
         self.lastInGroupHeaderSize = lastInGroupHeaderSize
         self.shouldAnimateReactions = shouldAnimateReactions
         self.spacerWidth = spacerWidth
-        self.showAvatarsInGroups = showAvatarsInGroups ?? showAvatars
         self.reactionsTopPadding = reactionsTopPadding
         self.newMessagesSeparatorSize = newMessagesSeparatorSize
         self.dateSeparator = dateSeparator
@@ -235,8 +238,11 @@ public final class MessageDisplayOptions {
         self.showOriginalTranslatedButton = showOriginalTranslatedButton
     }
 
-    public func showAvatars(for channel: ChatChannel) -> Bool {
-        channel.isDirectMessageChannel ? showAvatars : showAvatarsInGroups
+    public func showAvatars(for channel: ChatChannel, incoming: Bool) -> Bool {
+        if !channel.isDirectMessageChannel && !showAvatarsInGroups {
+            return false
+        }
+        return incoming ? showIncomingMessageAvatar : showOutgoingMessageAvatar
     }
     
     public static func defaultDateSeparator(message: ChatMessage, previous: ChatMessage) -> Date? {

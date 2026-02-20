@@ -712,6 +712,55 @@ import XCTest
         AssertSnapshot(view, size: CGSize(width: 375, height: 200))
     }
 
+    // MARK: - Avatar Visibility
+
+    func test_messageItemView_outgoingAvatarShown_snapshot() {
+        // Given
+        let messageDisplayOptions = MessageDisplayOptions(
+            showOutgoingMessageAvatar: true
+        )
+        let messageListConfig = MessageListConfig(messageDisplayOptions: messageDisplayOptions)
+        let utils = Utils(messageListConfig: messageListConfig)
+        streamChat = StreamChat(chatClient: chatClient, utils: utils)
+
+        let message = ChatMessage.mock(
+            id: .unique,
+            cid: .unique,
+            text: "Outgoing message with avatar",
+            author: .mock(id: Self.currentUserId, name: "Martin"),
+            isSentByCurrentUser: true
+        )
+
+        // When
+        let view = testMessageViewContainer(message: message)
+
+        // Then
+        AssertSnapshot(view, size: CGSize(width: 375, height: 200))
+    }
+
+    func test_messageItemView_incomingAvatarHidden_snapshot() {
+        // Given
+        let messageDisplayOptions = MessageDisplayOptions(
+            showIncomingMessageAvatar: false
+        )
+        let messageListConfig = MessageListConfig(messageDisplayOptions: messageDisplayOptions)
+        let utils = Utils(messageListConfig: messageListConfig)
+        streamChat = StreamChat(chatClient: chatClient, utils: utils)
+
+        let message = ChatMessage.mock(
+            id: .unique,
+            cid: .unique,
+            text: "Incoming message without avatar",
+            author: .mock(id: .unique, name: "Alice")
+        )
+
+        // When
+        let view = testMessageViewContainer(message: message)
+
+        // Then
+        AssertSnapshot(view, size: CGSize(width: 375, height: 200))
+    }
+
     // MARK: - private
 
     func testMessageViewContainer(

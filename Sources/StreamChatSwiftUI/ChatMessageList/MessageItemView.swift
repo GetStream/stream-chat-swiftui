@@ -135,7 +135,8 @@ public struct MessageItemView<Factory: ViewFactory>: View {
 
     private var messageView: some View {
         HStack(alignment: .bottom, spacing: tokens.spacingXs) {
-            if !messageViewModel.isRightAligned {
+            if !messageViewModel.isRightAligned
+                && utils.messageListConfig.messageDisplayOptions.showAvatars(for: channel, incoming: true) {
                 avatarView
             }
 
@@ -187,7 +188,8 @@ public struct MessageItemView<Factory: ViewFactory>: View {
                 }
             }
 
-            if messageViewModel.isRightAligned {
+            if messageViewModel.isRightAligned
+                && utils.messageListConfig.messageDisplayOptions.showAvatars(for: channel, incoming: false) {
                 avatarView
             }
         }

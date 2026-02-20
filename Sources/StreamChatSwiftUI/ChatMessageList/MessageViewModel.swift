@@ -82,7 +82,7 @@ import StreamChat
 
     public var messageAuthor: ChatUser? {
         guard let channel else { return nil }
-        guard messageListConfig.messageDisplayOptions.showAvatars(for: channel) else { return nil }
+        guard messageListConfig.messageDisplayOptions.showAvatars(for: channel, incoming: !isRightAligned) else { return nil }
         return message.author
     }
 

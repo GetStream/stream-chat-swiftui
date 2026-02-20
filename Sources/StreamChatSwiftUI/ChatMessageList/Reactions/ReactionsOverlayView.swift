@@ -272,7 +272,7 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
     }
 
     private var showAvatars: Bool {
-        utils.messageListConfig.messageDisplayOptions.showAvatars(for: channel)
+        utils.messageListConfig.messageDisplayOptions.showAvatars(for: channel, incoming: !isRightAligned)
     }
 
     private var messageHorizontalPadding: CGFloat {
