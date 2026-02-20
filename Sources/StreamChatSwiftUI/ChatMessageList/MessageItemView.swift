@@ -240,7 +240,6 @@ public struct MessageItemView<Factory: ViewFactory>: View {
                         }
                     )
                 )
-                .offset(x: messageViewModel.isRightAligned ? -tokens.spacingXs : tokens.spacingXs)
                 : nil,
             alignment: messageViewModel.isRightAligned ? .trailing : .leading
         )
