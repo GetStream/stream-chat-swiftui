@@ -6,136 +6,233 @@ import StreamChat
 import SwiftUI
 
 extension ChannelAction {
-    /// Returns the default channel actions.
+    /// Returns the default channel actions, branching on whether the channel is a DM or a group.
     /// - Parameter options: The configuration options affecting the set of actions.
     /// - Returns: An array of channel actions for the current configuration options.
     @MainActor public static func defaultActions(for options: SupportedMoreChannelActionsOptions) -> [ChannelAction] {
+        if options.channel.isDirectMessageChannel {
+            return dmActions(for: options)
+        } else {
+            return groupActions(for: options)
+        }
+    }
+
+    // MARK: - DM actions
+
+    /// Actions for direct-message channels:
+    /// View Info → Mute/Unmute User → Archive/Unarchive Conversation → Block/Unblock User → Delete Conversation.
+    @MainActor private static func dmActions(for options: SupportedMoreChannelActionsOptions) -> [ChannelAction] {
         let channel = options.channel
         let chatClient = InjectedValues[\.chatClient]
         let onDismiss = options.onDismiss
         let onError = options.onError
         var actions = [ChannelAction]()
 
-        let viewInfo = viewInfo(for: channel)
-
-        actions.append(viewInfo)
-
-        if !channel.isDirectMessageChannel, channel.ownCapabilities.contains(.leaveChannel), let userId = chatClient.currentUserId {
-            let leaveGroup = leaveGroup(
-                for: channel,
-                chatClient: chatClient,
-                userId: userId,
-                onDismiss: onDismiss,
-                onError: onError
-            )
-
-            actions.append(leaveGroup)
-        }
+        actions.append(viewInfo(for: channel))
 
         if channel.config.mutesEnabled {
-            if channel.isMuted {
-                let unmuteUser = unmuteAction(
-                    for: channel,
-                    chatClient: chatClient,
-                    onDismiss: onDismiss,
-                    onError: onError
-                )
-                actions.append(unmuteUser)
-            } else {
-                let muteUser = muteAction(
-                    for: channel,
-                    chatClient: chatClient,
-                    onDismiss: onDismiss,
-                    onError: onError
-                )
-                actions.append(muteUser)
-            }
+            actions.append(muteAction(for: channel, chatClient: chatClient, onDismiss: onDismiss, onError: onError))
+        }
+
+        actions.append(archiveAction(for: channel, chatClient: chatClient, onDismiss: onDismiss, onError: onError))
+
+        if let otherMember = channel.lastActiveMembers.first(where: { $0.id != chatClient.currentUserId }) {
+            let blockedIds = chatClient.currentUserController().dataStore.currentUser()?.blockedUserIds ?? []
+            actions.append(
+                blockedIds.contains(otherMember.id)
+                    ? unblockUserAction(for: otherMember, chatClient: chatClient, onDismiss: onDismiss, onError: onError)
+                    : blockUserAction(for: otherMember, chatClient: chatClient, onDismiss: onDismiss, onError: onError)
+            )
         }
 
         if channel.ownCapabilities.contains(.deleteChannel) {
-            let deleteConversation = deleteAction(
-                for: channel,
-                chatClient: chatClient,
-                onDismiss: onDismiss,
-                onError: onError
-            )
-            actions.append(deleteConversation)
+            actions.append(deleteAction(for: channel, chatClient: chatClient, onDismiss: onDismiss, onError: onError))
         }
-
-        let cancel = ChannelAction(
-            title: L10n.Alert.Actions.cancel,
-            iconName: "xmark.circle",
-            action: onDismiss,
-            confirmationPopup: nil,
-            isDestructive: false
-        )
-
-        actions.append(cancel)
 
         return actions
     }
 
+    // MARK: - Group actions
+
+    /// Actions for group channels:
+    /// View Info → Mute/Unmute Channel → Archive/Unarchive Channel → Delete Conversation (or Leave Conversation).
+    @MainActor private static func groupActions(for options: SupportedMoreChannelActionsOptions) -> [ChannelAction] {
+        let channel = options.channel
+        let chatClient = InjectedValues[\.chatClient]
+        let onDismiss = options.onDismiss
+        let onError = options.onError
+        var actions = [ChannelAction]()
+
+        actions.append(viewInfo(for: channel))
+
+        if channel.config.mutesEnabled {
+            actions.append(muteAction(for: channel, chatClient: chatClient, onDismiss: onDismiss, onError: onError))
+        }
+
+        actions.append(archiveAction(for: channel, chatClient: chatClient, onDismiss: onDismiss, onError: onError))
+
+        if channel.ownCapabilities.contains(.deleteChannel) {
+            actions.append(deleteAction(for: channel, chatClient: chatClient, onDismiss: onDismiss, onError: onError))
+        } else if channel.ownCapabilities.contains(.leaveChannel), let userId = chatClient.currentUserId {
+            actions.append(leaveGroupAction(for: channel, chatClient: chatClient, userId: userId, onDismiss: onDismiss, onError: onError))
+        }
+
+        return actions
+    }
+
+    // MARK: - Individual action builders
+
+    @MainActor private static func viewInfo(for channel: ChatChannel) -> ChannelAction {
+        let action = ChannelAction(
+            title: L10n.Alert.Actions.viewInfoTitle,
+            iconName: "info.circle",
+            action: { /* no-op — navigation handled via navigationDestination */ },
+            confirmationPopup: nil,
+            isDestructive: false
+        )
+        action.navigationDestination = AnyView(ChatChannelInfoView(channel: channel))
+        return action
+    }
+
+    /// Single mute/unmute builder for both DM and group channels.
+    /// Picks titles and confirmation text based on `channel.isDirectMessageChannel` and `channel.isMuted`.
     @MainActor private static func muteAction(
         for channel: ChatChannel,
         chatClient: ChatClient,
         onDismiss: @escaping @MainActor () -> Void,
         onError: @escaping @MainActor (Error) -> Void
     ) -> ChannelAction {
-        let muteAction: @MainActor () -> Void = {
-            let controller = chatClient.channelController(for: channel.cid)
-            controller.muteChannel { error in
-                if let error {
-                    onError(error)
+        let muting = !channel.isMuted
+        let isDM = channel.isDirectMessageChannel
+        let title = muting
+            ? (isDM ? L10n.Alert.Actions.muteUser : L10n.Alert.Actions.muteChannel)
+            : (isDM ? L10n.Alert.Actions.unmuteUser : L10n.Alert.Actions.unmuteChannel)
+        let subject = isDM ? L10n.Channel.Name.directMessage : L10n.Channel.Name.group
+        let confirmationPrefix = muting ? L10n.Alert.Actions.muteChannelTitle : L10n.Alert.Actions.unmuteChannelTitle
+        let buttonTitle = muting ? L10n.Channel.Item.mute : L10n.Channel.Item.unmute
+
+        return ChannelAction(
+            title: title,
+            iconName: muting ? "speaker.slash" : "speaker.wave.1",
+            action: {
+                let controller = chatClient.channelController(for: channel.cid)
+                if muting {
+                    controller.muteChannel { error in
+                        if let error { onError(error) } else { onDismiss() }
+                    }
                 } else {
-                    onDismiss()
+                    controller.unmuteChannel { error in
+                        if let error { onError(error) } else { onDismiss() }
+                    }
                 }
-            }
-        }
-        let confirmationPopup = ConfirmationPopup(
-            title: "\(L10n.Channel.Item.mute) \(naming(for: channel))",
-            message: "\(L10n.Alert.Actions.muteChannelTitle) \(naming(for: channel))?",
-            buttonTitle: L10n.Channel.Item.mute
-        )
-        let muteUser = ChannelAction(
-            title: "\(L10n.Channel.Item.mute) \(naming(for: channel))",
-            iconName: "speaker.slash",
-            action: muteAction,
-            confirmationPopup: confirmationPopup,
+            },
+            confirmationPopup: ConfirmationPopup(
+                title: title,
+                message: "\(confirmationPrefix) \(subject)?",
+                buttonTitle: buttonTitle
+            ),
             isDestructive: false
         )
-        return muteUser
     }
 
-    @MainActor private static func unmuteAction(
+    /// Single archive/unarchive builder for both DM and group channels.
+    /// Picks titles based on `channel.isDirectMessageChannel` and `channel.isArchived`.
+    @MainActor private static func archiveAction(
         for channel: ChatChannel,
         chatClient: ChatClient,
         onDismiss: @escaping @MainActor () -> Void,
         onError: @escaping @MainActor (Error) -> Void
     ) -> ChannelAction {
-        let unMuteAction: @MainActor () -> Void = {
-            let controller = chatClient.channelController(for: channel.cid)
-            controller.unmuteChannel { error in
-                if let error {
-                    onError(error)
+        let archiving = !channel.isArchived
+        let isDM = channel.isDirectMessageChannel
+        let title = archiving
+            ? (isDM ? L10n.Alert.Actions.archiveConversation : L10n.Alert.Actions.archiveChannel)
+            : (isDM ? L10n.Alert.Actions.unarchiveConversation : L10n.Alert.Actions.unarchiveChannel)
+
+        return ChannelAction(
+            title: title,
+            iconName: "archivebox",
+            action: {
+                let controller = chatClient.channelController(for: channel.cid)
+                if archiving {
+                    controller.archive { error in
+                        if let error { onError(error) } else { onDismiss() }
+                    }
                 } else {
-                    onDismiss()
+                    controller.unarchive { error in
+                        if let error { onError(error) } else { onDismiss() }
+                    }
                 }
-            }
-        }
-        let confirmationPopup = ConfirmationPopup(
-            title: "\(L10n.Channel.Item.unmute) \(naming(for: channel))",
-            message: "\(L10n.Alert.Actions.unmuteChannelTitle) \(naming(for: channel))?",
-            buttonTitle: L10n.Channel.Item.unmute
-        )
-        let unmuteUser = ChannelAction(
-            title: "\(L10n.Channel.Item.unmute) \(naming(for: channel))",
-            iconName: "speaker.wave.1",
-            action: unMuteAction,
-            confirmationPopup: confirmationPopup,
+            },
+            confirmationPopup: nil,
             isDestructive: false
         )
+    }
 
-        return unmuteUser
+    @MainActor private static func blockUserAction(
+        for user: ChatChannelMember,
+        chatClient: ChatClient,
+        onDismiss: @escaping @MainActor () -> Void,
+        onError: @escaping @MainActor (Error) -> Void
+    ) -> ChannelAction {
+        ChannelAction(
+            title: L10n.Alert.Actions.blockUser,
+            iconName: "circle.slash",
+            action: {
+                chatClient.userController(userId: user.id).block { error in
+                    if let error { onError(error) } else { onDismiss() }
+                }
+            },
+            confirmationPopup: ConfirmationPopup(
+                title: L10n.Alert.Actions.blockUser,
+                message: L10n.Message.Actions.UserBlock.confirmationMessage,
+                buttonTitle: L10n.Alert.Actions.ok
+            ),
+            isDestructive: false
+        )
+    }
+
+    @MainActor private static func unblockUserAction(
+        for user: ChatChannelMember,
+        chatClient: ChatClient,
+        onDismiss: @escaping @MainActor () -> Void,
+        onError: @escaping @MainActor (Error) -> Void
+    ) -> ChannelAction {
+        ChannelAction(
+            title: L10n.Alert.Actions.unblockUser,
+            iconName: "circle.slash",
+            action: {
+                chatClient.userController(userId: user.id).unblock { error in
+                    if let error { onError(error) } else { onDismiss() }
+                }
+            },
+            confirmationPopup: nil,
+            isDestructive: false
+        )
+    }
+
+    @MainActor private static func leaveGroupAction(
+        for channel: ChatChannel,
+        chatClient: ChatClient,
+        userId: String,
+        onDismiss: @escaping @MainActor () -> Void,
+        onError: @escaping @MainActor (Error) -> Void
+    ) -> ChannelAction {
+        ChannelAction(
+            title: L10n.Alert.Actions.leaveConversation,
+            iconName: "rectangle.portrait.and.arrow.forward",
+            action: {
+                chatClient.channelController(for: channel.cid).removeMembers(userIds: [userId]) { error in
+                    if let error { onError(error) } else { onDismiss() }
+                }
+            },
+            confirmationPopup: ConfirmationPopup(
+                title: L10n.Alert.Actions.leaveConversation,
+                message: L10n.Alert.Actions.leaveGroupMessage,
+                buttonTitle: L10n.Alert.Actions.leaveGroupButton
+            ),
+            isDestructive: true
+        )
     }
 
     @MainActor private static func deleteAction(
@@ -144,80 +241,20 @@ extension ChannelAction {
         onDismiss: @escaping @MainActor () -> Void,
         onError: @escaping @MainActor (Error) -> Void
     ) -> ChannelAction {
-        let deleteConversationAction: @MainActor () -> Void = {
-            let controller = chatClient.channelController(for: channel.cid)
-            controller.deleteChannel { error in
-                if let error {
-                    onError(error)
-                } else {
-                    onDismiss()
-                }
-            }
-        }
-        let confirmationPopup = ConfirmationPopup(
-            title: L10n.Alert.Actions.deleteChannelTitle,
-            message: L10n.Alert.Actions.deleteChannelMessage,
-            buttonTitle: L10n.Alert.Actions.delete
-        )
-        let deleteConversation = ChannelAction(
+        ChannelAction(
             title: L10n.Alert.Actions.deleteChannelTitle,
             iconName: "trash",
-            action: deleteConversationAction,
-            confirmationPopup: confirmationPopup,
+            action: {
+                chatClient.channelController(for: channel.cid).deleteChannel { error in
+                    if let error { onError(error) } else { onDismiss() }
+                }
+            },
+            confirmationPopup: ConfirmationPopup(
+                title: L10n.Alert.Actions.deleteChannelTitle,
+                message: L10n.Alert.Actions.deleteChannelMessage,
+                buttonTitle: L10n.Alert.Actions.delete
+            ),
             isDestructive: true
         )
-
-        return deleteConversation
-    }
-
-    @MainActor private static func leaveGroup(
-        for channel: ChatChannel,
-        chatClient: ChatClient,
-        userId: String,
-        onDismiss: @escaping @MainActor () -> Void,
-        onError: @escaping @MainActor (Error) -> Void
-    ) -> ChannelAction {
-        let leaveAction: @MainActor () -> Void = {
-            let controller = chatClient.channelController(for: channel.cid)
-            controller.removeMembers(userIds: [userId]) { error in
-                if let error {
-                    onError(error)
-                } else {
-                    onDismiss()
-                }
-            }
-        }
-        let confirmationPopup = ConfirmationPopup(
-            title: L10n.Alert.Actions.leaveGroupTitle,
-            message: L10n.Alert.Actions.leaveGroupMessage,
-            buttonTitle: L10n.Alert.Actions.leaveGroupButton
-        )
-        let leaveConversation = ChannelAction(
-            title: L10n.Alert.Actions.leaveGroupTitle,
-            iconName: "rectangle.portrait.and.arrow.forward",
-            action: leaveAction,
-            confirmationPopup: confirmationPopup,
-            isDestructive: false
-        )
-
-        return leaveConversation
-    }
-
-    @MainActor private static func viewInfo(for channel: ChatChannel) -> ChannelAction {
-        let viewInfo = ChannelAction(
-            title: L10n.Alert.Actions.viewInfoTitle,
-            iconName: "info.circle",
-            action: { /* no-op */ },
-            confirmationPopup: nil,
-            isDestructive: false
-        )
-
-        viewInfo.navigationDestination = AnyView(ChatChannelInfoView(channel: channel))
-
-        return viewInfo
-    }
-
-    @MainActor private static func naming(for channel: ChatChannel) -> String {
-        channel.isDirectMessageChannel ? L10n.Channel.Name.directMessage : L10n.Channel.Name.group
     }
 }

@@ -94,7 +94,9 @@ import UIKit
     @Published public var loading = false
     @Published public var customAlertShown = false {
         didSet {
-            hideTabBar = customAlertShown
+            if !customAlertShown {
+                swipedChannelId = nil
+            }
         }
     }
 
