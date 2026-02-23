@@ -31,7 +31,7 @@ import XCTest
         .applyDefaultSize()
 
         // Then
-        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
+        AssertSnapshot(view)
     }
 
     func test_moreChannelActionsView_groupChannel_snapshot() {
@@ -56,7 +56,7 @@ import XCTest
         .applyDefaultSize()
 
         // Then
-        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
+        AssertSnapshot(view)
     }
 
     func test_moreChannelActionsView_mutedDMChannel_snapshot() {
@@ -82,7 +82,7 @@ import XCTest
         .applyDefaultSize()
 
         // Then
-        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
+        AssertSnapshot(view)
     }
 
     func test_moreChannelActionsView_archivedDMChannel_snapshot() {
@@ -109,7 +109,7 @@ import XCTest
         .applyDefaultSize()
 
         // Then
-        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
+        AssertSnapshot(view)
     }
 
     func test_moreChannelActionsView_groupWithLeaveConversation_snapshot() {
@@ -137,6 +137,6 @@ import XCTest
         .applyDefaultSize()
 
         // Then
-        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
+        AssertSnapshot(view)
     }
 }
