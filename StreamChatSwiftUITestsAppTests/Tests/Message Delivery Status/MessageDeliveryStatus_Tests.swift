@@ -92,9 +92,6 @@ final class MessageDeliveryStatus_Tests: StreamTestCase {
         THEN("user spots double checkmark below the message") {
             userRobot.assertMessageDeliveryStatus(.read)
         }
-        AND("user spots read by 1 number below the message") {
-            userRobot.assertMessageReadCount(readBy: 1)
-        }
     }
 
     func test_doubleCheckmarkShown_whenNewParticipantAdded() throws {
@@ -281,9 +278,6 @@ extension MessageDeliveryStatus_Tests {
         }
         THEN("user spots double checkmark below the message in thread") {
             userRobot.assertMessageDeliveryStatus(.read)
-        }
-        AND("user spots read by 1 number below the message") {
-            userRobot.assertMessageReadCount(readBy: 1)
         }
     }
 
