@@ -687,6 +687,10 @@ internal enum L10n {
       internal static func repliedTo(_ p1: Any) -> String {
         return L10n.tr("Localizable", "thread.item.replied-to", String(describing: p1))
       }
+      /// replies
+      internal static var replies: String { L10n.tr("Localizable", "thread.item.replies") }
+      /// reply
+      internal static var reply: String { L10n.tr("Localizable", "thread.item.reply") }
     }
     internal enum NoContent {
       /// No threads here yet...
