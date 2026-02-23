@@ -423,8 +423,7 @@ import XCTest
         let view = viewFactory.makeQuotedMessageView(
             options: .init(
                 quotedMessage: message,
-                quotedByCurrentUser: true,
-                shownInMessageList: false
+                outgoing: true
             )
         )
 

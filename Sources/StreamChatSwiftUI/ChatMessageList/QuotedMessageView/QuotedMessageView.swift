@@ -7,7 +7,6 @@ import SwiftUI
 
 /// A quoted message view used to display a reference to another message.
 public struct QuotedMessageView<Factory: ViewFactory>: View {
-    @Injected(\.colors) private var colors
     @Injected(\.tokens) private var tokens
 
     private let factory: Factory
@@ -32,10 +31,6 @@ public struct QuotedMessageView<Factory: ViewFactory>: View {
     public var body: some View {
         referenceMessageView
             .padding(padding ?? defaultPadding)
-            .modifier(ReferenceMessageViewBackgroundModifier(
-                backgroundColor: backgroundColor.toColor
-            ))
-            .frame(height: 56)
     }
 
     /// The default padding applied to the quoted message view.
@@ -47,21 +42,13 @@ public struct QuotedMessageView<Factory: ViewFactory>: View {
             trailing: tokens.spacingSm
         )
     }
-    
-    private var backgroundColor: UIColor {
-        if viewModel.shownInMessageList {
-            return viewModel.quotedByCurrentUser ? colors.chatBackgroundAttachmentOutgoing : colors.chatBackgroundAttachmentIncoming
-        } else {
-            return viewModel.isSentByCurrentUser ? colors.chatBackgroundOutgoing : colors.chatBackgroundIncoming
-        }
-    }
 
     @ViewBuilder
     private var referenceMessageView: some View {
         ReferenceMessageView(
             title: viewModel.title,
             subtitle: viewModel.subtitle,
-            isSentByCurrentUser: viewModel.isSentByCurrentUser,
+            outgoing: viewModel.outgoing,
             iconPreview: {
                 if let icon = viewModel.subtitleIcon {
                     factory.makeMessageAttachmentPreviewIconView(

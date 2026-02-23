@@ -12,6 +12,7 @@ import SwiftUI
 /// in the top-trailing corner. Use this in the composer to display quoted messages with
 /// the ability to dismiss/cancel the quote.
 public struct ComposerQuotedMessageView<Factory: ViewFactory>: View {
+    @Injected(\.colors) private var colors
     @Injected(\.tokens) private var tokens
 
     private let factory: Factory
@@ -37,8 +38,7 @@ public struct ComposerQuotedMessageView<Factory: ViewFactory>: View {
         factory.makeQuotedMessageView(
             options: QuotedMessageViewOptions(
                 quotedMessage: quotedMessage,
-                quotedByCurrentUser: true,
-                shownInMessageList: false,
+                outgoing: quotedMessage.isSentByCurrentUser,
                 padding: .init(
                     top: tokens.spacingXs,
                     leading: tokens.spacingXs,
@@ -47,6 +47,14 @@ public struct ComposerQuotedMessageView<Factory: ViewFactory>: View {
                 )
             )
         )
+        .modifier(ReferenceMessageViewBackgroundModifier(
+            backgroundColor: Color(
+                quotedMessage.isSentByCurrentUser
+                    ? colors.chatBackgroundOutgoing
+                    : colors.chatBackgroundIncoming
+            )
+        ))
+        .frame(height: 56)
         .dismissButtonOverlayModifier(onDismiss: onDismiss)
         .padding(.top, tokens.spacingSm)
         .padding(.trailing, tokens.spacingSm)

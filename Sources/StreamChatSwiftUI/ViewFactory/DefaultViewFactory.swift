@@ -822,8 +822,7 @@ extension ViewFactory {
             viewModel: QuotedMessageViewModel(
                 message: options.quotedMessage,
                 currentUser: chatClient.currentUserController().currentUser,
-                quotedByCurrentUser: options.quotedByCurrentUser,
-                shownInMessageList: options.shownInMessageList
+                outgoing: options.outgoing
             ),
             padding: options.padding
         )

@@ -8,6 +8,7 @@ import SwiftUI
 /// A container view for displaying quoted messages in the message list.
 /// This view handles the tap gesture to scroll to the original message.
 public struct ChatQuotedMessageView<Factory: ViewFactory>: View {
+    @Injected(\.colors) private var colors
     @Injected(\.tokens) private var tokens
     
     private let factory: Factory
@@ -36,10 +37,17 @@ public struct ChatQuotedMessageView<Factory: ViewFactory>: View {
         factory.makeQuotedMessageView(
             options: QuotedMessageViewOptions(
                 quotedMessage: quotedMessage,
-                quotedByCurrentUser: parentMessageSentByCurrentUser,
-                shownInMessageList: true
+                outgoing: parentMessageSentByCurrentUser
             )
         )
+        .modifier(ReferenceMessageViewBackgroundModifier(
+            backgroundColor: Color(
+                parentMessageSentByCurrentUser
+                    ? colors.chatBackgroundAttachmentOutgoing
+                    : colors.chatBackgroundAttachmentIncoming
+            )
+        ))
+        .frame(height: 56)
         .padding(tokens.spacingXs)
         .onTapGesture {
             scrolledId = quotedMessage.messageId

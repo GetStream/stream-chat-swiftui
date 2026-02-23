@@ -319,23 +319,19 @@ public final class ComposerQuotedMessageViewOptions: Sendable {
 public final class QuotedMessageViewOptions: Sendable {
     /// The quoted message to display.
     public let quotedMessage: ChatMessage
-    /// True, if the message is quoted by the current user, otherwise false.
-    public let quotedByCurrentUser: Bool
-    /// True, if quoted message appears in the message list, otherwise false.
-    public let shownInMessageList: Bool
+    /// Whether the view should use outgoing style.
+    public let outgoing: Bool
     /// The padding to apply around the quoted message view.
     public let padding: EdgeInsets?
     
     public init(
         quotedMessage: ChatMessage,
-        quotedByCurrentUser: Bool,
-        shownInMessageList: Bool,
+        outgoing: Bool,
         padding: EdgeInsets? = nil
     ) {
         self.quotedMessage = quotedMessage
-        self.quotedByCurrentUser = quotedByCurrentUser
+        self.outgoing = outgoing
         self.padding = padding
-        self.shownInMessageList = shownInMessageList
     }
 }
 

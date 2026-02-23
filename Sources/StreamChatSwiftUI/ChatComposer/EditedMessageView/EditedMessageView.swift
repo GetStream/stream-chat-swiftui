@@ -49,7 +49,7 @@ public struct EditedMessageView<Factory: ViewFactory>: View {
         ReferenceMessageView(
             title: viewModel.title,
             subtitle: viewModel.subtitle,
-            isSentByCurrentUser: true,
+            outgoing: true,
             iconPreview: {
                 if let icon = viewModel.subtitleIcon {
                     factory.makeMessageAttachmentPreviewIconView(

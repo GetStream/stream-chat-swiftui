@@ -4,7 +4,6 @@
 
 import Foundation
 import StreamChat
-import UIKit
 
 /// A view model that provides display data for a quoted message.
 @MainActor
@@ -21,26 +20,25 @@ open class QuotedMessageViewModel {
     private lazy var attachmentPreviewResolver: MessageAttachmentPreviewResolver = {
         MessageAttachmentPreviewResolver(message: message)
     }()
-    
-    let quotedByCurrentUser: Bool
-    let shownInMessageList: Bool
 
     // MARK: - Init
+
+    /// Whether the view should use outgoing style (affects indicator and text colors).
+    public let outgoing: Bool
 
     /// Creates a new quoted message view model.
     /// - Parameters:
     ///   - message: The quoted message to display.
     ///   - currentUser: The current logged-in user.
+    ///   - outgoing: Whether the view should use outgoing style.
     public init(
         message: ChatMessage,
         currentUser: CurrentChatUser?,
-        quotedByCurrentUser: Bool,
-        shownInMessageList: Bool
+        outgoing: Bool
     ) {
         self.message = message
         self.currentUser = currentUser
-        self.quotedByCurrentUser = quotedByCurrentUser
-        self.shownInMessageList = shownInMessageList
+        self.outgoing = outgoing
     }
     
     // MARK: - Display Properties
@@ -53,11 +51,6 @@ open class QuotedMessageViewModel {
     /// The author's display name.
     open var authorName: String {
         message.author.name ?? message.author.id
-    }
-    
-    /// Whether the message was sent by the current user.
-    open var isSentByCurrentUser: Bool {
-        message.isSentByCurrentUser
     }
     
     /// The message ID for scroll navigation.
