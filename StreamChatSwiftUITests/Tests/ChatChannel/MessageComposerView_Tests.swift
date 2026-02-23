@@ -570,6 +570,48 @@ import XCTest
 
         AssertSnapshot(view, variants: .onlyUserInterfaceStyles, size: size, suffix: "themed")
     }
+
+    func test_composerInputView_command_empty() {
+        let factory = DefaultViewFactory.shared
+        let channelController = ChatChannelTestHelpers.makeChannelController(chatClient: chatClient)
+        let size = CGSize(width: composerWidth, height: 200)
+
+        let view = ComposerInputView(
+            factory: factory,
+            channelController: channelController,
+            text: .constant(""),
+            selectedRangeLocation: .constant(0),
+            command: .constant(.init(
+                id: .unique,
+                typingSuggestion: .empty,
+                displayInfo: CommandDisplayInfo(
+                    displayName: "Giphy",
+                    icon: Appearance.Images().commandGiphy,
+                    format: "",
+                    isInstant: true
+                )
+            )),
+            recordingState: .constant(.initial),
+            composerAssets: [],
+            addedCustomAttachments: [],
+            addedVoiceRecordings: [],
+            quotedMessage: .constant(nil),
+            editedMessage: .constant(nil),
+            cooldownDuration: 0,
+            hasContent: false,
+            canSendMessage: true,
+            onCustomAttachmentTap: { _ in },
+            removeAttachmentWithId: { _ in },
+            sendMessage: {},
+            onImagePasted: { _ in },
+            startRecording: {},
+            stopRecording: {}
+        )
+        .environmentObject(MessageComposerTestUtils.makeComposerViewModel(chatClient: chatClient))
+        .frame(width: size.width, height: size.height)
+
+        AssertSnapshot(view, variants: .onlyUserInterfaceStyles, size: size)
+    }
   
     // MARK: - Drafts
 

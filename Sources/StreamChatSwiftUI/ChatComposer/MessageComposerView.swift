@@ -533,6 +533,10 @@ public struct ComposerInputView<Factory: ViewFactory>: View, KeyboardReadable {
             return .editing(hasContent: hasContent)
         }
 
+        if command?.displayInfo?.isInstant == true {
+            return .creating(hasContent: hasContent)
+        }
+
         if utils.composerConfig.isVoiceRecordingEnabled && !hasContent {
             return .allowAudioRecording
         }
