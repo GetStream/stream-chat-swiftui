@@ -870,10 +870,8 @@ extension ViewFactory {
             currentUserId: chatClient.currentUserId,
             message: options.message
         )
-        let showReadCount = options.channel.memberCount > 2 && !options.message.isLastActionFailed
         return MessageReadIndicatorView(
             readUsers: readUsers,
-            showReadCount: showReadCount,
             localState: options.message.localState,
             usesInvertedStyle: options.usesInvertedStyle
         )

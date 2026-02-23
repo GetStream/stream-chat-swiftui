@@ -54,7 +54,6 @@ struct DemoAppChatChannelListItem: View {
                                         currentUserId: chatClient.currentUserId,
                                         message: channel.latestMessages.first
                                     ),
-                                    showReadCount: false,
                                     localState: channel.latestMessages.first?.localState
                                 )
                             }
