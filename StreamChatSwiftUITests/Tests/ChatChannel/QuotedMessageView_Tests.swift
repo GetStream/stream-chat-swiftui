@@ -62,8 +62,7 @@ import XCTest
             id: .unique,
             cid: .unique,
             text: "I'm thinking we could grab brunch at that new café downtown and then head to the park for a walk.",
-            author: author,
-            isSentByCurrentUser: false
+            author: author
         )
         
         // When
@@ -100,8 +99,7 @@ import XCTest
             cid: .unique,
             text: "Looks cozy, right? https://bloomharbor.com/cafe-menu",
             author: author,
-            attachments: [linkAttachment.asAnyAttachment],
-            isSentByCurrentUser: false
+            attachments: [linkAttachment.asAnyAttachment]
         )
         
         // When
@@ -127,8 +125,7 @@ import XCTest
                     id: .unique,
                     imageURL: .localYodaImage
                 ).asAnyAttachment
-            ],
-            isSentByCurrentUser: false
+            ]
         )
         
         // When
@@ -154,8 +151,7 @@ import XCTest
                     id: .unique,
                     imageURL: .localYodaImage
                 ).asAnyAttachment
-            ],
-            isSentByCurrentUser: false
+            ]
         )
         
         // When
@@ -180,8 +176,7 @@ import XCTest
                 ChatMessageImageAttachment.mock(id: .unique, imageURL: .localYodaImage).asAnyAttachment,
                 ChatMessageImageAttachment.mock(id: .unique, imageURL: .localYodaImage).asAnyAttachment,
                 ChatMessageImageAttachment.mock(id: .unique, imageURL: .localYodaImage).asAnyAttachment
-            ],
-            isSentByCurrentUser: false
+            ]
         )
         
         // When
@@ -209,8 +204,7 @@ import XCTest
                 ChatMessageImageAttachment.mock(id: .unique, imageURL: .localYodaImage).asAnyAttachment,
                 ChatMessageImageAttachment.mock(id: .unique, imageURL: .localYodaImage).asAnyAttachment,
                 ChatMessageImageAttachment.mock(id: .unique, imageURL: .localYodaImage).asAnyAttachment
-            ],
-            isSentByCurrentUser: false
+            ]
         )
         
         // When
@@ -245,8 +239,7 @@ import XCTest
             cid: .unique,
             text: "I took a short clip earlier",
             author: author,
-            attachments: [videoAttachment.asAnyAttachment],
-            isSentByCurrentUser: false
+            attachments: [videoAttachment.asAnyAttachment]
         )
         
         // When
@@ -281,8 +274,7 @@ import XCTest
             cid: .unique,
             text: "",
             author: author,
-            attachments: [videoAttachment.asAnyAttachment],
-            isSentByCurrentUser: false
+            attachments: [videoAttachment.asAnyAttachment]
         )
         
         // When
@@ -319,8 +311,7 @@ import XCTest
             cid: .unique,
             text: "I took some videos today",
             author: author,
-            attachments: [videoAttachment(), videoAttachment(), videoAttachment()],
-            isSentByCurrentUser: false
+            attachments: [videoAttachment(), videoAttachment(), videoAttachment()]
         )
         
         // When
@@ -360,8 +351,7 @@ import XCTest
             attachments: [
                 videoAttachment(), videoAttachment(), videoAttachment(),
                 videoAttachment(), videoAttachment(), videoAttachment()
-            ],
-            isSentByCurrentUser: false
+            ]
         )
         
         // When
@@ -405,8 +395,7 @@ import XCTest
             cid: .unique,
             text: "I'm sending you some photos and files",
             author: author,
-            attachments: [imageAttachment, imageAttachment2, fileAttachment],
-            isSentByCurrentUser: false
+            attachments: [imageAttachment, imageAttachment2, fileAttachment]
         )
         
         // When
@@ -456,8 +445,7 @@ import XCTest
                 imageAttachment, imageAttachment2,
                 fileAttachment(), fileAttachment(), fileAttachment(),
                 fileAttachment(), fileAttachment()
-            ],
-            isSentByCurrentUser: false
+            ]
         )
         
         // When
@@ -493,8 +481,7 @@ import XCTest
             cid: .unique,
             text: "Here's a quick voice note",
             author: author,
-            attachments: [voiceAttachment.asAnyAttachment],
-            isSentByCurrentUser: false
+            attachments: [voiceAttachment.asAnyAttachment]
         )
         
         // When
@@ -530,8 +517,7 @@ import XCTest
             cid: .unique,
             text: "",
             author: author,
-            attachments: [voiceAttachment.asAnyAttachment],
-            isSentByCurrentUser: false
+            attachments: [voiceAttachment.asAnyAttachment]
         )
         
         // When
@@ -565,8 +551,7 @@ import XCTest
             cid: .unique,
             text: "Here is the Q4 report",
             author: author,
-            attachments: [fileAttachment.asAnyAttachment],
-            isSentByCurrentUser: false
+            attachments: [fileAttachment.asAnyAttachment]
         )
         
         // When
@@ -600,8 +585,7 @@ import XCTest
             cid: .unique,
             text: "",
             author: author,
-            attachments: [fileAttachment.asAnyAttachment],
-            isSentByCurrentUser: false
+            attachments: [fileAttachment.asAnyAttachment]
         )
         
         // When
@@ -624,7 +608,6 @@ import XCTest
             cid: .unique,
             text: "",
             author: author,
-            isSentByCurrentUser: false,
             poll: poll
         )
         
@@ -646,8 +629,7 @@ import XCTest
             cid: .unique,
             text: "This message was deleted",
             author: author,
-            deletedAt: Date(),
-            isSentByCurrentUser: false
+            deletedAt: Date()
         )
         
         // When
@@ -669,7 +651,7 @@ import XCTest
             text: "Test message",
             author: author
         )
-        let viewModel = QuotedMessageViewModel(message: message, currentUser: nil)
+        let viewModel = QuotedMessageViewModel(message: message, currentUser: nil, outgoing: false)
         
         // Then
         XCTAssertEqual(viewModel.title, "Reply to Emma Chen")
@@ -684,7 +666,7 @@ import XCTest
             text: "Hello world",
             author: author
         )
-        let viewModel = QuotedMessageViewModel(message: message, currentUser: nil)
+        let viewModel = QuotedMessageViewModel(message: message, currentUser: nil, outgoing: false)
         
         // Then
         XCTAssertEqual(viewModel.subtitle, "Hello world")
@@ -702,7 +684,7 @@ import XCTest
                 ChatMessageImageAttachment.mock(id: .unique, imageURL: .localYodaImage).asAnyAttachment
             ]
         )
-        let viewModel = QuotedMessageViewModel(message: message, currentUser: nil)
+        let viewModel = QuotedMessageViewModel(message: message, currentUser: nil, outgoing: false)
         
         // Then
         XCTAssertEqual(viewModel.subtitle, "Photo")
@@ -721,7 +703,7 @@ import XCTest
                 ChatMessageImageAttachment.mock(id: .unique, imageURL: .localYodaImage).asAnyAttachment
             ]
         )
-        let viewModel = QuotedMessageViewModel(message: message, currentUser: nil)
+        let viewModel = QuotedMessageViewModel(message: message, currentUser: nil, outgoing: false)
         
         // Then
         XCTAssertEqual(viewModel.subtitle, "3 photos")
@@ -751,7 +733,7 @@ import XCTest
             author: author,
             attachments: [voiceAttachment.asAnyAttachment]
         )
-        let viewModel = QuotedMessageViewModel(message: message, currentUser: nil)
+        let viewModel = QuotedMessageViewModel(message: message, currentUser: nil, outgoing: false)
         
         // Then
         XCTAssertEqual(viewModel.subtitle, "Voice message (01:12)")
@@ -766,7 +748,7 @@ import XCTest
             text: "Test message",
             author: author
         )
-        let viewModel = QuotedMessageViewModel(message: message, currentUser: nil)
+        let viewModel = QuotedMessageViewModel(message: message, currentUser: nil, outgoing: false)
         
         // Then
         XCTAssertEqual(viewModel.messageId, messageId)
@@ -782,7 +764,7 @@ import XCTest
             translations: [.spanish: "Hola"]
         )
         let currentUser = CurrentChatUser.mock(currentUserId: .unique, language: .spanish)
-        let viewModel = QuotedMessageViewModel(message: message, currentUser: currentUser)
+        let viewModel = QuotedMessageViewModel(message: message, currentUser: currentUser, outgoing: false)
         
         // Then
         XCTAssertEqual(viewModel.subtitle, "Hola")
@@ -799,7 +781,7 @@ import XCTest
         )
         // User language is French but translation is only available in Spanish
         let currentUser = CurrentChatUser.mock(currentUserId: .unique, language: .french)
-        let viewModel = QuotedMessageViewModel(message: message, currentUser: currentUser)
+        let viewModel = QuotedMessageViewModel(message: message, currentUser: currentUser, outgoing: false)
         
         // Then - should fall back to original text
         XCTAssertEqual(viewModel.subtitle, "Hello")
@@ -820,13 +802,14 @@ import XCTest
 
 // MARK: - Factory Helpers
 
-extension QuotedMessageView where Factory == DefaultViewFactory {
+private extension QuotedMessageView where Factory == DefaultViewFactory {
     init(message: ChatMessage) {
         self.init(
             factory: DefaultViewFactory.shared,
             viewModel: QuotedMessageViewModel(
                 message: message,
-                currentUser: nil
+                currentUser: nil,
+                outgoing: false
             )
         )
     }

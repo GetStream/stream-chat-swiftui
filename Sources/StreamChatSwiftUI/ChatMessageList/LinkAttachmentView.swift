@@ -44,6 +44,7 @@ public struct LinkAttachmentContainer<Factory: ViewFactory>: View {
                 factory.makeChatQuotedMessageView(
                     options: ChatQuotedMessageViewOptions(
                         quotedMessage: quotedMessage,
+                        parentMessage: message,
                         scrolledId: $scrolledId
                     )
                 )

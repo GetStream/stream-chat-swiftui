@@ -40,6 +40,7 @@ public struct ImageAttachmentContainer<Factory: ViewFactory>: View {
                 factory.makeChatQuotedMessageView(
                     options: ChatQuotedMessageViewOptions(
                         quotedMessage: quotedMessage,
+                        parentMessage: message,
                         scrolledId: $scrolledId
                     )
                 )

@@ -31,10 +31,6 @@ public struct QuotedMessageView<Factory: ViewFactory>: View {
     public var body: some View {
         referenceMessageView
             .padding(padding ?? defaultPadding)
-            .modifier(ReferenceMessageViewBackgroundModifier(
-                isSentByCurrentUser: viewModel.isSentByCurrentUser
-            ))
-            .frame(height: 56)
     }
 
     /// The default padding applied to the quoted message view.
@@ -52,7 +48,7 @@ public struct QuotedMessageView<Factory: ViewFactory>: View {
         ReferenceMessageView(
             title: viewModel.title,
             subtitle: viewModel.subtitle,
-            isSentByCurrentUser: viewModel.isSentByCurrentUser,
+            outgoing: viewModel.outgoing,
             iconPreview: {
                 if let icon = viewModel.subtitleIcon {
                     factory.makeMessageAttachmentPreviewIconView(

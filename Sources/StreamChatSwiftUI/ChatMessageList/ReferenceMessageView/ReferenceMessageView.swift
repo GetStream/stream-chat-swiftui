@@ -20,8 +20,8 @@ public struct ReferenceMessageView<IconPreview: View, AttachmentPreview: View>: 
     public let subtitle: String
     /// An optional icon preview displayed before the subtitle (e.g., attachment type icon).
     public let iconPreview: IconPreview?
-    /// Whether the referenced message was sent by the current user. Affects the indicator color.
-    public let isSentByCurrentUser: Bool
+    /// Whether the referenced message uses outgoing style. Affects the indicator and text colors.
+    public let outgoing: Bool
     /// An optional attachment preview displayed on the trailing edge.
     public let attachmentPreview: AttachmentPreview?
 
@@ -29,19 +29,19 @@ public struct ReferenceMessageView<IconPreview: View, AttachmentPreview: View>: 
     /// - Parameters:
     ///   - title: The title text (e.g., "Reply to [Author]").
     ///   - subtitle: The subtitle text (e.g., message preview).
-    ///   - isSentByCurrentUser: Whether the referenced message was sent by the current user.
+    ///   - outgoing: Whether the referenced message uses outgoing style.
     ///   - iconPreview: A view builder for the icon preview displayed before the subtitle.
     ///   - attachmentPreview: A view builder for the attachment preview.
     public init(
         title: String,
         subtitle: String,
-        isSentByCurrentUser: Bool,
+        outgoing: Bool,
         @ViewBuilder iconPreview: () -> IconPreview,
         @ViewBuilder attachmentPreview: () -> AttachmentPreview
     ) {
         self.title = title
         self.subtitle = subtitle
-        self.isSentByCurrentUser = isSentByCurrentUser
+        self.outgoing = outgoing
         self.iconPreview = iconPreview()
         self.attachmentPreview = attachmentPreview()
     }
@@ -49,7 +49,7 @@ public struct ReferenceMessageView<IconPreview: View, AttachmentPreview: View>: 
     public var body: some View {
         HStack(spacing: tokens.spacingXs) {
             ReferenceIndicatorView(
-                tintColor: isSentByCurrentUser
+                tintColor: outgoing
                     ? colors.chatReplyIndicatorOutgoing
                     : colors.chatReplyIndicatorIncoming
             )
@@ -71,7 +71,7 @@ public struct ReferenceMessageView<IconPreview: View, AttachmentPreview: View>: 
     var titleView: some View {
         Text(title)
             .font(fonts.subheadlineBold)
-            .foregroundColor(Color(isSentByCurrentUser ? colors.chatTextOutgoing : colors.chatTextIncoming))
+            .foregroundColor(Color(outgoing ? colors.chatTextOutgoing : colors.chatTextIncoming))
             .lineLimit(1)
     }
 
@@ -84,7 +84,7 @@ public struct ReferenceMessageView<IconPreview: View, AttachmentPreview: View>: 
 
             Text(subtitle)
                 .font(fonts.footnote)
-                .foregroundColor(Color(isSentByCurrentUser ? colors.chatTextOutgoing : colors.chatTextIncoming))
+                .foregroundColor(Color(outgoing ? colors.chatTextOutgoing : colors.chatTextIncoming))
                 .lineLimit(1)
                 .accessibilityIdentifier("referenceMessageSubtitle")
         }
@@ -98,15 +98,15 @@ extension ReferenceMessageView where IconPreview == EmptyView, AttachmentPreview
     /// - Parameters:
     ///   - title: The title text (e.g., "Reply to [Author]").
     ///   - subtitle: The subtitle text (e.g., message preview).
-    ///   - isSentByCurrentUser: Whether the referenced message was sent by the current user.
+    ///   - outgoing: Whether the referenced message uses outgoing style.
     public init(
         title: String,
         subtitle: String,
-        isSentByCurrentUser: Bool
+        outgoing: Bool
     ) {
         self.title = title
         self.subtitle = subtitle
-        self.isSentByCurrentUser = isSentByCurrentUser
+        self.outgoing = outgoing
         self.iconPreview = nil
         self.attachmentPreview = nil
     }

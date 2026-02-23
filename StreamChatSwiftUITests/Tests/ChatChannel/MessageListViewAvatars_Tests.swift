@@ -21,7 +21,7 @@ import XCTest
     
     func test_messageListView_defaultDMChannel() {
         // Given
-        setupConfig(showAvatars: true, showAvatarsInGroups: nil)
+        setupConfig(showIncomingMessageAvatar: true)
         let channel = ChatChannel.mockDMChannel()
 
         // When
@@ -33,7 +33,7 @@ import XCTest
 
     func test_messageListView_defaultGroupsChannel() {
         // Given
-        setupConfig(showAvatars: true, showAvatarsInGroups: nil)
+        setupConfig(showIncomingMessageAvatar: true)
         let channel = ChatChannel.mockNonDMChannel()
 
         // When
@@ -45,7 +45,7 @@ import XCTest
 
     func test_messageListView_dmChannelAvatarsOff() {
         // Given
-        setupConfig(showAvatars: false, showAvatarsInGroups: nil)
+        setupConfig(showIncomingMessageAvatar: false)
         let channel = ChatChannel.mockDMChannel()
 
         // When
@@ -57,7 +57,7 @@ import XCTest
 
     func test_messageListView_groupsChannelAvatarsOff() {
         // Given
-        setupConfig(showAvatars: true, showAvatarsInGroups: false)
+        setupConfig(showIncomingMessageAvatar: true, showAvatarsInGroups: false)
         let channel = ChatChannel.mockNonDMChannel()
 
         // When
@@ -67,9 +67,14 @@ import XCTest
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
 
-    private func setupConfig(showAvatars: Bool, showAvatarsInGroups: Bool?) {
+    private func setupConfig(
+        showIncomingMessageAvatar: Bool = true,
+        showOutgoingMessageAvatar: Bool = false,
+        showAvatarsInGroups: Bool = true
+    ) {
         let messageDisplayOptions = MessageDisplayOptions(
-            showAvatars: showAvatars,
+            showIncomingMessageAvatar: showIncomingMessageAvatar,
+            showOutgoingMessageAvatar: showOutgoingMessageAvatar,
             showAvatarsInGroups: showAvatarsInGroups
         )
         let messageListConfig = MessageListConfig(messageDisplayOptions: messageDisplayOptions)

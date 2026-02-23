@@ -19,8 +19,8 @@ import XCTest
 
     private let messageDisplayInfo = MessageDisplayInfo(
         message: .mock(id: .unique, cid: .unique, text: "test", author: .mock(id: .unique)),
-        frame: CGRect(x: 44, y: 200, width: 80, height: 50),
-        contentWidth: 200,
+        frame: CGRect(x: 0, y: 200, width: defaultScreenSize.width, height: 70),
+        contentWidth: 240,
         isFirst: true
     )
 
@@ -86,8 +86,8 @@ import XCTest
         )
         let messageDisplayInfo = MessageDisplayInfo(
             message: message,
-            frame: CGRect(x: 44, y: 200, width: 80, height: 50),
-            contentWidth: 200,
+            frame: CGRect(x: 0, y: 200, width: defaultScreenSize.width, height: 70),
+            contentWidth: 240,
             isFirst: true,
             showsMessageActions: false
         )
@@ -124,8 +124,8 @@ import XCTest
         )
         let messageDisplayInfo = MessageDisplayInfo(
             message: testMessage,
-            frame: CGRect(x: 44, y: 105, width: defaultScreenSize.width - 60, height: defaultScreenSize.height * 2),
-            contentWidth: 200,
+            frame: CGRect(x: 0, y: 200, width: defaultScreenSize.width, height: defaultScreenSize.height * 2),
+            contentWidth: 240,
             isFirst: true
         )
 
@@ -208,8 +208,8 @@ import XCTest
         )
         let messageDisplayInfo = MessageDisplayInfo(
             message: testMessage,
-            frame: messageDisplayInfo.frame,
-            contentWidth: messageDisplayInfo.contentWidth,
+            frame: CGRect(x: 0, y: 200, width: defaultScreenSize.width, height: 85),
+            contentWidth: 240,
             isFirst: true
         )
         let channel = ChatChannel.mock(cid: .unique, membership: .mock(id: "test", language: .portuguese))

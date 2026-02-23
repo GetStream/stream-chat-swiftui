@@ -151,10 +151,10 @@ public final class MessagePaddings {
     public let groupBottom: CGFloat
 
     public init(
-        horizontal: CGFloat = 8,
-        quotedViewPadding: CGFloat = 8,
+        horizontal: CGFloat = 16,
+        quotedViewPadding: CGFloat = 16,
         singleBottom: CGFloat = 8,
-        groupBottom: CGFloat = 2
+        groupBottom: CGFloat = 4
     ) {
         self.horizontal = horizontal
         self.quotedViewPadding = quotedViewPadding
@@ -172,7 +172,8 @@ public enum DateIndicatorPlacement {
 
 /// Used to show and hide different helper views around the message.
 public final class MessageDisplayOptions {
-    public let showAvatars: Bool
+    public let showIncomingMessageAvatar: Bool
+    public let showOutgoingMessageAvatar: Bool
     public let showAvatarsInGroups: Bool
     public let showMessageDate: Bool
     public let showAuthorName: Bool
@@ -188,13 +189,14 @@ public final class MessageDisplayOptions {
     public let reactionsStyle: ReactionsStyle
     public let showOriginalTranslatedButton: Bool
     public let messageLinkDisplayResolver: @MainActor (ChatMessage) -> [NSAttributedString.Key: Any]
-    public let spacerWidth: (CGFloat) -> CGFloat
+    public let spacerWidth: @MainActor (CGFloat) -> CGFloat
     public let reactionsTopPadding: (ChatMessage) -> CGFloat
     public let dateSeparator: (ChatMessage, ChatMessage) -> Date?
 
     public init(
-        showAvatars: Bool = true,
-        showAvatarsInGroups: Bool? = nil,
+        showIncomingMessageAvatar: Bool = true,
+        showOutgoingMessageAvatar: Bool = false,
+        showAvatarsInGroups: Bool = true,
         showMessageDate: Bool = true,
         showAuthorName: Bool = true,
         animateChanges: Bool = true,
@@ -210,11 +212,13 @@ public final class MessageDisplayOptions {
         showOriginalTranslatedButton: Bool = false,
         messageLinkDisplayResolver: @escaping @MainActor (ChatMessage) -> [NSAttributedString.Key: Any] = MessageDisplayOptions
             .defaultLinkDisplay,
-        spacerWidth: @escaping (CGFloat) -> CGFloat = MessageDisplayOptions.defaultSpacerWidth,
+        spacerWidth: @escaping @MainActor (CGFloat) -> CGFloat = MessageDisplayOptions.defaultSpacerWidth,
         reactionsTopPadding: @escaping (ChatMessage) -> CGFloat = MessageDisplayOptions.defaultReactionsTopPadding,
         dateSeparator: @escaping (ChatMessage, ChatMessage) -> Date? = MessageDisplayOptions.defaultDateSeparator
     ) {
-        self.showAvatars = showAvatars
+        self.showIncomingMessageAvatar = showIncomingMessageAvatar
+        self.showOutgoingMessageAvatar = showOutgoingMessageAvatar
+        self.showAvatarsInGroups = showAvatarsInGroups
         self.showAuthorName = showAuthorName
         self.showMessageDate = showMessageDate
         self.animateChanges = animateChanges
@@ -226,7 +230,6 @@ public final class MessageDisplayOptions {
         self.lastInGroupHeaderSize = lastInGroupHeaderSize
         self.shouldAnimateReactions = shouldAnimateReactions
         self.spacerWidth = spacerWidth
-        self.showAvatarsInGroups = showAvatarsInGroups ?? showAvatars
         self.reactionsTopPadding = reactionsTopPadding
         self.newMessagesSeparatorSize = newMessagesSeparatorSize
         self.dateSeparator = dateSeparator
@@ -235,8 +238,11 @@ public final class MessageDisplayOptions {
         self.showOriginalTranslatedButton = showOriginalTranslatedButton
     }
 
-    public func showAvatars(for channel: ChatChannel) -> Bool {
-        channel.isDirectMessageChannel ? showAvatars : showAvatarsInGroups
+    public func showAvatars(for channel: ChatChannel, incoming: Bool) -> Bool {
+        if !channel.isDirectMessageChannel && !showAvatarsInGroups {
+            return false
+        }
+        return incoming ? showIncomingMessageAvatar : showOutgoingMessageAvatar
     }
     
     public static func defaultDateSeparator(message: ChatMessage, previous: ChatMessage) -> Date? {
@@ -260,18 +266,34 @@ public final class MessageDisplayOptions {
         }
     }
 
-    public static var defaultSpacerWidth: (CGFloat) -> (CGFloat) {
+    /// The spacer is the empty region on the side opposite the avatar.
+    /// It mirrors the avatar side layout plus an extra offset so incoming
+    /// and outgoing bubbles don't start at the same horizontal position.
+    ///
+    /// Incoming message (bubble left-aligned):
+    /// |<-pad->|<-avatar->|<-gap->|<--bubble-->|<------spacer------>|
+    /// |  16   |    32    |   8   |  up to 264 | 16+32+8+26 = 82   |
+    ///
+    /// Outgoing message (bubble right-aligned):
+    /// |<------spacer------>|<--bubble-->|<-gap->|<-avatar->|<-pad->|
+    /// | 16+32+8+26 = 82   | up to 264  |   8   |    32    |  16   |
+    public static var defaultSpacerWidth: @MainActor (CGFloat) -> (CGFloat) {
         { availableWidth in
             if isIPad && availableWidth > 500 {
-                2 * availableWidth / 3
+                return 2 * availableWidth / 3
             } else {
-                availableWidth / 4
+                @Injected(\.utils) var utils
+                @Injected(\.tokens) var tokens
+                let padding = utils.messageListConfig.messagePaddings.horizontal
+                let avatarWithSpacing = AvatarSize.medium + tokens.spacingXs
+                let additionalOffset: CGFloat = 26
+                return padding + avatarWithSpacing + additionalOffset
             }
         }
     }
     
     public static var defaultReactionsTopPadding: (ChatMessage) -> CGFloat {
-        { _ in 24 }
+        { _ in 20 }
     }
 }
 

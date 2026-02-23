@@ -7,13 +7,12 @@ import SwiftUI
 
 /// Background modifier for message reference views.
 public struct ReferenceMessageViewBackgroundModifier: ViewModifier {
-    @Injected(\.colors) var colors
     @Injected(\.tokens) var tokens
 
-    let isSentByCurrentUser: Bool
+    let backgroundColor: Color
 
-    init(isSentByCurrentUser: Bool) {
-        self.isSentByCurrentUser = isSentByCurrentUser
+    init(backgroundColor: Color) {
+        self.backgroundColor = backgroundColor
     }
 
     public func body(content: Content) -> some View {
@@ -23,11 +22,7 @@ public struct ReferenceMessageViewBackgroundModifier: ViewModifier {
                     cornerRadius: tokens.messageBubbleRadiusAttachment,
                     style: .continuous
                 )
-                .fill(Color(
-                    isSentByCurrentUser
-                        ? colors.chatBackgroundOutgoing
-                        : colors.chatBackgroundIncoming
-                ))
+                .fill(backgroundColor)
             )
     }
 }

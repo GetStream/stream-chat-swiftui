@@ -422,7 +422,8 @@ import XCTest
         // When
         let view = viewFactory.makeQuotedMessageView(
             options: .init(
-                quotedMessage: message
+                quotedMessage: message,
+                outgoing: true
             )
         )
 
@@ -438,6 +439,7 @@ import XCTest
         let view = viewFactory.makeChatQuotedMessageView(
             options: ChatQuotedMessageViewOptions(
                 quotedMessage: message,
+                parentMessage: .mock(),
                 scrolledId: .constant(nil)
             )
         )

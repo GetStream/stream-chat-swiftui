@@ -232,20 +232,22 @@ extension ViewFactory {
         Color(InjectedValues[\.colors].background)
     }
     
-    public func makeMessageContainerView(
-        options: MessageContainerViewOptions
+    public func makeMessageItemView(
+        options: MessageItemViewOptions
     ) -> some View {
-        MessageContainerView(
+        MessageItemView(
             factory: self,
             channel: options.channel,
             message: options.message,
             width: options.width,
             showsAllInfo: options.showsAllInfo,
+            shownAsPreview: options.shownAsPreview,
             isInThread: options.isInThread,
             isLast: options.isLast,
             scrolledId: options.scrolledId,
             quotedMessage: options.quotedMessage,
-            onLongPress: options.onLongPress
+            onLongPress: options.onLongPress,
+            viewModel: options.viewModel
         )
     }
     
@@ -261,11 +263,11 @@ extension ViewFactory {
     }
     
     public func makeMessageDateView(options: MessageDateViewOptions) -> some View {
-        MessageDateView(message: options.message, textColor: options.textColor)
+        MessageDateView(message: options.message, usesInvertedStyle: options.usesInvertedStyle)
     }
     
     public func makeMessageAuthorAndDateView(options: MessageAuthorAndDateViewOptions) -> some View {
-        MessageAuthorAndDateView(message: options.message)
+        MessageAuthorAndDateView(message: options.message, usesInvertedStyle: options.usesInvertedStyle)
     }
     
     public func makeLastInGroupHeaderView(options: LastInGroupHeaderViewOptions) -> some View {
@@ -276,7 +278,8 @@ extension ViewFactory {
         options: MessageTranslationFooterViewOptions
     ) -> some View {
         MessageTranslationFooterView(
-            messageViewModel: options.messageViewModel
+            messageViewModel: options.messageViewModel,
+            usesInvertedStyle: options.usesInvertedStyle
         )
     }
 
@@ -453,7 +456,8 @@ extension ViewFactory {
             factory: self,
             channel: options.channel,
             message: options.message,
-            replyCount: options.replyCount
+            replyCount: options.replyCount,
+            usesInvertedStyle: options.usesInvertedStyle
         )
     }
     
@@ -466,7 +470,8 @@ extension ViewFactory {
             message: options.parentMessage,
             replyCount: options.replyCount,
             showReplyCount: false,
-            isRightAligned: options.message.isRightAligned
+            isRightAligned: options.message.isRightAligned,
+            usesInvertedStyle: options.usesInvertedStyle
         )
     }
     
@@ -804,6 +809,7 @@ extension ViewFactory {
         ChatQuotedMessageView(
             factory: self,
             quotedMessage: options.quotedMessage,
+            parentMessage: options.parentMessage,
             scrolledId: options.scrolledId
         )
     }
@@ -815,7 +821,8 @@ extension ViewFactory {
             factory: self,
             viewModel: QuotedMessageViewModel(
                 message: options.quotedMessage,
-                currentUser: chatClient.currentUserController().currentUser
+                currentUser: chatClient.currentUserController().currentUser,
+                outgoing: options.outgoing
             ),
             padding: options.padding
         )
@@ -867,7 +874,8 @@ extension ViewFactory {
         return MessageReadIndicatorView(
             readUsers: readUsers,
             showReadCount: showReadCount,
-            localState: options.message.localState
+            localState: options.message.localState,
+            usesInvertedStyle: options.usesInvertedStyle
         )
     }
     

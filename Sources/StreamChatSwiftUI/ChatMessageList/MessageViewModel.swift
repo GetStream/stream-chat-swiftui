@@ -12,6 +12,7 @@ import StreamChat
 
     @Published public internal(set) var message: ChatMessage
     @Published public internal(set) var channel: ChatChannel?
+    @Published public var usesScrollView: Bool = false
     private var cancellables = Set<AnyCancellable>()
 
     public init(
@@ -81,8 +82,16 @@ import StreamChat
 
     public var messageAuthor: ChatUser? {
         guard let channel else { return nil }
-        guard messageListConfig.messageDisplayOptions.showAvatars(for: channel) else { return nil }
+        guard messageListConfig.messageDisplayOptions.showAvatars(for: channel, incoming: !isRightAligned) else { return nil }
         return message.author
+    }
+
+    public func isHighlighted(messageId: String?) -> Bool {
+        messageListConfig.highlightMessageWhenJumping && messageId == message.messageId
+    }
+
+    public var isDoubleTapOverlayEnabled: Bool {
+        messageListConfig.doubleTapOverlayEnabled
     }
 
     open var isSwipeToQuoteReplyPossible: Bool {

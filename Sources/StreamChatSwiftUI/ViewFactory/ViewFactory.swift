@@ -148,11 +148,11 @@ import SwiftUI
     /// - Returns: view shown as a background for the message list.
     func makeMessageListBackground(options: MessageListBackgroundOptions) -> MessageListBackground
 
-    associatedtype MessageContainerViewType: View
-    /// Creates the message container view.
-    /// - Parameter options: the options for creating the message container view.
-    /// - Returns: view shown in the message container slot.
-    func makeMessageContainerView(options: MessageContainerViewOptions) -> MessageContainerViewType
+    associatedtype MessageItemViewType: View
+    /// Creates the message item view.
+    /// - Parameter options: the options for creating the message item view.
+    /// - Returns: view shown in the message item slot.
+    func makeMessageItemView(options: MessageItemViewOptions) -> MessageItemViewType
 
     associatedtype MessageTextViewType: View
     /// Creates the message text view.

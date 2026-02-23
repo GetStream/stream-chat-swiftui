@@ -16,6 +16,7 @@ enum MessageRepliesConstants {
 public struct MessageRepliesView<Factory: ViewFactory>: View {
     @Injected(\.fonts) private var fonts
     @Injected(\.colors) private var colors
+    @Injected(\.tokens) private var tokens
 
     var factory: Factory
     var channel: ChatChannel
@@ -23,7 +24,9 @@ public struct MessageRepliesView<Factory: ViewFactory>: View {
     var replyCount: Int
     var isRightAligned: Bool
     var showReplyCount: Bool
-    var threadReplyMessage: ChatMessage? // The actual reply message (for showReplyInChannel messages)
+    /// When true, the `textOnAccent` color is used instead of the default darker text color.
+    var usesInvertedStyle: Bool
+    var threadReplyMessage: ChatMessage?
 
     public init(
         factory: Factory,
@@ -32,6 +35,7 @@ public struct MessageRepliesView<Factory: ViewFactory>: View {
         replyCount: Int,
         showReplyCount: Bool = true,
         isRightAligned: Bool? = nil,
+        usesInvertedStyle: Bool = false,
         threadReplyMessage: ChatMessage? = nil
     ) {
         self.factory = factory
@@ -40,6 +44,7 @@ public struct MessageRepliesView<Factory: ViewFactory>: View {
         self.replyCount = replyCount
         self.isRightAligned = isRightAligned ?? message.isRightAligned
         self.showReplyCount = showReplyCount
+        self.usesInvertedStyle = usesInvertedStyle
         self.threadReplyMessage = threadReplyMessage
     }
 
@@ -59,7 +64,7 @@ public struct MessageRepliesView<Factory: ViewFactory>: View {
                 userInfo: userInfo
             )
         } label: {
-            HStack {
+            HStack(spacing: tokens.spacingXs) {
                 if !isRightAligned {
                     messageAvatarView
                 }
@@ -69,36 +74,35 @@ public struct MessageRepliesView<Factory: ViewFactory>: View {
                     messageAvatarView
                 }
             }
-            .padding(.horizontal, 16)
+            .padding(.horizontal, 16 + tokens.spacingXs)
+            .padding(.top, tokens.spacingXxs)
             .overlay(
                 Path { path in
-                    let corner: CGFloat = 16
-                    let height: CGFloat = 2 * corner
-                    let startX: CGFloat = 0
-                    let endX = startX + corner
-
-                    path.move(to: CGPoint(x: startX, y: 0))
-                    path.addLine(to: CGPoint(x: startX, y: height - corner))
-                    path.addQuadCurve(
-                        to: CGPoint(x: endX, y: height),
-                        control: CGPoint(x: startX, y: height)
+                    path.move(to: CGPoint(x: 0.5, y: 0))
+                    path.addLine(to: CGPoint(x: 0.5, y: 20.5))
+                    path.addCurve(
+                        to: CGPoint(x: 16, y: 36),
+                        control1: CGPoint(x: 0.5, y: 29.0604),
+                        control2: CGPoint(x: 7.43959, y: 36)
                     )
                 }
                 .stroke(
-                    Color(message.isSentByCurrentUser ? colors.chatThreadConnectorOutgoing : colors.chatThreadConnectorIncoming),
+                    Color(message.isSentByCurrentUser ? colors.chatBackgroundOutgoing : colors.chatBackgroundIncoming),
                     style: StrokeStyle(
                         lineWidth: 1.0,
                         lineCap: .round,
                         lineJoin: .round
                     )
                 )
-                .offset(y: -22)
+                .frame(width: 16, height: 48)
+                .offset(y: -10)
                 .rotation3DEffect(
                     .degrees(isRightAligned ? 180 : 0),
                     axis: (x: 0, y: 1, z: 0)
-                )
+                ),
+                alignment: isRightAligned ? .trailing : .leading
             )
-            .foregroundColor(colors.textPrimary.toColor)
+            .foregroundColor(usesInvertedStyle ? colors.textOnAccent.toColor : colors.textPrimary.toColor)
         }
     }
     
@@ -137,41 +141,82 @@ public struct MessageRepliesView<Factory: ViewFactory>: View {
 /// This is needed when the parent message is not available in the local cache.
 /// Changing the `parentMessage` to `nil` in the `MessageRepliesView` would case multiple changes including breaking changes.
 struct LazyMessageRepliesView<Factory: ViewFactory>: View {
-    @StateObject private var parentMessageObserver: ChatMessageController.ObservableObject
+    @StateObject private var viewModel: ViewModel
 
     var factory: Factory
-    var channel: ChatChannel
-    var message: ChatMessage
+    /// When true, the `textOnAccent` color is used instead of the default darker text color.
+    var usesInvertedStyle: Bool
 
     init(
         factory: Factory,
         channel: ChatChannel,
         message: ChatMessage,
-        parentMessageController: ChatMessageController
+        parentMessageId: MessageId,
+        usesInvertedStyle: Bool = false
     ) {
-        _parentMessageObserver = StateObject(wrappedValue: parentMessageController.observableObject)
         self.factory = factory
-        self.channel = channel
-        self.message = message
+        self.usesInvertedStyle = usesInvertedStyle
+        _viewModel = StateObject(wrappedValue: ViewModel(
+            channel: channel,
+            message: message,
+            parentMessageId: parentMessageId
+        ))
     }
 
     var body: some View {
         VStack {
-            if let parentMessage = parentMessageObserver.message {
+            if let parentMessage = viewModel.parentMessage {
                 factory.makeMessageRepliesShownInChannelView(
                     options: .init(
-                        channel: channel,
-                        message: message,
+                        channel: viewModel.channel,
+                        message: viewModel.message,
                         parentMessage: parentMessage,
-                        replyCount: parentMessage.replyCount
+                        replyCount: parentMessage.replyCount,
+                        usesInvertedStyle: usesInvertedStyle
                     )
                 )
             } else {
                 EmptyView()
             }
-        }.onAppear {
-            if parentMessageObserver.message == nil {
-                parentMessageObserver.controller.synchronize()
+        }
+        .onAppear {
+            viewModel.loadParentMessage()
+        }
+    }
+    
+    @MainActor
+    final class ViewModel: ObservableObject {
+        @Injected(\.chatClient) private var chatClient
+        @Published private(set) var parentMessage: ChatMessage?
+        
+        let channel: ChatChannel
+        let message: ChatMessage
+        let parentMessageId: MessageId
+        private var parentMessageObserver: ChatMessageController.ObservableObject?
+        
+        init(channel: ChatChannel, message: ChatMessage, parentMessageId: MessageId) {
+            self.channel = channel
+            self.message = message
+            self.parentMessageId = parentMessageId
+        }
+        
+        func loadParentMessage() {
+            guard parentMessageObserver == nil else {
+                if parentMessage == nil {
+                    parentMessageObserver?.controller.synchronize()
+                }
+                return
+            }
+            
+            let controller = chatClient.messageController(cid: channel.cid, messageId: parentMessageId)
+            let observer = ChatMessageController.ObservableObject(controller: controller)
+            parentMessageObserver = observer
+            
+            // Bind the observer's message to our published property
+            observer.$message.assign(to: &$parentMessage)
+            
+            if parentMessage == nil {
+                controller.synchronize()
             }
         }
     }

@@ -196,7 +196,7 @@
 				Tests/ChatChannel/MessageCachingUtils_Tests.swift,
 				Tests/ChatChannel/MessageComposerView_Tests.swift,
 				Tests/ChatChannel/MessageComposerViewModel_Tests.swift,
-				Tests/ChatChannel/MessageContainerView_Tests.swift,
+				Tests/ChatChannel/MessageItemView_Tests.swift,
 				Tests/ChatChannel/MessageListDateUtils_Tests.swift,
 				Tests/ChatChannel/MessageListView_Tests.swift,
 				Tests/ChatChannel/MessageListViewAvatars_Tests.swift,

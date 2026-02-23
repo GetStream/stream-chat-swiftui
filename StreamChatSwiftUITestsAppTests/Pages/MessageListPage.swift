@@ -11,7 +11,7 @@ import XCTest
 
 class MessageListPage {
     static var cells: XCUIElementQuery {
-        app.otherElements.matching(identifier: "MessageContainerView")
+        app.otherElements.matching(identifier: "MessageItemView")
     }
 
     static func messageView(for cell: XCUIElement) -> XCUIElement {

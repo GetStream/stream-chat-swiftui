@@ -12,10 +12,19 @@ public struct MessageTranslationFooterView: View {
     @Injected(\.colors) private var colors
     @Injected(\.utils) private var utils
 
+    /// When true, the `textOnAccent` color is used instead of the default darker text color.
+    var usesInvertedStyle: Bool
+
     public init(
-        messageViewModel: MessageViewModel
+        messageViewModel: MessageViewModel,
+        usesInvertedStyle: Bool = false
     ) {
         self.messageViewModel = messageViewModel
+        self.usesInvertedStyle = usesInvertedStyle
+    }
+
+    private var resolvedTextColor: Color {
+        usesInvertedStyle ? colors.textOnAccent.toColor : colors.chatTextTimestamp.toColor
     }
 
     public var body: some View {
@@ -35,13 +44,13 @@ public struct MessageTranslationFooterView: View {
     private var translatedToView: some View {
         Text(messageViewModel.translatedLanguageText ?? "")
             .font(fonts.footnote)
-            .foregroundColor(colors.chatTextTimestamp.toColor)
+            .foregroundColor(resolvedTextColor)
     }
 
     private var separatorView: some View {
         Text("•")
             .font(fonts.footnote)
-            .foregroundColor(colors.chatTextTimestamp.toColor)
+            .foregroundColor(resolvedTextColor)
     }
 
     private var showOriginalButton: some View {
@@ -56,7 +65,7 @@ public struct MessageTranslationFooterView: View {
             label: {
                 Text(messageViewModel.originalTranslationButtonText)
                     .font(fonts.footnote)
-                    .foregroundColor(colors.chatTextTimestamp.toColor)
+                    .foregroundColor(resolvedTextColor)
             }
         )
     }

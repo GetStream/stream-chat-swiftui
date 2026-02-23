@@ -319,14 +319,18 @@ public final class ComposerQuotedMessageViewOptions: Sendable {
 public final class QuotedMessageViewOptions: Sendable {
     /// The quoted message to display.
     public let quotedMessage: ChatMessage
+    /// Whether the view should use outgoing style.
+    public let outgoing: Bool
     /// The padding to apply around the quoted message view.
     public let padding: EdgeInsets?
     
     public init(
         quotedMessage: ChatMessage,
+        outgoing: Bool,
         padding: EdgeInsets? = nil
     ) {
         self.quotedMessage = quotedMessage
+        self.outgoing = outgoing
         self.padding = padding
     }
 }
@@ -335,14 +339,18 @@ public final class QuotedMessageViewOptions: Sendable {
 public final class ChatQuotedMessageViewOptions: Sendable {
     /// The quoted message to display.
     public let quotedMessage: ChatMessage
+    /// The parent message which is quoting another message.
+    public let parentMessage: ChatMessage
     /// Binding to the currently scrolled message ID.
     public let scrolledId: Binding<String?>
     
     public init(
         quotedMessage: ChatMessage,
+        parentMessage: ChatMessage,
         scrolledId: Binding<String?>
     ) {
         self.quotedMessage = quotedMessage
+        self.parentMessage = parentMessage
         self.scrolledId = scrolledId
     }
 }

@@ -33,7 +33,7 @@ public struct MessageView<Factory: ViewFactory>: View {
     }
 
     public var body: some View {
-        VStack {
+        VStack(alignment: message.isRightAligned ? .trailing : .leading) {
             if messageTypeResolver.isDeleted(message: message) {
                 factory.makeDeletedMessageView(
                     options: DeletedMessageViewOptions(
@@ -207,6 +207,7 @@ public struct MessageTextView<Factory: ViewFactory>: View {
                 factory.makeChatQuotedMessageView(
                     options: ChatQuotedMessageViewOptions(
                         quotedMessage: quotedMessage,
+                        parentMessage: message,
                         scrolledId: $scrolledId
                     )
                 )
@@ -246,6 +247,7 @@ public struct EmojiTextView<Factory: ViewFactory>: View {
                     factory.makeChatQuotedMessageView(
                         options: ChatQuotedMessageViewOptions(
                             quotedMessage: quotedMessage,
+                            parentMessage: message,
                             scrolledId: $scrolledId
                         )
                     )
