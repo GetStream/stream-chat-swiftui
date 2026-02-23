@@ -78,7 +78,10 @@ public struct ChatChannelListView<Factory: ViewFactory>: View {
         NavigationContainerView(embedInNavigationView: embedInNavigationView) {
             content()
         }
-        .overlay(viewModel.customAlertShown ? customViewOverlay() : nil)
+        .sheet(isPresented: $viewModel.customAlertShown, content: {
+            customViewOverlay()
+                .modifier(PresentationDetentsModifier(sheetSizes: [.custom(280), .medium]))
+        })
         .if(isIphone || !utils.messageListConfig.iPadSplitViewEnabled, transform: { view in
             view.navigationViewStyle(.stack)
         })
@@ -144,7 +147,6 @@ public struct ChatChannelListView<Factory: ViewFactory>: View {
         }
         .modifier(viewFactory.makeChannelListHeaderViewModifier(options: ChannelListHeaderViewModifierOptions(title: title)))
         .navigationBarTitleDisplayMode(utils.channelListConfig.navigationBarDisplayMode)
-        .blur(radius: (viewModel.customAlertShown || viewModel.alertShown) ? 6 : 0)
     }
 
     private func setupTabBarAppeareance() {
@@ -175,7 +177,6 @@ public struct ChatChannelListView<Factory: ViewFactory>: View {
                     }
                 )
             )
-            .edgesIgnoringSafeArea(.bottom)
         default:
             EmptyView()
         }

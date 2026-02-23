@@ -194,7 +194,7 @@ extension ChannelAction {
         )
         let leaveConversation = ChannelAction(
             title: L10n.Alert.Actions.leaveGroupTitle,
-            iconName: "person.fill.xmark",
+            iconName: "rectangle.portrait.and.arrow.forward",
             action: leaveAction,
             confirmationPopup: confirmationPopup,
             isDestructive: false
@@ -206,7 +206,7 @@ extension ChannelAction {
     @MainActor private static func viewInfo(for channel: ChatChannel) -> ChannelAction {
         let viewInfo = ChannelAction(
             title: L10n.Alert.Actions.viewInfoTitle,
-            iconName: "person.fill",
+            iconName: "info.circle",
             action: { /* no-op */ },
             confirmationPopup: nil,
             isDestructive: false

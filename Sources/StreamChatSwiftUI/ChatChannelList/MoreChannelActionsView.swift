@@ -10,6 +10,8 @@ public struct MoreChannelActionsView<Factory: ViewFactory>: View {
     @Injected(\.colors) private var colors
     @Injected(\.images) private var images
     @Injected(\.fonts) private var fonts
+    @Injected(\.tokens) private var tokens
+    @Injected(\.chatClient) private var chatClient
 
     @StateObject var viewModel: MoreChannelActionsViewModel
     @Binding var swipedChannelId: String?
@@ -22,7 +24,8 @@ public struct MoreChannelActionsView<Factory: ViewFactory>: View {
             isPresented = presentedView != nil
         }
     }
-    
+
+    private let channel: ChatChannel
     public let factory: Factory
 
     public init(
@@ -40,67 +43,19 @@ public struct MoreChannelActionsView<Factory: ViewFactory>: View {
             )
         )
         self.factory = factory
+        self.channel = channel
         self.onDismiss = onDismiss
         _swipedChannelId = swipedChannelId
         self.bundle = bundle
     }
 
     public var body: some View {
-        VStack {
+        VStack(alignment: .leading, spacing: 0) {
+            channelHeader
+            actionsListView
             Spacer()
-            VStack(spacing: 4) {
-                Text(viewModel.chatName)
-                    .font(fonts.bodyBold)
-
-                Text(viewModel.subtitleText)
-                    .font(fonts.footnote)
-                    .foregroundColor(Color(colors.textLowEmphasis))
-
-                memberList
-
-                ForEach(viewModel.channelActions) { action in
-                    VStack {
-                        Divider()
-                            .padding(.horizontal, -16)
-
-                        if let destination = action.navigationDestination {
-                            Button {
-                                presentedView = destination
-                            } label: {
-                                ActionItemView(
-                                    title: action.title,
-                                    iconName: action.iconName,
-                                    isDestructive: action.isDestructive,
-                                    bundle: bundle
-                                )
-                            }
-                        } else {
-                            Button {
-                                if action.confirmationPopup != nil {
-                                    viewModel.alertAction = action
-                                } else {
-                                    action.action()
-                                }
-                            } label: {
-                                ActionItemView(
-                                    title: action.title,
-                                    iconName: action.iconName,
-                                    isDestructive: action.isDestructive,
-                                    bundle: bundle
-                                )
-                            }
-                        }
-                    }
-                }
-            }
-            .padding()
-            .background(Color(colors.background1))
-            .cornerRadius(16)
-            .padding(.all, 8)
-            .padding(.bottom, bottomSafeArea)
-            .foregroundColor(Color(colors.text))
-            .opacity(viewModel.alertShown ? 0 : 1)
         }
+        .background(colors.background.toColor.edgesIgnoringSafeArea(.all))
         .alert(isPresented: $viewModel.alertShown) {
             let title = viewModel.alertAction?.confirmationPopup?.title ?? ""
             let message = viewModel.alertAction?.confirmationPopup?.message ?? ""
@@ -115,10 +70,6 @@ public struct MoreChannelActionsView<Factory: ViewFactory>: View {
                 secondaryButton: .cancel()
             )
         }
-        .background(Color.black.opacity(0.3))
-        .onTapGesture {
-            onDismiss()
-        }
         .fullScreenCover(isPresented: $isPresented) {
             if let fullScreenView = presentedView {
                 MoreChannelActionsFullScreenWrappingView(presentedView: fullScreenView) {
@@ -129,60 +80,85 @@ public struct MoreChannelActionsView<Factory: ViewFactory>: View {
         .accessibilityIdentifier("MoreChannelActionsView")
     }
 
-    private var memberList: some View {
-        Group {
-            if viewModel.members.count == 1 {
-                let member = viewModel.members[0]
-                ChannelMemberView(
-                    factory: factory,
-                    user: member
+    private var channelHeader: some View {
+        HStack(spacing: tokens.spacingMd) {
+            headerAvatar
+                .accessibilityHidden(true)
+
+            VStack(alignment: .leading, spacing: tokens.spacingXxxs) {
+                Text(viewModel.chatName)
+                    .font(fonts.headline)
+                    .foregroundColor(Color(colors.textPrimary))
+
+                Text(viewModel.subtitleText)
+                    .font(fonts.subheadline)
+                    .foregroundColor(Color(colors.textTertiary))
+            }
+
+            Spacer()
+        }
+        .padding(.horizontal, tokens.spacingMd)
+        .padding(.vertical, tokens.spacingLg)
+        .padding(.top, tokens.spacingXxs)
+    }
+
+    @ViewBuilder
+    private var headerAvatar: some View {
+        if channel.isDirectMessageChannel,
+           let otherMember = viewModel.members.first(where: { $0.id != chatClient.currentUserId }) {
+            factory.makeUserAvatarView(
+                options: UserAvatarViewOptions(
+                    user: otherMember,
+                    size: AvatarSize.large,
+                    showsIndicator: otherMember.isOnline
                 )
-            } else {
-                ScrollView(.horizontal) {
-                    HStack(alignment: .top, spacing: 16) {
-                        ForEach(viewModel.members) { member in
-                            ChannelMemberView(
-                                factory: factory,
-                                user: member
-                            )
+            )
+        } else {
+            ChannelAvatar(
+                channel: channel,
+                size: AvatarSize.large,
+                showsIndicator: false,
+                showsBorder: false
+            )
+        }
+    }
+
+    private var actionsListView: some View {
+        VStack(spacing: 0) {
+            ForEach(viewModel.channelActions) { action in
+                if let destination = action.navigationDestination {
+                    Button {
+                        presentedView = destination
+                    } label: {
+                        ActionItemView(
+                            title: action.title,
+                            iconName: action.iconName,
+                            isDestructive: action.isDestructive,
+                            boldTitle: false,
+                            bundle: bundle
+                        )
+                        .padding(.horizontal, tokens.spacingMd)
+                    }
+                } else {
+                    Button {
+                        if action.confirmationPopup != nil {
+                            viewModel.alertAction = action
+                        } else {
+                            action.action()
                         }
+                    } label: {
+                        ActionItemView(
+                            title: action.title,
+                            iconName: action.iconName,
+                            isDestructive: action.isDestructive,
+                            boldTitle: false,
+                            bundle: bundle
+                        )
+                        .padding(.horizontal, tokens.spacingMd)
                     }
                 }
             }
         }
-        .padding(.vertical, 16)
-    }
-}
-
-/// View displaying channel members with image and name.
-public struct ChannelMemberView<Factory: ViewFactory>: View {
-    @Injected(\.fonts) private var fonts
-
-    let factory: Factory
-    let user: ChatUser
-    let memberSize = CGSize(width: 64, height: 64)
-
-    public var body: some View {
-        VStack(alignment: .center) {
-            factory.makeUserAvatarView(
-                options: UserAvatarViewOptions(
-                    user: user,
-                    size: AvatarSize.large,
-                    showsIndicator: false
-                )
-            )
-            .accessibilityHidden(true)
-
-            Text(user.name ?? user.id)
-                .font(fonts.footnoteBold)
-                .multilineTextAlignment(.center)
-                .lineLimit(2)
-                .frame(maxWidth: memberSize.width, maxHeight: 34, alignment: .top)
-                .accessibilityLabel(Text(accessibilityLabel))
-        }
-    }
-    
-    var accessibilityLabel: String {
-        (user.name ?? user.id) + (user.isOnline ? ", \(L10n.Message.Title.online)" : "")
+        .foregroundColor(Color(colors.text))
     }
 }
