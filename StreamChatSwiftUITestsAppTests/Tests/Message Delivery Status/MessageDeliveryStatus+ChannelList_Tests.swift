@@ -28,9 +28,7 @@ final class MessageDeliveryStatus_ChannelList_Tests: StreamTestCase {
             userRobot.tapOnBackButton()
         }
         THEN("last message delivery status in the channel preview shows clocks on the left") {
-            userRobot
-                .assertMessageReadCountInChannelPreview(readBy: 0)
-                .assertMessageDeliveryStatusInChannelPreview(.pending)
+            userRobot.assertMessageDeliveryStatusInChannelPreview(.pending)
         }
     }
 
@@ -49,9 +47,7 @@ final class MessageDeliveryStatus_ChannelList_Tests: StreamTestCase {
             userRobot.tapOnBackButton()
         }
         THEN("last message delivery status in the channel preview shows single checkmark on the right") {
-            userRobot
-                .assertMessageReadCountInChannelPreview(readBy: 0)
-                .assertMessageDeliveryStatusInChannelPreview(.sent)
+            userRobot.assertMessageDeliveryStatusInChannelPreview(.sent)
         }
     }
 
@@ -76,9 +72,7 @@ final class MessageDeliveryStatus_ChannelList_Tests: StreamTestCase {
             userRobot.tapOnBackButton()
         }
         THEN("error indicator is shown for the failed message") {
-            userRobot
-                .assertMessageDeliveryStatus(.failed)
-                .assertMessageReadCount(readBy: 0)
+            userRobot.assertMessageDeliveryStatus(.failed)
         }
     }
 
@@ -102,9 +96,6 @@ final class MessageDeliveryStatus_ChannelList_Tests: StreamTestCase {
         THEN("user spots double checkmark next to the message") {
             userRobot.assertMessageDeliveryStatusInChannelPreview(.read)
         }
-        AND("read count is hidden") {
-            userRobot.assertMessageReadCountInChannelPreview(readBy: 0)
-        }
     }
 
     func test_deliveryStatusHiddenInPreview_whenMessageIsSentAndReadEventsIsDisabled() throws {
@@ -123,9 +114,7 @@ final class MessageDeliveryStatus_ChannelList_Tests: StreamTestCase {
             userRobot.tapOnBackButton()
         }
         THEN("delivery status is hidden") {
-            userRobot
-                .assertMessageDeliveryStatusInChannelPreview(nil)
-                .assertMessageReadCount(readBy: 0)
+            userRobot.assertMessageDeliveryStatusInChannelPreview(nil)
         }
     }
 
@@ -144,9 +133,7 @@ final class MessageDeliveryStatus_ChannelList_Tests: StreamTestCase {
             userRobot.tapOnBackButton()
         }
         THEN("delivery status is hidden") {
-            userRobot
-                .assertMessageDeliveryStatus(nil)
-                .assertMessageReadCount(readBy: 0)
+            userRobot.assertMessageDeliveryStatus(nil)
         }
     }
 }
@@ -175,7 +162,6 @@ extension MessageDeliveryStatus_ChannelList_Tests {
             userRobot
                 .assertLastMessageInChannelPreview(message)
                 .assertMessageDeliveryStatusInChannelPreview(nil)
-                .assertMessageReadCountInChannelPreview(readBy: 0)
         }
     }
 
@@ -206,7 +192,6 @@ extension MessageDeliveryStatus_ChannelList_Tests {
             userRobot
                 .assertLastMessageInChannelPreview(message)
                 .assertMessageDeliveryStatusInChannelPreview(.sent)
-                .assertMessageReadCountInChannelPreview(readBy: 0)
         }
     }
 
@@ -235,9 +220,6 @@ extension MessageDeliveryStatus_ChannelList_Tests {
                 .assertLastMessageInChannelPreview(message)
                 .assertMessageDeliveryStatusInChannelPreview(nil)
         }
-        AND("read count is hidden") {
-            userRobot.assertMessageReadCountInChannelPreview(readBy: 0)
-        }
     }
 
     func test_noCheckmarkShownForMessageInPreview_whenThreadReplyIsSentAndReadEventsIsDisabled() throws {
@@ -262,7 +244,6 @@ extension MessageDeliveryStatus_ChannelList_Tests {
             userRobot
                 .assertLastMessageInChannelPreview(message)
                 .assertMessageDeliveryStatus(nil)
-                .assertMessageReadCount(readBy: 0)
         }
     }
 
@@ -287,7 +268,6 @@ extension MessageDeliveryStatus_ChannelList_Tests {
             userRobot
                 .assertLastMessageInChannelPreview(message)
                 .assertMessageDeliveryStatus(nil)
-                .assertMessageReadCount(readBy: 0)
         }
     }
 }

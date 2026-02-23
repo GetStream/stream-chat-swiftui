@@ -27,9 +27,7 @@ final class MessageDeliveryStatus_Tests: StreamTestCase {
             userRobot.sendMessage(message)
         }
         THEN("user spots single checkmark below the message") {
-            userRobot
-                .assertMessageDeliveryStatus(.sent)
-                .assertMessageReadCount(readBy: 0)
+            userRobot.assertMessageDeliveryStatus(.sent)
         }
     }
 
@@ -69,9 +67,7 @@ final class MessageDeliveryStatus_Tests: StreamTestCase {
             userRobot.assertMessageFailedToBeSent()
         }
         AND("delivery status is hidden") {
-            userRobot
-                .assertMessageDeliveryStatus(nil)
-                .assertMessageReadCount(readBy: 0)
+            userRobot.assertMessageDeliveryStatus(nil)
         }
     }
 
@@ -109,18 +105,13 @@ final class MessageDeliveryStatus_Tests: StreamTestCase {
         }
         AND("message is read by more than 1 participant") {
             participantRobot.readMessage()
-            userRobot
-                .assertMessageDeliveryStatus(.read)
-                .assertMessageReadCount(readBy: 1)
+            userRobot.assertMessageDeliveryStatus(.read)
         }
         WHEN("new participant is added to the channel") {
 //            userRobot.addParticipant()
         }
         THEN("user spots double checkmark below the message") {
             userRobot.assertMessageDeliveryStatus(.read)
-        }
-        AND("user see read count 2 below the message") {
-            userRobot.assertMessageReadCount(readBy: 2)
         }
     }
 
@@ -139,9 +130,7 @@ final class MessageDeliveryStatus_Tests: StreamTestCase {
         }
         AND("is read by participant") {
             participantRobot.readMessage()
-            userRobot
-                .assertMessageDeliveryStatus(.read)
-                .assertMessageReadCount(readBy: 1)
+            userRobot.assertMessageDeliveryStatus(.read)
         }
         WHEN("participant is removed from the channel") {
 //            userRobot.removeParticipant(withUserId: participantRobot.id)
@@ -196,9 +185,7 @@ final class MessageDeliveryStatus_Tests: StreamTestCase {
             userRobot.deleteMessage()
         }
         THEN("delivery status is hidden") {
-            userRobot
-                .assertMessageDeliveryStatus(nil)
-                .assertMessageReadCount(readBy: 0)
+            userRobot.assertMessageDeliveryStatus(nil)
         }
     }
 }
@@ -223,9 +210,7 @@ extension MessageDeliveryStatus_Tests {
             userRobot.openThread()
         }
         THEN("user spots single checkmark below the message") {
-            userRobot
-                .assertMessageDeliveryStatus(.sent)
-                .assertMessageReadCount(readBy: 0)
+            userRobot.assertMessageDeliveryStatus(.sent)
         }
     }
 
@@ -248,9 +233,7 @@ extension MessageDeliveryStatus_Tests {
             userRobot.assertMessageFailedToBeSent()
         }
         AND("delivery status is not shown") {
-            userRobot
-                .assertMessageDeliveryStatus(nil)
-                .assertMessageReadCount(readBy: 0)
+            userRobot.assertMessageDeliveryStatus(nil)
         }
         AND("user can't preview this message in thread") {
             userRobot.assertContextMenuOptionNotAvailable(option: .threadReply)
@@ -298,9 +281,7 @@ extension MessageDeliveryStatus_Tests {
             userRobot.sendMessageInThread(threadReply)
         }
         THEN("user spots single checkmark below the thread reply") {
-            userRobot
-                .assertThreadReplyDeliveryStatus(.sent)
-                .assertMessageReadCount(readBy: 0)
+            userRobot.assertThreadReplyDeliveryStatus(.sent)
         }
     }
 
@@ -324,9 +305,7 @@ extension MessageDeliveryStatus_Tests {
             userRobot.assertThreadReplyFailedToBeSent()
         }
         AND("delivery status is not shown") {
-            userRobot
-                .assertThreadReplyDeliveryStatus(nil)
-                .assertThreadReplyReadCount(readBy: 0)
+            userRobot.assertThreadReplyDeliveryStatus(nil)
         }
     }
 
@@ -352,9 +331,6 @@ extension MessageDeliveryStatus_Tests {
         THEN("user spots double checkmark below the message") {
             userRobot.assertMessageDeliveryStatus(.read)
         }
-        AND("user spots read by 1 number below the message") {
-            userRobot.assertMessageReadCount(readBy: 1)
-        }
     }
 
     func test_doubleCheckmarkShownInThreadReply_whenNewParticipantAdded() throws {
@@ -379,9 +355,6 @@ extension MessageDeliveryStatus_Tests {
         THEN("user spots double checkmark below the thread reply") {
             userRobot.assertMessageDeliveryStatus(.read)
         }
-        AND("user see read count 2 below the message") {
-            userRobot.assertMessageReadCount(readBy: 1)
-        }
     }
 
     func test_readByDecrementedInThreadReply_whenParticipantIsRemoved() throws {
@@ -402,9 +375,7 @@ extension MessageDeliveryStatus_Tests {
         }
         AND("thread reply is read by participant") {
             participantRobot.readMessage()
-            userRobot
-                .assertMessageDeliveryStatus(.read)
-                .assertMessageReadCount(readBy: 1)
+            userRobot.assertMessageDeliveryStatus(.read)
         }
         WHEN("participant is removed from the channel") {
 //            userRobot.removeParticipant(withUserId: participantRobot.id)
@@ -465,9 +436,7 @@ extension MessageDeliveryStatus_Tests {
             userRobot.deleteMessage()
         }
         THEN("delivery status is hidden") {
-            userRobot
-                .assertMessageDeliveryStatus(nil)
-                .assertMessageReadCount(readBy: 0)
+            userRobot.assertMessageDeliveryStatus(nil)
         }
     }
 
@@ -488,9 +457,7 @@ extension MessageDeliveryStatus_Tests {
         THEN("delivery status is shown for \(message)") {
             userRobot
                 .assertMessageDeliveryStatus(.sent, at: 1)
-                .assertMessageReadCount(readBy: 0, at: 1)
                 .assertMessageDeliveryStatus(nil, at: 0)
-                .assertMessageReadCount(readBy: 0, at: 0)
         }
     }
 }
@@ -513,9 +480,7 @@ extension MessageDeliveryStatus_Tests {
             userRobot.sendMessage(message)
         }
         THEN("delivery status is hidden") {
-            userRobot
-                .assertMessageDeliveryStatus(nil)
-                .assertMessageReadCount(readBy: 0)
+            userRobot.assertMessageDeliveryStatus(nil)
         }
     }
 
@@ -535,9 +500,7 @@ extension MessageDeliveryStatus_Tests {
             userRobot.sendMessage(pendingMessage, waitForAppearance: false)
         }
         THEN("message delivery status shows clocks") {
-            userRobot
-                .assertMessageDeliveryStatus(.pending)
-                .assertMessageReadCount(readBy: 0)
+            userRobot.assertMessageDeliveryStatus(.pending)
         }
     }
 
@@ -561,9 +524,7 @@ extension MessageDeliveryStatus_Tests {
             userRobot.assertMessageFailedToBeSent()
         }
         AND("delivery status is hidden") {
-            userRobot
-                .assertMessageDeliveryStatus(nil)
-                .assertMessageReadCount(readBy: 0)
+            userRobot.assertMessageDeliveryStatus(nil)
         }
     }
 
@@ -583,9 +544,7 @@ extension MessageDeliveryStatus_Tests {
             participantRobot.readMessage()
         }
         THEN("delivery status is hidden") {
-            userRobot
-                .assertMessageDeliveryStatus(nil)
-                .assertMessageReadCount(readBy: 0)
+            userRobot.assertMessageDeliveryStatus(nil)
         }
     }
 
@@ -610,9 +569,7 @@ extension MessageDeliveryStatus_Tests {
 //            userRobot.addParticipant()
         }
         THEN("delivery status is hidden") {
-            userRobot
-                .assertMessageDeliveryStatus(nil)
-                .assertMessageReadCount(readBy: 0)
+            userRobot.assertMessageDeliveryStatus(nil)
         }
     }
 
@@ -638,9 +595,6 @@ extension MessageDeliveryStatus_Tests {
         }
         AND("delivery status is hidden") {
             userRobot.assertMessageDeliveryStatus(nil)
-        }
-        AND("user doesn't see read count") {
-            userRobot.assertMessageReadCount(readBy: 0)
         }
     }
 
@@ -691,9 +645,7 @@ extension MessageDeliveryStatus_Tests {
             userRobot.deleteMessage()
         }
         THEN("delivery status stays hidden") {
-            userRobot
-                .assertMessageDeliveryStatus(nil)
-                .assertMessageReadCount(readBy: 0)
+            userRobot.assertMessageDeliveryStatus(nil)
         }
     }
 }

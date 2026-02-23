@@ -166,10 +166,6 @@ class MessageListPage {
             messageCell.otherElements["SendFailureIndicator"]
         }
 
-        static func readCount(in messageCell: XCUIElement) -> XCUIElement {
-            messageCell.staticTexts["readIndicatorCount"]
-        }
-
         // FIXME:
         static func statusCheckmark(
             for status: StreamChatTestMockServer.MessageDeliveryStatus? = nil,
