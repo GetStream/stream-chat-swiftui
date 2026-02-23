@@ -421,22 +421,15 @@ public struct ComposerInputView<Factory: ViewFactory>: View, KeyboardReadable {
 
     private var inputView: some View {
         HStack(alignment: .bottom) {
-            HStack {
+            HStack(spacing: tokens.spacingXxs) {
                 if let command,
                    let displayInfo = command.displayInfo,
                    displayInfo.isInstant == true {
-                    HStack(spacing: 0) {
-                        Image(uiImage: images.smallBolt)
-                            .renderingMode(.template)
-                            .foregroundColor(Color(colors.staticColorText))
-                        Text(displayInfo.displayName.uppercased())
-                    }
-                    .padding(.horizontal, 8)
-                    .font(fonts.footnoteBold)
-                    .frame(height: 24)
-                    .background(Color(colors.accentPrimary))
-                    .foregroundColor(Color(colors.staticColorText))
-                    .cornerRadius(16)
+                    CommandChipView(
+                        displayName: displayInfo.displayName,
+                        onDismiss: { self.command = nil }
+                    )
+                    .padding(.leading, tokens.spacingXxs)
                 }
 
                 factory.makeComposerTextInputView(
@@ -453,20 +446,6 @@ public struct ComposerInputView<Factory: ViewFactory>: View, KeyboardReadable {
                 )
                 .accessibilityIdentifier("ComposerTextInputView")
                 .accessibilityElement(children: .contain)
-                .overlay(
-                    command?.displayInfo?.isInstant == true ?
-                        HStack {
-                            Spacer()
-                            Button {
-                                command = nil
-                            } label: {
-                                DiscardButtonView(
-                                    color: Color(colors.background7)
-                                )
-                            }
-                        }
-                        : nil
-                )
             }
             .frame(height: textFieldHeight)
             .padding(.vertical, 4)
