@@ -441,10 +441,14 @@ open class ChatChannelListViewModel: ObservableObject, ChatChannelListController
     }
 
     /// Creates a new message search controller, sets its delegate, and triggers the search operation.
+    /// Message search uses the channel list's sort order when available.
     open func performMessageSearch() {
         messageSearchController = chatClient.messageSearchController()
         loadingSearchResults = true
-        messageSearchController?.search(text: searchText) { [weak self] _ in
+        let messageSearchSort = controller.map {
+            MessageSearchQuery.messageSearchSort(fromChannelListSort: $0.query.sort)
+        } ?? nil
+        messageSearchController?.search(text: searchText, sort: messageSearchSort) { [weak self] _ in
             self?.loadingSearchResults = false
             self?.messageSearchController?.delegate = self
             self?.updateMessageSearchResults()
