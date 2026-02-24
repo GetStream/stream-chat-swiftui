@@ -93,7 +93,6 @@ public struct ChatChannelListItem<Factory: ViewFactory>: View {
                                     currentUserId: chatClient.currentUserId,
                                     message: channel.previewMessage
                                 ),
-                                showReadCount: false,
                                 showDelivered: channel.previewMessage?.deliveryStatus(for: channel) == .delivered
                             )
                         }

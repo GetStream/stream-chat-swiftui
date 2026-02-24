@@ -75,7 +75,7 @@ final class ChatThreadListItemView_Tests: StreamChatTestCase {
 
     func test_threadListItem_withParentMessageDeleted() throws {
         let thread = mockThread
-            .with(parentMessage: .mock(text: "Parent Message", deletedAt: .unique))
+            .with(parentMessage: .mock(text: "Parent Message", author: mockYoda, deletedAt: .unique))
 
         let view = ChatThreadListItem(thread: thread)
             .frame(width: defaultScreenSize.width)
@@ -100,7 +100,7 @@ final class ChatThreadListItemView_Tests: StreamChatTestCase {
     func test_threadListItem_whenAttachments() throws {
         let thread = mockThread
             .with(
-                parentMessage: .mock(text: "", attachments: [.dummy(type: .giphy)]),
+                parentMessage: .mock(text: "", author: mockYoda, attachments: [.dummy(type: .giphy)]),
                 latestReplies: [
                     .mock(text: "", author: mockYoda, attachments: [.dummy(type: .audio)])
                 ]
@@ -115,7 +115,7 @@ final class ChatThreadListItemView_Tests: StreamChatTestCase {
     func test_threadListItem_whenAttachmentIsPoll() throws {
         let thread = mockThread
             .with(
-                parentMessage: .mock(text: "", poll: .mock(name: "Who is better?")),
+                parentMessage: .mock(text: "", author: mockYoda, poll: .mock(name: "Who is better?")),
                 latestReplies: [
                     .mock(text: "", author: mockYoda, poll: .mock(name: "Who is worse?"))
                 ]
