@@ -47,7 +47,7 @@ public struct ChatThreadListItem<Factory: ViewFactory>: View {
         self.thread = thread
     }
 
-    /// The formatted thread parent message text (legacy, includes "replied to:" prefix).
+    /// The formatted thread parent message text.
     public var parentMessageText: String {
         var parentMessageText: String
         if thread.parentMessage.isDeleted {
@@ -55,7 +55,7 @@ public struct ChatThreadListItem<Factory: ViewFactory>: View {
         } else if let threadTitle = thread.title {
             parentMessageText = threadTitle
         } else {
-            let formatter = InjectedValues[\.utils].messagePreviewFormatter
+            let formatter = utils.messagePreviewFormatter
             parentMessageText = formatter.formatContent(for: thread.parentMessage, in: thread.channel)
         }
         return L10n.Thread.Item.repliedTo(parentMessageText.trimmed)
@@ -69,7 +69,7 @@ public struct ChatThreadListItem<Factory: ViewFactory>: View {
         if let threadTitle = thread.title {
             return threadTitle
         }
-        let formatter = InjectedValues[\.utils].messagePreviewFormatter
+        let formatter = utils.messagePreviewFormatter
         return formatter.format(thread.parentMessage, in: thread.channel)
     }
 
@@ -81,7 +81,7 @@ public struct ChatThreadListItem<Factory: ViewFactory>: View {
         if let threadTitle = thread.title {
             return threadTitle
         }
-        let formatter = InjectedValues[\.utils].messagePreviewFormatter
+        let formatter = utils.messagePreviewFormatter
         return formatter.formatContent(for: thread.parentMessage, in: thread.channel)
     }
 
@@ -107,7 +107,7 @@ public struct ChatThreadListItem<Factory: ViewFactory>: View {
             return L10n.Message.deletedMessagePlaceholder
         }
 
-        let formatter = InjectedValues[\.utils].messagePreviewFormatter
+        let formatter = utils.messagePreviewFormatter
         return formatter.format(latestReply, in: thread.channel)
     }
 
@@ -122,7 +122,7 @@ public struct ChatThreadListItem<Factory: ViewFactory>: View {
     public var draftReplyText: String? {
         guard utils.messageListConfig.draftMessagesEnabled else { return nil }
         guard let draftMessage = thread.parentMessage.draftReply else { return nil }
-        let messageFormatter = InjectedValues[\.utils].messagePreviewFormatter
+        let messageFormatter = utils.messagePreviewFormatter
         return messageFormatter.formatContent(for: ChatMessage(draftMessage), in: thread.channel)
     }
 
