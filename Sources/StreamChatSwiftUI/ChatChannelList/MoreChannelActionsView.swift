@@ -90,9 +90,11 @@ public struct MoreChannelActionsView<Factory: ViewFactory>: View {
                     .font(fonts.headline)
                     .foregroundColor(Color(colors.textPrimary))
 
-                Text(viewModel.subtitleText)
-                    .font(fonts.subheadline)
-                    .foregroundColor(Color(colors.textTertiary))
+                if !viewModel.subtitleText.isEmpty {
+                    Text(viewModel.subtitleText)
+                        .font(fonts.subheadline)
+                        .foregroundColor(Color(colors.textTertiary))
+                }
             }
 
             Spacer()
