@@ -108,7 +108,6 @@ public struct MessageReadIndicatorView: View {
     @Injected(\.colors) private var colors
     
     var readUsers: [ChatUser]
-    var showReadCount: Bool
     var showDelivered: Bool
     var localState: LocalMessageState?
     /// When true, the `textOnAccent` color is used instead of the default darker text color.
@@ -116,13 +115,11 @@ public struct MessageReadIndicatorView: View {
     
     public init(
         readUsers: [ChatUser],
-        showReadCount: Bool,
         showDelivered: Bool = false,
         localState: LocalMessageState? = nil,
         usesInvertedStyle: Bool = false
     ) {
         self.readUsers = readUsers
-        self.showReadCount = showReadCount
         self.showDelivered = showDelivered
         self.localState = localState
         self.usesInvertedStyle = usesInvertedStyle
@@ -130,12 +127,6 @@ public struct MessageReadIndicatorView: View {
     
     public var body: some View {
         HStack(spacing: 2) {
-            if showReadCount && shouldShowReads {
-                Text("\(readUsers.count)")
-                    .font(fonts.footnoteBold)
-                    .foregroundColor(usesInvertedStyle ? colors.textOnAccent.toColor : colors.textPrimary.toColor)
-                    .accessibilityIdentifier("readIndicatorCount")
-            }
             Image(
                 uiImage: image
             )

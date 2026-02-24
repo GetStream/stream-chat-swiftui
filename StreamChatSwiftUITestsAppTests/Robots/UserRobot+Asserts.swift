@@ -109,24 +109,6 @@ extension UserRobot {
     }
 
     @discardableResult
-    func assertMessageReadCountInChannelPreview(
-        readBy: Int,
-        at cellIndex: Int? = nil,
-        file: StaticString = #filePath,
-        line: UInt = #line
-    ) -> Self {
-        let cell = channelCell(withIndex: cellIndex, file: file, line: line)
-        let readByCount = channelAttributes.readCount(in: cell)
-        if readBy == 0 {
-            XCTAssertFalse(readByCount.isHittable, "Read count is visible", file: file, line: line)
-        } else {
-            let actualText = readByCount.waitForText("\(readBy)").text
-            XCTAssertEqual("\(readBy)", actualText, file: file, line: line)
-        }
-        return self
-    }
-
-    @discardableResult
     func assertChannelListPagination(
         channelsCount expectedCount: Int,
         file: StaticString = #filePath,
@@ -554,24 +536,6 @@ extension UserRobot {
         return self
     }
 
-    @discardableResult
-    func assertMessageReadCount(
-        readBy: Int,
-        at messageCellIndex: Int? = nil,
-        file: StaticString = #filePath,
-        line: UInt = #line
-    ) -> Self {
-        let messageCell = messageCell(withIndex: messageCellIndex, file: file, line: line)
-        let readByCount = attributes.readCount(in: messageCell)
-        if readBy == 0 {
-            XCTAssertFalse(readByCount.isHittable, "Read count is visible", file: file, line: line)
-        } else {
-            let actualText = readByCount.waitForText("\(readBy)", timeout: 10).text
-            XCTAssertEqual("\(readBy)", actualText, file: file, line: line)
-        }
-        return self
-    }
-
     func assertComposerLimits(
         toNumberOfLines limit: Int,
         file: StaticString = #filePath,
@@ -847,17 +811,6 @@ extension UserRobot {
     ) -> Self {
         assertThreadIsOpen(file: file, line: line)
             .assertMessage(text, at: messageCellIndex, file: file, line: line)
-    }
-
-    @discardableResult
-    func assertThreadReplyReadCount(
-        readBy: Int,
-        at messageCellIndex: Int? = nil,
-        file: StaticString = #filePath,
-        line: UInt = #line
-    ) -> Self {
-        assertThreadIsOpen(file: file, line: line)
-            .assertMessageReadCount(readBy: readBy, at: messageCellIndex, file: file, line: line)
     }
 
     @discardableResult
