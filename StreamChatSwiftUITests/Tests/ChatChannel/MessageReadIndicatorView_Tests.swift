@@ -12,8 +12,7 @@ class MessageReadIndicatorView_Tests: StreamChatTestCase {
     func test_messageReadIndicatorView_snapshotMessageSent() {
         // Given
         let view = MessageReadIndicatorView(
-            readUsers: [],
-            showReadCount: false
+            readUsers: []
         )
         .frame(width: 50, height: 16)
      
@@ -24,8 +23,7 @@ class MessageReadIndicatorView_Tests: StreamChatTestCase {
     func test_messageReadIndicatorView_snapshotMessageReadDirect() {
         // Given
         let view = MessageReadIndicatorView(
-            readUsers: [.mock(id: .unique)],
-            showReadCount: false
+            readUsers: [.mock(id: .unique)]
         )
         .frame(width: 50, height: 16)
      
@@ -36,8 +34,7 @@ class MessageReadIndicatorView_Tests: StreamChatTestCase {
     func test_messageReadIndicatorView_snapshotMessageReadGroup() {
         // Given
         let view = MessageReadIndicatorView(
-            readUsers: [.mock(id: .unique)],
-            showReadCount: true
+            readUsers: [.mock(id: .unique)]
         )
         .frame(width: 50, height: 16)
      
@@ -49,7 +46,6 @@ class MessageReadIndicatorView_Tests: StreamChatTestCase {
         // Given
         let view = MessageReadIndicatorView(
             readUsers: [],
-            showReadCount: false,
             localState: .pendingSend
         )
         .frame(width: 50, height: 16)
@@ -62,7 +58,6 @@ class MessageReadIndicatorView_Tests: StreamChatTestCase {
         // Given
         let view = MessageReadIndicatorView(
             readUsers: [],
-            showReadCount: false,
             localState: .sending
         )
         .frame(width: 50, height: 16)
@@ -75,7 +70,6 @@ class MessageReadIndicatorView_Tests: StreamChatTestCase {
         // Given
         let view = MessageReadIndicatorView(
             readUsers: [],
-            showReadCount: false,
             localState: .syncing
         )
         .frame(width: 50, height: 16)
@@ -88,7 +82,6 @@ class MessageReadIndicatorView_Tests: StreamChatTestCase {
         // Given
         let view = MessageReadIndicatorView(
             readUsers: [.mock(id: .unique)],
-            showReadCount: true,
             localState: .syncing
         )
         .frame(width: 50, height: 16)
@@ -101,7 +94,6 @@ class MessageReadIndicatorView_Tests: StreamChatTestCase {
         // Given
         let view = MessageReadIndicatorView(
             readUsers: [],
-            showReadCount: false,
             localState: .sendingFailed
         )
         .frame(width: 50, height: 16)
@@ -114,7 +106,6 @@ class MessageReadIndicatorView_Tests: StreamChatTestCase {
         // Given
         let view = MessageReadIndicatorView(
             readUsers: [],
-            showReadCount: false,
             localState: .syncingFailed
         )
         .frame(width: 50, height: 16)
@@ -127,7 +118,6 @@ class MessageReadIndicatorView_Tests: StreamChatTestCase {
         // Given
         let view = MessageReadIndicatorView(
             readUsers: [],
-            showReadCount: false,
             showDelivered: true
         )
         .frame(width: 50, height: 16)
@@ -140,7 +130,6 @@ class MessageReadIndicatorView_Tests: StreamChatTestCase {
         // Given
         let view = MessageReadIndicatorView(
             readUsers: [.mock(id: .unique), .mock(id: .unique)],
-            showReadCount: true,
             showDelivered: true
         )
         .frame(width: 50, height: 16)
