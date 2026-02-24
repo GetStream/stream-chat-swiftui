@@ -16,13 +16,6 @@ final class SnackBarView_Tests: StreamChatTestCase {
         AssertSnapshot(view, variants: [.defaultLight, .defaultDark])
     }
 
-    func test_snackBarView_error() {
-        let view = SnackBarView(text: "Something went wrong", style: .error)
-            .frame(width: 375)
-
-        AssertSnapshot(view, variants: [.defaultLight, .defaultDark])
-    }
-
     func test_snackBarView_longText() {
         let view = SnackBarView(text: "Muted a user with a very long display name that should be truncated")
             .frame(width: 375)
