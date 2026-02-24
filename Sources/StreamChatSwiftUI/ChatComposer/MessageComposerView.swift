@@ -557,6 +557,13 @@ public struct ComposerInputView<Factory: ViewFactory>: View, KeyboardReadable {
             return L10n.Composer.Placeholder.messageDisabled
         }
 
+        if let command,
+           let displayInfo = command.displayInfo,
+           displayInfo.isInstant == true,
+           let placeholder = displayInfo.placeholder {
+            return placeholder
+        }
+
         return L10n.Composer.Placeholder.message
     }
 

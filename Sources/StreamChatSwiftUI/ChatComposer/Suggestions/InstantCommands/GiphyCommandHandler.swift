@@ -32,7 +32,8 @@ public final class GiphyCommandHandler: CommandHandler {
             displayName: "Giphy",
             icon: images.commandGiphy,
             format: "\(id) [\(L10n.Composer.Commands.Format.text)]",
-            isInstant: true
+            isInstant: true,
+            placeholder: L10n.Composer.Placeholder.giphy
         )
     }
 

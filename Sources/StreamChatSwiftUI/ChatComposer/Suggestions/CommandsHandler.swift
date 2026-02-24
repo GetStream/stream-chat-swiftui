@@ -128,17 +128,20 @@ public final class CommandDisplayInfo: Sendable {
     public let icon: UIImage
     public let format: String
     public let isInstant: Bool
+    public let placeholder: String?
 
     public init(
         displayName: String,
         icon: UIImage,
         format: String,
-        isInstant: Bool
+        isInstant: Bool,
+        placeholder: String? = nil
     ) {
         self.displayName = displayName
         self.icon = icon
         self.format = format
         self.isInstant = isInstant
+        self.placeholder = placeholder
     }
 }
 

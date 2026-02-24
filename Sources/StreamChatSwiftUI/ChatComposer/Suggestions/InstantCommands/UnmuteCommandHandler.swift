@@ -25,7 +25,8 @@ public class UnmuteCommandHandler: TwoStepMentionCommand {
             displayName: L10n.Composer.Commands.unmute,
             icon: images.commandUnmute,
             format: "\(id) [\(L10n.Composer.Commands.Format.username)]",
-            isInstant: true
+            isInstant: true,
+            placeholder: L10n.Composer.Commands.Format.username
         )
         self.displayInfo = displayInfo
     }

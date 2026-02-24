@@ -534,13 +534,14 @@ import XCTest
             text: .constant(""),
             selectedRangeLocation: .constant(0),
             command: .constant(.init(
-                id: .unique,
+                id: "/giphy",
                 typingSuggestion: .empty,
                 displayInfo: CommandDisplayInfo(
                     displayName: "Giphy",
                     icon: Appearance.Images().commandGiphy,
-                    format: "",
-                    isInstant: true
+                    format: "/giphy [text]",
+                    isInstant: true,
+                    placeholder: "Search GIFs"
                 )
             )),
             recordingState: .constant(.initial),
@@ -582,13 +583,57 @@ import XCTest
             text: .constant(""),
             selectedRangeLocation: .constant(0),
             command: .constant(.init(
-                id: .unique,
+                id: "/giphy",
                 typingSuggestion: .empty,
                 displayInfo: CommandDisplayInfo(
                     displayName: "Giphy",
                     icon: Appearance.Images().commandGiphy,
-                    format: "",
-                    isInstant: true
+                    format: "/giphy [text]",
+                    isInstant: true,
+                    placeholder: "Search GIFs"
+                )
+            )),
+            recordingState: .constant(.initial),
+            composerAssets: [],
+            addedCustomAttachments: [],
+            addedVoiceRecordings: [],
+            quotedMessage: .constant(nil),
+            editedMessage: .constant(nil),
+            cooldownDuration: 0,
+            hasContent: false,
+            canSendMessage: true,
+            onCustomAttachmentTap: { _ in },
+            removeAttachmentWithId: { _ in },
+            sendMessage: {},
+            onImagePasted: { _ in },
+            startRecording: {},
+            stopRecording: {}
+        )
+        .environmentObject(MessageComposerTestUtils.makeComposerViewModel(chatClient: chatClient))
+        .frame(width: size.width, height: size.height)
+
+        AssertSnapshot(view, variants: .onlyUserInterfaceStyles, size: size)
+    }
+
+    func test_composerInputView_command_mute() {
+        let factory = DefaultViewFactory.shared
+        let channelController = ChatChannelTestHelpers.makeChannelController(chatClient: chatClient)
+        let size = CGSize(width: composerWidth, height: 200)
+
+        let view = ComposerInputView(
+            factory: factory,
+            channelController: channelController,
+            text: .constant(""),
+            selectedRangeLocation: .constant(0),
+            command: .constant(.init(
+                id: "/mute",
+                typingSuggestion: .empty,
+                displayInfo: CommandDisplayInfo(
+                    displayName: "Mute",
+                    icon: Appearance.Images().commandMute,
+                    format: "/mute [@username]",
+                    isInstant: true,
+                    placeholder: L10n.Composer.Commands.Format.username
                 )
             )),
             recordingState: .constant(.initial),
