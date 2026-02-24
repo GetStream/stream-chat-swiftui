@@ -11,7 +11,7 @@ extension ChannelAction {
     /// - Returns: An array of channel actions for the current configuration options.
     @MainActor public static func defaultActions(for options: SupportedMoreChannelActionsOptions) -> [ChannelAction] {
         if options.channel.isDirectMessageChannel {
-            return dmActions(for: options)
+            return directMessageActions(for: options)
         } else {
             return groupActions(for: options)
         }
@@ -21,7 +21,7 @@ extension ChannelAction {
 
     /// Actions for direct-message channels:
     /// View Info → Mute/Unmute User → Archive/Unarchive Conversation → Block/Unblock User → Delete Conversation.
-    @MainActor private static func dmActions(for options: SupportedMoreChannelActionsOptions) -> [ChannelAction] {
+    @MainActor private static func directMessageActions(for options: SupportedMoreChannelActionsOptions) -> [ChannelAction] {
         let channel = options.channel
         let chatClient = InjectedValues[\.chatClient]
         let onDismiss = options.onDismiss

@@ -78,8 +78,8 @@ public struct ChatChannelListView<Factory: ViewFactory>: View {
         NavigationContainerView(embedInNavigationView: embedInNavigationView) {
             content()
         }
-        .sheet(isPresented: $viewModel.customAlertShown, content: {
-            customViewOverlay()
+        .sheet(isPresented: $viewModel.channelPopupShown, content: {
+            channelPopup()
                 .modifier(PresentationDetentsModifier(sheetSizes: [.custom(280), .medium]))
         })
         .if(isIphone || !utils.messageListConfig.iPadSplitViewEnabled, transform: { view in
@@ -159,8 +159,8 @@ public struct ChatChannelListView<Factory: ViewFactory>: View {
     }
 
     @ViewBuilder
-    private func customViewOverlay() -> some View {
-        switch viewModel.customChannelPopupType {
+    private func channelPopup() -> some View {
+        switch viewModel.channelPopupType {
         case let .moreActions(channel):
             viewFactory.makeMoreChannelActionsView(
                 options: MoreChannelActionsViewOptions(
@@ -168,7 +168,7 @@ public struct ChatChannelListView<Factory: ViewFactory>: View {
                     swipedChannelId: $viewModel.swipedChannelId,
                     onDismiss: {
                         withAnimation {
-                            viewModel.customChannelPopupType = nil
+                            viewModel.channelPopupType = nil
                             viewModel.swipedChannelId = nil
                         }
                     },
