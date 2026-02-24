@@ -8,9 +8,10 @@ import SwiftUI
 /// View for the mentioned users.
 public struct MentionUsersView<Factory: ViewFactory>: View {
     @Injected(\.colors) private var colors
+    @Injected(\.tokens) private var tokens
 
     var factory: Factory
-    private let itemHeight: CGFloat = 60
+    private let itemHeight: CGFloat = 40
 
     var users: [ChatUser]
     var userSelected: (ChatUser) -> Void
@@ -26,31 +27,34 @@ public struct MentionUsersView<Factory: ViewFactory>: View {
     }
 
     public var body: some View {
-        ScrollView {
-            LazyVStack {
-                ForEach(users) { user in
-                    MentionUserView(
-                        factory: factory,
-                        user: user,
-                        userSelected: userSelected
-                    )
+        VStack(spacing: 0) {
+            Divider()
+
+            ScrollView {
+                LazyVStack(spacing: 0) {
+                    ForEach(users) { user in
+                        MentionUserView(
+                            factory: factory,
+                            user: user,
+                            userSelected: userSelected
+                        )
+                    }
                 }
             }
-            .animation(nil)
+            .padding(.vertical, tokens.spacingXs)
+            .frame(height: viewHeight)
         }
-        .frame(height: viewHeight)
         .background(Color(colors.background))
-        .modifier(ShadowViewModifier())
-        .padding(.all, 8)
-        .animation(.spring())
+        .animation(.easeInOut, value: users.count)
     }
 
     private var viewHeight: CGFloat {
-        if users.count > 3 {
-            3 * itemHeight
-        } else {
-            CGFloat(users.count) * itemHeight
-        }
+        let verticalPadding = tokens.spacingXs * 2
+        let maxVisible: CGFloat = 4
+        let contentHeight = CGFloat(users.count) * itemHeight + verticalPadding
+        let maxHeight = maxVisible * itemHeight + verticalPadding
+        let minHeight = itemHeight + verticalPadding
+        return max(minHeight, min(contentHeight, maxHeight))
     }
 }
 
@@ -58,7 +62,7 @@ public struct MentionUsersView<Factory: ViewFactory>: View {
 public struct MentionUserView<Factory: ViewFactory>: View {
     @Injected(\.fonts) private var fonts
     @Injected(\.colors) private var colors
-    @Injected(\.utils) private var utils
+    @Injected(\.tokens) private var tokens
 
     var factory: Factory
     var user: ChatUser
@@ -75,28 +79,27 @@ public struct MentionUserView<Factory: ViewFactory>: View {
     }
 
     public var body: some View {
-        HStack {
-            factory.makeUserAvatarView(
-                options: .init(
-                    user: user,
-                    size: AvatarSize.medium,
-                    showsIndicator: false
+        Button {
+            userSelected(user)
+        } label: {
+            HStack(spacing: tokens.spacingSm) {
+                factory.makeUserAvatarView(
+                    options: .init(
+                        user: user,
+                        size: AvatarSize.medium,
+                        showsIndicator: false
+                    )
                 )
-            )
-            Text(user.name ?? user.id)
-                .lineLimit(1)
-                .font(fonts.bodyBold)
-            Spacer()
-            Text(utils.commandsConfig.mentionsSymbol)
-                .font(fonts.title)
-                .foregroundColor(Color(colors.accentPrimary))
+
+                Text(user.name ?? user.id)
+                    .lineLimit(1)
+                    .font(fonts.body)
+                    .foregroundColor(Color(colors.text))
+
+                Spacer()
+            }
+            .padding(.horizontal, tokens.spacingMd)
+            .padding(.vertical, tokens.spacingXxs)
         }
-        .standardPadding()
-        .highPriorityGesture(
-            TapGesture()
-                .onEnded { _ in
-                    userSelected(user)
-                }
-        )
     }
 }

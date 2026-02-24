@@ -34,10 +34,14 @@ import SwiftUI
                 channelController.sendKeystrokeEvent()
             } else {
                 if composerCommand?.displayInfo?.isInstant == false {
-                    composerCommand = nil
+                    withAnimation(.easeInOut(duration: 0.2)) {
+                        composerCommand = nil
+                    }
                 }
                 selectedRangeLocation = 0
-                suggestions = [String: Any]()
+                withAnimation(.easeInOut(duration: 0.2)) {
+                    suggestions = [String: Any]()
+                }
                 mentionedUsers = Set<ChatUser>()
 
                 if shouldDeleteDraftMessage(oldValue: oldValue) {
@@ -81,7 +85,9 @@ import SwiftUI
                     )
                     showTypingSuggestions()
                 } else {
-                    composerCommand = nil
+                    withAnimation(.easeInOut(duration: 0.2)) {
+                        composerCommand = nil
+                    }
                 }
             }
         }
@@ -721,7 +727,9 @@ import SwiftUI
         composerAssets = []
         addedVoiceRecordings = []
         addedCustomAttachments = []
-        composerCommand = nil
+        withAnimation(.easeInOut(duration: 0.2)) {
+            composerCommand = nil
+        }
         mentionedUsers = Set<ChatUser>()
         clearText()
     }

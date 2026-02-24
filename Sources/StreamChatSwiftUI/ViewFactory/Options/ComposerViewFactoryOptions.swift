@@ -44,10 +44,17 @@ public final class LeadingComposerViewOptions: Sendable {
     public let state: Binding<PickerTypeState>
     /// The channel configuration.
     public let channelConfig: ChannelConfig?
+    /// Whether an instant command (e.g. /giphy, /mute) is currently active.
+    public let isCommandActive: Bool
     
-    public init(state: Binding<PickerTypeState>, channelConfig: ChannelConfig?) {
+    public init(
+        state: Binding<PickerTypeState>,
+        channelConfig: ChannelConfig?,
+        isCommandActive: Bool = false
+    ) {
         self.state = state
         self.channelConfig = channelConfig
+        self.isCommandActive = isCommandActive
     }
 }
 

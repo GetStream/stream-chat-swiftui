@@ -58,7 +58,8 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
                 factory.makeLeadingComposerView(
                     options: LeadingComposerViewOptions(
                         state: $viewModel.pickerTypeState,
-                        channelConfig: channelConfig
+                        channelConfig: channelConfig,
+                        isCommandActive: viewModel.composerCommand?.displayInfo?.isInstant == true
                     )
                 )
 
@@ -227,26 +228,33 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
                 popupSize = height - bottomSafeArea
             }
         }
-        .overlay(
-            viewModel.showCommandsOverlay ?
-                factory.makeCommandsContainerView(
-                    options: CommandsContainerViewOptions(
-                        suggestions: viewModel.suggestions,
-                        handleCommand: { commandInfo in
-                            viewModel.handleCommand(
-                                for: $viewModel.text,
-                                selectedRangeLocation: $viewModel.selectedRangeLocation,
-                                command: $viewModel.composerCommand,
-                                extraData: commandInfo
-                            )
-                        }
+        
+        .modifier(factory.styles.makeComposerViewModifier(options: ComposerViewModifierOptions()))
+        .background(
+            Group {
+                if viewModel.showCommandsOverlay {
+                    factory.makeCommandsContainerView(
+                        options: CommandsContainerViewOptions(
+                            suggestions: viewModel.suggestions,
+                            handleCommand: { commandInfo in
+                                withAnimation(.easeInOut(duration: 0.2)) {
+                                    viewModel.handleCommand(
+                                        for: $viewModel.text,
+                                        selectedRangeLocation: $viewModel.selectedRangeLocation,
+                                        command: $viewModel.composerCommand,
+                                        extraData: commandInfo
+                                    )
+                                }
+                            }
+                        )
                     )
-                )
-                .offset(y: -composerHeight)
-                .animation(nil) : nil,
+                    .transition(.opacity.combined(with: .offset(y: 8)))
+                }
+            }
+            .animation(.easeInOut(duration: 0.2), value: viewModel.showCommandsOverlay)
+            .offset(y: -composerHeight),
             alignment: .bottom
         )
-        .modifier(factory.styles.makeComposerViewModifier(options: ComposerViewModifierOptions()))
         .snackBar(
             text: $viewModel.snackBarText,
             bottomOffset: composerHeight + tokens.spacingMd
@@ -431,7 +439,11 @@ public struct ComposerInputView<Factory: ViewFactory>: View, KeyboardReadable {
                    displayInfo.isInstant == true {
                     CommandChipView(
                         displayName: displayInfo.displayName,
-                        onDismiss: { self.command = nil }
+                        onDismiss: {
+                            withAnimation(.easeInOut(duration: 0.2)) {
+                                self.command = nil
+                            }
+                        }
                     )
                     .padding(.leading, tokens.spacingXxs)
                 }

@@ -17,7 +17,9 @@ struct InstantCommandsView: View {
     @State private var itemHeight: CGFloat = 40
 
     var body: some View {
-        VStack {
+        VStack(spacing: 0) {
+            Divider()
+
             InstantCommandsHeader()
                 .standardPadding()
                 .accessibilityElement(children: .contain)
@@ -60,9 +62,7 @@ struct InstantCommandsView: View {
         }
         .background(Color(colors.background))
         .frame(height: viewHeight)
-        .modifier(ShadowViewModifier())
-        .padding(.all, 8)
-        .animation(.spring())
+        .animation(.easeInOut, value: instantCommands.count)
         .accessibilityElement(children: .contain)
     }
 
@@ -70,9 +70,10 @@ struct InstantCommandsView: View {
         if instantCommands.isEmpty {
             return 40
         }
-        let height = CGFloat(instantCommands.count) * itemHeight + 70
-        let maxHeight: CGFloat = 320
-        return height > maxHeight ? maxHeight : height
+        let headerHeight: CGFloat = 40
+        let contentHeight = CGFloat(instantCommands.count) * itemHeight + headerHeight
+        let maxHeight: CGFloat = 168
+        return min(contentHeight, maxHeight)
     }
 }
 

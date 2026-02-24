@@ -494,7 +494,8 @@ extension ViewFactory {
         LeadingComposerView(
             factory: self,
             pickerTypeState: options.state,
-            channelConfig: options.channelConfig
+            channelConfig: options.channelConfig,
+            isCommandActive: options.isCommandActive
         )
     }
     

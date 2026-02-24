@@ -251,6 +251,29 @@ import XCTest
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
 
+    func test_messageComposerView_commandActive() {
+        // Given
+        let factory = DefaultViewFactory.shared
+        let channelController = ChatChannelTestHelpers.makeChannelController(chatClient: chatClient)
+        let viewModel = MessageComposerViewModel(channelController: channelController, messageController: nil)
+        viewModel.composerCommand = ComposerCommandFactory.shared.mute()
+
+        // When
+        let view = MessageComposerView(
+            viewFactory: factory,
+            viewModel: viewModel,
+            channelController: channelController,
+            messageController: nil,
+            quotedMessage: .constant(nil),
+            editedMessage: .constant(nil),
+            onMessageSent: {}
+        )
+        .frame(width: composerWidth, height: 200)
+
+        // Then
+        AssertSnapshot(view, variants: [.defaultLight, .defaultDark])
+    }
+
     // MARK: - Attachment Picker Prompt Views
 
     func test_photoLibraryAccessPromptView_snapshot() {
