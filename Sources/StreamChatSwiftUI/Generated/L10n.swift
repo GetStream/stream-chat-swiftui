@@ -13,6 +13,12 @@ internal enum L10n {
 
   internal enum Alert {
     internal enum Actions {
+      /// Archive Channel
+      internal static var archiveChannel: String { L10n.tr("Localizable", "alert.actions.archive-channel") }
+      /// Archive Conversation
+      internal static var archiveConversation: String { L10n.tr("Localizable", "alert.actions.archive-conversation") }
+      /// Block User
+      internal static var blockUser: String { L10n.tr("Localizable", "alert.actions.block-user") }
       /// Cancel
       internal static var cancel: String { L10n.tr("Localizable", "alert.actions.cancel") }
       /// Delete
@@ -27,20 +33,36 @@ internal enum L10n {
       internal static var end: String { L10n.tr("Localizable", "alert.actions.end") }
       /// Keep Editing
       internal static var keepEditing: String { L10n.tr("Localizable", "alert.actions.keep-editing") }
+      /// Leave Conversation
+      internal static var leaveConversation: String { L10n.tr("Localizable", "alert.actions.leave-conversation") }
       /// Leave
       internal static var leaveGroupButton: String { L10n.tr("Localizable", "alert.actions.leave-group-button") }
       /// Are you sure you want to leave this group?
       internal static var leaveGroupMessage: String { L10n.tr("Localizable", "alert.actions.leave-group-message") }
       /// Leave group
       internal static var leaveGroupTitle: String { L10n.tr("Localizable", "alert.actions.leave-group-title") }
+      /// Mute Channel
+      internal static var muteChannel: String { L10n.tr("Localizable", "alert.actions.mute-channel") }
       /// Are you sure you want to mute this
       internal static var muteChannelTitle: String { L10n.tr("Localizable", "alert.actions.mute-channel-title") }
+      /// Mute User
+      internal static var muteUser: String { L10n.tr("Localizable", "alert.actions.mute-user") }
       /// OK
       internal static var ok: String { L10n.tr("Localizable", "alert.actions.ok") }
       /// Send
       internal static var send: String { L10n.tr("Localizable", "alert.actions.send") }
+      /// Unarchive Channel
+      internal static var unarchiveChannel: String { L10n.tr("Localizable", "alert.actions.unarchive-channel") }
+      /// Unarchive Conversation
+      internal static var unarchiveConversation: String { L10n.tr("Localizable", "alert.actions.unarchive-conversation") }
+      /// Unblock User
+      internal static var unblockUser: String { L10n.tr("Localizable", "alert.actions.unblock-user") }
+      /// Unmute Channel
+      internal static var unmuteChannel: String { L10n.tr("Localizable", "alert.actions.unmute-channel") }
       /// Are you sure you want to unmute this
       internal static var unmuteChannelTitle: String { L10n.tr("Localizable", "alert.actions.unmute-channel-title") }
+      /// Unmute User
+      internal static var unmuteUser: String { L10n.tr("Localizable", "alert.actions.unmute-user") }
       /// View info
       internal static var viewInfoTitle: String { L10n.tr("Localizable", "alert.actions.view-info-title") }
     }

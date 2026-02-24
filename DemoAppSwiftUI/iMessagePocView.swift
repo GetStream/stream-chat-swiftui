@@ -72,8 +72,8 @@ struct iMessagePocView: View {
 
                 Spacer()
             }
-            .blur(radius: (viewModel.customAlertShown || viewModel.alertShown) ? 6 : 0)
-            .overlay(viewModel.customAlertShown ? customViewOverlay() : nil)
+            .blur(radius: (viewModel.channelPopupShown || viewModel.alertShown) ? 6 : 0)
+            .overlay(viewModel.channelPopupShown ? customViewOverlay() : nil)
             .accentColor(Color(colors.accentPrimary))
             .navigationTitle("Messages")
         }
@@ -81,7 +81,7 @@ struct iMessagePocView: View {
 
     @ViewBuilder
     private func customViewOverlay() -> some View {
-        switch viewModel.customChannelPopupType {
+        switch viewModel.channelPopupType {
         case let .moreActions(channel):
             factory.makeMoreChannelActionsView(
                 options: .init(
@@ -89,7 +89,7 @@ struct iMessagePocView: View {
                     swipedChannelId: $viewModel.swipedChannelId
                 ) {
                     withAnimation {
-                        viewModel.customChannelPopupType = nil
+                        viewModel.channelPopupType = nil
                     }
                 } onError: { error in
                     viewModel.showErrorPopup(error)

@@ -114,6 +114,17 @@
 "alert.actions.leave-group-message" = "Are you sure you want to leave this group?";
 "alert.actions.leave-group-button" = "Leave";
 "alert.actions.view-info-title" = "View info";
+"alert.actions.mute-user" = "Mute User";
+"alert.actions.unmute-user" = "Unmute User";
+"alert.actions.mute-channel" = "Mute Channel";
+"alert.actions.unmute-channel" = "Unmute Channel";
+"alert.actions.archive-conversation" = "Archive Conversation";
+"alert.actions.unarchive-conversation" = "Unarchive Conversation";
+"alert.actions.archive-channel" = "Archive Channel";
+"alert.actions.unarchive-channel" = "Unarchive Channel";
+"alert.actions.leave-conversation" = "Leave Conversation";
+"alert.actions.block-user" = "Block User";
+"alert.actions.unblock-user" = "Unblock User";
 "alert.text-field.polls-new-option" = "Enter a new option";
 "alert.title.add-comment" = "Add a comment";
 "alert.title.end-poll" = "Nobody will be able to vote in this poll anymore.";
