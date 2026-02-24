@@ -19,15 +19,13 @@ public struct ChatThreadListLoadingView<Factory: ViewFactory>: View {
                     ChatThreadListItemContentView(
                         factory: factory,
                         channelNameText: placeholder(length: 8),
-                        parentMessageText: placeholder(length: 50),
+                        parentMessageAuthorName: nil,
+                        parentMessageContentText: placeholder(length: 50),
                         unreadRepliesCount: 0,
-                        replyAuthor: nil,
-                        replyAuthorId: placeholder(length: 8),
-                        replyAuthorName: placeholder(length: 8),
-                        replyAuthorUrl: URL(string: "url"),
-                        replyAuthorIsOnline: false,
-                        replyMessageText: placeholder(length: 50),
-                        replyTimestampText: placeholder(length: 8)
+                        parentAuthor: nil,
+                        replyCountText: placeholder(length: 8),
+                        replyTimestampText: placeholder(length: 8),
+                        participantUsers: []
                     )
                     .shimmering(duration: 0.8, delay: 0.1)
                     .redacted(reason: .placeholder)
