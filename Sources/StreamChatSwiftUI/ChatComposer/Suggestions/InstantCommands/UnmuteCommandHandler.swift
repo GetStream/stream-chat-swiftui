@@ -21,14 +21,7 @@ public class UnmuteCommandHandler: TwoStepMentionCommand {
             commandSymbol: commandSymbol,
             id: id
         )
-        let displayInfo = CommandDisplayInfo(
-            displayName: L10n.Composer.Commands.unmute,
-            icon: images.commandUnmute,
-            format: "\(id) [\(L10n.Composer.Commands.Format.username)]",
-            isInstant: true,
-            placeholder: L10n.Composer.Commands.Format.username
-        )
-        self.displayInfo = displayInfo
+        self.displayInfo = ComposerCommandFactory.shared.unmute().displayInfo
     }
 
     override public func executeOnMessageSent(

@@ -109,6 +109,66 @@ extension CommandHandler {
     }
 }
 
+/// Factory for creating built-in composer commands.
+@MainActor
+public class ComposerCommandFactory {
+    @Injected(\.images) private var images
+
+    public static let shared = ComposerCommandFactory()
+
+    private init() {}
+
+    public func giphy(
+        typingSuggestion: TypingSuggestion = .empty
+    ) -> ComposerCommand {
+        ComposerCommand(
+            id: "/giphy",
+            typingSuggestion: typingSuggestion,
+            displayInfo: CommandDisplayInfo(
+                displayName: "Giphy",
+                icon: images.commandGiphy,
+                format: "/giphy [\(L10n.Composer.Commands.Format.text)]",
+                isInstant: true,
+                placeholder: L10n.Composer.Placeholder.giphy
+            )
+        )
+    }
+
+    public func mute(
+        typingSuggestion: TypingSuggestion = .empty
+    ) -> ComposerCommand {
+        ComposerCommand(
+            id: "/mute",
+            typingSuggestion: typingSuggestion,
+            displayInfo: CommandDisplayInfo(
+                displayName: L10n.Composer.Commands.mute,
+                icon: images.commandMute,
+                format: "/mute [\(L10n.Composer.Commands.Format.username)]",
+                isInstant: true,
+                placeholder: L10n.Composer.Commands.Format.username
+            ),
+            replacesMessageSent: true
+        )
+    }
+
+    public func unmute(
+        typingSuggestion: TypingSuggestion = .empty
+    ) -> ComposerCommand {
+        ComposerCommand(
+            id: "/unmute",
+            typingSuggestion: typingSuggestion,
+            displayInfo: CommandDisplayInfo(
+                displayName: L10n.Composer.Commands.unmute,
+                icon: images.commandUnmute,
+                format: "/unmute [\(L10n.Composer.Commands.Format.username)]",
+                isInstant: true,
+                placeholder: L10n.Composer.Commands.Format.username
+            ),
+            replacesMessageSent: true
+        )
+    }
+}
+
 /// Provides information about the suggestion.
 public final class SuggestionInfo {
     /// Identifies the suggestion.

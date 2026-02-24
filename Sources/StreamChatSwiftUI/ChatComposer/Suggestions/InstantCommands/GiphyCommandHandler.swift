@@ -28,13 +28,7 @@ public final class GiphyCommandHandler: CommandHandler {
                 shouldTriggerOnlyAtStart: true
             )
         )
-        displayInfo = CommandDisplayInfo(
-            displayName: "Giphy",
-            icon: images.commandGiphy,
-            format: "\(id) [\(L10n.Composer.Commands.Format.text)]",
-            isInstant: true,
-            placeholder: L10n.Composer.Placeholder.giphy
-        )
+        displayInfo = ComposerCommandFactory.shared.giphy().displayInfo
     }
 
     public func canHandleCommand(in text: String, caretLocation: Int) -> ComposerCommand? {

@@ -533,17 +533,7 @@ import XCTest
             channelController: channelController,
             text: .constant(""),
             selectedRangeLocation: .constant(0),
-            command: .constant(.init(
-                id: "/giphy",
-                typingSuggestion: .empty,
-                displayInfo: CommandDisplayInfo(
-                    displayName: "Giphy",
-                    icon: Appearance.Images().commandGiphy,
-                    format: "/giphy [text]",
-                    isInstant: true,
-                    placeholder: "Search GIFs"
-                )
-            )),
+            command: .constant(ComposerCommandFactory.shared.giphy()),
             recordingState: .constant(.initial),
             composerAssets: [],
             addedCustomAttachments: [],
@@ -582,17 +572,7 @@ import XCTest
             channelController: channelController,
             text: .constant(""),
             selectedRangeLocation: .constant(0),
-            command: .constant(.init(
-                id: "/giphy",
-                typingSuggestion: .empty,
-                displayInfo: CommandDisplayInfo(
-                    displayName: "Giphy",
-                    icon: Appearance.Images().commandGiphy,
-                    format: "/giphy [text]",
-                    isInstant: true,
-                    placeholder: "Search GIFs"
-                )
-            )),
+            command: .constant(ComposerCommandFactory.shared.giphy()),
             recordingState: .constant(.initial),
             composerAssets: [],
             addedCustomAttachments: [],
@@ -625,17 +605,7 @@ import XCTest
             channelController: channelController,
             text: .constant(""),
             selectedRangeLocation: .constant(0),
-            command: .constant(.init(
-                id: "/mute",
-                typingSuggestion: .empty,
-                displayInfo: CommandDisplayInfo(
-                    displayName: "Mute",
-                    icon: Appearance.Images().commandMute,
-                    format: "/mute [@username]",
-                    isInstant: true,
-                    placeholder: L10n.Composer.Commands.Format.username
-                )
-            )),
+            command: .constant(ComposerCommandFactory.shared.mute()),
             recordingState: .constant(.initial),
             composerAssets: [],
             addedCustomAttachments: [],
