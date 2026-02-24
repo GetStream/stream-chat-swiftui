@@ -299,6 +299,7 @@ struct ChatThreadListItemContentView<Factory: ViewFactory>: View {
                 .foregroundColor(Color(colors.textLink))
             SubtitleText(text: replyTimestampText, color: Color(colors.textTertiary))
         }
+        .offset(y: tokens.spacingXxxs)
     }
 
     var participantAvatarsView: some View {
