@@ -247,6 +247,10 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
             alignment: .bottom
         )
         .modifier(factory.styles.makeComposerViewModifier(options: ComposerViewModifierOptions()))
+        .snackBar(
+            text: $viewModel.snackBarText,
+            bottomOffset: composerHeight + tokens.spacingMd
+        )
         .onChange(of: editedMessage) { _ in
             viewModel.fillEditedMessage(editedMessage)
             if editedMessage != nil {

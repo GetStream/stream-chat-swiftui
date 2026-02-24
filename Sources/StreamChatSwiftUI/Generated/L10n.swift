@@ -245,6 +245,18 @@ internal enum L10n {
         /// @username
         internal static var username: String { L10n.tr("Localizable", "composer.commands.format.username") }
       }
+      internal enum Mute {
+        /// Muted %@
+        internal static func confirmation(_ p1: Any) -> String {
+          return L10n.tr("Localizable", "composer.commands.mute.confirmation", String(describing: p1))
+        }
+      }
+      internal enum Unmute {
+        /// Unmuted %@
+        internal static func confirmation(_ p1: Any) -> String {
+          return L10n.tr("Localizable", "composer.commands.unmute.confirmation", String(describing: p1))
+        }
+      }
     }
     internal enum Files {
       /// Add more files

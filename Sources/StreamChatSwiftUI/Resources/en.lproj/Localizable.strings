@@ -178,6 +178,8 @@
 "composer.commands.unmute" = "Unmute";
 "composer.commands.format.text" = "text";
 "composer.commands.format.username" = "@username";
+"composer.commands.mute.confirmation" = "Muted %@";
+"composer.commands.unmute.confirmation" = "Unmuted %@";
 
 
 "composer.suggestions.commands.header" = "Instant Commands";

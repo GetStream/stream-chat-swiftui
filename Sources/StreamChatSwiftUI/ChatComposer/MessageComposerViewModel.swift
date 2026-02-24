@@ -144,6 +144,7 @@ import SwiftUI
     }
     
     @Published public var audioRecordingInfo = AudioRecordingInfo.initial
+    @Published public var snackBarText: String?
 
     public let channelController: ChatChannelController
     public var messageController: ChatMessageController?
@@ -341,9 +342,14 @@ import SwiftUI
         }
 
         if let composerCommand, composerCommand.id != "instantCommands" {
+            let commandId = composerCommand.id
+            let commandText = text
             commandsHandler.executeOnMessageSent(
                 composerCommand: composerCommand
-            ) { [weak self] _ in
+            ) { [weak self] error in
+                if error == nil {
+                    self?.showCommandSnackBar(commandId: commandId, text: commandText)
+                }
                 self?.clearInputData()
                 completion()
             }
@@ -718,6 +724,22 @@ import SwiftUI
         composerCommand = nil
         mentionedUsers = Set<ChatUser>()
         clearText()
+    }
+
+    private func showCommandSnackBar(commandId: String, text: String) {
+        let username = text
+            .replacingOccurrences(of: "@", with: "")
+            .trimmingCharacters(in: .whitespaces)
+        guard !username.isEmpty else { return }
+
+        switch commandId {
+        case "/mute":
+            snackBarText = L10n.Composer.Commands.Mute.confirmation(username)
+        case "/unmute":
+            snackBarText = L10n.Composer.Commands.Unmute.confirmation(username)
+        default:
+            break
+        }
     }
     
     private func checkTypingSuggestions() {
