@@ -6,8 +6,8 @@ import StreamChat
 import StreamChatCommonUI
 import SwiftUI
 
-/// View for the instant commands suggestions.
-struct InstantCommandsView: View {
+/// View for the command suggestions.
+struct CommandSuggestionsView: View {
     @Injected(\.tokens) private var tokens
 
     var instantCommands: [CommandHandler]
@@ -17,7 +17,7 @@ struct InstantCommandsView: View {
 
     var body: some View {
         VStack(spacing: 0) {
-            InstantCommandsHeader()
+            CommandSuggestionsHeader()
 
             ScrollView {
                 VStack(spacing: 0) {
@@ -33,10 +33,10 @@ struct InstantCommandsView: View {
                                 )
                                 commandSelected(instantCommand)
                             } label: {
-                                InstantCommandView(displayInfo: displayInfo)
+                                CommandSuggestionView(displayInfo: displayInfo)
                             }
                             .accessibilityElement(children: .contain)
-                            .accessibilityIdentifier("InstantCommandView_\(command.id)")
+                            .accessibilityIdentifier("CommandSuggestionView_\(command.id)")
                         }
                     }
                 }
@@ -58,8 +58,8 @@ struct InstantCommandsView: View {
     }
 }
 
-/// View for the instant commands header.
-struct InstantCommandsHeader: View {
+/// View for the command suggestions header.
+struct CommandSuggestionsHeader: View {
     @Injected(\.fonts) private var fonts
     @Injected(\.colors) private var colors
     @Injected(\.tokens) private var tokens
@@ -69,7 +69,7 @@ struct InstantCommandsHeader: View {
             Text(L10n.Composer.Suggestions.Commands.header)
                 .font(fonts.subheadline)
                 .foregroundColor(Color(colors.textLowEmphasis))
-                .accessibilityIdentifier("InstantCommandsHeader")
+                .accessibilityIdentifier("CommandSuggestionsHeader")
             Spacer()
         }
         .padding(.top, tokens.spacingMd)
@@ -78,8 +78,8 @@ struct InstantCommandsHeader: View {
     }
 }
 
-/// View for an instant command entry.
-struct InstantCommandView: View {
+/// View for a single command suggestion row.
+struct CommandSuggestionView: View {
     @Injected(\.fonts) private var fonts
     @Injected(\.colors) private var colors
     @Injected(\.tokens) private var tokens

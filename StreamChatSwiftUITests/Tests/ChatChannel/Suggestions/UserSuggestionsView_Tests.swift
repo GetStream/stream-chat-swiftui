@@ -9,7 +9,7 @@ import SwiftUI
 import XCTest
 
 @MainActor
-final class MentionUsersView_Tests: StreamChatTestCase {
+final class UserSuggestionsView_Tests: StreamChatTestCase {
     func test_messageComposerView_emptyMentions() {
         let factory = DefaultViewFactory.shared
         let channelController = ChatChannelTestHelpers.makeChannelController(chatClient: chatClient)
@@ -36,9 +36,9 @@ final class MentionUsersView_Tests: StreamChatTestCase {
 
     // MARK: - Regular Style
 
-    func test_mentionUsersView_regularStyle() {
+    func test_userSuggestionsView_regularStyle() {
         let users = mockUsers(count: 3)
-        let view = MentionUsersView(users: users, userSelected: { _ in })
+        let view = UserSuggestionsView(users: users, userSelected: { _ in })
             .modifier(SuggestionsRegularContainerModifier())
             .frame(width: defaultScreenSize.width)
 
@@ -47,9 +47,9 @@ final class MentionUsersView_Tests: StreamChatTestCase {
 
     // MARK: - Liquid Glass Style
 
-    func test_mentionUsersView_liquidGlassStyle() {
+    func test_userSuggestionsView_liquidGlassStyle() {
         let users = mockUsers(count: 3)
-        let view = MentionUsersView(users: users, userSelected: { _ in })
+        let view = UserSuggestionsView(users: users, userSelected: { _ in })
             .modifier(SuggestionsLiquidGlassContainerModifier())
             .frame(width: defaultScreenSize.width)
 

@@ -5,8 +5,8 @@
 import StreamChat
 import SwiftUI
 
-/// View for the mentioned users.
-public struct MentionUsersView<Factory: ViewFactory>: View {
+/// View for the user suggestions.
+public struct UserSuggestionsView<Factory: ViewFactory>: View {
     @Injected(\.tokens) private var tokens
 
     var factory: Factory
@@ -29,7 +29,7 @@ public struct MentionUsersView<Factory: ViewFactory>: View {
         ScrollView {
             LazyVStack(spacing: 0) {
                 ForEach(users) { user in
-                    MentionUserView(
+                    UserSuggestionView(
                         factory: factory,
                         user: user,
                         userSelected: userSelected
@@ -52,8 +52,8 @@ public struct MentionUsersView<Factory: ViewFactory>: View {
     }
 }
 
-/// View for one user that can be mentioned.
-public struct MentionUserView<Factory: ViewFactory>: View {
+/// View for a single user suggestion row.
+public struct UserSuggestionView<Factory: ViewFactory>: View {
     @Injected(\.fonts) private var fonts
     @Injected(\.colors) private var colors
     @Injected(\.tokens) private var tokens

@@ -8,8 +8,8 @@
 import StreamSwiftTestHelpers
 import XCTest
 
-@MainActor class InstantCommandsView_Tests: StreamChatTestCase {
-    func test_instantCommandsView_snapshot() {
+@MainActor class CommandSuggestionsView_Tests: StreamChatTestCase {
+    func test_commandSuggestionView_snapshot() {
         let commandDisplayInfo = CommandDisplayInfo(
             displayName: "Test command",
             icon: UIImage(systemName: "person")!,
@@ -18,7 +18,7 @@ import XCTest
             description: "A test command description"
         )
 
-        let view = InstantCommandView(displayInfo: commandDisplayInfo)
+        let view = CommandSuggestionView(displayInfo: commandDisplayInfo)
             .frame(width: defaultScreenSize.width, height: 100)
 
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
@@ -26,9 +26,9 @@ import XCTest
 
     // MARK: - Regular Style
 
-    func test_instantCommandsContainerView_regularStyle() {
+    func test_commandSuggestionsContainerView_regularStyle() {
         let commands: [CommandHandler] = defaultCommands()
-        let view = InstantCommandsView(instantCommands: commands, commandSelected: { _ in })
+        let view = CommandSuggestionsView(instantCommands: commands, commandSelected: { _ in })
             .modifier(SuggestionsRegularContainerModifier())
             .frame(width: defaultScreenSize.width)
 
@@ -37,9 +37,9 @@ import XCTest
 
     // MARK: - Liquid Glass Style
 
-    func test_instantCommandsContainerView_liquidGlassStyle() {
+    func test_commandSuggestionsContainerView_liquidGlassStyle() {
         let commands: [CommandHandler] = defaultCommands()
-        let view = InstantCommandsView(instantCommands: commands, commandSelected: { _ in })
+        let view = CommandSuggestionsView(instantCommands: commands, commandSelected: { _ in })
             .modifier(SuggestionsLiquidGlassContainerModifier())
             .frame(width: defaultScreenSize.width)
 
