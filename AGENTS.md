@@ -96,8 +96,7 @@ Accessibility & UI quality
 
 Testing policy
 
-- Add/extend tests in StreamChatSwiftUITests/ for:
-- View models and state handling
+- Add/extend tests in StreamChatSwiftUITests/
 - Prefer using the AssertSnapshot from StreamChatTestHelpers instead of using the SnapshotTesting framework directly.
 - Avoid using the AssertAsync from StreamChatTestHelpers, instead use the XCTestExpectation directly whenever possible.
 
