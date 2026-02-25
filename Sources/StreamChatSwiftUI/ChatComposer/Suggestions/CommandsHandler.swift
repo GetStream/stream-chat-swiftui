@@ -111,14 +111,14 @@ extension CommandHandler {
 
 /// Factory for creating built-in composer commands.
 @MainActor
-public class ComposerCommandFactory {
+class ComposerCommandFactory {
     @Injected(\.images) private var images
 
-    public static let shared = ComposerCommandFactory()
+    static let shared = ComposerCommandFactory()
 
     private init() {}
 
-    public func giphy(
+    func giphy(
         typingSuggestion: TypingSuggestion = .empty
     ) -> ComposerCommand {
         ComposerCommand(
@@ -135,7 +135,7 @@ public class ComposerCommandFactory {
         )
     }
 
-    public func mute(
+    func mute(
         typingSuggestion: TypingSuggestion = .empty
     ) -> ComposerCommand {
         ComposerCommand(
@@ -153,7 +153,7 @@ public class ComposerCommandFactory {
         )
     }
 
-    public func unmute(
+    func unmute(
         typingSuggestion: TypingSuggestion = .empty
     ) -> ComposerCommand {
         ComposerCommand(

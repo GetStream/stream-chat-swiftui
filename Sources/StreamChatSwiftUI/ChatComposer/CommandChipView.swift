@@ -27,7 +27,7 @@ public struct CommandChipView: View {
         HStack(spacing: tokens.spacingXxs) {
             Image(uiImage: images.commandsBolt)
                 .customizable()
-                .frame(width: 12, height: 12)
+                .frame(width: tokens.iconSizeXs, height: tokens.iconSizeXs)
 
             Text(displayName.uppercased())
                 .font(fonts.footnoteBold)

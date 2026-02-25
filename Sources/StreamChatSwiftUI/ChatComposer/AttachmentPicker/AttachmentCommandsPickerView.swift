@@ -28,8 +28,7 @@ public struct AttachmentCommandsPickerView: View {
                 headerView
 
                 VStack(spacing: 0) {
-                    ForEach(instantCommands.indices, id: \.self) { i in
-                        let command = instantCommands[i]
+                    ForEach(instantCommands, id: \.id) { command in
                         if let displayInfo = command.displayInfo {
                             AttachmentCommandRow(displayInfo: displayInfo)
                                 .contentShape(Rectangle())
@@ -78,7 +77,7 @@ private struct AttachmentCommandRow: View {
             Image(uiImage: displayInfo.icon)
                 .resizable()
                 .scaledToFit()
-                .frame(width: 20, height: 20)
+                .frame(width: tokens.iconSizeMd, height: tokens.iconSizeMd)
                 .foregroundColor(Color(colors.textLowEmphasis))
 
             Text(displayInfo.displayName)

@@ -36,7 +36,7 @@ struct InstantCommandsView: View {
                                 InstantCommandView(displayInfo: displayInfo)
                             }
                             .accessibilityElement(children: .contain)
-                            .accessibilityIdentifier("InstantCommandView")
+                            .accessibilityIdentifier("InstantCommandView_\(command.id)")
                         }
                     }
                 }
@@ -91,7 +91,7 @@ struct InstantCommandView: View {
             Image(uiImage: displayInfo.icon)
                 .resizable()
                 .scaledToFit()
-                .frame(width: 20, height: 20)
+                .frame(width: tokens.iconSizeMd, height: tokens.iconSizeMd)
                 .foregroundColor(Color(colors.textLowEmphasis))
                 .accessibilityIdentifier("image\(displayInfo.displayName)")
 
