@@ -47,6 +47,10 @@ public protocol Styles {
     associatedtype ComposerViewModifier: ViewModifier
     /// Creates the composer view modifier, that's applied to the whole composer view.
     func makeComposerViewModifier(options: ComposerViewModifierOptions) -> ComposerViewModifier
+
+    associatedtype SuggestionsContainerModifier: ViewModifier
+    /// Creates the suggestions container modifier applied to the suggestions overlay.
+    func makeSuggestionsContainerModifier(options: SuggestionsContainerModifierOptions) -> SuggestionsContainerModifier
 }
 
 extension Styles {
@@ -102,6 +106,10 @@ public class LiquidGlassStyles: Styles {
     public func makeComposerButtonViewModifier(options: ComposerButtonModifierOptions) -> some ViewModifier {
         LiquidGlassModifier(shape: .circle, isInteractive: true)
     }
+    
+    public func makeSuggestionsContainerModifier(options: SuggestionsContainerModifierOptions) -> some ViewModifier {
+        SuggestionsLiquidGlassContainerModifier()
+    }
 }
 
 public class RegularStyles: Styles {
@@ -119,6 +127,10 @@ public class RegularStyles: Styles {
 
     public func makeComposerViewModifier(options: ComposerViewModifierOptions) -> some ViewModifier {
         ComposerBackgroundRegularViewModifier()
+    }
+    
+    public func makeSuggestionsContainerModifier(options: SuggestionsContainerModifierOptions) -> some ViewModifier {
+        SuggestionsRegularContainerModifier()
     }
 }
 
@@ -169,6 +181,35 @@ struct ComposerBackgroundRegularViewModifier: ViewModifier {
     func body(content: Content) -> some View {
         content
             .background(Color(colors.composerBackground))
+    }
+}
+
+public class SuggestionsContainerModifierOptions {
+    public init() {}
+}
+
+struct SuggestionsRegularContainerModifier: ViewModifier {
+    @Injected(\.colors) var colors
+
+    func body(content: Content) -> some View {
+        VStack(spacing: 0) {
+            Divider()
+            content
+        }
+        .background(Color(colors.background))
+    }
+}
+
+struct SuggestionsLiquidGlassContainerModifier: ViewModifier {
+    @Injected(\.tokens) var tokens
+
+    func body(content: Content) -> some View {
+        content
+            .clipShape(RoundedRectangle(cornerRadius: tokens.radius3xl))
+            .modifier(
+                LiquidGlassModifier(shape: .roundedRect(tokens.radius3xl))
+            )
+            .padding(.horizontal, tokens.spacingMd)
     }
 }
 

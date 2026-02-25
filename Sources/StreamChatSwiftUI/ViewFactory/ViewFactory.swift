@@ -521,11 +521,11 @@ import SwiftUI
     /// - Parameter options: The options for creating the attachment preview icon view.
     func makeMessageAttachmentPreviewIconView(options: MessageAttachmentPreviewIconViewOptions) -> MessageAttachmentPreviewIconViewType
 
-    associatedtype CommandsContainerViewType: View
-    /// Creates the commands container view, above the composer.
-    /// - Parameter options: the options for creating the commands container view.
-    /// - Returns: view displayed in the commands container slot.
-    func makeCommandsContainerView(options: CommandsContainerViewOptions) -> CommandsContainerViewType
+    associatedtype SuggestionsContainerViewType: View
+    /// Creates the suggestions container view, above the composer.
+    /// - Parameter options: the options for creating the suggestions container view.
+    /// - Returns: view displayed in the suggestions container slot.
+    func makeSuggestionsContainerView(options: SuggestionsContainerViewOptions) -> SuggestionsContainerViewType
 
     associatedtype MessageReadIndicatorViewType: View
     /// Creates the message read indicator view.
@@ -571,13 +571,7 @@ import SwiftUI
     associatedtype NoThreads: View
     /// Creates the view that is displayed when there are no threads available.
     func makeNoThreadsView(options: NoThreadsViewOptions) -> NoThreads
-
-    associatedtype ThreadListErrorBannerView: View
-    /// Creates the error view that is displayed at the bottom of the thread list.
-    /// - Parameter options: the options for creating the threads list error banner view.
-    /// - Returns: Returns the error view shown as a banner at the bottom of the thread list.
-    func makeThreadsListErrorBannerView(options: ThreadListErrorBannerViewOptions) -> ThreadListErrorBannerView
-
+    
     associatedtype ThreadListLoadingView: View
     /// Creates a loading view for the thread list.
     func makeThreadListLoadingView(options: ThreadListLoadingViewOptions) -> ThreadListLoadingView
