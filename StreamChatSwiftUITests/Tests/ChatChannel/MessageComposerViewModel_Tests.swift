@@ -644,6 +644,7 @@ import XCTest
             config: channelConfig
         )
         viewModel.composerCommand = .init(id: "test", typingSuggestion: .empty, displayInfo: nil)
+        viewModel.suggestions = ["commands": []]
 
         // Then
         XCTAssertTrue(viewModel.showSuggestionsOverlay)

@@ -42,7 +42,7 @@ final class MentionUsersView_Tests: StreamChatTestCase {
             .modifier(SuggestionsRegularContainerModifier())
             .frame(width: defaultScreenSize.width)
 
-        AssertSnapshot(view, variants: [.defaultLight, .defaultDark])
+        AssertSnapshot(view)
     }
 
     // MARK: - Liquid Glass Style
