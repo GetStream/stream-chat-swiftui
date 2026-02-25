@@ -50,15 +50,3 @@ public struct CommandChipView: View {
         .accessibilityAddTraits(.isButton)
     }
 }
-
-// TODO: Move to Common Module
-
-extension Appearance.Images {
-    var commandsBolt: UIImage {
-        UIImage(systemName: "bolt.fill", withConfiguration: UIImage.SymbolConfiguration(weight: .black))!
-    }
-
-    var commandsDismissIcon: UIImage {
-        UIImage(systemName: "xmark", withConfiguration: UIImage.SymbolConfiguration(weight: .bold))!
-    }
-}

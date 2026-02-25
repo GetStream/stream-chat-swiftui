@@ -120,24 +120,3 @@ struct CommandSuggestionView: View {
         .padding(.horizontal, tokens.spacingXxs)
     }
 }
-
-// TODO: Move to Common Module
-
-extension Appearance.Images {
-    var commandGiphyIcon: UIImage {
-        UIImage(named: "GiphyIcon", in: .streamChatUI, compatibleWith: nil)!
-            .withRenderingMode(.alwaysOriginal)
-    }
-
-    var commandMuteIcon: UIImage {
-        let config = UIImage.SymbolConfiguration(pointSize: 16, weight: .medium)
-        return UIImage(systemName: "speaker.slash", withConfiguration: config)!
-            .withRenderingMode(.alwaysTemplate)
-    }
-
-    var commandUnmuteIcon: UIImage {
-        let config = UIImage.SymbolConfiguration(pointSize: 16, weight: .medium)
-        return UIImage(systemName: "speaker.wave.2", withConfiguration: config)!
-            .withRenderingMode(.alwaysTemplate)
-    }
-}
