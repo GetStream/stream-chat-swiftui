@@ -240,6 +240,7 @@
 				Tests/CommonViews/AlertBannerViewModifier_Tests.swift,
 				Tests/CommonViews/Avatars/ChannelAvatar_Tests.swift,
 				Tests/CommonViews/Avatars/UserAvatar_Tests.swift,
+				Tests/CommonViews/BadgeNotificationView_Tests.swift,
 				Tests/CommonViews/GalleryHeaderView_Tests.swift,
 				Tests/CommonViews/SearchBar_Tests.swift,
 				Tests/CommonViews/SnackBarView_Tests.swift,
