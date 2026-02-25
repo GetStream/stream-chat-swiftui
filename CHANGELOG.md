@@ -4,7 +4,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 # Upcoming
 
 ### ✅ Added
-- Channel list message search now uses the channel list's sort order: `ChatChannelListViewModel.performMessageSearch()` is set from the channel list query in the default strategy, and is passed to the search API.
+- Channel list message search now uses the channel list's sort order: `ChatChannelListViewModel.performMessageSearch()` is set from the channel list query in the default strategy, and is passed to the search API [#1237](https://github.com/GetStream/stream-chat-swiftui/pull/1237)
 
 ### 🐞 Fixed
 - Fix composer text, placeholder and icons not respecting layout direction in RTL [#1206](https://github.com/GetStream/stream-chat-swiftui/pull/1206)
