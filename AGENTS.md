@@ -98,4 +98,7 @@ Testing policy
   • Avoid using the AssertAsync from StreamChatTestHelpers, instead use the XCTestExpectation directly whenever possible.
 
 Pull Requests:
-  • When creating a PR, the base branch should be the v5 branch. Make sure to fill in the PR template, including the manual testing section. Use the Github CLI to create a PR and use the Linear MCP to link the relevant issue assigned to me.
+  • Use the Github CLI to create a PR and use the Linear MCP to link the relevant issue assigned to me.
+  • When creating a PR, the base branch should be the v5 branch.
+  • Make sure to fill in the PR template, including the manual testing section.
+  • Make sure to fill the template with atomic information, do not mention things that were done and then reverted in this same PR.
