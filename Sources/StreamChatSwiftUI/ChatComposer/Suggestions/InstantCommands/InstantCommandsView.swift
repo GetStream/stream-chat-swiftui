@@ -130,10 +130,12 @@ extension Appearance.Images {
     }
 
     var commandMuteIcon: UIImage {
-        UIImage(systemName: "speaker.slash")!.withRenderingMode(.alwaysTemplate)
+        let config = UIImage.SymbolConfiguration(pointSize: 16, weight: .medium)
+        return UIImage(systemName: "speaker.slash", withConfiguration: config)!
     }
 
     var commandUnmuteIcon: UIImage {
-        UIImage(systemName: "speaker.wave.2")!.withRenderingMode(.alwaysTemplate)
+        let config = UIImage.SymbolConfiguration(pointSize: 16, weight: .medium)
+        return UIImage(systemName: "speaker.wave.2", withConfiguration: config)!
     }
 }
