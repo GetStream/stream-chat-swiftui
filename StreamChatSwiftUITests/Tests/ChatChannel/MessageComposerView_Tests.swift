@@ -576,7 +576,7 @@ import XCTest
         .environmentObject(MessageComposerTestUtils.makeComposerViewModel(chatClient: chatClient))
         .frame(width: size.width, height: size.height)
 
-        AssertSnapshot(view, variants: .onlyUserInterfaceStyles, size: size)
+        AssertSnapshot(view, size: size)
 
         // Themed
         streamChat?.appearance.colorPalette.backgroundCoreInverse = UIColor(Color.indigo)
