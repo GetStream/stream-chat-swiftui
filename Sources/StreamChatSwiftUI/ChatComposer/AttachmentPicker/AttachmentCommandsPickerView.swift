@@ -44,7 +44,7 @@ public struct AttachmentCommandsPickerView: View {
             .padding(.horizontal, tokens.spacingSm)
             .padding(.vertical, tokens.spacingXs)
         }
-        .background(Color(colors.background))
+        .background(Color(colors.backgroundElevationElevation1))
         .accessibilityElement(children: .contain)
         .accessibilityIdentifier("AttachmentCommandsPickerView")
     }
