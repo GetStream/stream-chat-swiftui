@@ -571,13 +571,7 @@ import SwiftUI
     associatedtype NoThreads: View
     /// Creates the view that is displayed when there are no threads available.
     func makeNoThreadsView(options: NoThreadsViewOptions) -> NoThreads
-
-    associatedtype ThreadListErrorBannerView: View
-    /// Creates the error view that is displayed at the bottom of the thread list.
-    /// - Parameter options: the options for creating the threads list error banner view.
-    /// - Returns: Returns the error view shown as a banner at the bottom of the thread list.
-    func makeThreadsListErrorBannerView(options: ThreadListErrorBannerViewOptions) -> ThreadListErrorBannerView
-
+    
     associatedtype ThreadListLoadingView: View
     /// Creates a loading view for the thread list.
     func makeThreadListLoadingView(options: ThreadListLoadingViewOptions) -> ThreadListLoadingView

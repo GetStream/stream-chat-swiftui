@@ -938,10 +938,6 @@ extension ViewFactory {
         NoThreadsView()
     }
 
-    public func makeThreadsListErrorBannerView(options: ThreadListErrorBannerViewOptions) -> some View {
-        ChatThreadListErrorBannerView(action: options.onRefreshAction)
-    }
-
     public func makeThreadListLoadingView(options: ThreadListLoadingViewOptions) -> some View {
         ChatThreadListLoadingView()
     }

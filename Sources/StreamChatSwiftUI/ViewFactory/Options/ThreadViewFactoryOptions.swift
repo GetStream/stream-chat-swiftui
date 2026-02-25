@@ -29,16 +29,6 @@ public final class ThreadListItemOptions<ThreadDestination: View> {
     }
 }
 
-/// Options for creating the thread list error banner view.
-public final class ThreadListErrorBannerViewOptions: Sendable {
-    /// Callback when the refresh action is triggered.
-    public let onRefreshAction: @MainActor () -> Void
-    
-    public init(onRefreshAction: @escaping @MainActor () -> Void) {
-        self.onRefreshAction = onRefreshAction
-    }
-}
-
 /// Options for creating the thread list container view modifier.
 public final class ThreadListContainerModifierOptions: Sendable {
     /// The view model for the thread list.
