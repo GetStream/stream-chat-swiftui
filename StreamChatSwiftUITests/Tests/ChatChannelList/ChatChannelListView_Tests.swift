@@ -11,6 +11,13 @@ import SwiftUI
 import XCTest
 
 @MainActor class ChatChannelListView_Tests: StreamChatTestCase {
+    override func setUp() {
+        super.setUp()
+
+        overrideRecording = true
+        isRecording = true
+    }
+
     func test_chatChannelScreen_snapshot() {
         // Given
         let controller = makeChannelListController()
