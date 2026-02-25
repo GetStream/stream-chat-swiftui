@@ -73,17 +73,7 @@ class AppDelegate: NSObject, UIApplicationDelegate {
             channelListConfig: ChannelListConfig(
                 channelItemMutedStyle: .bottomRightCorner
             ),
-            messageListConfig: MessageListConfig(
-                messageDisplayOptions: .init(showOriginalTranslatedButton: true),
-                dateIndicatorPlacement: .messageList,
-                userBlockingEnabled: true,
-                bouncedMessagesAlertActionsEnabled: true,
-                skipEditedMessageLabel: { message in
-                    message.extraData["ai_generated"]?.boolValue == true
-                },
-                draftMessagesEnabled: true,
-                downloadFileAttachmentsEnabled: true
-            ),
+            messageListConfig: AppConfiguration.makeMessageListConfig(),
             composerConfig: ComposerConfig(isVoiceRecordingEnabled: true)
         )
         streamChat = StreamChat(chatClient: chatClient, utils: utils)

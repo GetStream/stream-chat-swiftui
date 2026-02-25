@@ -80,21 +80,23 @@ import UIKit
         }
     }
 
-    @Published public var customChannelPopupType: ChannelPopupType? {
+    @Published public var channelPopupType: ChannelPopupType? {
         didSet {
-            if customChannelPopupType != nil {
-                customAlertShown = true
+            if channelPopupType != nil {
+                channelPopupShown = true
             } else {
-                customAlertShown = false
+                channelPopupShown = false
             }
         }
     }
 
     @Published public var alertShown = false
     @Published public var loading = false
-    @Published public var customAlertShown = false {
+    @Published public var channelPopupShown = false {
         didSet {
-            hideTabBar = customAlertShown
+            if !channelPopupShown {
+                swipedChannelId = nil
+            }
         }
     }
 
@@ -241,7 +243,7 @@ import UIKit
     }
 
     public func onMoreTapped(channel: ChatChannel) {
-        customChannelPopupType = .moreActions(channel)
+        channelPopupType = .moreActions(channel)
     }
 
     public func delete(channel: ChatChannel) {

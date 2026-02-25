@@ -3,10 +3,13 @@
 //
 
 import Combine
+import StreamChatSwiftUI
 import SwiftUI
 
 struct AppConfigurationView: View {
     @State private var channelPinningEnabled = AppConfiguration.default.isChannelPinningFeatureEnabled
+    @State private var reactionsStyle = AppConfiguration.default.reactionsStyle
+    @State private var reactionsPlacement = AppConfiguration.default.reactionsPlacement
 
     var body: some View {
         NavigationView {
@@ -17,11 +20,29 @@ struct AppConfigurationView: View {
                     }
                     Toggle("Channel Pinning", isOn: $channelPinningEnabled)
                 }
+                Section("Reactions") {
+                    Picker("Style", selection: $reactionsStyle) {
+                        Text("Segmented").tag(ReactionsStyle.segmented)
+                        Text("Clustered").tag(ReactionsStyle.clustered)
+                    }
+                    Picker("Placement", selection: $reactionsPlacement) {
+                        Text("Top").tag(ReactionsPlacement.top)
+                        Text("Bottom").tag(ReactionsPlacement.bottom)
+                    }
+                }
             }
             .navigationBarTitleDisplayMode(.inline)
             .navigationTitle("App Configuration")
         }
         .onChange(of: channelPinningEnabled, perform: { AppConfiguration.default.isChannelPinningFeatureEnabled = $0 })
+        .onChange(of: reactionsStyle) { newStyle in
+            AppConfiguration.default.reactionsStyle = newStyle
+            InjectedValues[\.utils].messageListConfig = AppConfiguration.makeMessageListConfig()
+        }
+        .onChange(of: reactionsPlacement) { newPlacement in
+            AppConfiguration.default.reactionsPlacement = newPlacement
+            InjectedValues[\.utils].messageListConfig = AppConfiguration.makeMessageListConfig()
+        }
     }
 }
 

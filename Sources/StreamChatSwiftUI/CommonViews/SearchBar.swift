@@ -9,62 +9,74 @@ struct SearchBar: View, KeyboardReadable {
     @Injected(\.colors) private var colors
     @Injected(\.fonts) private var fonts
     @Injected(\.images) private var images
+    @Injected(\.tokens) private var tokens
 
     @Binding var text: String
     @State private var isEditing = false
 
     var body: some View {
         HStack {
-            TextField(L10n.Message.Search.title, text: $text)
-                .padding(8)
-                .padding(.leading, 8)
-                .padding(.horizontal, 24)
-                .background(Color(colors.background1))
-                .clipShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
-                .overlay(
-                    HStack {
-                        Image(uiImage: images.emptySearch)
+            HStack(spacing: tokens.spacingXs) {
+                Image(uiImage: images.emptySearch)
+                    .customizable()
+                    .foregroundColor(Color(colors.inputTextIcon))
+                    .frame(width: tokens.iconSizeMd, height: tokens.iconSizeMd)
+                    .padding(.leading, tokens.spacingXs)
+                
+                if #available(iOS 15.0, *) {
+                    TextField(
+                        "",
+                        text: $text,
+                        prompt: Text(L10n.Message.Search.title)
+                            .foregroundColor(Color(colors.inputTextPlaceholder))
+                    )
+                    .foregroundColor(Color(colors.textPrimary))
+                } else {
+                    TextField(L10n.Message.Search.title, text: $text)
+                        .font(fonts.body)
+                        .foregroundColor(Color(colors.textPrimary))
+                }
+
+                if !text.isEmpty {
+                    Button(action: {
+                        text = ""
+                    }) {
+                        Image(uiImage: images.searchClose)
                             .customizable()
-                            .foregroundColor(Color(colors.textLowEmphasis))
-                            .frame(maxHeight: 18)
-                            .padding(.leading, 12)
-
-                        Spacer()
-
-                        if !text.isEmpty {
-                            Button(action: {
-                                text = ""
-                            }) {
-                                Image(uiImage: images.searchClose)
-                                    .customizable()
-                                    .frame(width: 18, height: 18)
-                                    .foregroundColor(Color(colors.textLowEmphasis))
-                                    .padding(.trailing, 8)
-                            }
-                        }
+                            .frame(width: tokens.iconSizeMd, height: tokens.iconSizeMd)
+                            .foregroundColor(Color(colors.inputTextIcon))
                     }
-                )
-                .padding(.horizontal, 8)
-                .transition(.identity)
-                .animation(.easeInOut, value: isEditing)
+                }
+            }
+            .padding(.horizontal, tokens.spacingSm)
+            .padding(.vertical, tokens.spacingSm)
+            .background(Color(colors.backgroundElevationElevation1))
+            .clipShape(RoundedRectangle(cornerRadius: tokens.radiusMax, style: .continuous))
+            .overlay(
+                RoundedRectangle(cornerRadius: tokens.radiusMax, style: .continuous)
+                    .stroke(Color(colors.inputBorderDefault), lineWidth: 1)
+            )
+            .padding(.horizontal, tokens.spacingXs)
+            .transition(.identity)
+            .animation(.easeInOut, value: isEditing)
 
             if isEditing {
                 Button(action: {
                     isEditing = false
                     text = ""
-                    // Dismiss the keyboard
                     resignFirstResponder()
                 }) {
                     Text(L10n.Message.Search.cancel)
+                        .font(fonts.body)
                         .foregroundColor(Color(colors.accentPrimary))
                 }
-                .frame(height: 20)
-                .padding(.trailing, 8)
+                .frame(height: tokens.iconSizeLg)
+                .padding(.trailing, tokens.spacingXs)
                 .transition(.move(edge: .trailing))
                 .animation(.easeInOut)
             }
         }
-        .padding(.vertical, 8)
+        .padding(.all, tokens.spacingXs)
         .onReceive(keyboardWillChangePublisher) { shown in
             if shown {
                 isEditing = true

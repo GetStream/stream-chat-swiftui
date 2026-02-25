@@ -145,8 +145,8 @@ import XCTest
         viewModel.onMoreTapped(channel: channel)
 
         // Then
-        XCTAssert(viewModel.customChannelPopupType == .moreActions(channel))
-        XCTAssert(viewModel.customAlertShown == true)
+        XCTAssert(viewModel.channelPopupType == .moreActions(channel))
+        XCTAssert(viewModel.channelPopupShown == true)
     }
 
     func test_channelListVM_deleteChannel() {

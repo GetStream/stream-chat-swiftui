@@ -384,12 +384,15 @@ struct PresentationDetentsModifier: ViewModifier {
 }
 
 enum SheetSize {
+    case custom(CGFloat)
     case medium
     case large
     
     @available(iOS 16.0, *)
     var toPresentationDetent: PresentationDetent {
         switch self {
+        case .custom(let height):
+            return .height(height)
         case .medium:
             return .medium
         case .large:

@@ -62,10 +62,6 @@ enum ChannelListPage {
             cell.images["ChannelAvatar"].firstMatch
         }
 
-        static func readCount(in cell: XCUIElement) -> XCUIElement {
-            cell.staticTexts["UnreadIndicatorView"]
-        }
-
         static func statusCheckmark(
             for status: StreamChatTestMockServer.MessageDeliveryStatus?,
             in cell: XCUIElement
