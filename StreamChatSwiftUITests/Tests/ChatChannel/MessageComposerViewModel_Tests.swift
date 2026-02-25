@@ -624,7 +624,7 @@ import XCTest
         XCTAssertFalse(viewModel.canSendPoll)
     }
 
-    func test_showCommandsOverlay() {
+    func test_showSuggestionsOverlay_returnsTrue() {
         // Given
         let channelController = makeChannelController()
         let messageController = ChatMessageControllerSUI_Mock.mock(
@@ -646,10 +646,10 @@ import XCTest
         viewModel.composerCommand = .init(id: "test", typingSuggestion: .empty, displayInfo: nil)
 
         // Then
-        XCTAssertTrue(viewModel.showCommandsOverlay)
+        XCTAssertTrue(viewModel.showSuggestionsOverlay)
     }
 
-    func test_showCommandsOverlay_whenComposerCommandIsNil_returnsFalse() {
+    func test_showSuggestionsOverlay_whenComposerCommandIsNil_returnsFalse() {
         // Given
         let channelController = makeChannelController()
         let messageController = ChatMessageControllerSUI_Mock.mock(
@@ -671,10 +671,10 @@ import XCTest
         viewModel.composerCommand = nil
 
         // Then
-        XCTAssertFalse(viewModel.showCommandsOverlay)
+        XCTAssertFalse(viewModel.showSuggestionsOverlay)
     }
 
-    func test_showCommandsOverlay_whenCommandsAreDisabled_returnsFalse() {
+    func test_showSuggestionsOverlay_whenCommandsAreDisabled_returnsFalse() {
         // Given
         let channelController = makeChannelController()
         let messageController = ChatMessageControllerSUI_Mock.mock(
@@ -696,10 +696,10 @@ import XCTest
         viewModel.composerCommand = .init(id: "test", typingSuggestion: .empty, displayInfo: nil)
 
         // Then
-        XCTAssertFalse(viewModel.showCommandsOverlay)
+        XCTAssertFalse(viewModel.showSuggestionsOverlay)
     }
 
-    func test_showCommandsOverlay_whenCommandsAreDisabledButIsMentions_returnsTrue() {
+    func test_showSuggestionsOverlay_whenMentionsWithUsers_returnsTrue() {
         // Given
         let channelController = makeChannelController()
         let messageController = ChatMessageControllerSUI_Mock.mock(
@@ -719,9 +719,36 @@ import XCTest
             config: channelConfig
         )
         viewModel.composerCommand = .init(id: "mentions", typingSuggestion: .empty, displayInfo: nil)
+        viewModel.suggestions = ["mentions": [ChatUser.mock(id: "test-user")]]
 
         // Then
-        XCTAssertTrue(viewModel.showCommandsOverlay)
+        XCTAssertTrue(viewModel.showSuggestionsOverlay)
+    }
+
+    func test_showSuggestionsOverlay_whenMentionsWithNoUsers_returnsFalse() {
+        // Given
+        let channelController = makeChannelController()
+        let messageController = ChatMessageControllerSUI_Mock.mock(
+            chatClient: chatClient,
+            cid: .unique,
+            messageId: .unique
+        )
+        let viewModel = MessageComposerViewModel(
+            channelController: channelController,
+            messageController: messageController
+        )
+
+        // When
+        let channelConfig = ChannelConfig(commands: [])
+        channelController.channel_mock = .mock(
+            cid: .unique,
+            config: channelConfig
+        )
+        viewModel.composerCommand = .init(id: "mentions", typingSuggestion: .empty, displayInfo: nil)
+        viewModel.suggestions = ["mentions": [ChatUser]()]
+
+        // Then
+        XCTAssertFalse(viewModel.showSuggestionsOverlay)
     }
 
     func test_messageComposerVM_checkChannelCooldown_whenNoLastMessageFromCurrentUser_keepsCooldownDisabled() {

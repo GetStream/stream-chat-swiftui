@@ -5,8 +5,8 @@
 import StreamChat
 import SwiftUI
 
-/// Default implementation of the commands container.
-struct CommandsContainerView<Factory: ViewFactory>: View {
+/// Default implementation of the suggestions container.
+struct SuggestionsContainerView<Factory: ViewFactory>: View {
     var factory: Factory
     var suggestions: [String: Any]
     var handleCommand: ([String: Any]) -> Void
@@ -45,6 +45,6 @@ struct CommandsContainerView<Factory: ViewFactory>: View {
             }
         }
         .accessibilityElement(children: .contain)
-        .accessibilityIdentifier("CommandsContainerView")
+        .accessibilityIdentifier("SuggestionsContainerView")
     }
 }

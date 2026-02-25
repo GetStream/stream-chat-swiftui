@@ -855,10 +855,10 @@ extension ViewFactory {
         )
     }
     
-    public func makeCommandsContainerView(
-        options: CommandsContainerViewOptions
+    public func makeSuggestionsContainerView(
+        options: SuggestionsContainerViewOptions
     ) -> some View {
-        CommandsContainerView(
+        SuggestionsContainerView(
             suggestions: options.suggestions,
             handleCommand: options.handleCommand
         )

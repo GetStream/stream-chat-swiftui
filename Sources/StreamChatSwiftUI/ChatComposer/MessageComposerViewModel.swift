@@ -451,13 +451,15 @@ import SwiftUI
         channelController.channel?.isDirectMessageChannel ?? false
     }
     
-    public var showCommandsOverlay: Bool {
-        // Mentions are really not commands, but at the moment this flag controls
-        // if the mentions are displayed or not, so if the command is related to mentions
-        // then we need to ignore if commands are available or not.
+    public var showSuggestionsOverlay: Bool {
+        guard !suggestions.isEmpty else { return false }
+
         let isMentionsSuggestions = composerCommand?.id == "mentions"
         if isMentionsSuggestions {
-            return true
+            if let users = suggestions["mentions"] as? [ChatUser], !users.isEmpty {
+                return true
+            }
+            return false
         }
         let commandAvailable = composerCommand != nil
         let configuredCommandsAvailable = channelController.channel?.config.commands.count ?? 0 > 0

@@ -232,9 +232,9 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
         .modifier(factory.styles.makeComposerViewModifier(options: ComposerViewModifierOptions()))
         .background(
             Group {
-                if viewModel.showCommandsOverlay {
-                    factory.makeCommandsContainerView(
-                        options: CommandsContainerViewOptions(
+                if viewModel.showSuggestionsOverlay {
+                    factory.makeSuggestionsContainerView(
+                        options: SuggestionsContainerViewOptions(
                             suggestions: viewModel.suggestions,
                             handleCommand: { commandInfo in
                                 withAnimation(.easeInOut(duration: 0.2)) {
@@ -251,7 +251,7 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
                     .transition(.opacity.combined(with: .offset(y: 8)))
                 }
             }
-            .animation(.easeInOut(duration: 0.2), value: viewModel.showCommandsOverlay)
+            .animation(.easeInOut(duration: 0.2), value: viewModel.showSuggestionsOverlay)
             .offset(y: -composerHeight),
             alignment: .bottom
         )
