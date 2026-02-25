@@ -14,8 +14,9 @@ import XCTest
         let commandDisplayInfo = CommandDisplayInfo(
             displayName: "Test command",
             icon: UIImage(systemName: "person")!,
-            format: "test command",
-            isInstant: false
+            format: "/test [@username]",
+            isInstant: false,
+            description: "A test command description"
         )
 
         // When

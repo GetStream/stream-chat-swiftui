@@ -126,10 +126,12 @@ public class ComposerCommandFactory {
             typingSuggestion: typingSuggestion,
             displayInfo: CommandDisplayInfo(
                 displayName: "Giphy",
-                icon: images.commandGiphy,
+                icon: (UIImage(named: "GiphyIcon", in: .streamChatUI, compatibleWith: nil) ?? images.commandGiphy)
+                    .withRenderingMode(.alwaysOriginal),
                 format: "/giphy [\(L10n.Composer.Commands.Format.text)]",
                 isInstant: true,
-                placeholder: L10n.Composer.Placeholder.giphy
+                placeholder: L10n.Composer.Placeholder.giphy,
+                description: L10n.Composer.Commands.Giphy.description
             )
         )
     }
@@ -142,10 +144,11 @@ public class ComposerCommandFactory {
             typingSuggestion: typingSuggestion,
             displayInfo: CommandDisplayInfo(
                 displayName: L10n.Composer.Commands.mute,
-                icon: images.commandMute,
+                icon: UIImage(systemName: "speaker.slash")!.withRenderingMode(.alwaysTemplate),
                 format: "/mute [\(L10n.Composer.Commands.Format.username)]",
                 isInstant: true,
-                placeholder: L10n.Composer.Commands.Format.username
+                placeholder: L10n.Composer.Commands.Format.username,
+                description: L10n.Composer.Commands.Mute.description
             ),
             replacesMessageSent: true
         )
@@ -159,10 +162,11 @@ public class ComposerCommandFactory {
             typingSuggestion: typingSuggestion,
             displayInfo: CommandDisplayInfo(
                 displayName: L10n.Composer.Commands.unmute,
-                icon: images.commandUnmute,
+                icon: UIImage(systemName: "speaker.wave.2")!.withRenderingMode(.alwaysTemplate),
                 format: "/unmute [\(L10n.Composer.Commands.Format.username)]",
                 isInstant: true,
-                placeholder: L10n.Composer.Commands.Format.username
+                placeholder: L10n.Composer.Commands.Format.username,
+                description: L10n.Composer.Commands.Unmute.description
             ),
             replacesMessageSent: true
         )
@@ -189,19 +193,22 @@ public final class CommandDisplayInfo: Sendable {
     public let format: String
     public let isInstant: Bool
     public let placeholder: String?
+    public let description: String?
 
     public init(
         displayName: String,
         icon: UIImage,
         format: String,
         isInstant: Bool,
-        placeholder: String? = nil
+        placeholder: String? = nil,
+        description: String? = nil
     ) {
         self.displayName = displayName
         self.icon = icon
         self.format = format
         self.isInstant = isInstant
         self.placeholder = placeholder
+        self.description = description
     }
 }
 
