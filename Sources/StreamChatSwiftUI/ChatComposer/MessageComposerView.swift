@@ -58,7 +58,8 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
                 factory.makeLeadingComposerView(
                     options: LeadingComposerViewOptions(
                         state: $viewModel.pickerTypeState,
-                        channelConfig: channelConfig
+                        channelConfig: channelConfig,
+                        isCommandActive: viewModel.composerCommand?.displayInfo?.isInstant == true
                     )
                 )
 
@@ -227,26 +228,37 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
                 popupSize = height - bottomSafeArea
             }
         }
-        .overlay(
-            viewModel.showCommandsOverlay ?
-                factory.makeCommandsContainerView(
-                    options: CommandsContainerViewOptions(
-                        suggestions: viewModel.suggestions,
-                        handleCommand: { commandInfo in
-                            viewModel.handleCommand(
-                                for: $viewModel.text,
-                                selectedRangeLocation: $viewModel.selectedRangeLocation,
-                                command: $viewModel.composerCommand,
-                                extraData: commandInfo
-                            )
-                        }
+        
+        .modifier(factory.styles.makeComposerViewModifier(options: ComposerViewModifierOptions()))
+        .background(
+            Group {
+                if viewModel.showSuggestionsOverlay {
+                    factory.makeSuggestionsContainerView(
+                        options: SuggestionsContainerViewOptions(
+                            suggestions: viewModel.suggestions,
+                            handleCommand: { commandInfo in
+                                withAnimation(.easeInOut(duration: 0.2)) {
+                                    viewModel.handleCommand(
+                                        for: $viewModel.text,
+                                        selectedRangeLocation: $viewModel.selectedRangeLocation,
+                                        command: $viewModel.composerCommand,
+                                        extraData: commandInfo
+                                    )
+                                }
+                            }
+                        )
                     )
-                )
-                .offset(y: -composerHeight)
-                .animation(nil) : nil,
+                    .transition(.opacity.combined(with: .offset(y: 8)))
+                }
+            }
+            .animation(.easeInOut(duration: 0.2), value: viewModel.showSuggestionsOverlay)
+            .offset(y: -composerHeight),
             alignment: .bottom
         )
-        .modifier(factory.styles.makeComposerViewModifier(options: ComposerViewModifierOptions()))
+        .snackBar(
+            text: $viewModel.snackBarText,
+            bottomOffset: composerHeight + tokens.spacingMd
+        )
         .onChange(of: editedMessage) { _ in
             viewModel.fillEditedMessage(editedMessage)
             if editedMessage != nil {
@@ -421,22 +433,20 @@ public struct ComposerInputView<Factory: ViewFactory>: View, KeyboardReadable {
 
     private var inputView: some View {
         HStack(alignment: .bottom) {
-            HStack {
+            HStack(alignment: .bottom, spacing: tokens.spacingXxs) {
                 if let command,
                    let displayInfo = command.displayInfo,
                    displayInfo.isInstant == true {
-                    HStack(spacing: 0) {
-                        Image(uiImage: images.smallBolt)
-                            .renderingMode(.template)
-                            .foregroundColor(Color(colors.staticColorText))
-                        Text(displayInfo.displayName.uppercased())
-                    }
-                    .padding(.horizontal, 8)
-                    .font(fonts.footnoteBold)
-                    .frame(height: 24)
-                    .background(Color(colors.accentPrimary))
-                    .foregroundColor(Color(colors.staticColorText))
-                    .cornerRadius(16)
+                    CommandChipView(
+                        displayName: displayInfo.displayName,
+                        onDismiss: {
+                            withAnimation(.easeInOut(duration: 0.2)) {
+                                self.command = nil
+                            }
+                        }
+                    )
+                    .padding(.leading, tokens.spacingXxs)
+                    .padding(.bottom, tokens.spacingXs)
                 }
 
                 factory.makeComposerTextInputView(
@@ -453,23 +463,9 @@ public struct ComposerInputView<Factory: ViewFactory>: View, KeyboardReadable {
                 )
                 .accessibilityIdentifier("ComposerTextInputView")
                 .accessibilityElement(children: .contain)
-                .overlay(
-                    command?.displayInfo?.isInstant == true ?
-                        HStack {
-                            Spacer()
-                            Button {
-                                command = nil
-                            } label: {
-                                DiscardButtonView(
-                                    color: Color(colors.background7)
-                                )
-                            }
-                        }
-                        : nil
-                )
             }
             .frame(height: textFieldHeight)
-            .padding(.vertical, 4)
+            .padding(.vertical, tokens.spacingXxs)
 
             factory.makeComposerInputTrailingView(
                 options: .init(
@@ -554,6 +550,10 @@ public struct ComposerInputView<Factory: ViewFactory>: View, KeyboardReadable {
             return .editing(hasContent: hasContent)
         }
 
+        if command?.displayInfo?.isInstant == true {
+            return .creating(hasContent: hasContent)
+        }
+
         if utils.composerConfig.isVoiceRecordingEnabled && !hasContent {
             return .allowAudioRecording
         }
@@ -572,6 +572,13 @@ public struct ComposerInputView<Factory: ViewFactory>: View, KeyboardReadable {
 
         if isChannelFrozen {
             return L10n.Composer.Placeholder.messageDisabled
+        }
+
+        if let command,
+           let displayInfo = command.displayInfo,
+           displayInfo.isInstant == true,
+           let placeholder = displayInfo.placeholder {
+            return placeholder
         }
 
         return L10n.Composer.Placeholder.message

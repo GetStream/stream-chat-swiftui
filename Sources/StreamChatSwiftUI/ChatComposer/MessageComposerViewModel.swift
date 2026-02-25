@@ -34,10 +34,14 @@ import SwiftUI
                 channelController.sendKeystrokeEvent()
             } else {
                 if composerCommand?.displayInfo?.isInstant == false {
-                    composerCommand = nil
+                    withAnimation(.easeInOut(duration: 0.2)) {
+                        composerCommand = nil
+                    }
                 }
                 selectedRangeLocation = 0
-                suggestions = [String: Any]()
+                withAnimation(.easeInOut(duration: 0.2)) {
+                    suggestions = [String: Any]()
+                }
                 mentionedUsers = Set<ChatUser>()
 
                 if shouldDeleteDraftMessage(oldValue: oldValue) {
@@ -81,7 +85,9 @@ import SwiftUI
                     )
                     showTypingSuggestions()
                 } else {
-                    composerCommand = nil
+                    withAnimation(.easeInOut(duration: 0.2)) {
+                        composerCommand = nil
+                    }
                 }
             }
         }
@@ -144,6 +150,7 @@ import SwiftUI
     }
     
     @Published public var audioRecordingInfo = AudioRecordingInfo.initial
+    @Published public var snackBarText: String?
 
     public let channelController: ChatChannelController
     public var messageController: ChatMessageController?
@@ -341,9 +348,14 @@ import SwiftUI
         }
 
         if let composerCommand, composerCommand.id != "instantCommands" {
+            let commandId = composerCommand.id
+            let commandText = text
             commandsHandler.executeOnMessageSent(
                 composerCommand: composerCommand
-            ) { [weak self] _ in
+            ) { [weak self] error in
+                if error == nil {
+                    self?.showCommandSnackBar(commandId: commandId, text: commandText)
+                }
                 self?.clearInputData()
                 completion()
             }
@@ -439,13 +451,15 @@ import SwiftUI
         channelController.channel?.isDirectMessageChannel ?? false
     }
     
-    public var showCommandsOverlay: Bool {
-        // Mentions are really not commands, but at the moment this flag controls
-        // if the mentions are displayed or not, so if the command is related to mentions
-        // then we need to ignore if commands are available or not.
+    public var showSuggestionsOverlay: Bool {
+        guard !suggestions.isEmpty else { return false }
+
         let isMentionsSuggestions = composerCommand?.id == "mentions"
         if isMentionsSuggestions {
-            return true
+            if let users = suggestions["mentions"] as? [ChatUser], !users.isEmpty {
+                return true
+            }
+            return false
         }
         let commandAvailable = composerCommand != nil
         let configuredCommandsAvailable = channelController.channel?.config.commands.count ?? 0 > 0
@@ -715,9 +729,27 @@ import SwiftUI
         composerAssets = []
         addedVoiceRecordings = []
         addedCustomAttachments = []
-        composerCommand = nil
+        withAnimation(.easeInOut(duration: 0.2)) {
+            composerCommand = nil
+        }
         mentionedUsers = Set<ChatUser>()
         clearText()
+    }
+
+    private func showCommandSnackBar(commandId: String, text: String) {
+        let username = text
+            .replacingOccurrences(of: "@", with: "")
+            .trimmingCharacters(in: .whitespaces)
+        guard !username.isEmpty else { return }
+
+        switch commandId {
+        case "/mute":
+            snackBarText = L10n.Composer.Commands.Mute.confirmation(username)
+        case "/unmute":
+            snackBarText = L10n.Composer.Commands.Unmute.confirmation(username)
+        default:
+            break
+        }
     }
     
     private func checkTypingSuggestions() {

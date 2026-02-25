@@ -24,27 +24,34 @@ public struct AttachmentCommandsPickerView: View {
 
     public var body: some View {
         ScrollView(showsIndicators: false) {
-            VStack(alignment: .leading, spacing: tokens.spacingXs) {
+            VStack(alignment: .leading, spacing: tokens.spacingMd) {
                 headerView
 
-                VStack(spacing: tokens.spacingXs) {
-                    ForEach(commandItems) { item in
-                        AttachmentCommandRow(item: item)
-                            .contentShape(Rectangle())
-                            .highPriorityGesture(
-                                TapGesture().onEnded {
-                                    handleSelection(item)
-                                }
-                            )
-                            .accessibilityElement(children: .contain)
-                            .accessibilityIdentifier("AttachmentCommandView_\(item.id)")
+                VStack(spacing: 0) {
+                    ForEach(instantCommands, id: \.id) { command in
+                        if let displayInfo = command.displayInfo {
+                            AttachmentCommandRow(displayInfo: displayInfo)
+                                .contentShape(Rectangle())
+                                .highPriorityGesture(
+                                    TapGesture().onEnded {
+                                        let composerCommand = ComposerCommand(
+                                            id: command.id,
+                                            typingSuggestion: TypingSuggestion.empty,
+                                            displayInfo: displayInfo,
+                                            replacesMessageSent: command.replacesMessageSent
+                                        )
+                                        onCommandSelected(composerCommand)
+                                    }
+                                )
+                                .accessibilityElement(children: .contain)
+                                .accessibilityIdentifier("AttachmentCommandView_\(command.id)")
+                        }
                     }
                 }
             }
-            .padding(.horizontal, tokens.spacingSm)
             .padding(.vertical, tokens.spacingXs)
         }
-        .background(Color(colors.background))
+        .background(Color(colors.backgroundElevationElevation1))
         .accessibilityElement(children: .contain)
         .accessibilityIdentifier("AttachmentCommandsPickerView")
     }
@@ -53,37 +60,8 @@ public struct AttachmentCommandsPickerView: View {
         Text(L10n.Composer.Suggestions.Commands.header)
             .font(fonts.bodyBold)
             .foregroundColor(Color(colors.text))
-            .padding(.top, tokens.spacingXs)
-            .padding(.bottom, tokens.spacingXxs)
+            .padding(.horizontal, tokens.spacingSm)
             .accessibilityIdentifier("AttachmentCommandsHeader")
-    }
-
-    private var commandItems: [CommandItem] {
-        instantCommands.compactMap { handler in
-            guard let displayInfo = handler.displayInfo else {
-                return nil
-            }
-            return CommandItem(
-                id: handler.id,
-                displayInfo: displayInfo,
-                replacesMessageSent: handler.replacesMessageSent,
-                usesTintedIcon: shouldUseTintedIcon(displayInfo.icon)
-            )
-        }
-    }
-
-    private func shouldUseTintedIcon(_ image: UIImage) -> Bool {
-        image.renderingMode == .alwaysTemplate || image.isSymbolImage
-    }
-
-    private func handleSelection(_ item: CommandItem) {
-        let command = ComposerCommand(
-            id: item.id,
-            typingSuggestion: TypingSuggestion.empty,
-            displayInfo: item.displayInfo,
-            replacesMessageSent: item.replacesMessageSent
-        )
-        onCommandSelected(command)
     }
 }
 
@@ -92,45 +70,31 @@ private struct AttachmentCommandRow: View {
     @Injected(\.fonts) private var fonts
     @Injected(\.tokens) private var tokens
 
-    let item: CommandItem
+    let displayInfo: CommandDisplayInfo
 
     var body: some View {
         HStack(spacing: tokens.spacingSm) {
-            iconView
+            Image(uiImage: displayInfo.icon)
+                .resizable()
+                .scaledToFit()
                 .frame(width: tokens.iconSizeMd, height: tokens.iconSizeMd)
-                .accessibilityIdentifier("AttachmentCommandIcon_\(item.id)")
+                .foregroundColor(Color(colors.textLowEmphasis))
 
-            Text(item.displayInfo.displayName)
+            Text(displayInfo.displayName)
                 .font(fonts.bodyBold)
-                .foregroundColor(Color(colors.textPrimary))
+                .foregroundColor(Color(colors.text))
+                .frame(width: 80, alignment: .leading)
+                .lineLimit(1)
 
-            Text(item.displayInfo.format)
+            Text(displayInfo.format)
                 .font(fonts.body)
-                .foregroundColor(Color(colors.textTertiary))
+                .foregroundColor(Color(colors.textLowEmphasis))
+                .lineLimit(1)
 
             Spacer()
         }
-        .padding(.vertical, tokens.spacingSm)
+        .padding(.horizontal, tokens.spacingSm)
+        .padding(.vertical, tokens.spacingXs)
+        .padding(.horizontal, tokens.spacingXxs)
     }
-
-    @ViewBuilder
-    private var iconView: some View {
-        let image = Image(uiImage: item.displayInfo.icon)
-        if item.usesTintedIcon {
-            image
-                .customizable()
-                .foregroundColor(Color(colors.textSecondary))
-        } else {
-            image
-                .resizable()
-                .scaledToFit()
-        }
-    }
-}
-
-struct CommandItem: Identifiable {
-    let id: String
-    let displayInfo: CommandDisplayInfo
-    let replacesMessageSent: Bool
-    let usesTintedIcon: Bool
 }

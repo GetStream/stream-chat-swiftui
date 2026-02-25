@@ -181,9 +181,9 @@ struct AppleMessageComposerView<Factory: ViewFactory>: View, KeyboardReadable {
             }
         }
         .overlay(
-            viewModel.showCommandsOverlay ?
-                factory.makeCommandsContainerView(
-                    options: CommandsContainerViewOptions(
+            viewModel.showSuggestionsOverlay ?
+                factory.makeSuggestionsContainerView(
+                    options: SuggestionsContainerViewOptions(
                         suggestions: viewModel.suggestions,
                         handleCommand: { commandInfo in
                             viewModel.handleCommand(
@@ -196,7 +196,7 @@ struct AppleMessageComposerView<Factory: ViewFactory>: View, KeyboardReadable {
                     )
                 )
                 .offset(y: -composerHeight)
-                .animation(.none, value: viewModel.showCommandsOverlay) : nil,
+                .animation(.none, value: viewModel.showSuggestionsOverlay) : nil,
             alignment: .bottom
         )
         .modifier(factory.styles.makeComposerViewModifier(options: ComposerViewModifierOptions()))

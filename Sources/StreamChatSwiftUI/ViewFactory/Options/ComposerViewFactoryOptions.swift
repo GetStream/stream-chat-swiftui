@@ -44,10 +44,17 @@ public final class LeadingComposerViewOptions: Sendable {
     public let state: Binding<PickerTypeState>
     /// The channel configuration.
     public let channelConfig: ChannelConfig?
+    /// Whether an instant command (e.g. /giphy, /mute) is currently active.
+    public let isCommandActive: Bool
     
-    public init(state: Binding<PickerTypeState>, channelConfig: ChannelConfig?) {
+    public init(
+        state: Binding<PickerTypeState>,
+        channelConfig: ChannelConfig?,
+        isCommandActive: Bool = false
+    ) {
         self.state = state
         self.channelConfig = channelConfig
+        self.isCommandActive = isCommandActive
     }
 }
 
@@ -282,13 +289,13 @@ public final class ComposerRecordingLockedViewOptions: Sendable {
     }
 }
 
-// MARK: - Commands Options
+// MARK: - Suggestions Options
 
-/// Options for creating the commands container view.
-public final class CommandsContainerViewOptions: @unchecked Sendable {
-    /// The command suggestions.
+/// Options for creating the suggestions container view.
+public final class SuggestionsContainerViewOptions: @unchecked Sendable {
+    /// The suggestions.
     public let suggestions: [String: Any]
-    /// Callback to handle a command.
+    /// Callback to handle a suggestion selection.
     public let handleCommand: @MainActor ([String: Any]) -> Void
     
     public init(suggestions: [String: Any], handleCommand: @escaping @MainActor ([String: Any]) -> Void) {

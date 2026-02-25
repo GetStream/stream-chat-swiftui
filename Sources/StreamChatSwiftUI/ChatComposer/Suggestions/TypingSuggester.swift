@@ -51,7 +51,7 @@ public final class TypingSuggestion: Sendable {
 }
 
 extension TypingSuggestion {
-    static let empty = TypingSuggestion(
+    public static let empty = TypingSuggestion(
         text: "",
         locationRange: NSRange(
             location: 0,

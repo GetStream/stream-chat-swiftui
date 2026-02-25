@@ -494,7 +494,8 @@ extension ViewFactory {
         LeadingComposerView(
             factory: self,
             pickerTypeState: options.state,
-            channelConfig: options.channelConfig
+            channelConfig: options.channelConfig,
+            isCommandActive: options.isCommandActive
         )
     }
     
@@ -854,10 +855,11 @@ extension ViewFactory {
         )
     }
     
-    public func makeCommandsContainerView(
-        options: CommandsContainerViewOptions
+    public func makeSuggestionsContainerView(
+        options: SuggestionsContainerViewOptions
     ) -> some View {
-        CommandsContainerView(
+        SuggestionsContainerView(
+            factory: self,
             suggestions: options.suggestions,
             handleCommand: options.handleCommand
         )

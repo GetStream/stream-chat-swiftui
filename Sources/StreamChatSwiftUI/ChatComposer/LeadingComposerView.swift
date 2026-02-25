@@ -13,9 +13,10 @@ struct LeadingComposerView<Factory: ViewFactory>: View {
     
     @Binding var pickerTypeState: PickerTypeState
     public let channelConfig: ChannelConfig?
+    var isCommandActive: Bool
     
     var body: some View {
-        HStack {
+        if !isCommandActive {
             ComposerAttachmentPickerButton(
                 factory: factory,
                 pickerTypeState: $pickerTypeState

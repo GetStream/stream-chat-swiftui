@@ -521,11 +521,11 @@ import SwiftUI
     /// - Parameter options: The options for creating the attachment preview icon view.
     func makeMessageAttachmentPreviewIconView(options: MessageAttachmentPreviewIconViewOptions) -> MessageAttachmentPreviewIconViewType
 
-    associatedtype CommandsContainerViewType: View
-    /// Creates the commands container view, above the composer.
-    /// - Parameter options: the options for creating the commands container view.
-    /// - Returns: view displayed in the commands container slot.
-    func makeCommandsContainerView(options: CommandsContainerViewOptions) -> CommandsContainerViewType
+    associatedtype SuggestionsContainerViewType: View
+    /// Creates the suggestions container view, above the composer.
+    /// - Parameter options: the options for creating the suggestions container view.
+    /// - Returns: view displayed in the suggestions container slot.
+    func makeSuggestionsContainerView(options: SuggestionsContainerViewOptions) -> SuggestionsContainerViewType
 
     associatedtype MessageReadIndicatorViewType: View
     /// Creates the message read indicator view.
