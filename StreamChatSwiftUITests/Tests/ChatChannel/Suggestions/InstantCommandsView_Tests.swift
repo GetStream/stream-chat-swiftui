@@ -10,7 +10,6 @@ import XCTest
 
 @MainActor class InstantCommandsView_Tests: StreamChatTestCase {
     func test_instantCommandsView_snapshot() {
-        // Given
         let commandDisplayInfo = CommandDisplayInfo(
             displayName: "Test command",
             icon: UIImage(systemName: "person")!,
@@ -19,52 +18,35 @@ import XCTest
             description: "A test command description"
         )
 
-        // When
         let view = InstantCommandView(displayInfo: commandDisplayInfo)
             .frame(width: defaultScreenSize.width, height: 100)
 
-        // Then
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
 
-    func test_instantCommandsContainerViewEmpty_snapshot() {
-        // Given
-        let commands: [CommandHandler] = []
+    // MARK: - Regular Style
 
-        // When
-        let view = InstantCommandsView(instantCommands: commands, commandSelected: { _ in })
-            .applyDefaultSize()
-
-        // Then
-        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
-    }
-
-    func test_instantCommandsContainerView_snapshot() {
-        // Given
+    func test_instantCommandsContainerView_regularStyle() {
         let commands: [CommandHandler] = defaultCommands()
-
-        // When
         let view = InstantCommandsView(instantCommands: commands, commandSelected: { _ in })
-            .applyDefaultSize()
+            .modifier(SuggestionsRegularContainerModifier())
+            .frame(width: defaultScreenSize.width)
 
-        // Then
-        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
+        AssertSnapshot(view, variants: [.defaultLight, .defaultDark])
     }
 
-    func test_instantCommandsContainerMaxSize_snapshot() {
-        // Given
-        var commands = [CommandHandler]()
-        for i in 0..<5 {
-            commands.append(contentsOf: defaultCommands(suffix: "\(i)"))
-        }
+    // MARK: - Liquid Glass Style
 
-        // When
+    func test_instantCommandsContainerView_liquidGlassStyle() {
+        let commands: [CommandHandler] = defaultCommands()
         let view = InstantCommandsView(instantCommands: commands, commandSelected: { _ in })
-            .applyDefaultSize()
+            .modifier(SuggestionsLiquidGlassContainerModifier())
+            .frame(width: defaultScreenSize.width)
 
-        // Then
-        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
+        AssertSnapshot(view, variants: [.defaultLight, .defaultDark])
     }
+
+    // MARK: - Helpers
 
     private func defaultCommands(suffix: String = "") -> [CommandHandler] {
         let channelController = ChatChannelTestHelpers.makeChannelController(

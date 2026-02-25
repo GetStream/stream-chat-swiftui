@@ -8,7 +8,6 @@ import SwiftUI
 
 /// View for the instant commands suggestions.
 struct InstantCommandsView: View {
-    @Injected(\.colors) private var colors
     @Injected(\.tokens) private var tokens
 
     var instantCommands: [CommandHandler]
@@ -18,8 +17,6 @@ struct InstantCommandsView: View {
 
     var body: some View {
         VStack(spacing: 0) {
-            Divider()
-
             InstantCommandsHeader()
 
             ScrollView {
@@ -45,7 +42,6 @@ struct InstantCommandsView: View {
                 }
             }
         }
-        .background(Color(colors.background))
         .frame(height: viewHeight)
         .animation(.easeInOut, value: instantCommands.count)
         .accessibilityElement(children: .contain)

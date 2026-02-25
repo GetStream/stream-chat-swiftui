@@ -44,6 +44,7 @@ struct SuggestionsContainerView<Factory: ViewFactory>: View {
                 .accessibilityIdentifier("InstantCommandsView")
             }
         }
+        .modifier(factory.styles.makeSuggestionsContainerModifier(options: SuggestionsContainerModifierOptions()))
         .accessibilityElement(children: .contain)
         .accessibilityIdentifier("SuggestionsContainerView")
     }

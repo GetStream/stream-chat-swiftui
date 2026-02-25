@@ -859,6 +859,7 @@ extension ViewFactory {
         options: SuggestionsContainerViewOptions
     ) -> some View {
         SuggestionsContainerView(
+            factory: self,
             suggestions: options.suggestions,
             handleCommand: options.handleCommand
         )

@@ -10,30 +10,6 @@ import XCTest
 
 @MainActor
 final class MentionUsersView_Tests: StreamChatTestCase {
-    func test_mentionUsersView_default() {
-        let users = mockUsers(count: 3)
-        let view = MentionUsersView(users: users, userSelected: { _ in })
-            .frame(width: defaultScreenSize.width)
-
-        AssertSnapshot(view, variants: [.defaultLight, .defaultDark])
-    }
-
-    func test_mentionUsersView_singleUser() {
-        let users = mockUsers(count: 1)
-        let view = MentionUsersView(users: users, userSelected: { _ in })
-            .frame(width: defaultScreenSize.width)
-
-        AssertSnapshot(view, variants: [.defaultLight])
-    }
-
-    func test_mentionUsersView_maxHeight() {
-        let users = mockUsers(count: 8)
-        let view = MentionUsersView(users: users, userSelected: { _ in })
-            .frame(width: defaultScreenSize.width)
-
-        AssertSnapshot(view, variants: [.defaultLight])
-    }
-
     func test_messageComposerView_emptyMentions() {
         let factory = DefaultViewFactory.shared
         let channelController = ChatChannelTestHelpers.makeChannelController(chatClient: chatClient)
@@ -57,6 +33,30 @@ final class MentionUsersView_Tests: StreamChatTestCase {
 
         AssertSnapshot(view, variants: [.defaultLight])
     }
+
+    // MARK: - Regular Style
+
+    func test_mentionUsersView_regularStyle() {
+        let users = mockUsers(count: 3)
+        let view = MentionUsersView(users: users, userSelected: { _ in })
+            .modifier(SuggestionsRegularContainerModifier())
+            .frame(width: defaultScreenSize.width)
+
+        AssertSnapshot(view, variants: [.defaultLight, .defaultDark])
+    }
+
+    // MARK: - Liquid Glass Style
+
+    func test_mentionUsersView_liquidGlassStyle() {
+        let users = mockUsers(count: 3)
+        let view = MentionUsersView(users: users, userSelected: { _ in })
+            .modifier(SuggestionsLiquidGlassContainerModifier())
+            .frame(width: defaultScreenSize.width)
+
+        AssertSnapshot(view, variants: [.defaultLight, .defaultDark])
+    }
+
+    // MARK: - Helpers
 
     private func mockUsers(count: Int) -> [ChatUser] {
         let names = ["Elena Barros", "Emma Chen", "Lina Park", "Noah Richter", "Wesley Lau", "Ana Silva", "John Doe", "Jane Smith"]

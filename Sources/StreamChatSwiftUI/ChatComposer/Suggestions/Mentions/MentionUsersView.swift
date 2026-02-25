@@ -7,7 +7,6 @@ import SwiftUI
 
 /// View for the mentioned users.
 public struct MentionUsersView<Factory: ViewFactory>: View {
-    @Injected(\.colors) private var colors
     @Injected(\.tokens) private var tokens
 
     var factory: Factory
@@ -27,24 +26,19 @@ public struct MentionUsersView<Factory: ViewFactory>: View {
     }
 
     public var body: some View {
-        VStack(spacing: 0) {
-            Divider()
-
-            ScrollView {
-                LazyVStack(spacing: 0) {
-                    ForEach(users) { user in
-                        MentionUserView(
-                            factory: factory,
-                            user: user,
-                            userSelected: userSelected
-                        )
-                    }
+        ScrollView {
+            LazyVStack(spacing: 0) {
+                ForEach(users) { user in
+                    MentionUserView(
+                        factory: factory,
+                        user: user,
+                        userSelected: userSelected
+                    )
                 }
             }
-            .padding(.vertical, tokens.spacingXs)
-            .frame(height: viewHeight)
         }
-        .background(Color(colors.background))
+        .padding(.vertical, tokens.spacingXs)
+        .frame(height: viewHeight)
         .animation(.easeInOut, value: users.count)
     }
 
