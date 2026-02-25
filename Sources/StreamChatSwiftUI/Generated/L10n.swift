@@ -721,7 +721,7 @@ internal enum L10n {
     /// Threads
     internal static var title: String { L10n.tr("Localizable", "thread.title") }
     internal enum Error {
-      /// Error loading threads
+      /// Couldn't load new threads. Tap to retry.
       internal static var message: String { L10n.tr("Localizable", "thread.error.message") }
     }
     internal enum Item {

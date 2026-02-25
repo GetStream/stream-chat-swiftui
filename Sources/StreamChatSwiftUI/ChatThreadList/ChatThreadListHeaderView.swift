@@ -32,6 +32,10 @@ public struct ChatThreadListHeaderView: View {
                 ) {
                     viewModel.loadThreads()
                 }
+            } else if viewModel.failedToLoadThreads || viewModel.failedToLoadMoreThreads {
+                ChatThreadListErrorBannerView {
+                    viewModel.retryLoadThreads()
+                }
             } else {
                 EmptyView()
             }

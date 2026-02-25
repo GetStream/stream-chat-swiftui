@@ -64,15 +64,6 @@ public struct ChatThreadListView<Factory: ViewFactory>: View {
                     )
                 }
             }
-            .bottomBanner(isPresented: viewModel.failedToLoadThreads || viewModel.failedToLoadMoreThreads) {
-                viewFactory.makeThreadsListErrorBannerView(
-                    options: ThreadListErrorBannerViewOptions(
-                        onRefreshAction: {
-                            viewModel.retryLoadThreads()
-                        }
-                    )
-                )
-            }
             .background(
                 viewFactory.makeThreadListBackground(options: ThreadListBackgroundOptions(colors: colors))
             )
