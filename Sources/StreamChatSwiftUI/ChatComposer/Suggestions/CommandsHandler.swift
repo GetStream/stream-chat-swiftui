@@ -126,8 +126,7 @@ public class ComposerCommandFactory {
             typingSuggestion: typingSuggestion,
             displayInfo: CommandDisplayInfo(
                 displayName: "Giphy",
-                icon: (UIImage(named: "GiphyIcon", in: .streamChatUI, compatibleWith: nil) ?? images.commandGiphy)
-                    .withRenderingMode(.alwaysOriginal),
+                icon: images.commandGiphyIcon,
                 format: "/giphy [\(L10n.Composer.Commands.Format.text)]",
                 isInstant: true,
                 placeholder: L10n.Composer.Placeholder.giphy,
@@ -144,7 +143,7 @@ public class ComposerCommandFactory {
             typingSuggestion: typingSuggestion,
             displayInfo: CommandDisplayInfo(
                 displayName: L10n.Composer.Commands.mute,
-                icon: UIImage(systemName: "speaker.slash")!.withRenderingMode(.alwaysTemplate),
+                icon: images.commandMuteIcon,
                 format: "/mute [\(L10n.Composer.Commands.Format.username)]",
                 isInstant: true,
                 placeholder: L10n.Composer.Commands.Format.username,
@@ -162,7 +161,7 @@ public class ComposerCommandFactory {
             typingSuggestion: typingSuggestion,
             displayInfo: CommandDisplayInfo(
                 displayName: L10n.Composer.Commands.unmute,
-                icon: UIImage(systemName: "speaker.wave.2")!.withRenderingMode(.alwaysTemplate),
+                icon: images.commandUnmuteIcon,
                 format: "/unmute [\(L10n.Composer.Commands.Format.username)]",
                 isInstant: true,
                 placeholder: L10n.Composer.Commands.Format.username,

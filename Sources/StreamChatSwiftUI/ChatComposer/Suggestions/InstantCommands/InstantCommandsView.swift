@@ -3,6 +3,7 @@
 //
 
 import StreamChat
+import StreamChatCommonUI
 import SwiftUI
 
 /// View for the instant commands suggestions.
@@ -121,5 +122,22 @@ struct InstantCommandView: View {
         }
         .padding(tokens.spacingSm)
         .padding(.horizontal, tokens.spacingXxs)
+    }
+}
+
+// TODO: Move to Common Module
+
+extension Appearance.Images {
+    var commandGiphyIcon: UIImage {
+        UIImage(named: "GiphyIcon", in: .streamChatUI, compatibleWith: nil)!
+            .withRenderingMode(.alwaysOriginal)
+    }
+
+    var commandMuteIcon: UIImage {
+        UIImage(systemName: "speaker.slash")!.withRenderingMode(.alwaysTemplate)
+    }
+
+    var commandUnmuteIcon: UIImage {
+        UIImage(systemName: "speaker.wave.2")!.withRenderingMode(.alwaysTemplate)
     }
 }
