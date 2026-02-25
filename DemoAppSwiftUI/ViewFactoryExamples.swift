@@ -15,7 +15,7 @@ class DemoAppFactory: ViewFactory {
 
     public static let shared = DemoAppFactory()
     
-    public var styles = LiquidGlassStyles()
+    public var styles = RegularStyles()
 
     func makeChannelListHeaderViewModifier(options: ChannelListHeaderViewModifierOptions) -> some ChannelListHeaderViewModifier {
         CustomChannelModifier(title: options.title)
