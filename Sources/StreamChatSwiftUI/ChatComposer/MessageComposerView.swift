@@ -433,7 +433,7 @@ public struct ComposerInputView<Factory: ViewFactory>: View, KeyboardReadable {
 
     private var inputView: some View {
         HStack(alignment: .bottom) {
-            HStack(spacing: tokens.spacingXxs) {
+            HStack(alignment: .bottom, spacing: tokens.spacingXxs) {
                 if let command,
                    let displayInfo = command.displayInfo,
                    displayInfo.isInstant == true {
@@ -446,6 +446,7 @@ public struct ComposerInputView<Factory: ViewFactory>: View, KeyboardReadable {
                         }
                     )
                     .padding(.leading, tokens.spacingXxs)
+                    .padding(.bottom, tokens.spacingXs)
                 }
 
                 factory.makeComposerTextInputView(
@@ -464,7 +465,7 @@ public struct ComposerInputView<Factory: ViewFactory>: View, KeyboardReadable {
                 .accessibilityElement(children: .contain)
             }
             .frame(height: textFieldHeight)
-            .padding(.vertical, 4)
+            .padding(.vertical, tokens.spacingXxs)
 
             factory.makeComposerInputTrailingView(
                 options: .init(
