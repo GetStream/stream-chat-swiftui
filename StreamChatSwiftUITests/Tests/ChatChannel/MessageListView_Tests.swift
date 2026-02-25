@@ -45,7 +45,7 @@ import XCTest
         let button = ScrollToBottomButton(unreadCount: 3, onScrollToBottom: {})
 
         // Then
-        assertSnapshot(matching: button, as: .image(perceptualPrecision: precision))
+        AssertSnapshot(button)
     }
 
     func test_scrollToBottomButton_snapshotEmptyCount() {
@@ -53,7 +53,15 @@ import XCTest
         let button = ScrollToBottomButton(unreadCount: 0, onScrollToBottom: {})
 
         // Then
-        assertSnapshot(matching: button, as: .image(perceptualPrecision: precision))
+        AssertSnapshot(button)
+    }
+
+    func test_scrollToBottomButton_snapshotHighUnreadCount() {
+        // Given
+        let button = ScrollToBottomButton(unreadCount: 16, onScrollToBottom: {})
+
+        // Then
+        AssertSnapshot(button)
     }
 
     func test_messageListView_typingIndicator() {

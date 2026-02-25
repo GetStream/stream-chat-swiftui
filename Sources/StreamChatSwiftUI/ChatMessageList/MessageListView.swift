@@ -297,7 +297,15 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
                         }
                         let scrollButtonShown = offsetValue < -20
                         if scrollButtonShown != showScrollToLatestButton {
-                            showScrollToLatestButton = scrollButtonShown
+                            if scrollButtonShown {
+                                withAnimation(.easeOut(duration: 0.18)) {
+                                    showScrollToLatestButton = true
+                                }
+                            } else {
+                                withAnimation(.easeIn(duration: 0.12)) {
+                                    showScrollToLatestButton = false
+                                }
+                            }
                         }
                         if messageListConfig.resignsFirstResponderOnScrollDown && keyboardShown && diff < -20 {
                             keyboardShown = false
@@ -338,7 +346,13 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
                         onScrollToBottom: onScrollToBottom
                     )
                 )
-                .offset(y: -bottomInset - 20)
+                .transition(
+                    .modifier(
+                        active: ScrollButtonTransitionModifier(opacity: 0, offset: 10),
+                        identity: ScrollButtonTransitionModifier(opacity: 1, offset: 0)
+                    )
+                )
+                .offset(y: -bottomInset)
             }
 
             if shouldShowTypingIndicator {
@@ -521,55 +535,50 @@ public struct NewMessagesIndicator: View {
 }
 
 public struct ScrollToBottomButton: View {
-    @Injected(\.images) private var images
     @Injected(\.colors) private var colors
-
-    private let buttonSize: CGFloat = 40
+    @Injected(\.tokens) private var tokens
 
     var unreadCount: Int
     var onScrollToBottom: () -> Void
 
     public var body: some View {
         BottomRightView {
-            Button {
-                onScrollToBottom()
-            } label: {
-                Image(uiImage: images.scrollDownArrow)
-                    .aspectRatio(contentMode: .fit)
-                    .frame(width: buttonSize, height: buttonSize)
-                    .modifier(ShadowViewModifier(cornerRadius: buttonSize / 2))
+            StreamIconButton(
+                role: .secondary,
+                style: .outline,
+                size: .medium,
+                action: onScrollToBottom
+            ) {
+                Image(systemName: "arrow.down")
+                    .font(.system(size: tokens.iconSizeSm, weight: .medium))
+                    .frame(width: tokens.iconSizeMd, height: tokens.iconSizeMd)
             }
-            .accessibilityLabel(Text(L10n.Channel.List.ScrollToBottom.title))
-            .padding()
-            .overlay(
-                unreadCount > 0 ?
-                    UnreadButtonIndicator(unreadCount: unreadCount) : nil
+            .background(
+                Circle()
+                    .fill(Color(colors.backgroundElevationElevation1))
+                    .shadow(
+                        color: Color(tokens.lightElevation3.color),
+                        radius: tokens.lightElevation3.blur / 2,
+                        x: tokens.lightElevation3.x,
+                        y: tokens.lightElevation3.y
+                    )
             )
+            .badgeNotification(count: unreadCount)
+            .accessibilityLabel(Text(L10n.Channel.List.ScrollToBottom.title))
+            .padding(tokens.spacingMd)
         }
         .accessibilityIdentifier("ScrollToBottomButton")
     }
 }
 
-struct UnreadButtonIndicator: View {
-    @Injected(\.colors) private var colors
-    @Injected(\.fonts) private var fonts
+struct ScrollButtonTransitionModifier: ViewModifier {
+    let opacity: Double
+    let offset: CGFloat
 
-    private let size: CGFloat = 16
-
-    var unreadCount: Int
-
-    var body: some View {
-        Text("\(unreadCount)")
-            .lineLimit(1)
-            .padding(.horizontal, 4)
-            .padding(.vertical, 2)
-            .font(fonts.footnoteBold)
-            .frame(width: unreadCount < 10 ? size : nil, height: size)
-            .padding(.horizontal, unreadCount < 10 ? 2 : 6)
-            .background(Color(colors.highlightedAccentBackground))
-            .cornerRadius(9)
-            .foregroundColor(Color(colors.staticColorText))
-            .offset(y: -size)
+    func body(content: Content) -> some View {
+        content
+            .opacity(opacity)
+            .offset(y: offset)
     }
 }
 
