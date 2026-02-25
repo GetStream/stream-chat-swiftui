@@ -302,7 +302,7 @@ import XCTest
         .applyDefaultSize()
         
         // Then
-        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
+        AssertSnapshot(view)
     }
     
     func test_messageViewVideo_snapshot() {
