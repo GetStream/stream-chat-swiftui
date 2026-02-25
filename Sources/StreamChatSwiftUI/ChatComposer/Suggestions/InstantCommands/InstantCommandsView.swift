@@ -14,7 +14,7 @@ struct InstantCommandsView: View {
     var instantCommands: [CommandHandler]
     var commandSelected: (ComposerCommand) -> Void
 
-    private let itemHeight: CGFloat = 64
+    private let itemHeight: CGFloat = 60
 
     var body: some View {
         VStack(spacing: 0) {
@@ -23,7 +23,7 @@ struct InstantCommandsView: View {
             InstantCommandsHeader()
 
             ScrollView {
-                LazyVStack(spacing: 0) {
+                VStack(spacing: 0) {
                     ForEach(0..<instantCommands.count, id: \.self) { i in
                         let command = instantCommands[i]
                         if let displayInfo = command.displayInfo {
