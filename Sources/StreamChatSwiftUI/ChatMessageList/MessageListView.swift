@@ -606,21 +606,20 @@ public struct DateIndicatorView: View {
 
 struct TypingIndicatorBottomView: View {
     @Injected(\.colors) private var colors
-    @Injected(\.fonts) private var fonts
-
-    var typingIndicatorString: String
+    @Injected(\.tokens) private var tokens
+    @Injected(\.utils) private var utils
+    let typingUsers: [(url: URL?, initials: String)]
+    let avatarSize: CGFloat
 
     var body: some View {
         VStack {
             Spacer()
             HStack {
-                TypingIndicatorView()
-                Text(typingIndicatorString)
-                    .font(fonts.footnote)
-                    .foregroundColor(Color(colors.textLowEmphasis))
+                TypingIndicatorView(typingUsers: typingUsers, avatarSize: avatarSize)
                 Spacer()
             }
-            .standardPadding()
+            .padding(.horizontal, utils.messageListConfig.messagePaddings.horizontal)
+            .padding(.vertical, tokens.spacingXs)
             .background(
                 Color(colors.background)
                     .opacity(0.9)

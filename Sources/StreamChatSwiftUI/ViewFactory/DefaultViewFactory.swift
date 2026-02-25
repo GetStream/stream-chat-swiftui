@@ -439,8 +439,10 @@ extension ViewFactory {
     public func makeTypingIndicatorBottomView(
         options: TypingIndicatorBottomViewOptions
     ) -> some View {
-        let typingIndicatorString = options.channel.typingIndicatorString(currentUserId: options.currentUserId)
-        return TypingIndicatorBottomView(typingIndicatorString: typingIndicatorString)
+        let users = options.channel.currentlyTypingUsersFiltered(currentUserId: options.currentUserId)
+        let avatars = users.map { ($0.imageURL, UserAvatar.initials(from: $0.name ?? "")) }
+        let size = options.channel.isDirectMessageChannel && options.channel.memberCount == 2 ? AvatarSize.medium : AvatarSize.small
+        return TypingIndicatorBottomView(typingUsers: avatars, avatarSize: size)
     }
     
     public func makeGiphyBadgeViewType(

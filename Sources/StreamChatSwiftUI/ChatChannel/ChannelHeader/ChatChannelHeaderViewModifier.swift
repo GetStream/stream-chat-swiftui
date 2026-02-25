@@ -154,7 +154,7 @@ public struct ChannelTitleView: View {
 
             if shouldShowTypingIndicator {
                 HStack {
-                    TypingIndicatorView()
+                    TypingIndicatorDotsView()
                     SubtitleText(text: channel.typingIndicatorString(currentUserId: currentUserId))
                 }
             } else {

@@ -126,7 +126,7 @@ public struct ChatChannelListItem<Factory: ViewFactory>: View {
                     .foregroundColor(Color(colors.accentError))
                     .lineLimit(1)
             } else if channel.shouldShowTypingIndicator {
-                TypingIndicatorView()
+                TypingIndicatorDotsView()
                 SubtitleText(text: typingText)
             } else if utils.messageListConfig.draftMessagesEnabled, let draftText = channel.draftMessageText {
                 HStack(spacing: 2) {
