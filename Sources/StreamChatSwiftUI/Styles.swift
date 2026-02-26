@@ -205,10 +205,12 @@ public class SuggestionsContainerModifierOptions {
     public init() {}
 }
 
-struct SuggestionsRegularContainerModifier: ViewModifier {
+public struct SuggestionsRegularContainerModifier: ViewModifier {
     @Injected(\.colors) var colors
 
-    func body(content: Content) -> some View {
+    public init() {}
+
+    public func body(content: Content) -> some View {
         VStack(spacing: 0) {
             Divider()
             content
@@ -217,10 +219,12 @@ struct SuggestionsRegularContainerModifier: ViewModifier {
     }
 }
 
-struct SuggestionsLiquidGlassContainerModifier: ViewModifier {
+public struct SuggestionsLiquidGlassContainerModifier: ViewModifier {
     @Injected(\.tokens) var tokens
 
-    func body(content: Content) -> some View {
+    public init() {}
+
+    public func body(content: Content) -> some View {
         content
             .clipShape(RoundedRectangle(cornerRadius: tokens.radius3xl))
             .modifier(
