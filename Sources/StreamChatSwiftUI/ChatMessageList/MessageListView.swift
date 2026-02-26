@@ -555,10 +555,10 @@ public struct ScrollToBottomButton<Factory: ViewFactory>: View {
                     .frame(width: tokens.iconSizeMd, height: tokens.iconSizeMd)
             }
             .modifier(factory.styles.makeScrollToBottomButtonModifier(options: .init()))
-            .badgeNotification(count: unreadCount)
             .accessibilityLabel(Text(L10n.Channel.List.ScrollToBottom.title))
-            .padding(tokens.spacingMd)
             .accessibilityIdentifier("ScrollToBottomButton")
+            .badgeNotification(count: unreadCount)
+            .padding(tokens.spacingMd)
         }
     }
 }

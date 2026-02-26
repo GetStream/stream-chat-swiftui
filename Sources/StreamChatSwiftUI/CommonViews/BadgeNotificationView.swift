@@ -44,6 +44,7 @@ public struct BadgeNotificationView: View {
                 .lineLimit(1)
                 .font(sizeMetrics.font)
                 .foregroundColor(Color(foregroundColor))
+                .accessibilityIdentifier("BadgeNotificationView")
         }
         .padding(.horizontal, tokens.spacingXxs)
         .padding(.vertical, tokens.spacingNone)
@@ -61,7 +62,6 @@ public struct BadgeNotificationView: View {
                 .inset(by: -1)
                 .stroke(Color(colors.badgeBorder), lineWidth: 2)
         )
-        .accessibilityIdentifier("BadgeNotificationView")
     }
 
     // MARK: - Colors
