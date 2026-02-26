@@ -15,6 +15,9 @@ public protocol Styles {
     associatedtype ComposerButtonViewModifier: ViewModifier
     func makeComposerButtonViewModifier(options: ComposerButtonModifierOptions) -> ComposerButtonViewModifier
     
+    associatedtype ScrollToBottomButtonViewModifier: ViewModifier
+    func makeScrollToBottomButtonModifier(options: ScrollToBottomButtonModifierOptions) -> ScrollToBottomButtonViewModifier
+    
     associatedtype ChannelListContentModifier: ViewModifier
     /// Returns a view modifier applied to the channel list content (including both header and footer views).
     func makeChannelListContentModifier(options: ChannelListContentModifierOptions) -> ChannelListContentModifier
@@ -107,6 +110,10 @@ public class LiquidGlassStyles: Styles {
         LiquidGlassModifier(shape: .circle, isInteractive: true)
     }
     
+    public func makeScrollToBottomButtonModifier(options: ScrollToBottomButtonModifierOptions) -> some ViewModifier {
+        LiquidGlassModifier(shape: .circle, isInteractive: true)
+    }
+    
     public func makeSuggestionsContainerModifier(options: SuggestionsContainerModifierOptions) -> some ViewModifier {
         SuggestionsLiquidGlassContainerModifier()
     }
@@ -123,6 +130,10 @@ public class RegularStyles: Styles {
     
     public func makeComposerButtonViewModifier(options: ComposerButtonModifierOptions) -> some ViewModifier {
         RegularButtonViewModifier()
+    }
+    
+    public func makeScrollToBottomButtonModifier(options: ScrollToBottomButtonModifierOptions) -> some ViewModifier {
+        RegularScrollToBottomButtonModifier()
     }
 
     public func makeComposerViewModifier(options: ComposerViewModifierOptions) -> some ViewModifier {
@@ -175,10 +186,16 @@ public class ComposerButtonModifierOptions {
     public init() {}
 }
 
-struct ComposerBackgroundRegularViewModifier: ViewModifier {
+public class ScrollToBottomButtonModifierOptions {
+    public init() {}
+}
+
+public struct ComposerBackgroundRegularViewModifier: ViewModifier {
     @Injected(\.colors) var colors
 
-    func body(content: Content) -> some View {
+    public init() {}
+
+    public func body(content: Content) -> some View {
         content
             .background(Color(colors.composerBackground))
     }
@@ -210,6 +227,27 @@ struct SuggestionsLiquidGlassContainerModifier: ViewModifier {
                 LiquidGlassModifier(shape: .roundedRect(tokens.radius3xl))
             )
             .padding(.horizontal, tokens.spacingMd)
+    }
+}
+
+public struct RegularScrollToBottomButtonModifier: ViewModifier {
+    @Injected(\.colors) var colors
+    @Injected(\.tokens) var tokens
+
+    public init() {}
+
+    public func body(content: Content) -> some View {
+        content
+            .background(
+                Circle()
+                    .fill(Color(colors.backgroundElevationElevation1))
+                    .shadow(
+                        color: Color(tokens.lightElevation3.color),
+                        radius: tokens.lightElevation3.blur / 2,
+                        x: tokens.lightElevation3.x,
+                        y: tokens.lightElevation3.y
+                    )
+            )
     }
 }
 

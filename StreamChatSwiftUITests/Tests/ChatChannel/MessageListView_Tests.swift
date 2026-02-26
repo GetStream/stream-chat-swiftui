@@ -42,7 +42,7 @@ import XCTest
 
     func test_scrollToBottomButton_snapshotUnreadCount() {
         // Given
-        let button = ScrollToBottomButton(unreadCount: 3, onScrollToBottom: {})
+        let button = ScrollToBottomButton(factory: DefaultViewFactory.shared, unreadCount: 3, onScrollToBottom: {})
 
         // Then
         AssertSnapshot(button)
@@ -50,7 +50,7 @@ import XCTest
 
     func test_scrollToBottomButton_snapshotEmptyCount() {
         // Given
-        let button = ScrollToBottomButton(unreadCount: 0, onScrollToBottom: {})
+        let button = ScrollToBottomButton(factory: DefaultViewFactory.shared, unreadCount: 0, onScrollToBottom: {})
 
         // Then
         AssertSnapshot(button)
@@ -58,7 +58,7 @@ import XCTest
 
     func test_scrollToBottomButton_snapshotHighUnreadCount() {
         // Given
-        let button = ScrollToBottomButton(unreadCount: 16, onScrollToBottom: {})
+        let button = ScrollToBottomButton(factory: DefaultViewFactory.shared, unreadCount: 16, onScrollToBottom: {})
 
         // Then
         AssertSnapshot(button)

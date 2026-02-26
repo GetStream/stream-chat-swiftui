@@ -534,10 +534,10 @@ public struct NewMessagesIndicator: View {
     }
 }
 
-public struct ScrollToBottomButton: View {
-    @Injected(\.colors) private var colors
+public struct ScrollToBottomButton<Factory: ViewFactory>: View {
     @Injected(\.tokens) private var tokens
 
+    var factory: Factory
     var unreadCount: Int
     var onScrollToBottom: () -> Void
 
@@ -553,16 +553,7 @@ public struct ScrollToBottomButton: View {
                     .font(.system(size: tokens.iconSizeSm, weight: .medium))
                     .frame(width: tokens.iconSizeMd, height: tokens.iconSizeMd)
             }
-            .background(
-                Circle()
-                    .fill(Color(colors.backgroundElevationElevation1))
-                    .shadow(
-                        color: Color(tokens.lightElevation3.color),
-                        radius: tokens.lightElevation3.blur / 2,
-                        x: tokens.lightElevation3.x,
-                        y: tokens.lightElevation3.y
-                    )
-            )
+            .modifier(factory.styles.makeScrollToBottomButtonModifier(options: .init()))
             .badgeNotification(count: unreadCount)
             .accessibilityLabel(Text(L10n.Channel.List.ScrollToBottom.title))
             .padding(tokens.spacingMd)
