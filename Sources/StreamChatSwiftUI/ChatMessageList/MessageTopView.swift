@@ -17,11 +17,17 @@ struct MessageTopView<Factory: ViewFactory>: View {
     let message: ChatMessage
     let channel: ChatChannel
     @ObservedObject var messageViewModel: MessageViewModel
+    /// When true, the `textOnAccent` color is used instead of the default darker text color.
+    var usesInvertedStyle: Bool = false
+
+    private var resolvedTextColor: Color {
+        usesInvertedStyle ? colors.textOnAccent.toColor : colors.textPrimary.toColor
+    }
 
     var body: some View {
         VStack(alignment: messageViewModel.isRightAligned ? .trailing : .leading, spacing: 0) {
             if messageViewModel.isPinned {
-                MessagePinDetailsView(message: message)
+                MessagePinDetailsView(message: message, usesInvertedStyle: usesInvertedStyle)
             }
 
             if messageViewModel.sentInChannelShown {
@@ -39,7 +45,8 @@ struct MessageTopView<Factory: ViewFactory>: View {
             if messageViewModel.translatedText != nil {
                 factory.makeMessageTranslationView(
                     options: MessageTranslationViewOptions(
-                        messageViewModel: messageViewModel
+                        messageViewModel: messageViewModel,
+                        usesInvertedStyle: usesInvertedStyle
                     )
                 )
             }
@@ -66,7 +73,7 @@ struct MessageTopView<Factory: ViewFactory>: View {
                     .font(fonts.metadataDefault)
                     .foregroundColor(Color(colors.accentPrimary))
             }
-            .foregroundColor(colors.textPrimary.toColor)
+            .foregroundColor(resolvedTextColor)
             .frame(height: 24)
         }
         .accessibilityIdentifier("SentInChannelAnnotation")
@@ -90,7 +97,7 @@ struct MessageTopView<Factory: ViewFactory>: View {
                     .font(fonts.metadataDefault)
                     .foregroundColor(Color(colors.accentPrimary))
             }
-            .foregroundColor(colors.textPrimary.toColor)
+            .foregroundColor(resolvedTextColor)
             .frame(height: 24)
         }
         .accessibilityIdentifier("RepliedToThreadAnnotation")
@@ -111,7 +118,7 @@ struct MessageTopView<Factory: ViewFactory>: View {
                     .font(fonts.metadataDefault)
             }
         }
-        .foregroundColor(colors.textPrimary.toColor)
+        .foregroundColor(resolvedTextColor)
         .frame(height: 24)
         .accessibilityIdentifier("ReminderAnnotation")
     }

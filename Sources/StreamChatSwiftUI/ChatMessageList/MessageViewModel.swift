@@ -140,6 +140,10 @@ import StreamChat
             || translatedText != nil
     }
 
+    public var threadRepliesShown: Bool {
+        !isInThread && message.replyCount > 0
+    }
+
     public var sentInChannelShown: Bool {
         isInThread && message.showReplyInChannel && message.parentMessageId != nil
     }

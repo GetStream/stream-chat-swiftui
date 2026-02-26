@@ -15,8 +15,16 @@ public struct MessageTranslationView: View {
     @Injected(\.tokens) private var tokens
     @Injected(\.utils) private var utils
 
-    public init(messageViewModel: MessageViewModel) {
+    /// When true, the `textOnAccent` color is used instead of the default darker text color.
+    var usesInvertedStyle: Bool
+
+    public init(messageViewModel: MessageViewModel, usesInvertedStyle: Bool = false) {
         self.messageViewModel = messageViewModel
+        self.usesInvertedStyle = usesInvertedStyle
+    }
+
+    private var resolvedTextColor: Color {
+        usesInvertedStyle ? colors.textOnAccent.toColor : colors.textPrimary.toColor
     }
 
     public var body: some View {
@@ -34,7 +42,7 @@ public struct MessageTranslationView: View {
                 }
                 showOriginalButton
             }
-            .foregroundColor(colors.textPrimary.toColor)
+            .foregroundColor(resolvedTextColor)
             .frame(height: 24)
         } else {
             HStack(spacing: tokens.spacingXxs) {
@@ -45,7 +53,7 @@ public struct MessageTranslationView: View {
                     .font(fonts.metadataEmphasis)
                     .lineLimit(1)
             }
-            .foregroundColor(colors.textPrimary.toColor)
+            .foregroundColor(resolvedTextColor)
             .frame(height: 24)
         }
     }

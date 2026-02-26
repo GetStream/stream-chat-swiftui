@@ -278,7 +278,8 @@ extension ViewFactory {
         options: MessageTranslationViewOptions
     ) -> some View {
         MessageTranslationView(
-            messageViewModel: options.messageViewModel
+            messageViewModel: options.messageViewModel,
+            usesInvertedStyle: options.usesInvertedStyle
         )
     }
 
@@ -289,7 +290,8 @@ extension ViewFactory {
             factory: self,
             message: options.message,
             channel: options.channel,
-            messageViewModel: options.messageViewModel
+            messageViewModel: options.messageViewModel,
+            usesInvertedStyle: options.usesInvertedStyle
         )
     }
 

@@ -177,9 +177,12 @@ public struct MessagePinDetailsView: View {
     @Injected(\.tokens) private var tokens
     
     var message: ChatMessage
+    /// When true, the `textOnAccent` color is used instead of the default darker text color.
+    var usesInvertedStyle: Bool
     
-    public init(message: ChatMessage) {
+    public init(message: ChatMessage, usesInvertedStyle: Bool = false) {
         self.message = message
+        self.usesInvertedStyle = usesInvertedStyle
     }
     
     public var body: some View {
@@ -191,7 +194,7 @@ public struct MessagePinDetailsView: View {
             Text("\(L10n.Message.Cell.pinnedBy) \(message.pinDetails?.pinnedBy.name ?? L10n.Message.Cell.unknownPin)")
                 .font(fonts.metadataEmphasis)
         }
-        .foregroundColor(colors.textPrimary.toColor)
+        .foregroundColor(usesInvertedStyle ? colors.textOnAccent.toColor : colors.textPrimary.toColor)
         .frame(height: 24)
         .accessibilityIdentifier("MessagePinDetailsView")
     }

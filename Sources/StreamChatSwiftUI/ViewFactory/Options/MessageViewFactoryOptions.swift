@@ -169,9 +169,12 @@ public final class MessageAuthorAndDateViewOptions: Sendable {
 public final class MessageTranslationViewOptions: Sendable {
     /// The view model for the message.
     public let messageViewModel: MessageViewModel
+    /// When true, the `textOnAccent` color is used instead of the default darker text color.
+    public let usesInvertedStyle: Bool
     
-    public init(messageViewModel: MessageViewModel) {
+    public init(messageViewModel: MessageViewModel, usesInvertedStyle: Bool = false) {
         self.messageViewModel = messageViewModel
+        self.usesInvertedStyle = usesInvertedStyle
     }
 }
 
@@ -183,15 +186,19 @@ public final class MessageTopViewOptions: Sendable {
     public let channel: ChatChannel
     /// The view model for the message.
     public let messageViewModel: MessageViewModel
+    /// When true, the `textOnAccent` color is used instead of the default darker text color.
+    public let usesInvertedStyle: Bool
     
     public init(
         message: ChatMessage,
         channel: ChatChannel,
-        messageViewModel: MessageViewModel
+        messageViewModel: MessageViewModel,
+        usesInvertedStyle: Bool = false
     ) {
         self.message = message
         self.channel = channel
         self.messageViewModel = messageViewModel
+        self.usesInvertedStyle = usesInvertedStyle
     }
 }
 

@@ -114,7 +114,7 @@ public struct MessageItemView<Factory: ViewFactory>: View {
             Group {
                 if messageViewModel.isHighlighted(messageId: highlightedMessageId) {
                     Color(colors.messageCellHighlightBackground)
-                } else if messageViewModel.isPinned {
+                } else if messageViewModel.isPinned && !shownAsPreview {
                     Color(colors.pinnedMessageBackground)
                 }
             }
@@ -145,12 +145,13 @@ public struct MessageItemView<Factory: ViewFactory>: View {
                 alignment: messageViewModel.isRightAligned ? .trailing : .leading,
                 spacing: tokens.spacingXxs
             ) {
-                if !shownAsPreview && messageViewModel.annotationsShown {
+                if messageViewModel.annotationsShown {
                     factory.makeMessageTopView(
                         options: MessageTopViewOptions(
                             message: message,
                             channel: channel,
-                            messageViewModel: messageViewModel
+                            messageViewModel: messageViewModel,
+                            usesInvertedStyle: shownAsPreview
                         )
                     )
                 }
@@ -159,7 +160,7 @@ public struct MessageItemView<Factory: ViewFactory>: View {
                     .accessibilityElement(children: .contain)
                     .accessibilityIdentifier("MessageView")
 
-                if !isInThread, message.replyCount > 0 {
+                if messageViewModel.threadRepliesShown {
                     factory.makeMessageRepliesView(
                         options: MessageRepliesViewOptions(
                             channel: channel,
