@@ -14,6 +14,7 @@ enum MessageRepliesConstants {
 
 /// View shown below a message, when there are replies to it.
 public struct MessageRepliesView<Factory: ViewFactory>: View {
+    @Environment(\.layoutDirection) private var layoutDirection
     @Injected(\.fonts) private var fonts
     @Injected(\.colors) private var colors
     @Injected(\.tokens) private var tokens
@@ -97,7 +98,7 @@ public struct MessageRepliesView<Factory: ViewFactory>: View {
                 .frame(width: 16, height: 48)
                 .offset(y: -10)
                 .rotation3DEffect(
-                    .degrees(isRightAligned ? 180 : 0),
+                    .degrees(isLineFlipped ? 180 : 0),
                     axis: (x: 0, y: 1, z: 0)
                 ),
                 alignment: isRightAligned ? .trailing : .leading
@@ -106,6 +107,10 @@ public struct MessageRepliesView<Factory: ViewFactory>: View {
         }
     }
     
+    private var isLineFlipped: Bool {
+        isRightAligned != (layoutDirection == .rightToLeft)
+    }
+
     var title: String {
         if showReplyCount {
             "\(replyCount) \(repliesText)"

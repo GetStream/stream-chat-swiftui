@@ -34,6 +34,7 @@ public struct MessageBubbleModifier: ViewModifier {
     @Injected(\.colors) private var colors
     @Injected(\.tokens) private var tokens
     @Injected(\.utils) private var utils
+    @Environment(\.layoutDirection) private var layoutDirection
 
     public var message: ChatMessage
     public var isFirst: Bool
@@ -71,7 +72,8 @@ public struct MessageBubbleModifier: ViewModifier {
                 BubbleModifier(
                     corners: message.bubbleCorners(
                         isFirst: isFirst,
-                        forceLeftToRight: forceLeftToRight
+                        forceLeftToRight: forceLeftToRight,
+                        layoutDirection: layoutDirection
                     ),
                     backgroundColors: message.bubbleBackground(
                         colors: colors,
@@ -249,22 +251,47 @@ extension View {
     }
 }
 
+extension UIRectCorner {
+    /// Mirrors left and right corners so that a shape designed for LTR
+    /// renders correctly in an RTL layout.
+    var horizontallyFlipped: UIRectCorner {
+        var result: UIRectCorner = []
+        if contains(.topLeft) { result.insert(.topRight) }
+        if contains(.topRight) { result.insert(.topLeft) }
+        if contains(.bottomLeft) { result.insert(.bottomRight) }
+        if contains(.bottomRight) { result.insert(.bottomLeft) }
+        return result
+    }
+}
+
 extension ChatMessage {
     /// Returns the default corners that will be rounded by the message bubble modifier.
     /// - Parameters:
     ///  - isFirst: whether the message is first.
     ///  - forceLeftToRight: whether left to right should be forced.
+    ///  - layoutDirection: the current layout direction used to mirror corners for RTL.
     /// - Returns: the corners to be rounded in the message cell.
-    public func bubbleCorners(isFirst: Bool, forceLeftToRight: Bool) -> UIRectCorner {
+    public func bubbleCorners(
+        isFirst: Bool,
+        forceLeftToRight: Bool,
+        layoutDirection: LayoutDirection = .leftToRight
+    ) -> UIRectCorner {
         if !isFirst {
             return [.topLeft, .topRight, .bottomLeft, .bottomRight]
         }
 
+        var corners: UIRectCorner
         if isSentByCurrentUser && !forceLeftToRight {
-            return [.topLeft, .topRight, .bottomLeft]
+            corners = [.topLeft, .topRight, .bottomLeft]
         } else {
-            return [.topLeft, .topRight, .bottomRight]
+            corners = [.topLeft, .topRight, .bottomRight]
         }
+
+        if layoutDirection == .rightToLeft {
+            corners = corners.horizontallyFlipped
+        }
+
+        return corners
     }
     
     func bubbleBorder(colors: Appearance.ColorPalette) -> Color {
