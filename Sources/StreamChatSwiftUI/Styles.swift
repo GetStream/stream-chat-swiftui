@@ -111,7 +111,7 @@ public class LiquidGlassStyles: Styles {
     }
     
     public func makeScrollToBottomButtonModifier(options: ScrollToBottomButtonModifierOptions) -> some ViewModifier {
-        LiquidGlassModifier(shape: .circle, isInteractive: true)
+        LiquidGlassScrollToBottomButtonModifier()
     }
     
     public func makeSuggestionsContainerModifier(options: SuggestionsContainerModifierOptions) -> some ViewModifier {
@@ -252,6 +252,16 @@ public struct RegularScrollToBottomButtonModifier: ViewModifier {
                         y: tokens.lightElevation3.y
                     )
             )
+    }
+}
+
+public struct LiquidGlassScrollToBottomButtonModifier: ViewModifier {
+    public init() {}
+
+    public func body(content: Content) -> some View {
+        content
+            .modifier(LiquidGlassModifier(shape: .circle, isInteractive: true))
+            .offset(y: 12)
     }
 }
 

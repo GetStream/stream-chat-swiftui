@@ -258,7 +258,7 @@ class DemoAppStyles: Styles {
         StyleSwitchModifier(
             isLiquidGlass: isLiquidGlass,
             regular: RegularScrollToBottomButtonModifier(),
-            liquidGlass: LiquidGlassModifier(shape: .circle, isInteractive: true)
+            liquidGlass: LiquidGlassScrollToBottomButtonModifier()
         )
     }
 
