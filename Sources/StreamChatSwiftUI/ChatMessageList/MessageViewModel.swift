@@ -132,10 +132,6 @@ import StreamChat
         return L10n.Message.translatedTo(localizedName)
     }
 
-    public var originalTranslationButtonText: String {
-        originalTextShown ? L10n.Message.showTranslation : L10n.Message.showOriginal
-    }
-
     public var annotationsShown: Bool {
         isPinned
             || sentInChannelShown

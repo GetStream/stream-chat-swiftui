@@ -146,8 +146,8 @@ public struct MessageItemView<Factory: ViewFactory>: View {
                 spacing: tokens.spacingXxs
             ) {
                 if !shownAsPreview && messageViewModel.annotationsShown {
-                    factory.makeMessageAnnotationsView(
-                        options: MessageAnnotationsViewOptions(
+                    factory.makeMessageTopView(
+                        options: MessageTopViewOptions(
                             message: message,
                             channel: channel,
                             messageViewModel: messageViewModel

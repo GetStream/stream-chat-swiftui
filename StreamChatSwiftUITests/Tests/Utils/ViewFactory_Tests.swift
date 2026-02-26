@@ -1085,15 +1085,15 @@ import XCTest
         XCTAssert(view is MessageTranslationView)
     }
 
-    func test_viewFactory_makeMessageAnnotationsView() {
+    func test_viewFactory_makeMessageTopView() {
         // Given
         let viewFactory = DefaultViewFactory.shared
         let channel = ChatChannel.mockDMChannel()
         let viewModel = MessageViewModel(message: message, channel: channel)
 
         // When
-        let view = viewFactory.makeMessageAnnotationsView(
-            options: MessageAnnotationsViewOptions(
+        let view = viewFactory.makeMessageTopView(
+            options: MessageTopViewOptions(
                 message: message,
                 channel: channel,
                 messageViewModel: viewModel
@@ -1101,7 +1101,7 @@ import XCTest
         )
 
         // Then
-        XCTAssert(view is MessageAnnotationsView<DefaultViewFactory>)
+        XCTAssert(view is MessageTopView<DefaultViewFactory>)
     }
 }
 

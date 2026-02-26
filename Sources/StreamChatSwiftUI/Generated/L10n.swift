@@ -527,8 +527,6 @@ internal enum L10n {
       internal static var translated: String { L10n.tr("Localizable", "message.annotation.translated") }
       /// View
       internal static var view: String { L10n.tr("Localizable", "message.annotation.view") }
-      /// View original
-      internal static var viewOriginal: String { L10n.tr("Localizable", "message.annotation.viewOriginal") }
     }
     internal enum Attachment {
       /// Attachment %d

@@ -6,7 +6,7 @@ import StreamChat
 import SwiftUI
 
 /// A vertical stack that renders all applicable annotation rows above the message bubble.
-struct MessageAnnotationsView<Factory: ViewFactory>: View {
+struct MessageTopView<Factory: ViewFactory>: View {
     @Injected(\.fonts) private var fonts
     @Injected(\.colors) private var colors
     @Injected(\.images) private var images
@@ -142,30 +142,6 @@ struct MessageAnnotationsView<Factory: ViewFactory>: View {
                 ]
             )
         }
-    }
-}
-
-/// A single annotation row displayed above the message bubble.
-private struct MessageAnnotationRowView: View {
-    @Injected(\.fonts) private var fonts
-    @Injected(\.colors) private var colors
-    @Injected(\.tokens) private var tokens
-
-    let icon: Image
-    let label: Text
-
-    var body: some View {
-        HStack(spacing: tokens.spacingXxs) {
-            icon
-                .resizable()
-                .scaledToFit()
-                .frame(width: 16, height: 16)
-            label
-                .font(fonts.metadataEmphasis)
-                .lineLimit(1)
-        }
-        .foregroundColor(colors.textPrimary.toColor)
-        .frame(height: 24)
     }
 }
 

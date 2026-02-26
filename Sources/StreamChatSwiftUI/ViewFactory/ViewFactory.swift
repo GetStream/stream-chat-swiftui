@@ -178,11 +178,13 @@ import SwiftUI
     /// - Returns: A view to display translation information of the message.
     func makeMessageTranslationView(options: MessageTranslationViewOptions) -> MessageTranslationViewType
 
-    associatedtype MessageAnnotationsViewType: View
-    /// Creates the annotations stack shown above the message bubble.
-    /// - Parameter options: the options for creating the message annotations view.
-    /// - Returns: A view displaying all applicable annotation rows (pin, thread, translation, reminder).
-    func makeMessageAnnotationsView(options: MessageAnnotationsViewOptions) -> MessageAnnotationsViewType
+    associatedtype MessageTopViewType: View
+    /// Creates the view shown above the message bubble containing message annotations.
+    ///
+    /// Annotations include: pinned, sent in channel / replied to thread, reminder, and translated.
+    /// - Parameter options: The options for creating the message top view.
+    /// - Returns: A view displaying all applicable message annotations.
+    func makeMessageTopView(options: MessageTopViewOptions) -> MessageTopViewType
 
     associatedtype LastInGroupHeaderView: View
     /// Creates a view shown as a header of the last message in a group.

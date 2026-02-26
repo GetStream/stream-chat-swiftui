@@ -176,7 +176,7 @@ public final class MessageTranslationViewOptions: Sendable {
 }
 
 /// Options for creating the message annotations stack view.
-public final class MessageAnnotationsViewOptions: Sendable {
+public final class MessageTopViewOptions: Sendable {
     /// The message to display annotations for.
     public let message: ChatMessage
     /// The channel containing the message.

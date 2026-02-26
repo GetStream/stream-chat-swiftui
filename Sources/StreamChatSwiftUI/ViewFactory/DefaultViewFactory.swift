@@ -282,10 +282,10 @@ extension ViewFactory {
         )
     }
 
-    public func makeMessageAnnotationsView(
-        options: MessageAnnotationsViewOptions
+    public func makeMessageTopView(
+        options: MessageTopViewOptions
     ) -> some View {
-        MessageAnnotationsView(
+        MessageTopView(
             factory: self,
             message: options.message,
             channel: options.channel,

@@ -10,7 +10,7 @@ import StreamSwiftTestHelpers
 import SwiftUI
 import XCTest
 
-@MainActor class MessageAnnotationsView_Tests: StreamChatTestCase {
+@MainActor class MessageTopView_Tests: StreamChatTestCase {
     // MARK: - Pinned
 
     func test_pinnedAnnotation_snapshot() {
@@ -193,7 +193,7 @@ import XCTest
     ) -> some View {
         let ch = channel ?? .mockDMChannel()
         let viewModel = MessageViewModel(message: message, channel: ch, isInThread: isInThread)
-        return MessageAnnotationsView(
+        return MessageTopView(
             factory: DefaultViewFactory.shared,
             message: message,
             channel: ch,

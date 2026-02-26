@@ -60,7 +60,7 @@ public struct MessageTranslationView: View {
                 }
             },
             label: {
-                Text(messageViewModel.originalTextShown ? L10n.Message.showTranslation : L10n.Message.Annotation.viewOriginal)
+                Text(messageViewModel.originalTextShown ? L10n.Message.showTranslation : L10n.Message.showOriginal)
                     .font(fonts.metadataDefault)
                     .foregroundColor(Color(colors.accentPrimary))
             }
