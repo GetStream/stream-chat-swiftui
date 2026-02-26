@@ -251,6 +251,29 @@ import XCTest
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
 
+    func test_messageComposerView_commandActive() {
+        // Given
+        let factory = DefaultViewFactory.shared
+        let channelController = ChatChannelTestHelpers.makeChannelController(chatClient: chatClient)
+        let viewModel = MessageComposerViewModel(channelController: channelController, messageController: nil)
+        viewModel.composerCommand = ComposerCommandFactory.shared.mute()
+
+        // When
+        let view = MessageComposerView(
+            viewFactory: factory,
+            viewModel: viewModel,
+            channelController: channelController,
+            messageController: nil,
+            quotedMessage: .constant(nil),
+            editedMessage: .constant(nil),
+            onMessageSent: {}
+        )
+        .frame(width: composerWidth, height: 200)
+
+        // Then
+        AssertSnapshot(view, variants: [.defaultLight, .defaultDark])
+    }
+
     // MARK: - Attachment Picker Prompt Views
 
     func test_photoLibraryAccessPromptView_snapshot() {
@@ -533,16 +556,7 @@ import XCTest
             channelController: channelController,
             text: .constant(""),
             selectedRangeLocation: .constant(0),
-            command: .constant(.init(
-                id: .unique,
-                typingSuggestion: .empty,
-                displayInfo: CommandDisplayInfo(
-                    displayName: "Giphy",
-                    icon: Appearance.Images().commandGiphy,
-                    format: "",
-                    isInstant: true
-                )
-            )),
+            command: .constant(ComposerCommandFactory.shared.giphy()),
             recordingState: .constant(.initial),
             composerAssets: [],
             addedCustomAttachments: [],
@@ -562,12 +576,79 @@ import XCTest
         .environmentObject(MessageComposerTestUtils.makeComposerViewModel(chatClient: chatClient))
         .frame(width: size.width, height: size.height)
 
-        AssertSnapshot(view, variants: .onlyUserInterfaceStyles, size: size)
+        AssertSnapshot(view, size: size)
 
         // Themed
-        streamChat?.appearance.colorPalette.accentPrimary = UIColor(Color.mint)
-        streamChat?.appearance.colorPalette.staticColorText = .black
+        streamChat?.appearance.colorPalette.backgroundCoreInverse = UIColor(Color.indigo)
+        streamChat?.appearance.colorPalette.textOnDark = .yellow
+
         AssertSnapshot(view, variants: .onlyUserInterfaceStyles, size: size, suffix: "themed")
+    }
+
+    func test_composerInputView_command_empty() {
+        let factory = DefaultViewFactory.shared
+        let channelController = ChatChannelTestHelpers.makeChannelController(chatClient: chatClient)
+        let size = CGSize(width: composerWidth, height: 200)
+
+        let view = ComposerInputView(
+            factory: factory,
+            channelController: channelController,
+            text: .constant(""),
+            selectedRangeLocation: .constant(0),
+            command: .constant(ComposerCommandFactory.shared.giphy()),
+            recordingState: .constant(.initial),
+            composerAssets: [],
+            addedCustomAttachments: [],
+            addedVoiceRecordings: [],
+            quotedMessage: .constant(nil),
+            editedMessage: .constant(nil),
+            cooldownDuration: 0,
+            hasContent: false,
+            canSendMessage: true,
+            onCustomAttachmentTap: { _ in },
+            removeAttachmentWithId: { _ in },
+            sendMessage: {},
+            onImagePasted: { _ in },
+            startRecording: {},
+            stopRecording: {}
+        )
+        .environmentObject(MessageComposerTestUtils.makeComposerViewModel(chatClient: chatClient))
+        .frame(width: size.width, height: size.height)
+
+        AssertSnapshot(view, variants: .onlyUserInterfaceStyles, size: size)
+    }
+
+    func test_composerInputView_command_mute() {
+        let factory = DefaultViewFactory.shared
+        let channelController = ChatChannelTestHelpers.makeChannelController(chatClient: chatClient)
+        let size = CGSize(width: composerWidth, height: 200)
+
+        let view = ComposerInputView(
+            factory: factory,
+            channelController: channelController,
+            text: .constant(""),
+            selectedRangeLocation: .constant(0),
+            command: .constant(ComposerCommandFactory.shared.mute()),
+            recordingState: .constant(.initial),
+            composerAssets: [],
+            addedCustomAttachments: [],
+            addedVoiceRecordings: [],
+            quotedMessage: .constant(nil),
+            editedMessage: .constant(nil),
+            cooldownDuration: 0,
+            hasContent: false,
+            canSendMessage: true,
+            onCustomAttachmentTap: { _ in },
+            removeAttachmentWithId: { _ in },
+            sendMessage: {},
+            onImagePasted: { _ in },
+            startRecording: {},
+            stopRecording: {}
+        )
+        .environmentObject(MessageComposerTestUtils.makeComposerViewModel(chatClient: chatClient))
+        .frame(width: size.width, height: size.height)
+
+        AssertSnapshot(view, variants: .onlyUserInterfaceStyles, size: size)
     }
   
     // MARK: - Drafts

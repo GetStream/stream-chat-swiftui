@@ -109,6 +109,69 @@ extension CommandHandler {
     }
 }
 
+/// Factory for creating built-in composer commands.
+@MainActor
+class ComposerCommandFactory {
+    @Injected(\.images) private var images
+
+    static let shared = ComposerCommandFactory()
+
+    private init() {}
+
+    func giphy(
+        typingSuggestion: TypingSuggestion = .empty
+    ) -> ComposerCommand {
+        ComposerCommand(
+            id: "/giphy",
+            typingSuggestion: typingSuggestion,
+            displayInfo: CommandDisplayInfo(
+                displayName: "Giphy",
+                icon: images.commandGiphyIcon,
+                format: "/giphy [\(L10n.Composer.Commands.Format.text)]",
+                isInstant: true,
+                placeholder: L10n.Composer.Placeholder.giphy,
+                description: L10n.Composer.Commands.Giphy.description
+            )
+        )
+    }
+
+    func mute(
+        typingSuggestion: TypingSuggestion = .empty
+    ) -> ComposerCommand {
+        ComposerCommand(
+            id: "/mute",
+            typingSuggestion: typingSuggestion,
+            displayInfo: CommandDisplayInfo(
+                displayName: L10n.Composer.Commands.mute,
+                icon: images.commandMuteIcon,
+                format: "/mute [\(L10n.Composer.Commands.Format.username)]",
+                isInstant: true,
+                placeholder: L10n.Composer.Commands.Format.username,
+                description: L10n.Composer.Commands.Mute.description
+            ),
+            replacesMessageSent: true
+        )
+    }
+
+    func unmute(
+        typingSuggestion: TypingSuggestion = .empty
+    ) -> ComposerCommand {
+        ComposerCommand(
+            id: "/unmute",
+            typingSuggestion: typingSuggestion,
+            displayInfo: CommandDisplayInfo(
+                displayName: L10n.Composer.Commands.unmute,
+                icon: images.commandUnmuteIcon,
+                format: "/unmute [\(L10n.Composer.Commands.Format.username)]",
+                isInstant: true,
+                placeholder: L10n.Composer.Commands.Format.username,
+                description: L10n.Composer.Commands.Unmute.description
+            ),
+            replacesMessageSent: true
+        )
+    }
+}
+
 /// Provides information about the suggestion.
 public final class SuggestionInfo {
     /// Identifies the suggestion.
@@ -128,17 +191,23 @@ public final class CommandDisplayInfo: Sendable {
     public let icon: UIImage
     public let format: String
     public let isInstant: Bool
+    public let placeholder: String?
+    public let description: String?
 
     public init(
         displayName: String,
         icon: UIImage,
         format: String,
-        isInstant: Bool
+        isInstant: Bool,
+        placeholder: String? = nil,
+        description: String? = nil
     ) {
         self.displayName = displayName
         self.icon = icon
         self.format = format
         self.isInstant = isInstant
+        self.placeholder = placeholder
+        self.description = description
     }
 }
 

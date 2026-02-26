@@ -464,15 +464,15 @@ import XCTest
         XCTAssert(view is ComposerQuotedMessageView<DefaultViewFactory>)
     }
 
-    func test_viewFactory_makeCommandsContainerView() {
+    func test_viewFactory_makeSuggestionsContainerView() {
         // Given
         let viewFactory = DefaultViewFactory.shared
 
         // When
-        let view = viewFactory.makeCommandsContainerView(options: CommandsContainerViewOptions(suggestions: [:]) { _ in })
+        let view = viewFactory.makeSuggestionsContainerView(options: SuggestionsContainerViewOptions(suggestions: [:]) { _ in })
 
         // Then
-        XCTAssert(view is CommandsContainerView<DefaultViewFactory>)
+        XCTAssert(view is SuggestionsContainerView<DefaultViewFactory>)
     }
 
     func test_viewFactory_makeLeadingSwipeActionsView() {

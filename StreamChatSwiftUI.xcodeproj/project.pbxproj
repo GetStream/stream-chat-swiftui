@@ -216,11 +216,12 @@
 				Tests/ChatChannel/ReactionsOverlayView_Tests.swift,
 				Tests/ChatChannel/ReactionsView_Tests.swift,
 				Tests/ChatChannel/Suggestions/CommandsHandler_Tests.swift,
+				Tests/ChatChannel/Suggestions/CommandSuggestionsView_Tests.swift,
 				Tests/ChatChannel/Suggestions/InstantCommandsHandler_Tests.swift,
-				Tests/ChatChannel/Suggestions/InstantCommandsView_Tests.swift,
 				Tests/ChatChannel/Suggestions/MuteCommandHandler_Tests.swift,
 				Tests/ChatChannel/Suggestions/TestCommandsConfig.swift,
 				Tests/ChatChannel/Suggestions/TypingSuggester_Tests.swift,
+				Tests/ChatChannel/Suggestions/UserSuggestionsView_Tests.swift,
 				Tests/ChatChannel/TypingIndicatorView_Tests.swift,
 				Tests/ChatChannel/WebView_Tests.swift,
 				Tests/ChatChannelList/ChatChannelListItemView_Tests.swift,
@@ -242,6 +243,7 @@
 				Tests/CommonViews/Avatars/UserAvatar_Tests.swift,
 				Tests/CommonViews/GalleryHeaderView_Tests.swift,
 				Tests/CommonViews/SearchBar_Tests.swift,
+				Tests/CommonViews/SnackBarView_Tests.swift,
 				Tests/CommonViews/StreamButton_Tests.swift,
 				Tests/StreamChatTestCase.swift,
 				Tests/Utils/ChatClientExtensions_Tests.swift,
@@ -1534,7 +1536,7 @@
 			repositoryURL = "https://github.com/GetStream/stream-chat-swift.git";
 			requirement = {
 				kind = revision;
-				revision = 8e658c0c44ca24b627e4d741aff64b86dfeed5da;
+				revision = 7e49b0325191c84aae6c6a9e66f2569a105eb05a;
 			};
 		};
 		E3A1C01A282BAC66002D1E26 /* XCRemoteSwiftPackageReference "sentry-cocoa" */ = {

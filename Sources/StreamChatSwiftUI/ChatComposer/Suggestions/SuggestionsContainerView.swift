@@ -5,8 +5,8 @@
 import StreamChat
 import SwiftUI
 
-/// Default implementation of the commands container.
-struct CommandsContainerView<Factory: ViewFactory>: View {
+/// Default implementation of the suggestions container.
+struct SuggestionsContainerView<Factory: ViewFactory>: View {
     var factory: Factory
     var suggestions: [String: Any]
     var handleCommand: ([String: Any]) -> Void
@@ -24,27 +24,28 @@ struct CommandsContainerView<Factory: ViewFactory>: View {
     var body: some View {
         ZStack {
             if let suggestedUsers = suggestions["mentions"] as? [ChatUser] {
-                MentionUsersView(
+                UserSuggestionsView(
                     factory: factory,
                     users: suggestedUsers,
                     userSelected: { user in
                         handleCommand(["chatUser": user])
                     }
                 )
-                .accessibilityIdentifier("MentionUsersView")
+                .accessibilityIdentifier("UserSuggestionsView")
             }
 
             if let instantCommands = suggestions["instantCommands"] as? [CommandHandler] {
-                InstantCommandsView(
+                CommandSuggestionsView(
                     instantCommands: instantCommands,
                     commandSelected: { command in
                         handleCommand(["instantCommand": command])
                     }
                 )
-                .accessibilityIdentifier("InstantCommandsView")
+                .accessibilityIdentifier("CommandSuggestionsView")
             }
         }
+        .modifier(factory.styles.makeSuggestionsContainerModifier(options: SuggestionsContainerModifierOptions()))
         .accessibilityElement(children: .contain)
-        .accessibilityIdentifier("CommandsContainerView")
+        .accessibilityIdentifier("SuggestionsContainerView")
     }
 }

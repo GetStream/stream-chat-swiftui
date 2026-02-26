@@ -6,24 +6,31 @@ import SwiftUI
 
 struct ActionBannerView: View {
     @Injected(\.colors) private var colors
+    @Injected(\.tokens) private var tokens
+    @Injected(\.fonts) private var fonts
 
     let text: String
     let image: UIImage
     let action: () -> Void
 
     public var body: some View {
-        HStack(alignment: .center) {
-            Text(text)
-                .foregroundColor(Color(colors.staticColorText))
-            Spacer()
-            Button(action: action) {
+        Button(action: action) {
+            HStack(alignment: .center, spacing: tokens.spacingSm) {
+                Spacer()
+                
                 Image(uiImage: image)
                     .customizable()
-                    .frame(width: 20, height: 20)
-                    .foregroundColor(Color(colors.staticColorText))
+                    .frame(width: tokens.iconSizeMd, height: tokens.iconSizeMd)
+                    .foregroundColor(Color(colors.textSecondary))
+
+                Text(text)
+                    .font(fonts.footnoteBold)
+                    .foregroundColor(Color(colors.textSecondary))
+                
+                Spacer()
             }
+            .padding(.all, 16)
+            .background(Color(colors.backgroundCoreSurface))
         }
-        .padding(.all, 16)
-        .background(Color(colors.bannerBackgroundColor))
     }
 }

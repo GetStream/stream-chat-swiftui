@@ -21,13 +21,7 @@ public class MuteCommandHandler: TwoStepMentionCommand {
             commandSymbol: commandSymbol,
             id: id
         )
-        let displayInfo = CommandDisplayInfo(
-            displayName: L10n.Composer.Commands.mute,
-            icon: images.commandMute,
-            format: "\(id) [\(L10n.Composer.Commands.Format.username)]",
-            isInstant: true
-        )
-        self.displayInfo = displayInfo
+        self.displayInfo = ComposerCommandFactory.shared.mute().displayInfo
     }
 
     override public func executeOnMessageSent(
