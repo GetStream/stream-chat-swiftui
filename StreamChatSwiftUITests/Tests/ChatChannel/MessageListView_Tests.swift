@@ -12,6 +12,7 @@ import XCTest
 @MainActor class MessageListView_Tests: StreamChatTestCase {
     override func setUp() {
         super.setUp()
+
         DelayedRenderingViewModifier.isEnabled = false
     }
     
