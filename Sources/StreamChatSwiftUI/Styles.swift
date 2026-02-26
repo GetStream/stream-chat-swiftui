@@ -107,6 +107,10 @@ public class LiquidGlassStyles: Styles {
         LiquidGlassModifier(shape: .circle, isInteractive: true)
     }
     
+    public func makeComposerViewModifier(options: ComposerViewModifierOptions) -> some ViewModifier {
+        ScrollEdgeBlurModifier()
+    }
+
     public func makeSuggestionsContainerModifier(options: SuggestionsContainerModifierOptions) -> some ViewModifier {
         SuggestionsLiquidGlassContainerModifier()
     }
@@ -210,6 +214,31 @@ struct SuggestionsLiquidGlassContainerModifier: ViewModifier {
                 LiquidGlassModifier(shape: .roundedRect(tokens.radius3xl))
             )
             .padding(.horizontal, tokens.spacingMd)
+    }
+}
+
+struct ScrollEdgeBlurModifier: ViewModifier {
+    func body(content: Content) -> some View {
+        if #available(iOS 15.0, *) {
+            content
+                .background(
+                    Rectangle()
+                        .fill(.ultraThinMaterial)
+                        .mask(
+                            LinearGradient(
+                                stops: [
+                                    .init(color: .white, location: 0),
+                                    .init(color: .clear, location: 1.0)
+                                ],
+                                startPoint: .bottom,
+                                endPoint: .top
+                            )
+                        )
+                        .edgesIgnoringSafeArea(.bottom)
+                )
+        } else {
+            content
+        }
     }
 }
 
