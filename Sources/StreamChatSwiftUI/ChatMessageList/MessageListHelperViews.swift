@@ -169,6 +169,34 @@ struct MessageSpacer: View {
     }
 }
 
+/// View that's displayed as an annotation when a message is pinned.
+public struct MessagePinDetailsView: View {
+    @Injected(\.colors) private var colors
+    @Injected(\.images) private var images
+    @Injected(\.fonts) private var fonts
+    @Injected(\.tokens) private var tokens
+    
+    var message: ChatMessage
+    
+    public init(message: ChatMessage) {
+        self.message = message
+    }
+    
+    public var body: some View {
+        HStack(spacing: tokens.spacingXxs) {
+            Image(uiImage: images.pin)
+                .customizable()
+                .frame(width: 16, height: 16)
+                .accessibilityHidden(true)
+            Text("\(L10n.Message.Cell.pinnedBy) \(message.pinDetails?.pinnedBy.name ?? L10n.Message.Cell.unknownPin)")
+                .font(fonts.metadataEmphasis)
+        }
+        .foregroundColor(colors.textPrimary.toColor)
+        .frame(height: 24)
+        .accessibilityIdentifier("MessagePinDetailsView")
+    }
+}
+
 public struct TopLeftView<Content: View>: View {
     var content: () -> Content
     
