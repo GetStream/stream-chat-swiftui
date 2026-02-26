@@ -91,9 +91,17 @@ public struct BadgeNotificationView: View {
     private var sizeMetrics: SizeMetrics {
         switch size {
         case .small:
-            return .small(fonts: fonts)
+            return .init(
+                width: tokens.iconSizeMd,
+                height: tokens.iconSizeMd,
+                font: fonts.footnoteBold
+            )
         case .extraSmall:
-            return .extraSmall(fonts: fonts)
+            return .init(
+                width: tokens.iconSizeSm,
+                height: tokens.iconSizeSm,
+                font: fonts.caption1.bold()
+            )
         }
     }
 
@@ -101,14 +109,6 @@ public struct BadgeNotificationView: View {
         let width: CGFloat
         let height: CGFloat
         let font: Font
-
-        static func small(fonts: Appearance.FontsSwiftUI) -> SizeMetrics {
-            .init(width: 20, height: 20, font: fonts.footnoteBold)
-        }
-
-        static func extraSmall(fonts: Appearance.FontsSwiftUI) -> SizeMetrics {
-            .init(width: 16, height: 16, font: fonts.caption1.bold())
-        }
     }
 }
 

@@ -90,6 +90,10 @@ extension Styles {
     public func makeComposerViewModifier(options: ComposerViewModifierOptions) -> some ViewModifier {
         EmptyViewModifier()
     }
+
+    public func makeScrollToBottomButtonModifier(options: ScrollToBottomButtonModifierOptions) -> some ViewModifier {
+        RegularScrollToBottomButtonModifier()
+    }
 }
 
 public class LiquidGlassStyles: Styles {
