@@ -550,7 +550,7 @@ public struct ScrollToBottomButton<Factory: ViewFactory>: View {
                 size: .medium,
                 action: onScrollToBottom
             ) {
-                Image(uiImage: images.scrollToBottomArrow)
+                Image(uiImage: images.scrollDownArrow)
                     .renderingMode(.template)
                     .frame(width: tokens.iconSizeMd, height: tokens.iconSizeMd)
             }
