@@ -74,6 +74,8 @@ public struct UserAvatar: View {
                         image
                             .resizable()
                             .aspectRatio(contentMode: .fill)
+                            .background(Color.white)
+                            .compositingGroup()
                             .overlay(
                                 showsBorder ? Circle().strokeBorder(colors.borderCoreOpacity10.toColor, lineWidth: 1) : nil
                             )

@@ -133,6 +133,63 @@ import SwiftUI
     .padding()
 }
 
+// MARK: - Avatar Stack
+
+@available(iOS 26, *)
+#Preview("Avatar Stack", traits: .fixedLayout(width: 400, height: 420)) {
+    @Previewable let avatarURL = URL(string: "https://vignette.wikia.nocookie.net/starwars/images/b/b2/Padmegreenscrshot.jpg")!
+    @Previewable let streamChat = StreamChat(chatClient: .init(config: .init(apiKeyString: "Preview")))
+
+    let sizes: [(label: String, size: CGFloat)] = [
+        ("sm", AvatarSize.small),
+        ("xs", AvatarSize.extraSmall)
+    ]
+
+    let avatarData: (URL?) -> [(url: URL?, initials: String)] = { url in
+        [(url, "AB"), (url, "CD"), (url, "EF")]
+    }
+
+    VStack(alignment: .leading, spacing: 16) {
+        // Column headers
+        AvatarPreviewRow(label: "") {
+            ForEach(sizes, id: \.size) { item in
+                Text(item.label)
+                    .font(.caption)
+                    .frame(width: AvatarPreviewConstants.columnWidth)
+            }
+        }
+
+        // Badge?=False rows
+        AvatarPreviewRow(label: "1") {
+            ForEach(sizes, id: \.size) { item in
+                AvatarStack(avatars: Array(avatarData(avatarURL).prefix(1)), totalCount: 1, size: item.size)
+                    .frame(width: AvatarPreviewConstants.columnWidth, height: AvatarPreviewConstants.rowHeight)
+            }
+        }
+        AvatarPreviewRow(label: "2") {
+            ForEach(sizes, id: \.size) { item in
+                AvatarStack(avatars: Array(avatarData(avatarURL).prefix(2)), totalCount: 2, size: item.size)
+                    .frame(width: AvatarPreviewConstants.columnWidth, height: AvatarPreviewConstants.rowHeight)
+            }
+        }
+        AvatarPreviewRow(label: "3") {
+            ForEach(sizes, id: \.size) { item in
+                AvatarStack(avatars: avatarData(avatarURL), totalCount: 3, size: item.size)
+                    .frame(width: AvatarPreviewConstants.columnWidth, height: AvatarPreviewConstants.rowHeight)
+            }
+        }
+
+        // Badge?=True row (3 visible + badge "1")
+        AvatarPreviewRow(label: "Badge") {
+            ForEach(sizes, id: \.size) { item in
+                AvatarStack(avatars: avatarData(avatarURL), totalCount: 4, size: item.size)
+                    .frame(width: AvatarPreviewConstants.columnWidth, height: AvatarPreviewConstants.rowHeight)
+            }
+        }
+    }
+    .padding()
+}
+
 // MARK: - Preview Helpers
 
 private enum AvatarPreviewConstants {

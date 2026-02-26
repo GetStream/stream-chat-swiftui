@@ -90,6 +90,8 @@ public struct ChannelAvatar: View {
                         image
                             .resizable()
                             .aspectRatio(contentMode: .fill)
+                            .background(Color.white)
+                            .compositingGroup()
                             .overlay(
                                 showsBorder ? Circle().strokeBorder(colors.borderCoreOpacity10.toColor, lineWidth: 1) : nil
                             )
@@ -264,8 +266,16 @@ private extension ChannelAvatar {
                 avatar(for: users[1])
                     .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topTrailing)
                     .offset(x: outerBorderWidth, y: -outerBorderWidth)
-                CountBadgeView(count: memberCount - 2, size: size)
+                AvatarBadgeView(count: memberCount - 2, size: badgeSize)
                     .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
+            }
+        }
+        
+        private var badgeSize: CGFloat {
+            switch size {
+            case AvatarSize.sizeClassExtraExtraLarge: 32
+            case AvatarSize.sizeClassExtraLarge: 24
+            default: 20
             }
         }
         
@@ -285,79 +295,6 @@ private extension ChannelAvatar {
             )
             .padding(outerBorderWidth)
             .background(Circle().fill(colors.borderCoreOnDark.toColor))
-        }
-    }
-    
-    /// A small pill-shaped badge that shows the number of additional members not displayed.
-    struct CountBadgeView: View {
-        @Injected(\.colors) var colors
-        @Injected(\.tokens) var tokens
-        
-        let count: Int
-        /// The avatar size used to determine badge dimensions.
-        let size: CGFloat
-        
-        /// The capped display value. Values ≥ 100 are clamped to 99.
-        private var displayText: String {
-            "+\(min(count, 99))"
-        }
-        
-        private var elevation: BoxShadow { tokens.lightElevation2 }
-        
-        // MARK: - Size-dependent properties
-        
-        /// Badge height based on the avatar size class.
-        private var badgeHeight: CGFloat {
-            switch size {
-            case AvatarSize.sizeClassExtraExtraLarge: 32
-            case AvatarSize.sizeClassExtraLarge: 24
-            default: 20
-            }
-        }
-        
-        /// Badge minimum width based on the avatar size class.
-        private var badgeMinWidth: CGFloat { badgeHeight }
-        
-        /// Horizontal padding based on the avatar size class.
-        private var horizontalPadding: CGFloat {
-            switch size {
-            case AvatarSize.sizeClassExtraExtraLarge: 8
-            case AvatarSize.sizeClassExtraLarge: 8
-            default: 4
-            }
-        }
-        
-        /// Font size based on the avatar size class.
-        private var fontSize: CGFloat {
-            switch size {
-            case AvatarSize.sizeClassExtraExtraLarge: 13
-            case AvatarSize.sizeClassExtraLarge: 13
-            default: 10
-            }
-        }
-        
-        var body: some View {
-            Text(displayText)
-                .font(.system(size: fontSize, weight: .bold))
-                .foregroundColor(colors.badgeText.toColor)
-                .environment(\.sizeCategory, .large)
-                .padding(.horizontal, horizontalPadding)
-                .frame(minWidth: badgeMinWidth, minHeight: badgeHeight)
-                .frame(height: badgeHeight)
-                .background(
-                    Capsule()
-                        .fill(colors.badgeBackgroundDefault.toColor)
-                )
-                .overlay(
-                    Capsule()
-                        .strokeBorder(colors.borderCoreSubtle.toColor, lineWidth: 1)
-                )
-                .shadow(
-                    color: Color(elevation.color),
-                    radius: elevation.blur / 2,
-                    x: elevation.x,
-                    y: elevation.y
-                )
         }
     }
 }
