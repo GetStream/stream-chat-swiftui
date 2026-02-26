@@ -7,12 +7,17 @@ import StreamChatCommonUI
 import SwiftUI
 
 /// A pill-shaped badge that shows the number of additional avatars not displayed.
-struct AvatarBadgeView: View {
+public struct BadgeCount: View {
     @Injected(\.colors) var colors
     @Injected(\.tokens) var tokens
     
     let count: Int
     let size: CGFloat
+    
+    public init(count: Int, size: CGFloat) {
+        self.count = count
+        self.size = size
+    }
     
     private var displayText: String {
         "+\(min(count, 99))"
@@ -41,7 +46,7 @@ struct AvatarBadgeView: View {
     
     // MARK: - Body
     
-    var body: some View {
+    public var body: some View {
         Text(displayText)
             .font(.system(size: fontSize, weight: .bold))
             .foregroundColor(colors.badgeText.toColor)
