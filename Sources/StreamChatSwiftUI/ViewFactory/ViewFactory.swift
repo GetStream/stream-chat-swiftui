@@ -172,11 +172,17 @@ import SwiftUI
     /// - Returns: view shown in the date and author indicator slot.
     func makeMessageAuthorAndDateView(options: MessageAuthorAndDateViewOptions) -> MessageAuthorAndDateViewType
 
-    associatedtype MessageTranslationFooterViewType: View
-    /// Creates a view to display translation information below a message if it has been translated.
-    /// - Parameter options: the options for creating the message translation footer view.
+    associatedtype MessageTranslationViewType: View
+    /// Creates a view to display translation information for a message.
+    /// - Parameter options: the options for creating the message translation view.
     /// - Returns: A view to display translation information of the message.
-    func makeMessageTranslationFooterView(options: MessageTranslationFooterViewOptions) -> MessageTranslationFooterViewType
+    func makeMessageTranslationView(options: MessageTranslationViewOptions) -> MessageTranslationViewType
+
+    associatedtype MessageAnnotationsViewType: View
+    /// Creates the annotations stack shown above the message bubble.
+    /// - Parameter options: the options for creating the message annotations view.
+    /// - Returns: A view displaying all applicable annotation rows (pin, thread, translation, reminder).
+    func makeMessageAnnotationsView(options: MessageAnnotationsViewOptions) -> MessageAnnotationsViewType
 
     associatedtype LastInGroupHeaderView: View
     /// Creates a view shown as a header of the last message in a group.
@@ -311,12 +317,6 @@ import SwiftUI
     /// - Returns: view displayed in the message replies view slot.
     func makeMessageRepliesView(options: MessageRepliesViewOptions) -> MessageRepliesViewType
     
-    associatedtype MessageRepliesShownInChannelViewType: View
-    /// Creates the message replies view for a reply that is also shown in a channel.
-    /// - Parameter options: the options for creating the message replies shown in channel view.
-    /// - Returns: view displayed in the message replies view slot.
-    func makeMessageRepliesShownInChannelView(options: MessageRepliesShownInChannelViewOptions) -> MessageRepliesShownInChannelViewType
-
     associatedtype MessageComposerViewType: View
     /// Creates the message composer view.
     /// - Parameter options: the options for creating the message composer view.

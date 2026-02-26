@@ -191,6 +191,7 @@
 				Tests/ChatChannel/LazyImageExtensions_Tests.swift,
 				Tests/ChatChannel/MessageActions_Tests.swift,
 				Tests/ChatChannel/MessageActionsViewModel_Tests.swift,
+				Tests/ChatChannel/MessageAnnotationsView_Tests.swift,
 				Tests/ChatChannel/MessageAttachmentPreviewResolver_Tests.swift,
 				Tests/ChatChannel/MessageAttachmentsConverter_Tests.swift,
 				Tests/ChatChannel/MessageCachingUtils_Tests.swift,
@@ -1534,8 +1535,8 @@
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/GetStream/stream-chat-swift.git";
 			requirement = {
-				kind = revision;
-				revision = 7e49b0325191c84aae6c6a9e66f2569a105eb05a;
+				branch = "v5-annotation-colors-images";
+				kind = branch;
 			};
 		};
 		E3A1C01A282BAC66002D1E26 /* XCRemoteSwiftPackageReference "sentry-cocoa" */ = {

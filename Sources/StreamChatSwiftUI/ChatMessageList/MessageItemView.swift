@@ -72,7 +72,8 @@ public struct MessageItemView<Factory: ViewFactory>: View {
         _messageViewModel = .init(
             wrappedValue: viewModel ?? MessageViewModel(
                 message: message,
-                channel: channel
+                channel: channel,
+                isInThread: isInThread
             )
         )
         _scrolledId = scrolledId
@@ -144,10 +145,13 @@ public struct MessageItemView<Factory: ViewFactory>: View {
                 alignment: messageViewModel.isRightAligned ? .trailing : .leading,
                 spacing: tokens.spacingXxs
             ) {
-                if messageViewModel.isPinned {
-                    MessagePinDetailsView(
-                        message: message,
-                        reactionsShown: topReactionsShown
+                if !shownAsPreview && messageViewModel.annotationsShown {
+                    factory.makeMessageAnnotationsView(
+                        options: MessageAnnotationsViewOptions(
+                            message: message,
+                            channel: channel,
+                            messageViewModel: messageViewModel
+                        )
                     )
                 }
 
@@ -155,16 +159,20 @@ public struct MessageItemView<Factory: ViewFactory>: View {
                     .accessibilityElement(children: .contain)
                     .accessibilityIdentifier("MessageView")
 
-                if !isInThread {
-                    ThreadRepliesContainerView(
-                        factory: factory,
-                        channel: channel,
-                        message: message,
-                        shownAsPreview: shownAsPreview
+                if !isInThread, message.replyCount > 0 {
+                    factory.makeMessageRepliesView(
+                        options: MessageRepliesViewOptions(
+                            channel: channel,
+                            message: message,
+                            replyCount: message.replyCount,
+                            usesInvertedStyle: shownAsPreview
+                        )
                     )
+                    .accessibilityElement(children: .contain)
+                    .accessibility(identifier: "MessageRepliesView")
                 }
 
-                if bottomReactionsShown {
+                if messageViewModel.bottomReactionsShown {
                     factory.makeBottomReactionsView(
                         options: ReactionsBottomViewOptions(
                             message: message,
@@ -175,15 +183,6 @@ public struct MessageItemView<Factory: ViewFactory>: View {
                             onLongPress: {
                                 handleGestureForMessage(showsMessageActions: false)
                             }
-                        )
-                    )
-                }
-
-                if messageViewModel.translatedText != nil {
-                    factory.makeMessageTranslationFooterView(
-                        options: MessageTranslationFooterViewOptions(
-                            messageViewModel: messageViewModel,
-                            usesInvertedStyle: shownAsPreview
                         )
                     )
                 }
@@ -201,11 +200,11 @@ public struct MessageItemView<Factory: ViewFactory>: View {
         .frame(maxWidth: .infinity, alignment: messageViewModel.isRightAligned ? .trailing : .leading)
         .padding(
             .top,
-            topReactionsShown && !messageViewModel.isPinned ? messageListConfig.messageDisplayOptions
+            messageViewModel.topReactionsShown && !messageViewModel.annotationsShown ? messageListConfig.messageDisplayOptions
                 .reactionsTopPadding(message) : 0
         )
         .padding(.horizontal, messageListConfig.messagePaddings.horizontal)
-        .padding(.bottom, showsAllInfo || messageViewModel.isPinned ? paddingValue : groupMessageInterItemSpacing)
+        .padding(.bottom, showsAllInfo || messageViewModel.annotationsShown ? paddingValue : groupMessageInterItemSpacing)
         .padding(.top, isLast ? paddingValue : 0)
     }
 
@@ -235,7 +234,7 @@ public struct MessageItemView<Factory: ViewFactory>: View {
             }
         }
         .overlay(
-            topReactionsShown ?
+            messageViewModel.topReactionsShown ?
                 factory.makeMessageReactionView(
                     options: MessageReactionViewOptions(
                         message: message,
@@ -312,26 +311,6 @@ public struct MessageItemView<Factory: ViewFactory>: View {
 
     private var spacerWidth: CGFloat {
         messageListConfig.messageDisplayOptions.spacerWidth(width ?? 0)
-    }
-
-    private var topReactionsShown: Bool {
-        if messageListConfig.messageDisplayOptions.reactionsPlacement == .bottom {
-            return false
-        }
-        return reactionsShown
-    }
-
-    private var bottomReactionsShown: Bool {
-        if messageListConfig.messageDisplayOptions.reactionsPlacement == .top {
-            return false
-        }
-        return reactionsShown
-    }
-
-    private var reactionsShown: Bool {
-        !message.reactionScores.isEmpty
-            && !message.isDeleted
-            && channel.config.reactionsEnabled
     }
 
     private var paddingValue: CGFloat {
@@ -497,58 +476,6 @@ struct SendFailureIndicator: View {
         }
         .accessibilityElement(children: .contain)
         .accessibilityIdentifier("SendFailureIndicator")
-    }
-}
-
-// MARK: - Thread Replies Container
-
-private struct ThreadRepliesContainerView<Factory: ViewFactory>: View {
-    @Injected(\.chatClient) private var chatClient
-    @Injected(\.utils) private var utils
-    
-    let factory: Factory
-    let channel: ChatChannel
-    let message: ChatMessage
-    let shownAsPreview: Bool
-    
-    var body: some View {
-        if message.replyCount > 0 {
-            factory.makeMessageRepliesView(
-                options: MessageRepliesViewOptions(
-                    channel: channel,
-                    message: message,
-                    replyCount: message.replyCount,
-                    usesInvertedStyle: shownAsPreview
-                )
-            )
-            .accessibilityElement(children: .contain)
-            .accessibility(identifier: "MessageRepliesView")
-        } else if message.showReplyInChannel, let parentId = message.parentMessageId {
-            if let controller = utils.channelControllerFactory.currentChannelController,
-               let parentMessage = controller.dataStore.message(id: parentId) {
-                factory.makeMessageRepliesShownInChannelView(
-                    options: MessageRepliesShownInChannelViewOptions(
-                        channel: channel,
-                        message: message,
-                        parentMessage: parentMessage,
-                        replyCount: parentMessage.replyCount,
-                        usesInvertedStyle: shownAsPreview
-                    )
-                )
-                .accessibilityElement(children: .contain)
-                .accessibility(identifier: "MessageRepliesView")
-            } else {
-                LazyMessageRepliesView(
-                    factory: factory,
-                    channel: channel,
-                    message: message,
-                    parentMessageId: parentId,
-                    usesInvertedStyle: shownAsPreview
-                )
-                .accessibilityElement(children: .contain)
-                .accessibility(identifier: "MessageRepliesView")
-            }
-        }
     }
 }
 

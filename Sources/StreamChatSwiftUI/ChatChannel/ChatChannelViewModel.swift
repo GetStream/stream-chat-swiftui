@@ -229,6 +229,12 @@ import SwiftUI
                 name: NSNotification.Name(MessageRepliesConstants.selectedMessageThread),
                 object: nil
             )
+            NotificationCenter.default.addObserver(
+                self,
+                selector: #selector(selectedMessageInChannel(notification:)),
+                name: NSNotification.Name(MessageRepliesConstants.selectedMessage),
+                object: nil
+            )
         }
                 
         channelName = channel?.name ?? ""
@@ -248,6 +254,15 @@ import SwiftUI
                 messageCachingUtils.jumpToReplyId = replyMessage.messageId
             }
         }
+    }
+
+    @objc
+    private func selectedMessageInChannel(notification: Notification) {
+        guard let message = notification.userInfo?[MessageRepliesConstants.selectedMessage] as? ChatMessage else {
+            return
+        }
+        threadMessageShown = false
+        scrolledId = message.id
     }
     
     @objc

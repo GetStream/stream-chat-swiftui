@@ -11,16 +11,19 @@ import StreamChat
     @Injected(\.chatClient) private var chatClient
 
     @Published public internal(set) var message: ChatMessage
-    @Published public internal(set) var channel: ChatChannel?
+    @Published public internal(set) var channel: ChatChannel
     @Published public var usesScrollView: Bool = false
+    public let isInThread: Bool
     private var cancellables = Set<AnyCancellable>()
 
     public init(
         message: ChatMessage,
-        channel: ChatChannel?
+        channel: ChatChannel,
+        isInThread: Bool = false
     ) {
         self.message = message
         self.channel = channel
+        self.isInThread = isInThread
         utils.originalTranslationsStore.$originalTextMessageIds.sink(
             receiveValue: { [weak self] _ in
                 self?.objectWillChange.send()
@@ -54,7 +57,15 @@ import StreamChat
     public var reactionsShown: Bool {
         !message.reactionScores.isEmpty
             && !message.isDeleted
-            && channel?.config.reactionsEnabled == true
+            && channel.config.reactionsEnabled == true
+    }
+
+    public var topReactionsShown: Bool {
+        messageListConfig.messageDisplayOptions.reactionsPlacement != .bottom && reactionsShown
+    }
+
+    public var bottomReactionsShown: Bool {
+        messageListConfig.messageDisplayOptions.reactionsPlacement != .top && reactionsShown
     }
 
     public var failureIndicatorShown: Bool {
@@ -62,7 +73,6 @@ import StreamChat
     }
 
     open var authorAndDateShown: Bool {
-        guard let channel else { return false }
         return !message.isRightAligned
             && channel.memberCount > 2
             && messageListConfig.messageDisplayOptions.showAuthorName
@@ -81,7 +91,6 @@ import StreamChat
     }
 
     public var messageAuthor: ChatUser? {
-        guard let channel else { return nil }
         guard messageListConfig.messageDisplayOptions.showAvatars(for: channel, incoming: !isRightAligned) else { return nil }
         return message.author
     }
@@ -95,7 +104,7 @@ import StreamChat
     }
 
     open var isSwipeToQuoteReplyPossible: Bool {
-        message.isInteractionEnabled && channel?.config.quotesEnabled == true
+        message.isInteractionEnabled && channel.config.quotesEnabled == true
     }
 
     open var textContent: String {
@@ -107,7 +116,7 @@ import StreamChat
     }
 
     public var translatedText: String? {
-        if let language = channel?.membership?.language,
+        if let language = channel.membership?.language,
            let translatedText = message.textContent(for: language) {
             return translatedText
         }
@@ -116,7 +125,7 @@ import StreamChat
     }
 
     public var translatedLanguageText: String? {
-        guard let localizedName = channel?.membership?.language?.localizedName else {
+        guard let localizedName = channel.membership?.language?.localizedName else {
             return nil
         }
         
@@ -127,8 +136,45 @@ import StreamChat
         originalTextShown ? L10n.Message.showTranslation : L10n.Message.showOriginal
     }
 
+    public var annotationsShown: Bool {
+        isPinned
+            || sentInChannelShown
+            || repliedToThreadShown
+            || hasReminder
+            || translatedText != nil
+    }
+
+    public var sentInChannelShown: Bool {
+        isInThread && message.showReplyInChannel && message.parentMessageId != nil
+    }
+
+    public var repliedToThreadShown: Bool {
+        !isInThread && message.showReplyInChannel && message.parentMessageId != nil
+    }
+
+    /// Whether the message has an active reminder set.
+    public var hasReminder: Bool {
+        message.reminder != nil
+    }
+
+    /// Formatted text describing when the reminder fires (e.g. "In 1 hour", "Today at 15:00").
+    public var reminderTimeText: String? {
+        guard let remindAt = message.reminder?.remindAt else { return nil }
+        let now = Date()
+        let interval = remindAt.timeIntervalSince(now)
+        guard interval > 0 else { return nil }
+        let formatter = RelativeDateTimeFormatter()
+        formatter.unitsStyle = .full
+        return formatter.localizedString(for: remindAt, relativeTo: now)
+    }
+
     // MARK: - Helpers
 
+    func parentMessage() async -> ChatMessage? {
+        guard let parentMessageId = message.parentMessageId else { return nil }
+        return try? await chatClient.makeChat(for: channel.cid).messageState(for: parentMessageId).message
+    }
+    
     private var messageListConfig: MessageListConfig {
         utils.messageListConfig
     }

@@ -274,12 +274,22 @@ extension ViewFactory {
         EmptyView()
     }
 
-    public func makeMessageTranslationFooterView(
-        options: MessageTranslationFooterViewOptions
+    public func makeMessageTranslationView(
+        options: MessageTranslationViewOptions
     ) -> some View {
-        MessageTranslationFooterView(
-            messageViewModel: options.messageViewModel,
-            usesInvertedStyle: options.usesInvertedStyle
+        MessageTranslationView(
+            messageViewModel: options.messageViewModel
+        )
+    }
+
+    public func makeMessageAnnotationsView(
+        options: MessageAnnotationsViewOptions
+    ) -> some View {
+        MessageAnnotationsView(
+            factory: self,
+            message: options.message,
+            channel: options.channel,
+            messageViewModel: options.messageViewModel
         )
     }
 
@@ -457,20 +467,6 @@ extension ViewFactory {
             channel: options.channel,
             message: options.message,
             replyCount: options.replyCount,
-            usesInvertedStyle: options.usesInvertedStyle
-        )
-    }
-    
-    public func makeMessageRepliesShownInChannelView(
-        options: MessageRepliesShownInChannelViewOptions
-    ) -> some View {
-        MessageRepliesView(
-            factory: self,
-            channel: options.channel,
-            message: options.parentMessage,
-            replyCount: options.replyCount,
-            showReplyCount: false,
-            isRightAligned: options.message.isRightAligned,
             usesInvertedStyle: options.usesInvertedStyle
         )
     }

@@ -169,37 +169,6 @@ struct MessageSpacer: View {
     }
 }
 
-/// View that's displayed when a message is pinned.
-public struct MessagePinDetailsView: View {
-    @Injected(\.colors) private var colors
-    @Injected(\.images) private var images
-    @Injected(\.fonts) private var fonts
-    
-    var message: ChatMessage
-    var reactionsShown: Bool
-    
-    public init(message: ChatMessage, reactionsShown: Bool) {
-        self.message = message
-        self.reactionsShown = reactionsShown
-    }
-    
-    public var body: some View {
-        HStack {
-            Image(uiImage: images.pin)
-                .customizable()
-                .frame(maxHeight: 12)
-                .accessibilityHidden(true)
-            Text("\(L10n.Message.Cell.pinnedBy) \(message.pinDetails?.pinnedBy.name ?? L10n.Message.Cell.unknownPin)")
-                .font(fonts.footnote)
-        }
-        .foregroundColor(Color(colors.chatTextTimestamp))
-        .frame(height: 16)
-        .padding(.bottom, reactionsShown ? 16 : 0)
-        .padding(.top, 4)
-        .accessibilityIdentifier("MessagePinDetailsView")
-    }
-}
-
 public struct TopLeftView<Content: View>: View {
     var content: () -> Content
     

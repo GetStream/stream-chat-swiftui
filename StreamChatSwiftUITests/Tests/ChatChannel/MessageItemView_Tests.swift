@@ -782,7 +782,7 @@ import XCTest
             scrolledId: .constant(nil),
             quotedMessage: .constant(nil),
             onLongPress: { _ in },
-            viewModel: messageViewModel ?? MessageViewModel(message: message, channel: channel)
+            viewModel: messageViewModel ?? MessageViewModel(message: message, channel: channel ?? .mockDMChannel())
         )
         .environment(\.highlightedMessageId, highlightedMessageId)
         .frame(width: 375, height: 200)
