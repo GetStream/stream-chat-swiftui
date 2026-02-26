@@ -94,32 +94,6 @@ final class ChatMessageBubbles_Tests: StreamChatTestCase {
         XCTAssertEqual(corners, expected)
     }
 
-    // MARK: - horizontallyFlipped
-
-    func test_horizontallyFlipped_swapsLeftAndRight() {
-        let corners: UIRectCorner = [.topLeft, .bottomRight]
-        let flipped = corners.horizontallyFlipped
-        XCTAssertEqual(flipped, [.topRight, .bottomLeft])
-    }
-
-    func test_horizontallyFlipped_allCorners_remainsAllCorners() {
-        let corners: UIRectCorner = [.topLeft, .topRight, .bottomLeft, .bottomRight]
-        let flipped = corners.horizontallyFlipped
-        XCTAssertEqual(flipped, [.topLeft, .topRight, .bottomLeft, .bottomRight])
-    }
-
-    func test_horizontallyFlipped_currentUserCorners() {
-        let corners: UIRectCorner = [.topLeft, .topRight, .bottomLeft]
-        let flipped = corners.horizontallyFlipped
-        XCTAssertEqual(flipped, [.topLeft, .topRight, .bottomRight])
-    }
-
-    func test_horizontallyFlipped_otherUserCorners() {
-        let corners: UIRectCorner = [.topLeft, .topRight, .bottomRight]
-        let flipped = corners.horizontallyFlipped
-        XCTAssertEqual(flipped, [.topLeft, .topRight, .bottomLeft])
-    }
-
     // MARK: - Backgrounds
 
     func test_bubbleBackgrounds_injected() {

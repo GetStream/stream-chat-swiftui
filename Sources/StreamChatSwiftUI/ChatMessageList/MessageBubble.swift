@@ -251,19 +251,6 @@ extension View {
     }
 }
 
-extension UIRectCorner {
-    /// Mirrors left and right corners so that a shape designed for LTR
-    /// renders correctly in an RTL layout.
-    var horizontallyFlipped: UIRectCorner {
-        var result: UIRectCorner = []
-        if contains(.topLeft) { result.insert(.topRight) }
-        if contains(.topRight) { result.insert(.topLeft) }
-        if contains(.bottomLeft) { result.insert(.bottomRight) }
-        if contains(.bottomRight) { result.insert(.bottomLeft) }
-        return result
-    }
-}
-
 extension ChatMessage {
     /// Returns the default corners that will be rounded by the message bubble modifier.
     /// - Parameters:
@@ -280,18 +267,12 @@ extension ChatMessage {
             return [.topLeft, .topRight, .bottomLeft, .bottomRight]
         }
 
-        var corners: UIRectCorner
+        let isRTL = layoutDirection == .rightToLeft
         if isSentByCurrentUser && !forceLeftToRight {
-            corners = [.topLeft, .topRight, .bottomLeft]
+            return [.topLeft, .topRight, isRTL ? .bottomRight : .bottomLeft]
         } else {
-            corners = [.topLeft, .topRight, .bottomRight]
+            return [.topLeft, .topRight, isRTL ? .bottomLeft : .bottomRight]
         }
-
-        if layoutDirection == .rightToLeft {
-            corners = corners.horizontallyFlipped
-        }
-
-        return corners
     }
     
     func bubbleBorder(colors: Appearance.ColorPalette) -> Color {
