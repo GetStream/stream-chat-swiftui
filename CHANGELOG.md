@@ -3,6 +3,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 # Upcoming
 
+### ✅ Added
+- Add support for optional sort in channel list message search [#1237](https://github.com/GetStream/stream-chat-swiftui/pull/1237)
+
 ### 🐞 Fixed
 - Fix composer text, placeholder and icons not respecting layout direction in RTL [#1206](https://github.com/GetStream/stream-chat-swiftui/pull/1206)
 - Use `chevron.forward` instead of `chevron.right` for channel info disclosure indicator in RTL [#1206](https://github.com/GetStream/stream-chat-swiftui/pull/1206)
