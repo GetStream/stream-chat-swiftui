@@ -535,6 +535,7 @@ public struct NewMessagesIndicator: View {
 }
 
 public struct ScrollToBottomButton<Factory: ViewFactory>: View {
+    @Injected(\.images) private var images
     @Injected(\.tokens) private var tokens
 
     var factory: Factory
@@ -549,8 +550,8 @@ public struct ScrollToBottomButton<Factory: ViewFactory>: View {
                 size: .medium,
                 action: onScrollToBottom
             ) {
-                Image(systemName: "arrow.down")
-                    .font(.system(size: tokens.iconSizeSm, weight: .medium))
+                Image(uiImage: images.scrollToBottomArrow)
+                    .renderingMode(.template)
                     .frame(width: tokens.iconSizeMd, height: tokens.iconSizeMd)
             }
             .modifier(factory.styles.makeScrollToBottomButtonModifier(options: .init()))
