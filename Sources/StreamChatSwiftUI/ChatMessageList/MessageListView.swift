@@ -558,8 +558,8 @@ public struct ScrollToBottomButton<Factory: ViewFactory>: View {
             .badgeNotification(count: unreadCount)
             .accessibilityLabel(Text(L10n.Channel.List.ScrollToBottom.title))
             .padding(tokens.spacingMd)
+            .accessibilityIdentifier("ScrollToBottomButton")
         }
-        .accessibilityIdentifier("ScrollToBottomButton")
     }
 }
 
