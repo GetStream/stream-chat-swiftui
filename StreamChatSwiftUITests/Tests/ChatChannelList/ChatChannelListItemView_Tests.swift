@@ -12,8 +12,6 @@ import XCTest
 @MainActor final class ChatChannelListItemView_Tests: StreamChatTestCase {
     override func setUp() {
         super.setUp()
-        overrideRecording = true
-        isRecording = true
 
         streamChat?.utils.messageListConfig = .init(draftMessagesEnabled: true)
     }
