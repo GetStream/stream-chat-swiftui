@@ -1462,7 +1462,7 @@
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/GetStream/stream-chat-swift.git";
 			requirement = {
-				branch = "feature/channel-list-sort-in-message-search";
+				branch = develop;
 				kind = branch;
 			};
 		};
