@@ -10,6 +10,7 @@ struct AppConfigurationView: View {
     @State private var channelPinningEnabled = AppConfiguration.default.isChannelPinningFeatureEnabled
     @State private var reactionsStyle = AppConfiguration.default.reactionsStyle
     @State private var reactionsPlacement = AppConfiguration.default.reactionsPlacement
+    @State private var appStyle = AppConfiguration.default.appStyle
 
     var body: some View {
         NavigationView {
@@ -30,6 +31,12 @@ struct AppConfigurationView: View {
                         Text("Bottom").tag(ReactionsPlacement.bottom)
                     }
                 }
+                Section("App Style") {
+                    Picker("Style", selection: $appStyle) {
+                        Text("Regular").tag(AppConfiguration.AppStyle.regular)
+                        Text("Liquid Glass").tag(AppConfiguration.AppStyle.liquidGlass)
+                    }
+                }
             }
             .navigationBarTitleDisplayMode(.inline)
             .navigationTitle("App Configuration")
@@ -42,6 +49,9 @@ struct AppConfigurationView: View {
         .onChange(of: reactionsPlacement) { newPlacement in
             AppConfiguration.default.reactionsPlacement = newPlacement
             InjectedValues[\.utils].messageListConfig = AppConfiguration.makeMessageListConfig()
+        }
+        .onChange(of: appStyle) { newStyle in
+            AppConfiguration.default.appStyle = newStyle
         }
     }
 }

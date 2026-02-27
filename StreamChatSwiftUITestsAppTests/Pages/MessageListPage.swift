@@ -39,7 +39,7 @@ class MessageListPage {
     }
     
     static var scrollToBottomButtonUnreadCount: XCUIElement {
-        app.staticTexts["ScrollToBottomButton"]
+        app.staticTexts["BadgeNotificationView"]
     }
 
     enum NavigationBar {

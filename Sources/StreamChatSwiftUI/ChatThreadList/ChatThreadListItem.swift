@@ -264,7 +264,7 @@ struct ChatThreadListItemContentView<Factory: ViewFactory>: View {
 
             Spacer()
             if unreadRepliesCount > 0 {
-                UnreadIndicatorView(unreadCount: unreadRepliesCount)
+                BadgeNotificationView(count: unreadRepliesCount)
             }
         }
     }
