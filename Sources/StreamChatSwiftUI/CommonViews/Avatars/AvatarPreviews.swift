@@ -141,6 +141,7 @@ import SwiftUI
     @Previewable let streamChat = StreamChat(chatClient: .init(config: .init(apiKeyString: "Preview")))
 
     let sizes: [(label: String, size: CGFloat)] = [
+        ("md", AvatarSize.medium),
         ("sm", AvatarSize.small),
         ("xs", AvatarSize.extraSmall)
     ]

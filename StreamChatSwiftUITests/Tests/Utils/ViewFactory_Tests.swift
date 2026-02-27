@@ -723,20 +723,20 @@ import XCTest
         XCTAssert(view is MessageRepliesView<DefaultViewFactory>)
     }
 
-    func test_viewFactory_makeTypingIndicatorBottomView() {
+    func test_viewFactory_makeTypingIndicatorView() {
         // Given
         let viewFactory = DefaultViewFactory.shared
 
         // When
-        let view = viewFactory.makeTypingIndicatorBottomView(
-            options: TypingIndicatorBottomViewOptions(
+        let view = viewFactory.makeTypingIndicatorView(
+            options: TypingIndicatorViewOptions(
                 channel: .mockDMChannel(),
                 currentUserId: nil
             )
         )
 
         // Then
-        XCTAssert(view is TypingIndicatorBottomView)
+        XCTAssert(view is TypingIndicatorView)
     }
 
     func test_viewFactory_makeReactionsContentView() {

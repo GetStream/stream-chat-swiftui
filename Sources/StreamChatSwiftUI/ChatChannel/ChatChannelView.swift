@@ -96,8 +96,8 @@ public struct ChatChannelView<Factory: ViewFactory>: View, KeyboardReadable {
                                     hideComposerCommandsAndAttachmentsPicker()
                                 }
                             if viewModel.shouldShowTypingIndicator {
-                                factory.makeTypingIndicatorBottomView(
-                                    options: TypingIndicatorBottomViewOptions(
+                                factory.makeTypingIndicatorView(
+                                    options: TypingIndicatorViewOptions(
                                         channel: channel,
                                         currentUserId: chatClient.currentUserId
                                     )

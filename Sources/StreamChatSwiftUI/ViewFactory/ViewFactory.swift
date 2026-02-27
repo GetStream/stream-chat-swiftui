@@ -292,11 +292,11 @@ import SwiftUI
     /// - Returns: view shown above messages separated by date.
     func makeMessageListDateIndicator(options: MessageListDateIndicatorViewOptions) -> MessageListDateIndicatorViewType
 
-    associatedtype TypingIndicatorBottomViewType: View
+    associatedtype TypingIndicatorViewType: View
     /// Creates the typing indicator shown at the bottom of a message list.
-    /// - Parameter options: the options for creating the typing indicator bottom view.
+    /// - Parameter options: the options for creating the typing indicator view.
     /// - Returns: view shown in the typing indicator slot.
-    func makeTypingIndicatorBottomView(options: TypingIndicatorBottomViewOptions) -> TypingIndicatorBottomViewType
+    func makeTypingIndicatorView(options: TypingIndicatorViewOptions) -> TypingIndicatorViewType
 
     associatedtype GiphyBadgeViewType: View
     /// Creates giphy badge view.

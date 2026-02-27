@@ -11,44 +11,48 @@ import SwiftUI
 /// Displays an ``AvatarStack`` of typing users next to an incoming-style
 /// message bubble that contains animated dots.
 public struct TypingIndicatorView: View {
-    @Environment(\.layoutDirection) var layoutDirection
     @Injected(\.colors) var colors
     @Injected(\.tokens) var tokens
+    @Injected(\.utils) var utils
 
     let typingUsers: [(url: URL?, initials: String)]
-    let avatarSize: CGFloat
+    let totalCount: Int
+    let typingText: String
 
-    public init(typingUsers: [(url: URL?, initials: String)], avatarSize: CGFloat) {
-        self.typingUsers = typingUsers
-        self.avatarSize = avatarSize
-    }
-
-    private var bubbleCorners: UIRectCorner {
-        layoutDirection == .rightToLeft
-            ? [.bottomLeft, .topLeft, .topRight]
-            : [.topLeft, .topRight, .bottomRight]
+    public init(
+        users: [ChatUser],
+        typingText: String
+    ) {
+        self.totalCount = users.count
+        self.typingUsers = users.prefix(3).map { ($0.imageURL, UserAvatar.initials(from: $0.name ?? "")) }
+        self.typingText = typingText
     }
 
     public var body: some View {
         HStack(alignment: .bottom, spacing: tokens.spacingXs) {
             AvatarStack(
                 avatars: typingUsers,
-                totalCount: typingUsers.count,
-                size: avatarSize
+                totalCount: totalCount,
+                size: AvatarSize.medium
             )
             TypingIndicatorDotsView()
                 .frame(height: 36)
                 .padding(.horizontal, tokens.spacingSm)
                 .modifier(
                     BubbleModifier(
-                        corners: bubbleCorners,
+                        corners: [.topLeft, .topRight, .bottomRight],
                         backgroundColors: [colors.chatBackgroundIncoming.toColor],
                         borderColor: colors.chatBorderIncoming.toColor,
                         cornerRadius: tokens.messageBubbleRadiusGroupBottom
                     )
                 )
         }
+        .padding(.vertical, tokens.spacingXs)
+        .padding(.horizontal, utils.messageListConfig.messagePaddings.horizontal)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .transition(utils.messageListConfig.messageDisplayOptions.otherUserMessageTransition)
         .accessibilityElement(children: .combine)
+        .accessibilityLabel(typingText)
         .accessibilityIdentifier("TypingIndicatorView")
     }
 }
