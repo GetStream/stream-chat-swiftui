@@ -423,6 +423,7 @@ extension ViewFactory {
         options: ScrollToBottomButtonOptions
     ) -> some View {
         ScrollToBottomButton(
+            factory: self,
             unreadCount: options.unreadCount,
             onScrollToBottom: options.onScrollToBottom
         )
@@ -496,7 +497,8 @@ extension ViewFactory {
         LeadingComposerView(
             factory: self,
             pickerTypeState: options.state,
-            channelConfig: options.channelConfig
+            channelConfig: options.channelConfig,
+            isCommandActive: options.isCommandActive
         )
     }
     
@@ -856,10 +858,11 @@ extension ViewFactory {
         )
     }
     
-    public func makeCommandsContainerView(
-        options: CommandsContainerViewOptions
+    public func makeSuggestionsContainerView(
+        options: SuggestionsContainerViewOptions
     ) -> some View {
-        CommandsContainerView(
+        SuggestionsContainerView(
+            factory: self,
             suggestions: options.suggestions,
             handleCommand: options.handleCommand
         )
@@ -938,10 +941,6 @@ extension ViewFactory {
 
     public func makeNoThreadsView(options: NoThreadsViewOptions) -> some View {
         NoThreadsView()
-    }
-
-    public func makeThreadsListErrorBannerView(options: ThreadListErrorBannerViewOptions) -> some View {
-        ChatThreadListErrorBannerView(action: options.onRefreshAction)
     }
 
     public func makeThreadListLoadingView(options: ThreadListLoadingViewOptions) -> some View {

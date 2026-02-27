@@ -17,6 +17,13 @@ final class AppConfiguration {
     var reactionsStyle: ReactionsStyle = .segmented
     /// Reactions placement relative to the message (top or bottom).
     var reactionsPlacement: ReactionsPlacement = .top
+    /// The visual style used across the app (regular or liquid glass).
+    var appStyle: AppStyle = .regular
+
+    enum AppStyle: String, CaseIterable {
+        case regular
+        case liquidGlass
+    }
 
     /// Builds the demo app's `MessageListConfig` using current app configuration.
     @MainActor static func makeMessageListConfig() -> MessageListConfig {

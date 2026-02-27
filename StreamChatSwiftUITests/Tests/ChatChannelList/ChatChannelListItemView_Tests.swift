@@ -12,6 +12,7 @@ import XCTest
 @MainActor final class ChatChannelListItemView_Tests: StreamChatTestCase {
     override func setUp() {
         super.setUp()
+
         streamChat?.utils.messageListConfig = .init(draftMessagesEnabled: true)
     }
 

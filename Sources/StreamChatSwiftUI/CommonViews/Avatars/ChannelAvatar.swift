@@ -90,7 +90,7 @@ public struct ChannelAvatar: View {
                         image
                             .resizable()
                             .aspectRatio(contentMode: .fill)
-                            .background(Color.white)
+                            .background(colors.backgroundCoreApp.toColor)
                             .compositingGroup()
                             .overlay(
                                 showsBorder ? Circle().strokeBorder(colors.borderCoreOpacity10.toColor, lineWidth: 1) : nil
@@ -266,7 +266,7 @@ private extension ChannelAvatar {
                 avatar(for: users[1])
                     .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topTrailing)
                     .offset(x: outerBorderWidth, y: -outerBorderWidth)
-                AvatarBadgeView(count: memberCount - 2, size: badgeSize)
+                BadgeCountView(count: memberCount - 2, size: badgeSize)
                     .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
             }
         }

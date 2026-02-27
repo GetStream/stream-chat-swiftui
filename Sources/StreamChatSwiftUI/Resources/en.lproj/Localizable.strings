@@ -185,10 +185,15 @@
 "composer.audio-recording.stop" = "Stop recording audio message";
 
 "composer.commands.giphy" = "Giphy";
+"composer.commands.giphy.description" = "Post a random gif to the channel";
 "composer.commands.mute" = "Mute";
+"composer.commands.mute.description" = "Mute a user";
 "composer.commands.unmute" = "Unmute";
+"composer.commands.unmute.description" = "Unmute a user";
 "composer.commands.format.text" = "text";
 "composer.commands.format.username" = "@username";
+"composer.commands.mute.confirmation" = "Muted %@";
+"composer.commands.unmute.confirmation" = "Unmuted %@";
 
 
 "composer.suggestions.commands.header" = "Instant Commands";
@@ -264,7 +269,7 @@
 
 "thread.title" = "Threads";
 "thread.new-threads" = "%d new threads";
-"thread.error.message" = "Error loading threads";
+"thread.error.message" = "Couldn't load new threads. Tap to retry.";
 "thread.no-content.message" = "No threads here yet...";
 "thread.item.replied-to" = "replied to: %@";
 "thread.item.reply" = "reply";

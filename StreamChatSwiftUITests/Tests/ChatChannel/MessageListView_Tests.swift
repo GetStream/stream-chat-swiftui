@@ -12,6 +12,7 @@ import XCTest
 @MainActor class MessageListView_Tests: StreamChatTestCase {
     override func setUp() {
         super.setUp()
+
         DelayedRenderingViewModifier.isEnabled = false
     }
     
@@ -42,18 +43,26 @@ import XCTest
 
     func test_scrollToBottomButton_snapshotUnreadCount() {
         // Given
-        let button = ScrollToBottomButton(unreadCount: 3, onScrollToBottom: {})
+        let button = ScrollToBottomButton(factory: DefaultViewFactory.shared, unreadCount: 3, onScrollToBottom: {})
 
         // Then
-        assertSnapshot(matching: button, as: .image(perceptualPrecision: precision))
+        AssertSnapshot(button)
     }
 
     func test_scrollToBottomButton_snapshotEmptyCount() {
         // Given
-        let button = ScrollToBottomButton(unreadCount: 0, onScrollToBottom: {})
+        let button = ScrollToBottomButton(factory: DefaultViewFactory.shared, unreadCount: 0, onScrollToBottom: {})
 
         // Then
-        assertSnapshot(matching: button, as: .image(perceptualPrecision: precision))
+        AssertSnapshot(button)
+    }
+
+    func test_scrollToBottomButton_snapshotHighUnreadCount() {
+        // Given
+        let button = ScrollToBottomButton(factory: DefaultViewFactory.shared, unreadCount: 16, onScrollToBottom: {})
+
+        // Then
+        AssertSnapshot(button)
     }
 
     func test_messageListView_typingIndicator() {

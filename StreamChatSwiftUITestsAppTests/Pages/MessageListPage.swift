@@ -39,7 +39,7 @@ class MessageListPage {
     }
     
     static var scrollToBottomButtonUnreadCount: XCUIElement {
-        app.staticTexts["ScrollToBottomButton"]
+        app.staticTexts["BadgeNotificationView"]
     }
 
     enum NavigationBar {
@@ -355,11 +355,11 @@ class MessageListPage {
 
     enum ComposerCommands {
         static var cells: XCUIElementQuery {
-            app.otherElements.matching(identifier: "InstantCommandView")
+            app.otherElements.matching(identifier: "CommandSuggestionView")
         }
 
         static var headerTitle: XCUIElement {
-            app.staticTexts["InstantCommandsHeader"]
+            app.staticTexts["CommandSuggestionsHeader"]
         }
 
         static var headerImage: XCUIElement {
@@ -373,7 +373,7 @@ class MessageListPage {
 
     enum ComposerMentions {
         static var cells: XCUIElementQuery {
-            app.scrollViews["CommandsContainerView"].images.matching(NSPredicate(format: "identifier LIKE 'UserAvatar'"))
+            app.scrollViews["SuggestionsContainerView"].images.matching(NSPredicate(format: "identifier LIKE 'UserAvatar'"))
         }
     }
 }
