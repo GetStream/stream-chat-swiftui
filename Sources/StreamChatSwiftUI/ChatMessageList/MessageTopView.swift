@@ -97,28 +97,22 @@ struct MessageTopView: View {
     // MARK: - Navigation
 
     private func navigateToSentInChannel() {
-        // NOTE: Needed because of a bug in iOS 16.
-        resignFirstResponder()
         NotificationCenter.default.post(
-            name: NSNotification.Name(MessageRepliesConstants.selectedMessage),
+            name: MessageRepliesConstants.channelMessageNavigationNotification,
             object: nil,
-            userInfo: [MessageRepliesConstants.selectedMessage: message]
+            userInfo: [MessageRepliesConstants.channelMessageMessageId: message.messageId]
         )
     }
 
     private func navigateToThread() {
-        // NOTE: Needed because of a bug in iOS 16.
-        resignFirstResponder()
-        Task {
-            guard let parentMessage = await messageViewModel.parentMessage() else { return }
-            NotificationCenter.default.post(
-                name: NSNotification.Name(MessageRepliesConstants.selectedMessageThread),
-                object: nil,
-                userInfo: [
-                    MessageRepliesConstants.selectedMessage: parentMessage,
-                    MessageRepliesConstants.threadReplyMessage: message
-                ]
-            )
-        }
+        guard let parentMessageId = message.parentMessageId else { return }
+        NotificationCenter.default.post(
+            name: MessageRepliesConstants.threadMessageNavigationNotification,
+            object: nil,
+            userInfo: [
+                MessageRepliesConstants.threadMessageParentId: parentMessageId,
+                MessageRepliesConstants.threadMessageReplyId: message.messageId
+            ]
+        )
     }
 }

@@ -7,9 +7,12 @@ import StreamChat
 import SwiftUI
 
 enum MessageRepliesConstants {
-    static let selectedMessageThread = "selectedMessageThread"
-    static let selectedMessage = "selectedMessage"
-    static let threadReplyMessage = "threadReplyMessage"
+    static let channelMessageNavigationNotification: Notification.Name = Notification.Name("channelMessageNavigationNotification")
+    static let channelMessageMessageId = "channelMessageMessageId"
+    
+    static let threadMessageNavigationNotification: Notification.Name = Notification.Name("threadMessageNavigationNotification")
+    static let threadMessageParentId = "threadMessageParentId"
+    static let threadMessageReplyId = "threadMessageReplyId"
 }
 
 /// View shown below a message, when there are replies to it.
@@ -51,16 +54,14 @@ public struct MessageRepliesView<Factory: ViewFactory>: View {
 
     public var body: some View {
         Button {
-            // NOTE: Needed because of a bug in iOS 16.
-            resignFirstResponder()
-            // NOTE: this is used to avoid breaking changes.
+            // TODO: [IOS-1455] this is used to avoid breaking changes.
             // Will be updated in a major release.
-            var userInfo: [String: Any] = [MessageRepliesConstants.selectedMessage: message]
-            if let threadReplyMessage = threadReplyMessage {
-                userInfo[MessageRepliesConstants.threadReplyMessage] = threadReplyMessage
+            var userInfo: [String: Any] = [MessageRepliesConstants.threadMessageParentId: message.messageId]
+            if let threadReplyMessage {
+                userInfo[MessageRepliesConstants.threadMessageReplyId] = threadReplyMessage.messageId
             }
             NotificationCenter.default.post(
-                name: NSNotification.Name(MessageRepliesConstants.selectedMessageThread),
+                name: MessageRepliesConstants.threadMessageNavigationNotification,
                 object: nil,
                 userInfo: userInfo
             )

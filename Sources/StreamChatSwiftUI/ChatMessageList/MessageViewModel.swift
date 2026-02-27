@@ -166,11 +166,6 @@ import StreamChat
 
     // MARK: - Helpers
 
-    func parentMessage() async -> ChatMessage? {
-        guard let parentMessageId = message.parentMessageId else { return nil }
-        return try? await chatClient.makeChat(for: channel.cid).messageState(for: parentMessageId).message
-    }
-    
     private var messageListConfig: MessageListConfig {
         utils.messageListConfig
     }
