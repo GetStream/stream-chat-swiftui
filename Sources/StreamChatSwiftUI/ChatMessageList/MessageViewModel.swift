@@ -154,18 +154,14 @@ import StreamChat
 
     /// Whether the message has an active reminder set.
     public var hasReminder: Bool {
-        message.reminder != nil
+        channel.config.messageRemindersEnabled && message.reminder != nil
     }
 
-    /// Formatted text describing when the reminder fires (e.g. "In 1 hour", "Today at 15:00").
+    /// Formatted text describing when the reminder fires (e.g. "in 1 hour").
     public var reminderTimeText: String? {
+        guard channel.config.messageRemindersEnabled else { return nil }
         guard let remindAt = message.reminder?.remindAt else { return nil }
-        let now = Date()
-        let interval = remindAt.timeIntervalSince(now)
-        guard interval > 0 else { return nil }
-        let formatter = RelativeDateTimeFormatter()
-        formatter.unitsStyle = .full
-        return formatter.localizedString(for: remindAt, relativeTo: now)
+        return utils.messageRemindersFormatter.format(remindAt)
     }
 
     // MARK: - Helpers
