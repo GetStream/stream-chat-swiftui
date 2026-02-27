@@ -53,7 +53,7 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
     var onMessageSent: () -> Void
 
     public var body: some View {
-        VStack(spacing: 0) {
+        VStack(spacing: tokens.spacingSm) {
             HStack(alignment: .bottom, spacing: tokens.spacingXs) {
                 factory.makeLeadingComposerView(
                     options: LeadingComposerViewOptions(
@@ -109,7 +109,6 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
                 }
             }
             .padding(.top, tokens.spacingMd)
-            .padding(.bottom, dynamicBottomPadding)
             .padding(.horizontal, tokens.spacingMd)
             .opacity(viewModel.recordingState.showsComposer ? 1 : 0)
             .overlay(
@@ -288,21 +287,6 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
         }
         .preference(key: FloatingComposerHeightPreferenceKey.self, value: composerHeight)
         .accessibilityElement(children: .contain)
-    }
-
-    // In regular styles, when the attachment picker is shown,
-    // we don't want spacing in the composer bottom since the picker already
-    // as the desired top spacing.
-    private var dynamicBottomPadding: CGFloat {
-        if factory.styles.composerPlacement == .docked && viewModel.overlayShown {
-            return 0
-        }
-
-        if viewModel.sendInChannelShown {
-            return tokens.spacingSm
-        }
-
-        return tokens.spacingMd
     }
 
     public func sendMessage() {

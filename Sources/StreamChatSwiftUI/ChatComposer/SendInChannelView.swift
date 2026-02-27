@@ -28,7 +28,6 @@ struct SendInChannelView: View {
                 Spacer()
             }
         }
-        .frame(maxHeight: 32)
         .padding(.vertical, tokens.spacingXxs)
         .padding(.horizontal, tokens.spacingMd)
         .accessibilityIdentifier("SendInChannelView")

@@ -223,7 +223,7 @@ public struct ChatChannelView<Factory: ViewFactory>: View, KeyboardReadable {
                 .ignoresSafeArea(.all)
                 .allowsHitTesting(false)
         )
-        .padding(.bottom, keyboardShown || !tabBarAvailable || viewModel.isMessageThread || generatingSnapshot ? 0 : bottomPadding)
+        .padding(.bottom, keyboardShown || !tabBarAvailable || (viewModel.isMessageThread && factory.styles.composerPlacement == .floating) || generatingSnapshot ? 0 : bottomPadding)
         .ignoresSafeArea(.container, edges: tabBarAvailable ? .bottom : [])
         .alertBanner(isPresented: $viewModel.showAlertBanner)
         .accessibilityElement(children: .contain)
