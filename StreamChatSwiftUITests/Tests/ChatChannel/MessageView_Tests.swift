@@ -245,6 +245,66 @@ import XCTest
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
     
+    func test_messageViewPendingGiphy_snapshot() {
+        // Given
+        let giphyAttachments: [AnyChatMessageAttachment] = [
+            ChatMessageGiphyAttachment(
+                id: .unique,
+                type: .giphy,
+                payload: GiphyAttachmentPayload(
+                    title: "test",
+                    previewURL: URL.localYodaImage,
+                    actions: [
+                        .init(
+                            name: "Send",
+                            value: "Send",
+                            style: .primary,
+                            type: .button,
+                            text: "Send"
+                        ),
+                        .init(
+                            name: "Shuffle",
+                            value: "Shuffle",
+                            style: .default,
+                            type: .button,
+                            text: "Shuffle"
+                        ),
+                        .init(
+                            name: "Cancel",
+                            value: "Cancel",
+                            style: .default,
+                            type: .button,
+                            text: "Cancel"
+                        )
+                    ]
+                ),
+                downloadingState: nil,
+                uploadingState: nil
+            )
+            .asAnyAttachment
+        ]
+        let giphyMessage = ChatMessage.mock(
+            id: .unique,
+            cid: .unique,
+            text: "",
+            author: .mock(id: .unique),
+            attachments: giphyAttachments
+        )
+        
+        // When
+        let view = MessageView(
+            factory: DefaultViewFactory.shared,
+            message: giphyMessage,
+            contentWidth: defaultScreenSize.width,
+            isFirst: true,
+            scrolledId: .constant(nil)
+        )
+        .applyDefaultSize()
+        
+        // Then
+        AssertSnapshot(view)
+    }
+    
     func test_messageViewVideo_snapshot() {
         // Given
         let videoMessage = ChatMessage.mock(

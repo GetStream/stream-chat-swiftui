@@ -10,6 +10,8 @@ public struct GiphyAttachmentView<Factory: ViewFactory>: View {
     @Injected(\.chatClient) private var chatClient
     @Injected(\.colors) private var colors
     @Injected(\.fonts) private var fonts
+    @Injected(\.images) private var images
+    @Injected(\.tokens) private var tokens
 
     let factory: Factory
     let message: ChatMessage
@@ -31,6 +33,19 @@ public struct GiphyAttachmentView<Factory: ViewFactory>: View {
                     )
                 )
             }
+            
+            if visibleOnlyToCurrentUser {
+                HStack {
+                    Image(uiImage: images.onlyVisibleToCurrentUser)
+                        .customizable()
+                        .frame(width: tokens.iconSizeSm)
+                    Text(L10n.Message.onlyVisibleToYou)
+                        .font(fonts.subheadline)
+                        .fontWeight(.semibold)
+                }
+                .foregroundColor(colors.chatTextOutgoing.toColor)
+                .padding(.all, tokens.spacingSm)
+            }
 
             LazyGiphyView(
                 source: message.giphyAttachments[0].previewURL,
@@ -45,7 +60,7 @@ public struct GiphyAttachmentView<Factory: ViewFactory>: View {
                 )
             )
 
-            if !giphyActions.isEmpty {
+            if visibleOnlyToCurrentUser {
                 HStack {
                     ForEach(0..<giphyActions.count, id: \.self) { index in
                         let action = giphyActions[index]
@@ -58,8 +73,8 @@ public struct GiphyAttachmentView<Factory: ViewFactory>: View {
                         }
                         .foregroundColor(
                             action.style == .primary ?
-                                Color(colors.accentPrimary) :
-                                Color(colors.textLowEmphasis)
+                                Color(colors.buttonPrimaryText) :
+                                Color(colors.buttonSecondaryText)
                         )
                         .font(fonts.bodyBold)
                         .frame(maxWidth: .infinity)
@@ -71,12 +86,17 @@ public struct GiphyAttachmentView<Factory: ViewFactory>: View {
             factory.styles.makeMessageViewModifier(
                 for: MessageModifierInfo(
                     message: message,
-                    isFirst: isFirst
+                    isFirst: isFirst,
+                    injectedBackgroundColor: colors.highlightedAccentBackground1
                 )
             )
         )
         .frame(maxWidth: width)
         .accessibilityIdentifier("GiphyAttachmentView")
+    }
+    
+    private var visibleOnlyToCurrentUser: Bool {
+        !giphyActions.isEmpty
     }
 
     private var giphyActions: [AttachmentAction] {
