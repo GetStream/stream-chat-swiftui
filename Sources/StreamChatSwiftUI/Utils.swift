@@ -40,6 +40,7 @@ import StreamChatCommonUI
     public var videoDurationFormatter: VideoDurationFormatter
     public var mediaBadgeDurationFormatter: MediaBadgeDurationFormatter
     public var audioRecordingNameFormatter: AudioRecordingNameFormatter
+    public var messageRemindersFormatter: any MessageRemindersFormatter
     public var audioPlayerBuilder: () -> AudioPlaying = { StreamAudioPlayer() }
     public var audioPlayer: AudioPlaying {
         if let _audioPlayer {
@@ -102,6 +103,7 @@ import StreamChatCommonUI
         videoDurationFormatter: VideoDurationFormatter = DefaultVideoDurationFormatter(),
         mediaBadgeDurationFormatter: MediaBadgeDurationFormatter = DefaultMediaBadgeDurationFormatter(),
         audioRecordingNameFormatter: AudioRecordingNameFormatter = DefaultAudioRecordingNameFormatter(),
+        messageRemindersFormatter: any MessageRemindersFormatter = DefaultMessageRemindersFormatter(),
         sortReactions: @escaping (MessageReactionType, MessageReactionType) -> Bool = Utils.defaultSortReactions,
         shouldSyncChannelControllerOnAppear: @escaping (ChatChannelController) -> Bool = { _ in true }
     ) {
@@ -132,6 +134,7 @@ import StreamChatCommonUI
         self.videoDurationFormatter = videoDurationFormatter
         self.mediaBadgeDurationFormatter = mediaBadgeDurationFormatter
         self.audioRecordingNameFormatter = audioRecordingNameFormatter
+        self.messageRemindersFormatter = messageRemindersFormatter
         self.pollsConfig = pollsConfig
         messageListDateUtils = MessageListDateUtils(messageListConfig: messageListConfig)
     }

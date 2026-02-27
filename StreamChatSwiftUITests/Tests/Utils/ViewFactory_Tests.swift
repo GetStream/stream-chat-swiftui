@@ -705,24 +705,6 @@ import XCTest
         XCTAssert(view is MessageRepliesView<DefaultViewFactory>)
     }
     
-    func test_viewFactory_makeMessageRepliesShownInChannelView() {
-        // Given
-        let viewFactory = DefaultViewFactory.shared
-
-        // When
-        let view = viewFactory.makeMessageRepliesShownInChannelView(
-            options: MessageRepliesShownInChannelViewOptions(
-                channel: ChatChannel.mockDMChannel(),
-                message: message,
-                parentMessage: message,
-                replyCount: 2
-            )
-        )
-
-        // Then
-        XCTAssert(view is MessageRepliesView<DefaultViewFactory>)
-    }
-
     func test_viewFactory_makeTypingIndicatorBottomView() {
         // Given
         let viewFactory = DefaultViewFactory.shared
@@ -1087,6 +1069,25 @@ import XCTest
 
         // Then
         XCTAssert(view is ReactionsDetailView)
+    }
+
+    func test_viewFactory_makeMessageTopView() {
+        // Given
+        let viewFactory = DefaultViewFactory.shared
+        let channel = ChatChannel.mockDMChannel()
+        let viewModel = MessageViewModel(message: message, channel: channel)
+
+        // When
+        let view = viewFactory.makeMessageTopView(
+            options: MessageTopViewOptions(
+                message: message,
+                channel: channel,
+                messageViewModel: viewModel
+            )
+        )
+
+        // Then
+        XCTAssert(view is MessageTopView)
     }
 }
 

@@ -516,6 +516,18 @@ internal enum L10n {
         internal static var confirmationMessage: String { L10n.tr("Localizable", "message.actions.user-unblock.confirmation-message") }
       }
     }
+    internal enum Annotation {
+      /// Reminder set
+      internal static var reminderSet: String { L10n.tr("Localizable", "message.annotation.reminderSet") }
+      /// Replied to a thread
+      internal static var repliedToThread: String { L10n.tr("Localizable", "message.annotation.repliedToThread") }
+      /// Also sent in channel
+      internal static var sentInChannel: String { L10n.tr("Localizable", "message.annotation.sentInChannel") }
+      /// Translated
+      internal static var translated: String { L10n.tr("Localizable", "message.annotation.translated") }
+      /// View
+      internal static var view: String { L10n.tr("Localizable", "message.annotation.view") }
+    }
     internal enum Attachment {
       /// Attachment %d
       internal static func accessibilityLabel(_ p1: Int) -> String {
