@@ -15,7 +15,7 @@ class DemoAppFactory: ViewFactory {
 
     public static let shared = DemoAppFactory()
     
-    public var styles = RegularStyles()
+    public var styles = DemoAppStyles()
 
     func makeChannelListHeaderViewModifier(options: ChannelListHeaderViewModifierOptions) -> some ChannelListHeaderViewModifier {
         CustomChannelModifier(title: options.title)
@@ -221,6 +221,80 @@ struct CustomChannelDestination: View {
         }
     }
 }
+
+// MARK: - DemoAppStyles
+
+/// A `Styles` implementation that switches between `RegularStyles` and `LiquidGlassStyles`
+/// at runtime based on the current `AppConfiguration.appStyle`.
+class DemoAppStyles: Styles {
+    @Injected(\.tokens) var tokens
+
+    var composerPlacement: ComposerPlacement {
+        get { isLiquidGlass ? .floating : .docked }
+        set {}
+    }
+
+    private var isLiquidGlass: Bool {
+        AppConfiguration.default.appStyle == .liquidGlass
+    }
+
+    func makeComposerInputViewModifier(options: ComposerInputModifierOptions) -> some ViewModifier {
+        StyleSwitchModifier(
+            isLiquidGlass: isLiquidGlass,
+            regular: RegularInputViewModifier(),
+            liquidGlass: LiquidGlassModifier(shape: RoundedRectangle(cornerRadius: tokens.radius3xl), isInteractive: true)
+        )
+    }
+
+    func makeComposerButtonViewModifier(options: ComposerButtonModifierOptions) -> some ViewModifier {
+        StyleSwitchModifier(
+            isLiquidGlass: isLiquidGlass,
+            regular: RegularButtonViewModifier(),
+            liquidGlass: LiquidGlassModifier(shape: .circle, isInteractive: true)
+        )
+    }
+
+    func makeScrollToBottomButtonModifier(options: ScrollToBottomButtonModifierOptions) -> some ViewModifier {
+        StyleSwitchModifier(
+            isLiquidGlass: isLiquidGlass,
+            regular: RegularScrollToBottomButtonModifier(),
+            liquidGlass: LiquidGlassScrollToBottomButtonModifier()
+        )
+    }
+
+    func makeComposerViewModifier(options: ComposerViewModifierOptions) -> some ViewModifier {
+        StyleSwitchModifier(
+            isLiquidGlass: isLiquidGlass,
+            regular: ComposerBackgroundRegularViewModifier(),
+            liquidGlass: EmptyViewModifier()
+        )
+    }
+
+    func makeSuggestionsContainerModifier(options: SuggestionsContainerModifierOptions) -> some ViewModifier {
+        StyleSwitchModifier(
+            isLiquidGlass: isLiquidGlass,
+            regular: SuggestionsRegularContainerModifier(),
+            liquidGlass: SuggestionsLiquidGlassContainerModifier()
+        )
+    }
+}
+
+/// A generic modifier that switches between two concrete modifiers based on a boolean flag.
+struct StyleSwitchModifier<Regular: ViewModifier, LiquidGlass: ViewModifier>: ViewModifier {
+    let isLiquidGlass: Bool
+    let regular: Regular
+    let liquidGlass: LiquidGlass
+
+    func body(content: Content) -> some View {
+        if isLiquidGlass {
+            content.modifier(liquidGlass)
+        } else {
+            content.modifier(regular)
+        }
+    }
+}
+
+// MARK: - CustomFactory
 
 class CustomFactory: ViewFactory {
     @Injected(\.chatClient) public var chatClient

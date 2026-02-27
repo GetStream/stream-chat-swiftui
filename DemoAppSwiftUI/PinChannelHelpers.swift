@@ -36,8 +36,8 @@ struct DemoAppChatChannelListItem: View {
                         Spacer()
 
                         if injectedChannelInfo == nil && channel.unreadCount != .noUnread {
-                            UnreadIndicatorView(
-                                unreadCount: channel.unreadCount.messages
+                            BadgeNotificationView(
+                                count: channel.unreadCount.messages
                             )
                         }
                     }
