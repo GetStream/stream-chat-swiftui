@@ -50,7 +50,7 @@ public struct AvatarStack: View {
                 }
             }
             if showsBadge {
-                BadgeCount(count: overflowCount, size: size)
+                BadgeCountView(count: overflowCount, size: size)
                     .zIndex(Double(avatars.count))
             }
         }

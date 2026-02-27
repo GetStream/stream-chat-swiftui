@@ -10,7 +10,7 @@ import StreamSwiftTestHelpers
 import SwiftUI
 import XCTest
 
-final class BadgeCount_Tests: StreamChatTestCase {
+final class BadgeCountView_Tests: StreamChatTestCase {
     func test_badgeCount_singleDigit() {
         let size = CGSize(width: 200, height: 60)
         let view = sizeRow(count: 3)
@@ -39,9 +39,9 @@ final class BadgeCount_Tests: StreamChatTestCase {
     
     private func sizeRow(count: Int) -> some View {
         HStack(spacing: 12) {
-            BadgeCount(count: count, size: AvatarSize.medium)
-            BadgeCount(count: count, size: AvatarSize.small)
-            BadgeCount(count: count, size: AvatarSize.extraSmall)
+            BadgeCountView(count: count, size: AvatarSize.medium)
+            BadgeCountView(count: count, size: AvatarSize.small)
+            BadgeCountView(count: count, size: AvatarSize.extraSmall)
         }
     }
 }

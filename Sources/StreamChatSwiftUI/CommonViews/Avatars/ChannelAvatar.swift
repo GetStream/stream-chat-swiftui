@@ -266,7 +266,7 @@ private extension ChannelAvatar {
                 avatar(for: users[1])
                     .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topTrailing)
                     .offset(x: outerBorderWidth, y: -outerBorderWidth)
-                BadgeCount(count: memberCount - 2, size: badgeSize)
+                BadgeCountView(count: memberCount - 2, size: badgeSize)
                     .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
             }
         }
