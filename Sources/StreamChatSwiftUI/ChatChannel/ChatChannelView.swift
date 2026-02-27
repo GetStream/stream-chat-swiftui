@@ -223,7 +223,7 @@ public struct ChatChannelView<Factory: ViewFactory>: View, KeyboardReadable {
                 .ignoresSafeArea(.all)
                 .allowsHitTesting(false)
         )
-        .padding(.bottom, keyboardShown || !tabBarAvailable || (viewModel.isMessageThread && factory.styles.composerPlacement == .floating) || generatingSnapshot ? 0 : bottomPadding)
+        .padding(.bottom, contentBottomPadding)
         .ignoresSafeArea(.container, edges: tabBarAvailable ? .bottom : [])
         .alertBanner(isPresented: $viewModel.showAlertBanner)
         .accessibilityElement(children: .contain)
@@ -265,21 +265,35 @@ public struct ChatChannelView<Factory: ViewFactory>: View, KeyboardReadable {
     }
 
     private var bottomPadding: CGFloat {
-        let bottomPadding = topVC()?.view.safeAreaInsets.bottom ?? 0
-        return bottomPadding
+        topVC()?.view.safeAreaInsets.bottom ?? 0
     }
 
-    /// Bottom padding for the floating composer to keep it above the safe area.
-    ///
-    /// In threads (and during snapshot generation), the content view does not add
-    /// bottom safe-area padding even though the safe area is ignored, so the
-    /// floating composer overlay would otherwise extend into the home-indicator region.
+    /// Whether bottom safe-area compensation is needed.
+    /// When the tab bar is visible the bottom safe area is ignored,
+    /// so we must add padding manually — unless the keyboard already provides it.
+    private var needsBottomSafeAreaPadding: Bool {
+        !keyboardShown && tabBarAvailable
+    }
+
+    /// Whether the floating composer should own the bottom safe-area padding
+    /// instead of the main content. This happens in threads and during
+    /// pre-iOS 26 snapshot generation, where the content skips its own padding.
+    private var floatingComposerOwnsBottomPadding: Bool {
+        composerPlacement == .floating && (viewModel.isMessageThread || generatingSnapshot)
+    }
+
+    /// Bottom padding for the main content area.
+    private var contentBottomPadding: CGFloat {
+        guard needsBottomSafeAreaPadding, !generatingSnapshot else { return 0 }
+        return floatingComposerOwnsBottomPadding ? 0 : bottomPadding
+    }
+
+    /// Bottom padding for the floating composer overlay.
+    /// In threads and during snapshot generation, the main content skips
+    /// its bottom padding, so the floating composer compensates.
     private var floatingComposerBottomPadding: CGFloat {
-        guard composerPlacement == .floating, !keyboardShown else { return 0 }
-        if tabBarAvailable && (viewModel.isMessageThread || generatingSnapshot) {
-            return bottomPadding
-        }
-        return 0
+        guard needsBottomSafeAreaPadding, floatingComposerOwnsBottomPadding else { return 0 }
+        return bottomPadding
     }
 
     private func hideComposerCommandsAndAttachmentsPicker() {
