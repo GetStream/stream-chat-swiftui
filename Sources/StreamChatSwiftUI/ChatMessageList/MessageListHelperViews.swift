@@ -192,7 +192,7 @@ public struct MessagePinDetailsView: View {
                 .frame(width: 16, height: 16)
                 .accessibilityHidden(true)
             Text("\(L10n.Message.Cell.pinnedBy) \(message.pinDetails?.pinnedBy.name ?? L10n.Message.Cell.unknownPin)")
-                .font(fonts.metadataEmphasis)
+                .font(fonts.footnote.weight(.semibold))
         }
         .foregroundColor(usesInvertedStyle ? colors.textOnAccent.toColor : colors.textPrimary.toColor)
         .frame(height: 24)

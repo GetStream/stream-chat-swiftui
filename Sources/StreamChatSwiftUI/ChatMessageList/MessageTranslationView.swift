@@ -35,10 +35,10 @@ public struct MessageTranslationView: View {
                     .frame(width: 16, height: 16)
                 if !messageViewModel.originalTextShown {
                     Text(L10n.Message.Annotation.translated)
-                        .font(fonts.metadataEmphasis)
+                        .font(fonts.footnote.weight(.semibold))
                         .lineLimit(1)
                     Text("•")
-                        .font(fonts.metadataDefault)
+                        .font(fonts.footnote)
                 }
                 showOriginalButton
             }
@@ -50,7 +50,7 @@ public struct MessageTranslationView: View {
                     .customizable()
                     .frame(width: 16, height: 16)
                 Text(messageViewModel.translatedLanguageText ?? "")
-                    .font(fonts.metadataEmphasis)
+                    .font(fonts.footnote.weight(.semibold))
                     .lineLimit(1)
             }
             .foregroundColor(resolvedTextColor)
@@ -69,7 +69,7 @@ public struct MessageTranslationView: View {
             },
             label: {
                 Text(messageViewModel.originalTextShown ? L10n.Message.showTranslation : L10n.Message.showOriginal)
-                    .font(fonts.metadataDefault)
+                    .font(fonts.footnote)
                     .foregroundColor(Color(colors.accentPrimary))
             }
         )
