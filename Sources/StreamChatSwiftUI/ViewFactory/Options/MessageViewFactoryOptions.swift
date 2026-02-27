@@ -165,19 +165,6 @@ public final class MessageAuthorAndDateViewOptions: Sendable {
     }
 }
 
-/// Options for creating the message translation view.
-public final class MessageTranslationViewOptions: Sendable {
-    /// The view model for the message.
-    public let messageViewModel: MessageViewModel
-    /// When true, the `textOnAccent` color is used instead of the default darker text color.
-    public let usesInvertedStyle: Bool
-    
-    public init(messageViewModel: MessageViewModel, usesInvertedStyle: Bool = false) {
-        self.messageViewModel = messageViewModel
-        self.usesInvertedStyle = usesInvertedStyle
-    }
-}
-
 /// Options for creating the message annotations stack view.
 public final class MessageTopViewOptions: Sendable {
     /// The message to display annotations for.

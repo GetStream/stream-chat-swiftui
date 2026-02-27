@@ -172,12 +172,6 @@ import SwiftUI
     /// - Returns: view shown in the date and author indicator slot.
     func makeMessageAuthorAndDateView(options: MessageAuthorAndDateViewOptions) -> MessageAuthorAndDateViewType
 
-    associatedtype MessageTranslationViewType: View
-    /// Creates a view to display translation information for a message.
-    /// - Parameter options: the options for creating the message translation view.
-    /// - Returns: A view to display translation information of the message.
-    func makeMessageTranslationView(options: MessageTranslationViewOptions) -> MessageTranslationViewType
-
     associatedtype MessageTopViewType: View
     /// Creates the view shown above the message bubble containing message annotations.
     ///

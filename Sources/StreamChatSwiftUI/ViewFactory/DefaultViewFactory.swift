@@ -274,20 +274,10 @@ extension ViewFactory {
         EmptyView()
     }
 
-    public func makeMessageTranslationView(
-        options: MessageTranslationViewOptions
-    ) -> some View {
-        MessageTranslationView(
-            messageViewModel: options.messageViewModel,
-            usesInvertedStyle: options.usesInvertedStyle
-        )
-    }
-
     public func makeMessageTopView(
         options: MessageTopViewOptions
     ) -> some View {
         MessageTopView(
-            factory: self,
             message: options.message,
             channel: options.channel,
             messageViewModel: options.messageViewModel,

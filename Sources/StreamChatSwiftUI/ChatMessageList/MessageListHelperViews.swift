@@ -169,37 +169,6 @@ struct MessageSpacer: View {
     }
 }
 
-/// View that's displayed as an annotation when a message is pinned.
-public struct MessagePinDetailsView: View {
-    @Injected(\.colors) private var colors
-    @Injected(\.images) private var images
-    @Injected(\.fonts) private var fonts
-    @Injected(\.tokens) private var tokens
-    
-    var message: ChatMessage
-    /// When true, the `textOnAccent` color is used instead of the default darker text color.
-    var usesInvertedStyle: Bool
-    
-    public init(message: ChatMessage, usesInvertedStyle: Bool = false) {
-        self.message = message
-        self.usesInvertedStyle = usesInvertedStyle
-    }
-    
-    public var body: some View {
-        HStack(spacing: tokens.spacingXxs) {
-            Image(uiImage: images.pin)
-                .customizable()
-                .frame(width: 16, height: 16)
-                .accessibilityHidden(true)
-            Text("\(L10n.Message.Cell.pinnedBy) \(message.pinDetails?.pinnedBy.name ?? L10n.Message.Cell.unknownPin)")
-                .font(fonts.footnote.weight(.semibold))
-        }
-        .foregroundColor(usesInvertedStyle ? colors.textOnAccent.toColor : colors.textPrimary.toColor)
-        .frame(height: 24)
-        .accessibilityIdentifier("MessagePinDetailsView")
-    }
-}
-
 public struct TopLeftView<Content: View>: View {
     var content: () -> Content
     

@@ -6,121 +6,92 @@ import StreamChat
 import SwiftUI
 
 /// A vertical stack that renders all applicable annotation rows above the message bubble.
-struct MessageTopView<Factory: ViewFactory>: View {
-    @Injected(\.fonts) private var fonts
-    @Injected(\.colors) private var colors
+struct MessageTopView: View {
     @Injected(\.images) private var images
     @Injected(\.tokens) private var tokens
     @Injected(\.utils) private var utils
 
-    let factory: Factory
     let message: ChatMessage
     let channel: ChatChannel
     @ObservedObject var messageViewModel: MessageViewModel
     /// When true, the `textOnAccent` color is used instead of the default darker text color.
     var usesInvertedStyle: Bool = false
 
-    private var resolvedTextColor: Color {
-        usesInvertedStyle ? colors.textOnAccent.toColor : colors.textPrimary.toColor
-    }
-
     var body: some View {
-        VStack(alignment: messageViewModel.isRightAligned ? .trailing : .leading, spacing: 0) {
+        VStack(alignment: messageViewModel.isRightAligned ? .trailing : .leading, spacing: tokens.spacingXxs) {
             if messageViewModel.isPinned {
-                MessagePinDetailsView(message: message, usesInvertedStyle: usesInvertedStyle)
+                MessageAnnotationView(
+                    icon: images.pin,
+                    title: "\(L10n.Message.Cell.pinnedBy) \(message.pinDetails?.pinnedBy.name ?? L10n.Message.Cell.unknownPin)",
+                    usesInvertedStyle: usesInvertedStyle
+                )
+                .accessibilityIdentifier("MessagePinDetailsView")
             }
 
             if messageViewModel.sentInChannelShown {
-                sentInChannelAnnotation
+                MessageAnnotationView(
+                    icon: images.annotationThread,
+                    title: L10n.Message.Annotation.sentInChannel,
+                    buttonTitle: L10n.Message.Annotation.view,
+                    buttonAction: { navigateToSentInChannel() },
+                    usesInvertedStyle: usesInvertedStyle
+                )
+                .accessibilityIdentifier("SentInChannelAnnotation")
             }
 
             if messageViewModel.repliedToThreadShown {
-                repliedToThreadAnnotation
+                MessageAnnotationView(
+                    icon: images.annotationThread,
+                    title: L10n.Message.Annotation.repliedToThread,
+                    buttonTitle: L10n.Message.Annotation.view,
+                    buttonAction: { navigateToThread() },
+                    usesInvertedStyle: usesInvertedStyle
+                )
+                .accessibilityIdentifier("RepliedToThreadAnnotation")
             }
 
             if messageViewModel.hasReminder {
-                reminderAnnotation
+                MessageAnnotationView(
+                    icon: images.annotationReminder,
+                    title: L10n.Message.Annotation.reminderSet,
+                    subtitle: messageViewModel.reminderTimeText,
+                    usesInvertedStyle: usesInvertedStyle
+                )
+                .accessibilityIdentifier("ReminderAnnotation")
             }
 
             if messageViewModel.translatedText != nil {
-                factory.makeMessageTranslationView(
-                    options: MessageTranslationViewOptions(
-                        messageViewModel: messageViewModel,
-                        usesInvertedStyle: usesInvertedStyle
-                    )
-                )
+                translationAnnotation
             }
         }
+        .padding(.vertical, tokens.spacingXxs)
     }
 
-    // MARK: - Annotations
+    // MARK: - Translation
 
-    private var sentInChannelAnnotation: some View {
-        Button {
-            navigateToSentInChannel()
-        } label: {
-            HStack(spacing: tokens.spacingXxs) {
-                Image(uiImage: images.annotationThread)
-                    .customizable()
-                    .padding(2)
-                    .frame(width: 16, height: 16)
-                Text(L10n.Message.Annotation.sentInChannel)
-                    .font(fonts.footnote.weight(.semibold))
-                    .lineLimit(1)
-                Text("•")
-                    .font(fonts.footnote)
-                Text(L10n.Message.Annotation.view)
-                    .font(fonts.footnote)
-                    .foregroundColor(Color(colors.accentPrimary))
-            }
-            .foregroundColor(resolvedTextColor)
-            .frame(height: 24)
+    @ViewBuilder
+    private var translationAnnotation: some View {
+        if utils.messageListConfig.messageDisplayOptions.showOriginalTranslatedButton {
+            MessageAnnotationView(
+                icon: images.annotationTranslation,
+                title: messageViewModel.originalTextShown ? nil : L10n.Message.Annotation.translated,
+                buttonTitle: messageViewModel.originalTextShown ? L10n.Message.showTranslation : L10n.Message.showOriginal,
+                buttonAction: {
+                    if messageViewModel.originalTextShown {
+                        messageViewModel.hideOriginalText()
+                    } else {
+                        messageViewModel.showOriginalText()
+                    }
+                },
+                usesInvertedStyle: usesInvertedStyle
+            )
+        } else {
+            MessageAnnotationView(
+                icon: images.annotationTranslation,
+                title: messageViewModel.translatedLanguageText ?? "",
+                usesInvertedStyle: usesInvertedStyle
+            )
         }
-        .accessibilityIdentifier("SentInChannelAnnotation")
-    }
-
-    private var repliedToThreadAnnotation: some View {
-        Button {
-            navigateToThread()
-        } label: {
-            HStack(spacing: tokens.spacingXxs) {
-                Image(uiImage: images.annotationThread)
-                    .customizable()
-                    .padding(2)
-                    .frame(width: 16, height: 16)
-                Text(L10n.Message.Annotation.repliedToThread)
-                    .font(fonts.footnote.weight(.semibold))
-                    .lineLimit(1)
-                Text("•")
-                    .font(fonts.footnote)
-                Text(L10n.Message.Annotation.view)
-                    .font(fonts.footnote)
-                    .foregroundColor(Color(colors.accentPrimary))
-            }
-            .foregroundColor(resolvedTextColor)
-            .frame(height: 24)
-        }
-        .accessibilityIdentifier("RepliedToThreadAnnotation")
-    }
-
-    private var reminderAnnotation: some View {
-        HStack(spacing: tokens.spacingXxs) {
-            Image(uiImage: images.annotationReminder)
-                .customizable()
-                .frame(width: 16, height: 16)
-            Text(L10n.Message.Annotation.reminderSet)
-                .font(fonts.footnote.weight(.semibold))
-                .lineLimit(1)
-            if let timeText = messageViewModel.reminderTimeText {
-                Text("•")
-                    .font(fonts.footnote)
-                Text(timeText)
-                    .font(fonts.footnote)
-            }
-        }
-        .foregroundColor(resolvedTextColor)
-        .frame(height: 24)
-        .accessibilityIdentifier("ReminderAnnotation")
     }
 
     // MARK: - Navigation
@@ -134,7 +105,7 @@ struct MessageTopView<Factory: ViewFactory>: View {
             userInfo: [MessageRepliesConstants.selectedMessage: message]
         )
     }
-    
+
     private func navigateToThread() {
         // NOTE: Needed because of a bug in iOS 16.
         resignFirstResponder()

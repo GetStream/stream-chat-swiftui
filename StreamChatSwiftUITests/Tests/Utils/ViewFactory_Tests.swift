@@ -1071,20 +1071,6 @@ import XCTest
         XCTAssert(view is ReactionsDetailView)
     }
 
-    func test_viewFactory_makeMessageTranslationView() {
-        // Given
-        let viewFactory = DefaultViewFactory.shared
-        let viewModel = MessageViewModel(message: message, channel: .mockDMChannel())
-
-        // When
-        let view = viewFactory.makeMessageTranslationView(
-            options: MessageTranslationViewOptions(messageViewModel: viewModel)
-        )
-
-        // Then
-        XCTAssert(view is MessageTranslationView)
-    }
-
     func test_viewFactory_makeMessageTopView() {
         // Given
         let viewFactory = DefaultViewFactory.shared
@@ -1101,7 +1087,7 @@ import XCTest
         )
 
         // Then
-        XCTAssert(view is MessageTopView<DefaultViewFactory>)
+        XCTAssert(view is MessageTopView)
     }
 }
 
