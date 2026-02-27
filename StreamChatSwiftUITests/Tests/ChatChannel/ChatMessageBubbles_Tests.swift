@@ -58,6 +58,44 @@ final class ChatMessageBubbles_Tests: StreamChatTestCase {
         XCTAssert(corners == expected)
     }
 
+    func test_messageBubbleCorners_firstCurrentUser_RTL() {
+        // Given
+        let message = ChatMessage.mock(isSentByCurrentUser: true)
+        let expected: UIRectCorner = [.topLeft, .topRight, .bottomRight]
+
+        // When
+        let corners = message.bubbleCorners(isFirst: true, forceLeftToRight: false, layoutDirection: .rightToLeft)
+
+        // Then
+        XCTAssertEqual(corners, expected)
+    }
+
+    func test_messageBubbleCorners_firstOtherUser_RTL() {
+        // Given
+        let message = ChatMessage.mock(isSentByCurrentUser: false)
+        let expected: UIRectCorner = [.topLeft, .topRight, .bottomLeft]
+
+        // When
+        let corners = message.bubbleCorners(isFirst: true, forceLeftToRight: false, layoutDirection: .rightToLeft)
+
+        // Then
+        XCTAssertEqual(corners, expected)
+    }
+
+    func test_messageBubbleCorners_notFirst_RTL() {
+        // Given
+        let message = ChatMessage.mock()
+        let expected: UIRectCorner = [.topLeft, .topRight, .bottomLeft, .bottomRight]
+
+        // When
+        let corners = message.bubbleCorners(isFirst: false, forceLeftToRight: false, layoutDirection: .rightToLeft)
+
+        // Then
+        XCTAssertEqual(corners, expected)
+    }
+
+    // MARK: - Backgrounds
+
     func test_bubbleBackgrounds_injected() {
         // Given
         let message = ChatMessage.mock()
