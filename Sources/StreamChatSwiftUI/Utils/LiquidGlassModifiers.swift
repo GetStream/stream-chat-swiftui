@@ -33,7 +33,7 @@ public struct LiquidGlassModifier<BackgroundShape: Shape>: ViewModifier {
     }
 }
 
-extension Shape where Self == RoundedRectangle {
+public extension Shape where Self == RoundedRectangle {
     static func roundedRect(_ radius: CGFloat) -> Self {
         RoundedRectangle(cornerRadius: radius)
     }

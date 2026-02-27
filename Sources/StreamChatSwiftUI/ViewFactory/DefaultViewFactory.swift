@@ -425,6 +425,7 @@ extension ViewFactory {
         options: ScrollToBottomButtonOptions
     ) -> some View {
         ScrollToBottomButton(
+            factory: self,
             unreadCount: options.unreadCount,
             onScrollToBottom: options.onScrollToBottom
         )
