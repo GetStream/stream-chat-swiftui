@@ -246,7 +246,7 @@ import SwiftUI
     private func selectedMessageThread(notification: Notification) {
         resignFirstResponder()
         guard let parentId = notification.userInfo?[MessageRepliesConstants.threadMessageParentId] as? String else { return }
-        let message = channelController.dataStore.message(id: parentId)
+        let message = messages.first(where: { $0.messageId == parentId }) ?? channelController.dataStore.message(id: parentId)
         threadMessage = message
         threadMessageShown = true
         if let replyId = notification.userInfo?[MessageRepliesConstants.threadMessageReplyId] as? String {
