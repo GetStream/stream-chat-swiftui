@@ -14,16 +14,16 @@ public struct MessageAnnotationView: View {
     @Injected(\.tokens) private var tokens
 
     let icon: UIImage
-    var title: String?
-    var subtitle: String?
-    var buttonTitle: String?
-    var buttonAction: (@MainActor () -> Void)?
+    let title: String?
+    let subtitle: String?
+    let buttonTitle: String?
+    let buttonAction: (@MainActor () -> Void)?
     /// When true, the `textOnAccent` color is used instead of the default darker text color.
-    var usesInvertedStyle: Bool = false
+    let usesInvertedStyle: Bool
 
     public init(
         icon: UIImage,
-        title: String? = nil,
+        title: String?,
         subtitle: String? = nil,
         buttonTitle: String? = nil,
         buttonAction: (@MainActor () -> Void)? = nil,
