@@ -181,6 +181,7 @@ public struct ChatChannelView<Factory: ViewFactory>: View, KeyboardReadable {
                     composerPlacement: composerPlacement,
                     composer: {
                         composerView
+                            .padding(.bottom, floatingComposerBottomPadding)
                             .opacity(viewModel.reactionsShown ? 0 : 1)
                     }
                 ))
@@ -266,6 +267,19 @@ public struct ChatChannelView<Factory: ViewFactory>: View, KeyboardReadable {
     private var bottomPadding: CGFloat {
         let bottomPadding = topVC()?.view.safeAreaInsets.bottom ?? 0
         return bottomPadding
+    }
+
+    /// Bottom padding for the floating composer to keep it above the safe area.
+    ///
+    /// In threads (and during snapshot generation), the content view does not add
+    /// bottom safe-area padding even though the safe area is ignored, so the
+    /// floating composer overlay would otherwise extend into the home-indicator region.
+    private var floatingComposerBottomPadding: CGFloat {
+        guard composerPlacement == .floating, !keyboardShown else { return 0 }
+        if tabBarAvailable && (viewModel.isMessageThread || generatingSnapshot) {
+            return bottomPadding
+        }
+        return 0
     }
 
     private func hideComposerCommandsAndAttachmentsPicker() {

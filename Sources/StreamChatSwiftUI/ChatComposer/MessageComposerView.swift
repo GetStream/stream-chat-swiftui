@@ -298,6 +298,10 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
             return 0
         }
 
+        if viewModel.sendInChannelShown {
+            return tokens.spacingSm
+        }
+
         return tokens.spacingMd
     }
 
