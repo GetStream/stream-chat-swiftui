@@ -705,12 +705,12 @@ import XCTest
         XCTAssert(view is MessageRepliesView<DefaultViewFactory>)
     }
     
-    func test_viewFactory_makeTypingIndicatorBottomView() {
+    func test_viewFactory_makeInlineTypingIndicatorView() {
         // Given
         let viewFactory = DefaultViewFactory.shared
 
         // When
-        let view = viewFactory.makeTypingIndicatorView(
+        let view = viewFactory.makeInlineTypingIndicatorView(
             options: TypingIndicatorViewOptions(
                 channel: .mockDMChannel(),
                 currentUserId: nil
@@ -719,6 +719,21 @@ import XCTest
 
         // Then
         XCTAssert(view is TypingIndicatorView)
+    }
+    
+    func test_viewFactory_makeSubtitleTypingIndicatorView() {
+        // Given
+        let viewFactory = DefaultViewFactory.shared
+
+        // When
+        let view = viewFactory.makeSubtitleTypingIndicatorView(
+            options: SubtitleTypingIndicatorViewOptions(
+                channel: .mockDMChannel()
+            )
+        )
+
+        // Then
+        XCTAssertNotNil(view)
     }
 
     func test_viewFactory_makeReactionsContentView() {

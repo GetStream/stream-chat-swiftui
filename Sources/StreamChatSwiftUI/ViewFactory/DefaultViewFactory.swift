@@ -443,12 +443,18 @@ extension ViewFactory {
         DateIndicatorView(date: options.date)
     }
     
-    public func makeTypingIndicatorView(
+    public func makeInlineTypingIndicatorView(
         options: TypingIndicatorViewOptions
     ) -> some View {
         let users = Array(options.channel.currentlyTypingUsersFiltered(currentUserId: options.currentUserId))
         let typingText = options.channel.typingIndicatorString(currentUserId: options.currentUserId)
         return TypingIndicatorView(users: users, typingText: typingText)
+    }
+    
+    public func makeSubtitleTypingIndicatorView(
+        options: SubtitleTypingIndicatorViewOptions
+    ) -> some View {
+        SubtitleTypingIndicatorView(channel: options.channel)
     }
     
     public func makeGiphyBadgeViewType(

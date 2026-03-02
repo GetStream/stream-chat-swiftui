@@ -175,7 +175,7 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
 
                     LazyVStack(spacing: 0) {
                         if shouldShowTypingIndicator {
-                            factory.makeTypingIndicatorView(
+                            factory.makeInlineTypingIndicatorView(
                                 options: TypingIndicatorViewOptions(
                                     channel: channel,
                                     currentUserId: chatClient.currentUserId

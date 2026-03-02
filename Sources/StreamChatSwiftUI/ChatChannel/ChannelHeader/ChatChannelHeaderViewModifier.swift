@@ -44,6 +44,7 @@ public struct DefaultChatChannelHeader<Factory: ViewFactory>: ToolbarContent {
     public var body: some ToolbarContent {
         ToolbarItem(placement: .principal) {
             ChannelTitleView(
+                factory: factory,
                 channel: channel,
                 shouldShowTypingIndicator: shouldShowTypingIndicator
             )
@@ -125,16 +126,22 @@ public struct DefaultChannelHeaderModifier<Factory: ViewFactory>: ChatChannelHea
     }
 }
 
-public struct ChannelTitleView: View {
+public struct ChannelTitleView<Factory: ViewFactory>: View {
     @Injected(\.fonts) private var fonts
     @Injected(\.utils) private var utils
     @Injected(\.colors) private var colors
     @Injected(\.chatClient) private var chatClient
 
+    private var factory: Factory
     let channel: ChatChannel
     let shouldShowTypingIndicator: Bool
 
-    public init(channel: ChatChannel, shouldShowTypingIndicator: Bool) {
+    public init(
+        factory: Factory = DefaultViewFactory.shared,
+        channel: ChatChannel,
+        shouldShowTypingIndicator: Bool
+    ) {
+        self.factory = factory
         self.channel = channel
         self.shouldShowTypingIndicator = shouldShowTypingIndicator
     }
@@ -151,10 +158,11 @@ public struct ChannelTitleView: View {
                 .accessibilityIdentifier("chatName")
 
             if shouldShowTypingIndicator {
-                HStack {
-                    TypingIndicatorDotsView()
-                    SubtitleText(text: channel.typingIndicatorString(currentUserId: currentUserId))
-                }
+                factory.makeSubtitleTypingIndicatorView(
+                    options: SubtitleTypingIndicatorViewOptions(
+                        channel: channel
+                    )
+                )
             } else {
                 Text(channel.onlineInfoText(currentUserId: currentUserId))
                     .font(fonts.footnote)

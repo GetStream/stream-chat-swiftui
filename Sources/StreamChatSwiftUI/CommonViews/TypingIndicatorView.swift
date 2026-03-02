@@ -101,6 +101,26 @@ public struct TypingIndicatorDotsView: View {
     }
 }
 
+/// Typing indicator shown in the channel header subtitle area.
+///
+/// Displays animated dots alongside a text description of who is typing.
+public struct SubtitleTypingIndicatorView: View {
+    @Injected(\.chatClient) private var chatClient
+
+    let channel: ChatChannel
+
+    public init(channel: ChatChannel) {
+        self.channel = channel
+    }
+
+    public var body: some View {
+        HStack {
+            TypingIndicatorDotsView()
+            SubtitleText(text: channel.typingIndicatorString(currentUserId: chatClient.currentUserId))
+        }
+    }
+}
+
 /// One circle of the typing indicator dots animation.
 private struct TypingIndicatorCircle: View {
     @Injected(\.colors) var colors

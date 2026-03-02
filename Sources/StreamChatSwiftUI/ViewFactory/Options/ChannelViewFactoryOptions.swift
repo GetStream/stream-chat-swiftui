@@ -304,3 +304,15 @@ public final class AddUsersViewOptions: Sendable {
         self.onUserTap = onUserTap
     }
 }
+
+// MARK: - Subtitle Typing Indicator Options
+
+/// Options for creating the subtitle typing indicator view shown in the channel header.
+public final class SubtitleTypingIndicatorViewOptions: Sendable {
+    /// The channel to show typing indicators for.
+    public let channel: ChatChannel
+    
+    public init(channel: ChatChannel) {
+        self.channel = channel
+    }
+}
