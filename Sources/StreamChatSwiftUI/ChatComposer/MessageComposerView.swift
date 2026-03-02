@@ -139,17 +139,6 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
             )
             .frame(height: viewModel.recordingState.showsComposer ? nil : recordingViewHeight)
 
-            if viewModel.sendInChannelShown && factory.styles.composerPlacement == .docked {
-                factory.makeSendInChannelView(
-                    options: SendInChannelViewOptions(
-                        showReplyInChannel: $viewModel.showReplyInChannel,
-                        isDirectMessage: viewModel.isDirectChannel
-                    )
-                )
-                .padding(.top, tokens.spacingXs)
-                .padding(.leading, tokens.spacingMd)
-            }
-
             factory.makeAttachmentPickerView(
                 options: AttachmentPickerViewOptions(
                     attachmentPickerState: $viewModel.pickerState,
@@ -470,7 +459,7 @@ public struct ComposerInputView<Factory: ViewFactory>: View, KeyboardReadable {
                 .frame(height: textFieldHeight)
                 .padding(.vertical, tokens.spacingXxs)
 
-                if sendInChannelShown && factory.styles.composerPlacement == .floating {
+                if sendInChannelShown {
                     factory.makeSendInChannelView(
                         options: SendInChannelViewOptions(
                             showReplyInChannel: $showReplyInChannel,
