@@ -9,27 +9,46 @@ import SwiftUI
 struct SendInChannelView: View {
     @Injected(\.colors) private var colors
     @Injected(\.fonts) private var fonts
+    @Injected(\.tokens) private var tokens
 
     @Binding var sendInChannel: Bool
-    var isDirectMessage: Bool
+
+    private let checkboxSize: CGFloat = 20
 
     var body: some View {
-        HStack {
-            Button {
-                sendInChannel.toggle()
-            } label: {
-                Image(systemName: sendInChannel ? "checkmark.square.fill" : "square")
-                    .foregroundColor(sendInChannel ? Color(colors.accentPrimary) : Color(colors.background7))
+        Button {
+            sendInChannel.toggle()
+        } label: {
+            HStack(spacing: tokens.spacingXs) {
+                checkbox
+                Text(L10n.Composer.Checkmark.channelReply)
+                    .font(fonts.footnote)
+                    .lineLimit(1)
+                    .foregroundColor(sendInChannel ? Color(colors.textPrimary) : Color(colors.textTertiary))
+                Spacer()
             }
-
-            Text(isDirectMessage ? L10n.Composer.Checkmark.directMessageReply : L10n.Composer.Checkmark.channelReply)
-                .font(fonts.footnote)
-                .foregroundColor(Color(colors.textLowEmphasis))
-
-            Spacer()
         }
-        .padding(.horizontal, 8)
-        .padding(.bottom, 8)
+        .padding(.horizontal, tokens.spacingXs)
+        .padding(.bottom, tokens.spacingSm)
         .accessibilityIdentifier("SendInChannelView")
+    }
+
+    @ViewBuilder
+    private var checkbox: some View {
+        ZStack {
+            if sendInChannel {
+                RoundedRectangle(cornerRadius: tokens.radiusSm)
+                    .fill(Color(colors.controlRadiocheckBackgroundSelected))
+                    .frame(width: checkboxSize, height: checkboxSize)
+                Image(systemName: "checkmark")
+                    .font(.system(size: 11, weight: .bold))
+                    .foregroundColor(Color(colors.controlRadiocheckIconSelected))
+            } else {
+                RoundedRectangle(cornerRadius: tokens.radiusSm)
+                    .stroke(Color(colors.controlRadiocheckBorder), lineWidth: 1)
+                    .frame(width: checkboxSize, height: checkboxSize)
+            }
+        }
+        .frame(width: checkboxSize, height: checkboxSize)
     }
 }

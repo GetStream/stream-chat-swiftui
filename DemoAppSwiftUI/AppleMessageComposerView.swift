@@ -100,7 +100,9 @@ struct AppleMessageComposerView<Factory: ViewFactory>: View, KeyboardReadable {
                     sendMessage: {},
                     onImagePasted: viewModel.imagePasted,
                     startRecording: viewModel.startRecording,
-                    stopRecording: viewModel.stopRecording
+                    stopRecording: viewModel.stopRecording,
+                    sendInChannelShown: viewModel.sendInChannelShown,
+                    showReplyInChannel: $viewModel.showReplyInChannel
                 )
                 .overlay(
                     viewModel.hasContent ? sendButton : nil

@@ -17,7 +17,7 @@ import XCTest
 
     override func setUp() {
         super.setUp()
-
+        
         let imageLoader = TestImagesLoader_Mock()
         let utils = Utils(
             imageLoader: imageLoader,
@@ -168,7 +168,9 @@ import XCTest
             sendMessage: {},
             onImagePasted: { _ in },
             startRecording: {},
-            stopRecording: {}
+            stopRecording: {},
+            sendInChannelShown: false,
+            showReplyInChannel: .constant(false)
         )
         .environmentObject(MessageComposerTestUtils.makeComposerViewModel(chatClient: chatClient))
         .frame(width: composerWidth, height: 200)
@@ -274,6 +276,72 @@ import XCTest
         AssertSnapshot(view, variants: [.defaultLight, .defaultDark])
     }
 
+    // MARK: - Send In Channel
+
+    func test_messageComposerView_sendInChannel_selected() {
+        // Given
+        let size = CGSize(width: composerWidth, height: 200)
+        let factory = DefaultViewFactory.shared
+        let channelController = ChatChannelTestHelpers.makeChannelController(chatClient: chatClient)
+        let messageController = ChatMessageControllerSUI_Mock.mock(
+            chatClient: chatClient,
+            cid: .unique,
+            messageId: .unique
+        )
+        let viewModel = MessageComposerViewModel(
+            channelController: channelController,
+            messageController: messageController
+        )
+        viewModel.showReplyInChannel = true
+
+        // When
+        let view = MessageComposerView(
+            viewFactory: factory,
+            viewModel: viewModel,
+            channelController: channelController,
+            messageController: messageController,
+            quotedMessage: .constant(nil),
+            editedMessage: .constant(nil),
+            onMessageSent: {}
+        )
+        .frame(width: size.width, height: size.height)
+
+        // Then
+        AssertSnapshot(view, size: size)
+    }
+
+    func test_messageComposerView_sendInChannel_unselected() {
+        // Given
+        let size = CGSize(width: composerWidth, height: 200)
+        let factory = DefaultViewFactory.shared
+        let channelController = ChatChannelTestHelpers.makeChannelController(chatClient: chatClient)
+        let messageController = ChatMessageControllerSUI_Mock.mock(
+            chatClient: chatClient,
+            cid: .unique,
+            messageId: .unique
+        )
+        let viewModel = MessageComposerViewModel(
+            channelController: channelController,
+            messageController: messageController
+        )
+        viewModel.showReplyInChannel = false
+
+        // When
+        let view = MessageComposerView(
+            viewFactory: factory,
+            viewModel: viewModel,
+            channelController: channelController,
+            messageController: messageController,
+            quotedMessage: .constant(nil),
+            editedMessage: .constant(nil),
+            onMessageSent: {}
+        )
+        .frame(width: size.width, height: size.height)
+
+        // Then
+        AssertSnapshot(view, size: size)
+    }
+
     // MARK: - Attachment Picker Prompt Views
 
     func test_photoLibraryAccessPromptView_snapshot() {
@@ -365,7 +433,9 @@ import XCTest
             sendMessage: {},
             onImagePasted: { _ in },
             startRecording: {},
-            stopRecording: {}
+            stopRecording: {},
+            sendInChannelShown: false,
+            showReplyInChannel: .constant(false)
         )
         .environmentObject(viewModel)
         .frame(width: composerWidth, height: 200)
@@ -571,7 +641,9 @@ import XCTest
             sendMessage: {},
             onImagePasted: { _ in },
             startRecording: {},
-            stopRecording: {}
+            stopRecording: {},
+            sendInChannelShown: false,
+            showReplyInChannel: .constant(false)
         )
         .environmentObject(MessageComposerTestUtils.makeComposerViewModel(chatClient: chatClient))
         .frame(width: size.width, height: size.height)
@@ -610,7 +682,9 @@ import XCTest
             sendMessage: {},
             onImagePasted: { _ in },
             startRecording: {},
-            stopRecording: {}
+            stopRecording: {},
+            sendInChannelShown: false,
+            showReplyInChannel: .constant(false)
         )
         .environmentObject(MessageComposerTestUtils.makeComposerViewModel(chatClient: chatClient))
         .frame(width: size.width, height: size.height)
@@ -643,7 +717,9 @@ import XCTest
             sendMessage: {},
             onImagePasted: { _ in },
             startRecording: {},
-            stopRecording: {}
+            stopRecording: {},
+            sendInChannelShown: false,
+            showReplyInChannel: .constant(false)
         )
         .environmentObject(MessageComposerTestUtils.makeComposerViewModel(chatClient: chatClient))
         .frame(width: size.width, height: size.height)
