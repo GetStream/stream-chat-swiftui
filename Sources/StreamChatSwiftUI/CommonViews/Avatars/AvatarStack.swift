@@ -11,6 +11,7 @@ import SwiftUI
 /// When more than three avatars are provided, only the first three are shown
 /// and a badge displays the remaining count.
 public struct AvatarStack: View {
+    @Injected(\.colors) var colors
     @Injected(\.tokens) var tokens
     
     let avatars: [(url: URL?, initials: String)]
@@ -44,8 +45,12 @@ public struct AvatarStack: View {
     public var body: some View {
         HStack(spacing: -size / 2 + tokens.spacingXxs) {
             ForEach(avatars.indices, id: \.self) { index in
-                avatarView(url: avatars[index].url, initials: avatars[index].initials)
-                    .zIndex(Double(index))
+                avatarView(
+                    url: avatars[index].url,
+                    initials: avatars[index].initials,
+                    outerBorder: index > avatars.startIndex
+                )
+                .zIndex(Double(index))
             }
             if showsBadge {
                 BadgeCountView(count: overflowCount, size: size)
@@ -58,7 +63,8 @@ public struct AvatarStack: View {
     
     // MARK: - Subviews
     
-    private func avatarView(url: URL?, initials: String) -> some View {
+    private func avatarView(url: URL?, initials: String, outerBorder: Bool) -> some View {
         UserAvatar(url: url, initials: initials, size: size, indicator: .none, showsBorder: false)
+            .overlay(outerBorder ? Circle().inset(by: -1).stroke(colors.borderCoreOnDark.toColor, lineWidth: 2) : nil)
     }
 }

@@ -135,7 +135,7 @@ private struct TypingIndicatorCircle: View {
 
     var body: some View {
         Circle()
-            .foregroundColor(colors.chatBackgroundTypingIndicator.toColor)
+            .foregroundColor(colors.chatTextTypingIndicator.toColor)
             .frame(width: circleWidth, height: circleHeight)
             .opacity(isTyping ? maxOpacity : minOpacity)
             .offset(y: isTyping ? yOffset : -yOffset)
