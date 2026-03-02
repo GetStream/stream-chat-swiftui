@@ -86,8 +86,7 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
                         startRecording: viewModel.startRecording,
                         stopRecording: viewModel.stopRecording,
                         sendInChannelShown: viewModel.sendInChannelShown,
-                        showReplyInChannel: $viewModel.showReplyInChannel,
-                        isDirectMessage: viewModel.isDirectChannel
+                        showReplyInChannel: $viewModel.showReplyInChannel
                     )
                 )
                 .environmentObject(viewModel)
@@ -328,7 +327,6 @@ public struct ComposerInputView<Factory: ViewFactory>: View, KeyboardReadable {
     var stopRecording: @MainActor () -> Void
     var sendInChannelShown: Bool
     @Binding var showReplyInChannel: Bool
-    var isDirectMessage: Bool
 
     @State var textHeight: CGFloat = TextSizeConstants.defaultInputViewHeight
     @State var keyboardShown = false
@@ -355,9 +353,8 @@ public struct ComposerInputView<Factory: ViewFactory>: View, KeyboardReadable {
         onImagePasted: @escaping @MainActor (UIImage) -> Void,
         startRecording: @escaping @MainActor () -> Void,
         stopRecording: @escaping @MainActor () -> Void,
-        sendInChannelShown: Bool = false,
-        showReplyInChannel: Binding<Bool> = .constant(false),
-        isDirectMessage: Bool = false
+        sendInChannelShown: Bool,
+        showReplyInChannel: Binding<Bool>
     ) {
         self.factory = factory
         self.channelController = channelController
@@ -382,7 +379,6 @@ public struct ComposerInputView<Factory: ViewFactory>: View, KeyboardReadable {
         self.stopRecording = stopRecording
         self.sendInChannelShown = sendInChannelShown
         _showReplyInChannel = showReplyInChannel
-        self.isDirectMessage = isDirectMessage
     }
 
     var textFieldHeight: CGFloat {

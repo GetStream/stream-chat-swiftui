@@ -526,8 +526,7 @@ extension ViewFactory {
             startRecording: options.startRecording,
             stopRecording: options.stopRecording,
             sendInChannelShown: options.sendInChannelShown,
-            showReplyInChannel: options.showReplyInChannel,
-            isDirectMessage: options.isDirectMessage
+            showReplyInChannel: options.showReplyInChannel
         )
     }
     

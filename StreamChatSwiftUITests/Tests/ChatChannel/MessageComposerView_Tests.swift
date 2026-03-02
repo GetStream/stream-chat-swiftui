@@ -168,7 +168,9 @@ import XCTest
             sendMessage: {},
             onImagePasted: { _ in },
             startRecording: {},
-            stopRecording: {}
+            stopRecording: {},
+            sendInChannelShown: false,
+            showReplyInChannel: .constant(false)
         )
         .environmentObject(MessageComposerTestUtils.makeComposerViewModel(chatClient: chatClient))
         .frame(width: composerWidth, height: 200)
@@ -431,7 +433,9 @@ import XCTest
             sendMessage: {},
             onImagePasted: { _ in },
             startRecording: {},
-            stopRecording: {}
+            stopRecording: {},
+            sendInChannelShown: false,
+            showReplyInChannel: .constant(false)
         )
         .environmentObject(viewModel)
         .frame(width: composerWidth, height: 200)
@@ -637,7 +641,9 @@ import XCTest
             sendMessage: {},
             onImagePasted: { _ in },
             startRecording: {},
-            stopRecording: {}
+            stopRecording: {},
+            sendInChannelShown: false,
+            showReplyInChannel: .constant(false)
         )
         .environmentObject(MessageComposerTestUtils.makeComposerViewModel(chatClient: chatClient))
         .frame(width: size.width, height: size.height)
@@ -676,7 +682,9 @@ import XCTest
             sendMessage: {},
             onImagePasted: { _ in },
             startRecording: {},
-            stopRecording: {}
+            stopRecording: {},
+            sendInChannelShown: false,
+            showReplyInChannel: .constant(false)
         )
         .environmentObject(MessageComposerTestUtils.makeComposerViewModel(chatClient: chatClient))
         .frame(width: size.width, height: size.height)
@@ -709,7 +717,9 @@ import XCTest
             sendMessage: {},
             onImagePasted: { _ in },
             startRecording: {},
-            stopRecording: {}
+            stopRecording: {},
+            sendInChannelShown: false,
+            showReplyInChannel: .constant(false)
         )
         .environmentObject(MessageComposerTestUtils.makeComposerViewModel(chatClient: chatClient))
         .frame(width: size.width, height: size.height)
