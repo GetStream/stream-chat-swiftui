@@ -824,24 +824,20 @@ import SwiftUI
     }
     
     private func checkTypingIndicator() {
-        guard let channel else { return }
-        let hasTypingUsers = !channel.currentlyTypingUsersFiltered(currentUserId: chatClient.currentUserId).isEmpty
-            && channel.config.typingEventsEnabled
+        guard let channel, channel.config.typingEventsEnabled else {
+            shouldShowInlineTypingIndicator = false
+            shouldShowNavigationBarTypingIndicator = false
+            return
+        }
+        
+        let isTyping = !channel.currentlyTypingUsersFiltered(currentUserId: chatClient.currentUserId).isEmpty
         let placement = utils.messageListConfig.typingIndicatorPlacement
-
-        let shouldShow = hasTypingUsers && placement != .navigationBar
-        if shouldShow != shouldShowInlineTypingIndicator {
-            shouldShowInlineTypingIndicator = shouldShow
-        }
-
-        let shouldShowInNavBar: Bool
-        switch placement {
-        case .navigationBar: shouldShowInNavBar = hasTypingUsers
-        case .inline: shouldShowInNavBar = false
-        case .automatic: shouldShowInNavBar = hasTypingUsers && showScrollToLatestButton
-        }
-        if shouldShowInNavBar != shouldShowNavigationBarTypingIndicator {
-            shouldShowNavigationBarTypingIndicator = shouldShowInNavBar
+        
+        shouldShowInlineTypingIndicator = isTyping && placement != .navigationBar
+        shouldShowNavigationBarTypingIndicator = switch placement {
+        case .navigationBar: isTyping
+        case .inline: false
+        case .automatic: isTyping && showScrollToLatestButton
         }
     }
     
