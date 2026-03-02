@@ -66,10 +66,9 @@ public struct PinnedMessagesView<Factory: ViewFactory>: View {
                 }
             } else {
                 NoContentView(
-                    image: images.noContent,
+                    image: images.pin,
                     title: L10n.ChatInfo.PinnedMessages.emptyTitle,
-                    description: L10n.ChatInfo.PinnedMessages.emptyDesc,
-                    shouldRotateImage: true
+                    description: L10n.ChatInfo.PinnedMessages.emptyDesc
                 )
             }
         }
