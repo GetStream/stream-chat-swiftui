@@ -271,9 +271,12 @@ public final class ChannelListSearchResultItemOptions<ChannelDestination: View> 
 public final class ChannelHeaderViewModifierOptions: Sendable {
     /// The channel to display in the header.
     public let channel: ChatChannel
+    /// Whether the typing indicator should be shown in the navigation bar.
+    public let shouldShowTypingIndicator: Bool
     
-    public init(channel: ChatChannel) {
+    public init(channel: ChatChannel, shouldShowTypingIndicator: Bool) {
         self.channel = channel
+        self.shouldShowTypingIndicator = shouldShowTypingIndicator
     }
 }
 
@@ -299,5 +302,17 @@ public final class AddUsersViewOptions: Sendable {
     public init(options: AddUsersOptions, onUserTap: @escaping @MainActor (ChatUser) -> Void) {
         self.options = options
         self.onUserTap = onUserTap
+    }
+}
+
+// MARK: - Subtitle Typing Indicator Options
+
+/// Options for creating the subtitle typing indicator view shown in the channel header.
+public final class SubtitleTypingIndicatorViewOptions: Sendable {
+    /// The channel to show typing indicators for.
+    public let channel: ChatChannel
+    
+    public init(channel: ChatChannel) {
+        self.channel = channel
     }
 }

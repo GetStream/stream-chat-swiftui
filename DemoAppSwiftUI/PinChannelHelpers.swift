@@ -79,7 +79,7 @@ struct DemoAppChatChannelListItem: View {
                     .foregroundColor(Color(colors.subtitleText))
             } else {
                 if channel.shouldShowTypingIndicator {
-                    TypingIndicatorView()
+                    TypingIndicatorDotsView()
                 }
             }
             if let draftText = channel.draftMessageText {
