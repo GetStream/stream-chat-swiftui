@@ -24,29 +24,24 @@ import XCTest
         XCTAssert(moreUsersShown == true)
         XCTAssert(memberListCollapsed == true)
         XCTAssert(participants.count == 10)
-        XCTAssert(displayedParticipants.count == 6)
-        XCTAssert(notDisplayedParticipantsCount == 4)
+        XCTAssert(displayedParticipants.count == 5)
+        XCTAssert(notDisplayedParticipantsCount == 5)
     }
 
-    func test_chatChannelInfoVM_expandedGroupParticipants() {
-        // Given
+    func test_chatChannelInfoVM_groupParticipantsCappedAtFive() {
+        // Given - displayedParticipants is always capped at 5 for groups;
+        // the full list is shown via the member list sheet (memberListSheetShown).
         let channel = mockGroup(with: 10)
         let viewModel = ChatChannelInfoViewModel(channel: channel)
 
-        // When
+        // When - memberListCollapsed toggle no longer affects displayedParticipants
         viewModel.memberListCollapsed = false
-        let participants = viewModel.participants
         let displayedParticipants = viewModel.displayedParticipants
         let moreUsersShown = viewModel.showMoreUsersButton
-        let memberListCollapsed = viewModel.memberListCollapsed
-        let notDisplayedParticipantsCount = viewModel.notDisplayedParticipantsCount
 
         // Then
-        XCTAssert(moreUsersShown == false)
-        XCTAssert(memberListCollapsed == false)
-        XCTAssert(participants.count == 10)
-        XCTAssert(displayedParticipants.count == 10)
-        XCTAssert(notDisplayedParticipantsCount == 0)
+        XCTAssert(displayedParticipants.count == 5)
+        XCTAssert(moreUsersShown == true)
     }
 
     func test_chatChannelInfoVM_smallGroupParticipants() {
@@ -313,10 +308,11 @@ import XCTest
         let actions = viewModel.participantActions(for: participant)
 
         // Then
-        XCTAssert(actions.count == 4) // mute, remove, cancel
+        XCTAssert(actions.count == 4) // direct message, mute, leave group, remove
         XCTAssert(actions.contains { $0.title.contains("Mute") })
         XCTAssert(actions.contains { $0.title.contains("Remove") })
-        XCTAssert(actions.contains { $0.title == L10n.Alert.Actions.cancel })
+        XCTAssert(actions.contains { $0.title == L10n.Alert.Actions.leaveGroupTitle })
+        XCTAssertFalse(actions.contains { $0.title == L10n.Alert.Actions.cancel })
     }
 
     func test_chatChannelInfoVM_participantActions_withMutesDisabled() {
@@ -334,11 +330,12 @@ import XCTest
         let actions = viewModel.participantActions(for: participant)
 
         // Then
-        XCTAssert(actions.count == 3) // direct message, remove, cancel
+        XCTAssert(actions.count == 3) // direct message, leave group, remove
         XCTAssertNotNil(actions.first?.navigationDestination)
         XCTAssertFalse(actions.contains { $0.title.contains("Mute") })
         XCTAssert(actions.contains { $0.title.contains("Remove") })
-        XCTAssert(actions.contains { $0.title == L10n.Alert.Actions.cancel })
+        XCTAssert(actions.contains { $0.title == L10n.Alert.Actions.leaveGroupTitle })
+        XCTAssertFalse(actions.contains { $0.title == L10n.Alert.Actions.cancel })
     }
 
     func test_chatChannelInfoVM_participantActions_withoutUpdateMembersCapability() {
@@ -356,10 +353,11 @@ import XCTest
         let actions = viewModel.participantActions(for: participant)
 
         // Then
-        XCTAssert(actions.count == 3) // direct message, mute, cancel (no remove)
+        XCTAssert(actions.count == 3) // direct message, mute, leave group (no remove)
         XCTAssert(actions.contains { $0.title.contains("Mute") })
         XCTAssertFalse(actions.contains { $0.title.contains("Remove") })
-        XCTAssert(actions.contains { $0.title == L10n.Alert.Actions.cancel })
+        XCTAssert(actions.contains { $0.title == L10n.Alert.Actions.leaveGroupTitle })
+        XCTAssertFalse(actions.contains { $0.title == L10n.Alert.Actions.cancel })
     }
 
     func test_chatChannelInfoVM_participantActions_withMutedUser() {
@@ -378,9 +376,10 @@ import XCTest
         let actions = viewModel.participantActions(for: participant)
 
         // Then
-        XCTAssert(actions.count >= 2) // At least remove and cancel
+        XCTAssert(actions.count >= 2) // At least leave group and remove
         XCTAssert(actions.contains { $0.title.contains("Remove") })
-        XCTAssert(actions.contains { $0.title == L10n.Alert.Actions.cancel })
+        XCTAssert(actions.contains { $0.title == L10n.Alert.Actions.leaveGroupTitle })
+        XCTAssertFalse(actions.contains { $0.title == L10n.Alert.Actions.cancel })
     }
 
     func test_chatChannelInfoVM_participantActions_withUnmutedUser() {
@@ -404,9 +403,10 @@ import XCTest
         let actions = viewModel.participantActions(for: participant)
 
         // Then
-        XCTAssert(actions.count >= 2) // At least remove and cancel
+        XCTAssert(actions.count >= 2) // At least leave group and remove
         XCTAssert(actions.contains { $0.title.contains("Remove") })
-        XCTAssert(actions.contains { $0.title == L10n.Alert.Actions.cancel })
+        XCTAssert(actions.contains { $0.title == L10n.Alert.Actions.leaveGroupTitle })
+        XCTAssertFalse(actions.contains { $0.title == L10n.Alert.Actions.cancel })
     }
 
     func test_chatChannelInfoVM_muteAction_properties() {
@@ -566,7 +566,8 @@ import XCTest
         XCTAssertNotNil(removeAction.action)
     }
 
-    func test_chatChannelInfoVM_participantActions_cancelAction() {
+    func test_chatChannelInfoVM_participantActions_noCancelAction() {
+        // The cancel action was removed; dismissal is handled by the sheet/popup UI.
         // Given
         let channel = mockGroup(with: 5)
         let viewModel = ChatChannelInfoViewModel(channel: channel)
@@ -576,17 +577,12 @@ import XCTest
             onlineInfoText: "online",
             isDeactivated: false
         )
-        
-        viewModel.selectedParticipant = participant
 
         // When
         let actions = viewModel.participantActions(for: participant)
-        let cancelAction = actions.first { $0.title == L10n.Alert.Actions.cancel }
-        
-        cancelAction?.action()
 
         // Then
-        XCTAssertNil(viewModel.selectedParticipant)
+        XCTAssertFalse(actions.contains { $0.title == L10n.Alert.Actions.cancel })
     }
 
     func test_chatChannelInfoVM_channelUpdated_updatesParticipants() {
@@ -627,6 +623,332 @@ import XCTest
 
         // Then
         XCTAssertEqual(viewModel.errorShown, true)
+    }
+
+    // MARK: - allParticipants / displayedParticipants
+
+    func test_chatChannelInfoVM_allParticipants_excludesDeactivated() {
+        // Given - group of 5 members where member at index 2 is deactivated
+        let cid: ChannelId = .unique
+        let members = ChannelInfoMockUtils.setupMockMembers(
+            count: 5,
+            currentUserId: chatClient.currentUserId!,
+            deactivatedUserIndexes: [2]
+        )
+        let channel = ChatChannel.mock(
+            cid: cid,
+            lastActiveMembers: members,
+            memberCount: members.count
+        )
+        let viewModel = ChatChannelInfoViewModel(channel: channel)
+
+        // When
+        let all = viewModel.allParticipants
+
+        // Then
+        XCTAssertEqual(all.count, 4)
+        XCTAssertFalse(all.contains { $0.isDeactivated })
+    }
+
+    func test_chatChannelInfoVM_displayedParticipants_groupCappedAtFive() {
+        // Given
+        let channel = mockGroup(with: 10)
+        let viewModel = ChatChannelInfoViewModel(channel: channel)
+
+        // When
+        let displayed = viewModel.displayedParticipants
+
+        // Then - always capped at 5 for groups; full list shown via member list sheet
+        XCTAssertEqual(displayed.count, 5)
+    }
+
+    // MARK: - New @Published properties initial state
+
+    func test_chatChannelInfoVM_newPublishedProperties_initialFalse() {
+        // Given
+        let channel = mockGroup(with: 3)
+        let viewModel = ChatChannelInfoViewModel(channel: channel)
+
+        // Then
+        XCTAssertFalse(viewModel.memberListSheetShown)
+        XCTAssertFalse(viewModel.editGroupShown)
+        XCTAssertFalse(viewModel.isUploadingGroupAvatar)
+    }
+
+    // MARK: - Current user display name
+
+    func test_chatChannelInfoVM_currentUserDisplayName_isYou() {
+        // Given
+        let channel = mockGroup(with: 3)
+        let viewModel = ChatChannelInfoViewModel(channel: channel)
+
+        // When - first member is always the current user (index 0 in setupMockMembers)
+        let currentUserParticipant = viewModel.participants.first { $0.id == chatClient.currentUserId }
+
+        // Then
+        XCTAssertEqual(currentUserParticipant?.displayName, L10n.Channel.Item.you)
+    }
+
+    func test_chatChannelInfoVM_otherMemberDisplayName_isNotYou() {
+        // Given
+        let channel = mockGroup(with: 3)
+        let viewModel = ChatChannelInfoViewModel(channel: channel)
+
+        // When - other members should not have "You" as display name
+        let otherParticipants = viewModel.participants.filter { $0.id != chatClient.currentUserId }
+
+        // Then
+        XCTAssertFalse(otherParticipants.contains { $0.displayName == L10n.Channel.Item.you })
+    }
+
+    // MARK: - shouldShowBlockUserButton
+
+    func test_chatChannelInfoVM_shouldShowBlockUserButton_falseForGroup() {
+        // Given
+        let channel = mockGroup(with: 5)
+        let viewModel = ChatChannelInfoViewModel(channel: channel)
+
+        // Then - block button only shown in 1-on-1 DMs
+        XCTAssertFalse(viewModel.shouldShowBlockUserButton)
+    }
+
+    func test_chatChannelInfoVM_shouldShowBlockUserButton_trueForSingleMemberDM() {
+        // Given
+        let members = ChannelInfoMockUtils.setupMockMembers(
+            count: 2,
+            currentUserId: chatClient.currentUserId!
+        )
+        let channel = ChatChannel.mockDMChannel(
+            lastActiveMembers: members,
+            memberCount: 2
+        )
+        let viewModel = ChatChannelInfoViewModel(channel: channel)
+
+        // Then - showSingleMemberDMView == true → block button shown
+        XCTAssertTrue(viewModel.shouldShowBlockUserButton)
+    }
+
+    func test_chatChannelInfoVM_shouldShowBlockUserButton_falseForMultiPersonDM() {
+        // Given - DM channel with 4 members (showSingleMemberDMView == false)
+        let members = ChannelInfoMockUtils.setupMockMembers(
+            count: 4,
+            currentUserId: chatClient.currentUserId!
+        )
+        let channel = ChatChannel.mockDMChannel(
+            lastActiveMembers: members,
+            memberCount: 4
+        )
+        let viewModel = ChatChannelInfoViewModel(channel: channel)
+
+        // Then - more than 2 members → showSingleMemberDMView false → block hidden
+        XCTAssertFalse(viewModel.shouldShowBlockUserButton)
+    }
+
+    // MARK: - shouldShowLeaveConversationButton for multi-person DM
+
+    func test_chatChannelInfoVM_leaveButtonShownInMultiPersonDM() {
+        // Given - DM channel (cid with "!members" prefix) with 4 members and leaveChannel capability
+        let cidDM = ChannelId(type: .messaging, id: "!members" + .newUniqueId)
+        let members = ChannelInfoMockUtils.setupMockMembers(
+            count: 4,
+            currentUserId: chatClient.currentUserId!
+        )
+        let channel = ChatChannel.mock(
+            cid: cidDM,
+            ownCapabilities: [.leaveChannel],
+            lastActiveMembers: members,
+            memberCount: members.count
+        )
+        let viewModel = ChatChannelInfoViewModel(channel: channel)
+
+        // Then - multi-person DM uses leaveChannel capability for leave button
+        XCTAssertTrue(viewModel.shouldShowLeaveConversationButton)
+    }
+
+    // MARK: - leaveButtonTitle / leaveConversationDescription for multi-person DM
+
+    func test_chatChannelInfoVM_displayOptions_multiPersonDM() {
+        // Given - DM channel with 4 members (treated like a group for leave/title purposes)
+        let members = ChannelInfoMockUtils.setupMockMembers(
+            count: 4,
+            currentUserId: chatClient.currentUserId!
+        )
+        let channel = ChatChannel.mockDMChannel(
+            lastActiveMembers: members,
+            memberCount: 4
+        )
+        let viewModel = ChatChannelInfoViewModel(channel: channel)
+
+        // When
+        let leaveButtonTitle = viewModel.leaveButtonTitle
+        let leaveConversationDescription = viewModel.leaveConversationDescription
+
+        // Then - multi-person DM uses group leave text (not delete channel text)
+        XCTAssertEqual(leaveButtonTitle, L10n.Alert.Actions.leaveGroupTitle)
+        XCTAssertEqual(leaveConversationDescription, L10n.Alert.Actions.leaveGroupMessage)
+    }
+
+    // MARK: - participantActions for current user
+
+    func test_chatChannelInfoVM_participantActions_currentUserInGroup_returnsLeaveGroup() {
+        // Given
+        let channel = mockGroup(with: 5)
+        let viewModel = ChatChannelInfoViewModel(channel: channel)
+        let currentUserParticipant = viewModel.participants.first { $0.id == chatClient.currentUserId }!
+
+        // When
+        let actions = viewModel.participantActions(for: currentUserParticipant)
+
+        // Then - current user in group gets only the leave group action
+        XCTAssertEqual(actions.count, 1)
+        XCTAssertEqual(actions.first?.title, L10n.Alert.Actions.leaveGroupTitle)
+    }
+
+    func test_chatChannelInfoVM_participantActions_currentUserInSingleDM_returnsEmpty() {
+        // Given
+        let members = ChannelInfoMockUtils.setupMockMembers(
+            count: 2,
+            currentUserId: chatClient.currentUserId!
+        )
+        let channel = ChatChannel.mockDMChannel(
+            lastActiveMembers: members,
+            memberCount: 2
+        )
+        let viewModel = ChatChannelInfoViewModel(channel: channel)
+        let currentUserParticipant = viewModel.participants.first { $0.id == chatClient.currentUserId }!
+
+        // When
+        let actions = viewModel.participantActions(for: currentUserParticipant)
+
+        // Then - current user in 1-on-1 DM gets no actions
+        XCTAssertTrue(actions.isEmpty)
+    }
+
+    // MARK: - participantActions includes correct block/leave for channel type
+
+    func test_chatChannelInfoVM_participantActions_groupIncludesLeaveGroup() {
+        // Given
+        let channel = mockGroup(with: 5)
+        let viewModel = ChatChannelInfoViewModel(channel: channel)
+        let participant = ParticipantInfo(
+            chatUser: ChatUser.mock(id: .unique),
+            displayName: "Test User",
+            onlineInfoText: "online",
+            isDeactivated: false
+        )
+
+        // When
+        let actions = viewModel.participantActions(for: participant)
+
+        // Then - groups show Leave Group, not Block
+        XCTAssertTrue(actions.contains { $0.title == L10n.Alert.Actions.leaveGroupTitle })
+        XCTAssertFalse(actions.contains { $0.title == L10n.Alert.Actions.blockUser })
+    }
+
+    func test_chatChannelInfoVM_participantActions_singleDMIncludesBlock() {
+        // Given
+        let members = ChannelInfoMockUtils.setupMockMembers(
+            count: 2,
+            currentUserId: chatClient.currentUserId!
+        )
+        let channel = ChatChannel.mockDMChannel(
+            config: ChannelConfig(mutesEnabled: false),
+            lastActiveMembers: members,
+            memberCount: 2
+        )
+        let viewModel = ChatChannelInfoViewModel(channel: channel)
+        let otherParticipant = viewModel.participants.first { $0.id != chatClient.currentUserId }!
+
+        // When
+        let actions = viewModel.participantActions(for: otherParticipant)
+
+        // Then - 1-on-1 DM shows Block, not Leave Group
+        XCTAssertTrue(actions.contains { $0.title == L10n.Alert.Actions.blockUser })
+        XCTAssertFalse(actions.contains { $0.title == L10n.Alert.Actions.leaveGroupTitle })
+    }
+
+    // MARK: - blockParticipantAction properties
+
+    func test_chatChannelInfoVM_blockParticipantAction_properties() {
+        // Given
+        let members = ChannelInfoMockUtils.setupMockMembers(
+            count: 2,
+            currentUserId: chatClient.currentUserId!
+        )
+        let channel = ChatChannel.mockDMChannel(
+            lastActiveMembers: members,
+            memberCount: 2
+        )
+        let viewModel = ChatChannelInfoViewModel(channel: channel)
+        let otherParticipant = viewModel.participants.first { $0.id != chatClient.currentUserId }!
+
+        // When
+        let blockAction = viewModel.blockParticipantAction(
+            participant: otherParticipant,
+            onDismiss: {},
+            onError: { _ in }
+        )
+
+        // Then
+        XCTAssertEqual(blockAction.title, L10n.Alert.Actions.blockUser)
+        XCTAssertEqual(blockAction.iconName, "circle.slash")
+        XCTAssertTrue(blockAction.isDestructive)
+        XCTAssertNotNil(blockAction.confirmationPopup)
+        XCTAssertEqual(blockAction.confirmationPopup?.title, L10n.Alert.Actions.blockUser)
+        XCTAssertEqual(blockAction.confirmationPopup?.buttonTitle, L10n.Alert.Actions.blockUser)
+    }
+
+    // MARK: - leaveGroupAction properties
+
+    func test_chatChannelInfoVM_leaveGroupAction_properties() {
+        // Given
+        let channel = mockGroup(with: 5)
+        let viewModel = ChatChannelInfoViewModel(channel: channel)
+
+        // When
+        let leaveAction = viewModel.leaveGroupAction(onDismiss: {}, onError: { _ in })
+
+        // Then
+        XCTAssertEqual(leaveAction.title, L10n.Alert.Actions.leaveGroupTitle)
+        XCTAssertEqual(leaveAction.iconName, "rectangle.portrait.and.arrow.right")
+        XCTAssertTrue(leaveAction.isDestructive)
+        XCTAssertNotNil(leaveAction.confirmationPopup)
+        XCTAssertEqual(leaveAction.confirmationPopup?.title, L10n.Alert.Actions.leaveGroupTitle)
+        XCTAssertEqual(leaveAction.confirmationPopup?.buttonTitle, L10n.Alert.Actions.leaveGroupButton)
+    }
+
+    // MARK: - saveGroupEdit
+
+    func test_chatChannelInfoVM_saveGroupEdit_withoutImage_closesSheet() {
+        // Given
+        let channel = mockGroup(with: 3)
+        let viewModel = ChatChannelInfoViewModel(channel: channel)
+        viewModel.editGroupShown = true
+
+        // When
+        viewModel.saveGroupEdit(name: "New Group Name", image: nil)
+
+        // Then
+        XCTAssertFalse(viewModel.isUploadingGroupAvatar)
+        XCTAssertFalse(viewModel.editGroupShown)
+        XCTAssertEqual(viewModel.channelName, "New Group Name")
+    }
+
+    func test_chatChannelInfoVM_saveGroupEdit_withImage_setsUploadingFlag() {
+        // Given
+        let channel = mockGroup(with: 3)
+        let viewModel = ChatChannelInfoViewModel(channel: channel)
+        viewModel.editGroupShown = true
+        let image = UIGraphicsImageRenderer(size: CGSize(width: 1, height: 1)).image { ctx in
+            UIColor.red.setFill()
+            ctx.fill(CGRect(x: 0, y: 0, width: 1, height: 1))
+        }
+
+        // When
+        viewModel.saveGroupEdit(name: "New Group Name", image: image)
+
+        // Then - uploading flag is set synchronously before the async upload begins
+        XCTAssertTrue(viewModel.isUploadingGroupAvatar)
     }
 
     // MARK: - private
