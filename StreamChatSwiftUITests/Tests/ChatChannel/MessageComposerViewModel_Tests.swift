@@ -780,6 +780,50 @@ class MessageComposerViewModel_Tests: StreamChatTestCase {
         XCTAssert(extraData?["test"] == "test")
         try! FileManager.default.removeItem(at: url)
     }
+
+    func test_addedAsset_toAttachmentPayload_includesOriginalWidthHeightForImage() throws {
+        let image = UIImage(systemName: "person")!
+        let url = URL.newTemporaryFileURL()
+        defer { try? FileManager.default.removeItem(at: url) }
+        try image.pngData()?.write(to: url)
+
+        let addedAsset = AddedAsset(
+            image: image,
+            id: "imageId",
+            url: url,
+            type: .image,
+            originalWidth: 800,
+            originalHeight: 600
+        )
+
+        let attachment = try addedAsset.toAttachmentPayload()
+        let payload = try XCTUnwrap(attachment.payload as? ImageAttachmentPayload)
+        XCTAssertEqual(payload.originalWidth, 800)
+        XCTAssertEqual(payload.originalHeight, 600)
+    }
+
+    func test_addedAsset_toAttachmentPayload_includesWidthHeightDurationForVideo() throws {
+        let thumbnail = UIImage(systemName: "video")!
+        let url = URL.newTemporaryFileURL().appendingPathExtension("mp4")
+        defer { try? FileManager.default.removeItem(at: url) }
+        try Data(count: 100).write(to: url)
+
+        let addedAsset = AddedAsset(
+            image: thumbnail,
+            id: "videoId",
+            url: url,
+            type: .video,
+            originalWidth: 1920,
+            originalHeight: 1080,
+            duration: 120.5
+        )
+
+        let attachment = try addedAsset.toAttachmentPayload()
+        let payload = try XCTUnwrap(attachment.payload as? VideoAttachmentPayload)
+        XCTAssertEqual(payload.originalWidth, 1920)
+        XCTAssertEqual(payload.originalHeight, 1080)
+        XCTAssertEqual(payload.duration, 120.5)
+    }
     
     // MARK: - Recording
     
