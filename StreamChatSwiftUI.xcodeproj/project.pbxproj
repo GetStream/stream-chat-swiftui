@@ -203,6 +203,7 @@
 				Tests/ChatChannel/MessageListViewLastGroupHeader_Tests.swift,
 				Tests/ChatChannel/MessageListViewNewMessages_Tests.swift,
 				Tests/ChatChannel/MessageReadIndicatorView_Tests.swift,
+				Tests/ChatChannel/MessageTopView_Tests.swift,
 				Tests/ChatChannel/MessageTypeResolver_Tests.swift,
 				Tests/ChatChannel/MessageView_Tests.swift,
 				Tests/ChatChannel/MessageViewMultiRowReactions_Tests.swift,
@@ -1538,7 +1539,7 @@
 			repositoryURL = "https://github.com/GetStream/stream-chat-swift.git";
 			requirement = {
 				kind = revision;
-				revision = 229e72efbf850e652b1d2df99a2d0ed161166f32;
+				revision = 8713cf105084b23998260e2c029bc659134db6af;
 			};
 		};
 		E3A1C01A282BAC66002D1E26 /* XCRemoteSwiftPackageReference "sentry-cocoa" */ = {

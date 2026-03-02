@@ -7,9 +7,12 @@ import StreamChat
 import SwiftUI
 
 enum MessageRepliesConstants {
-    static let selectedMessageThread = "selectedMessageThread"
-    static let selectedMessage = "selectedMessage"
-    static let threadReplyMessage = "threadReplyMessage"
+    static let channelMessageNavigationNotification: Notification.Name = Notification.Name("channelMessageNavigationNotification")
+    static let channelMessageMessageId = "channelMessageMessageId"
+    
+    static let threadMessageNavigationNotification: Notification.Name = Notification.Name("threadMessageNavigationNotification")
+    static let threadMessageParentId = "threadMessageParentId"
+    static let threadMessageReplyId = "threadMessageReplyId"
 }
 
 /// View shown below a message, when there are replies to it.
@@ -51,16 +54,14 @@ public struct MessageRepliesView<Factory: ViewFactory>: View {
 
     public var body: some View {
         Button {
-            // NOTE: Needed because of a bug in iOS 16.
-            resignFirstResponder()
-            // NOTE: this is used to avoid breaking changes.
+            // TODO: [IOS-1455] this is used to avoid breaking changes.
             // Will be updated in a major release.
-            var userInfo: [String: Any] = [MessageRepliesConstants.selectedMessage: message]
-            if let threadReplyMessage = threadReplyMessage {
-                userInfo[MessageRepliesConstants.threadReplyMessage] = threadReplyMessage
+            var userInfo: [String: Any] = [MessageRepliesConstants.threadMessageParentId: message.messageId]
+            if let threadReplyMessage {
+                userInfo[MessageRepliesConstants.threadMessageReplyId] = threadReplyMessage.messageId
             }
             NotificationCenter.default.post(
-                name: NSNotification.Name(MessageRepliesConstants.selectedMessageThread),
+                name: MessageRepliesConstants.threadMessageNavigationNotification,
                 object: nil,
                 userInfo: userInfo
             )
@@ -138,91 +139,6 @@ public struct MessageRepliesView<Factory: ViewFactory>: View {
             )
         } else {
             UserAvatar(url: nil, initials: "", size: AvatarSize.extraSmall, indicator: .none)
-        }
-    }
-}
-
-/// Lazy view that uses the message controller to fetch the parent message before creating message replies view.
-/// This is needed when the parent message is not available in the local cache.
-/// Changing the `parentMessage` to `nil` in the `MessageRepliesView` would case multiple changes including breaking changes.
-struct LazyMessageRepliesView<Factory: ViewFactory>: View {
-    @StateObject private var viewModel: ViewModel
-
-    var factory: Factory
-    /// When true, the `textOnAccent` color is used instead of the default darker text color.
-    var usesInvertedStyle: Bool
-
-    init(
-        factory: Factory,
-        channel: ChatChannel,
-        message: ChatMessage,
-        parentMessageId: MessageId,
-        usesInvertedStyle: Bool = false
-    ) {
-        self.factory = factory
-        self.usesInvertedStyle = usesInvertedStyle
-        _viewModel = StateObject(wrappedValue: ViewModel(
-            channel: channel,
-            message: message,
-            parentMessageId: parentMessageId
-        ))
-    }
-
-    var body: some View {
-        VStack {
-            if let parentMessage = viewModel.parentMessage {
-                factory.makeMessageRepliesShownInChannelView(
-                    options: .init(
-                        channel: viewModel.channel,
-                        message: viewModel.message,
-                        parentMessage: parentMessage,
-                        replyCount: parentMessage.replyCount,
-                        usesInvertedStyle: usesInvertedStyle
-                    )
-                )
-            } else {
-                EmptyView()
-            }
-        }
-        .onAppear {
-            viewModel.loadParentMessage()
-        }
-    }
-    
-    @MainActor
-    final class ViewModel: ObservableObject {
-        @Injected(\.chatClient) private var chatClient
-        @Published private(set) var parentMessage: ChatMessage?
-        
-        let channel: ChatChannel
-        let message: ChatMessage
-        let parentMessageId: MessageId
-        private var parentMessageObserver: ChatMessageController.ObservableObject?
-        
-        init(channel: ChatChannel, message: ChatMessage, parentMessageId: MessageId) {
-            self.channel = channel
-            self.message = message
-            self.parentMessageId = parentMessageId
-        }
-        
-        func loadParentMessage() {
-            guard parentMessageObserver == nil else {
-                if parentMessage == nil {
-                    parentMessageObserver?.controller.synchronize()
-                }
-                return
-            }
-            
-            let controller = chatClient.messageController(cid: channel.cid, messageId: parentMessageId)
-            let observer = ChatMessageController.ObservableObject(controller: controller)
-            parentMessageObserver = observer
-            
-            // Bind the observer's message to our published property
-            observer.$message.assign(to: &$parentMessage)
-            
-            if parentMessage == nil {
-                controller.synchronize()
-            }
         }
     }
 }

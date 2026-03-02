@@ -459,20 +459,20 @@ import XCTest
 
     func test_chatChannelVM_threadMessage() {
         // Given
-        let channelController = makeChannelController()
-        let viewModel = ChatChannelViewModel(channelController: channelController)
         let message = ChatMessage.mock(
             id: .unique,
             cid: .unique,
             text: "Some text",
             author: .mock(id: .unique)
         )
+        let channelController = makeChannelController(messages: [message])
+        let viewModel = ChatChannelViewModel(channelController: channelController)
 
         // When
         NotificationCenter.default.post(
-            name: NSNotification.Name(MessageRepliesConstants.selectedMessageThread),
+            name: MessageRepliesConstants.threadMessageNavigationNotification,
             object: nil,
-            userInfo: [MessageRepliesConstants.selectedMessage: message]
+            userInfo: [MessageRepliesConstants.threadMessageParentId: message.messageId]
         )
 
         // Then
@@ -600,20 +600,20 @@ import XCTest
 
     func test_chatChannelVM_selectedMessageThread_opensThread() {
         // Given
-        let channelController = makeChannelController()
-        let viewModel = ChatChannelViewModel(channelController: channelController)
         let message = ChatMessage.mock(
             id: .unique,
             cid: .unique,
             text: "Test message",
             author: .mock(id: .unique)
         )
+        let channelController = makeChannelController(messages: [message])
+        let viewModel = ChatChannelViewModel(channelController: channelController)
 
         // When
         NotificationCenter.default.post(
-            name: NSNotification.Name(MessageRepliesConstants.selectedMessageThread),
+            name: MessageRepliesConstants.threadMessageNavigationNotification,
             object: nil,
-            userInfo: [MessageRepliesConstants.selectedMessage: message]
+            userInfo: [MessageRepliesConstants.threadMessageParentId: message.messageId]
         )
 
         // Then
@@ -623,8 +623,6 @@ import XCTest
 
     func test_chatChannelVM_selectedMessageThread_withThreadReplyMessage_opensThread() {
         // Given
-        let channelController = makeChannelController()
-        let viewModel = ChatChannelViewModel(channelController: channelController)
         let parentMessage = ChatMessage.mock(
             id: .unique,
             cid: .unique,
@@ -638,14 +636,16 @@ import XCTest
             author: .mock(id: .unique),
             parentMessageId: parentMessage.id
         )
+        let channelController = makeChannelController(messages: [parentMessage, replyMessage])
+        let viewModel = ChatChannelViewModel(channelController: channelController)
 
         // When
         NotificationCenter.default.post(
-            name: NSNotification.Name(MessageRepliesConstants.selectedMessageThread),
+            name: MessageRepliesConstants.threadMessageNavigationNotification,
             object: nil,
             userInfo: [
-                MessageRepliesConstants.selectedMessage: parentMessage,
-                MessageRepliesConstants.threadReplyMessage: replyMessage
+                MessageRepliesConstants.threadMessageParentId: parentMessage.messageId,
+                MessageRepliesConstants.threadMessageReplyId: replyMessage.messageId
             ]
         )
 

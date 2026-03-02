@@ -226,7 +226,13 @@ import SwiftUI
             NotificationCenter.default.addObserver(
                 self,
                 selector: #selector(selectedMessageThread(notification:)),
-                name: NSNotification.Name(MessageRepliesConstants.selectedMessageThread),
+                name: MessageRepliesConstants.threadMessageNavigationNotification,
+                object: nil
+            )
+            NotificationCenter.default.addObserver(
+                self,
+                selector: #selector(selectedMessageInChannel(notification:)),
+                name: MessageRepliesConstants.channelMessageNavigationNotification,
                 object: nil
             )
         }
@@ -238,16 +244,22 @@ import SwiftUI
 
     @objc
     private func selectedMessageThread(notification: Notification) {
-        if let message = notification.userInfo?[MessageRepliesConstants.selectedMessage] as? ChatMessage {
-            threadMessage = message
-            threadMessageShown = true
-
-            // Only set jumpToReplyId if there's a specific reply message to highlight
-            // (for showReplyInChannel messages). The parent message should never be highlighted.
-            if let replyMessage = notification.userInfo?[MessageRepliesConstants.threadReplyMessage] as? ChatMessage {
-                messageCachingUtils.jumpToReplyId = replyMessage.messageId
-            }
+        resignFirstResponder()
+        guard let parentId = notification.userInfo?[MessageRepliesConstants.threadMessageParentId] as? String else { return }
+        let message = messages.first(where: { $0.messageId == parentId }) ?? channelController.dataStore.message(id: parentId)
+        threadMessage = message
+        threadMessageShown = true
+        if let replyId = notification.userInfo?[MessageRepliesConstants.threadMessageReplyId] as? String {
+            messageCachingUtils.jumpToReplyId = replyId
         }
+    }
+
+    @objc
+    private func selectedMessageInChannel(notification: Notification) {
+        resignFirstResponder()
+        guard let messageId = notification.userInfo?[MessageRepliesConstants.channelMessageMessageId] as? String else { return }
+        threadMessageShown = false
+        _ = jumpToMessage(messageId: messageId)
     }
     
     @objc
