@@ -17,10 +17,7 @@ import XCTest
 
     override func setUp() {
         super.setUp()
-
-        overrideRecording = true
-        isRecording = true
-
+        
         let imageLoader = TestImagesLoader_Mock()
         let utils = Utils(
             imageLoader: imageLoader,
