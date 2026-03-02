@@ -105,7 +105,7 @@ import XCTest
         let viewFactory = DefaultViewFactory.shared
 
         // When
-        let view = viewFactory.makeChannelHeaderViewModifier(options: ChannelHeaderViewModifierOptions(channel: .mockDMChannel()))
+        let view = viewFactory.makeChannelHeaderViewModifier(options: ChannelHeaderViewModifierOptions(channel: .mockDMChannel(), shouldShowTypingIndicator: false))
 
         // Then
         XCTAssert(view is DefaultChannelHeaderModifier<DefaultViewFactory>)

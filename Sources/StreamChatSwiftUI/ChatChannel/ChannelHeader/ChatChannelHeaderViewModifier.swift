@@ -17,16 +17,6 @@ public struct DefaultChatChannelHeader<Factory: ViewFactory>: ToolbarContent {
     @Injected(\.colors) private var colors
     @Injected(\.chatClient) private var chatClient
 
-    private var currentUserId: String {
-        chatClient.currentUserId ?? ""
-    }
-
-    private var shouldShowTypingIndicator: Bool {
-        !channel.currentlyTypingUsersFiltered(currentUserId: currentUserId).isEmpty
-            && utils.messageListConfig.typingIndicatorPlacement == .navigationBar
-            && channel.config.typingEventsEnabled
-    }
-
     private var onlineIndicatorShown: Bool {
         !channel.lastActiveMembers.filter { member in
             member.id != chatClient.currentUserId && member.isOnline
@@ -36,15 +26,18 @@ public struct DefaultChatChannelHeader<Factory: ViewFactory>: ToolbarContent {
 
     private var factory: Factory
     public var channel: ChatChannel
+    public var shouldShowTypingIndicator: Bool
     @Binding public var isActive: Bool
 
     public init(
         factory: Factory = DefaultViewFactory.shared,
         channel: ChatChannel,
+        shouldShowTypingIndicator: Bool,
         isActive: Binding<Bool>
     ) {
         self.factory = factory
         self.channel = channel
+        self.shouldShowTypingIndicator = shouldShowTypingIndicator
         _isActive = isActive
     }
 
@@ -92,13 +85,16 @@ public struct DefaultChannelHeaderModifier<Factory: ViewFactory>: ChatChannelHea
 
     private var factory: Factory
     public var channel: ChatChannel
+    public var shouldShowTypingIndicator: Bool
     
     public init(
         factory: Factory = DefaultViewFactory.shared,
-        channel: ChatChannel
+        channel: ChatChannel,
+        shouldShowTypingIndicator: Bool
     ) {
         self.factory = factory
         self.channel = channel
+        self.shouldShowTypingIndicator = shouldShowTypingIndicator
     }
 
     public func body(content: Content) -> some View {
@@ -108,6 +104,7 @@ public struct DefaultChannelHeaderModifier<Factory: ViewFactory>: ChatChannelHea
                     DefaultChatChannelHeader(
                         factory: factory,
                         channel: channel,
+                        shouldShowTypingIndicator: shouldShowTypingIndicator,
                         isActive: $isActive
                     )
                     #if compiler(>=6.2)
@@ -120,6 +117,7 @@ public struct DefaultChannelHeaderModifier<Factory: ViewFactory>: ChatChannelHea
                     DefaultChatChannelHeader(
                         factory: factory,
                         channel: channel,
+                        shouldShowTypingIndicator: shouldShowTypingIndicator,
                         isActive: $isActive
                     )
                 }

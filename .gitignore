@@ -95,6 +95,9 @@ yeetd-normal.pkg
 *LinkMap.txt
 stream-chat-test-mock-server
 
+# Claude Code
+.claude
+
 # VSCode
 .vscode
 buildServer.json

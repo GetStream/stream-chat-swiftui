@@ -57,7 +57,7 @@ public struct ChatChannelView<Factory: ViewFactory>: View, KeyboardReadable {
                             currentDateString: viewModel.currentDateString,
                             listId: viewModel.listId,
                             isMessageThread: viewModel.isMessageThread,
-                            shouldShowTypingIndicator: viewModel.shouldShowTypingIndicator,
+                            shouldShowTypingIndicator: viewModel.shouldShowInlineTypingIndicator,
                             bottomInset: composerPlacement == .floating ? floatingComposerHeight - (keyboardShown ? bottomPadding : 0) : 0,
                             scrollPosition: $viewModel.scrollPosition,
                             loadingNextMessages: viewModel.loadingNextMessages,
@@ -95,7 +95,7 @@ public struct ChatChannelView<Factory: ViewFactory>: View, KeyboardReadable {
                                 .dismissKeyboardOnTap(enabled: keyboardShown) {
                                     hideComposerCommandsAndAttachmentsPicker()
                                 }
-                            if viewModel.shouldShowTypingIndicator {
+                            if viewModel.shouldShowInlineTypingIndicator {
                                 factory.makeTypingIndicatorView(
                                     options: TypingIndicatorViewOptions(
                                         channel: channel,
@@ -115,11 +115,13 @@ public struct ChatChannelView<Factory: ViewFactory>: View, KeyboardReadable {
                         .if(!viewModel.reactionsShown, transform: { view in
                             view.modifier(factory.makeChannelBarsVisibilityViewModifier(options: ChannelBarsVisibilityViewModifierOptions(shouldShow: true)))
                         })
-                        .if(viewModel.channelHeaderType == .regular) { view in
-                            view.modifier(factory.makeChannelHeaderViewModifier(options: ChannelHeaderViewModifierOptions(channel: channel)))
-                        }
-                        .if(viewModel.channelHeaderType == .typingIndicator) { view in
-                            view.modifier(factory.makeChannelHeaderViewModifier(options: ChannelHeaderViewModifierOptions(channel: channel)))
+                        .if(viewModel.channelHeaderType != .messageThread) { view in
+                            view.modifier(factory.makeChannelHeaderViewModifier(
+                                options: ChannelHeaderViewModifierOptions(
+                                    channel: channel,
+                                    shouldShowTypingIndicator: viewModel.shouldShowNavigationBarTypingIndicator
+                                )
+                            ))
                         }
                         .if(viewModel.channelHeaderType == .messageThread) { view in
                             view.modifier(factory.makeMessageThreadHeaderViewModifier(options: MessageThreadHeaderViewModifierOptions()))

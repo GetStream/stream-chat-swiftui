@@ -211,7 +211,11 @@ extension ViewFactory {
     public func makeChannelHeaderViewModifier(
         options: ChannelHeaderViewModifierOptions
     ) -> some ChatChannelHeaderViewModifier {
-        DefaultChannelHeaderModifier(factory: self, channel: options.channel)
+        DefaultChannelHeaderModifier(
+            factory: self,
+            channel: options.channel,
+            shouldShowTypingIndicator: options.shouldShowTypingIndicator
+        )
     }
     
     public func makeChannelBarsVisibilityViewModifier(options: ChannelBarsVisibilityViewModifierOptions) -> some ViewModifier {

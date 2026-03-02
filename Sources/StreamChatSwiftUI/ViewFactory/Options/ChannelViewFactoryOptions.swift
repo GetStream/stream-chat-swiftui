@@ -271,9 +271,12 @@ public final class ChannelListSearchResultItemOptions<ChannelDestination: View> 
 public final class ChannelHeaderViewModifierOptions: Sendable {
     /// The channel to display in the header.
     public let channel: ChatChannel
+    /// Whether the typing indicator should be shown in the navigation bar.
+    public let shouldShowTypingIndicator: Bool
     
-    public init(channel: ChatChannel) {
+    public init(channel: ChatChannel, shouldShowTypingIndicator: Bool) {
         self.channel = channel
+        self.shouldShowTypingIndicator = shouldShowTypingIndicator
     }
 }
 

@@ -60,7 +60,13 @@ import SwiftUI
     // This is used for scenarios when scrolling to message Id should not highlight it.
     var skipHighlightMessageId: String?
 
-    @Published public var showScrollToLatestButton = false
+    @Published public var showScrollToLatestButton = false {
+        didSet {
+            checkTypingIndicator()
+            checkHeaderType()
+        }
+    }
+
     @Published var showAlertBanner = false
 
     @Published public var currentDateString: String?
@@ -120,7 +126,8 @@ import SwiftUI
         }
     }
 
-    @Published public var shouldShowTypingIndicator = false
+    @Published public var shouldShowInlineTypingIndicator = false
+    @Published public var shouldShowNavigationBarTypingIndicator = false
     @Published public var scrollPosition: String?
     @Published public private(set) var loadingNextMessages: Bool = false
     @Published public var firstUnreadMessageId: String? {
@@ -702,18 +709,10 @@ import SwiftUI
     }
     
     private func checkHeaderType() {
-        guard let channel else {
-            return
-        }
-        
         let type: ChannelHeaderType
-        let typingUsers = channel.currentlyTypingUsersFiltered(
-            currentUserId: chatClient.currentUserId
-        )
-        
         if !reactionsShown && isMessageThread {
             type = .messageThread
-        } else if !typingUsers.isEmpty && utils.messageListConfig.typingIndicatorPlacement == .navigationBar {
+        } else if shouldShowNavigationBarTypingIndicator {
             type = .typingIndicator
         } else {
             type = .regular
@@ -826,11 +825,23 @@ import SwiftUI
     
     private func checkTypingIndicator() {
         guard let channel else { return }
-        let shouldShow = !channel.currentlyTypingUsersFiltered(currentUserId: chatClient.currentUserId).isEmpty
-            && utils.messageListConfig.typingIndicatorPlacement == .bottomOverlay
+        let hasTypingUsers = !channel.currentlyTypingUsersFiltered(currentUserId: chatClient.currentUserId).isEmpty
             && channel.config.typingEventsEnabled
-        if shouldShow != shouldShowTypingIndicator {
-            shouldShowTypingIndicator = shouldShow
+        let placement = utils.messageListConfig.typingIndicatorPlacement
+
+        let shouldShow = hasTypingUsers && placement != .navigationBar
+        if shouldShow != shouldShowInlineTypingIndicator {
+            shouldShowInlineTypingIndicator = shouldShow
+        }
+
+        let shouldShowInNavBar: Bool
+        switch placement {
+        case .navigationBar: shouldShowInNavBar = hasTypingUsers
+        case .inline: shouldShowInNavBar = false
+        case .automatic: shouldShowInNavBar = hasTypingUsers && showScrollToLatestButton
+        }
+        if shouldShowInNavBar != shouldShowNavigationBarTypingIndicator {
+            shouldShowNavigationBarTypingIndicator = shouldShowInNavBar
         }
     }
     

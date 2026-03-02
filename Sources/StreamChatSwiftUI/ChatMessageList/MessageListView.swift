@@ -143,7 +143,7 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
             currentDateString: viewModel.currentDateString,
             listId: viewModel.listId,
             isMessageThread: viewModel.isMessageThread,
-            shouldShowTypingIndicator: viewModel.shouldShowTypingIndicator,
+            shouldShowTypingIndicator: viewModel.shouldShowInlineTypingIndicator,
             bottomInset: 0,
             scrollPosition: Binding(
                 get: { viewModel.scrollPosition },
