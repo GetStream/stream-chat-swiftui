@@ -116,17 +116,20 @@ public struct ChatInfoMemberRow<Factory: ViewFactory>: View {
 
     let factory: Factory
     let participant: ParticipantInfo
+    var backgroundColor: UIColor?
     var onAppear: () -> Void
     var onTap: () -> Void
 
     public init(
         factory: Factory = DefaultViewFactory.shared,
         participant: ParticipantInfo,
+        backgroundColor: UIColor? = nil,
         onAppear: @escaping () -> Void,
         onTap: @escaping () -> Void
     ) {
         self.factory = factory
         self.participant = participant
+        self.backgroundColor = backgroundColor
         self.onAppear = onAppear
         self.onTap = onTap
     }
@@ -137,7 +140,7 @@ public struct ChatInfoMemberRow<Factory: ViewFactory>: View {
                 options: UserAvatarViewOptions(
                     user: participant.chatUser,
                     size: AvatarSize.medium,
-                    showsIndicator: true
+                    showsIndicator: participant.chatUser.isOnline
                 )
             )
 
@@ -161,7 +164,7 @@ public struct ChatInfoMemberRow<Factory: ViewFactory>: View {
         }
         .padding(.horizontal, tokens.spacingMd)
         .padding(.vertical, tokens.spacingXs)
-        .background(Color(colors.backgroundCoreSurfaceCard))
+        .background(Color(backgroundColor ?? colors.backgroundCoreSurfaceCard))
         .contentShape(.rect)
         .onAppear { onAppear() }
         .onTapGesture { onTap() }
@@ -252,5 +255,83 @@ public struct ChannelInfoItemView<TrailingView: View>: View {
         .padding(.horizontal, tokens.spacingMd)
         .padding(.vertical, verticalPadding)
         .background(Color(colors.backgroundCoreSurfaceCard))
+    }
+}
+
+// MARK: - Member List View
+
+/// A view that displays the full member list for a group channel, presented as a sheet.
+public struct MemberListView<Factory: ViewFactory>: View {
+    @Injected(\.colors) private var colors
+    @Injected(\.fonts) private var fonts
+    @Injected(\.tokens) private var tokens
+    @Injected(\.images) private var images
+    @Injected(\.chatClient) private var chatClient
+
+    let factory: Factory
+    @ObservedObject var viewModel: ChatChannelInfoViewModel
+
+    public init(factory: Factory = DefaultViewFactory.shared, viewModel: ChatChannelInfoViewModel) {
+        self.factory = factory
+        self.viewModel = viewModel
+    }
+
+    public var body: some View {
+        NavigationView {
+            ZStack {
+                let allParticipants = viewModel.allParticipants
+                ScrollView {
+                    LazyVStack(spacing: 0) {
+                        ForEach(Array(allParticipants.enumerated()), id: \.element.id) { _, participant in
+                            ChatInfoMemberRow(
+                                factory: factory,
+                                participant: participant,
+                                backgroundColor: colors.backgroundCoreApp,
+                                onAppear: { viewModel.onSheetMemberAppear(participant) },
+                                onTap: {
+                                    withAnimation {
+                                        if participant.id != chatClient.currentUserId {
+                                            viewModel.selectedParticipant = participant
+                                        }
+                                    }
+                                }
+                            )
+                        }
+                    }
+                }
+                .background(Color(colors.backgroundCoreApp).edgesIgnoringSafeArea(.all))
+                .blur(radius: viewModel.selectedParticipant != nil ? 6 : 0)
+                .allowsHitTesting(viewModel.selectedParticipant == nil)
+
+                if let selectedParticipant = viewModel.selectedParticipant {
+                    ParticipantInfoView(
+                        factory: factory,
+                        participant: selectedParticipant,
+                        actions: viewModel.participantActions(for: selectedParticipant)
+                    ) {
+                        withAnimation {
+                            viewModel.selectedParticipant = nil
+                        }
+                    }
+                }
+            }
+            .background(Color(colors.backgroundCoreApp).edgesIgnoringSafeArea(.all))
+            .toolbarThemed {
+                ToolbarItem(placement: .principal) {
+                    Text(L10n.ChatInfo.Members.count(viewModel.channel.memberCount))
+                        .font(fonts.bodyBold)
+                        .foregroundColor(Color(colors.navigationBarTitle))
+                }
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button {
+                        viewModel.memberListSheetShown = false
+                    } label: {
+                        Image(uiImage: images.close)
+                            .foregroundColor(Color(colors.textSecondary))
+                    }
+                }
+            }
+            .navigationBarTitleDisplayMode(.inline)
+        }
     }
 }

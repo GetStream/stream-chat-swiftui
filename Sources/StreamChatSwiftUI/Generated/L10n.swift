@@ -217,6 +217,14 @@ internal enum L10n {
       /// Admin
       internal static var admin: String { L10n.tr("Localizable", "chat-info.member.admin") }
     }
+    internal enum Members {
+      /// %d Members
+      internal static func count(_ p1: Int) -> String {
+        return L10n.tr("Localizable", "chat-info.members.count", p1)
+      }
+      /// Members
+      internal static var title: String { L10n.tr("Localizable", "chat-info.members.title") }
+    }
     internal enum Mute {
       /// Mute Group
       internal static var group: String { L10n.tr("Localizable", "chat-info.mute.group") }

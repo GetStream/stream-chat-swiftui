@@ -11,6 +11,7 @@ import SwiftUI
 // View model for the `ChatChannelInfoView`.
 @MainActor public class ChatChannelInfoViewModel: ObservableObject, ChatChannelControllerDelegate {
     @Injected(\.chatClient) private var chatClient
+    @Injected(\.utils) private var utils
 
     @Published public var participants = [ParticipantInfo]()
     @Published public var muted: Bool {
@@ -24,6 +25,7 @@ import SwiftUI
     }
 
     @Published public var memberListCollapsed = true
+    @Published public var memberListSheetShown = false
     @Published public var leaveGroupAlertShown = false
     @Published public var blockUserAlertShown = false
     @Published public var errorShown = false
@@ -93,18 +95,12 @@ import SwiftUI
            }) {
             return [otherParticipant]
         }
-        
-        let participants = participants.filter { $0.isDeactivated == false }
 
-        if participants.count <= 6 {
-            return participants
-        }
+        return Array(allParticipants.prefix(5))
+    }
 
-        if memberListCollapsed {
-            return Array(participants[0..<6])
-        } else {
-            return participants
-        }
+    public var allParticipants: [ParticipantInfo] {
+        participants.filter { $0.isDeactivated == false }
     }
 
     open var leaveButtonTitle: String {
@@ -136,12 +132,17 @@ import SwiftUI
     }
 
     public var showMoreUsersButton: Bool {
-        !showSingleMemberDMView && memberListCollapsed && notDisplayedParticipantsCount > 0
+        !showSingleMemberDMView && notDisplayedParticipantsCount > 0
     }
 
     public init(channel: ChatChannel) {
         self.channel = channel
-        channelName = channel.name ?? ""
+        channelName = channel.name?.isEmpty == false
+            ? channel.name!
+            : (InjectedValues[\.utils].channelNameFormatter.format(
+                channel: channel,
+                forCurrentUserId: InjectedValues[\.chatClient].currentUserId
+            ) ?? "")
         muted = channel.isMuted
         channelController = chatClient.channelController(for: channel.cid)
         channelController.delegate = self
@@ -196,6 +197,13 @@ import SwiftUI
         loadAdditionalUsers()
     }
 
+    public func onSheetMemberAppear(_ participantInfo: ParticipantInfo) {
+        let all = allParticipants
+        guard let index = all.firstIndex(where: { $0.id == participantInfo.id }) else { return }
+        if index < all.count - 10 { return }
+        loadAdditionalUsers()
+    }
+
     public func leaveConversationTapped(completion: @escaping @MainActor () -> Void) {
         if !channel.isDirectMessageChannel {
             removeUserFromConversation(completion: completion)
@@ -239,6 +247,12 @@ import SwiftUI
     ) {
         if let channel = channelController.channel {
             self.channel = channel
+            channelName = channel.name?.isEmpty == false
+                ? channel.name!
+                : (utils.channelNameFormatter.format(
+                    channel: channel,
+                    forCurrentUserId: chatClient.currentUserId
+                ) ?? "")
             participants = channel.lastActiveMembers.map { member in
                 ParticipantInfo(
                     chatUser: member,

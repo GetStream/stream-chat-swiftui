@@ -259,6 +259,8 @@
 "chat-info.users.view-all" = "View all";
 "chat-info.edit" = "Edit";
 "chat-info.member.admin" = "Admin";
+"chat-info.members.title" = "Members";
+"chat-info.members.count" = "%d Members";
 
 "channel.item.audio" = "Audio";
 "channel.item.photo" = "Photo";

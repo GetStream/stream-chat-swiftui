@@ -110,6 +110,9 @@ public struct ChatChannelInfoView<Factory: ViewFactory>: View, KeyboardReadable 
         }
         .dismissKeyboardOnTap(enabled: viewModel.keyboardShown)
         .background(Color(colors.backgroundCoreApp).edgesIgnoringSafeArea(.bottom))
+        .sheet(isPresented: $viewModel.memberListSheetShown) {
+            MemberListView(factory: factory, viewModel: viewModel)
+        }
     }
 
     // MARK: - Header
@@ -179,7 +182,7 @@ public struct ChatChannelInfoView<Factory: ViewFactory>: View, KeyboardReadable 
 
             if viewModel.showMoreUsersButton {
                 Button {
-                    viewModel.memberListCollapsed = false
+                    viewModel.memberListSheetShown = true
                 } label: {
                     Text(L10n.ChatInfo.Users.viewAll)
                         .font(fonts.body)
