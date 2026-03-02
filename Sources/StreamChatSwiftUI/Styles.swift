@@ -106,10 +106,6 @@ public class LiquidGlassStyles: Styles {
     public func makeComposerButtonViewModifier(options: ComposerButtonModifierOptions) -> some ViewModifier {
         LiquidGlassModifier(shape: .circle, isInteractive: true)
     }
-    
-    public func makeMessageListContainerModifier(options: MessageListContainerModifierOptions) -> some ViewModifier {
-        MessageListEdgeBlurModifier()
-    }
 
     public func makeSuggestionsContainerModifier(options: SuggestionsContainerModifierOptions) -> some ViewModifier {
         SuggestionsLiquidGlassContainerModifier()
@@ -214,36 +210,6 @@ struct SuggestionsLiquidGlassContainerModifier: ViewModifier {
                 LiquidGlassModifier(shape: .roundedRect(tokens.radius3xl))
             )
             .padding(.horizontal, tokens.spacingMd)
-    }
-}
-
-struct MessageListEdgeBlurModifier: ViewModifier {
-    @Injected(\.colors) var colors
-
-    private let gradientHeight: CGFloat = 120
-
-    func body(content: Content) -> some View {
-        if #available(iOS 15.0, *) {
-            content
-                .overlay(alignment: .bottom) {
-                    Rectangle()
-                        .fill(.ultraThinMaterial)
-                        .frame(height: gradientHeight)
-                        .mask(
-                            LinearGradient(
-                                stops: [
-                                    .init(color: .clear, location: 0),
-                                    .init(color: Color(colors.background), location: 1.0)
-                                ],
-                                startPoint: .top,
-                                endPoint: .bottom
-                            )
-                        )
-                        .allowsHitTesting(false)
-                }
-        } else {
-            content
-        }
     }
 }
 
