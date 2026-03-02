@@ -715,8 +715,7 @@ extension ViewFactory {
         options: SendInChannelViewOptions
     ) -> some View {
         SendInChannelView(
-            sendInChannel: options.showReplyInChannel,
-            isDirectMessage: options.isDirectMessage
+            sendInChannel: options.showReplyInChannel
         )
     }
     

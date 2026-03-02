@@ -462,8 +462,7 @@ public struct ComposerInputView<Factory: ViewFactory>: View, KeyboardReadable {
                 if sendInChannelShown {
                     factory.makeSendInChannelView(
                         options: SendInChannelViewOptions(
-                            showReplyInChannel: $showReplyInChannel,
-                            isDirectMessage: isDirectMessage
+                            showReplyInChannel: $showReplyInChannel
                         )
                     )
                 }

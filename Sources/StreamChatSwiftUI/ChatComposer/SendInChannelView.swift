@@ -12,7 +12,6 @@ struct SendInChannelView: View {
     @Injected(\.tokens) private var tokens
 
     @Binding var sendInChannel: Bool
-    var isDirectMessage: Bool
 
     private let checkboxSize: CGFloat = 20
 
@@ -22,8 +21,9 @@ struct SendInChannelView: View {
         } label: {
             HStack(spacing: tokens.spacingXs) {
                 checkbox
-                Text(isDirectMessage ? L10n.Composer.Checkmark.directMessageReply : L10n.Composer.Checkmark.channelReply)
+                Text(L10n.Composer.Checkmark.channelReply)
                     .font(fonts.footnote)
+                    .lineLimit(1)
                     .foregroundColor(sendInChannel ? Color(colors.textPrimary) : Color(colors.textTertiary))
                 Spacer()
             }
