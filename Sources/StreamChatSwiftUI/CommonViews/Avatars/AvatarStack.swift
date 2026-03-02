@@ -42,12 +42,10 @@ public struct AvatarStack: View {
     // MARK: - Body
     
     public var body: some View {
-        HStack(spacing: tokens.spacingSm - size) {
-            HStack(spacing: -tokens.spacingXs) {
-                ForEach(avatars.indices, id: \.self) { index in
-                    avatarView(url: avatars[index].url, initials: avatars[index].initials)
-                        .zIndex(Double(index))
-                }
+        HStack(spacing: -size / 2 + tokens.spacingXxs) {
+            ForEach(avatars.indices, id: \.self) { index in
+                avatarView(url: avatars[index].url, initials: avatars[index].initials)
+                    .zIndex(Double(index))
             }
             if showsBadge {
                 BadgeCountView(count: overflowCount, size: size)
