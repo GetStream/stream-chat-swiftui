@@ -148,7 +148,7 @@ struct PinnedMessageView<Factory: ViewFactory>: View {
                 }
             }
         }
-        .padding(.all, 8)
+        .padding(.all, tokens.spacingMd)
     }
 
     private var previewAttachmentIconImage: UIImage? {

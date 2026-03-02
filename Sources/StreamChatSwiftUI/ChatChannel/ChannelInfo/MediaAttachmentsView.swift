@@ -2,7 +2,9 @@
 // Copyright © 2026 Stream.io Inc. All rights reserved.
 //
 
+import AVFoundation
 import StreamChat
+import StreamChatCommonUI
 import SwiftUI
 
 /// View displaying media attachments.
@@ -70,7 +72,7 @@ public struct MediaAttachmentsView<Factory: ViewFactory>: View {
                                 }
                             }
                             .overlay(
-                                BottomRightView {
+                                TopLeftView {
                                     factory.makeUserAvatarView(
                                         options: UserAvatarViewOptions(
                                             user: mediaItem.message.author,
@@ -110,7 +112,12 @@ public struct MediaAttachmentsView<Factory: ViewFactory>: View {
 }
 
 public struct MediaAttachmentContentView<Factory: ViewFactory>: View {
+    @Injected(\.utils) private var utils
+    @Injected(\.tokens) private var tokens
+
     @State private var galleryShown = false
+    @State private var videoDuration: TimeInterval?
+    @State private var durationTask: Task<Void, Never>?
 
     let factory: Factory
     let mediaItem: MediaItem
@@ -144,11 +151,37 @@ public struct MediaAttachmentContentView<Factory: ViewFactory>: View {
                 width: itemWidth,
                 height: itemWidth
             )
-            .frame(
-                width: itemWidth,
-                height: itemWidth
-            )
+            .frame(width: itemWidth, height: itemWidth)
             .clipped()
+            .overlay(
+                Group {
+                    if mediaItem.isVideo, let d = durationText {
+                        VideoMediaBadge(durationText: d)
+                            .padding(tokens.spacingXxs)
+                    }
+                },
+                alignment: .bottomLeading
+            )
+        }
+        .onAppear {
+            guard mediaItem.isVideo,
+                  let url = mediaItem.videoAttachment?.payload.videoURL else { return }
+            durationTask = Task {
+                let asset = AVURLAsset(url: url)
+                await withCheckedContinuation { continuation in
+                    asset.loadValuesAsynchronously(forKeys: ["duration"]) {
+                        let seconds = asset.duration.seconds
+                        if seconds.isFinite && seconds > 0 {
+                            Task { @MainActor in videoDuration = seconds }
+                        }
+                        continuation.resume()
+                    }
+                }
+            }
+        }
+        .onDisappear {
+            durationTask?.cancel()
+            durationTask = nil
         }
         .fullScreenCover(isPresented: $galleryShown) {
             factory.makeGalleryView(
@@ -160,5 +193,16 @@ public struct MediaAttachmentContentView<Factory: ViewFactory>: View {
                 )
             )
         }
+    }
+
+    private var durationText: String? {
+        // Prefer extraData duration (available immediately, no network needed)
+        if let extraData = mediaItem.videoAttachment?.payload.extraData,
+           case let .number(duration) = extraData["duration"] {
+            return utils.mediaBadgeDurationFormatter.longFormat(duration)
+        }
+        // Fall back to AVFoundation-loaded duration
+        guard let duration = videoDuration else { return nil }
+        return utils.mediaBadgeDurationFormatter.longFormat(duration)
     }
 }
