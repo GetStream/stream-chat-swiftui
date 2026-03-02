@@ -7,13 +7,18 @@ import SwiftUI
 struct ParticipantInfoView<Factory: ViewFactory>: View {
     @Injected(\.fonts) var fonts
     @Injected(\.colors) var colors
-    
+    @Injected(\.tokens) var tokens
+
     var factory: Factory
     let participant: ParticipantInfo
     var actions: [ParticipantAction]
-    
     var onDismiss: () -> Void
-    
+
+    @State private var alertShown = false
+    @State private var alertAction: ParticipantAction? {
+        didSet { alertShown = alertAction != nil }
+    }
+
     init(
         factory: Factory = DefaultViewFactory.shared,
         participant: ParticipantInfo,
@@ -25,74 +30,40 @@ struct ParticipantInfoView<Factory: ViewFactory>: View {
         self.actions = actions
         self.onDismiss = onDismiss
     }
-    
-    @State private var alertShown = false
-    @State private var alertAction: ParticipantAction? {
-        didSet {
-            alertShown = alertAction != nil
-        }
-    }
-    
-    public var body: some View {
-        VStack {
-            Spacer()
-            VStack(spacing: 4) {
-                Text(participant.displayName)
-                    .font(fonts.bodyBold)
 
-                Text(participant.onlineInfoText)
-                    .font(fonts.footnote)
-                    .foregroundColor(Color(colors.textLowEmphasis))
-                
-                factory.makeUserAvatarView(
-                    options: .init(
-                        user: participant.chatUser,
-                        size: AvatarSize.extraExtraLarge,
-                        showsIndicator: true
+    var body: some View {
+        NavigationView {
+            VStack(alignment: .leading, spacing: 0) {
+                HStack(spacing: tokens.spacingMd) {
+                    factory.makeUserAvatarView(
+                        options: .init(
+                            user: participant.chatUser,
+                            size: AvatarSize.extraLarge,
+                            showsIndicator: true
+                        )
                     )
-                )
-                .padding()
-
-                VStack {
-                    ForEach(actions) { action in
-                        Divider()
-                            .padding(.horizontal, -16)
-
-                        if let destination = action.navigationDestination {
-                            NavigationLink {
-                                destination
-                            } label: {
-                                ActionItemView(
-                                    title: action.title,
-                                    iconName: action.iconName,
-                                    isDestructive: action.isDestructive
-                                )
-                            }
-                        } else {
-                            Button {
-                                if action.confirmationPopup != nil {
-                                    alertAction = action
-                                } else {
-                                    action.action()
-                                }
-                            } label: {
-                                ActionItemView(
-                                    title: action.title,
-                                    iconName: action.iconName,
-                                    isDestructive: action.isDestructive
-                                )
-                            }
-                        }
+                    .padding(.top, tokens.spacingSm)
+                    
+                    VStack(alignment: .leading, spacing: tokens.spacingXxxs) {
+                        Text(participant.displayName)
+                            .font(fonts.title3.weight(.semibold))
+                            .foregroundColor(Color(colors.textPrimary))
+                        Text(participant.onlineInfoText)
+                            .font(fonts.footnote)
+                            .foregroundColor(Color(colors.textSecondary))
                     }
+                    Spacer()
                 }
+                .padding(.all, tokens.spacingMd)
+
+                ForEach(actions) { action in
+                    actionRow(for: action)
+                }
+
+                Spacer()
             }
-            .padding()
-            .frame(maxWidth: .infinity)
-            .background(Color(colors.background1))
-            .cornerRadius(16)
-            .padding(.all, 8)
-            .foregroundColor(Color(colors.text))
-            .opacity(alertShown ? 0 : 1)
+            .background(Color(colors.background).edgesIgnoringSafeArea(.all))
+            .navigationBarHidden(true)
         }
         .alert(isPresented: $alertShown) {
             Alert(
@@ -100,15 +71,45 @@ struct ParticipantInfoView<Factory: ViewFactory>: View {
                 message: Text(alertAction?.confirmationPopup?.message ?? ""),
                 primaryButton: .destructive(Text(alertAction?.confirmationPopup?.buttonTitle ?? "")) {
                     alertAction?.action()
+                    onDismiss()
                 },
                 secondaryButton: .cancel()
             )
         }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .contentShape(.rect)
-        .onTapGesture {
-            onDismiss()
+    }
+
+    @ViewBuilder
+    private func actionRow(for action: ParticipantAction) -> some View {
+        if let destination = action.navigationDestination {
+            NavigationLink {
+                destination
+            } label: {
+                actionLabel(for: action)
+            }
+        } else {
+            Button {
+                if action.confirmationPopup != nil {
+                    alertAction = action
+                } else {
+                    action.action()
+                    onDismiss()
+                }
+            } label: {
+                actionLabel(for: action)
+            }
         }
+    }
+
+    private func actionLabel(for action: ParticipantAction) -> some View {
+        HStack(spacing: tokens.spacingMd) {
+            Image(systemName: action.iconName)
+                .frame(width: tokens.spacingLg)
+            Text(action.title)
+                .font(fonts.body)
+            Spacer()
+        }
+        .foregroundColor(action.isDestructive ? Color(colors.alert) : Color(colors.textPrimary))
+        .padding(.all, tokens.spacingMd)
     }
 }
 

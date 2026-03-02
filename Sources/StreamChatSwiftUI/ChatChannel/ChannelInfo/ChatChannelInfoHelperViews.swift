@@ -270,6 +270,7 @@ public struct MemberListView<Factory: ViewFactory>: View {
 
     let factory: Factory
     @ObservedObject var viewModel: ChatChannelInfoViewModel
+    @State private var selectedParticipant: ParticipantInfo?
 
     public init(factory: Factory = DefaultViewFactory.shared, viewModel: ChatChannelInfoViewModel) {
         self.factory = factory
@@ -278,39 +279,22 @@ public struct MemberListView<Factory: ViewFactory>: View {
 
     public var body: some View {
         NavigationView {
-            ZStack {
-                let allParticipants = viewModel.allParticipants
-                ScrollView {
-                    LazyVStack(spacing: 0) {
-                        ForEach(Array(allParticipants.enumerated()), id: \.element.id) { _, participant in
-                            ChatInfoMemberRow(
-                                factory: factory,
-                                participant: participant,
-                                backgroundColor: colors.backgroundCoreApp,
-                                onAppear: { viewModel.onSheetMemberAppear(participant) },
-                                onTap: {
-                                    withAnimation {
-                                        if participant.id != chatClient.currentUserId {
-                                            viewModel.selectedParticipant = participant
-                                        }
-                                    }
-                                }
-                            )
-                        }
-                    }
-                }
-                .background(Color(colors.backgroundCoreApp).edgesIgnoringSafeArea(.all))
-                .blur(radius: viewModel.selectedParticipant != nil ? 6 : 0)
-                .allowsHitTesting(viewModel.selectedParticipant == nil)
-
-                if let selectedParticipant = viewModel.selectedParticipant {
-                    ParticipantInfoView(
-                        factory: factory,
-                        participant: selectedParticipant,
-                        actions: viewModel.participantActions(for: selectedParticipant)
-                    ) {
-                        withAnimation {
-                            viewModel.selectedParticipant = nil
+            ScrollView {
+                LazyVStack(spacing: 0) {
+                    let allParticipants = viewModel.allParticipants
+                    ForEach(Array(allParticipants.enumerated()), id: \.element.id) { index, participant in
+                        ChatInfoMemberRow(
+                            factory: factory,
+                            participant: participant,
+                            backgroundColor: colors.backgroundCoreApp,
+                            onAppear: { viewModel.onSheetMemberAppear(participant) },
+                            onTap: {
+                                selectedParticipant = participant
+                            }
+                        )
+                        if index < allParticipants.count - 1 {
+                            Divider()
+                                .padding(.leading, tokens.spacingMd + AvatarSize.medium + tokens.spacingSm)
                         }
                     }
                 }
@@ -322,7 +306,7 @@ public struct MemberListView<Factory: ViewFactory>: View {
                         .font(fonts.bodyBold)
                         .foregroundColor(Color(colors.navigationBarTitle))
                 }
-                ToolbarItem(placement: .navigationBarTrailing) {
+                ToolbarItem(placement: .navigationBarLeading) {
                     Button {
                         viewModel.memberListSheetShown = false
                     } label: {
@@ -332,6 +316,16 @@ public struct MemberListView<Factory: ViewFactory>: View {
                 }
             }
             .navigationBarTitleDisplayMode(.inline)
+        }
+        .sheet(item: $selectedParticipant) { participant in
+            ParticipantInfoView(
+                factory: factory,
+                participant: participant,
+                actions: viewModel.participantActions(for: participant)
+            ) {
+                selectedParticipant = nil
+            }
+            .modifier(PresentationDetentsModifier(sheetSizes: [.custom(250), .medium]))
         }
     }
 }

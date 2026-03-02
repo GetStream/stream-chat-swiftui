@@ -42,7 +42,7 @@ import SwiftUI
     @Published public var selectedParticipant: ParticipantInfo?
     
     open var shouldShowBlockUserButton: Bool {
-        channel.isDirectMessageChannel
+        showSingleMemberDMView
     }
 
     public var isDMUserBlocked: Bool {
@@ -55,7 +55,7 @@ import SwiftUI
     }
 
     open var shouldShowLeaveConversationButton: Bool {
-        if channel.isDirectMessageChannel {
+        if showSingleMemberDMView {
             channel.ownCapabilities.contains(.deleteChannel)
         } else {
             channel.ownCapabilities.contains(.leaveChannel)
@@ -104,7 +104,7 @@ import SwiftUI
     }
 
     open var leaveButtonTitle: String {
-        if channel.isDirectMessageChannel {
+        if showSingleMemberDMView {
             L10n.Alert.Actions.deleteChannelTitle
         } else {
             L10n.Alert.Actions.leaveGroupTitle
@@ -112,7 +112,7 @@ import SwiftUI
     }
 
     open var leaveConversationDescription: String {
-        if channel.isDirectMessageChannel {
+        if showSingleMemberDMView {
             L10n.Alert.Actions.deleteChannelMessage
         } else {
             L10n.Alert.Actions.leaveGroupMessage
@@ -155,7 +155,7 @@ import SwiftUI
         participants = channel.lastActiveMembers.map { member in
             ParticipantInfo(
                 chatUser: member,
-                displayName: member.name ?? member.id,
+                displayName: memberDisplayName(member),
                 onlineInfoText: onlineInfo(for: member),
                 isDeactivated: member.isDeactivated
             )
@@ -205,7 +205,7 @@ import SwiftUI
     }
 
     public func leaveConversationTapped(completion: @escaping @MainActor () -> Void) {
-        if !channel.isDirectMessageChannel {
+        if !showSingleMemberDMView {
             removeUserFromConversation(completion: completion)
         } else {
             deleteChannel(completion: completion)
@@ -256,7 +256,7 @@ import SwiftUI
             participants = channel.lastActiveMembers.map { member in
                 ParticipantInfo(
                     chatUser: member,
-                    displayName: member.name ?? member.id,
+                    displayName: memberDisplayName(member),
                     onlineInfoText: onlineInfo(for: member),
                     isDeactivated: member.isDeactivated
                 )
@@ -305,7 +305,7 @@ import SwiftUI
                 let newMembers = memberListController.members.map { member in
                     ParticipantInfo(
                         chatUser: member,
-                        displayName: member.name ?? member.id,
+                        displayName: self.memberDisplayName(member),
                         onlineInfoText: self.onlineInfo(for: member),
                         isDeactivated: member.isDeactivated
                     )
@@ -320,8 +320,23 @@ import SwiftUI
     private var lastSeenDateFormatter: (Date) -> String? {
         DateUtils.timeAgo
     }
+
+    private func memberDisplayName(_ member: ChatChannelMember) -> String {
+        member.id == chatClient.currentUserId ? L10n.Channel.Item.you : (member.name ?? member.id)
+    }
     
     open func participantActions(for participant: ParticipantInfo) -> [ParticipantAction] {
+        if participant.id == chatClient.currentUserId {
+            var actions = [ParticipantAction]()
+            if !showSingleMemberDMView {
+                actions.append(leaveGroupAction(
+                    onDismiss: handleParticipantActionDismiss,
+                    onError: handleParticipantActionError
+                ))
+            }
+            return actions
+        }
+
         var actions = [ParticipantAction]()
 
         let directMessageAction = ParticipantAction(
@@ -362,6 +377,21 @@ import SwiftUI
             }
         }
         
+        if showSingleMemberDMView {
+            let blockAction = blockParticipantAction(
+                participant: participant,
+                onDismiss: handleParticipantActionDismiss,
+                onError: handleParticipantActionError
+            )
+            actions.append(blockAction)
+        } else {
+            let leaveAction = leaveGroupAction(
+                onDismiss: handleParticipantActionDismiss,
+                onError: handleParticipantActionError
+            )
+            actions.append(leaveAction)
+        }
+
         if channel.canUpdateChannelMembers {
             let removeUserAction = removeUserAction(
                 participant: participant,
@@ -370,19 +400,7 @@ import SwiftUI
             )
             actions.append(removeUserAction)
         }
-
-        let cancel = ParticipantAction(
-            title: L10n.Alert.Actions.cancel,
-            iconName: "xmark.circle",
-            action: { [weak self] in
-                self?.selectedParticipant = nil
-            },
-            confirmationPopup: nil,
-            isDestructive: false
-        )
-
-        actions.append(cancel)
-
+        
         return actions
     }
     
@@ -484,10 +502,68 @@ import SwiftUI
         return removeUserAction
     }
     
+    public func blockParticipantAction(
+        participant: ParticipantInfo,
+        onDismiss: @escaping () -> Void,
+        onError: @escaping (Error) -> Void
+    ) -> ParticipantAction {
+        let isBlocked = currentUserController?.currentUser?.blockedUserIds.contains(participant.id) ?? false
+        let title = isBlocked ? L10n.Alert.Actions.unblockUser : L10n.Alert.Actions.blockUser
+        let action = { [weak self] in
+            let controller = self?.chatClient.userController(userId: participant.id)
+            if isBlocked {
+                controller?.unblock { error in
+                    if let error { onError(error) } else { onDismiss() }
+                }
+            } else {
+                controller?.block { error in
+                    if let error { onError(error) } else { onDismiss() }
+                }
+            }
+        }
+        let confirmationPopup = isBlocked ? nil : ConfirmationPopup(
+            title: L10n.Alert.Actions.blockUser,
+            message: L10n.Message.Actions.UserBlock.confirmationMessage,
+            buttonTitle: L10n.Alert.Actions.blockUser
+        )
+        return ParticipantAction(
+            title: title,
+            iconName: "circle.slash",
+            action: action,
+            confirmationPopup: confirmationPopup,
+            isDestructive: !isBlocked
+        )
+    }
+
+    public func leaveGroupAction(
+        onDismiss: @escaping () -> Void,
+        onError: @escaping (Error) -> Void
+    ) -> ParticipantAction {
+        let action = { [weak self] in
+            guard let self else { return }
+            guard let userId = chatClient.currentUserId else { return }
+            channelController.removeMembers(userIds: [userId]) { error in
+                if let error { onError(error) } else { onDismiss() }
+            }
+        }
+        let confirmationPopup = ConfirmationPopup(
+            title: L10n.Alert.Actions.leaveGroupTitle,
+            message: L10n.Alert.Actions.leaveGroupMessage,
+            buttonTitle: L10n.Alert.Actions.leaveGroupButton
+        )
+        return ParticipantAction(
+            title: L10n.Alert.Actions.leaveGroupTitle,
+            iconName: "rectangle.portrait.and.arrow.right",
+            action: action,
+            confirmationPopup: confirmationPopup,
+            isDestructive: true
+        )
+    }
+
     func handleParticipantActionDismiss() {
         selectedParticipant = nil
     }
-    
+
     func handleParticipantActionError(_ error: Error?) {
         errorShown = true
     }

@@ -64,11 +64,11 @@ public struct ChatChannelInfoView<Factory: ViewFactory>: View, KeyboardReadable 
                 }
             }
             .overlay(
-                popupShown ?
+                viewModel.addUsersShown ?
                     Color.black.opacity(0.3).edgesIgnoringSafeArea(.all) : nil
             )
-            .blur(radius: popupShown ? 6 : 0)
-            .allowsHitTesting(!popupShown)
+            .blur(radius: viewModel.addUsersShown ? 6 : 0)
+            .allowsHitTesting(!viewModel.addUsersShown)
 
             if viewModel.addUsersShown {
                 VStack {
@@ -91,18 +91,6 @@ public struct ChatChannelInfoView<Factory: ViewFactory>: View, KeyboardReadable 
                     )
                 }
             }
-
-            if let selectedParticipant = viewModel.selectedParticipant {
-                ParticipantInfoView(
-                    factory: factory,
-                    participant: selectedParticipant,
-                    actions: viewModel.participantActions(for: selectedParticipant)
-                ) {
-                    withAnimation {
-                        viewModel.selectedParticipant = nil
-                    }
-                }
-            }
         }
         .modifier(ChatChannelInfoViewHeaderViewModifier(viewModel: viewModel))
         .onReceive(keyboardWillChangePublisher) { visible in
@@ -112,6 +100,16 @@ public struct ChatChannelInfoView<Factory: ViewFactory>: View, KeyboardReadable 
         .background(Color(colors.backgroundCoreApp).edgesIgnoringSafeArea(.bottom))
         .sheet(isPresented: $viewModel.memberListSheetShown) {
             MemberListView(factory: factory, viewModel: viewModel)
+        }
+        .sheet(item: $viewModel.selectedParticipant) { participant in
+            ParticipantInfoView(
+                factory: factory,
+                participant: participant,
+                actions: viewModel.participantActions(for: participant)
+            ) {
+                viewModel.selectedParticipant = nil
+            }
+            .modifier(PresentationDetentsModifier(sheetSizes: [.custom(250), .medium]))
         }
     }
 
@@ -172,9 +170,7 @@ public struct ChatChannelInfoView<Factory: ViewFactory>: View, KeyboardReadable 
                     onAppear: { viewModel.onParticipantAppear(participant) },
                     onTap: {
                         withAnimation {
-                            if participant.id != chatClient.currentUserId {
-                                viewModel.selectedParticipant = participant
-                            }
+                            viewModel.selectedParticipant = participant
                         }
                     }
                 )
@@ -265,7 +261,7 @@ public struct ChatChannelInfoView<Factory: ViewFactory>: View, KeyboardReadable 
             viewModel.leaveGroupAlertShown = true
         } label: {
             HStack(spacing: tokens.spacingMd) {
-                Image(systemName: viewModel.channel.isDirectMessageChannel ? "trash" : "rectangle.portrait.and.arrow.right")
+                Image(systemName: viewModel.showSingleMemberDMView ? "trash" : "rectangle.portrait.and.arrow.right")
                     .customizable()
                     .frame(width: tokens.spacingLg)
                 Text(viewModel.leaveButtonTitle)
@@ -295,7 +291,7 @@ public struct ChatChannelInfoView<Factory: ViewFactory>: View, KeyboardReadable 
     }
 
     private var popupShown: Bool {
-        viewModel.addUsersShown || viewModel.selectedParticipant != nil
+        viewModel.addUsersShown
     }
 }
 
