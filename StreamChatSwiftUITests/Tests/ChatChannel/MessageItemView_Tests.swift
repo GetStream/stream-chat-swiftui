@@ -761,6 +761,89 @@ import XCTest
         AssertSnapshot(view, size: CGSize(width: 375, height: 200))
     }
 
+    // MARK: - Top reactions + annotations
+
+    func test_messageContainerView_topReactionsWithPinnedAnnotation_snapshot() {
+        // Given
+        let reactions: [MessageReactionType: Int] = [
+            MessageReactionType(rawValue: "like"): 2,
+            MessageReactionType(rawValue: "love"): 1
+        ]
+        let channel = ChatChannel.mockNonDMChannel()
+        let message = ChatMessage.mock(
+            id: .unique,
+            cid: channel.cid,
+            text: "Pinned message with reactions",
+            author: .mock(id: .unique, name: "Martin"),
+            reactionScores: reactions,
+            reactionCounts: reactions,
+            pinDetails: MessagePinDetails(
+                pinnedAt: Date(),
+                pinnedBy: .mock(id: .unique, name: "Martin"),
+                expiresAt: nil
+            )
+        )
+
+        // When
+        let view = testMessageViewContainer(message: message, channel: channel)
+
+        // Then
+        AssertSnapshot(view, size: CGSize(width: 375, height: 200))
+    }
+
+    func test_messageContainerView_topReactionsWithThreadReplyAnnotation_snapshot() {
+        // Given
+        let reactions: [MessageReactionType: Int] = [
+            MessageReactionType(rawValue: "like"): 1
+        ]
+        let channel = ChatChannel.mockNonDMChannel()
+        let message = ChatMessage.mock(
+            id: .unique,
+            cid: channel.cid,
+            text: "Thread reply shown in channel",
+            author: .mock(id: .unique, name: "Martin"),
+            parentMessageId: .unique,
+            showReplyInChannel: true,
+            reactionScores: reactions,
+            reactionCounts: reactions
+        )
+
+        // When
+        let view = testMessageViewContainer(message: message, channel: channel)
+
+        // Then
+        AssertSnapshot(view, size: CGSize(width: 375, height: 200))
+    }
+
+    func test_messageContainerView_topReactionsWithReminderAnnotation_snapshot() {
+        // Given
+        let reactions: [MessageReactionType: Int] = [
+            MessageReactionType(rawValue: "like"): 1
+        ]
+        let channel = ChatChannel.mockNonDMChannel(
+            config: .mock(messageRemindersEnabled: true)
+        )
+        let message = ChatMessage.mock(
+            id: .unique,
+            cid: channel.cid,
+            text: "Message with reminder and reactions",
+            author: .mock(id: .unique, name: "Martin"),
+            reactionScores: reactions,
+            reactionCounts: reactions,
+            reminder: MessageReminderInfo(
+                remindAt: Date().addingTimeInterval(3600),
+                createdAt: Date(),
+                updatedAt: Date()
+            )
+        )
+
+        // When
+        let view = testMessageViewContainer(message: message, channel: channel)
+
+        // Then
+        AssertSnapshot(view, size: CGSize(width: 375, height: 200))
+    }
+
     // MARK: - private
 
     func testMessageViewContainer(
@@ -782,7 +865,7 @@ import XCTest
             scrolledId: .constant(nil),
             quotedMessage: .constant(nil),
             onLongPress: { _ in },
-            viewModel: messageViewModel ?? MessageViewModel(message: message, channel: channel)
+            viewModel: messageViewModel ?? MessageViewModel(message: message, channel: channel ?? .mockDMChannel())
         )
         .environment(\.highlightedMessageId, highlightedMessageId)
         .frame(width: 375, height: 200)

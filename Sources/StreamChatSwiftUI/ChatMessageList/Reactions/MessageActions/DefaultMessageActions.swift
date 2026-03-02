@@ -395,9 +395,9 @@ public extension MessageAction {
             iconName: "icn_thread_reply",
             action: {
                 NotificationCenter.default.post(
-                    name: NSNotification.Name(MessageRepliesConstants.selectedMessageThread),
+                    name: MessageRepliesConstants.threadMessageNavigationNotification,
                     object: nil,
-                    userInfo: [MessageRepliesConstants.selectedMessage: message]
+                    userInfo: [MessageRepliesConstants.threadMessageParentId: message.messageId]
                 )
             },
             confirmationPopup: nil,

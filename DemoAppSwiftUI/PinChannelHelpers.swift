@@ -36,8 +36,8 @@ struct DemoAppChatChannelListItem: View {
                         Spacer()
 
                         if injectedChannelInfo == nil && channel.unreadCount != .noUnread {
-                            UnreadIndicatorView(
-                                unreadCount: channel.unreadCount.messages
+                            BadgeNotificationView(
+                                count: channel.unreadCount.messages
                             )
                         }
                     }
@@ -79,7 +79,7 @@ struct DemoAppChatChannelListItem: View {
                     .foregroundColor(Color(colors.subtitleText))
             } else {
                 if channel.shouldShowTypingIndicator {
-                    TypingIndicatorView()
+                    TypingIndicatorDotsView()
                 }
             }
             if let draftText = channel.draftMessageText {

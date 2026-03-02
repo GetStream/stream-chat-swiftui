@@ -119,6 +119,7 @@ import XCTest
         // Given
         let header = DefaultChatChannelHeader(
             channel: .mockDMChannel(name: "Test"),
+            shouldShowTypingIndicator: false,
             isActive: .constant(false)
         )
         let view = NavigationView {

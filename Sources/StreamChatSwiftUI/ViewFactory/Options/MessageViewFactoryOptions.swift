@@ -165,14 +165,25 @@ public final class MessageAuthorAndDateViewOptions: Sendable {
     }
 }
 
-/// Options for creating the message translation footer view.
-public final class MessageTranslationFooterViewOptions: Sendable {
+/// Options for creating the message annotations stack view.
+public final class MessageTopViewOptions: Sendable {
+    /// The message to display annotations for.
+    public let message: ChatMessage
+    /// The channel containing the message.
+    public let channel: ChatChannel
     /// The view model for the message.
     public let messageViewModel: MessageViewModel
     /// When true, the `textOnAccent` color is used instead of the default darker text color.
     public let usesInvertedStyle: Bool
     
-    public init(messageViewModel: MessageViewModel, usesInvertedStyle: Bool = false) {
+    public init(
+        message: ChatMessage,
+        channel: ChatChannel,
+        messageViewModel: MessageViewModel,
+        usesInvertedStyle: Bool = false
+    ) {
+        self.message = message
+        self.channel = channel
         self.messageViewModel = messageViewModel
         self.usesInvertedStyle = usesInvertedStyle
     }
@@ -267,8 +278,8 @@ public final class MessageListDateIndicatorViewOptions: Sendable {
     }
 }
 
-/// Options for creating the typing indicator bottom view.
-public final class TypingIndicatorBottomViewOptions: Sendable {
+/// Options for creating the typing indicator view.
+public final class TypingIndicatorViewOptions: Sendable {
     /// The channel to show typing indicators for.
     public let channel: ChatChannel
     /// The current user ID.
@@ -296,34 +307,6 @@ public final class MessageRepliesViewOptions: Sendable {
     public init(channel: ChatChannel, message: ChatMessage, replyCount: Int, usesInvertedStyle: Bool = false) {
         self.channel = channel
         self.message = message
-        self.replyCount = replyCount
-        self.usesInvertedStyle = usesInvertedStyle
-    }
-}
-
-/// Options for creating the message replies shown in channel view.
-public final class MessageRepliesShownInChannelViewOptions: Sendable {
-    /// The channel containing the message.
-    public let channel: ChatChannel
-    /// The message to show replies for.
-    public let message: ChatMessage
-    /// The parent message.
-    public let parentMessage: ChatMessage
-    /// The number of replies.
-    public let replyCount: Int
-    /// When true, the `textOnAccent` color is used instead of the default darker text color.
-    public let usesInvertedStyle: Bool
-    
-    public init(
-        channel: ChatChannel,
-        message: ChatMessage,
-        parentMessage: ChatMessage,
-        replyCount: Int,
-        usesInvertedStyle: Bool = false
-    ) {
-        self.channel = channel
-        self.message = message
-        self.parentMessage = parentMessage
         self.replyCount = replyCount
         self.usesInvertedStyle = usesInvertedStyle
     }

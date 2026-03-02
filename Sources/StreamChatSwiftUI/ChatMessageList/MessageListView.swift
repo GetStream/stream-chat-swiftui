@@ -9,6 +9,7 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
     @Injected(\.utils) private var utils
     @Injected(\.chatClient) private var chatClient
     @Injected(\.colors) private var colors
+    @Injected(\.tokens) private var tokens
 
     var factory: Factory
     var channel: ChatChannel
@@ -142,7 +143,7 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
             currentDateString: viewModel.currentDateString,
             listId: viewModel.listId,
             isMessageThread: viewModel.isMessageThread,
-            shouldShowTypingIndicator: viewModel.shouldShowTypingIndicator,
+            shouldShowTypingIndicator: viewModel.shouldShowInlineTypingIndicator,
             bottomInset: 0,
             scrollPosition: Binding(
                 get: { viewModel.scrollPosition },
@@ -173,6 +174,16 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
                     }
 
                     LazyVStack(spacing: 0) {
+                        if shouldShowTypingIndicator {
+                            factory.makeInlineTypingIndicatorView(
+                                options: TypingIndicatorViewOptions(
+                                    channel: channel,
+                                    currentUserId: chatClient.currentUserId
+                                )
+                            )
+                            .flippedUpsideDown()
+                        }
+
                         ForEach(messages, id: \.messageId) { message in
                             var index: Int? = messageListDateUtils.indexForMessageDate(message: message, in: messages)
                             let messageDate: Date? = messageListDateUtils.showMessageDate(for: index, in: messages)
@@ -297,7 +308,15 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
                         }
                         let scrollButtonShown = offsetValue < -20
                         if scrollButtonShown != showScrollToLatestButton {
-                            showScrollToLatestButton = scrollButtonShown
+                            if scrollButtonShown {
+                                withAnimation(.easeOut(duration: 0.18)) {
+                                    showScrollToLatestButton = true
+                                }
+                            } else {
+                                withAnimation(.easeIn(duration: 0.12)) {
+                                    showScrollToLatestButton = false
+                                }
+                            }
                         }
                         if messageListConfig.resignsFirstResponderOnScrollDown && keyboardShown && diff < -20 {
                             keyboardShown = false
@@ -338,16 +357,13 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
                         onScrollToBottom: onScrollToBottom
                     )
                 )
-                .offset(y: -bottomInset - 20)
-            }
-
-            if shouldShowTypingIndicator {
-                factory.makeTypingIndicatorBottomView(
-                    options: TypingIndicatorBottomViewOptions(
-                        channel: channel,
-                        currentUserId: chatClient.currentUserId
+                .transition(
+                    .modifier(
+                        active: ScrollButtonTransitionModifier(opacity: 0, offset: 10),
+                        identity: ScrollButtonTransitionModifier(opacity: 1, offset: 0)
                     )
                 )
+                .offset(y: -bottomInset)
             }
         }
         .onReceive(keyboardDidChangePublisher) { visible in
@@ -520,56 +536,43 @@ public struct NewMessagesIndicator: View {
     }
 }
 
-public struct ScrollToBottomButton: View {
+public struct ScrollToBottomButton<Factory: ViewFactory>: View {
     @Injected(\.images) private var images
-    @Injected(\.colors) private var colors
+    @Injected(\.tokens) private var tokens
 
-    private let buttonSize: CGFloat = 40
-
+    var factory: Factory
     var unreadCount: Int
     var onScrollToBottom: () -> Void
 
     public var body: some View {
         BottomRightView {
-            Button {
-                onScrollToBottom()
-            } label: {
+            StreamIconButton(
+                role: .secondary,
+                style: .outline,
+                size: .medium,
+                action: onScrollToBottom
+            ) {
                 Image(uiImage: images.scrollDownArrow)
-                    .aspectRatio(contentMode: .fit)
-                    .frame(width: buttonSize, height: buttonSize)
-                    .modifier(ShadowViewModifier(cornerRadius: buttonSize / 2))
+                    .renderingMode(.template)
+                    .frame(width: tokens.iconSizeMd, height: tokens.iconSizeMd)
             }
+            .modifier(factory.styles.makeScrollToBottomButtonModifier(options: .init()))
             .accessibilityLabel(Text(L10n.Channel.List.ScrollToBottom.title))
-            .padding()
-            .overlay(
-                unreadCount > 0 ?
-                    UnreadButtonIndicator(unreadCount: unreadCount) : nil
-            )
+            .accessibilityIdentifier("ScrollToBottomButton")
+            .badgeNotification(count: unreadCount)
+            .padding(tokens.spacingMd)
         }
-        .accessibilityIdentifier("ScrollToBottomButton")
     }
 }
 
-struct UnreadButtonIndicator: View {
-    @Injected(\.colors) private var colors
-    @Injected(\.fonts) private var fonts
+struct ScrollButtonTransitionModifier: ViewModifier {
+    let opacity: Double
+    let offset: CGFloat
 
-    private let size: CGFloat = 16
-
-    var unreadCount: Int
-
-    var body: some View {
-        Text("\(unreadCount)")
-            .lineLimit(1)
-            .padding(.horizontal, 4)
-            .padding(.vertical, 2)
-            .font(fonts.footnoteBold)
-            .frame(width: unreadCount < 10 ? size : nil, height: size)
-            .padding(.horizontal, unreadCount < 10 ? 2 : 6)
-            .background(Color(colors.highlightedAccentBackground))
-            .cornerRadius(9)
-            .foregroundColor(Color(colors.staticColorText))
-            .offset(y: -size)
+    func body(content: Content) -> some View {
+        content
+            .opacity(opacity)
+            .offset(y: offset)
     }
 }
 
@@ -601,33 +604,6 @@ public struct DateIndicatorView: View {
             Spacer()
         }
         .accessibilityAddTraits(.isHeader)
-    }
-}
-
-struct TypingIndicatorBottomView: View {
-    @Injected(\.colors) private var colors
-    @Injected(\.fonts) private var fonts
-
-    var typingIndicatorString: String
-
-    var body: some View {
-        VStack {
-            Spacer()
-            HStack {
-                TypingIndicatorView()
-                Text(typingIndicatorString)
-                    .font(fonts.footnote)
-                    .foregroundColor(Color(colors.textLowEmphasis))
-                Spacer()
-            }
-            .standardPadding()
-            .background(
-                Color(colors.background)
-                    .opacity(0.9)
-            )
-            .accessibilityIdentifier("TypingIndicatorBottomView")
-        }
-        .accessibilityElement(children: .contain)
     }
 }
 

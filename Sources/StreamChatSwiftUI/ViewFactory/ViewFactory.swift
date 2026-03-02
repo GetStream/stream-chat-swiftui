@@ -172,11 +172,13 @@ import SwiftUI
     /// - Returns: view shown in the date and author indicator slot.
     func makeMessageAuthorAndDateView(options: MessageAuthorAndDateViewOptions) -> MessageAuthorAndDateViewType
 
-    associatedtype MessageTranslationFooterViewType: View
-    /// Creates a view to display translation information below a message if it has been translated.
-    /// - Parameter options: the options for creating the message translation footer view.
-    /// - Returns: A view to display translation information of the message.
-    func makeMessageTranslationFooterView(options: MessageTranslationFooterViewOptions) -> MessageTranslationFooterViewType
+    associatedtype MessageTopViewType: View
+    /// Creates the view shown above the message bubble containing message annotations.
+    ///
+    /// Annotations include: pinned, sent in channel / replied to thread, reminder, and translated.
+    /// - Parameter options: The options for creating the message top view.
+    /// - Returns: A view displaying all applicable message annotations.
+    func makeMessageTopView(options: MessageTopViewOptions) -> MessageTopViewType
 
     associatedtype LastInGroupHeaderView: View
     /// Creates a view shown as a header of the last message in a group.
@@ -292,11 +294,17 @@ import SwiftUI
     /// - Returns: view shown above messages separated by date.
     func makeMessageListDateIndicator(options: MessageListDateIndicatorViewOptions) -> MessageListDateIndicatorViewType
 
-    associatedtype TypingIndicatorBottomViewType: View
-    /// Creates the typing indicator shown at the bottom of a message list.
-    /// - Parameter options: the options for creating the typing indicator bottom view.
-    /// - Returns: view shown in the typing indicator slot.
-    func makeTypingIndicatorBottomView(options: TypingIndicatorBottomViewOptions) -> TypingIndicatorBottomViewType
+    associatedtype InlineTypingIndicatorViewType: View
+    /// Creates the typing indicator shown inline in the message list.
+    /// - Parameter options: the options for creating the typing indicator view.
+    /// - Returns: view shown in the inline typing indicator slot.
+    func makeInlineTypingIndicatorView(options: TypingIndicatorViewOptions) -> InlineTypingIndicatorViewType
+
+    associatedtype SubtitleTypingIndicatorViewType: View
+    /// Creates the typing indicator shown in the channel header subtitle area.
+    /// - Parameter options: the options for creating the subtitle typing indicator view.
+    /// - Returns: view shown in the navigation bar subtitle when users are typing.
+    func makeSubtitleTypingIndicatorView(options: SubtitleTypingIndicatorViewOptions) -> SubtitleTypingIndicatorViewType
 
     associatedtype GiphyBadgeViewType: View
     /// Creates giphy badge view.
@@ -311,12 +319,6 @@ import SwiftUI
     /// - Returns: view displayed in the message replies view slot.
     func makeMessageRepliesView(options: MessageRepliesViewOptions) -> MessageRepliesViewType
     
-    associatedtype MessageRepliesShownInChannelViewType: View
-    /// Creates the message replies view for a reply that is also shown in a channel.
-    /// - Parameter options: the options for creating the message replies shown in channel view.
-    /// - Returns: view displayed in the message replies view slot.
-    func makeMessageRepliesShownInChannelView(options: MessageRepliesShownInChannelViewOptions) -> MessageRepliesShownInChannelViewType
-
     associatedtype MessageComposerViewType: View
     /// Creates the message composer view.
     /// - Parameter options: the options for creating the message composer view.

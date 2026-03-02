@@ -285,7 +285,7 @@ import XCTest
 
         // Then
         XCTAssert(headerType == .regular)
-        XCTAssert(viewModel.shouldShowTypingIndicator == false)
+        XCTAssert(viewModel.shouldShowInlineTypingIndicator == false)
     }
 
     func test_chatChannelVM_typingIndicatorMessageHeader() {
@@ -311,7 +311,7 @@ import XCTest
         XCTAssert(headerType == .typingIndicator)
     }
 
-    func test_chatChannelVM_typingIndicatorMessageList() {
+    func test_chatChannelVM_typingIndicatorInline() {
         // Given
         let channelController = makeChannelController()
         let typingUser: ChatChannelMember = ChatChannelMember.mock(id: .unique)
@@ -326,7 +326,154 @@ import XCTest
         )
 
         // Then
-        XCTAssert(viewModel.shouldShowTypingIndicator == true)
+        XCTAssert(viewModel.shouldShowInlineTypingIndicator == true)
+    }
+
+    // MARK: - Automatic typing indicator placement
+
+    func test_chatChannelVM_automaticPlacement_showsInlineTypingIndicator() {
+        // Given
+        let utils = Utils(
+            messageListConfig: MessageListConfig(typingIndicatorPlacement: .automatic)
+        )
+        streamChat = StreamChat(chatClient: chatClient, utils: utils)
+        let channelController = makeChannelController()
+        let typingUser: ChatChannelMember = ChatChannelMember.mock(id: .unique)
+        let viewModel = ChatChannelViewModel(channelController: channelController)
+
+        // When
+        let channel: ChatChannel = .mockDMChannel(currentlyTypingUsers: Set(arrayLiteral: typingUser))
+        channelController.simulate(
+            channel: channel,
+            change: .update(channel),
+            typingUsers: Set(arrayLiteral: typingUser)
+        )
+
+        // Then
+        XCTAssertTrue(viewModel.shouldShowInlineTypingIndicator)
+    }
+
+    func test_chatChannelVM_automaticPlacement_hidesNavBarTypingIndicatorWhenAtBottom() {
+        // Given
+        let utils = Utils(
+            messageListConfig: MessageListConfig(typingIndicatorPlacement: .automatic)
+        )
+        streamChat = StreamChat(chatClient: chatClient, utils: utils)
+        let channelController = makeChannelController()
+        let typingUser: ChatChannelMember = ChatChannelMember.mock(id: .unique)
+        let viewModel = ChatChannelViewModel(channelController: channelController)
+        viewModel.showScrollToLatestButton = false
+
+        // When
+        let channel: ChatChannel = .mockDMChannel(currentlyTypingUsers: Set(arrayLiteral: typingUser))
+        channelController.simulate(
+            channel: channel,
+            change: .update(channel),
+            typingUsers: Set(arrayLiteral: typingUser)
+        )
+
+        // Then
+        XCTAssertFalse(viewModel.shouldShowNavigationBarTypingIndicator)
+        XCTAssertEqual(viewModel.channelHeaderType, .regular)
+    }
+
+    func test_chatChannelVM_automaticPlacement_showsNavBarTypingIndicatorWhenScrolledUp() {
+        // Given
+        let utils = Utils(
+            messageListConfig: MessageListConfig(typingIndicatorPlacement: .automatic)
+        )
+        streamChat = StreamChat(chatClient: chatClient, utils: utils)
+        let channelController = makeChannelController()
+        let typingUser: ChatChannelMember = ChatChannelMember.mock(id: .unique)
+        let viewModel = ChatChannelViewModel(channelController: channelController)
+
+        // When
+        let channel: ChatChannel = .mockDMChannel(currentlyTypingUsers: Set(arrayLiteral: typingUser))
+        channelController.simulate(
+            channel: channel,
+            change: .update(channel),
+            typingUsers: Set(arrayLiteral: typingUser)
+        )
+        viewModel.showScrollToLatestButton = true
+
+        // Then
+        XCTAssertTrue(viewModel.shouldShowNavigationBarTypingIndicator)
+        XCTAssertEqual(viewModel.channelHeaderType, .typingIndicator)
+    }
+
+    func test_chatChannelVM_automaticPlacement_hidesNavBarTypingIndicatorWhenScrolledBackToBottom() {
+        // Given
+        let utils = Utils(
+            messageListConfig: MessageListConfig(typingIndicatorPlacement: .automatic)
+        )
+        streamChat = StreamChat(chatClient: chatClient, utils: utils)
+        let channelController = makeChannelController()
+        let typingUser: ChatChannelMember = ChatChannelMember.mock(id: .unique)
+        let viewModel = ChatChannelViewModel(channelController: channelController)
+
+        let channel: ChatChannel = .mockDMChannel(currentlyTypingUsers: Set(arrayLiteral: typingUser))
+        channelController.simulate(
+            channel: channel,
+            change: .update(channel),
+            typingUsers: Set(arrayLiteral: typingUser)
+        )
+        viewModel.showScrollToLatestButton = true
+        XCTAssertTrue(viewModel.shouldShowNavigationBarTypingIndicator)
+
+        // When
+        viewModel.showScrollToLatestButton = false
+
+        // Then
+        XCTAssertFalse(viewModel.shouldShowNavigationBarTypingIndicator)
+        XCTAssertEqual(viewModel.channelHeaderType, .regular)
+    }
+
+    func test_chatChannelVM_navigationBarPlacement_showsNavBarTypingIndicatorRegardlessOfScroll() {
+        // Given
+        let utils = Utils(
+            messageListConfig: MessageListConfig(typingIndicatorPlacement: .navigationBar)
+        )
+        streamChat = StreamChat(chatClient: chatClient, utils: utils)
+        let channelController = makeChannelController()
+        let typingUser: ChatChannelMember = ChatChannelMember.mock(id: .unique)
+        let viewModel = ChatChannelViewModel(channelController: channelController)
+        viewModel.showScrollToLatestButton = false
+
+        // When
+        let channel: ChatChannel = .mockDMChannel(currentlyTypingUsers: Set(arrayLiteral: typingUser))
+        channelController.simulate(
+            channel: channel,
+            change: .update(channel),
+            typingUsers: Set(arrayLiteral: typingUser)
+        )
+
+        // Then
+        XCTAssertTrue(viewModel.shouldShowNavigationBarTypingIndicator)
+        XCTAssertFalse(viewModel.shouldShowInlineTypingIndicator)
+    }
+
+    func test_chatChannelVM_inlinePlacement_neverShowsNavBarTypingIndicator() {
+        // Given
+        let utils = Utils(
+            messageListConfig: MessageListConfig(typingIndicatorPlacement: .inline)
+        )
+        streamChat = StreamChat(chatClient: chatClient, utils: utils)
+        let channelController = makeChannelController()
+        let typingUser: ChatChannelMember = ChatChannelMember.mock(id: .unique)
+        let viewModel = ChatChannelViewModel(channelController: channelController)
+        viewModel.showScrollToLatestButton = true
+
+        // When
+        let channel: ChatChannel = .mockDMChannel(currentlyTypingUsers: Set(arrayLiteral: typingUser))
+        channelController.simulate(
+            channel: channel,
+            change: .update(channel),
+            typingUsers: Set(arrayLiteral: typingUser)
+        )
+
+        // Then
+        XCTAssertFalse(viewModel.shouldShowNavigationBarTypingIndicator)
+        XCTAssertTrue(viewModel.shouldShowInlineTypingIndicator)
     }
 
     func test_chatChannelVM_skipChanges() {
@@ -459,20 +606,20 @@ import XCTest
 
     func test_chatChannelVM_threadMessage() {
         // Given
-        let channelController = makeChannelController()
-        let viewModel = ChatChannelViewModel(channelController: channelController)
         let message = ChatMessage.mock(
             id: .unique,
             cid: .unique,
             text: "Some text",
             author: .mock(id: .unique)
         )
+        let channelController = makeChannelController(messages: [message])
+        let viewModel = ChatChannelViewModel(channelController: channelController)
 
         // When
         NotificationCenter.default.post(
-            name: NSNotification.Name(MessageRepliesConstants.selectedMessageThread),
+            name: MessageRepliesConstants.threadMessageNavigationNotification,
             object: nil,
-            userInfo: [MessageRepliesConstants.selectedMessage: message]
+            userInfo: [MessageRepliesConstants.threadMessageParentId: message.messageId]
         )
 
         // Then
@@ -600,20 +747,20 @@ import XCTest
 
     func test_chatChannelVM_selectedMessageThread_opensThread() {
         // Given
-        let channelController = makeChannelController()
-        let viewModel = ChatChannelViewModel(channelController: channelController)
         let message = ChatMessage.mock(
             id: .unique,
             cid: .unique,
             text: "Test message",
             author: .mock(id: .unique)
         )
+        let channelController = makeChannelController(messages: [message])
+        let viewModel = ChatChannelViewModel(channelController: channelController)
 
         // When
         NotificationCenter.default.post(
-            name: NSNotification.Name(MessageRepliesConstants.selectedMessageThread),
+            name: MessageRepliesConstants.threadMessageNavigationNotification,
             object: nil,
-            userInfo: [MessageRepliesConstants.selectedMessage: message]
+            userInfo: [MessageRepliesConstants.threadMessageParentId: message.messageId]
         )
 
         // Then
@@ -623,8 +770,6 @@ import XCTest
 
     func test_chatChannelVM_selectedMessageThread_withThreadReplyMessage_opensThread() {
         // Given
-        let channelController = makeChannelController()
-        let viewModel = ChatChannelViewModel(channelController: channelController)
         let parentMessage = ChatMessage.mock(
             id: .unique,
             cid: .unique,
@@ -638,14 +783,16 @@ import XCTest
             author: .mock(id: .unique),
             parentMessageId: parentMessage.id
         )
+        let channelController = makeChannelController(messages: [parentMessage, replyMessage])
+        let viewModel = ChatChannelViewModel(channelController: channelController)
 
         // When
         NotificationCenter.default.post(
-            name: NSNotification.Name(MessageRepliesConstants.selectedMessageThread),
+            name: MessageRepliesConstants.threadMessageNavigationNotification,
             object: nil,
             userInfo: [
-                MessageRepliesConstants.selectedMessage: parentMessage,
-                MessageRepliesConstants.threadReplyMessage: replyMessage
+                MessageRepliesConstants.threadMessageParentId: parentMessage.messageId,
+                MessageRepliesConstants.threadMessageReplyId: replyMessage.messageId
             ]
         )
 

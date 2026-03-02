@@ -80,8 +80,8 @@ public struct ChatChannelListItem<Factory: ViewFactory>: View {
                         }
                         
                         if injectedChannelInfo == nil && channel.unreadCount != .noUnread {
-                            UnreadIndicatorView(
-                                unreadCount: channel.unreadCount.messages
+                            BadgeNotificationView(
+                                count: channel.unreadCount.messages
                             )
                         }
                     }
@@ -126,8 +126,9 @@ public struct ChatChannelListItem<Factory: ViewFactory>: View {
                     .foregroundColor(Color(colors.accentError))
                     .lineLimit(1)
             } else if channel.shouldShowTypingIndicator {
-                TypingIndicatorView()
-                SubtitleText(text: typingText)
+                factory.makeSubtitleTypingIndicatorView(
+                    options: SubtitleTypingIndicatorViewOptions(channel: channel)
+                )
             } else if utils.messageListConfig.draftMessagesEnabled, let draftText = channel.draftMessageText {
                 HStack(spacing: 2) {
                     Text("\(L10n.Message.Preview.draft): ")
@@ -164,13 +165,6 @@ public struct ChatChannelListItem<Factory: ViewFactory>: View {
             Spacer()
         }
         .accessibilityIdentifier("subtitleView")
-    }
-
-    private var typingText: String {
-        if channel.isDirectMessageChannel && channel.memberCount == 2 {
-            return L10n.Channel.Item.typing
-        }
-        return channel.typingIndicatorString(currentUserId: chatClient.currentUserId)
     }
 
     private var previewAttachmentIconImage: UIImage? {
@@ -251,30 +245,6 @@ public struct ChatChannelListItem<Factory: ViewFactory>: View {
             return images.muted
         }
         return nil
-    }
-}
-
-/// View displaying the user's unread messages in the channel list item.
-public struct UnreadIndicatorView: View {
-    @Injected(\.fonts) private var fonts
-    @Injected(\.colors) private var colors
-
-    var unreadCount: Int
-
-    public init(unreadCount: Int) {
-        self.unreadCount = unreadCount
-    }
-
-    public var body: some View {
-        Text("\(unreadCount)")
-            .lineLimit(1)
-            .font(fonts.footnoteBold)
-            .foregroundColor(Color(colors.badgeTextOnAccent))
-            .frame(width: unreadCount < 10 ? 18 : nil, height: 18)
-            .padding(.horizontal, unreadCount < 10 ? 0 : 6)
-            .background(Color(colors.badgeBackgroundPrimary))
-            .cornerRadius(9)
-            .accessibilityIdentifier("UnreadIndicatorView")
     }
 }
 

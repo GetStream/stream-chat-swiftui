@@ -31,7 +31,7 @@ class MessageListPage {
     }
 
     static var typingIndicator: XCUIElement {
-        app.staticTexts["TypingIndicatorBottomView"].firstMatch
+        app.descendants(matching: .any)["TypingIndicatorView"].firstMatch
     }
 
     static var scrollToBottomButton: XCUIElement {
@@ -39,7 +39,7 @@ class MessageListPage {
     }
     
     static var scrollToBottomButtonUnreadCount: XCUIElement {
-        app.staticTexts["ScrollToBottomButton"]
+        app.staticTexts["BadgeNotificationView"]
     }
 
     enum NavigationBar {

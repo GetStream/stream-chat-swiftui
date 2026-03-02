@@ -211,7 +211,11 @@ extension ViewFactory {
     public func makeChannelHeaderViewModifier(
         options: ChannelHeaderViewModifierOptions
     ) -> some ChatChannelHeaderViewModifier {
-        DefaultChannelHeaderModifier(factory: self, channel: options.channel)
+        DefaultChannelHeaderModifier(
+            factory: self,
+            channel: options.channel,
+            shouldShowTypingIndicator: options.shouldShowTypingIndicator
+        )
     }
     
     public func makeChannelBarsVisibilityViewModifier(options: ChannelBarsVisibilityViewModifierOptions) -> some ViewModifier {
@@ -274,10 +278,12 @@ extension ViewFactory {
         EmptyView()
     }
 
-    public func makeMessageTranslationFooterView(
-        options: MessageTranslationFooterViewOptions
+    public func makeMessageTopView(
+        options: MessageTopViewOptions
     ) -> some View {
-        MessageTranslationFooterView(
+        MessageTopView(
+            message: options.message,
+            channel: options.channel,
             messageViewModel: options.messageViewModel,
             usesInvertedStyle: options.usesInvertedStyle
         )
@@ -423,6 +429,7 @@ extension ViewFactory {
         options: ScrollToBottomButtonOptions
     ) -> some View {
         ScrollToBottomButton(
+            factory: self,
             unreadCount: options.unreadCount,
             onScrollToBottom: options.onScrollToBottom
         )
@@ -436,11 +443,18 @@ extension ViewFactory {
         DateIndicatorView(date: options.date)
     }
     
-    public func makeTypingIndicatorBottomView(
-        options: TypingIndicatorBottomViewOptions
+    public func makeInlineTypingIndicatorView(
+        options: TypingIndicatorViewOptions
     ) -> some View {
-        let typingIndicatorString = options.channel.typingIndicatorString(currentUserId: options.currentUserId)
-        return TypingIndicatorBottomView(typingIndicatorString: typingIndicatorString)
+        let users = Array(options.channel.currentlyTypingUsersFiltered(currentUserId: options.currentUserId))
+        let typingText = options.channel.typingIndicatorString(currentUserId: options.currentUserId)
+        return TypingIndicatorView(users: users, typingText: typingText)
+    }
+    
+    public func makeSubtitleTypingIndicatorView(
+        options: SubtitleTypingIndicatorViewOptions
+    ) -> some View {
+        SubtitleTypingIndicatorView(channel: options.channel)
     }
     
     public func makeGiphyBadgeViewType(
@@ -457,20 +471,6 @@ extension ViewFactory {
             channel: options.channel,
             message: options.message,
             replyCount: options.replyCount,
-            usesInvertedStyle: options.usesInvertedStyle
-        )
-    }
-    
-    public func makeMessageRepliesShownInChannelView(
-        options: MessageRepliesShownInChannelViewOptions
-    ) -> some View {
-        MessageRepliesView(
-            factory: self,
-            channel: options.channel,
-            message: options.parentMessage,
-            replyCount: options.replyCount,
-            showReplyCount: false,
-            isRightAligned: options.message.isRightAligned,
             usesInvertedStyle: options.usesInvertedStyle
         )
     }

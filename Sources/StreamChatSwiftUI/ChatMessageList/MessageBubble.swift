@@ -34,6 +34,7 @@ public struct MessageBubbleModifier: ViewModifier {
     @Injected(\.colors) private var colors
     @Injected(\.tokens) private var tokens
     @Injected(\.utils) private var utils
+    @Environment(\.layoutDirection) private var layoutDirection
 
     public var message: ChatMessage
     public var isFirst: Bool
@@ -71,7 +72,8 @@ public struct MessageBubbleModifier: ViewModifier {
                 BubbleModifier(
                     corners: message.bubbleCorners(
                         isFirst: isFirst,
-                        forceLeftToRight: forceLeftToRight
+                        forceLeftToRight: forceLeftToRight,
+                        layoutDirection: layoutDirection
                     ),
                     backgroundColors: message.bubbleBackground(
                         colors: colors,
@@ -254,16 +256,22 @@ extension ChatMessage {
     /// - Parameters:
     ///  - isFirst: whether the message is first.
     ///  - forceLeftToRight: whether left to right should be forced.
+    ///  - layoutDirection: the current layout direction used to mirror corners for RTL.
     /// - Returns: the corners to be rounded in the message cell.
-    public func bubbleCorners(isFirst: Bool, forceLeftToRight: Bool) -> UIRectCorner {
+    public func bubbleCorners(
+        isFirst: Bool,
+        forceLeftToRight: Bool,
+        layoutDirection: LayoutDirection = .leftToRight
+    ) -> UIRectCorner {
         if !isFirst {
             return [.topLeft, .topRight, .bottomLeft, .bottomRight]
         }
 
+        let isRTL = layoutDirection == .rightToLeft
         if isSentByCurrentUser && !forceLeftToRight {
-            return [.topLeft, .topRight, .bottomLeft]
+            return [.topLeft, .topRight, isRTL ? .bottomRight : .bottomLeft]
         } else {
-            return [.topLeft, .topRight, .bottomRight]
+            return [.topLeft, .topRight, isRTL ? .bottomLeft : .bottomRight]
         }
     }
     

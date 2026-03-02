@@ -273,3 +273,11 @@
 "thread.item.replied-to" = "replied to: %@";
 "thread.item.reply" = "reply";
 "thread.item.replies" = "replies";
+
+// - MARK: Message Annotations
+
+"message.annotation.sentInChannel" = "Also sent in channel";
+"message.annotation.repliedToThread" = "Replied to a thread";
+"message.annotation.reminderSet" = "Reminder set";
+"message.annotation.view" = "View";
+"message.annotation.translated" = "Translated";
