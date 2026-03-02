@@ -5,6 +5,13 @@
 import StreamChatCommonUI
 import SwiftUI
 
+// MARK: - ColorPalette Extensions
+
+public extension Appearance.ColorPalette {
+    /// Background color for card surfaces in the channel info screen and similar elevated surfaces.
+    var backgroundCoreSurfaceCard: UIColor { backgroundCoreSurfaceSubtle }
+}
+
 // MARK: - Appearance + Default
 
 public extension Appearance {

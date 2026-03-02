@@ -254,6 +254,11 @@
 
 "chat-info.rename.name" = "NAME";
 "chat-info.rename.placeholder" = "Add a group name";
+"chat-info.group.title" = "Group Info";
+"chat-info.contact.title" = "Contact Info";
+"chat-info.users.view-all" = "View all";
+"chat-info.edit" = "Edit";
+"chat-info.member.admin" = "Admin";
 
 "channel.item.audio" = "Audio";
 "channel.item.photo" = "Photo";

@@ -25,6 +25,7 @@ import SwiftUI
 
     @Published public var memberListCollapsed = true
     @Published public var leaveGroupAlertShown = false
+    @Published public var blockUserAlertShown = false
     @Published public var errorShown = false
     @Published public var channelName: String
     @Published public var channel: ChatChannel {
@@ -38,6 +39,19 @@ import SwiftUI
     @Published public var addUsersShown = false
     @Published public var selectedParticipant: ParticipantInfo?
     
+    open var shouldShowBlockUserButton: Bool {
+        channel.isDirectMessageChannel
+    }
+
+    public var isDMUserBlocked: Bool {
+        guard let otherUserId = displayedParticipants.first?.id else { return false }
+        return currentUserController?.currentUser?.blockedUserIds.contains(otherUserId) ?? false
+    }
+
+    public var blockUserTitle: String {
+        isDMUserBlocked ? L10n.Alert.Actions.unblockUser : L10n.Alert.Actions.blockUser
+    }
+
     open var shouldShowLeaveConversationButton: Bool {
         if channel.isDirectMessageChannel {
             channel.ownCapabilities.contains(.deleteChannel)
@@ -109,10 +123,6 @@ import SwiftUI
         }
     }
     
-    public var showMoreUsersButtonTitle: String {
-        L10n.ChatInfo.Users.loadMore(notDisplayedParticipantsCount)
-    }
-
     public var notDisplayedParticipantsCount: Int {
         let total = channel.memberCount
         let displayed = displayedParticipants.count
@@ -191,6 +201,20 @@ import SwiftUI
             removeUserFromConversation(completion: completion)
         } else {
             deleteChannel(completion: completion)
+        }
+    }
+
+    public func blockUserTapped() {
+        guard let otherUserId = displayedParticipants.first?.id else { return }
+        let controller = chatClient.userController(userId: otherUserId)
+        if isDMUserBlocked {
+            controller.unblock { [weak self] error in
+                if error != nil { self?.errorShown = true }
+            }
+        } else {
+            controller.block { [weak self] error in
+                if error != nil { self?.errorShown = true }
+            }
         }
     }
 

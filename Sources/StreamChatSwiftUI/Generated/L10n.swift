@@ -187,6 +187,12 @@ internal enum L10n {
   }
 
   internal enum ChatInfo {
+    /// Edit
+    internal static var edit: String { L10n.tr("Localizable", "chat-info.edit") }
+    internal enum Contact {
+      /// Contact Info
+      internal static var title: String { L10n.tr("Localizable", "chat-info.contact.title") }
+    }
     internal enum Files {
       /// Files sent in this chat will appear here.
       internal static var emptyDesc: String { L10n.tr("Localizable", "chat-info.files.empty-desc") }
@@ -195,6 +201,10 @@ internal enum L10n {
       /// Files
       internal static var title: String { L10n.tr("Localizable", "chat-info.files.title") }
     }
+    internal enum Group {
+      /// Group Info
+      internal static var title: String { L10n.tr("Localizable", "chat-info.group.title") }
+    }
     internal enum Media {
       /// Photos or videos sent in this chat will appear here.
       internal static var emptyDesc: String { L10n.tr("Localizable", "chat-info.media.empty-desc") }
@@ -202,6 +212,10 @@ internal enum L10n {
       internal static var emptyTitle: String { L10n.tr("Localizable", "chat-info.media.empty-title") }
       /// Photos & Videos
       internal static var title: String { L10n.tr("Localizable", "chat-info.media.title") }
+    }
+    internal enum Member {
+      /// Admin
+      internal static var admin: String { L10n.tr("Localizable", "chat-info.member.admin") }
     }
     internal enum Mute {
       /// Mute Group
@@ -228,6 +242,8 @@ internal enum L10n {
       internal static func loadMore(_ p1: Any) -> String {
         return L10n.tr("Localizable", "chat-info.users.loadMore", String(describing: p1))
       }
+      /// View all
+      internal static var viewAll: String { L10n.tr("Localizable", "chat-info.users.view-all") }
     }
   }
 
