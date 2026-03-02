@@ -464,7 +464,7 @@ extension UserRobot {
             line: line
         )
         XCTAssertTrue(
-            typingIndicatorView.text.contains(typingUserName),
+            typingIndicatorView.label.contains(typingUserName),
             "User name is wrong",
             file: file,
             line: line

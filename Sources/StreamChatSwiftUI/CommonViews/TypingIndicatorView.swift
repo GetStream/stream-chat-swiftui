@@ -108,7 +108,7 @@ private struct TypingIndicatorCircle: View {
     private let circleWidth: CGFloat = 5
     private let circleHeight: CGFloat = 5
     private let yOffset: CGFloat = 1.5
-    private let minOpacity: CGFloat = 0.1
+    private let minOpacity: CGFloat = 0.25
     private let maxOpacity: CGFloat = 1.0
 
     var isTyping: Bool
