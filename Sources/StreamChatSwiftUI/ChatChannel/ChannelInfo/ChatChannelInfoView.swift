@@ -178,20 +178,19 @@ public struct ChatChannelInfoView<Factory: ViewFactory>: View, KeyboardReadable 
                     }
                 )
             }
-
             if viewModel.showMoreUsersButton {
-                Button {
+                StreamTextButton(role: .secondary, style: .outline, size: .small) {
                     viewModel.memberListSheetShown = true
-                } label: {
+                } text: {
                     Text(L10n.ChatInfo.Users.viewAll)
-                        .font(fonts.body)
-                        .foregroundColor(Color(colors.accentPrimary))
-                        .frame(maxWidth: .infinity)
-                        .padding(.vertical, tokens.spacingSm)
+                        .font(fonts.bodyBold)
                 }
-                .background(Color(colors.backgroundCoreSurfaceCard))
+                .padding(.vertical, tokens.spacingXs)
             }
         }
+        .padding(.vertical, tokens.spacingXs)
+        .background(colors.backgroundCoreSurfaceCard.toColor)
+        .cornerRadius(16)
     }
 
     // MARK: - Actions Card
@@ -332,12 +331,11 @@ struct ChatChannelInfoViewHeaderViewModifier: ViewModifier {
 
         ToolbarItem(placement: .navigationBarTrailing) {
             if !viewModel.showSingleMemberDMView {
-                Button {
+                StreamTextButton(role: .secondary, style: .outline, size: .small) {
                     viewModel.editGroupShown = true
-                } label: {
+                } text: {
                     Text(L10n.ChatInfo.edit)
-                        .font(fonts.body)
-                        .foregroundColor(Color(colors.accentPrimary))
+                        .font(fonts.bodyBold)
                 }
             }
         }

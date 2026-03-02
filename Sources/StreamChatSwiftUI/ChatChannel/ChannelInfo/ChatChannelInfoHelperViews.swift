@@ -282,7 +282,7 @@ public struct MemberListView<Factory: ViewFactory>: View {
             ScrollView {
                 LazyVStack(spacing: 0) {
                     let allParticipants = viewModel.allParticipants
-                    ForEach(Array(allParticipants.enumerated()), id: \.element.id) { index, participant in
+                    ForEach(Array(allParticipants.enumerated()), id: \.element.id) { _, participant in
                         ChatInfoMemberRow(
                             factory: factory,
                             participant: participant,
@@ -292,10 +292,6 @@ public struct MemberListView<Factory: ViewFactory>: View {
                                 selectedParticipant = participant
                             }
                         )
-                        if index < allParticipants.count - 1 {
-                            Divider()
-                                .padding(.leading, tokens.spacingMd + AvatarSize.medium + tokens.spacingSm)
-                        }
                     }
                 }
             }
