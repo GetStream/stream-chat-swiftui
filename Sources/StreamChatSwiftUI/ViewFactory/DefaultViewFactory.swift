@@ -211,7 +211,11 @@ extension ViewFactory {
     public func makeChannelHeaderViewModifier(
         options: ChannelHeaderViewModifierOptions
     ) -> some ChatChannelHeaderViewModifier {
-        DefaultChannelHeaderModifier(factory: self, channel: options.channel)
+        DefaultChannelHeaderModifier(
+            factory: self,
+            channel: options.channel,
+            shouldShowTypingIndicator: options.shouldShowTypingIndicator
+        )
     }
     
     public func makeChannelBarsVisibilityViewModifier(options: ChannelBarsVisibilityViewModifierOptions) -> some ViewModifier {
@@ -439,11 +443,18 @@ extension ViewFactory {
         DateIndicatorView(date: options.date)
     }
     
-    public func makeTypingIndicatorBottomView(
-        options: TypingIndicatorBottomViewOptions
+    public func makeInlineTypingIndicatorView(
+        options: TypingIndicatorViewOptions
     ) -> some View {
-        let typingIndicatorString = options.channel.typingIndicatorString(currentUserId: options.currentUserId)
-        return TypingIndicatorBottomView(typingIndicatorString: typingIndicatorString)
+        let users = Array(options.channel.currentlyTypingUsersFiltered(currentUserId: options.currentUserId))
+        let typingText = options.channel.typingIndicatorString(currentUserId: options.currentUserId)
+        return TypingIndicatorView(users: users, typingText: typingText)
+    }
+    
+    public func makeSubtitleTypingIndicatorView(
+        options: SubtitleTypingIndicatorViewOptions
+    ) -> some View {
+        SubtitleTypingIndicatorView(channel: options.channel)
     }
     
     public func makeGiphyBadgeViewType(

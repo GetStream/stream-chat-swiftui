@@ -278,8 +278,8 @@ public final class MessageListDateIndicatorViewOptions: Sendable {
     }
 }
 
-/// Options for creating the typing indicator bottom view.
-public final class TypingIndicatorBottomViewOptions: Sendable {
+/// Options for creating the typing indicator view.
+public final class TypingIndicatorViewOptions: Sendable {
     /// The channel to show typing indicators for.
     public let channel: ChatChannel
     /// The current user ID.

@@ -18,7 +18,7 @@ import XCTest
         let view = NavigationView {
             Text("Test")
                 .applyDefaultSize()
-                .modifier(DefaultChannelHeaderModifier(channel: channel))
+                .modifier(DefaultChannelHeaderModifier(channel: channel, shouldShowTypingIndicator: false))
         }
         .applyDefaultSize()
 
@@ -37,7 +37,8 @@ import XCTest
                 .modifier(
                     DefaultChannelHeaderModifier(
                         factory: ChannelAvatarViewFactory(),
-                        channel: channel
+                        channel: channel,
+                        shouldShowTypingIndicator: false
                     )
                 )
         }
@@ -56,7 +57,7 @@ import XCTest
             Text("Test")
                 .applyDefaultSize()
                 .toolbar {
-                    DefaultChatChannelHeader(channel: channel, isActive: .constant(false))
+                    DefaultChatChannelHeader(channel: channel, shouldShowTypingIndicator: false, isActive: .constant(false))
                 }
         }
         .applyDefaultSize()

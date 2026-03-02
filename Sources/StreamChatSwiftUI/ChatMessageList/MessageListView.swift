@@ -9,6 +9,7 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
     @Injected(\.utils) private var utils
     @Injected(\.chatClient) private var chatClient
     @Injected(\.colors) private var colors
+    @Injected(\.tokens) private var tokens
 
     var factory: Factory
     var channel: ChatChannel
@@ -142,7 +143,7 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
             currentDateString: viewModel.currentDateString,
             listId: viewModel.listId,
             isMessageThread: viewModel.isMessageThread,
-            shouldShowTypingIndicator: viewModel.shouldShowTypingIndicator,
+            shouldShowTypingIndicator: viewModel.shouldShowInlineTypingIndicator,
             bottomInset: 0,
             scrollPosition: Binding(
                 get: { viewModel.scrollPosition },
@@ -173,6 +174,16 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
                     }
 
                     LazyVStack(spacing: 0) {
+                        if shouldShowTypingIndicator {
+                            factory.makeInlineTypingIndicatorView(
+                                options: TypingIndicatorViewOptions(
+                                    channel: channel,
+                                    currentUserId: chatClient.currentUserId
+                                )
+                            )
+                            .flippedUpsideDown()
+                        }
+
                         ForEach(messages, id: \.messageId) { message in
                             var index: Int? = messageListDateUtils.indexForMessageDate(message: message, in: messages)
                             let messageDate: Date? = messageListDateUtils.showMessageDate(for: index, in: messages)
@@ -353,15 +364,6 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
                     )
                 )
                 .offset(y: -bottomInset)
-            }
-
-            if shouldShowTypingIndicator {
-                factory.makeTypingIndicatorBottomView(
-                    options: TypingIndicatorBottomViewOptions(
-                        channel: channel,
-                        currentUserId: chatClient.currentUserId
-                    )
-                )
             }
         }
         .onReceive(keyboardDidChangePublisher) { visible in
@@ -602,33 +604,6 @@ public struct DateIndicatorView: View {
             Spacer()
         }
         .accessibilityAddTraits(.isHeader)
-    }
-}
-
-struct TypingIndicatorBottomView: View {
-    @Injected(\.colors) private var colors
-    @Injected(\.fonts) private var fonts
-
-    var typingIndicatorString: String
-
-    var body: some View {
-        VStack {
-            Spacer()
-            HStack {
-                TypingIndicatorView()
-                Text(typingIndicatorString)
-                    .font(fonts.footnote)
-                    .foregroundColor(Color(colors.textLowEmphasis))
-                Spacer()
-            }
-            .standardPadding()
-            .background(
-                Color(colors.background)
-                    .opacity(0.9)
-            )
-            .accessibilityIdentifier("TypingIndicatorBottomView")
-        }
-        .accessibilityElement(children: .contain)
     }
 }
 

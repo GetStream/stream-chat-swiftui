@@ -10,7 +10,7 @@ import SwiftUI
 @MainActor public final class MessageListConfig {
     public init(
         messageListType: MessageListType = .messaging,
-        typingIndicatorPlacement: TypingIndicatorPlacement = .bottomOverlay,
+        typingIndicatorPlacement: TypingIndicatorPlacement = .automatic,
         groupMessages: Bool = true,
         messageDisplayOptions: MessageDisplayOptions = MessageDisplayOptions(),
         messagePaddings: MessagePaddings = MessagePaddings(),
