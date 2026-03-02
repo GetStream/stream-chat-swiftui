@@ -100,6 +100,12 @@ public final class ComposerInputViewOptions: Sendable {
     public let startRecording: @MainActor () -> Void
     /// Stop a recording.
     public let stopRecording: @MainActor () -> Void
+    /// Whether the send in channel view should be shown.
+    public let sendInChannelShown: Bool
+    /// Binding to whether to show reply in channel.
+    public let showReplyInChannel: Binding<Bool>
+    /// Whether this is a direct message.
+    public let isDirectMessage: Bool
     
     public init(
         channelController: ChatChannelController,
@@ -121,7 +127,10 @@ public final class ComposerInputViewOptions: Sendable {
         sendMessage: @escaping @MainActor () -> Void,
         onImagePasted: @escaping @MainActor (UIImage) -> Void,
         startRecording: @escaping @MainActor () -> Void,
-        stopRecording: @escaping @MainActor () -> Void
+        stopRecording: @escaping @MainActor () -> Void,
+        sendInChannelShown: Bool = false,
+        showReplyInChannel: Binding<Bool> = .constant(false),
+        isDirectMessage: Bool = false
     ) {
         self.channelController = channelController
         self.text = text
@@ -143,6 +152,9 @@ public final class ComposerInputViewOptions: Sendable {
         self.onImagePasted = onImagePasted
         self.startRecording = startRecording
         self.stopRecording = stopRecording
+        self.sendInChannelShown = sendInChannelShown
+        self.showReplyInChannel = showReplyInChannel
+        self.isDirectMessage = isDirectMessage
     }
 }
 

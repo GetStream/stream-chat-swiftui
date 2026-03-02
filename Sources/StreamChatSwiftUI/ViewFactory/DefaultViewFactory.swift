@@ -524,7 +524,10 @@ extension ViewFactory {
             sendMessage: options.sendMessage,
             onImagePasted: options.onImagePasted,
             startRecording: options.startRecording,
-            stopRecording: options.stopRecording
+            stopRecording: options.stopRecording,
+            sendInChannelShown: options.sendInChannelShown,
+            showReplyInChannel: options.showReplyInChannel,
+            isDirectMessage: options.isDirectMessage
         )
     }
     

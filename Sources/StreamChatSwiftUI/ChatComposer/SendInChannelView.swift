@@ -28,8 +28,8 @@ struct SendInChannelView: View {
                 Spacer()
             }
         }
-        .padding(.vertical, tokens.spacingXxs)
-        .padding(.horizontal, tokens.spacingMd)
+        .padding(.horizontal, tokens.spacingXs)
+        .padding(.bottom, tokens.spacingSm)
         .accessibilityIdentifier("SendInChannelView")
     }
 
