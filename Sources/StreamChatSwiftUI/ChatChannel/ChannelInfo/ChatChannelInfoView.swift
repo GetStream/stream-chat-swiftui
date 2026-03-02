@@ -101,6 +101,9 @@ public struct ChatChannelInfoView<Factory: ViewFactory>: View, KeyboardReadable 
         .sheet(isPresented: $viewModel.memberListSheetShown) {
             MemberListView(factory: factory, viewModel: viewModel)
         }
+        .sheet(isPresented: $viewModel.editGroupShown) {
+            EditGroupView(viewModel: viewModel)
+        }
         .sheet(item: $viewModel.selectedParticipant) { participant in
             ParticipantInfoView(
                 factory: factory,
@@ -330,7 +333,7 @@ struct ChatChannelInfoViewHeaderViewModifier: ViewModifier {
         ToolbarItem(placement: .navigationBarTrailing) {
             if !viewModel.showSingleMemberDMView {
                 Button {
-                    viewModel.addUsersShown = true
+                    viewModel.editGroupShown = true
                 } label: {
                     Text(L10n.ChatInfo.edit)
                         .font(fonts.body)

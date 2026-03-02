@@ -26,6 +26,8 @@ import SwiftUI
 
     @Published public var memberListCollapsed = true
     @Published public var memberListSheetShown = false
+    @Published public var editGroupShown = false
+    @Published public var isUploadingGroupAvatar = false
     @Published public var leaveGroupAlertShown = false
     @Published public var blockUserAlertShown = false
     @Published public var errorShown = false
@@ -239,6 +241,38 @@ import SwiftUI
             team: channel.team,
             extraData: channel.extraData
         )
+    }
+
+    public func saveGroupEdit(name: String, image: UIImage?) {
+        channelName = name
+        let imageURL = channel.imageURL
+        let team = channel.team
+        let extraData = channel.extraData
+        if let image, let localURL = try? image.saveAsJpgToTemporaryUrl() {
+            isUploadingGroupAvatar = true
+            chatClient.uploadAttachment(localUrl: localURL, progress: nil) { [weak self] result in
+                let uploadedURL = try? result.get().fileURL
+                DispatchQueue.main.async { [weak self] in
+                    guard let self else { return }
+                    isUploadingGroupAvatar = false
+                    channelController.updateChannel(
+                        name: name,
+                        imageURL: uploadedURL ?? imageURL,
+                        team: team,
+                        extraData: extraData
+                    )
+                    editGroupShown = false
+                }
+            }
+        } else {
+            channelController.updateChannel(
+                name: name,
+                imageURL: imageURL,
+                team: team,
+                extraData: extraData
+            )
+            editGroupShown = false
+        }
     }
 
     public func channelController(

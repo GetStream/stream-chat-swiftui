@@ -193,6 +193,12 @@ internal enum L10n {
       /// Contact Info
       internal static var title: String { L10n.tr("Localizable", "chat-info.contact.title") }
     }
+    internal enum Edit {
+      /// Group name
+      internal static var groupName: String { L10n.tr("Localizable", "chat-info.edit.group-name") }
+      /// Upload
+      internal static var upload: String { L10n.tr("Localizable", "chat-info.edit.upload") }
+    }
     internal enum Files {
       /// Files sent in this chat will appear here.
       internal static var emptyDesc: String { L10n.tr("Localizable", "chat-info.files.empty-desc") }
