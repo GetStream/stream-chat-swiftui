@@ -59,6 +59,7 @@ public struct ChatMediaAttachmentsContainerView<Factory: ViewFactory>: View {
 
     @State private var galleryShown = false
     @State private var selectedIndex = 0
+    @State private var isThumbnailLoading = true
 
     private var spacing: CGFloat { tokens.spacingXxxs }
     private var cornerRadius: CGFloat { tokens.messageBubbleRadiusAttachment }
@@ -75,20 +76,28 @@ public struct ChatMediaAttachmentsContainerView<Factory: ViewFactory>: View {
     }
 
     public var body: some View {
-        galleryGrid
-            .fullScreenCover(isPresented: $galleryShown, onDismiss: {
-                selectedIndex = 0
-            }) {
-                factory.makeGalleryView(
-                    options: GalleryViewOptions(
-                        mediaAttachments: sources,
-                        message: message,
-                        isShown: $galleryShown,
-                        options: .init(selectedIndex: selectedIndex)
-                    )
-                )
+        ZStack {
+            galleryGrid
+            if isThumbnailLoading {
+                factory.makeLoadingView(options: .init(type: .spinner))
             }
-            .accessibilityIdentifier("ChatMediaAttachmentsContainerView")
+        }
+        .onPreferenceChange(ThumbnailLoadingKey.self) { isLoading in
+            isThumbnailLoading = isLoading
+        }
+        .fullScreenCover(isPresented: $galleryShown, onDismiss: {
+            selectedIndex = 0
+        }) {
+            factory.makeGalleryView(
+                options: GalleryViewOptions(
+                    mediaAttachments: sources,
+                    message: message,
+                    isShown: $galleryShown,
+                    options: .init(selectedIndex: selectedIndex)
+                )
+            )
+        }
+        .accessibilityIdentifier("ChatMediaAttachmentsContainerView")
     }
 
     // MARK: - Layout

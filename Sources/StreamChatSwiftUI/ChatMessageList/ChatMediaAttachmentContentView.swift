@@ -5,6 +5,18 @@
 import StreamChat
 import SwiftUI
 
+/// A preference key that tracks whether any media thumbnail is still loading.
+///
+/// Each ``ChatMediaAttachmentContentView`` reports `true` while its thumbnail
+/// has not yet loaded. The values are reduced with `||` so the container
+/// sees `true` as long as *any* child is still loading.
+struct ThumbnailLoadingKey: PreferenceKey {
+    static let defaultValue = false
+    static func reduce(value: inout Bool, nextValue: () -> Bool) {
+        value = value || nextValue()
+    }
+}
+
 /// A view that renders a single media attachment (image or video) thumbnail.
 ///
 /// Uses ``MediaAttachment/generateThumbnail(resize:preferredSize:completion:)``
@@ -75,6 +87,7 @@ public struct ChatMediaAttachmentContentView: View {
             }
         }
         .accessibilityIdentifier("ChatMediaAttachmentContentView")
+        .preference(key: ThumbnailLoadingKey.self, value: image == nil && error == nil)
     }
 
     private var placeholderGradient: some View {
