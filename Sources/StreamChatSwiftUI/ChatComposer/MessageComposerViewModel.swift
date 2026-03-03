@@ -141,10 +141,6 @@ import SwiftUI
                     recordingState = .initial
                     stopRecording()
                 }
-            } else if recordingState == .showingTip {
-                DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) { [weak self] in
-                    self?.recordingState = .initial
-                }
             }
         }
     }

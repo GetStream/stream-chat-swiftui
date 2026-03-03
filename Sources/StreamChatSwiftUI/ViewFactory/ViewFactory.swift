@@ -376,11 +376,6 @@ import SwiftUI
     ///  - Returns: view shown in the locked recording slot.
     func makeComposerRecordingLockedView(options: ComposerRecordingLockedViewOptions) -> ComposerRecordingLockedViewType
     
-    associatedtype ComposerRecordingTipViewType: View
-    /// Creates a view shown when a recording tip is displayed.
-    /// - Returns: view shown in the recording tip slot.
-    func makeComposerRecordingTipView(options: ComposerRecordingTipViewOptions) -> ComposerRecordingTipViewType
-
     associatedtype AttachmentPickerViewType: View
     /// Creates the attachment picker view.
     /// - Parameter options: the options for creating the attachment picker view.

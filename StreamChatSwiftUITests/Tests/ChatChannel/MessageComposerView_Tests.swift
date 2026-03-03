@@ -96,12 +96,12 @@ import XCTest
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
     
-    func test_messageComposerView_recordingTip() {
+    func test_messageComposerView_recordingTipSnackbar() {
         // Given
         let factory = DefaultViewFactory.shared
         let channelController = ChatChannelTestHelpers.makeChannelController(chatClient: chatClient)
         let viewModel = MessageComposerViewModel(channelController: channelController, messageController: nil)
-        viewModel.recordingState = .showingTip
+        viewModel.showRecordingTip()
         
         // When
         let view = MessageComposerView(
@@ -113,10 +113,10 @@ import XCTest
             editedMessage: .constant(nil),
             onMessageSent: {}
         )
-        .frame(width: composerWidth, height: 120)
+        .frame(width: composerWidth, height: 200)
 
         // Then
-        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision), record: true)
     }
     
     func test_messageComposerView_addedVoiceRecording() {
@@ -169,6 +169,7 @@ import XCTest
             onImagePasted: { _ in },
             startRecording: {},
             stopRecording: {},
+            showRecordingTip: {},
             sendInChannelShown: false,
             showReplyInChannel: .constant(false)
         )
@@ -434,6 +435,7 @@ import XCTest
             onImagePasted: { _ in },
             startRecording: {},
             stopRecording: {},
+            showRecordingTip: {},
             sendInChannelShown: false,
             showReplyInChannel: .constant(false)
         )
@@ -642,6 +644,7 @@ import XCTest
             onImagePasted: { _ in },
             startRecording: {},
             stopRecording: {},
+            showRecordingTip: {},
             sendInChannelShown: false,
             showReplyInChannel: .constant(false)
         )
@@ -683,6 +686,7 @@ import XCTest
             onImagePasted: { _ in },
             startRecording: {},
             stopRecording: {},
+            showRecordingTip: {},
             sendInChannelShown: false,
             showReplyInChannel: .constant(false)
         )
@@ -718,6 +722,7 @@ import XCTest
             onImagePasted: { _ in },
             startRecording: {},
             stopRecording: {},
+            showRecordingTip: {},
             sendInChannelShown: false,
             showReplyInChannel: .constant(false)
         )

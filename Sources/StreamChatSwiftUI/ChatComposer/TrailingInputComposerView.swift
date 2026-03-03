@@ -12,6 +12,7 @@ struct TrailingInputComposerView<Factory: ViewFactory>: View {
     var composerInputState: MessageComposerInputState
     var startRecording: @MainActor () -> Void
     var stopRecording: @MainActor () -> Void
+    var showRecordingTip: @MainActor () -> Void
     var sendMessage: @MainActor () -> Void
 
     var body: some View {
@@ -34,7 +35,8 @@ struct TrailingInputComposerView<Factory: ViewFactory>: View {
             VoiceRecordingButton(
                 recordingState: $recordingState,
                 startRecording: startRecording,
-                stopRecording: stopRecording
+                stopRecording: stopRecording,
+                showRecordingTip: showRecordingTip
             )
         case .slowMode(let cooldownDuration):
             SlowModeView(cooldownDuration: cooldownDuration)

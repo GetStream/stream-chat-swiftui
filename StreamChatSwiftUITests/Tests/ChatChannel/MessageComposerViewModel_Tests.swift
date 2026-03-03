@@ -932,12 +932,66 @@ import XCTest
         let viewModel = makeComposerViewModel()
         viewModel.recordingState = .recording(.zero)
         
-        // Then
+        // When
         viewModel.audioRecorder(viewModel.audioRecorder, didFailWithError: ClientError.Unexpected())
         
         // Then
         XCTAssert(viewModel.recordingState == .initial)
         XCTAssert(viewModel.audioRecordingInfo == .initial)
+    }
+    
+    // MARK: - Snackbar
+    
+    func test_messageComposer_showRecordingTip_setsSnackBarText() {
+        // Given
+        let viewModel = makeComposerViewModel()
+        XCTAssertNil(viewModel.snackBarText)
+        
+        // When
+        viewModel.showRecordingTip()
+        
+        // Then
+        XCTAssertEqual(viewModel.snackBarText, L10n.Composer.Recording.tip)
+    }
+    
+    func test_messageComposer_discardRecording_setsSnackBarText() {
+        // Given
+        let viewModel = makeComposerViewModel()
+        viewModel.recordingState = .locked
+        XCTAssertNil(viewModel.snackBarText)
+        
+        // When
+        viewModel.discardRecording()
+        
+        // Then
+        XCTAssertEqual(viewModel.snackBarText, L10n.Composer.Recording.voiceMessageDeleted)
+        XCTAssertEqual(viewModel.recordingState, .initial)
+    }
+    
+    func test_messageComposer_recordingError_setsSnackBarText() {
+        // Given
+        let viewModel = makeComposerViewModel()
+        viewModel.recordingState = .recording(.zero)
+        XCTAssertNil(viewModel.snackBarText)
+        
+        // When
+        viewModel.audioRecorder(viewModel.audioRecorder, didFailWithError: ClientError.Unexpected())
+        
+        // Then
+        XCTAssertEqual(viewModel.snackBarText, L10n.Composer.Recording.recordingStopped)
+    }
+    
+    func test_messageComposer_recordingError_whenNotRecording_doesNotSetSnackBarText() {
+        // Given
+        let viewModel = makeComposerViewModel()
+        viewModel.recordingState = .initial
+        XCTAssertNil(viewModel.snackBarText)
+        
+        // When
+        viewModel.audioRecorder(viewModel.audioRecorder, didFailWithError: ClientError.Unexpected())
+        
+        // Then
+        XCTAssertNil(viewModel.snackBarText)
     }
     
     // MARK: - Draft Message Tests

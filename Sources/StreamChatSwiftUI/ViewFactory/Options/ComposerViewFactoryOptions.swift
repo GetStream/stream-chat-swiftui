@@ -100,6 +100,8 @@ public final class ComposerInputViewOptions: Sendable {
     public let startRecording: @MainActor () -> Void
     /// Stop a recording.
     public let stopRecording: @MainActor () -> Void
+    /// Shows the recording tip snackbar.
+    public let showRecordingTip: @MainActor () -> Void
     /// Whether the send in channel view should be shown.
     public let sendInChannelShown: Bool
     /// Binding to whether to show reply in channel.
@@ -126,6 +128,7 @@ public final class ComposerInputViewOptions: Sendable {
         onImagePasted: @escaping @MainActor (UIImage) -> Void,
         startRecording: @escaping @MainActor () -> Void,
         stopRecording: @escaping @MainActor () -> Void,
+        showRecordingTip: @escaping @MainActor () -> Void,
         sendInChannelShown: Bool,
         showReplyInChannel: Binding<Bool>
     ) {
@@ -149,6 +152,7 @@ public final class ComposerInputViewOptions: Sendable {
         self.onImagePasted = onImagePasted
         self.startRecording = startRecording
         self.stopRecording = stopRecording
+        self.showRecordingTip = showRecordingTip
         self.sendInChannelShown = sendInChannelShown
         self.showReplyInChannel = showReplyInChannel
     }
@@ -206,6 +210,8 @@ public final class ComposerInputTrailingViewOptions: @unchecked Sendable {
     public let startRecording: @MainActor () -> Void
     /// The closure for stopping a recording.
     public let stopRecording: @MainActor () -> Void
+    /// The closure for showing the recording tip snackbar.
+    public let showRecordingTip: @MainActor () -> Void
     /// The closure for sending a message.
     public let sendMessage: @MainActor () -> Void
 
@@ -215,6 +221,7 @@ public final class ComposerInputTrailingViewOptions: @unchecked Sendable {
         composerInputState: MessageComposerInputState,
         startRecording: @escaping @MainActor () -> Void,
         stopRecording: @escaping @MainActor () -> Void,
+        showRecordingTip: @escaping @MainActor () -> Void,
         sendMessage: @escaping @MainActor () -> Void
     ) {
         _text = text
@@ -222,6 +229,7 @@ public final class ComposerInputTrailingViewOptions: @unchecked Sendable {
         self.composerInputState = composerInputState
         self.startRecording = startRecording
         self.stopRecording = stopRecording
+        self.showRecordingTip = showRecordingTip
         self.sendMessage = sendMessage
     }
 }

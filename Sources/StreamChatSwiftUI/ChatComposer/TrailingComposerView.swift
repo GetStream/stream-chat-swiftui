@@ -37,7 +37,8 @@ public struct TrailingComposerView<Factory: ViewFactory>: View {
                         VoiceRecordingButton(
                             recordingState: $viewModel.recordingState,
                             startRecording: viewModel.startRecording,
-                            stopRecording: viewModel.stopRecording
+                            stopRecording: viewModel.stopRecording,
+                            showRecordingTip: viewModel.showRecordingTip
                         )
                     }
                 }
@@ -64,6 +65,7 @@ public struct VoiceRecordingButton: View {
     @Binding var recordingState: RecordingState
     var startRecording: () -> Void
     var stopRecording: () -> Void
+    var showRecordingTip: () -> Void
 
     public var body: some View {
         Image(uiImage: images.composerMic)
@@ -89,9 +91,7 @@ public struct VoiceRecordingButton: View {
                     .onEnded { _ in
                         longPressed = false
                         if let longPressStarted, Date().timeIntervalSince(longPressStarted) <= 1 {
-                            if recordingState != .showingTip {
-                                recordingState = .showingTip
-                            }
+                            showRecordingTip()
                             self.longPressStarted = nil
                             return
                         }

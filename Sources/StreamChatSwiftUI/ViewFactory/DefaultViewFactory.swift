@@ -525,6 +525,7 @@ extension ViewFactory {
             onImagePasted: options.onImagePasted,
             startRecording: options.startRecording,
             stopRecording: options.stopRecording,
+            showRecordingTip: options.showRecordingTip,
             sendInChannelShown: options.sendInChannelShown,
             showReplyInChannel: options.showReplyInChannel
         )
@@ -555,6 +556,7 @@ extension ViewFactory {
             composerInputState: options.composerInputState,
             startRecording: options.startRecording,
             stopRecording: options.stopRecording,
+            showRecordingTip: options.showRecordingTip,
             sendMessage: options.sendMessage
         )
     }
@@ -599,10 +601,6 @@ extension ViewFactory {
         LockedView(viewModel: options.viewModel)
     }
     
-    public func makeComposerRecordingTipView(options: ComposerRecordingTipViewOptions) -> some View {
-        RecordingTipView()
-    }
-
     public func makeAttachmentPickerView(
         options: AttachmentPickerViewOptions
     ) -> some View {

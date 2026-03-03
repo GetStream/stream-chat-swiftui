@@ -101,6 +101,7 @@ struct AppleMessageComposerView<Factory: ViewFactory>: View, KeyboardReadable {
                     onImagePasted: viewModel.imagePasted,
                     startRecording: viewModel.startRecording,
                     stopRecording: viewModel.stopRecording,
+                    showRecordingTip: viewModel.showRecordingTip,
                     sendInChannelShown: viewModel.sendInChannelShown,
                     showReplyInChannel: $viewModel.showReplyInChannel
                 )

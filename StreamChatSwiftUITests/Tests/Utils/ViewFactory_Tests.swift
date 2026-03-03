@@ -887,17 +887,6 @@ import XCTest
         XCTAssert(view is RecordingView)
     }
     
-    func test_viewFactory_makeComposerRecordingTipView() {
-        // Given
-        let viewFactory = DefaultViewFactory.shared
-
-        // When
-        let view = viewFactory.makeComposerRecordingTipView(options: ComposerRecordingTipViewOptions())
-
-        // Then
-        XCTAssert(view is RecordingTipView)
-    }
-    
     func test_viewFactory_makeComposerRecordingLockedView() {
         // Given
         let viewFactory = DefaultViewFactory.shared

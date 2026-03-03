@@ -85,6 +85,7 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
                         onImagePasted: viewModel.imagePasted,
                         startRecording: viewModel.startRecording,
                         stopRecording: viewModel.stopRecording,
+                        showRecordingTip: viewModel.showRecordingTip,
                         sendInChannelShown: viewModel.sendInChannelShown,
                         showReplyInChannel: $viewModel.showReplyInChannel
                     )
@@ -128,9 +129,6 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
                             options: ComposerRecordingLockedViewOptions(viewModel: viewModel)
                         )
                         .frame(height: recordingViewHeight)
-                    } else if viewModel.recordingState == .showingTip {
-                        factory.makeComposerRecordingTipView(options: ComposerRecordingTipViewOptions())
-                            .offset(y: -composerHeight + 12)
                     } else {
                         EmptyView()
                     }
@@ -325,6 +323,7 @@ public struct ComposerInputView<Factory: ViewFactory>: View, KeyboardReadable {
     var onImagePasted: @MainActor (UIImage) -> Void
     var startRecording: @MainActor () -> Void
     var stopRecording: @MainActor () -> Void
+    var showRecordingTip: @MainActor () -> Void
     var sendInChannelShown: Bool
     @Binding var showReplyInChannel: Bool
 
@@ -353,6 +352,7 @@ public struct ComposerInputView<Factory: ViewFactory>: View, KeyboardReadable {
         onImagePasted: @escaping @MainActor (UIImage) -> Void,
         startRecording: @escaping @MainActor () -> Void,
         stopRecording: @escaping @MainActor () -> Void,
+        showRecordingTip: @escaping @MainActor () -> Void,
         sendInChannelShown: Bool,
         showReplyInChannel: Binding<Bool>
     ) {
@@ -377,6 +377,7 @@ public struct ComposerInputView<Factory: ViewFactory>: View, KeyboardReadable {
         self.onImagePasted = onImagePasted
         self.startRecording = startRecording
         self.stopRecording = stopRecording
+        self.showRecordingTip = showRecordingTip
         self.sendInChannelShown = sendInChannelShown
         _showReplyInChannel = showReplyInChannel
     }
@@ -471,6 +472,7 @@ public struct ComposerInputView<Factory: ViewFactory>: View, KeyboardReadable {
                     composerInputState: composerInputState,
                     startRecording: startRecording,
                     stopRecording: stopRecording,
+                    showRecordingTip: showRecordingTip,
                     sendMessage: sendMessage
                 )
             )

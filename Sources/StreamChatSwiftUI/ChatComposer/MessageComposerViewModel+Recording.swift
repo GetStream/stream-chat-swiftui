@@ -74,12 +74,20 @@ extension MessageComposerViewModel: AudioRecordingDelegate {
         didFailWithError error: Error
     ) {
         log.error(error)
+        let wasRecording = recordingState != .initial
         recordingState = .initial
         audioRecordingInfo = .initial
+        if wasRecording {
+            snackBarText = L10n.Composer.Recording.recordingStopped
+        }
     }
 }
 
 extension MessageComposerViewModel {
+    public func showRecordingTip() {
+        snackBarText = L10n.Composer.Recording.tip
+    }
+
     public func startRecording() {
         utils.audioSessionFeedbackGenerator.feedbackForBeginRecording()
         audioRecorder.beginRecording {
@@ -108,6 +116,7 @@ extension MessageComposerViewModel {
         recordingState = .initial
         audioRecordingInfo = .initial
         stopRecording()
+        snackBarText = L10n.Composer.Recording.voiceMessageDeleted
     }
     
     public func confirmRecording() {
