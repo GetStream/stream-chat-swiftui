@@ -264,6 +264,22 @@ class MessageAttachmentsConverter_Tests: StreamChatTestCase {
         XCTAssertNotNil(imageAsset?.image)
         XCTAssertNotNil(imageAsset?.payload)
     }
+
+    func test_attachmentsToAssets_imageAttachmentWithoutLocalURL_preservesPayloadMetadata() {
+        let attachments = [createImageAttachmentWithoutLocalURL(originalWidth: 1024, originalHeight: 768)]
+        let expectation = XCTestExpectation(description: "Image attachment conversion completion")
+        var result: ComposerAssets?
+
+        converter.attachmentsToAssets(attachments) { composerAssets in
+            result = composerAssets
+            expectation.fulfill()
+        }
+
+        wait(for: [expectation], timeout: 1.0)
+        let imageAsset = result?.mediaAssets.first
+        XCTAssertEqual(imageAsset?.originalWidth, 1024)
+        XCTAssertEqual(imageAsset?.originalHeight, 768)
+    }
     
     // MARK: - Helper Methods
     
@@ -415,7 +431,10 @@ class MessageAttachmentsConverter_Tests: StreamChatTestCase {
         ).asAnyAttachment
     }
     
-    private func createImageAttachmentWithoutLocalURL() -> AnyChatMessageAttachment {
+    private func createImageAttachmentWithoutLocalURL(
+        originalWidth: Double? = nil,
+        originalHeight: Double? = nil
+    ) -> AnyChatMessageAttachment {
         let attachmentFile = AttachmentFile(type: .png, size: 512, mimeType: "image/png")
         
         return ChatMessageImageAttachment(
@@ -424,6 +443,8 @@ class MessageAttachmentsConverter_Tests: StreamChatTestCase {
             payload: ImageAttachmentPayload(
                 title: "Test Image",
                 imageRemoteURL: URL(string: "https://example.com/image.png")!,
+                originalWidth: originalWidth,
+                originalHeight: originalHeight,
                 extraData: ["test": "value"]
             ),
             downloadingState: nil,
