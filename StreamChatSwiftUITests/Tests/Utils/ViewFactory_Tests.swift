@@ -406,8 +406,7 @@ import XCTest
         // When
         let view = viewFactory.makeSendInChannelView(
             options: SendInChannelViewOptions(
-                showReplyInChannel: .constant(true),
-                isDirectMessage: true
+                showReplyInChannel: .constant(true)
             )
         )
 

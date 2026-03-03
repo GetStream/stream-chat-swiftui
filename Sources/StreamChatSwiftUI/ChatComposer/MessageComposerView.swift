@@ -53,7 +53,7 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
     var onMessageSent: () -> Void
 
     public var body: some View {
-        VStack(spacing: 0) {
+        VStack(spacing: tokens.spacingSm) {
             HStack(alignment: .bottom, spacing: tokens.spacingXs) {
                 factory.makeLeadingComposerView(
                     options: LeadingComposerViewOptions(
@@ -84,7 +84,9 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
                         sendMessage: sendMessage,
                         onImagePasted: viewModel.imagePasted,
                         startRecording: viewModel.startRecording,
-                        stopRecording: viewModel.stopRecording
+                        stopRecording: viewModel.stopRecording,
+                        sendInChannelShown: viewModel.sendInChannelShown,
+                        showReplyInChannel: $viewModel.showReplyInChannel
                     )
                 )
                 .environmentObject(viewModel)
@@ -109,7 +111,6 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
                 }
             }
             .padding(.top, tokens.spacingMd)
-            .padding(.bottom, dynamicBottomPadding)
             .padding(.horizontal, tokens.spacingMd)
             .opacity(viewModel.recordingState.showsComposer ? 1 : 0)
             .overlay(
@@ -136,15 +137,6 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
                 }
             )
             .frame(height: viewModel.recordingState.showsComposer ? nil : recordingViewHeight)
-
-            if viewModel.sendInChannelShown {
-                factory.makeSendInChannelView(
-                    options: SendInChannelViewOptions(
-                        showReplyInChannel: $viewModel.showReplyInChannel,
-                        isDirectMessage: viewModel.isDirectChannel
-                    )
-                )
-            }
 
             factory.makeAttachmentPickerView(
                 options: AttachmentPickerViewOptions(
@@ -290,17 +282,6 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
         .accessibilityElement(children: .contain)
     }
 
-    // In regular styles, when the attachment picker is shown,
-    // we don't want spacing in the composer bottom since the picker already
-    // as the desired top spacing.
-    private var dynamicBottomPadding: CGFloat {
-        if factory.styles.composerPlacement == .docked && viewModel.overlayShown {
-            return 0
-        }
-
-        return tokens.spacingMd
-    }
-
     public func sendMessage() {
         // Calling onMessageSent() before erasing the edited and quoted message
         // so that onMessageSent can use them for state handling.
@@ -344,6 +325,8 @@ public struct ComposerInputView<Factory: ViewFactory>: View, KeyboardReadable {
     var onImagePasted: @MainActor (UIImage) -> Void
     var startRecording: @MainActor () -> Void
     var stopRecording: @MainActor () -> Void
+    var sendInChannelShown: Bool
+    @Binding var showReplyInChannel: Bool
 
     @State var textHeight: CGFloat = TextSizeConstants.defaultInputViewHeight
     @State var keyboardShown = false
@@ -369,7 +352,9 @@ public struct ComposerInputView<Factory: ViewFactory>: View, KeyboardReadable {
         sendMessage: @escaping @MainActor () -> Void,
         onImagePasted: @escaping @MainActor (UIImage) -> Void,
         startRecording: @escaping @MainActor () -> Void,
-        stopRecording: @escaping @MainActor () -> Void
+        stopRecording: @escaping @MainActor () -> Void,
+        sendInChannelShown: Bool,
+        showReplyInChannel: Binding<Bool>
     ) {
         self.factory = factory
         self.channelController = channelController
@@ -392,6 +377,8 @@ public struct ComposerInputView<Factory: ViewFactory>: View, KeyboardReadable {
         self.onImagePasted = onImagePasted
         self.startRecording = startRecording
         self.stopRecording = stopRecording
+        self.sendInChannelShown = sendInChannelShown
+        _showReplyInChannel = showReplyInChannel
     }
 
     var textFieldHeight: CGFloat {
@@ -433,39 +420,49 @@ public struct ComposerInputView<Factory: ViewFactory>: View, KeyboardReadable {
 
     private var inputView: some View {
         HStack(alignment: .bottom) {
-            HStack(alignment: .bottom, spacing: tokens.spacingXxs) {
-                if let command,
-                   let displayInfo = command.displayInfo,
-                   displayInfo.isInstant == true {
-                    CommandChipView(
-                        displayName: displayInfo.displayName,
-                        onDismiss: {
-                            withAnimation(.easeInOut(duration: 0.2)) {
-                                self.command = nil
+            VStack(spacing: 0) {
+                HStack(alignment: .bottom, spacing: tokens.spacingXxs) {
+                    if let command,
+                       let displayInfo = command.displayInfo,
+                       displayInfo.isInstant == true {
+                        CommandChipView(
+                            displayName: displayInfo.displayName,
+                            onDismiss: {
+                                withAnimation(.easeInOut(duration: 0.2)) {
+                                    self.command = nil
+                                }
                             }
-                        }
-                    )
-                    .padding(.leading, tokens.spacingXxs)
-                    .padding(.bottom, tokens.spacingXs)
-                }
+                        )
+                        .padding(.leading, tokens.spacingXxs)
+                        .padding(.bottom, tokens.spacingXs)
+                    }
 
-                factory.makeComposerTextInputView(
-                    options: ComposerTextInputViewOptions(
-                        text: $text,
-                        height: $textHeight,
-                        selectedRangeLocation: $selectedRangeLocation,
-                        placeholder: placeholderText,
-                        editable: !isInputDisabled,
-                        maxMessageLength: maxMessageLength,
-                        currentHeight: textFieldHeight,
-                        onImagePasted: onImagePasted
+                    factory.makeComposerTextInputView(
+                        options: ComposerTextInputViewOptions(
+                            text: $text,
+                            height: $textHeight,
+                            selectedRangeLocation: $selectedRangeLocation,
+                            placeholder: placeholderText,
+                            editable: !isInputDisabled,
+                            maxMessageLength: maxMessageLength,
+                            currentHeight: textFieldHeight,
+                            onImagePasted: onImagePasted
+                        )
                     )
-                )
-                .accessibilityIdentifier("ComposerTextInputView")
-                .accessibilityElement(children: .contain)
+                    .accessibilityIdentifier("ComposerTextInputView")
+                    .accessibilityElement(children: .contain)
+                }
+                .frame(height: textFieldHeight)
+                .padding(.vertical, tokens.spacingXxs)
+
+                if sendInChannelShown {
+                    factory.makeSendInChannelView(
+                        options: SendInChannelViewOptions(
+                            showReplyInChannel: $showReplyInChannel
+                        )
+                    )
+                }
             }
-            .frame(height: textFieldHeight)
-            .padding(.vertical, tokens.spacingXxs)
 
             factory.makeComposerInputTrailingView(
                 options: .init(
