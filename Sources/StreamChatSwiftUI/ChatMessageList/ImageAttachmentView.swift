@@ -99,11 +99,12 @@ public struct ImageAttachmentContainer<Factory: ViewFactory>: View {
             )
         }
         let imageSources = message.imageAttachments.map { attachment in
-            let url: URL = attachment.imageURL
-            return MediaAttachment(
-                url: url,
+            MediaAttachment(
+                url: attachment.imageURL,
                 type: .image,
-                uploadingState: attachment.uploadingState
+                uploadingState: attachment.uploadingState,
+                originalWidth: attachment.originalWidth,
+                originalHeight: attachment.originalHeight
             )
         }
         return videoSources + imageSources
@@ -444,11 +445,21 @@ public final class MediaAttachment: Identifiable, Equatable, Sendable {
     public let url: URL
     public let type: MediaAttachmentType
     public let uploadingState: AttachmentUploadingState?
+    public let originalWidth: Double?
+    public let originalHeight: Double?
 
-    public init(url: URL, type: MediaAttachmentType, uploadingState: AttachmentUploadingState? = nil) {
+    public init(
+        url: URL,
+        type: MediaAttachmentType,
+        uploadingState: AttachmentUploadingState? = nil,
+        originalWidth: Double? = nil,
+        originalHeight: Double? = nil
+    ) {
         self.url = url
         self.type = type
         self.uploadingState = uploadingState
+        self.originalWidth = originalWidth
+        self.originalHeight = originalHeight
     }
 
     public var id: String {
@@ -477,10 +488,23 @@ public final class MediaAttachment: Identifiable, Equatable, Sendable {
         }
     }
 
+    @MainActor func generateThumbnail(
+        resize: Bool,
+        preferredSize: CGSize
+    ) async throws -> UIImage {
+        try await withCheckedThrowingContinuation { continuation in
+            generateThumbnail(resize: resize, preferredSize: preferredSize) { result in
+                continuation.resume(with: result)
+            }
+        }
+    }
+
     public static func == (lhs: MediaAttachment, rhs: MediaAttachment) -> Bool {
         lhs.url == rhs.url
             && lhs.type == rhs.type
             && lhs.uploadingState == rhs.uploadingState
+            && lhs.originalWidth == rhs.originalWidth
+            && lhs.originalHeight == rhs.originalHeight
     }
 }
 
@@ -495,7 +519,9 @@ extension MediaAttachment {
         self.init(
             url: url,
             type: .image,
-            uploadingState: attachment.uploadingState
+            uploadingState: attachment.uploadingState,
+            originalWidth: attachment.originalWidth,
+            originalHeight: attachment.originalHeight
         )
     }
 }

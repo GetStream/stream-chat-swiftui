@@ -32,7 +32,7 @@ import XCTest
         let viewFactory = DefaultViewFactory.shared
 
         // When
-        let view = viewFactory.makeLoadingView(options: LoadingViewOptions())
+        let view = viewFactory.makeLoadingView(options: LoadingViewOptions(type: .redactedChannelList))
 
         // Then
         XCTAssert(view is RedactedLoadingView<DefaultViewFactory>)

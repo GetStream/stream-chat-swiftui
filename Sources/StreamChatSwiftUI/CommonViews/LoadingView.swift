@@ -16,6 +16,35 @@ public struct LoadingView: View {
     }
 }
 
+/// A circular spinner badge used as a loading indicator over media content.
+///
+/// Renders a white circular badge with a border and an animated spinner inside.
+public struct LoadingSpinnerView: View {
+    @Injected(\.colors) private var colors
+
+    let size: CGFloat
+
+    public init(size: CGFloat = 32) {
+        self.size = size
+    }
+
+    public var body: some View {
+        ZStack {
+            Circle()
+                .fill(Color(colors.background))
+                .overlay(
+                    Circle()
+                        .stroke(Color.white, lineWidth: 2)
+                )
+            ProgressView()
+                .progressViewStyle(.circular)
+                .scaleEffect(size / 40)
+        }
+        .frame(width: size, height: size)
+        .accessibilityIdentifier("LoadingSpinnerView")
+    }
+}
+
 /// Loading view showing redacted channel list data.
 public struct RedactedLoadingView<Factory: ViewFactory>: View {
     public var factory: Factory

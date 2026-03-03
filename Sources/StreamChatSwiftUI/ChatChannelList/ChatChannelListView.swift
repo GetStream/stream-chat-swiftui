@@ -108,7 +108,7 @@ public struct ChatChannelListView<Factory: ViewFactory>: View {
     private func content() -> some View {
         Group {
             if viewModel.loading {
-                viewFactory.makeLoadingView(options: LoadingViewOptions())
+                viewFactory.makeLoadingView(options: LoadingViewOptions(type: .redactedChannelList))
             } else if viewModel.channels.isEmpty {
                 viewFactory.makeNoChannelsView(options: NoChannelsViewOptions())
             } else {

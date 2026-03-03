@@ -14,8 +14,16 @@ extension ViewFactory {
         NoChannelsView()
     }
     
+    @ViewBuilder
     public func makeLoadingView(options: LoadingViewOptions) -> some View {
-        RedactedLoadingView(factory: self)
+        switch options.type {
+        case .redactedChannelList:
+            RedactedLoadingView(factory: self)
+        case .spinner:
+            LoadingSpinnerView()
+        case .progressIndicator:
+            LoadingView()
+        }
     }
     
     public func navigationBarDisplayMode() -> NavigationBarItem.TitleDisplayMode {
@@ -292,12 +300,10 @@ extension ViewFactory {
     public func makeImageAttachmentView(
         options: ImageAttachmentViewOptions
     ) -> some View {
-        ImageAttachmentContainer(
+        ChatMediaAttachmentsContainerView(
             factory: self,
             message: options.message,
-            width: options.availableWidth,
-            isFirst: options.isFirst,
-            scrolledId: options.scrolledId
+            width: options.availableWidth
         )
     }
     
