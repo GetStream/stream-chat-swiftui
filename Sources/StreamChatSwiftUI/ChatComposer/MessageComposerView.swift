@@ -55,13 +55,15 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
     public var body: some View {
         VStack(spacing: tokens.spacingSm) {
             HStack(alignment: .bottom, spacing: tokens.spacingXs) {
-                factory.makeLeadingComposerView(
-                    options: LeadingComposerViewOptions(
-                        state: $viewModel.pickerTypeState,
-                        channelConfig: channelConfig,
-                        isCommandActive: viewModel.composerCommand?.displayInfo?.isInstant == true
+                if viewModel.recordingState.showsComposer {
+                    factory.makeLeadingComposerView(
+                        options: LeadingComposerViewOptions(
+                            state: $viewModel.pickerTypeState,
+                            channelConfig: channelConfig,
+                            isCommandActive: viewModel.composerCommand?.displayInfo?.isInstant == true
+                        )
                     )
-                )
+                }
 
                 factory.makeComposerInputView(
                     options: ComposerInputViewOptions(
@@ -110,31 +112,32 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
                 .alert(isPresented: $viewModel.errorShown) {
                     Alert.defaultErrorAlert
                 }
+                .opacity(viewModel.recordingState.showsComposer ? 1 : 0)
+                .frame(width: viewModel.recordingState.showsComposer ? nil : 0)
             }
             .padding(.top, tokens.spacingMd)
             .padding(.horizontal, tokens.spacingMd)
-            .opacity(viewModel.recordingState.showsComposer ? 1 : 0)
             .overlay(
                 ZStack {
                     if case let .recording(location) = viewModel.recordingState {
-                        factory.makeComposerRecordingView(
-                            options: ComposerRecordingViewOptions(
-                                viewModel: viewModel,
-                                gestureLocation: location
-                            )
-                        )
-                        .frame(height: 60)
+                        HStack {
+                            Spacer()
+                            LockView()
+                                .offset(y: lockViewOffset(for: location))
+                        }
+                        .padding(.trailing, tokens.spacingXs)
                     } else if viewModel.recordingState == .locked || viewModel.recordingState == .stopped {
                         factory.makeComposerRecordingLockedView(
                             options: ComposerRecordingLockedViewOptions(viewModel: viewModel)
                         )
                         .frame(height: recordingViewHeight)
-                    } else {
-                        EmptyView()
                     }
                 }
             )
-            .frame(height: viewModel.recordingState.showsComposer ? nil : recordingViewHeight)
+            .frame(
+                height: (viewModel.recordingState == .locked || viewModel.recordingState == .stopped)
+                    ? recordingViewHeight : nil
+            )
 
             factory.makeAttachmentPickerView(
                 options: AttachmentPickerViewOptions(
@@ -292,6 +295,15 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
             editedMessage = nil
         }
     }
+
+    private static var initialLockOffset: CGFloat { -70 }
+
+    private func lockViewOffset(for location: CGPoint) -> CGFloat {
+        if location.y > 0 {
+            return Self.initialLockOffset
+        }
+        return Self.initialLockOffset + location.y
+    }
 }
 
 /// View for the composer's input (text and media).
@@ -301,6 +313,8 @@ public struct ComposerInputView<Factory: ViewFactory>: View, KeyboardReadable {
     @Injected(\.images) private var images
     @Injected(\.utils) private var utils
     @Injected(\.tokens) private var tokens
+
+    @EnvironmentObject var viewModel: MessageComposerViewModel
 
     var factory: Factory
     var channelController: ChatChannelController
@@ -398,16 +412,27 @@ public struct ComposerInputView<Factory: ViewFactory>: View, KeyboardReadable {
     }
 
     public var body: some View {
-        VStack(spacing: tokens.spacingXxs) {
-            referenceMessageView
-                .padding(.top, tokens.spacingXxs)
+        Group {
+            if case let .recording(location) = recordingState {
+                factory.makeComposerRecordingView(
+                    options: ComposerRecordingViewOptions(
+                        viewModel: viewModel,
+                        gestureLocation: location
+                    )
+                )
+            } else {
+                VStack(spacing: tokens.spacingXxs) {
+                    referenceMessageView
+                        .padding(.top, tokens.spacingXxs)
 
-            attachmentsTray
-                .padding(.top, tokens.spacingXxs)
-                .padding(.leading, tokens.spacingXs)
+                    attachmentsTray
+                        .padding(.top, tokens.spacingXxs)
+                        .padding(.leading, tokens.spacingXs)
 
-            inputView
-                .padding(.leading, tokens.spacingXs)
+                    inputView
+                        .padding(.leading, tokens.spacingXs)
+                }
+            }
         }
         .modifier(
             factory.styles.makeComposerInputViewModifier(
