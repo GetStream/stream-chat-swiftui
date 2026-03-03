@@ -15,4 +15,10 @@ extension RecordingState {
     var showsComposer: Bool {
         self == .initial
     }
+
+    /// Whether the user is actively recording (finger down, not yet locked).
+    var isRecording: Bool {
+        if case .recording = self { return true }
+        return false
+    }
 }

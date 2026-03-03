@@ -56,12 +56,8 @@ public struct TrailingComposerView<Factory: ViewFactory>: View {
 public struct VoiceRecordingButton: View {
     @Injected(\.colors) var colors
     @Injected(\.tokens) var tokens
-    @Injected(\.utils) var utils
     @Injected(\.images) var images
 
-    @State private var longPressed = false
-    @State private var longPressStarted: Date?
-    
     @Binding var recordingState: RecordingState
     var startRecording: () -> Void
     var stopRecording: () -> Void
@@ -72,34 +68,6 @@ public struct VoiceRecordingButton: View {
             .renderingMode(.template)
             .padding(tokens.buttonPaddingYSm)
             .foregroundColor(Color(colors.buttonSecondaryText))
-            .gesture(
-                DragGesture(minimumDistance: 0)
-                    .onChanged { value in
-                        if !longPressed {
-                            longPressStarted = Date()
-                            longPressed = true
-                            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-                                if longPressed {
-                                    recordingState = .recording(value.location)
-                                    startRecording()
-                                }
-                            }
-                        } else if case .recording = recordingState {
-                            recordingState = .recording(value.location)
-                        }
-                    }
-                    .onEnded { _ in
-                        longPressed = false
-                        if let longPressStarted, Date().timeIntervalSince(longPressStarted) <= 1 {
-                            showRecordingTip()
-                            self.longPressStarted = nil
-                            return
-                        }
-                        if recordingState != .locked {
-                            stopRecording()
-                        }
-                    }
-            )
             .accessibilityRemoveTraits(.isImage)
             .accessibilityAddTraits(.isButton)
             .accessibilityLabel(Text(L10n.Composer.AudioRecording.start))
