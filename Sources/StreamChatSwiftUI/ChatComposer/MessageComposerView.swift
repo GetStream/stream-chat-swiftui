@@ -52,18 +52,25 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
 
     var onMessageSent: () -> Void
 
+    private var showsLeadingComposer: Bool {
+        viewModel.recordingState.showsComposer
+            && viewModel.composerCommand?.displayInfo?.isInstant != true
+    }
+
     public var body: some View {
         VStack(spacing: tokens.spacingSm) {
             HStack(alignment: .bottom, spacing: tokens.spacingXs) {
-                if viewModel.recordingState.showsComposer {
-                    factory.makeLeadingComposerView(
-                        options: LeadingComposerViewOptions(
-                            state: $viewModel.pickerTypeState,
-                            channelConfig: channelConfig,
-                            isCommandActive: viewModel.composerCommand?.displayInfo?.isInstant == true
-                        )
+                factory.makeLeadingComposerView(
+                    options: LeadingComposerViewOptions(
+                        state: $viewModel.pickerTypeState,
+                        channelConfig: channelConfig,
+                        isCommandActive: viewModel.composerCommand?.displayInfo?.isInstant == true
                     )
-                }
+                )
+                .opacity(viewModel.recordingState.showsComposer ? 1 : 0)
+                .frame(width: viewModel.recordingState.showsComposer ? nil : 0)
+                .allowsHitTesting(viewModel.recordingState.showsComposer)
+                .animation(.interactiveSpring(response: 0.32, dampingFraction: 0.88), value: showsLeadingComposer)
 
                 factory.makeComposerInputView(
                     options: ComposerInputViewOptions(
@@ -114,7 +121,12 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
                 }
                 .opacity(viewModel.recordingState.showsComposer ? 1 : 0)
                 .frame(width: viewModel.recordingState.showsComposer ? nil : 0)
+                .animation(.easeInOut(duration: 0.25), value: viewModel.recordingState.showsComposer)
             }
+            .animation(
+                .interactiveSpring(response: 0.35, dampingFraction: 0.88, blendDuration: 0.12),
+                value: viewModel.recordingState.showsComposer
+            )
             .padding(.top, tokens.spacingMd)
             .padding(.horizontal, tokens.spacingMd)
             .overlay(
@@ -122,8 +134,9 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
                     if case let .recording(location) = viewModel.recordingState {
                         HStack {
                             Spacer()
-                            LockView()
+                            LockView(dragLocation: location)
                                 .offset(y: lockViewOffset(for: location))
+                                .animation(.interactiveSpring(response: 0.35, dampingFraction: 0.8), value: location)
                         }
                         .padding(.trailing, tokens.spacingXs)
                     } else if viewModel.recordingState == .locked || viewModel.recordingState == .stopped {
@@ -473,29 +486,48 @@ public struct ComposerInputView<Factory: ViewFactory>: View, KeyboardReadable {
         return textHeight
     }
 
-    public var body: some View {
-        Group {
-            if case let .recording(location) = recordingState {
-                factory.makeComposerRecordingView(
-                    options: ComposerRecordingViewOptions(
-                        viewModel: viewModel,
-                        gestureLocation: location
-                    )
-                )
-            } else {
-                VStack(spacing: tokens.spacingXxs) {
-                    referenceMessageView
-                        .padding(.top, tokens.spacingXxs)
+    private var regularInputContent: some View {
+        VStack(spacing: tokens.spacingXxs) {
+            referenceMessageView
+                .padding(.top, tokens.spacingXxs)
 
-                    attachmentsTray
-                        .padding(.top, tokens.spacingXxs)
-                        .padding(.leading, tokens.spacingXs)
+            attachmentsTray
+                .padding(.top, tokens.spacingXxs)
+                .padding(.leading, tokens.spacingXs)
 
-                    inputView
-                        .padding(.leading, tokens.spacingXs)
-                }
-            }
+            inputView
+                .padding(.leading, tokens.spacingXs)
         }
+    }
+
+    private var recordingContent: some View {
+        factory.makeComposerRecordingView(
+            options: ComposerRecordingViewOptions(
+                viewModel: viewModel,
+                gestureLocation: recordingState.isRecording ? recordingGestureLocation : .zero
+            )
+        )
+    }
+
+    private var recordingGestureLocation: CGPoint {
+        if case let .recording(location) = recordingState { return location }
+        return .zero
+    }
+
+    public var body: some View {
+        ZStack(alignment: .bottomLeading) {
+            regularInputContent
+                .opacity(recordingState.isRecording ? 0 : 1)
+                .allowsHitTesting(!recordingState.isRecording)
+
+            recordingContent
+                .opacity(recordingState.isRecording ? 1 : 0)
+                .allowsHitTesting(recordingState.isRecording)
+        }
+        .animation(
+            .interactiveSpring(response: 0.35, dampingFraction: 0.88, blendDuration: 0.12),
+            value: recordingState.isRecording
+        )
         .modifier(
             factory.styles.makeComposerInputViewModifier(
                 options: .init(keyboardShown: keyboardShown)
