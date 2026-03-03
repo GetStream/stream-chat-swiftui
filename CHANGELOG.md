@@ -3,7 +3,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 # Upcoming
 
-### 🔄 Changed
+### ✅ Added
+- `AddedAsset` now has `originalWidth`, `originalHeight`, and `duration` (videos), set at selection time and passed into image/video attachment payloads for custom CDN uploads [#1255](https://github.com/GetStream/stream-chat-swiftui/pull/1255)
 
 # [4.98.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/4.98.0)
 _February 26, 2026_

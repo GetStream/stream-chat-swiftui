@@ -56,11 +56,14 @@ final class ImagePickerCoordinator: NSObject, UIImagePickerControllerDelegate, U
     ) {
         if let uiImage = info[.originalImage] as? UIImage,
            let imageURL = try? uiImage.saveAsJpgToTemporaryUrl() {
+            let scale = uiImage.scale
             let addedImage = AddedAsset(
                 image: uiImage,
                 id: UUID().uuidString,
                 url: imageURL,
-                type: .image
+                type: .image,
+                originalWidth: Double(uiImage.size.width * scale),
+                originalHeight: Double(uiImage.size.height * scale)
             )
             parent.onAssetPicked(addedImage)
         } else if let videoURL = info[UIImagePickerController.InfoKey.mediaURL] as? URL {
@@ -73,11 +76,30 @@ final class ImagePickerCoordinator: NSObject, UIImagePickerControllerDelegate, U
                     actualTime: nil
                 )
                 let thumbnail = UIImage(cgImage: cgImage)
+                let durationSeconds = CMTimeGetSeconds(asset.duration)
+                let size: (Double, Double)? = {
+                    guard let track = asset.tracks(withMediaType: .video).first else { return nil }
+                    let size = track.naturalSize
+                    let transform = track.preferredTransform
+                    let width: Double
+                    let height: Double
+                    if transform.a == 0 && abs(transform.b) == 1 && abs(transform.c) == 1 && transform.d == 0 {
+                        width = Double(size.height)
+                        height = Double(size.width)
+                    } else {
+                        width = Double(size.width)
+                        height = Double(size.height)
+                    }
+                    return (width, height)
+                }()
                 let addedVideo = AddedAsset(
                     image: thumbnail,
                     id: UUID().uuidString,
                     url: videoURL,
-                    type: .video
+                    type: .video,
+                    originalWidth: size?.0,
+                    originalHeight: size?.1,
+                    duration: durationSeconds.isFinite && !durationSeconds.isNaN ? durationSeconds : nil
                 )
                 parent.onAssetPicked(addedVideo)
             } catch {

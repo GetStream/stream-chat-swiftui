@@ -103,14 +103,19 @@ public struct PhotoAttachmentCell: View {
                             .onTapGesture {
                                 withAnimation {
                                     if let assetURL = asset.mediaType == .image ? assetJpgURL() : assetURL {
+                                        let width = Double(asset.pixelWidth)
+                                        let height = Double(asset.pixelHeight)
+                                        let durationSeconds: TimeInterval? = asset.mediaType == .video ? asset.duration : nil
                                         onImageTap(
                                             AddedAsset(
                                                 image: image,
                                                 id: asset.localIdentifier,
                                                 url: assetURL,
                                                 type: assetType,
-                                                extraData: asset
-                                                    .mediaType == .video ? ["duration": .string(asset.durationString)] : [:]
+                                                extraData: asset.mediaType == .video ? ["duration": .string(asset.durationString)] : [:],
+                                                originalWidth: width > 0 ? width : nil,
+                                                originalHeight: height > 0 ? height : nil,
+                                                duration: durationSeconds
                                             )
                                         )
                                     }

@@ -12,6 +12,18 @@ public struct VideoAttachmentsContainer<Factory: ViewFactory>: View {
     let width: CGFloat
     @Binding var scrolledId: String?
 
+    public init(
+        factory: Factory,
+        message: ChatMessage,
+        width: CGFloat,
+        scrolledId: Binding<String?>
+    ) {
+        self.factory = factory
+        self.message = message
+        self.width = width
+        _scrolledId = scrolledId
+    }
+
     public var body: some View {
         VStack(spacing: 0) {
             if let quotedMessage = message.quotedMessage {

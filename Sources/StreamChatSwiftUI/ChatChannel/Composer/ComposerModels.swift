@@ -20,12 +20,19 @@ public final class AddedAsset: Identifiable, Equatable {
     public static func == (lhs: AddedAsset, rhs: AddedAsset) -> Bool {
         lhs.id == rhs.id
     }
-    
+
     public let image: UIImage
     public let id: String
     public let url: URL
     public let type: AssetType
     public var extraData: [String: RawJSON] = [:]
+
+    /// Original width in pixels (for images and videos). Available at selection time without extra computation.
+    public var originalWidth: Double?
+    /// Original height in pixels (for images and videos). Available at selection time without extra computation.
+    public var originalHeight: Double?
+    /// Duration in seconds (for videos only). Available at selection time without extra computation.
+    public var duration: TimeInterval?
 
     /// The payload of the attachment, in case the attachment has been uploaded to server already.
     /// This is mostly used when editing an existing message that contains attachments.
@@ -37,6 +44,9 @@ public final class AddedAsset: Identifiable, Equatable {
         url: URL,
         type: AssetType,
         extraData: [String: RawJSON] = [:],
+        originalWidth: Double? = nil,
+        originalHeight: Double? = nil,
+        duration: TimeInterval? = nil,
         payload: AttachmentPayload? = nil
     ) {
         self.image = image
@@ -44,6 +54,9 @@ public final class AddedAsset: Identifiable, Equatable {
         self.url = url
         self.type = type
         self.extraData = extraData
+        self.originalWidth = originalWidth
+        self.originalHeight = originalHeight
+        self.duration = duration
         self.payload = payload
     }
 }
@@ -53,10 +66,20 @@ extension AddedAsset {
         if let payload = self.payload {
             return AnyAttachmentPayload(payload: payload)
         }
+        var localMetadata: AnyAttachmentLocalMetadata?
+        if originalWidth != nil || originalHeight != nil || duration != nil {
+            var meta = AnyAttachmentLocalMetadata()
+            if let w = originalWidth, let h = originalHeight {
+                meta.originalResolution = (width: w, height: h)
+            }
+            meta.duration = duration
+            localMetadata = meta
+        }
         return try AnyAttachmentPayload(
             localFileURL: url,
             attachmentType: type == .video ? .video : .image,
-            extraData: extraData
+            localMetadata: localMetadata,
+            extraData: extraData.isEmpty ? nil : extraData
         )
     }
 }
