@@ -5,98 +5,202 @@
 import StreamChat
 import SwiftUI
 
-/// View for the add users popup.
+/// Full-sheet view for adding members to a channel.
+/// Supports search, pagination, and multi-select with a batch confirm action.
 public struct AddUsersView<Factory: ViewFactory>: View {
-    @Injected(\.fonts) private var fonts
     @Injected(\.colors) private var colors
 
-    private let columns = Array(
-        repeating:
-        GridItem(
-            .adaptive(minimum: 64),
-            alignment: .top
-        ),
-        count: 4
-    )
-    
-    private let factory: Factory
+    @Environment(\.presentationMode) private var presentationMode
 
+    private let factory: Factory
     @StateObject private var viewModel: AddUsersViewModel
-    var onUserTap: (ChatUser) -> Void
+    var onConfirm: ([ChatUser]) -> Void
 
     public init(
         factory: Factory = DefaultViewFactory.shared,
         loadedUserIds: [String],
-        onUserTap: @escaping (ChatUser) -> Void
+        onConfirm: @escaping ([ChatUser]) -> Void
     ) {
         _viewModel = StateObject(
             wrappedValue: AddUsersViewModel(loadedUserIds: loadedUserIds)
         )
-        self.onUserTap = onUserTap
+        self.onConfirm = onConfirm
         self.factory = factory
     }
 
     init(
         factory: Factory = DefaultViewFactory.shared,
         viewModel: AddUsersViewModel,
-        onUserTap: @escaping (ChatUser) -> Void
+        onConfirm: @escaping ([ChatUser]) -> Void
     ) {
-        _viewModel = StateObject(
-            wrappedValue: viewModel
-        )
-        self.onUserTap = onUserTap
+        _viewModel = StateObject(wrappedValue: viewModel)
+        self.onConfirm = onConfirm
         self.factory = factory
     }
 
     public var body: some View {
-        VStack {
-            SearchBar(text: $viewModel.searchText)
+        NavigationView {
+            VStack(spacing: 0) {
+                SearchBar(text: $viewModel.searchText)
 
-            ScrollView {
-                LazyVGrid(columns: columns, alignment: .center, spacing: 0) {
-                    ForEach(viewModel.users) { user in
-                        Button {
-                            onUserTap(user)
-                        } label: {
-                            VStack {
-                                let itemSize: CGFloat = 64
-                                factory.makeUserAvatarView(
-                                    options: UserAvatarViewOptions(
-                                        user: user,
-                                        size: itemSize,
-                                        showsIndicator: false
-                                    )
-                                )
-
-                                Text(user.name ?? user.id)
-                                    .multilineTextAlignment(.center)
-                                    .lineLimit(2)
-                                    .font(fonts.footnoteBold)
-                                    .frame(width: itemSize)
-                                    .foregroundColor(Color(colors.text))
+                ScrollView {
+                    LazyVStack(spacing: 0) {
+                        ForEach(viewModel.users) { user in
+                            AddMembersUserRow(
+                                factory: factory,
+                                user: user,
+                                isSelected: viewModel.isSelected(user),
+                                isAlreadyMember: viewModel.isAlreadyMember(user)
+                            ) {
+                                viewModel.toggleUser(user)
                             }
-                            .padding(.all, 8)
-                        }
-                        .onAppear {
-                            viewModel.onUserAppear(user)
+                            .onAppear {
+                                viewModel.onUserAppear(user)
+                            }
                         }
                     }
                 }
             }
-            .frame(maxHeight: 240)
+            .background(Color(colors.backgroundCoreApp).edgesIgnoringSafeArea(.all))
+            .modifier(
+                AddMembersToolbarModifier(
+                    viewModel: viewModel,
+                    onConfirm: { onConfirm(viewModel.selectedUsers) },
+                    onDismiss: { presentationMode.wrappedValue.dismiss() }
+                )
+            )
+            .navigationBarTitleDisplayMode(.inline)
         }
-        .standardPadding()
-        .background(Color(colors.background))
-        .cornerRadius(16)
-        .padding()
     }
 }
 
 /// Options used in the add users view.
 public final class AddUsersOptions: Sendable {
-    public let loadedUsers: [ChatUser]
-    
-    public init(loadedUsers: [ChatUser]) {
-        self.loadedUsers = loadedUsers
+    public let loadedUserIds: [String]
+
+    public init(loadedUserIds: [String]) {
+        self.loadedUserIds = loadedUserIds
+    }
+}
+
+// MARK: - User Row
+
+private struct AddMembersUserRow<Factory: ViewFactory>: View {
+    @Injected(\.colors) private var colors
+    @Injected(\.fonts) private var fonts
+    @Injected(\.tokens) private var tokens
+
+    let factory: Factory
+    let user: ChatUser
+    let isSelected: Bool
+    let isAlreadyMember: Bool
+    let onTap: () -> Void
+
+    var body: some View {
+        Button(action: { if !isAlreadyMember { onTap() } }) {
+            HStack(spacing: tokens.spacingSm) {
+                factory.makeUserAvatarView(
+                    options: UserAvatarViewOptions(
+                        user: user,
+                        size: AvatarSize.large,
+                        showsIndicator: false
+                    )
+                )
+
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(user.name ?? user.id)
+                        .font(fonts.body)
+                        .foregroundColor(Color(colors.textPrimary))
+                        .lineLimit(1)
+
+                    if isAlreadyMember {
+                        Text(L10n.ChatInfo.Members.alreadyMember)
+                            .font(fonts.footnote)
+                            .foregroundColor(Color(colors.textLowEmphasis))
+                    }
+                }
+
+                Spacer()
+
+                if !isAlreadyMember {
+                    selectionIndicator
+                }
+            }
+            .padding(.horizontal, tokens.spacingMd)
+            .padding(.vertical, tokens.spacingXs)
+            .background(Color(colors.backgroundCoreApp))
+            .contentShape(.rect)
+        }
+        .buttonStyle(.plain)
+    }
+
+    private var selectionIndicator: some View {
+        ZStack {
+            if isSelected {
+                Circle()
+                    .fill(Color(colors.accentPrimary))
+                    .frame(width: 24, height: 24)
+                Image(systemName: "checkmark")
+                    .font(.system(size: 12, weight: .bold))
+                    .foregroundColor(.white)
+            } else {
+                Circle()
+                    .strokeBorder(Color(colors.borderCoreSubtle), lineWidth: 1.5)
+                    .frame(width: 24, height: 24)
+            }
+        }
+    }
+}
+
+// MARK: - Toolbar
+
+private struct AddMembersToolbarModifier: ViewModifier {
+    @Injected(\.colors) private var colors
+    @Injected(\.fonts) private var fonts
+    @Injected(\.images) private var images
+    @Injected(\.tokens) private var tokens
+
+    @ObservedObject var viewModel: AddUsersViewModel
+    let onConfirm: () -> Void
+    let onDismiss: () -> Void
+
+    func body(content: Content) -> some View {
+        if #available(iOS 26.0, *) {
+            content
+                .toolbarThemed {
+                    toolbarContent()
+                    #if compiler(>=6.2)
+                        .sharedBackgroundVisibility(.hidden)
+                    #endif
+                }
+        } else {
+            content
+                .toolbarThemed {
+                    toolbarContent()
+                }
+        }
+    }
+
+    @ToolbarContentBuilder private func toolbarContent() -> some ToolbarContent {
+        ToolbarItem(placement: .principal) {
+            Text(L10n.ChatInfo.Members.addMembersTitle)
+                .font(fonts.bodyBold)
+                .foregroundColor(Color(colors.navigationBarTitle))
+        }
+        ToolbarItem(placement: .navigationBarLeading) {
+            Button(action: onDismiss) {
+                Image(uiImage: images.close)
+                    .foregroundColor(Color(colors.textSecondary))
+            }
+        }
+        ToolbarItem(placement: .navigationBarTrailing) {
+            Button(action: onConfirm) {
+                Image(systemName: "checkmark")
+                    .font(.system(size: 12, weight: .bold))
+                    .foregroundColor(.white)
+                    .frame(width: tokens.iconSizeLg, height: tokens.iconSizeLg)
+                    .background(Circle().fill(Color(colors.accentPrimary)))
+            }
+        }
     }
 }

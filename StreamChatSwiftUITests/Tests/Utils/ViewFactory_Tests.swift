@@ -1053,8 +1053,8 @@ import XCTest
         // When
         let view = viewFactory.makeAddUsersView(
             options: AddUsersViewOptions(
-                options: .init(loadedUsers: []),
-                onUserTap: { _ in }
+                options: .init(loadedUserIds: []),
+                onConfirm: { _ in }
             )
         )
         

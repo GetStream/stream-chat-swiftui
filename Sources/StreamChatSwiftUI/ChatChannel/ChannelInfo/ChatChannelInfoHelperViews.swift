@@ -271,6 +271,7 @@ public struct MemberListView<Factory: ViewFactory>: View {
     let factory: Factory
     @ObservedObject var viewModel: ChatChannelInfoViewModel
     @State private var selectedParticipant: ParticipantInfo?
+    @State private var addUsersShown = false
 
     public init(factory: Factory = DefaultViewFactory.shared, viewModel: ChatChannelInfoViewModel) {
         self.factory = factory
@@ -310,6 +311,16 @@ public struct MemberListView<Factory: ViewFactory>: View {
                             .foregroundColor(Color(colors.textSecondary))
                     }
                 }
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    StreamIconButton(role: .primary, style: .solid, size: .small) {
+                        addUsersShown = true
+                    } icon: {
+                        Image(systemName: "person.badge.plus")
+                    }
+                    .opacity(viewModel.shouldShowAddUserButton ? 1 : 0)
+                    .allowsHitTesting(viewModel.shouldShowAddUserButton)
+                    .accessibilityHidden(!viewModel.shouldShowAddUserButton)
+                }
             }
             .navigationBarTitleDisplayMode(.inline)
         }
@@ -321,7 +332,15 @@ public struct MemberListView<Factory: ViewFactory>: View {
             ) {
                 selectedParticipant = nil
             }
-            .modifier(PresentationDetentsModifier(sheetSizes: [.custom(250), .medium]))
+            .modifier(PresentationDetentsModifier(sheetSizes: [.custom(280), .medium]))
+        }
+        .sheet(isPresented: $addUsersShown) {
+            factory.makeAddUsersView(
+                options: AddUsersViewOptions(
+                    options: .init(loadedUserIds: viewModel.allMemberIds),
+                    onConfirm: viewModel.addUsersTapped(_:)
+                )
+            )
         }
     }
 }

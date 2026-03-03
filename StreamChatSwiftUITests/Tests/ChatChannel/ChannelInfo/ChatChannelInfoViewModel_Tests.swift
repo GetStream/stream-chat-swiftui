@@ -917,6 +917,63 @@ import XCTest
         XCTAssertEqual(leaveAction.confirmationPopup?.buttonTitle, L10n.Alert.Actions.leaveGroupButton)
     }
 
+    // MARK: - addUsersTapped
+
+    func test_chatChannelInfoVM_addUsersTapped_withUsers_closesSheet() {
+        // Given
+        let channel = mockGroup(with: 5)
+        let viewModel = ChatChannelInfoViewModel(channel: channel)
+        viewModel.addUsersShown = true
+        let usersToAdd = ChannelInfoMockUtils.generateMockUsers(count: 2)
+
+        // When
+        viewModel.addUsersTapped(usersToAdd)
+
+        // Then
+        XCTAssertFalse(viewModel.addUsersShown)
+    }
+
+    func test_chatChannelInfoVM_addUsersTapped_withEmptyArray_closesSheet() {
+        // Given
+        let channel = mockGroup(with: 5)
+        let viewModel = ChatChannelInfoViewModel(channel: channel)
+        viewModel.addUsersShown = true
+
+        // When
+        viewModel.addUsersTapped([])
+
+        // Then
+        XCTAssertFalse(viewModel.addUsersShown)
+    }
+
+    // MARK: - allMemberIds
+
+    func test_chatChannelInfoVM_allMemberIds_includesParticipantIds() {
+        // Given
+        let channel = mockGroup(with: 5)
+        let viewModel = ChatChannelInfoViewModel(channel: channel)
+
+        // When
+        let allIds = viewModel.allMemberIds
+
+        // Then
+        for participant in viewModel.participants {
+            XCTAssertTrue(allIds.contains(participant.id))
+        }
+    }
+
+    func test_chatChannelInfoVM_allMemberIds_noDuplicates() {
+        // Given
+        let channel = mockGroup(with: 5)
+        let viewModel = ChatChannelInfoViewModel(channel: channel)
+
+        // When
+        let allIds = viewModel.allMemberIds
+
+        // Then
+        XCTAssertEqual(allIds.count, Set(allIds).count)
+    }
+
     // MARK: - saveGroupEdit
 
     func test_chatChannelInfoVM_saveGroupEdit_withoutImage_closesSheet() {

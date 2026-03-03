@@ -11,25 +11,55 @@ import SwiftUI
     @Injected(\.chatClient) private var chatClient
 
     @Published var users = [ChatUser]()
-    @Published var searchText = "" {
-        didSet {
-            searchUsers(term: searchText)
-        }
-    }
+    @Published var searchText = ""
+    @Published private(set) var selectedUserIds = Set<String>()
 
     private var loadedUserIds: [String]
     private var loadingNextUsers = false
+    private var cancellables = Set<AnyCancellable>()
     private lazy var searchController: ChatUserSearchController = chatClient.userSearchController()
 
     init(loadedUserIds: [String]) {
         self.loadedUserIds = loadedUserIds
         searchUsers()
+        observeSearchText()
     }
 
     init(loadedUserIds: [String], searchController: ChatUserSearchController) {
         self.loadedUserIds = loadedUserIds
         self.searchController = searchController
         searchUsers()
+        observeSearchText()
+    }
+
+    private func observeSearchText() {
+        $searchText
+            .dropFirst()
+            .debounce(for: .milliseconds(300), scheduler: RunLoop.main)
+            .sink { [weak self] term in
+                self?.searchUsers(term: term)
+            }
+            .store(in: &cancellables)
+    }
+
+    func toggleUser(_ user: ChatUser) {
+        if selectedUserIds.contains(user.id) {
+            selectedUserIds.remove(user.id)
+        } else {
+            selectedUserIds.insert(user.id)
+        }
+    }
+
+    func isSelected(_ user: ChatUser) -> Bool {
+        selectedUserIds.contains(user.id)
+    }
+
+    func isAlreadyMember(_ user: ChatUser) -> Bool {
+        loadedUserIds.contains(user.id)
+    }
+
+    var selectedUsers: [ChatUser] {
+        users.filter { selectedUserIds.contains($0.id) }
     }
 
     func onUserAppear(_ user: ChatUser) {
@@ -47,7 +77,7 @@ import SwiftUI
             loadingNextUsers = true
             searchController.loadNextUsers { [weak self] _ in
                 guard let self else { return }
-                users = searchController.userArray
+                users = deduplicated(searchController.userArray)
                 loadingNextUsers = false
             }
         }
@@ -56,18 +86,23 @@ import SwiftUI
     private func searchUsers() {
         searchController.search(query: UserListQuery()) { [weak self] error in
             guard let self, error == nil else { return }
-            users = searchController.userArray.filter { user in
-                !self.loadedUserIds.contains(user.id)
-            }
+            users = deduplicated(searchController.userArray)
         }
     }
 
     private func searchUsers(term: String) {
-        searchController.search(term: searchText) { [weak self] error in
-            guard let self, error == nil else { return }
-            users = searchController.userArray.filter { user in
-                !self.loadedUserIds.contains(user.id)
-            }
+        if term.isEmpty {
+            searchUsers()
+            return
         }
+        searchController.search(term: term) { [weak self] error in
+            guard let self, error == nil else { return }
+            users = deduplicated(searchController.userArray)
+        }
+    }
+
+    private func deduplicated(_ users: [ChatUser]) -> [ChatUser] {
+        var seen = Set<String>()
+        return users.filter { seen.insert($0.id).inserted }
     }
 }

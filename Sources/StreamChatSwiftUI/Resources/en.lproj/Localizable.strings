@@ -261,6 +261,9 @@
 "chat-info.edit.upload" = "Upload";
 "chat-info.edit.group-name" = "Group name";
 "chat-info.member.admin" = "Admin";
+"chat-info.members.add" = "Add";
+"chat-info.members.add-members-title" = "Add Members";
+"chat-info.members.already-member" = "Already a member";
 "chat-info.members.title" = "Members";
 "chat-info.members.count" = "%d Members";
 

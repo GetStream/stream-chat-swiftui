@@ -43,53 +43,23 @@ public struct ChatChannelInfoView<Factory: ViewFactory>: View, KeyboardReadable 
     }
 
     public var body: some View {
-        ZStack {
-            ScrollView {
-                VStack(spacing: 0) {
-                    headerSection
-                        .padding(.top, tokens.spacingXl)
-                        .padding(.bottom, tokens.spacingLg)
+        ScrollView {
+            VStack(spacing: 0) {
+                headerSection
+                    .padding(.top, tokens.spacingXl)
+                    .padding(.bottom, tokens.spacingLg)
 
-                    VStack(spacing: tokens.spacingSm) {
-                        navigationLinksCard
+                VStack(spacing: tokens.spacingSm) {
+                    navigationLinksCard
 
-                        if !viewModel.showSingleMemberDMView {
-                            membersCard
-                        }
-
-                        actionsCard
+                    if !viewModel.showSingleMemberDMView {
+                        membersCard
                     }
-                    .padding(.horizontal, tokens.spacingMd)
-                    .padding(.bottom, tokens.spacing2xl)
-                }
-            }
-            .overlay(
-                viewModel.addUsersShown ?
-                    Color.black.opacity(0.3).edgesIgnoringSafeArea(.all) : nil
-            )
-            .blur(radius: viewModel.addUsersShown ? 6 : 0)
-            .allowsHitTesting(!viewModel.addUsersShown)
 
-            if viewModel.addUsersShown {
-                VStack {
-                    Rectangle()
-                        .fill(Color.clear)
-                        .contentShape(Rectangle())
-                        .layoutPriority(-1)
-                        .onTapGesture {
-                            viewModel.addUsersShown = false
-                        }
-                        .accessibilityAction {
-                            viewModel.addUsersShown = false
-                        }
-
-                    factory.makeAddUsersView(
-                        options: AddUsersViewOptions(
-                            options: .init(loadedUsers: viewModel.participants.map(\.chatUser)),
-                            onUserTap: viewModel.addUserTapped(_:)
-                        )
-                    )
+                    actionsCard
                 }
+                .padding(.horizontal, tokens.spacingMd)
+                .padding(.bottom, tokens.spacing2xl)
             }
         }
         .modifier(ChatChannelInfoViewHeaderViewModifier(viewModel: viewModel))
@@ -104,6 +74,14 @@ public struct ChatChannelInfoView<Factory: ViewFactory>: View, KeyboardReadable 
         .sheet(isPresented: $viewModel.editGroupShown) {
             EditGroupView(viewModel: viewModel)
         }
+        .sheet(isPresented: $viewModel.addUsersShown) {
+            factory.makeAddUsersView(
+                options: AddUsersViewOptions(
+                    options: .init(loadedUserIds: viewModel.allMemberIds),
+                    onConfirm: viewModel.addUsersTapped(_:)
+                )
+            )
+        }
         .sheet(item: $viewModel.selectedParticipant) { participant in
             ParticipantInfoView(
                 factory: factory,
@@ -112,7 +90,7 @@ public struct ChatChannelInfoView<Factory: ViewFactory>: View, KeyboardReadable 
             ) {
                 viewModel.selectedParticipant = nil
             }
-            .modifier(PresentationDetentsModifier(sheetSizes: [.custom(250), .medium]))
+            .modifier(PresentationDetentsModifier(sheetSizes: [.custom(280), .medium]))
         }
     }
 
@@ -166,6 +144,8 @@ public struct ChatChannelInfoView<Factory: ViewFactory>: View, KeyboardReadable 
     @ViewBuilder
     private var membersCard: some View {
         InfoSectionCard {
+            membersCardHeader
+
             ForEach(Array(viewModel.displayedParticipants.enumerated()), id: \.element.id) { _, participant in
                 ChatInfoMemberRow(
                     factory: factory,
@@ -191,6 +171,29 @@ public struct ChatChannelInfoView<Factory: ViewFactory>: View, KeyboardReadable 
         .padding(.vertical, tokens.spacingXs)
         .background(colors.backgroundCoreSurfaceCard.toColor)
         .cornerRadius(16)
+    }
+
+    private var membersCardHeader: some View {
+        HStack {
+            Text(L10n.ChatInfo.Members.count(viewModel.channel.memberCount))
+                .font(fonts.headline)
+                .foregroundColor(Color(colors.textPrimary))
+
+            Spacer()
+
+            if viewModel.shouldShowAddUserButton {
+                StreamTextButton(role: .secondary, style: .outline, size: .small) {
+                    viewModel.addUsersShown = true
+                } text: {
+                    Text(L10n.ChatInfo.Members.add)
+                        .font(fonts.bodyBold)
+                        .foregroundColor(Color(colors.buttonSecondaryText))
+                }
+            }
+        }
+        .padding(.horizontal, tokens.spacingMd)
+        .padding(.vertical, tokens.spacingXs)
+        .background(Color(colors.backgroundCoreSurfaceCard))
     }
 
     // MARK: - Actions Card
@@ -290,10 +293,6 @@ public struct ChatChannelInfoView<Factory: ViewFactory>: View, KeyboardReadable 
                 secondaryButton: .cancel()
             )
         }
-    }
-
-    private var popupShown: Bool {
-        viewModel.addUsersShown
     }
 }
 

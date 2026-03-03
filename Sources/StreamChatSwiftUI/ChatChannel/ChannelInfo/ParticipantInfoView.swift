@@ -33,34 +33,36 @@ struct ParticipantInfoView<Factory: ViewFactory>: View {
 
     var body: some View {
         NavigationView {
-            VStack(alignment: .leading, spacing: 0) {
-                HStack(spacing: tokens.spacingMd) {
-                    factory.makeUserAvatarView(
-                        options: .init(
-                            user: participant.chatUser,
-                            size: AvatarSize.extraLarge,
-                            showsIndicator: true
+            ScrollView {
+                VStack(alignment: .leading, spacing: 0) {
+                    HStack(spacing: tokens.spacingMd) {
+                        factory.makeUserAvatarView(
+                            options: .init(
+                                user: participant.chatUser,
+                                size: AvatarSize.extraLarge,
+                                showsIndicator: true
+                            )
                         )
-                    )
-                    .padding(.top, tokens.spacingSm)
-                    
-                    VStack(alignment: .leading, spacing: tokens.spacingXxxs) {
-                        Text(participant.displayName)
-                            .font(fonts.title3.weight(.semibold))
-                            .foregroundColor(Color(colors.textPrimary))
-                        Text(participant.onlineInfoText)
-                            .font(fonts.footnote)
-                            .foregroundColor(Color(colors.textSecondary))
+                        .padding(.top, tokens.spacingSm)
+                        
+                        VStack(alignment: .leading, spacing: tokens.spacingXxxs) {
+                            Text(participant.displayName)
+                                .font(fonts.title3.weight(.semibold))
+                                .foregroundColor(Color(colors.textPrimary))
+                            Text(participant.onlineInfoText)
+                                .font(fonts.footnote)
+                                .foregroundColor(Color(colors.textSecondary))
+                        }
+                        Spacer()
                     }
+                    .padding(.all, tokens.spacingMd)
+
+                    ForEach(actions) { action in
+                        actionRow(for: action)
+                    }
+
                     Spacer()
                 }
-                .padding(.all, tokens.spacingMd)
-
-                ForEach(actions) { action in
-                    actionRow(for: action)
-                }
-
-                Spacer()
             }
             .background(Color(colors.background).edgesIgnoringSafeArea(.all))
             .navigationBarHidden(true)

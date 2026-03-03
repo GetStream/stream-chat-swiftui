@@ -137,6 +137,12 @@ import SwiftUI
         !showSingleMemberDMView && notDisplayedParticipantsCount > 0
     }
 
+    public var allMemberIds: [String] {
+        var ids = Set(participants.map(\.id))
+        memberListController.members.forEach { ids.insert($0.id) }
+        return Array(ids)
+    }
+
     public init(channel: ChatChannel) {
         self.channel = channel
         channelName = channel.name?.isEmpty == false
@@ -298,8 +304,10 @@ import SwiftUI
         }
     }
 
-    public func addUserTapped(_ user: ChatUser) {
-        channelController.addMembers(userIds: [user.id])
+    public func addUsersTapped(_ users: [ChatUser]) {
+        if !users.isEmpty {
+            channelController.addMembers(userIds: Set(users.map(\.id)))
+        }
         addUsersShown = false
     }
 
