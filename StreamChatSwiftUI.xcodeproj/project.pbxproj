@@ -1462,7 +1462,7 @@
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/GetStream/stream-chat-swift.git";
 			requirement = {
-				branch = "feature/pre-populating-attachment-metadata";
+				branch = develop;
 				kind = branch;
 			};
 		};
