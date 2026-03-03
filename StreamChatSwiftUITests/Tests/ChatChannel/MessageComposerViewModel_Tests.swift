@@ -944,7 +944,7 @@ class MessageComposerViewModel_Tests: StreamChatTestCase {
         let url = URL.newTemporaryFileURL()
         defer { try? FileManager.default.removeItem(at: url) }
         try image.pngData()?.write(to: url)
-        viewModel.addedAssets = [
+        viewModel.updateAddedAssets([
             AddedAsset(
                 image: image,
                 id: "1",
@@ -953,7 +953,7 @@ class MessageComposerViewModel_Tests: StreamChatTestCase {
                 originalWidth: 300,
                 originalHeight: 200
             )
-        ]
+        ])
 
         let payloads = try viewModel.convertAddedAssetsToPayloads()
         let imagePayload = try XCTUnwrap(payloads.first?.payload as? ImageAttachmentPayload)
