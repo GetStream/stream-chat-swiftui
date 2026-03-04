@@ -390,10 +390,11 @@ private struct VoiceRecordingGestureOverlay: View {
                 DragGesture(minimumDistance: 0)
                     .onChanged { value in
                         let translation = CGPoint(x: value.translation.width, y: value.translation.height)
+                        triggerHapticFeedback(style: .medium)
                         if !longPressed {
                             longPressStarted = Date()
                             longPressed = true
-                            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.7) {
                                 if longPressed {
                                     recordingState = .recording(translation)
                                     startRecording()
