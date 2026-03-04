@@ -11,10 +11,11 @@ struct RecordingDurationView: View {
     @Injected(\.fonts) private var fonts
 
     var duration: TimeInterval
+    var usesAccentColor: Bool = false
 
     var body: some View {
         Text(utils.videoDurationFormatter.format(duration) ?? "")
             .font(fonts.subheadline.monospacedDigit())
-            .foregroundColor(Color(colors.textPrimary))
+            .foregroundColor(Color(usesAccentColor ? colors.accentPrimary : colors.textPrimary))
     }
 }
