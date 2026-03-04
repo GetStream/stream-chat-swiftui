@@ -8,6 +8,7 @@ struct ParticipantInfoView<Factory: ViewFactory>: View {
     @Injected(\.fonts) var fonts
     @Injected(\.colors) var colors
     @Injected(\.tokens) var tokens
+    @Injected(\.images) var images
 
     var factory: Factory
     let participant: ParticipantInfo
@@ -104,14 +105,26 @@ struct ParticipantInfoView<Factory: ViewFactory>: View {
 
     private func actionLabel(for action: ParticipantAction) -> some View {
         HStack(spacing: tokens.spacingMd) {
-            Image(systemName: action.iconName)
+            Image(uiImage: image(for: action.iconName))
+                .customizable()
                 .frame(width: tokens.spacingLg)
+                .foregroundColor(action.isDestructive ? Color(colors.accentError) : Color(colors.textSecondary))
             Text(action.title)
                 .font(fonts.body)
+                .foregroundColor(action.isDestructive ? Color(colors.accentError) : Color(colors.textPrimary))
             Spacer()
         }
-        .foregroundColor(action.isDestructive ? Color(colors.alert) : Color(colors.textPrimary))
         .padding(.all, tokens.spacingMd)
+    }
+
+    private func image(for iconName: String) -> UIImage {
+        if let image = UIImage(systemName: iconName) {
+            return image
+        }
+        if let image = UIImage(named: iconName, in: .streamChatCommonUI) {
+            return image
+        }
+        return images.imagePlaceholder
     }
 }
 

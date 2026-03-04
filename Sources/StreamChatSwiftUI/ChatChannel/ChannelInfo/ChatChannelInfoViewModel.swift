@@ -12,6 +12,7 @@ import SwiftUI
 @MainActor public class ChatChannelInfoViewModel: ObservableObject, ChatChannelControllerDelegate {
     @Injected(\.chatClient) private var chatClient
     @Injected(\.utils) private var utils
+    @Injected(\.images) private var images
 
     @Published public var participants = [ParticipantInfo]()
     @Published public var muted: Bool {
@@ -419,20 +420,12 @@ import SwiftUI
             }
         }
         
-        if showSingleMemberDMView {
-            let blockAction = blockParticipantAction(
-                participant: participant,
-                onDismiss: handleParticipantActionDismiss,
-                onError: handleParticipantActionError
-            )
-            actions.append(blockAction)
-        } else {
-            let leaveAction = leaveGroupAction(
-                onDismiss: handleParticipantActionDismiss,
-                onError: handleParticipantActionError
-            )
-            actions.append(leaveAction)
-        }
+        let blockAction = blockParticipantAction(
+            participant: participant,
+            onDismiss: handleParticipantActionDismiss,
+            onError: handleParticipantActionError
+        )
+        actions.append(blockAction)
 
         if channel.canUpdateChannelMembers {
             let removeUserAction = removeUserAction(
@@ -570,10 +563,10 @@ import SwiftUI
         )
         return ParticipantAction(
             title: title,
-            iconName: "circle.slash",
+            iconName: "icn_block_user",
             action: action,
             confirmationPopup: confirmationPopup,
-            isDestructive: !isBlocked
+            isDestructive: false
         )
     }
 

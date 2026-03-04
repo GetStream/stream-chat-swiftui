@@ -308,10 +308,10 @@ import XCTest
         let actions = viewModel.participantActions(for: participant)
 
         // Then
-        XCTAssert(actions.count == 4) // direct message, mute, leave group, remove
+        XCTAssert(actions.count == 4) // direct message, mute, block, remove
         XCTAssert(actions.contains { $0.title.contains("Mute") })
         XCTAssert(actions.contains { $0.title.contains("Remove") })
-        XCTAssert(actions.contains { $0.title == L10n.Alert.Actions.leaveGroupTitle })
+        XCTAssert(actions.contains { $0.title == L10n.Alert.Actions.blockUser })
         XCTAssertFalse(actions.contains { $0.title == L10n.Alert.Actions.cancel })
     }
 
@@ -330,11 +330,11 @@ import XCTest
         let actions = viewModel.participantActions(for: participant)
 
         // Then
-        XCTAssert(actions.count == 3) // direct message, leave group, remove
+        XCTAssert(actions.count == 3) // direct message, block, remove
         XCTAssertNotNil(actions.first?.navigationDestination)
         XCTAssertFalse(actions.contains { $0.title.contains("Mute") })
         XCTAssert(actions.contains { $0.title.contains("Remove") })
-        XCTAssert(actions.contains { $0.title == L10n.Alert.Actions.leaveGroupTitle })
+        XCTAssert(actions.contains { $0.title == L10n.Alert.Actions.blockUser })
         XCTAssertFalse(actions.contains { $0.title == L10n.Alert.Actions.cancel })
     }
 
@@ -353,10 +353,10 @@ import XCTest
         let actions = viewModel.participantActions(for: participant)
 
         // Then
-        XCTAssert(actions.count == 3) // direct message, mute, leave group (no remove)
+        XCTAssert(actions.count == 3) // direct message, mute, block (no remove)
         XCTAssert(actions.contains { $0.title.contains("Mute") })
         XCTAssertFalse(actions.contains { $0.title.contains("Remove") })
-        XCTAssert(actions.contains { $0.title == L10n.Alert.Actions.leaveGroupTitle })
+        XCTAssert(actions.contains { $0.title == L10n.Alert.Actions.blockUser })
         XCTAssertFalse(actions.contains { $0.title == L10n.Alert.Actions.cancel })
     }
 
@@ -376,9 +376,9 @@ import XCTest
         let actions = viewModel.participantActions(for: participant)
 
         // Then
-        XCTAssert(actions.count >= 2) // At least leave group and remove
+        XCTAssert(actions.count >= 2) // At least block and remove
         XCTAssert(actions.contains { $0.title.contains("Remove") })
-        XCTAssert(actions.contains { $0.title == L10n.Alert.Actions.leaveGroupTitle })
+        XCTAssert(actions.contains { $0.title == L10n.Alert.Actions.blockUser })
         XCTAssertFalse(actions.contains { $0.title == L10n.Alert.Actions.cancel })
     }
 
@@ -403,9 +403,9 @@ import XCTest
         let actions = viewModel.participantActions(for: participant)
 
         // Then
-        XCTAssert(actions.count >= 2) // At least leave group and remove
+        XCTAssert(actions.count >= 2) // At least block and remove
         XCTAssert(actions.contains { $0.title.contains("Remove") })
-        XCTAssert(actions.contains { $0.title == L10n.Alert.Actions.leaveGroupTitle })
+        XCTAssert(actions.contains { $0.title == L10n.Alert.Actions.blockUser })
         XCTAssertFalse(actions.contains { $0.title == L10n.Alert.Actions.cancel })
     }
 
@@ -826,7 +826,7 @@ import XCTest
 
     // MARK: - participantActions includes correct block/leave for channel type
 
-    func test_chatChannelInfoVM_participantActions_groupIncludesLeaveGroup() {
+    func test_chatChannelInfoVM_participantActions_groupIncludesBlock() {
         // Given
         let channel = mockGroup(with: 5)
         let viewModel = ChatChannelInfoViewModel(channel: channel)
@@ -840,9 +840,9 @@ import XCTest
         // When
         let actions = viewModel.participantActions(for: participant)
 
-        // Then - groups show Leave Group, not Block
-        XCTAssertTrue(actions.contains { $0.title == L10n.Alert.Actions.leaveGroupTitle })
-        XCTAssertFalse(actions.contains { $0.title == L10n.Alert.Actions.blockUser })
+        // Then - tapping any participant shows Block, not Leave Group
+        XCTAssertTrue(actions.contains { $0.title == L10n.Alert.Actions.blockUser })
+        XCTAssertFalse(actions.contains { $0.title == L10n.Alert.Actions.leaveGroupTitle })
     }
 
     func test_chatChannelInfoVM_participantActions_singleDMIncludesBlock() {
@@ -891,8 +891,8 @@ import XCTest
 
         // Then
         XCTAssertEqual(blockAction.title, L10n.Alert.Actions.blockUser)
-        XCTAssertEqual(blockAction.iconName, "circle.slash")
-        XCTAssertTrue(blockAction.isDestructive)
+        XCTAssertEqual(blockAction.iconName, "icn_block_user")
+        XCTAssertFalse(blockAction.isDestructive)
         XCTAssertNotNil(blockAction.confirmationPopup)
         XCTAssertEqual(blockAction.confirmationPopup?.title, L10n.Alert.Actions.blockUser)
         XCTAssertEqual(blockAction.confirmationPopup?.buttonTitle, L10n.Alert.Actions.blockUser)

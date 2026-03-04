@@ -162,7 +162,7 @@ public struct ChatInfoMemberView<Factory: ViewFactory>: View {
         }
         .padding(.horizontal, tokens.spacingMd)
         .padding(.vertical, tokens.spacingXs)
-        .background(Color(backgroundColor ?? colors.backgroundCoreSurfaceCard))
+        .background(Color(backgroundColor ?? colors.backgroundCoreSurfaceSubtle))
         .contentShape(.rect)
         .onAppear { onAppear() }
         .onTapGesture { onTap() }
@@ -206,7 +206,7 @@ struct DisclosureIndicatorView: View {
     @Injected(\.colors) private var colors
 
     var body: some View {
-        Image(systemName: "chevron.right")
+        Image(systemName: "chevron.forward")
             .foregroundColor(Color(colors.textSecondary))
     }
 }
@@ -220,18 +220,15 @@ public struct ChannelInfoItemView<TrailingView: View>: View {
 
     let icon: UIImage
     let title: String
-    var verticalPadding: CGFloat = 16
     var trailingView: () -> TrailingView
 
     public init(
         icon: UIImage,
         title: String,
-        verticalPadding: CGFloat = 16,
         trailingView: @escaping () -> TrailingView
     ) {
         self.icon = icon
         self.title = title
-        self.verticalPadding = verticalPadding
         self.trailingView = trailingView
     }
 
@@ -251,8 +248,8 @@ public struct ChannelInfoItemView<TrailingView: View>: View {
             trailingView()
         }
         .padding(.horizontal, tokens.spacingMd)
-        .padding(.vertical, verticalPadding)
-        .background(Color(colors.backgroundCoreSurfaceCard))
+        .padding(.vertical, tokens.spacingMd)
+        .background(Color(colors.backgroundCoreSurfaceSubtle))
     }
 }
 

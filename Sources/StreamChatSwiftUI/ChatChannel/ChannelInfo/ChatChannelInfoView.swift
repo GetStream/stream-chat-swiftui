@@ -169,7 +169,7 @@ public struct ChatChannelInfoView<Factory: ViewFactory>: View, KeyboardReadable 
             }
         }
         .padding(.vertical, tokens.spacingXs)
-        .background(colors.backgroundCoreSurfaceCard.toColor)
+        .background(colors.backgroundCoreSurfaceSubtle.toColor)
         .cornerRadius(16)
     }
 
@@ -193,7 +193,7 @@ public struct ChatChannelInfoView<Factory: ViewFactory>: View, KeyboardReadable 
         }
         .padding(.horizontal, tokens.spacingMd)
         .padding(.vertical, tokens.spacingXs)
-        .background(Color(colors.backgroundCoreSurfaceCard))
+        .background(Color(colors.backgroundCoreSurfaceSubtle))
     }
 
     // MARK: - Actions Card
@@ -205,8 +205,7 @@ public struct ChatChannelInfoView<Factory: ViewFactory>: View, KeyboardReadable 
                 if viewModel.shouldShowMuteChannelButton {
                     ChannelInfoItemView(
                         icon: images.muted,
-                        title: viewModel.mutedText,
-                        verticalPadding: tokens.spacingMd
+                        title: viewModel.mutedText
                     ) {
                         Toggle(isOn: $viewModel.muted) {
                             EmptyView()
@@ -233,7 +232,7 @@ public struct ChatChannelInfoView<Factory: ViewFactory>: View, KeyboardReadable 
             viewModel.blockUserAlertShown = true
         } label: {
             HStack(spacing: tokens.spacingMd) {
-                Image(systemName: "circle.slash")
+                Image(uiImage: images.messageActionBlockUser)
                     .customizable()
                     .frame(width: tokens.spacingLg)
                 Text(viewModel.blockUserTitle)
@@ -243,7 +242,7 @@ public struct ChatChannelInfoView<Factory: ViewFactory>: View, KeyboardReadable 
             .padding(.vertical, tokens.spacingMd)
             .font(fonts.body)
             .foregroundColor(Color(colors.textPrimary))
-            .background(Color(colors.backgroundCoreSurfaceCard))
+            .background(Color(colors.backgroundCoreSurfaceSubtle))
         }
         .alert(isPresented: $viewModel.blockUserAlertShown) {
             Alert(
@@ -276,7 +275,7 @@ public struct ChatChannelInfoView<Factory: ViewFactory>: View, KeyboardReadable 
             .padding(.vertical, tokens.spacingMd)
             .font(fonts.body)
             .foregroundColor(Color(colors.alert))
-            .background(Color(colors.backgroundCoreSurfaceCard))
+            .background(Color(colors.backgroundCoreSurfaceSubtle))
         }
         .alert(isPresented: $viewModel.leaveGroupAlertShown) {
             Alert(
