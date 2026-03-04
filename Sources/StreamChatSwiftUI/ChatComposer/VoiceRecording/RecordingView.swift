@@ -129,17 +129,14 @@ struct LockView: View {
         return min(1, -dragLocation.y / -RecordingConstants.lockMaxDistance)
     }
 
+    private var lockSymbolName: String {
+        isLocked || lockProgress >= 0.5 ? "lock" : "lock.open"
+    }
+
     var body: some View {
         VStack(spacing: isLocked ? 0 : tokens.spacingXxs) {
-            ZStack {
-                Image(systemName: "lock.open")
-                    .font(.system(size: 20))
-                    .opacity(1 - lockProgress)
-                Image(systemName: "lock.fill")
-                    .font(.system(size: 20))
-                    .opacity(lockProgress)
-            }
-            .animation(.spring(response: 0.35, dampingFraction: 0.75), value: lockProgress)
+            lockIcon
+                .animation(.spring(response: 0.35, dampingFraction: 0.75), value: lockProgress)
 
             Image(systemName: "chevron.up")
                 .font(.system(size: 20))
@@ -169,6 +166,25 @@ struct LockView: View {
             lockScale = 1.15
             withAnimation(.spring(response: 0.35, dampingFraction: 0.6)) {
                 lockScale = 1.0
+            }
+        }
+    }
+
+    @ViewBuilder
+    private var lockIcon: some View {
+        if #available(iOS 17, *) {
+            Image(systemName: lockSymbolName)
+                .font(.system(size: 20))
+                .contentTransition(.symbolEffect(.replace))
+                .animation(.spring(response: 0.32, dampingFraction: 0.76), value: lockProgress)
+        } else {
+            ZStack {
+                Image(systemName: "lock.open")
+                    .font(.system(size: 20))
+                    .opacity(1 - lockProgress)
+                Image(systemName: "lock")
+                    .font(.system(size: 20))
+                    .opacity(lockProgress)
             }
         }
     }
