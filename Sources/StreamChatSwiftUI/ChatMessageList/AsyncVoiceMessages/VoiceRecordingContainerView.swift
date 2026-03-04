@@ -9,6 +9,7 @@ import SwiftUI
 public struct VoiceRecordingContainerView<Factory: ViewFactory>: View {
     @Injected(\.colors) var colors
     @Injected(\.images) var images
+    @Injected(\.tokens) var tokens
     @Injected(\.utils) var utils
     
     let factory: Factory
@@ -51,9 +52,9 @@ public struct VoiceRecordingContainerView<Factory: ViewFactory>: View {
                     ),
                     index: index(for: attachment)
                 )
-                .padding(.all, 8)
-                .background(Color(colors.background8))
-                .roundWithBorder(cornerRadius: 14)
+                .padding(.all, tokens.spacingXs)
+                .background(backgroundColor)
+                .roundWithBorder(cornerRadius: tokens.messageBubbleRadiusAttachment)
             }
         }
         .onReceive(handler.$context, perform: { value in
@@ -82,12 +83,21 @@ public struct VoiceRecordingContainerView<Factory: ViewFactory>: View {
     private func index(for attachment: ChatMessageVoiceRecordingAttachment) -> Int {
         message.voiceRecordingAttachments.firstIndex(of: attachment) ?? 0
     }
+    
+    private var backgroundColor: Color {
+        let attachmentCounts = message.attachmentCounts
+        if message.text.isEmpty, attachmentCounts.count == 1, attachmentCounts[.voiceRecording] == 1 {
+            return .clear
+        }
+        return Color(message.isSentByCurrentUser ? colors.chatBackgroundAttachmentOutgoing : colors.chatBackgroundAttachmentIncoming)
+    }
 }
 
 struct VoiceRecordingView: View {
     @Injected(\.utils) var utils
     @Injected(\.colors) var colors
     @Injected(\.images) var images
+    @Injected(\.tokens) var tokens
     
     @State var isPlaying: Bool = false
     @State var loading: Bool = false
@@ -112,7 +122,7 @@ struct VoiceRecordingView: View {
     }
     
     var body: some View {
-        HStack {
+        HStack(spacing: tokens.spacingXs) {
             Button(action: {
                 handlePlayTap()
             }, label: {
@@ -142,7 +152,7 @@ struct VoiceRecordingView: View {
                 .lineLimit(1)
                 .foregroundColor(textColor)
                 
-                HStack {
+                HStack(spacing: tokens.spacingXs) {
                     RecordingDurationView(
                         duration: showContextDuration ? handler.context.currentTime : addedVoiceRecording.duration
                     )

@@ -23,15 +23,22 @@ public struct MessageAttachmentsView<Factory: ViewFactory>: View {
         if !message.text.isEmpty {
             return true
         }
-        let imageCount = message.imageAttachments.count
-        let videoCount = message.videoAttachments.count
-        let totalMedia = imageCount + videoCount
-        if totalMedia == 1
-            && !messageTypeResolver.hasFileAttachment(message: message)
-            && !messageTypeResolver.hasVoiceRecording(message: message) {
+        let totalAttachments = message.imageAttachments.count
+            + message.videoAttachments.count
+        if totalAttachments == 1 {
             return false
         }
         return true
+    }
+    
+    private var padding: CGFloat {
+        guard showsBubble else { return 0 }
+        // Single voice and file don't have extra padding
+        let attachmentCounts = message.attachmentCounts
+        if message.text.isEmpty, attachmentCounts.count == 1, attachmentCounts[.file] == 1 || attachmentCounts[.voiceRecording] == 1 {
+            return 0
+        }
+        return tokens.spacingXs
     }
 
     public var body: some View {
@@ -118,7 +125,7 @@ public struct MessageAttachmentsView<Factory: ViewFactory>: View {
         }
         .if(showsBubble) { view in
             view
-                .padding(tokens.spacingXs)
+                .padding(padding)
                 .modifier(
                     factory.styles.makeMessageViewModifier(
                         for: MessageModifierInfo(

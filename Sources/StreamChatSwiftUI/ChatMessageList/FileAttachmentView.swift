@@ -6,6 +6,8 @@ import StreamChat
 import SwiftUI
 
 public struct FileAttachmentsContainer<Factory: ViewFactory>: View {
+    @Injected(\.colors) var colors
+    @Injected(\.tokens) var tokens
     var factory: Factory
     var message: ChatMessage
     var width: CGFloat
@@ -34,9 +36,19 @@ public struct FileAttachmentsContainer<Factory: ViewFactory>: View {
                     width: width,
                     isFirst: isFirst
                 )
+                .background(backgroundColor)
+                .roundWithBorder(cornerRadius: tokens.messageBubbleRadiusAttachment)
             }
         }
         .accessibilityIdentifier("FileAttachmentsContainer")
+    }
+    
+    private var backgroundColor: Color {
+        let attachmentCounts = message.attachmentCounts
+        if message.text.isEmpty, attachmentCounts.count == 1, attachmentCounts[.file] == 1 {
+            return .clear
+        }
+        return Color(message.isSentByCurrentUser ? colors.chatBackgroundAttachmentOutgoing : colors.chatBackgroundAttachmentIncoming)
     }
 }
 
@@ -45,6 +57,7 @@ public struct FileAttachmentView: View {
     @Injected(\.images) private var images
     @Injected(\.fonts) private var fonts
     @Injected(\.colors) private var colors
+    @Injected(\.tokens) private var tokens
     @Injected(\.chatClient) private var chatClient
 
     @State private var fullScreenShown = false
@@ -79,10 +92,8 @@ public struct FileAttachmentView: View {
                 DownloadShareAttachmentView(attachment: attachment)
             }
         }
-        .padding(.all, 8)
-        .background(Color(colors.background))
+        .padding(.all, tokens.spacingSm)
         .frame(width: width)
-        .roundWithBorder()
         .withUploadingStateIndicator(for: attachment.uploadingState, url: attachment.assetURL)
         .withDownloadingStateIndicator(for: attachment.downloadingState, url: attachment.assetURL)
         .sheet(isPresented: $fullScreenShown) {
@@ -104,6 +115,7 @@ public struct FileAttachmentDisplayView: View {
     @Injected(\.images) private var images
     @Injected(\.fonts) private var fonts
     @Injected(\.colors) private var colors
+    @Injected(\.tokens) private var tokens
 
     var url: URL
     var title: String
@@ -116,13 +128,13 @@ public struct FileAttachmentDisplayView: View {
     }
 
     public var body: some View {
-        HStack {
+        HStack(spacing: tokens.spacingSm) {
             Image(uiImage: previewImage)
                 .resizable()
                 .aspectRatio(contentMode: .fit)
                 .frame(width: 34, height: 40)
                 .accessibilityHidden(true)
-            VStack(alignment: .leading, spacing: 8) {
+            VStack(alignment: .leading, spacing: tokens.spacingXxs) {
                 Text(title)
                     .font(fonts.bodyBold)
                     .lineLimit(1)
