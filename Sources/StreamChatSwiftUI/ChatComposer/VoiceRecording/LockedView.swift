@@ -71,7 +71,10 @@ struct ComposerVoiceRecordingInputView<Factory: ViewFactory>: View {
     private var recordingBar: some View {
         HStack(spacing: tokens.spacingNone) {
             HStack(spacing: tokens.spacingNone) {
-                micIndicator
+                if !isStopped {
+                    micIndicator
+                }
+                
                 durationOrPlayback
             }
 
@@ -105,6 +108,7 @@ struct ComposerVoiceRecordingInputView<Factory: ViewFactory>: View {
                         .font(.system(size: 16))
                         .foregroundColor(Color(colors.textPrimary))
                 }
+                .frame(width: 48, height: 48)
                 .accessibilityLabel(Text(isPlaying
                         ? L10n.Composer.AudioRecording.stop
                         : L10n.Composer.AudioRecording.start))
