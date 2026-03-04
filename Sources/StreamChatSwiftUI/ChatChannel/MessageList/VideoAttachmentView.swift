@@ -10,44 +10,37 @@ public struct VideoAttachmentsContainer<Factory: ViewFactory>: View {
     var factory: Factory
     let message: ChatMessage
     let width: CGFloat
+    let isFirst: Bool
     @Binding var scrolledId: String?
 
     public init(
         factory: Factory,
         message: ChatMessage,
         width: CGFloat,
+        isFirst: Bool = true,
         scrolledId: Binding<String?>
     ) {
         self.factory = factory
         self.message = message
         self.width = width
+        self.isFirst = isFirst
         _scrolledId = scrolledId
     }
 
     public var body: some View {
         VStack(spacing: 0) {
             if let quotedMessage = message.quotedMessage {
-                VStack {
-                    factory.makeQuotedMessageView(
-                        quotedMessage: quotedMessage,
-                        fillAvailableSpace: !message.attachmentCounts.isEmpty,
-                        isInComposer: false,
-                        scrolledId: $scrolledId
-                    )
+                factory.makeQuotedMessageView(
+                    quotedMessage: quotedMessage,
+                    fillAvailableSpace: !message.attachmentCounts.isEmpty,
+                    isInComposer: false,
+                    scrolledId: $scrolledId
+                )
 
-                    VideoAttachmentsList(
-                        factory: factory,
-                        message: message,
-                        width: width
-                    )
-                }
-                .modifier(
-                    factory.makeMessageViewModifier(
-                        for: MessageModifierInfo(
-                            message: message,
-                            isFirst: false
-                        )
-                    )
+                VideoAttachmentsList(
+                    factory: factory,
+                    message: message,
+                    width: width
                 )
             } else {
                 VideoAttachmentsList(
@@ -62,17 +55,14 @@ public struct VideoAttachmentsContainer<Factory: ViewFactory>: View {
                     .frame(width: width)
             }
         }
-        .if(!message.text.isEmpty, transform: { view in
-            view.modifier(
-                factory.makeMessageViewModifier(
-                    for: MessageModifierInfo(
-                        message: message,
-                        isFirst: true,
-                        cornerRadius: 24
-                    )
+        .modifier(
+            factory.makeMessageViewModifier(
+                for: MessageModifierInfo(
+                    message: message,
+                    isFirst: isFirst
                 )
             )
-        })
+        )
         .accessibilityIdentifier("VideoAttachmentsContainer")
     }
 }
@@ -116,7 +106,7 @@ public struct VideoAttachmentView<Factory: ViewFactory>: View {
     let message: ChatMessage
     let width: CGFloat
     var ratio: CGFloat = 0.75
-    var cornerRadius: CGFloat = 24
+    var cornerRadius: CGFloat = 18
 
     public init(
         factory: Factory = DefaultViewFactory.shared,
@@ -124,7 +114,7 @@ public struct VideoAttachmentView<Factory: ViewFactory>: View {
         message: ChatMessage,
         width: CGFloat,
         ratio: CGFloat = 0.75,
-        cornerRadius: CGFloat = 24
+        cornerRadius: CGFloat = 18
     ) {
         self.factory = factory
         self.attachment = attachment
@@ -164,7 +154,7 @@ struct VideoAttachmentContentView<Factory: ViewFactory>: View {
     let message: ChatMessage
     let width: CGFloat
     var ratio: CGFloat = 0.75
-    var cornerRadius: CGFloat = 24
+    var cornerRadius: CGFloat = 18
 
     @State var previewImage: UIImage?
     @State var error: Error?
@@ -204,7 +194,6 @@ struct VideoAttachmentContentView<Factory: ViewFactory>: View {
             }
         }
         .frame(width: width, height: width * ratio)
-        .cornerRadius(cornerRadius)
         .fullScreenCover(isPresented: $fullScreenShown) {
             factory.makeVideoPlayerView(
                 attachment: attachment,

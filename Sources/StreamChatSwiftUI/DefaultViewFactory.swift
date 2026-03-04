@@ -451,6 +451,7 @@ extension ViewFactory {
             factory: self,
             message: message,
             width: availableWidth,
+            isFirst: isFirst,
             scrolledId: scrolledId
         )
     }
