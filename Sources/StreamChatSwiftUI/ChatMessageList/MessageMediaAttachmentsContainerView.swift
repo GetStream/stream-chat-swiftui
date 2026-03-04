@@ -48,7 +48,7 @@ public enum MediaGalleryOrientation: Sendable {
 ///
 /// This view does **not** render message text or a bubble background.
 /// Tapping any cell opens the full-screen gallery.
-public struct ChatMediaAttachmentsContainerView<Factory: ViewFactory>: View {
+public struct MessageMediaAttachmentsContainerView<Factory: ViewFactory>: View {
     @Injected(\.colors) private var colors
     @Injected(\.fonts) private var fonts
     @Injected(\.tokens) private var tokens
@@ -97,7 +97,7 @@ public struct ChatMediaAttachmentsContainerView<Factory: ViewFactory>: View {
                 )
             )
         }
-        .accessibilityIdentifier("ChatMediaAttachmentsContainerView")
+        .accessibilityIdentifier("MessageMediaAttachmentsContainerView")
     }
 
     // MARK: - Layout
@@ -196,7 +196,7 @@ public struct ChatMediaAttachmentsContainerView<Factory: ViewFactory>: View {
         height: CGFloat,
         index: Int
     ) -> some View {
-        ChatMediaAttachmentContentView(
+        MessageMediaAttachmentContentView(
             source: item,
             width: width,
             height: height,

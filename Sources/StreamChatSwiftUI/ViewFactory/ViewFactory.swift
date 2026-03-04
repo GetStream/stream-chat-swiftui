@@ -191,11 +191,11 @@ import SwiftUI
     /// - Parameter options: the options for creating the message attachments view.
     func makeMessageAttachmentsView(options: MessageAttachmentsViewOptions) -> MessageAttachmentsViewType
 
-    associatedtype ImageAttachmentViewType: View
-    /// Creates the image attachment view.
-    /// - Parameter options: the options for creating the image attachment view.
-    ///  - Returns: view displayed in the image attachment slot.
-    func makeImageAttachmentView(options: ImageAttachmentViewOptions) -> ImageAttachmentViewType
+    associatedtype MediaAttachmentsViewType: View
+    /// Creates the media attachments view (images and videos).
+    /// - Parameter options: the options for creating the media attachments view.
+    ///  - Returns: view displayed in the media attachments slot.
+    func makeMediaAttachmentsView(options: MediaAttachmentsViewOptions) -> MediaAttachmentsViewType
 
     associatedtype GiphyAttachmentViewType: View
     /// Creates the giphy attachment view.
@@ -215,12 +215,6 @@ import SwiftUI
     ///  - Returns: view displayed in the file attachment slot.
     func makeFileAttachmentView(options: FileAttachmentViewOptions) -> FileAttachmentViewType
 
-    associatedtype VideoAttachmentViewType: View
-    /// Creates the video attachment view.
-    /// - Parameter options: the options for creating the video attachment view.
-    ///  - Returns: view displayed in the video attachment slot.
-    func makeVideoAttachmentView(options: VideoAttachmentViewOptions) -> VideoAttachmentViewType
-    
     associatedtype GalleryViewType: View
     /// Creates the gallery view.
     /// - Parameter options: the options for creating the gallery view.

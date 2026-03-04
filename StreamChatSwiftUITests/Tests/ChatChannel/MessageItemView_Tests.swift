@@ -199,28 +199,6 @@ import XCTest
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
 
-    func test_videoAttachment_snapshotNoText() {
-        // Given
-        let attachment = ChatChannelTestHelpers.videoAttachment
-        let message = ChatMessage.mock(
-            id: .unique,
-            cid: .unique,
-            text: "",
-            author: .mock(id: .unique)
-        )
-
-        // When
-        let view = VideoAttachmentView(
-            attachment: attachment,
-            message: message,
-            width: 2 * defaultScreenSize.width / 3
-        )
-        .applyDefaultSize()
-
-        // Then
-        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
-    }
-
     func test_videoAttachment_snapshotText() {
         // Given
         let message = ChatMessage.mock(
@@ -257,14 +235,7 @@ import XCTest
         )
 
         // When
-        let view = ImageAttachmentContainer(
-            factory: DefaultViewFactory.shared,
-            message: message,
-            width: 200,
-            isFirst: true,
-            scrolledId: .constant(nil)
-        )
-        .frame(width: 200)
+        let view = testMessageViewContainer(message: message, height: 300)
 
         // Then
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
@@ -283,14 +254,7 @@ import XCTest
         )
 
         // When
-        let view = ImageAttachmentContainer(
-            factory: DefaultViewFactory.shared,
-            message: message,
-            width: 200,
-            isFirst: true,
-            scrolledId: .constant(nil)
-        )
-        .frame(width: 200)
+        let view = testMessageViewContainer(message: message, height: 300)
 
         // Then
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
@@ -852,7 +816,8 @@ import XCTest
         channel: ChatChannel? = nil,
         shownAsPreview: Bool = false,
         messageViewModel: MessageViewModel? = nil,
-        highlightedMessageId: String? = nil
+        highlightedMessageId: String? = nil,
+        height: CGFloat = 200
     ) -> some View {
         MessageItemView(
             factory: DefaultViewFactory.shared,
@@ -869,7 +834,7 @@ import XCTest
             viewModel: messageViewModel ?? MessageViewModel(message: message, channel: channel ?? .mockDMChannel())
         )
         .environment(\.highlightedMessageId, highlightedMessageId)
-        .frame(width: 375, height: 200)
+        .frame(width: 375, height: height)
     }
 }
 

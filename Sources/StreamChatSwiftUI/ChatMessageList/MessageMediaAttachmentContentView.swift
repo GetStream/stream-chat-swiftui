@@ -7,7 +7,7 @@ import SwiftUI
 
 /// A preference key that tracks whether any media thumbnail is still loading.
 ///
-/// Each ``ChatMediaAttachmentContentView`` reports `true` while its thumbnail
+/// Each ``MessageMediaAttachmentContentView`` reports `true` while its thumbnail
 /// has not yet loaded. The values are reduced with `||` so the container
 /// sees `true` as long as *any* child is still loading.
 struct ThumbnailLoadingKey: PreferenceKey {
@@ -23,7 +23,7 @@ struct ThumbnailLoadingKey: PreferenceKey {
 /// to load and display thumbnails.
 /// Shows a gradient placeholder while the thumbnail is loading.
 /// For video attachments, a play icon is overlaid on the thumbnail.
-public struct ChatMediaAttachmentContentView: View {
+public struct MessageMediaAttachmentContentView: View {
     @Injected(\.colors) private var colors
 
     /// The media attachment source to display.
@@ -86,7 +86,7 @@ public struct ChatMediaAttachmentContentView: View {
                 self.error = error
             }
         }
-        .accessibilityIdentifier("ChatMediaAttachmentContentView")
+        .accessibilityIdentifier("MessageMediaAttachmentContentView")
         .preference(key: ThumbnailLoadingKey.self, value: image == nil && error == nil)
     }
 

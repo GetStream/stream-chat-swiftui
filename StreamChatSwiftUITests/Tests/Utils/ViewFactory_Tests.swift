@@ -147,13 +147,13 @@ import XCTest
         XCTAssert(view is MessageAttachmentsView<DefaultViewFactory>)
     }
 
-    func test_viewFactory_makeImageAttachmentView() {
+    func test_viewFactory_makeMediaAttachmentsView() {
         // Given
         let viewFactory = DefaultViewFactory.shared
 
         // When
-        let view = viewFactory.makeImageAttachmentView(
-            options: ImageAttachmentViewOptions(
+        let view = viewFactory.makeMediaAttachmentsView(
+            options: MediaAttachmentsViewOptions(
                 message: message,
                 isFirst: true,
                 availableWidth: 300,
@@ -162,7 +162,7 @@ import XCTest
         )
 
         // Then
-        XCTAssert(view is ChatMediaAttachmentsContainerView<DefaultViewFactory>)
+        XCTAssert(view is MessageMediaAttachmentsContainerView<DefaultViewFactory>)
     }
 
     func test_viewFactory_makeGiphyAttachmentView() {
@@ -217,24 +217,6 @@ import XCTest
 
         // Then
         XCTAssert(view is FileAttachmentsContainer<DefaultViewFactory>)
-    }
-
-    func test_viewFactory_makeVideoAttachmentView() {
-        // Given
-        let viewFactory = DefaultViewFactory.shared
-
-        // When
-        let view = viewFactory.makeVideoAttachmentView(
-            options: VideoAttachmentViewOptions(
-                message: message,
-                isFirst: true,
-                availableWidth: 300,
-                scrolledId: .constant(nil)
-            )
-        )
-
-        // Then
-        XCTAssert(view is VideoAttachmentsContainer<DefaultViewFactory>)
     }
 
     func test_viewFactory_makeDeletedMessageView() {

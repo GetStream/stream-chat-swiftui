@@ -309,10 +309,10 @@ extension ViewFactory {
         )
     }
 
-    public func makeImageAttachmentView(
-        options: ImageAttachmentViewOptions
+    public func makeMediaAttachmentsView(
+        options: MediaAttachmentsViewOptions
     ) -> some View {
-        ChatMediaAttachmentsContainerView(
+        MessageMediaAttachmentsContainerView(
             factory: self,
             message: options.message,
             width: options.availableWidth
@@ -351,17 +351,6 @@ extension ViewFactory {
             message: options.message,
             width: options.availableWidth,
             isFirst: options.isFirst,
-            scrolledId: options.scrolledId
-        )
-    }
-    
-    public func makeVideoAttachmentView(
-        options: VideoAttachmentViewOptions
-    ) -> some View {
-        VideoAttachmentsContainer(
-            factory: self,
-            message: options.message,
-            width: options.availableWidth,
             scrolledId: options.scrolledId
         )
     }
