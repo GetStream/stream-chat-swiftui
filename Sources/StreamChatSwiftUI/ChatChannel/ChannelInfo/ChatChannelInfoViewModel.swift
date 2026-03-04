@@ -261,14 +261,14 @@ import SwiftUI
                 let uploadedURL = try? result.get().fileURL
                 DispatchQueue.main.async { [weak self] in
                     guard let self else { return }
-                    isUploadingGroupAvatar = false
-                    channelController.updateChannel(
+                    self.isUploadingGroupAvatar = false
+                    self.channelController.updateChannel(
                         name: name,
                         imageURL: uploadedURL ?? imageURL,
                         team: team,
                         extraData: extraData
                     )
-                    editGroupShown = false
+                    self.editGroupShown = false
                 }
             }
         } else {

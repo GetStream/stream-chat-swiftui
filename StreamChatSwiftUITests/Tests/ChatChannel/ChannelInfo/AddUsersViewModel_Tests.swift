@@ -36,15 +36,19 @@ import XCTest
             searchController: searchController
         )
         let expectation = expectation(description: "search")
-
+        
+        // Observe first, but ignore the initial value
+        viewModel.$users
+            .dropFirst()
+            .first()
+            .sink { users in
+                XCTAssertEqual(users.count, 3)
+                expectation.fulfill()
+            }
+            .store(in: &cancellables)
+        
         // When
         viewModel.searchText = "Test User 1"
-        viewModel.$users.sink { users in
-            // Then
-            XCTAssert(users.count == 3)
-            expectation.fulfill()
-        }
-        .store(in: &cancellables)
 
         waitForExpectations(timeout: defaultTimeout)
     }
