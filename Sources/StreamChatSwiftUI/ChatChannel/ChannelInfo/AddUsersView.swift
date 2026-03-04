@@ -89,6 +89,7 @@ private struct AddMembersUserRow<Factory: ViewFactory>: View {
     @Injected(\.colors) private var colors
     @Injected(\.fonts) private var fonts
     @Injected(\.tokens) private var tokens
+    @Injected(\.images) private var images
 
     let factory: Factory
     let user: ChatUser
@@ -140,8 +141,9 @@ private struct AddMembersUserRow<Factory: ViewFactory>: View {
                 Circle()
                     .fill(Color(colors.accentPrimary))
                     .frame(width: 24, height: 24)
-                Image(systemName: "checkmark")
-                    .font(.system(size: 12, weight: .bold))
+                Image(uiImage: images.selectionBadgeIcon)
+                    .customizable()
+                    .frame(width: tokens.iconSizeXs)
                     .foregroundColor(.white)
             } else {
                 Circle()
@@ -195,12 +197,13 @@ private struct AddMembersToolbarModifier: ViewModifier {
         }
         ToolbarItem(placement: .navigationBarTrailing) {
             Button(action: onConfirm) {
-                Image(systemName: "checkmark")
-                    .font(.system(size: 12, weight: .bold))
+                Image(uiImage: images.selectionBadgeIcon)
+                    .customizable()
+                    .frame(width: tokens.iconSizeSm)
                     .foregroundColor(.white)
-                    .frame(width: tokens.iconSizeLg, height: tokens.iconSizeLg)
-                    .background(Circle().fill(Color(colors.accentPrimary)))
             }
+            .frame(width: tokens.buttonVisualHeightMd)
+            .background(Circle().fill(Color(colors.accentPrimary)))
         }
     }
 }

@@ -99,7 +99,7 @@ public struct ChatChannelInfoView<Factory: ViewFactory>: View, KeyboardReadable 
     @ViewBuilder
     private var headerSection: some View {
         if viewModel.showSingleMemberDMView {
-            ChatInfoDirectChannelView(
+            ChatInfoDirectMessageView(
                 factory: factory,
                 participant: viewModel.displayedParticipants.first
             )

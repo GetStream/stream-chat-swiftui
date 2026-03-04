@@ -67,7 +67,7 @@ public struct ChatInfoGroupHeaderView: View {
 
 /// Header view shown at the top of the direct message info screen.
 /// Displays the user avatar with online indicator, name, and online status.
-public struct ChatInfoDirectChannelView<Factory: ViewFactory>: View {
+public struct ChatInfoDirectMessageView<Factory: ViewFactory>: View {
     @Injected(\.fonts) private var fonts
     @Injected(\.colors) private var colors
     @Injected(\.tokens) private var tokens
