@@ -196,21 +196,24 @@ class MessageContainerView_Tests: StreamChatTestCase {
 
     func test_videoAttachment_snapshotNoText() {
         // Given
-        let attachment = ChatChannelTestHelpers.videoAttachment
         let message = ChatMessage.mock(
             id: .unique,
             cid: .unique,
             text: "",
-            author: .mock(id: .unique)
+            author: .mock(id: .unique),
+            attachments: ChatChannelTestHelpers.videoAttachments
         )
 
         // When
-        let view = VideoAttachmentView(
-            attachment: attachment,
+        let view = VideoAttachmentsContainer(
+            factory: DefaultViewFactory.shared,
             message: message,
-            width: 2 * defaultScreenSize.width / 3
+            width: 2 * defaultScreenSize.width / 3,
+            isFirst: true,
+            scrolledId: .constant(nil)
         )
-        .applyDefaultSize()
+        .frame(width: 200)
+        .padding()
 
         // Then
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
@@ -231,6 +234,57 @@ class MessageContainerView_Tests: StreamChatTestCase {
             factory: DefaultViewFactory.shared,
             message: message,
             width: 2 * defaultScreenSize.width / 3,
+            isFirst: true,
+            scrolledId: .constant(nil)
+        )
+        .frame(width: 200)
+        .padding()
+
+        // Then
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
+    }
+
+    func test_videoAttachmentsContainer_isFirstFalse_snapshot() {
+        // Given
+        let message = ChatMessage.mock(
+            id: .unique,
+            cid: .unique,
+            text: "Test message",
+            author: .mock(id: .unique),
+            attachments: ChatChannelTestHelpers.videoAttachments
+        )
+
+        // When
+        let view = VideoAttachmentsContainer(
+            factory: DefaultViewFactory.shared,
+            message: message,
+            width: 2 * defaultScreenSize.width / 3,
+            isFirst: false,
+            scrolledId: .constant(nil)
+        )
+        .frame(width: 200)
+        .padding()
+
+        // Then
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
+    }
+
+    func test_videoAttachment_noText_isFirstFalse_snapshot() {
+        // Given
+        let message = ChatMessage.mock(
+            id: .unique,
+            cid: .unique,
+            text: "",
+            author: .mock(id: .unique),
+            attachments: ChatChannelTestHelpers.videoAttachments
+        )
+
+        // When
+        let view = VideoAttachmentsContainer(
+            factory: DefaultViewFactory.shared,
+            message: message,
+            width: 2 * defaultScreenSize.width / 3,
+            isFirst: false,
             scrolledId: .constant(nil)
         )
         .frame(width: 200)
@@ -625,20 +679,22 @@ class MessageContainerView_Tests: StreamChatTestCase {
         message: ChatMessage,
         channel: ChatChannel? = nil,
         messageViewModel: MessageViewModel? = nil,
-        highlightedMessageId: String? = nil
+        highlightedMessageId: String? = nil,
+        showsAllInfo: Bool = true
     ) -> some View {
-        MessageContainerView(
+        let channelOrMock = channel ?? .mockDMChannel()
+        return MessageContainerView(
             factory: DefaultViewFactory.shared,
-            channel: channel ?? .mockDMChannel(),
+            channel: channelOrMock,
             message: message,
             width: defaultScreenSize.width,
-            showsAllInfo: true,
+            showsAllInfo: showsAllInfo,
             isInThread: false,
             isLast: false,
             scrolledId: .constant(nil),
             quotedMessage: .constant(nil),
             onLongPress: { _ in },
-            viewModel: messageViewModel ?? MessageViewModel(message: message, channel: channel)
+            viewModel: messageViewModel ?? MessageViewModel(message: message, channel: channelOrMock)
         )
         .environment(\.highlightedMessageId, highlightedMessageId)
         .frame(width: 375, height: 200)
