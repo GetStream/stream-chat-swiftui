@@ -100,7 +100,7 @@ struct ComposerVoiceRecordingInputView<Factory: ViewFactory>: View {
     @ViewBuilder
     private var durationOrPlayback: some View {
         if isStopped {
-            HStack(spacing: tokens.spacingXs) {
+            HStack(spacing: 0) {
                 Button {
                     handlePlayTap()
                 } label: {
