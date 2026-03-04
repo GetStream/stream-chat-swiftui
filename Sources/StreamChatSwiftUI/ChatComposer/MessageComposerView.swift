@@ -23,7 +23,7 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
     @Binding var quotedMessage: ChatMessage?
     @Binding var editedMessage: ChatMessage?
 
-    private let recordingViewHeight: CGFloat = 80
+    private let recordingViewHeight: CGFloat = 112
 
     public init(
         viewFactory: Factory,
@@ -55,6 +55,10 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
     private var showsLeadingComposer: Bool {
         viewModel.recordingState.showsComposer
             && viewModel.composerCommand?.displayInfo?.isInstant != true
+    }
+
+    private var isLockedOrStopped: Bool {
+        viewModel.recordingState == .locked || viewModel.recordingState == .stopped
     }
 
     public var body: some View {
@@ -131,20 +135,38 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
             .padding(.horizontal, tokens.spacingMd)
             .overlay(
                 ZStack {
-                    if case let .recording(location) = viewModel.recordingState {
-                        HStack {
-                            Spacer()
-                            LockView(dragLocation: location)
-                                .offset(y: lockViewOffset(for: location))
-                                .animation(.interactiveSpring(response: 0.35, dampingFraction: 0.8), value: location)
-                        }
-                        .padding(.trailing, tokens.spacingXs)
-                    } else if viewModel.recordingState == .locked || viewModel.recordingState == .stopped {
+                    if isLockedOrStopped {
                         factory.makeComposerRecordingLockedView(
                             options: ComposerRecordingLockedViewOptions(viewModel: viewModel)
                         )
-                        .frame(height: recordingViewHeight)
+                        .padding(.horizontal, tokens.spacingMd)
+                        .padding(.top, tokens.spacingMd)
+                        .transition(.opacity.combined(with: .scale(scale: 0.96, anchor: .bottom)))
                     }
+
+                    if viewModel.recordingState.isRecording || isLockedOrStopped {
+                        HStack {
+                            Spacer()
+                            LockView(
+                                dragLocation: currentDragLocation,
+                                isLocked: isLockedOrStopped
+                            )
+                            .offset(y: isLockedOrStopped
+                                ? lockedLockOffset
+                                : lockViewOffset(for: currentDragLocation))
+                            .animation(
+                                .interactiveSpring(response: 0.35, dampingFraction: 0.8),
+                                value: currentDragLocation
+                            )
+                        }
+                        .padding(.trailing, tokens.spacingMd)
+                        .animation(
+                            .interactiveSpring(response: 0.4, dampingFraction: 0.85),
+                            value: isLockedOrStopped
+                        )
+                        .transition(.opacity)
+                    }
+
                     if utils.composerConfig.isVoiceRecordingEnabled,
                        viewModel.recordingState == .initial || viewModel.recordingState.isRecording {
                         VoiceRecordingGestureOverlay(
@@ -155,10 +177,18 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
                         )
                     }
                 }
+                .animation(
+                    .interactiveSpring(response: 0.4, dampingFraction: 0.85),
+                    value: isLockedOrStopped
+                )
             )
             .frame(
                 height: (viewModel.recordingState == .locked || viewModel.recordingState == .stopped)
                     ? recordingViewHeight : nil
+            )
+            .animation(
+                .interactiveSpring(response: 0.4, dampingFraction: 0.85),
+                value: isLockedOrStopped
             )
 
             factory.makeAttachmentPickerView(
@@ -324,7 +354,28 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
         if location.y > 0 {
             return Self.initialLockOffset
         }
-        return Self.initialLockOffset + location.y
+
+        // Interpolate to the final locked position so the drag endpoint and
+        // locked resting position are identical (no vertical snap).
+        let progress = min(1, -location.y / -RecordingConstants.lockMaxDistance)
+        return Self.initialLockOffset + (lockedLockOffset - Self.initialLockOffset) * progress
+    }
+
+    private var currentDragLocation: CGPoint {
+        if case let .recording(location) = viewModel.recordingState {
+            return location
+        }
+        return .zero
+    }
+
+    /// Final locked circle sits outside the composer with 16pt gap.
+    private var lockedLockOffset: CGFloat {
+        let overlayCenterY = recordingViewHeight / 2
+        let composerTopInset = tokens.spacingMd
+        let desiredGapFromComposer = tokens.spacingMd * 2
+        let lockRadius: CGFloat = 20
+        let lockCenterY = composerTopInset - desiredGapFromComposer - lockRadius
+        return lockCenterY - overlayCenterY
     }
 }
 

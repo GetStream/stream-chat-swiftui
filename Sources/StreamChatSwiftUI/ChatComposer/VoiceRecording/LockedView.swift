@@ -5,107 +5,165 @@
 import StreamChat
 import SwiftUI
 
+/// Locked recording view shown after the user drags up to lock the recording.
+///
+/// Layout matches the Figma "Voice Message – Recording (Locked)" spec:
+/// - Recording Container (rounded card, radius 3xl, border)
+///   - Recording Bar: red mic indicator | duration | live waveform
+///   - Recording Controls: delete | stop | confirm
+///
+/// The floating lock indicator is managed externally (by the composer overlay)
+/// so it can transition seamlessly from the `LockView` capsule.
 struct LockedView: View {
     @Injected(\.colors) var colors
+    @Injected(\.fonts) var fonts
+    @Injected(\.tokens) var tokens
     @Injected(\.utils) var utils
-    
+
     @ObservedObject var viewModel: MessageComposerViewModel
-    @State var isPlaying = false
-    @State var showLockedIndicator = true
+    @State private var isPlaying = false
     @StateObject var voiceRecordingHandler = VoiceRecordingHandler()
-    
+
     private var player: AudioPlaying {
         utils.audioPlayer
     }
-    
+
     var body: some View {
-        VStack(spacing: 16) {
-            Divider()
-            HStack {
-                if viewModel.recordingState == .locked {
-                    Image(systemName: "mic")
-                        .foregroundColor(.red)
-                } else {
-                    Button {
-                        handlePlayTap()
-                    } label: {
-                        Image(systemName: isPlaying ? "pause" : "play")
-                    }
-                }
-                RecordingDurationView(
-                    duration: showContextTime ?
-                        voiceRecordingHandler.context.currentTime : viewModel.audioRecordingInfo.duration
-                )
-                RecordingWaveform(
-                    duration: viewModel.audioRecordingInfo.duration,
-                    currentTime: viewModel.recordingState == .stopped ?
-                        voiceRecordingHandler.context.currentTime :
-                        viewModel.audioRecordingInfo.duration,
-                    waveform: viewModel.audioRecordingInfo.waveform
-                )
-                Spacer()
+        recordingContainer
+            .onAppear {
+                player.subscribe(voiceRecordingHandler)
             }
-            .padding(.horizontal, 8)
-
-            HStack {
-                Button {
-                    withAnimation {
-                        viewModel.discardRecording()
-                    }
-                } label: {
-                    Image(systemName: "trash")
-                }
-
-                Spacer()
-                
-                if viewModel.recordingState == .locked {
-                    Button {
-                        withAnimation {
-                            viewModel.previewRecording()
-                        }
-                    } label: {
-                        Image(systemName: "stop.circle")
-                            .foregroundColor(.red)
-                    }
-                    
-                    Spacer()
-                }
-                
-                Button {
-                    withAnimation {
-                        viewModel.confirmRecording()
-                    }
-                } label: {
-                    Image(systemName: "checkmark.circle.fill")
+            .onReceive(voiceRecordingHandler.$context) { value in
+                if value.state == .stopped || value.state == .paused {
+                    isPlaying = false
+                } else if value.state == .playing {
+                    isPlaying = true
                 }
             }
-            .padding(.horizontal, 8)
-        }
-        .background(Color(colors.background).edgesIgnoringSafeArea(.bottom))
-        .offset(y: -20)
-        .background(Color(colors.background).edgesIgnoringSafeArea(.bottom))
-        .overlay(
-            showLockedIndicator ? TopRightView { LockedRecordIndicator() } : nil
-        )
-        .onAppear {
-            player.subscribe(voiceRecordingHandler)
-            DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
-                showLockedIndicator = false
-            }
-        }
-        .onReceive(voiceRecordingHandler.$context, perform: { value in
-            if value.state == .stopped || value.state == .paused {
-                isPlaying = false
-            } else if value.state == .playing {
-                isPlaying = true
-            }
-        })
     }
-    
+
+    // MARK: - Recording Container
+
+    private var recordingContainer: some View {
+        VStack(spacing: tokens.spacingNone) {
+            recordingBar
+            recordingControls
+        }
+        .background(Color(colors.backgroundElevationElevation1))
+        .clipShape(RoundedRectangle(cornerRadius: tokens.radius3xl))
+        .overlay(
+            RoundedRectangle(cornerRadius: tokens.radius3xl)
+                .stroke(Color(colors.borderCoreDefault), lineWidth: 1)
+        )
+    }
+
+    // MARK: - Recording Bar
+
+    private var recordingBar: some View {
+        HStack(spacing: tokens.spacingMd) {
+            HStack(spacing: tokens.spacingNone) {
+                micIndicator
+                durationOrPlayback
+            }
+
+            RecordingWaveform(
+                duration: viewModel.audioRecordingInfo.duration,
+                currentTime: viewModel.recordingState == .stopped
+                    ? voiceRecordingHandler.context.currentTime
+                    : viewModel.audioRecordingInfo.duration,
+                waveform: viewModel.audioRecordingInfo.waveform
+            )
+            .frame(height: 20)
+        }
+        .padding(.trailing, tokens.spacingMd)
+        .frame(height: 48)
+    }
+
+    private var micIndicator: some View {
+        Image(systemName: "mic.fill")
+            .font(.system(size: 20))
+            .foregroundColor(.red)
+            .frame(width: 48, height: 48)
+            .accessibilityHidden(true)
+    }
+
+    @ViewBuilder
+    private var durationOrPlayback: some View {
+        if viewModel.recordingState == .stopped {
+            HStack(spacing: tokens.spacingXs) {
+                Button {
+                    handlePlayTap()
+                } label: {
+                    Image(systemName: isPlaying ? "pause.fill" : "play.fill")
+                        .font(.system(size: 16))
+                        .foregroundColor(Color(colors.textPrimary))
+                }
+                .accessibilityLabel(Text(isPlaying
+                        ? L10n.Composer.AudioRecording.stop
+                        : L10n.Composer.AudioRecording.start))
+
+                RecordingDurationView(
+                    duration: showContextTime
+                        ? voiceRecordingHandler.context.currentTime
+                        : viewModel.audioRecordingInfo.duration
+                )
+            }
+        } else {
+            RecordingDurationView(duration: viewModel.audioRecordingInfo.duration)
+        }
+    }
+
+    // MARK: - Recording Controls
+
+    private var recordingControls: some View {
+        HStack {
+            StreamIconButton(role: .secondary, style: .outline, size: .small, action: {
+                withAnimation(.interactiveSpring(response: 0.35, dampingFraction: 0.88)) {
+                    viewModel.discardRecording()
+                }
+            }) {
+                Image(systemName: "trash")
+                    .font(.system(size: 20))
+            }
+            .frame(width: 48, height: 48)
+            .contentShape(Rectangle())
+
+            Spacer()
+
+            if viewModel.recordingState == .locked {
+                StreamIconButton(role: .destructive, style: .outline, size: .small, action: {
+                    withAnimation(.interactiveSpring(response: 0.35, dampingFraction: 0.88)) {
+                        viewModel.previewRecording()
+                    }
+                }) {
+                    Image(systemName: "stop.fill")
+                        .font(.system(size: 20))
+                }
+                .frame(width: 48, height: 48)
+                .contentShape(Rectangle())
+
+                Spacer()
+            }
+
+            StreamIconButton(role: .primary, style: .solid, size: .small, action: {
+                withAnimation(.interactiveSpring(response: 0.35, dampingFraction: 0.88)) {
+                    viewModel.confirmRecording()
+                }
+            }) {
+                Image(systemName: "checkmark")
+                    .font(.system(size: 20))
+            }
+            .frame(width: 48, height: 48)
+            .contentShape(Rectangle())
+        }
+    }
+
+    // MARK: - Helpers
+
     private var showContextTime: Bool {
         voiceRecordingHandler.context.currentTime > 0
     }
-    
+
     private func handlePlayTap() {
         if isPlaying {
             player.pause()
@@ -113,19 +171,5 @@ struct LockedView: View {
             player.loadAsset(from: url)
         }
         isPlaying.toggle()
-    }
-}
-
-struct LockedRecordIndicator: View {
-    @Injected(\.colors) var colors
-    
-    var body: some View {
-        Image(systemName: "lock")
-            .padding(.all, 8)
-            .background(Color(colors.background6))
-            .foregroundColor(.blue)
-            .clipShape(Circle())
-            .offset(y: -66)
-            .padding(.all, 4)
     }
 }

@@ -108,22 +108,29 @@ private struct SlideToCancelLabel: View {
 
 /// Floating lock button shown above the recording bar while recording.
 ///
-/// The user drags up to lock the recording into hands-free mode.
-/// The icon animates from lock.open to lock.fill as the user approaches the lock threshold.
+/// Morphs between two visual states with a single smooth animation:
+/// - **Unlocked** (capsule): lock.open ↔ lock.fill crossfade + chevron.up arrow
+/// - **Locked** (circle): lock.fill only, chevron collapses to zero height
+///
+/// Because `Capsule()` on a square frame produces a circle, the shape transition
+/// is automatic -- no clip-shape swap needed.
 struct LockView: View {
     @Injected(\.colors) var colors
     @Injected(\.tokens) var tokens
 
-    /// Drag translation (y negative = dragging up). Used to interpolate icon from unlocked to locked.
     var dragLocation: CGPoint = .zero
+    var isLocked: Bool = false
+
+    @State private var lockScale: CGFloat = 1.0
 
     private var lockProgress: CGFloat {
+        if isLocked { return 1 }
         guard dragLocation.y < 0 else { return 0 }
         return min(1, -dragLocation.y / -RecordingConstants.lockMaxDistance)
     }
 
     var body: some View {
-        VStack(spacing: tokens.spacingXxs) {
+        VStack(spacing: isLocked ? 0 : tokens.spacingXxs) {
             ZStack {
                 Image(systemName: "lock.open")
                     .font(.system(size: 20))
@@ -133,8 +140,12 @@ struct LockView: View {
                     .opacity(lockProgress)
             }
             .animation(.spring(response: 0.35, dampingFraction: 0.75), value: lockProgress)
+
             Image(systemName: "chevron.up")
                 .font(.system(size: 20))
+                .opacity(isLocked ? 0 : 1)
+                .frame(height: isLocked ? 0 : nil)
+                .clipped()
         }
         .foregroundColor(Color(colors.textSecondary))
         .padding(10)
@@ -151,5 +162,14 @@ struct LockView: View {
             x: tokens.lightElevation3.x,
             y: tokens.lightElevation3.y
         )
+        .scaleEffect(lockScale)
+        .animation(.interactiveSpring(response: 0.4, dampingFraction: 0.7), value: isLocked)
+        .onChange(of: isLocked) { locked in
+            guard locked else { return }
+            lockScale = 1.15
+            withAnimation(.spring(response: 0.35, dampingFraction: 0.6)) {
+                lockScale = 1.0
+            }
+        }
     }
 }
