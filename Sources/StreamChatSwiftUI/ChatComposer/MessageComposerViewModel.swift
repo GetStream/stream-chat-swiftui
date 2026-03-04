@@ -133,6 +133,9 @@ import SwiftUI
     @Published public var attachmentSizeExceeded: Bool = false
     @Published public var recordingState: RecordingState = .initial {
         didSet {
+            if recordingState.isLockedOrStopped {
+                pickerTypeState = .expanded(.none)
+            }
             if case let .recording(location) = recordingState {
                 if location.y < RecordingConstants.lockMaxDistance {
                     recordingState = .locked

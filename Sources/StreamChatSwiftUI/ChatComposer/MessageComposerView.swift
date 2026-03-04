@@ -759,7 +759,7 @@ public struct ComposerInputView<Factory: ViewFactory>: View, KeyboardReadable {
     }
 
     private var isInputDisabled: Bool {
-        isInCooldown || isChannelFrozen
+        isInCooldown || isChannelFrozen || recordingState.isRecording || recordingState.isLockedOrStopped
     }
 }
 
