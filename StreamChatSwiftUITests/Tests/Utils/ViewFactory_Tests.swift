@@ -884,7 +884,7 @@ import XCTest
         )
         
         // Then
-        XCTAssert(view is ComposerVoiceRecordingInputView)
+        XCTAssert(view is ComposerVoiceRecordingInputView<DefaultViewFactory>)
     }
     
     func test_viewFactory_makeChannelLoadingView() {
