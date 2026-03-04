@@ -20,6 +20,9 @@ public struct MessageAttachmentsView<Factory: ViewFactory>: View {
     @Binding var scrolledId: String?
 
     private var showsBubble: Bool {
+        if !message.text.isEmpty {
+            return true
+        }
         let imageCount = message.imageAttachments.count
         let videoCount = message.videoAttachments.count
         let totalMedia = imageCount + videoCount

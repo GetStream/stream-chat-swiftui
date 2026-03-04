@@ -232,10 +232,11 @@ import XCTest
         )
 
         // When
-        let view = VideoAttachmentsContainer(
+        let view = MessageAttachmentsView(
             factory: DefaultViewFactory.shared,
             message: message,
             width: 2 * defaultScreenSize.width / 3,
+            isFirst: true,
             scrolledId: .constant(nil)
         )
         .frame(width: 200)

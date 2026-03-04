@@ -44,7 +44,7 @@ public struct ChatQuotedMessageView<Factory: ViewFactory>: View {
                 outgoing: parentMessageSentByCurrentUser
             )
         )
-        .frame(width: availableWidth, height: 56)
+        .frame(width: availableWidth)
         .modifier(ReferenceMessageViewBackgroundModifier(
             backgroundColor: Color(
                 parentMessageSentByCurrentUser
@@ -52,6 +52,7 @@ public struct ChatQuotedMessageView<Factory: ViewFactory>: View {
                     : colors.chatBackgroundAttachmentIncoming
             )
         ))
+        .frame(height: 56)
         .onTapGesture {
             scrolledId = quotedMessage.messageId
         }

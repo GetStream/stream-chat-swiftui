@@ -59,7 +59,7 @@ public struct ChatMediaAttachmentsContainerView<Factory: ViewFactory>: View {
 
     @State private var galleryShown = false
     @State private var selectedIndex = 0
-    @State private var isThumbnailLoading = true
+    @State private var isThumbnailLoading = false
 
     private var spacing: CGFloat { tokens.spacingXxxs }
     private var cornerRadius: CGFloat { tokens.messageBubbleRadiusAttachment }

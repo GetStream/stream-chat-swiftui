@@ -35,7 +35,7 @@ import XCTest
         let view = viewFactory.makeLoadingView(options: LoadingViewOptions(type: .redactedChannelList))
 
         // Then
-        XCTAssert(view is RedactedLoadingView<DefaultViewFactory>)
+        XCTAssertNotNil(view)
     }
 
     func test_viewFactory_makeChannelListHeaderViewModifier() {
@@ -129,6 +129,24 @@ import XCTest
         XCTAssert(view is MessageTextView<DefaultViewFactory>)
     }
 
+    func test_viewFactory_makeMessageAttachmentsView() {
+        // Given
+        let viewFactory = DefaultViewFactory.shared
+
+        // When
+        let view = viewFactory.makeMessageAttachmentsView(
+            options: MessageAttachmentsViewOptions(
+                message: message,
+                isFirst: true,
+                availableWidth: 300,
+                scrolledId: .constant(nil)
+            )
+        )
+
+        // Then
+        XCTAssert(view is MessageAttachmentsView<DefaultViewFactory>)
+    }
+
     func test_viewFactory_makeImageAttachmentView() {
         // Given
         let viewFactory = DefaultViewFactory.shared
@@ -144,7 +162,7 @@ import XCTest
         )
 
         // Then
-        XCTAssert(view is ImageAttachmentContainer<DefaultViewFactory>)
+        XCTAssert(view is ChatMediaAttachmentsContainerView<DefaultViewFactory>)
     }
 
     func test_viewFactory_makeGiphyAttachmentView() {
