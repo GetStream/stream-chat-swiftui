@@ -14,12 +14,13 @@ import SwiftUI
 ///
 /// The red mic icon and duration label stay in the same position across both
 /// states so the transition feels continuous.
-struct ComposerVoiceRecordingInputView: View {
+struct ComposerVoiceRecordingInputView<Factory: ViewFactory>: View {
     @Injected(\.colors) private var colors
     @Injected(\.fonts) private var fonts
     @Injected(\.tokens) private var tokens
     @Injected(\.utils) private var utils
 
+    let factory: Factory
     @ObservedObject var viewModel: MessageComposerViewModel
     var gestureLocation: CGPoint
 
@@ -184,9 +185,18 @@ struct ComposerVoiceRecordingInputView: View {
 
             Spacer()
 
-            recordingControlButton(role: .primary, style: .solid, icon: "checkmark") {
-                viewModel.confirmRecording()
-            }
+            factory.makeConfirmEditButton(
+                options: ConfirmEditButtonOptions(
+                    enabled: true,
+                    onTap: {
+                        withAnimation(Self.recordingControlAnimation) {
+                            viewModel.confirmRecording()
+                        }
+                    }
+                )
+            )
+            .frame(width: 48, height: 48)
+            .contentShape(Rectangle())
         }
     }
 

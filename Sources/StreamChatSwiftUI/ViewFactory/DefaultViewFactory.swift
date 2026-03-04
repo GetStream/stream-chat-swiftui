@@ -591,6 +591,7 @@ extension ViewFactory {
         options: ComposerVoiceRecordingInputViewOptions
     ) -> some View {
         ComposerVoiceRecordingInputView(
+            factory: self,
             viewModel: options.viewModel,
             gestureLocation: options.gestureLocation
         )
