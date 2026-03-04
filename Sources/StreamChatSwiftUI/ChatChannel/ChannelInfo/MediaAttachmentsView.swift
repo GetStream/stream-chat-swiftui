@@ -149,7 +149,8 @@ public struct MediaAttachmentContentView<Factory: ViewFactory>: View {
             LazyLoadingImage(
                 source: mediaAttachment,
                 width: itemWidth,
-                height: itemWidth
+                height: itemWidth,
+                showVideoIcon: false
             )
             .frame(width: itemWidth, height: itemWidth)
             .clipped()

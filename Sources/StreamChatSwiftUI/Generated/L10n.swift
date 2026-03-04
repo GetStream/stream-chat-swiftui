@@ -198,6 +198,16 @@ internal enum L10n {
       internal static var groupName: String { L10n.tr("Localizable", "chat-info.edit.group-name") }
       /// Upload
       internal static var upload: String { L10n.tr("Localizable", "chat-info.edit.upload") }
+      internal enum Picture {
+        /// Take Photo
+        internal static var camera: String { L10n.tr("Localizable", "chat-info.edit.picture.camera") }
+        /// Choose Image
+        internal static var library: String { L10n.tr("Localizable", "chat-info.edit.picture.library") }
+        /// Reset Picture
+        internal static var reset: String { L10n.tr("Localizable", "chat-info.edit.picture.reset") }
+        /// Edit Group Picture
+        internal static var title: String { L10n.tr("Localizable", "chat-info.edit.picture.title") }
+      }
     }
     internal enum Files {
       /// Files sent in this chat will appear here.
