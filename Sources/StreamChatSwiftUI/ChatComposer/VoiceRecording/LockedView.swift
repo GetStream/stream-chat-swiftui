@@ -166,7 +166,7 @@ struct ComposerVoiceRecordingInputView<Factory: ViewFactory>: View {
 
     // MARK: - Recording Controls
 
-    /// Matches the 48pt frame set on each `recordingControlButton`.
+    /// Matches the 48pt frame set on each recording control button.
     private let recordingControlsHeight: CGFloat = 48
     private let controlsRevealDelay: TimeInterval = 0.12
 
@@ -176,16 +176,12 @@ struct ComposerVoiceRecordingInputView<Factory: ViewFactory>: View {
 
     private var recordingControls: some View {
         HStack {
-            recordingControlButton(role: .secondary, icon: "trash") {
-                viewModel.discardRecording()
-            }
+            trashControlButton
 
             Spacer()
 
-            recordingControlButton(role: .destructive, icon: "stop.fill") {
-                viewModel.previewRecording()
-            }
-            .opacity(viewModel.recordingState == .locked ? 1 : 0)
+            stopControlButton
+                .opacity(viewModel.recordingState == .locked ? 1 : 0)
 
             Spacer()
 
@@ -204,17 +200,28 @@ struct ComposerVoiceRecordingInputView<Factory: ViewFactory>: View {
         }
     }
 
-    private func recordingControlButton(
-        role: StreamButtonRole,
-        style: StreamButtonVisualStyle = .outline,
-        icon: String,
-        action: @escaping () -> Void
-    ) -> some View {
-        StreamIconButton(role: role, style: style, size: .small) {
-            withAnimation(Self.recordingControlAnimation) { action() }
+    private var trashControlButton: some View {
+        StreamIconButton(role: .secondary, style: .outline, size: .small) {
+            withAnimation(Self.recordingControlAnimation) {
+                viewModel.discardRecording()
+            }
         } icon: {
-            Image(systemName: icon)
-                .font(.system(size: 20))
+            Image(systemName: "trash")
+                .font(.system(size: 16))
+        }
+        .frame(width: 48, height: 48)
+        .contentShape(Rectangle())
+    }
+
+    private var stopControlButton: some View {
+        StreamIconButton(role: .destructive, style: .outline, size: .medium) {
+            withAnimation(Self.recordingControlAnimation) {
+                viewModel.previewRecording()
+            }
+        } icon: {
+            Image(systemName: "stop.fill")
+                .customizable()
+                .frame(width: 12, height: 12)
         }
         .frame(width: 48, height: 48)
         .contentShape(Rectangle())
