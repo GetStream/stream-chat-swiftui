@@ -115,47 +115,45 @@ struct LockedView: View {
 
     // MARK: - Recording Controls
 
+    private static var recordingControlAnimation: Animation {
+        .interactiveSpring(response: 0.35, dampingFraction: 0.88)
+    }
+
     private var recordingControls: some View {
         HStack {
-            StreamIconButton(role: .secondary, style: .outline, size: .small, action: {
-                withAnimation(.interactiveSpring(response: 0.35, dampingFraction: 0.88)) {
-                    viewModel.discardRecording()
-                }
-            }) {
-                Image(systemName: "trash")
-                    .font(.system(size: 20))
+            recordingControlButton(role: .secondary, icon: "trash") {
+                viewModel.discardRecording()
             }
-            .frame(width: 48, height: 48)
-            .contentShape(Rectangle())
 
             Spacer()
 
             if viewModel.recordingState == .locked {
-                StreamIconButton(role: .destructive, style: .outline, size: .small, action: {
-                    withAnimation(.interactiveSpring(response: 0.35, dampingFraction: 0.88)) {
-                        viewModel.previewRecording()
-                    }
-                }) {
-                    Image(systemName: "stop.fill")
-                        .font(.system(size: 20))
+                recordingControlButton(role: .destructive, icon: "stop.fill") {
+                    viewModel.previewRecording()
                 }
-                .frame(width: 48, height: 48)
-                .contentShape(Rectangle())
-
                 Spacer()
             }
 
-            StreamIconButton(role: .primary, style: .solid, size: .small, action: {
-                withAnimation(.interactiveSpring(response: 0.35, dampingFraction: 0.88)) {
-                    viewModel.confirmRecording()
-                }
-            }) {
-                Image(systemName: "checkmark")
-                    .font(.system(size: 20))
+            recordingControlButton(role: .primary, style: .solid, icon: "checkmark") {
+                viewModel.confirmRecording()
             }
-            .frame(width: 48, height: 48)
-            .contentShape(Rectangle())
         }
+    }
+
+    private func recordingControlButton(
+        role: StreamButtonRole,
+        style: StreamButtonVisualStyle = .outline,
+        icon: String,
+        action: @escaping () -> Void
+    ) -> some View {
+        StreamIconButton(role: role, style: style, size: .small) {
+            withAnimation(Self.recordingControlAnimation) { action() }
+        } icon: {
+            Image(systemName: icon)
+                .font(.system(size: 20))
+        }
+        .frame(width: 48, height: 48)
+        .contentShape(Rectangle())
     }
 
     // MARK: - Helpers

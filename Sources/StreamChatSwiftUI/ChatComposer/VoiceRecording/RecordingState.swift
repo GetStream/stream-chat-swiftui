@@ -21,4 +21,9 @@ extension RecordingState {
         if case .recording = self { return true }
         return false
     }
+
+    /// Whether the recording is locked or stopped (shows locked UI).
+    var isLockedOrStopped: Bool {
+        self == .locked || self == .stopped
+    }
 }

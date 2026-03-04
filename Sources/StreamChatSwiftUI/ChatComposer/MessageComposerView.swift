@@ -58,7 +58,11 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
     }
 
     private var isLockedOrStopped: Bool {
-        viewModel.recordingState == .locked || viewModel.recordingState == .stopped
+        viewModel.recordingState.isLockedOrStopped
+    }
+
+    private var showsRecordingOverlay: Bool {
+        viewModel.recordingState.isRecording || isLockedOrStopped
     }
 
     public var body: some View {
@@ -144,7 +148,7 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
                         .transition(.opacity.combined(with: .scale(scale: 0.96, anchor: .bottom)))
                     }
 
-                    if viewModel.recordingState.isRecording || isLockedOrStopped {
+                    if showsRecordingOverlay {
                         HStack {
                             Spacer()
                             LockView(
@@ -182,10 +186,7 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
                     value: isLockedOrStopped
                 )
             )
-            .frame(
-                height: (viewModel.recordingState == .locked || viewModel.recordingState == .stopped)
-                    ? recordingViewHeight : nil
-            )
+            .frame(height: isLockedOrStopped ? recordingViewHeight : nil)
             .animation(
                 .interactiveSpring(response: 0.4, dampingFraction: 0.85),
                 value: isLockedOrStopped
@@ -569,7 +570,7 @@ public struct ComposerInputView<Factory: ViewFactory>: View, KeyboardReadable {
         ZStack(alignment: .bottomLeading) {
             regularInputContent
                 .opacity(recordingState.isRecording ? 0 : 1)
-                .allowsHitTesting(!recordingState.isRecording)
+                .allowsHitTesting(true)
 
             recordingContent
                 .opacity(recordingState.isRecording ? 1 : 0)

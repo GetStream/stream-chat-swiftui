@@ -10,9 +10,7 @@ import SwiftUI
 /// Layout: [mic indicator | duration] — [Slide to cancel ‹] — [mic button]
 struct RecordingView: View {
     @Injected(\.colors) var colors
-    @Injected(\.fonts) var fonts
     @Injected(\.tokens) var tokens
-    @Injected(\.utils) var utils
 
     var location: CGPoint
     var audioRecordingInfo: AudioRecordingInfo
@@ -109,11 +107,11 @@ private struct SlideToCancelLabel: View {
 /// Floating lock button shown above the recording bar while recording.
 ///
 /// Morphs between two visual states with a single smooth animation:
-/// - **Unlocked** (capsule): lock.open ↔ lock.fill crossfade + chevron.up arrow
-/// - **Locked** (circle): lock.fill only, chevron collapses to zero height
+/// - **Unlocked** (capsule): lock.open ↔ lock + chevron.up arrow
+/// - **Locked** (circle): lock only, chevron collapses to zero height
 ///
 /// Because `Capsule()` on a square frame produces a circle, the shape transition
-/// is automatic -- no clip-shape swap needed.
+/// is automatic — no clip-shape swap needed.
 struct LockView: View {
     @Injected(\.colors) var colors
     @Injected(\.tokens) var tokens
