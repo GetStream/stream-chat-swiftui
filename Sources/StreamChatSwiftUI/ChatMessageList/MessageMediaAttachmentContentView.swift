@@ -70,7 +70,7 @@ public struct MessageMediaAttachmentContentView: View {
             }
 
             if source.type == .video && width > 64 && source.uploadingState == nil {
-                VideoPlayIcon()
+                VideoPlayIndicatorView(size: VideoPlayIndicatorSize.medium)
                     .allowsHitTesting(false)
             }
         }
