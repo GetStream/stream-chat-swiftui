@@ -182,6 +182,45 @@ open class WaveformView: UIView {
     }
 }
 
+/// SwiftUI wrapper used during active recording (locked/stopped states in the composer).
+/// Passes raw waveform data directly rather than an `AddedVoiceRecording`.
+struct RecordingWaveform: UIViewRepresentable {
+    var isRecording: Bool
+    var duration: TimeInterval
+    var currentTime: TimeInterval
+    var waveform: [Float]
+    var onSliderChanged: (TimeInterval) -> Void = { _ in }
+    var onSliderTapped: () -> Void = {}
+    
+    func makeUIView(context: Context) -> WaveformView {
+        let view = WaveformView()
+        view.onSliderChanged = onSliderChanged
+        view.onSliderTapped = onSliderTapped
+        view.applyCustomSliderThumb()
+        updateContent(for: view)
+        return view
+    }
+    
+    func updateUIView(_ uiView: WaveformView, context: Context) {
+        uiView.onSliderChanged = onSliderChanged
+        uiView.onSliderTapped = onSliderTapped
+        updateContent(for: uiView)
+    }
+    
+    private func updateContent(for view: WaveformView) {
+        view.content = .init(
+            isRecording: isRecording,
+            duration: duration,
+            currentTime: currentTime,
+            waveform: waveform
+        )
+        view.applyCustomSliderThumb()
+        view.slider.isUserInteractionEnabled = !isRecording
+    }
+}
+
+/// SwiftUI wrapper used for completed voice recordings (message list, composer attachments).
+/// Reads playback state from an `AddedVoiceRecording` and optional `AudioPlaybackContext`.
 struct WaveformViewSwiftUI: UIViewRepresentable {
     var audioContext: AudioPlaybackContext?
     var addedVoiceRecording: AddedVoiceRecording

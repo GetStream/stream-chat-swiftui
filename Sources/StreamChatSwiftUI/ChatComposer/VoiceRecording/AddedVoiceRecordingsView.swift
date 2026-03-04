@@ -49,17 +49,14 @@ struct ComposerVoiceRecordingCard: View {
     @Injected(\.tokens) private var tokens
     @Injected(\.utils) private var utils
 
-    @State private var isPlaying = false
-    @State private var rate: AudioPlaybackRate = .normal
     @ObservedObject var handler: VoiceRecordingHandler
 
     let recording: AddedVoiceRecording
     let index: Int
     var onDiscard: (String) -> Void
 
-    private var player: AudioPlaying {
-        utils.audioPlayer
-    }
+    private var isActive: Bool { handler.isActive(for: recording.url) }
+    private var showContextDuration: Bool { isActive && handler.context.currentTime > 0 }
 
     var body: some View {
         HStack(spacing: tokens.spacingXs) {
@@ -81,13 +78,8 @@ struct ComposerVoiceRecordingCard: View {
                 onDiscard: onDiscard
             )
         )
-        .onReceive(handler.$context) { value in
-            guard value.assetLocation == recording.url else { return }
-            if value.state == .stopped || value.state == .paused {
-                isPlaying = false
-            } else if value.state == .playing {
-                isPlaying = true
-            }
+        .onReceive(handler.$context) { _ in
+            handler.updatePlaybackState(for: recording.url)
         }
     }
 
@@ -95,9 +87,9 @@ struct ComposerVoiceRecordingCard: View {
 
     private var playButton: some View {
         StreamIconButton(role: .secondary, style: .outline, size: .medium) {
-            handlePlayTap()
+            handler.togglePlayback(for: recording.url)
         } icon: {
-            Image(systemName: isPlaying ? "pause.fill" : "play.fill")
+            Image(systemName: handler.isPlaying && isActive ? "pause.fill" : "play.fill")
                 .font(.system(size: 20))
         }
     }
@@ -123,18 +115,13 @@ struct ComposerVoiceRecordingCard: View {
                     .foregroundColor(Color(colors.textSecondary))
 
                 WaveformViewSwiftUI(
-                    audioContext: isCurrentRecordingActive ? handler.context : nil,
+                    audioContext: isActive ? handler.context : nil,
                     addedVoiceRecording: recording,
                     onSliderChanged: { timeInterval in
-                        if isCurrentRecordingActive {
-                            player.seek(to: timeInterval)
-                        } else {
-                            player.loadAsset(from: recording.url)
-                            player.seek(to: timeInterval)
-                        }
+                        handler.seek(to: timeInterval, loadingFrom: isActive ? nil : recording.url)
                     },
                     onSliderTapped: {
-                        handlePlayTap()
+                        handler.togglePlayback(for: recording.url)
                     }
                 )
                 .frame(height: 20)
@@ -146,9 +133,9 @@ struct ComposerVoiceRecordingCard: View {
 
     private var playbackSpeedToggle: some View {
         Button {
-            cycleRate()
+            handler.cycleRate()
         } label: {
-            Text(rateTitle)
+            Text(handler.rateTitle)
                 .font(fonts.footnote)
                 .foregroundColor(Color(colors.textPrimary))
                 .frame(width: 40, height: 24)
@@ -158,43 +145,5 @@ struct ComposerVoiceRecordingCard: View {
                 )
         }
         .frame(width: 40, height: 48)
-    }
-
-    // MARK: - Helpers
-
-    private var rateTitle: String {
-        switch rate {
-        case .half:
-            "x0.5"
-        default:
-            "x\(Int(rate.rawValue))"
-        }
-    }
-
-    private var showContextDuration: Bool {
-        isCurrentRecordingActive && handler.context.currentTime > 0
-    }
-
-    private var isCurrentRecordingActive: Bool {
-        handler.context.assetLocation == recording.url
-    }
-
-    private func cycleRate() {
-        if rate == .normal {
-            rate = .double
-        } else if rate == .double {
-            rate = .half
-        } else {
-            rate = .normal
-        }
-        player.updateRate(rate)
-    }
-
-    private func handlePlayTap() {
-        if isPlaying {
-            player.pause()
-        } else {
-            player.loadAsset(from: recording.url)
-        }
     }
 }

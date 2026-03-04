@@ -115,35 +115,23 @@ struct VoiceRecordingView: View {
     @Injected(\.utils) var utils
     @Injected(\.colors) var colors
     @Injected(\.images) var images
-    
-    @State var isPlaying: Bool = false
+
     @State var loading: Bool = false
-    @State var rate: AudioPlaybackRate = .normal
     @ObservedObject var handler: VoiceRecordingHandler
-    
+
     let textColor: Color
     let addedVoiceRecording: AddedVoiceRecording
     let index: Int
-    
-    private var player: AudioPlaying {
-        utils.audioPlayer
-    }
-    
-    private var rateTitle: String {
-        switch rate {
-        case .half:
-            "x0.5"
-        default:
-            "x\(Int(rate.rawValue))"
-        }
-    }
-    
+
+    private var isActive: Bool { handler.isActive(for: addedVoiceRecording.url) }
+    private var showContextDuration: Bool { isActive && handler.context.currentTime > 0 }
+
     var body: some View {
         HStack {
-            Button(action: {
-                handlePlayTap()
-            }, label: {
-                Image(uiImage: isPlaying ? images.pauseFill : images.playFill)
+            Button {
+                handler.togglePlayback(for: addedVoiceRecording.url)
+            } label: {
+                Image(uiImage: handler.isPlaying && isActive ? images.pauseFill : images.playFill)
                     .frame(width: 36, height: 36)
                     .foregroundColor(.primary)
                     .modifier(
@@ -154,10 +142,10 @@ struct VoiceRecordingView: View {
                             firstY: 4
                         )
                     )
-            })
+            }
             .opacity(loading ? 0 : 1)
             .overlay(loading ? ProgressView() : nil)
-            
+
             VStack(alignment: .leading, spacing: 4) {
                 Text(
                     utils.audioRecordingNameFormatter.title(
@@ -168,7 +156,7 @@ struct VoiceRecordingView: View {
                 .bold()
                 .lineLimit(1)
                 .foregroundColor(textColor)
-                
+
                 HStack {
                     RecordingDurationView(
                         duration: showContextDuration ? handler.context.currentTime : addedVoiceRecording.duration
@@ -177,40 +165,28 @@ struct VoiceRecordingView: View {
                         audioContext: handler.context,
                         addedVoiceRecording: addedVoiceRecording,
                         onSliderChanged: { timeInterval in
-                            if isCurrentRecordingActive {
-                                player.seek(to: timeInterval)
-                            } else {
-                                player.loadAsset(from: addedVoiceRecording.url)
-                                player.seek(to: timeInterval)
-                            }
+                            handler.seek(to: timeInterval, loadingFrom: isActive ? nil : addedVoiceRecording.url)
                         },
                         onSliderTapped: {
-                            handlePlayTap()
+                            handler.togglePlayback(for: addedVoiceRecording.url)
                         }
                     )
                     .frame(height: 30)
                     Spacer()
                 }
             }
-                        
-            if isPlaying {
-                Button(action: {
-                    if rate == .normal {
-                        rate = .double
-                    } else if rate == .double {
-                        rate = .half
-                    } else {
-                        rate = .normal
-                    }
-                    player.updateRate(rate)
-                }, label: {
-                    Text(rateTitle)
+
+            if handler.isPlaying && isActive {
+                Button {
+                    handler.cycleRate()
+                } label: {
+                    Text(handler.rateTitle)
                         .font(.caption)
                         .padding(.all, 8)
                         .padding(.horizontal, 2)
                         .foregroundColor(.primary)
                         .modifier(ShadowViewModifier(firstRadius: 2, firstY: 4))
-                })
+                }
             } else {
                 Image(uiImage: images.fileAac)
                     .resizable()
@@ -219,7 +195,7 @@ struct VoiceRecordingView: View {
                     .accessibilityHidden(true)
             }
         }
-        .onReceive(handler.$context, perform: { value in
+        .onReceive(handler.$context) { value in
             guard value.assetLocation == addedVoiceRecording.url else { return }
             if value.state == .loading {
                 loading = true
@@ -227,38 +203,73 @@ struct VoiceRecordingView: View {
             } else if loading {
                 loading = false
             }
-            if value.state == .stopped || value.state == .paused {
-                isPlaying = false
-            } else if value.state == .playing {
-                isPlaying = true
-            }
-        })
-    }
-    
-    private var showContextDuration: Bool {
-        isCurrentRecordingActive && handler.context.currentTime > 0
-    }
-    
-    private var isCurrentRecordingActive: Bool {
-        handler.context.assetLocation == addedVoiceRecording.url
-    }
-    
-    private func handlePlayTap() {
-        if isPlaying {
-            player.pause()
-        } else {
-            player.loadAsset(from: addedVoiceRecording.url)
+            handler.updatePlaybackState(for: addedVoiceRecording.url)
         }
     }
 }
 
 class VoiceRecordingHandler: ObservableObject, AudioPlayingDelegate {
+    @Injected(\.utils) private var utils
+
     @Published var context: AudioPlaybackContext = .notLoaded
-    
+    @Published var isPlaying: Bool = false
+    @Published var rate: AudioPlaybackRate = .normal
+
+    private var player: AudioPlaying { utils.audioPlayer }
+
     func audioPlayer(
         _ audioPlayer: AudioPlaying,
         didUpdateContext context: AudioPlaybackContext
     ) {
         self.context = context
+    }
+
+    // MARK: - Shared Playback Helpers
+
+    var rateTitle: String {
+        switch rate {
+        case .half: "x0.5"
+        default: "x\(Int(rate.rawValue))"
+        }
+    }
+
+    func updatePlaybackState(for url: URL) {
+        guard context.assetLocation == url else { return }
+        switch context.state {
+        case .playing:
+            isPlaying = true
+        case .stopped, .paused:
+            isPlaying = false
+        default:
+            break
+        }
+    }
+
+    func togglePlayback(for url: URL) {
+        if isPlaying {
+            player.pause()
+        } else {
+            player.loadAsset(from: url)
+        }
+    }
+
+    func cycleRate() {
+        switch rate {
+        case .normal: rate = .double
+        case .double: rate = .half
+        default: rate = .normal
+        }
+        player.updateRate(rate)
+    }
+
+    func isActive(for url: URL) -> Bool {
+        context.assetLocation == url
+    }
+
+    func seek(to time: TimeInterval, loadingFrom url: URL? = nil) {
+        if let url, !isActive(for: url) {
+            player.loadAsset(from: url)
+        }
+        player.seek(to: time)
     }
 }

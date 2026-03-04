@@ -24,12 +24,9 @@ struct ComposerVoiceRecordingInputView<Factory: ViewFactory>: View {
     @ObservedObject var viewModel: MessageComposerViewModel
     var gestureLocation: CGPoint
 
-    @State private var isPlaying = false
-    @StateObject private var voiceRecordingHandler = VoiceRecordingHandler()
+    @StateObject private var handler = VoiceRecordingHandler()
 
-    private var player: AudioPlaying {
-        utils.audioPlayer
-    }
+    private var player: AudioPlaying { utils.audioPlayer }
 
     private var isLockedOrStopped: Bool {
         viewModel.recordingState.isLockedOrStopped
@@ -56,12 +53,10 @@ struct ComposerVoiceRecordingInputView<Factory: ViewFactory>: View {
             .interactiveSpring(response: 0.35, dampingFraction: 0.88),
             value: isLockedOrStopped
         )
-        .onAppear { player.subscribe(voiceRecordingHandler) }
-        .onReceive(voiceRecordingHandler.$context) { value in
-            if value.state == .stopped || value.state == .paused {
-                isPlaying = false
-            } else if value.state == .playing {
-                isPlaying = true
+        .onAppear { player.subscribe(handler) }
+        .onReceive(handler.$context) { _ in
+            if let url = viewModel.pendingAudioRecording?.url {
+                handler.updatePlaybackState(for: url)
             }
         }
     }
@@ -74,7 +69,7 @@ struct ComposerVoiceRecordingInputView<Factory: ViewFactory>: View {
                 if !isStopped {
                     micIndicator
                 }
-                
+
                 durationOrPlayback
             }
 
@@ -102,22 +97,24 @@ struct ComposerVoiceRecordingInputView<Factory: ViewFactory>: View {
         if isStopped {
             HStack(spacing: 0) {
                 Button {
-                    handlePlayTap()
+                    if let url = viewModel.pendingAudioRecording?.url {
+                        handler.togglePlayback(for: url)
+                    }
                 } label: {
-                    Image(systemName: isPlaying ? "pause.fill" : "play.fill")
+                    Image(systemName: handler.isPlaying ? "pause.fill" : "play.fill")
                         .font(.system(size: 16))
                         .foregroundColor(Color(colors.textPrimary))
                 }
                 .frame(width: 48, height: 48)
-                .accessibilityLabel(Text(isPlaying
+                .accessibilityLabel(Text(handler.isPlaying
                         ? L10n.Composer.AudioRecording.stop
                         : L10n.Composer.AudioRecording.start))
 
                 RecordingDurationView(
-                    duration: showContextTime
-                        ? voiceRecordingHandler.context.currentTime
+                    duration: handler.context.currentTime > 0
+                        ? handler.context.currentTime
                         : viewModel.audioRecordingInfo.duration,
-                    usesAccentColor: isPlaying
+                    usesAccentColor: handler.isPlaying
                 )
             }
         } else {
@@ -158,15 +155,12 @@ struct ComposerVoiceRecordingInputView<Factory: ViewFactory>: View {
             isRecording: !isStopped,
             duration: viewModel.audioRecordingInfo.duration,
             currentTime: isStopped
-                ? voiceRecordingHandler.context.currentTime
+                ? handler.context.currentTime
                 : viewModel.audioRecordingInfo.duration,
             waveform: viewModel.audioRecordingInfo.waveform,
             onSliderChanged: { timeInterval in
                 guard let url = viewModel.pendingAudioRecording?.url else { return }
-                if voiceRecordingHandler.context.assetLocation != url {
-                    player.loadAsset(from: url)
-                }
-                player.seek(to: timeInterval)
+                handler.seek(to: timeInterval, loadingFrom: handler.isActive(for: url) ? nil : url)
             }
         )
         .frame(height: 20)
@@ -175,7 +169,6 @@ struct ComposerVoiceRecordingInputView<Factory: ViewFactory>: View {
 
     // MARK: - Recording Controls
 
-    /// Matches the 48pt frame set on each recording control button.
     private let recordingControlsHeight: CGFloat = 48
     private let controlsRevealDelay: TimeInterval = 0.12
 
@@ -241,19 +234,6 @@ struct ComposerVoiceRecordingInputView<Factory: ViewFactory>: View {
     private var opacityForSlideToCancel: CGFloat {
         guard gestureLocation.x < RecordingConstants.cancelMinDistance else { return 1 }
         return 1 - gestureLocation.x / RecordingConstants.cancelMaxDistance
-    }
-
-    private var showContextTime: Bool {
-        voiceRecordingHandler.context.currentTime > 0
-    }
-
-    private func handlePlayTap() {
-        if isPlaying {
-            player.pause()
-        } else if let url = viewModel.pendingAudioRecording?.url {
-            player.loadAsset(from: url)
-        }
-        isPlaying.toggle()
     }
 }
 
