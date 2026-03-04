@@ -77,7 +77,7 @@ import SwiftUI
             loadingNextUsers = true
             searchController.loadNextUsers { [weak self] _ in
                 guard let self else { return }
-                users = deduplicated(searchController.userArray)
+                users = searchController.userArray
                 loadingNextUsers = false
             }
         }
@@ -86,7 +86,7 @@ import SwiftUI
     private func searchUsers() {
         searchController.search(query: UserListQuery()) { [weak self] error in
             guard let self, error == nil else { return }
-            users = deduplicated(searchController.userArray)
+            users = searchController.userArray
         }
     }
 
@@ -97,12 +97,7 @@ import SwiftUI
         }
         searchController.search(term: term) { [weak self] error in
             guard let self, error == nil else { return }
-            users = deduplicated(searchController.userArray)
+            users = searchController.userArray
         }
-    }
-
-    private func deduplicated(_ users: [ChatUser]) -> [ChatUser] {
-        var seen = Set<String>()
-        return users.filter { seen.insert($0.id).inserted }
     }
 }
