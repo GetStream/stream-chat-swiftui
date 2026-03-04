@@ -13,55 +13,11 @@ public struct VideoAttachmentsContainer<Factory: ViewFactory>: View {
     @Binding var scrolledId: String?
 
     public var body: some View {
-        VStack(spacing: 0) {
-            if let quotedMessage = message.quotedMessage {
-                VStack {
-                    factory.makeChatQuotedMessageView(
-                        options: ChatQuotedMessageViewOptions(
-                            quotedMessage: quotedMessage,
-                            parentMessage: message,
-                            scrolledId: $scrolledId
-                        )
-                    )
-
-                    VideoAttachmentsList(
-                        factory: factory,
-                        message: message,
-                        width: width
-                    )
-                }
-                .modifier(
-                    factory.styles.makeMessageViewModifier(
-                        for: MessageModifierInfo(
-                            message: message,
-                            isFirst: false
-                        )
-                    )
-                )
-            } else {
-                VideoAttachmentsList(
-                    factory: factory,
-                    message: message,
-                    width: width
-                )
-            }
-
-            if !message.text.isEmpty {
-                AttachmentTextView(factory: factory, message: message)
-                    .frame(width: width)
-            }
-        }
-        .if(!message.text.isEmpty, transform: { view in
-            view.modifier(
-                factory.styles.makeMessageViewModifier(
-                    for: MessageModifierInfo(
-                        message: message,
-                        isFirst: true,
-                        cornerRadius: 24
-                    )
-                )
-            )
-        })
+        VideoAttachmentsList(
+            factory: factory,
+            message: message,
+            width: width
+        )
         .accessibilityIdentifier("VideoAttachmentsContainer")
     }
 }

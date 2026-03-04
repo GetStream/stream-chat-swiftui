@@ -35,60 +35,25 @@ public struct LinkAttachmentContainer<Factory: ViewFactory>: View {
         _scrolledId = scrolledId
     }
 
-    public var body: some View {
-        VStack(
-            alignment: message.alignmentInBubble,
-            spacing: 0
-        ) {
-            if let quotedMessage = message.quotedMessage {
-                factory.makeChatQuotedMessageView(
-                    options: ChatQuotedMessageViewOptions(
-                        quotedMessage: quotedMessage,
-                        parentMessage: message,
-                        scrolledId: $scrolledId
-                    )
-                )
-            }
-
-            if #available(iOS 15, *) {
-                HStack {
-                    factory.makeAttachmentTextView(options: .init(mesage: message))
-                        .standardPadding()
-                    Spacer()
-                }
-                .layoutPriority(1)
-            } else {
-                let availableWidth = width - 4 * padding
-                let size = message.adjustedText.frameSize(maxWidth: availableWidth)
-                LinkTextView(
-                    message: message,
-                    width: availableWidth,
-                    textColor: UIColor(textColor(for: message))
-                )
-                .frame(width: availableWidth, height: size.height)
-                .standardPadding()
-            }
-
-            if !message.linkAttachments.isEmpty {
-                LinkAttachmentView(
-                    linkAttachment: message.linkAttachments[0],
-                    width: width,
-                    isFirst: isFirst,
-                    onImageTap: onImageTap
-                )
-            }
-        }
-        .padding(.bottom, 8)
-        .modifier(
-            factory.styles.makeMessageViewModifier(
-                for: MessageModifierInfo(
-                    message: message,
-                    isFirst: isFirst,
-                    injectedBackgroundColor: colors.highlightedAccentBackground1
-                )
-            )
+    private var bubbleColor: Color {
+        Color(
+            message.isSentByCurrentUser
+                ? colors.chatBackgroundAttachmentOutgoing
+                : colors.chatBackgroundAttachmentIncoming
         )
-        .accessibilityIdentifier("LinkAttachmentContainer")
+    }
+
+    public var body: some View {
+        if !message.linkAttachments.isEmpty {
+            LinkAttachmentView(
+                linkAttachment: message.linkAttachments[0],
+                width: width,
+                isFirst: isFirst,
+                onImageTap: onImageTap
+            )
+            .background(bubbleColor)
+            .roundWithBorder()
+        }
     }
 }
 
@@ -96,8 +61,7 @@ public struct LinkAttachmentContainer<Factory: ViewFactory>: View {
 public struct LinkAttachmentView: View {
     @Injected(\.colors) private var colors
     @Injected(\.fonts) private var fonts
-
-    private let padding: CGFloat = 8
+    @Injected(\.tokens) private var tokens
 
     var linkAttachment: ChatMessageLinkAttachment
     var width: CGFloat
@@ -117,7 +81,7 @@ public struct LinkAttachmentView: View {
     }
 
     public var body: some View {
-        VStack(alignment: .leading, spacing: padding) {
+        VStack(alignment: .leading, spacing: 0) {
             if !imageHidden {
                 ZStack {
                     LazyImage(imageURL: linkAttachment.previewURL ?? linkAttachment.originalURL) { state in
@@ -130,8 +94,8 @@ public struct LinkAttachmentView: View {
                     .onDisappear(.cancel)
                     .processors([ImageProcessors.Resize(width: width)])
                     .priority(.high)
-                    .frame(width: width - 2 * padding, height: (width - 2 * padding) / 2)
-                    .cornerRadius(14)
+                    .frame(height: width / 2)
+                    .clipped()
 
                     if !authorHidden {
                         BottomLeftView {
@@ -149,7 +113,7 @@ public struct LinkAttachmentView: View {
                 }
             }
 
-            VStack(alignment: .leading) {
+            VStack(alignment: .leading, spacing: tokens.spacingXxs) {
                 if let title = linkAttachment.title {
                     Text(title)
                         .font(fonts.footnoteBold)
@@ -164,10 +128,8 @@ public struct LinkAttachmentView: View {
                         .lineLimit(3)
                 }
             }
-            .padding(.horizontal, 8)
-            .padding(.bottom, 8)
+            .padding(tokens.spacingSm)
         }
-        .padding(.horizontal, padding)
         .onTapGesture {
             if let onImageTap {
                 onImageTap(linkAttachment)

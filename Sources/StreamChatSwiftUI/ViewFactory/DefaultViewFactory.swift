@@ -20,7 +20,7 @@ extension ViewFactory {
         case .redactedChannelList:
             RedactedLoadingView(factory: self)
         case .spinner:
-            LoadingSpinnerView()
+            LoadingSpinnerView(size: LoadingSpinnerSize.large, bordered: true)
         case .progressIndicator:
             LoadingView()
         }
@@ -294,6 +294,18 @@ extension ViewFactory {
             channel: options.channel,
             messageViewModel: options.messageViewModel,
             usesInvertedStyle: options.usesInvertedStyle
+        )
+    }
+
+    public func makeMessageAttachmentsView(
+        options: MessageAttachmentsViewOptions
+    ) -> some View {
+        MessageAttachmentsView(
+            factory: self,
+            message: options.message,
+            width: options.availableWidth,
+            isFirst: options.isFirst,
+            scrolledId: options.scrolledId
         )
     }
 
@@ -818,6 +830,7 @@ extension ViewFactory {
             factory: self,
             quotedMessage: options.quotedMessage,
             parentMessage: options.parentMessage,
+            availableWidth: options.availableWidth,
             scrolledId: options.scrolledId
         )
     }

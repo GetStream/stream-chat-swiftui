@@ -32,6 +32,7 @@ public struct GiphyAttachmentView<Factory: ViewFactory>: View {
                         scrolledId: $scrolledId
                     )
                 )
+                .padding(tokens.spacingXs)
             }
             
             if visibleOnlyToCurrentUser {

@@ -186,6 +186,11 @@ import SwiftUI
     /// - Returns: view shown in the header of the last message.
     func makeLastInGroupHeaderView(options: LastInGroupHeaderViewOptions) -> LastInGroupHeaderView
 
+    associatedtype MessageAttachmentsViewType: View
+    /// Creates the message attachments view.
+    /// - Parameter options: the options for creating the message attachments view.
+    func makeMessageAttachmentsView(options: MessageAttachmentsViewOptions) -> MessageAttachmentsViewType
+
     associatedtype ImageAttachmentViewType: View
     /// Creates the image attachment view.
     /// - Parameter options: the options for creating the image attachment view.

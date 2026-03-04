@@ -14,22 +14,26 @@ public struct ChatQuotedMessageView<Factory: ViewFactory>: View {
     private let factory: Factory
     private let quotedMessage: ChatMessage
     private let parentMessageSentByCurrentUser: Bool
+    private let availableWidth: CGFloat?
     @Binding private var scrolledId: String?
 
     /// Creates a chat quoted message view.
     /// - Parameters:
     ///   - factory: The view factory to create the quoted message view.
     ///   - quotedMessage: The quoted message to display.
+    ///   - availableWidth: The available width for the quoted message view.
     ///   - scrolledId: A binding to the scrolled message ID for navigation to the quoted message.
     public init(
         factory: Factory,
         quotedMessage: ChatMessage,
         parentMessage: ChatMessage,
+        availableWidth: CGFloat? = nil,
         scrolledId: Binding<String?>
     ) {
         self.factory = factory
         self.quotedMessage = quotedMessage
         parentMessageSentByCurrentUser = parentMessage.isSentByCurrentUser
+        self.availableWidth = availableWidth
         self._scrolledId = scrolledId
     }
 
@@ -40,6 +44,7 @@ public struct ChatQuotedMessageView<Factory: ViewFactory>: View {
                 outgoing: parentMessageSentByCurrentUser
             )
         )
+        .frame(width: availableWidth, height: 56)
         .modifier(ReferenceMessageViewBackgroundModifier(
             backgroundColor: Color(
                 parentMessageSentByCurrentUser
@@ -47,8 +52,6 @@ public struct ChatQuotedMessageView<Factory: ViewFactory>: View {
                     : colors.chatBackgroundAttachmentIncoming
             )
         ))
-        .frame(height: 56)
-        .padding(tokens.spacingXs)
         .onTapGesture {
             scrolledId = quotedMessage.messageId
         }

@@ -53,74 +53,24 @@ public struct MessageView<Factory: ViewFactory>: View {
                 )
             } else if let poll = message.poll {
                 factory.makePollView(options: PollViewOptions(message: message, poll: poll, isFirst: isFirst))
-            } else if !message.attachmentCounts.isEmpty {
-                let hasOnlyLinks = { message.attachmentCounts.keys.allSatisfy { $0 == .linkPreview } }
-                if messageTypeResolver.hasLinkAttachment(message: message) && hasOnlyLinks() {
-                    factory.makeLinkAttachmentView(
-                        options: LinkAttachmentViewOptions(
-                            message: message,
-                            isFirst: isFirst,
-                            availableWidth: contentWidth,
-                            scrolledId: $scrolledId
-                        )
+            } else if messageTypeResolver.hasGiphyAttachment(message: message) {
+                factory.makeGiphyAttachmentView(
+                    options: GiphyAttachmentViewOptions(
+                        message: message,
+                        isFirst: isFirst,
+                        availableWidth: contentWidth,
+                        scrolledId: $scrolledId
                     )
-                }
-
-                if messageTypeResolver.hasFileAttachment(message: message) {
-                    factory.makeFileAttachmentView(
-                        options: FileAttachmentViewOptions(
-                            message: message,
-                            isFirst: isFirst,
-                            availableWidth: contentWidth,
-                            scrolledId: $scrolledId
-                        )
+                )
+            } else if !message.attachmentCounts.isEmpty || message.quotedMessage != nil {
+                factory.makeMessageAttachmentsView(
+                    options: MessageAttachmentsViewOptions(
+                        message: message,
+                        isFirst: isFirst,
+                        availableWidth: contentWidth,
+                        scrolledId: $scrolledId
                     )
-                }
-
-                if messageTypeResolver.hasImageAttachment(message: message) {
-                    factory.makeImageAttachmentView(
-                        options: ImageAttachmentViewOptions(
-                            message: message,
-                            isFirst: isFirst,
-                            availableWidth: contentWidth,
-                            scrolledId: $scrolledId
-                        )
-                    )
-                }
-
-                if messageTypeResolver.hasGiphyAttachment(message: message) {
-                    factory.makeGiphyAttachmentView(
-                        options: GiphyAttachmentViewOptions(
-                            message: message,
-                            isFirst: isFirst,
-                            availableWidth: contentWidth,
-                            scrolledId: $scrolledId
-                        )
-                    )
-                }
-
-                if messageTypeResolver.hasVideoAttachment(message: message)
-                    && !messageTypeResolver.hasImageAttachment(message: message) {
-                    factory.makeVideoAttachmentView(
-                        options: VideoAttachmentViewOptions(
-                            message: message,
-                            isFirst: isFirst,
-                            availableWidth: contentWidth,
-                            scrolledId: $scrolledId
-                        )
-                    )
-                }
-                
-                if messageTypeResolver.hasVoiceRecording(message: message) {
-                    factory.makeVoiceRecordingView(
-                        options: VoiceRecordingViewOptions(
-                            message: message,
-                            isFirst: isFirst,
-                            availableWidth: contentWidth,
-                            scrolledId: $scrolledId
-                        )
-                    )
-                }
+                )
             } else {
                 if message.shouldRenderAsJumbomoji {
                     factory.makeEmojiTextView(
@@ -203,16 +153,6 @@ public struct MessageTextView<Factory: ViewFactory>: View {
             alignment: message.alignmentInBubble,
             spacing: 0
         ) {
-            if let quotedMessage = message.quotedMessage {
-                factory.makeChatQuotedMessageView(
-                    options: ChatQuotedMessageViewOptions(
-                        quotedMessage: quotedMessage,
-                        parentMessage: message,
-                        scrolledId: $scrolledId
-                    )
-                )
-            }
-
             factory.makeAttachmentTextView(options: .init(mesage: message))
                 .padding(.leading, leadingPadding)
                 .padding(.trailing, trailingPadding)

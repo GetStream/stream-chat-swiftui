@@ -356,16 +356,20 @@ public final class ChatQuotedMessageViewOptions: Sendable {
     public let quotedMessage: ChatMessage
     /// The parent message which is quoting another message.
     public let parentMessage: ChatMessage
+    /// The available width for the quoted message view.
+    public let availableWidth: CGFloat?
     /// Binding to the currently scrolled message ID.
     public let scrolledId: Binding<String?>
     
     public init(
         quotedMessage: ChatMessage,
         parentMessage: ChatMessage,
+        availableWidth: CGFloat? = nil,
         scrolledId: Binding<String?>
     ) {
         self.quotedMessage = quotedMessage
         self.parentMessage = parentMessage
+        self.availableWidth = availableWidth
         self.scrolledId = scrolledId
     }
 }

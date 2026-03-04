@@ -41,6 +41,7 @@ public struct ImageAttachmentContainer<Factory: ViewFactory>: View {
                     options: ChatQuotedMessageViewOptions(
                         quotedMessage: quotedMessage,
                         parentMessage: message,
+                        availableWidth: width,
                         scrolledId: $scrolledId
                     )
                 )
@@ -114,6 +115,7 @@ public struct ImageAttachmentContainer<Factory: ViewFactory>: View {
 public struct AttachmentTextView<Factory: ViewFactory>: View {
     @Injected(\.colors) private var colors
     @Injected(\.fonts) private var fonts
+    @Injected(\.tokens) private var tokens
 
     var factory: Factory
     var message: ChatMessage
@@ -128,7 +130,7 @@ public struct AttachmentTextView<Factory: ViewFactory>: View {
     public var body: some View {
         HStack {
             factory.makeAttachmentTextView(options: .init(mesage: message))
-                .standardPadding()
+                .padding(.horizontal, tokens.spacingXxs)
                 .fixedSize(horizontal: false, vertical: true)
             Spacer()
         }
