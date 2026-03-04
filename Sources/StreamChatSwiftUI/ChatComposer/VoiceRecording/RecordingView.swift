@@ -61,14 +61,12 @@ struct RecordingView: View {
     }
 }
 
-/// Interactive slide-to-cancel label with position animation and gradient shimmer.
+/// Interactive slide-to-cancel label with shimmering highlight.
 private struct SlideToCancelLabel: View {
     @Injected(\.colors) private var colors
     @Injected(\.fonts) private var fonts
 
     let location: CGPoint
-
-    @State private var shimmerPhase: CGFloat = 0
 
     var body: some View {
         HStack(spacing: 4) {
@@ -89,48 +87,22 @@ private struct SlideToCancelLabel: View {
                             .font(fonts.body)
                     )
                 )
-                .overlay(shimmerOverlay)
-                .mask(
-                    Text(L10n.Composer.Recording.slideToCancel)
-                        .font(fonts.body)
-                )
             Image(systemName: "chevron.left")
                 .font(.system(size: 20))
                 .foregroundColor(Color(colors.textTertiary))
         }
+        .shimmering(
+            duration: 2.0,
+            delay: 0.3,
+            direction: .trailingToLeading,
+            intensity: .subtle
+        )
         .offset(x: slideOffset)
         .animation(.interactiveSpring(response: 0.35, dampingFraction: 0.8), value: location.x)
-        .onAppear {
-            withAnimation(
-                .linear(duration: 1.8)
-                    .repeatForever(autoreverses: false)
-            ) {
-                shimmerPhase = 1
-            }
-        }
     }
 
     private var slideOffset: CGFloat {
         min(0, location.x)
-    }
-
-    private var shimmerOverlay: some View {
-        GeometryReader { geo in
-            let width = geo.size.width * 0.4
-            LinearGradient(
-                stops: [
-                    .init(color: .clear, location: 0),
-                    .init(color: .white.opacity(0.5), location: 0.4),
-                    .init(color: .white.opacity(0.8), location: 0.5),
-                    .init(color: .white.opacity(0.5), location: 0.6),
-                    .init(color: .clear, location: 1)
-                ],
-                startPoint: .leading,
-                endPoint: .trailing
-            )
-            .frame(width: width)
-            .offset(x: geo.size.width - (geo.size.width + width) * shimmerPhase)
-        }
     }
 }
 
