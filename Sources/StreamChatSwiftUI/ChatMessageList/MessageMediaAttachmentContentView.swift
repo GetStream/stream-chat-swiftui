@@ -76,14 +76,15 @@ public struct MessageMediaAttachmentContentView: View {
         }
         .frame(width: width, height: height)
         .clipShape(RoundedRectangle(cornerRadius: cornerRadius, style: .continuous))
-        .compatibility.task(id: source.url.absoluteString) { @MainActor in
-            do {
-                self.image = try await source.generateThumbnail(
-                    resize: true,
-                    preferredSize: CGSize(width: width, height: height)
-                )
-            } catch {
-                self.error = error
+        .onAppear {
+            guard image == nil else { return }
+            source.generateThumbnail(resize: true, preferredSize: CGSize(width: width, height: height)) { result in
+                switch result {
+                case .success(let image):
+                    self.image = image
+                case .failure(let failure):
+                    self.error = failure
+                }
             }
         }
         .accessibilityIdentifier("MessageMediaAttachmentContentView")

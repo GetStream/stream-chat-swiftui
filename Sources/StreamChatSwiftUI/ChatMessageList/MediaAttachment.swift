@@ -52,17 +52,6 @@ public final class MediaAttachment: Identifiable, Equatable, Sendable {
         }
     }
 
-    @MainActor func generateThumbnail(
-        resize: Bool,
-        preferredSize: CGSize
-    ) async throws -> UIImage {
-        try await withCheckedThrowingContinuation { continuation in
-            generateThumbnail(resize: resize, preferredSize: preferredSize) { result in
-                continuation.resume(with: result)
-            }
-        }
-    }
-
     public static func == (lhs: MediaAttachment, rhs: MediaAttachment) -> Bool {
         lhs.url == rhs.url
             && lhs.type == rhs.type

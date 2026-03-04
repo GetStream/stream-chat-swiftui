@@ -14,6 +14,17 @@ import XCTest
 @MainActor class MessageItemView_Tests: StreamChatTestCase {
     @Injected(\.colors) private var colors
 
+    override func setUp() {
+        super.setUp()
+
+        let imageLoader = TestImagesLoader_Mock()
+        let utils = Utils(
+            imageLoader: imageLoader,
+            composerConfig: ComposerConfig(isVoiceRecordingEnabled: true)
+        )
+        streamChat = StreamChat(chatClient: chatClient, utils: utils)
+    }
+
     func test_messageContainerViewSentThisUser_snapshot() {
         // Given
         let message = ChatMessage.mock(
