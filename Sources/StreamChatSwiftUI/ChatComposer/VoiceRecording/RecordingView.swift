@@ -21,6 +21,7 @@ struct LockView: View {
     var isLocked: Bool = false
 
     @State private var lockScale: CGFloat = 1.0
+    @State private var lockedOpacity: CGFloat = 1.0
 
     private var lockProgress: CGFloat {
         if isLocked { return 1 }
@@ -59,12 +60,22 @@ struct LockView: View {
             y: tokens.lightElevation3.y
         )
         .scaleEffect(lockScale)
+        .opacity(isLocked ? lockedOpacity : 1)
         .animation(.interactiveSpring(response: 0.4, dampingFraction: 0.7), value: isLocked)
         .onChange(of: isLocked) { locked in
-            guard locked else { return }
+            guard locked else {
+                lockedOpacity = 1
+                return
+            }
             lockScale = 1.15
             withAnimation(.spring(response: 0.35, dampingFraction: 0.6)) {
                 lockScale = 1.0
+            }
+            lockedOpacity = 1
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
+                withAnimation(.easeInOut(duration: 0.2)) {
+                    lockedOpacity = 0
+                }
             }
         }
     }
