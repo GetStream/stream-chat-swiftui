@@ -116,7 +116,8 @@ struct ComposerVoiceRecordingInputView<Factory: ViewFactory>: View {
                 RecordingDurationView(
                     duration: showContextTime
                         ? voiceRecordingHandler.context.currentTime
-                        : viewModel.audioRecordingInfo.duration
+                        : viewModel.audioRecordingInfo.duration,
+                    usesAccentColor: isPlaying
                 )
             }
         } else {
@@ -154,11 +155,19 @@ struct ComposerVoiceRecordingInputView<Factory: ViewFactory>: View {
 
     private var lockedRecordingTrailing: some View {
         RecordingWaveform(
+            isRecording: !isStopped,
             duration: viewModel.audioRecordingInfo.duration,
             currentTime: isStopped
                 ? voiceRecordingHandler.context.currentTime
                 : viewModel.audioRecordingInfo.duration,
-            waveform: viewModel.audioRecordingInfo.waveform
+            waveform: viewModel.audioRecordingInfo.waveform,
+            onSliderChanged: { timeInterval in
+                guard let url = viewModel.pendingAudioRecording?.url else { return }
+                if voiceRecordingHandler.context.assetLocation != url {
+                    player.loadAsset(from: url)
+                }
+                player.seek(to: timeInterval)
+            }
         )
         .frame(height: 20)
         .padding(.horizontal, tokens.spacingMd)
