@@ -974,6 +974,66 @@ import XCTest
         XCTAssertEqual(allIds.count, Set(allIds).count)
     }
 
+    // MARK: - isDMUserBlocked / blockUserTitle
+
+    func test_chatChannelInfoVM_isDMUserBlocked_returnsFalse_whenNotBlocked() {
+        // Given
+        let members = ChannelInfoMockUtils.setupMockMembers(
+            count: 2,
+            currentUserId: chatClient.currentUserId!
+        )
+        let channel = ChatChannel.mockDMChannel(
+            lastActiveMembers: members,
+            memberCount: 2
+        )
+        let viewModel = ChatChannelInfoViewModel(channel: channel)
+
+        // Then - no blocked users by default
+        XCTAssertFalse(viewModel.isDMUserBlocked)
+    }
+
+    func test_chatChannelInfoVM_blockUserTitle_returnsBlockUser_whenNotBlocked() {
+        // Given
+        let members = ChannelInfoMockUtils.setupMockMembers(
+            count: 2,
+            currentUserId: chatClient.currentUserId!
+        )
+        let channel = ChatChannel.mockDMChannel(
+            lastActiveMembers: members,
+            memberCount: 2
+        )
+        let viewModel = ChatChannelInfoViewModel(channel: channel)
+
+        // Then
+        XCTAssertEqual(viewModel.blockUserTitle, L10n.Alert.Actions.blockUser)
+    }
+
+    func test_chatChannelInfoVM_blockUserTitle_returnsUnblockUser_whenBlocked() {
+        // Given
+        let members = ChannelInfoMockUtils.setupMockMembers(
+            count: 2,
+            currentUserId: chatClient.currentUserId!
+        )
+        let channel = ChatChannel.mockDMChannel(
+            lastActiveMembers: members,
+            memberCount: 2
+        )
+        let viewModel = ChatChannelInfoViewModel(channel: channel)
+        let otherParticipant = viewModel.participants.first { $0.id != chatClient.currentUserId }!
+
+        let currentUserController = CurrentChatUserController_Mock(client: chatClient)
+        let currentUser = CurrentChatUser.mock(
+            currentUserId: chatClient.currentUserId!,
+            blockedUserIds: [otherParticipant.id]
+        )
+        currentUserController.currentUser_mock = currentUser
+        viewModel.currentUserController = currentUserController
+
+        // Then
+        XCTAssertTrue(viewModel.isDMUserBlocked)
+        XCTAssertEqual(viewModel.blockUserTitle, L10n.Alert.Actions.unblockUser)
+    }
+
     // MARK: - saveGroupEdit
 
     func test_chatChannelInfoVM_saveGroupEdit_withoutImage_closesSheet() {
