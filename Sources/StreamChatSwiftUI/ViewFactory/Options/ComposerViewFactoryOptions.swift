@@ -282,26 +282,16 @@ public final class ConfirmEditButtonOptions: Sendable {
 
 // MARK: - Composer Recording Options
 
-/// Options for creating the composer recording view.
-public final class ComposerRecordingViewOptions: Sendable {
+/// Options for creating the unified voice recording input view.
+public final class ComposerVoiceRecordingInputViewOptions: Sendable {
     /// The view model for the composer.
     public let viewModel: MessageComposerViewModel
-    /// The location of the gesture.
+    /// The current gesture location during active recording.
     public let gestureLocation: CGPoint
     
     public init(viewModel: MessageComposerViewModel, gestureLocation: CGPoint) {
         self.viewModel = viewModel
         self.gestureLocation = gestureLocation
-    }
-}
-
-/// Options for creating the composer recording locked view.
-public final class ComposerRecordingLockedViewOptions: Sendable {
-    /// The view model for the composer.
-    public let viewModel: MessageComposerViewModel
-    
-    public init(viewModel: MessageComposerViewModel) {
-        self.viewModel = viewModel
     }
 }
 

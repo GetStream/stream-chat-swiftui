@@ -867,7 +867,7 @@ import XCTest
         XCTAssert(view is ReactionsContainer)
     }
     
-    func test_viewFactory_makeComposerRecordingView() {
+    func test_viewFactory_makeComposerVoiceRecordingInputView() {
         // Given
         let viewFactory = DefaultViewFactory.shared
         let controller = ChatChannelTestHelpers.makeChannelController(
@@ -876,32 +876,15 @@ import XCTest
         let viewModel = MessageComposerViewModel(channelController: controller, messageController: nil)
         
         // When
-        let view = viewFactory.makeComposerRecordingView(
-            options: ComposerRecordingViewOptions(
+        let view = viewFactory.makeComposerVoiceRecordingInputView(
+            options: ComposerVoiceRecordingInputViewOptions(
                 viewModel: viewModel,
                 gestureLocation: .zero
             )
         )
         
         // Then
-        XCTAssert(view is RecordingView)
-    }
-    
-    func test_viewFactory_makeComposerRecordingLockedView() {
-        // Given
-        let viewFactory = DefaultViewFactory.shared
-        let controller = ChatChannelTestHelpers.makeChannelController(
-            chatClient: chatClient
-        )
-        let viewModel = MessageComposerViewModel(channelController: controller, messageController: nil)
-        
-        // When
-        let view = viewFactory.makeComposerRecordingLockedView(
-            options: ComposerRecordingLockedViewOptions(viewModel: viewModel)
-        )
-        
-        // Then
-        XCTAssert(view is LockedView)
+        XCTAssert(view is ComposerVoiceRecordingInputView)
     }
     
     func test_viewFactory_makeChannelLoadingView() {

@@ -23,6 +23,7 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
     @Binding var quotedMessage: ChatMessage?
     @Binding var editedMessage: ChatMessage?
 
+    /// Height when recording is locked (shows full LockedView with controls).
     private let recordingViewHeight: CGFloat = 112
 
     public init(
@@ -139,15 +140,6 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
             .padding(.horizontal, tokens.spacingMd)
             .overlay(
                 ZStack {
-                    if isLockedOrStopped {
-                        factory.makeComposerRecordingLockedView(
-                            options: ComposerRecordingLockedViewOptions(viewModel: viewModel)
-                        )
-                        .padding(.horizontal, tokens.spacingMd)
-                        .padding(.top, tokens.spacingMd)
-                        .transition(.opacity.combined(with: .scale(scale: 0.96, anchor: .bottom)))
-                    }
-
                     if showsRecordingOverlay {
                         HStack {
                             Spacer()
@@ -185,11 +177,6 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
                     .interactiveSpring(response: 0.4, dampingFraction: 0.85),
                     value: isLockedOrStopped
                 )
-            )
-            .frame(height: isLockedOrStopped ? recordingViewHeight : nil)
-            .animation(
-                .interactiveSpring(response: 0.4, dampingFraction: 0.85),
-                value: isLockedOrStopped
             )
 
             factory.makeAttachmentPickerView(
@@ -424,7 +411,9 @@ private struct VoiceRecordingGestureOverlay: View {
                             return
                         }
                         if case .recording = recordingState {
-                            recordingState = .locked
+                            withAnimation(.interactiveSpring(response: 0.35, dampingFraction: 0.88)) {
+                                recordingState = .locked
+                            }
                         } else if recordingState != .locked {
                             stopRecording()
                         }
@@ -552,11 +541,11 @@ public struct ComposerInputView<Factory: ViewFactory>: View, KeyboardReadable {
         }
     }
 
-    private var recordingContent: some View {
-        factory.makeComposerRecordingView(
-            options: ComposerRecordingViewOptions(
+    private var voiceRecordingContent: some View {
+        factory.makeComposerVoiceRecordingInputView(
+            options: ComposerVoiceRecordingInputViewOptions(
                 viewModel: viewModel,
-                gestureLocation: recordingState.isRecording ? recordingGestureLocation : .zero
+                gestureLocation: recordingGestureLocation
             )
         )
     }
@@ -569,16 +558,16 @@ public struct ComposerInputView<Factory: ViewFactory>: View, KeyboardReadable {
     public var body: some View {
         ZStack(alignment: .bottomLeading) {
             regularInputContent
-                .opacity(recordingState.isRecording ? 0 : 1)
-                .allowsHitTesting(true)
+                .opacity(recordingState.showsComposer ? 1 : 0)
+                .allowsHitTesting(recordingState.showsComposer)
 
-            recordingContent
-                .opacity(recordingState.isRecording ? 1 : 0)
-                .allowsHitTesting(recordingState.isRecording)
+            voiceRecordingContent
+                .opacity(recordingState.showsComposer ? 0 : 1)
+                .allowsHitTesting(!recordingState.showsComposer)
         }
         .animation(
             .interactiveSpring(response: 0.35, dampingFraction: 0.88, blendDuration: 0.12),
-            value: recordingState.isRecording
+            value: recordingState.showsComposer
         )
         .modifier(
             factory.styles.makeComposerInputViewModifier(

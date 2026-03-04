@@ -587,18 +587,13 @@ extension ViewFactory {
         )
     }
     
-    public func makeComposerRecordingView(
-        options: ComposerRecordingViewOptions
+    public func makeComposerVoiceRecordingInputView(
+        options: ComposerVoiceRecordingInputViewOptions
     ) -> some View {
-        RecordingView(location: options.gestureLocation, audioRecordingInfo: options.viewModel.audioRecordingInfo) {
-            options.viewModel.stopRecording()
-        }
-    }
-    
-    public func makeComposerRecordingLockedView(
-        options: ComposerRecordingLockedViewOptions
-    ) -> some View {
-        LockedView(viewModel: options.viewModel)
+        ComposerVoiceRecordingInputView(
+            viewModel: options.viewModel,
+            gestureLocation: options.gestureLocation
+        )
     }
     
     public func makeAttachmentPickerView(

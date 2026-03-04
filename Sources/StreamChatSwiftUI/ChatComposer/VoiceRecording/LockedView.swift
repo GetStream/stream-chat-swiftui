@@ -5,77 +5,83 @@
 import StreamChat
 import SwiftUI
 
-/// Locked recording view shown after the user drags up to lock the recording.
+/// Unified voice recording input shown inside the composer when the user is
+/// actively recording or has locked/stopped a recording.
 ///
-/// Layout matches the Figma "Voice Message – Recording (Locked)" spec:
-/// - Recording Container (rounded card, radius 3xl, border)
-///   - Recording Bar: red mic indicator | duration | live waveform
-///   - Recording Controls: delete | stop | confirm
+/// Handles both states with seamless animations:
+/// - **Recording**: mic indicator, duration, slide-to-cancel, mic button
+/// - **Locked / Stopped**: mic indicator, duration (or playback), waveform, controls
 ///
-/// The floating lock indicator is managed externally (by the composer overlay)
-/// so it can transition seamlessly from the `LockView` capsule.
-struct LockedView: View {
-    @Injected(\.colors) var colors
-    @Injected(\.fonts) var fonts
-    @Injected(\.tokens) var tokens
-    @Injected(\.utils) var utils
+/// The red mic icon and duration label stay in the same position across both
+/// states so the transition feels continuous.
+struct ComposerVoiceRecordingInputView: View {
+    @Injected(\.colors) private var colors
+    @Injected(\.fonts) private var fonts
+    @Injected(\.tokens) private var tokens
+    @Injected(\.utils) private var utils
 
     @ObservedObject var viewModel: MessageComposerViewModel
+    var gestureLocation: CGPoint
+
     @State private var isPlaying = false
-    @StateObject var voiceRecordingHandler = VoiceRecordingHandler()
+    @StateObject private var voiceRecordingHandler = VoiceRecordingHandler()
 
     private var player: AudioPlaying {
         utils.audioPlayer
     }
 
-    var body: some View {
-        recordingContainer
-            .onAppear {
-                player.subscribe(voiceRecordingHandler)
-            }
-            .onReceive(voiceRecordingHandler.$context) { value in
-                if value.state == .stopped || value.state == .paused {
-                    isPlaying = false
-                } else if value.state == .playing {
-                    isPlaying = true
-                }
-            }
+    private var isLockedOrStopped: Bool {
+        viewModel.recordingState.isLockedOrStopped
     }
 
-    // MARK: - Recording Container
+    private var isStopped: Bool {
+        viewModel.recordingState == .stopped
+    }
 
-    private var recordingContainer: some View {
+    var body: some View {
         VStack(spacing: tokens.spacingNone) {
             recordingBar
+
             recordingControls
+                .frame(height: isLockedOrStopped ? recordingControlsHeight : 0, alignment: .top)
+                .clipped()
+                .animation(
+                    .interactiveSpring(response: 0.35, dampingFraction: 0.88)
+                        .delay(isLockedOrStopped ? controlsRevealDelay : 0),
+                    value: isLockedOrStopped
+                )
         }
-        .background(Color(colors.backgroundElevationElevation1))
-        .clipShape(RoundedRectangle(cornerRadius: tokens.radius3xl))
-        .overlay(
-            RoundedRectangle(cornerRadius: tokens.radius3xl)
-                .stroke(Color(colors.borderCoreDefault), lineWidth: 1)
+        .animation(
+            .interactiveSpring(response: 0.35, dampingFraction: 0.88),
+            value: isLockedOrStopped
         )
+        .onAppear { player.subscribe(voiceRecordingHandler) }
+        .onReceive(voiceRecordingHandler.$context) { value in
+            if value.state == .stopped || value.state == .paused {
+                isPlaying = false
+            } else if value.state == .playing {
+                isPlaying = true
+            }
+        }
     }
 
     // MARK: - Recording Bar
 
     private var recordingBar: some View {
-        HStack(spacing: tokens.spacingMd) {
+        HStack(spacing: tokens.spacingNone) {
             HStack(spacing: tokens.spacingNone) {
                 micIndicator
                 durationOrPlayback
             }
 
-            RecordingWaveform(
-                duration: viewModel.audioRecordingInfo.duration,
-                currentTime: viewModel.recordingState == .stopped
-                    ? voiceRecordingHandler.context.currentTime
-                    : viewModel.audioRecordingInfo.duration,
-                waveform: viewModel.audioRecordingInfo.waveform
-            )
-            .frame(height: 20)
+            ZStack {
+                activeRecordingTrailing
+                    .opacity(isLockedOrStopped ? 0 : 1)
+
+                lockedRecordingTrailing
+                    .opacity(isLockedOrStopped ? 1 : 0)
+            }
         }
-        .padding(.trailing, tokens.spacingMd)
         .frame(height: 48)
     }
 
@@ -89,7 +95,7 @@ struct LockedView: View {
 
     @ViewBuilder
     private var durationOrPlayback: some View {
-        if viewModel.recordingState == .stopped {
+        if isStopped {
             HStack(spacing: tokens.spacingXs) {
                 Button {
                     handlePlayTap()
@@ -113,7 +119,51 @@ struct LockedView: View {
         }
     }
 
+    // MARK: - Trailing Content (Recording vs Locked)
+
+    private var activeRecordingTrailing: some View {
+        HStack(spacing: tokens.spacingNone) {
+            Spacer()
+
+            SlideToCancelLabel(location: gestureLocation)
+                .opacity(opacityForSlideToCancel)
+                .animation(.easeInOut(duration: 0.2), value: gestureLocation.x)
+                .accessibilityHidden(true)
+
+            Spacer()
+
+            Button {
+                viewModel.stopRecording()
+            } label: {
+                Image(systemName: "mic.fill")
+                    .font(.system(size: 20))
+                    .foregroundColor(Color(colors.textPrimary))
+                    .frame(width: 32, height: 32)
+                    .background(Color(colors.backgroundCorePressed))
+                    .clipShape(Circle())
+            }
+            .frame(width: 48, height: 48)
+            .accessibilityLabel(Text(L10n.Composer.AudioRecording.stop))
+        }
+    }
+
+    private var lockedRecordingTrailing: some View {
+        RecordingWaveform(
+            duration: viewModel.audioRecordingInfo.duration,
+            currentTime: isStopped
+                ? voiceRecordingHandler.context.currentTime
+                : viewModel.audioRecordingInfo.duration,
+            waveform: viewModel.audioRecordingInfo.waveform
+        )
+        .frame(height: 20)
+        .padding(.horizontal, tokens.spacingMd)
+    }
+
     // MARK: - Recording Controls
+
+    /// Matches the 48pt frame set on each `recordingControlButton`.
+    private let recordingControlsHeight: CGFloat = 48
+    private let controlsRevealDelay: TimeInterval = 0.12
 
     private static var recordingControlAnimation: Animation {
         .interactiveSpring(response: 0.35, dampingFraction: 0.88)
@@ -127,12 +177,12 @@ struct LockedView: View {
 
             Spacer()
 
-            if viewModel.recordingState == .locked {
-                recordingControlButton(role: .destructive, icon: "stop.fill") {
-                    viewModel.previewRecording()
-                }
-                Spacer()
+            recordingControlButton(role: .destructive, icon: "stop.fill") {
+                viewModel.previewRecording()
             }
+            .opacity(viewModel.recordingState == .locked ? 1 : 0)
+
+            Spacer()
 
             recordingControlButton(role: .primary, style: .solid, icon: "checkmark") {
                 viewModel.confirmRecording()
@@ -158,6 +208,11 @@ struct LockedView: View {
 
     // MARK: - Helpers
 
+    private var opacityForSlideToCancel: CGFloat {
+        guard gestureLocation.x < RecordingConstants.cancelMinDistance else { return 1 }
+        return 1 - gestureLocation.x / RecordingConstants.cancelMaxDistance
+    }
+
     private var showContextTime: Bool {
         voiceRecordingHandler.context.currentTime > 0
     }
@@ -169,5 +224,52 @@ struct LockedView: View {
             player.loadAsset(from: url)
         }
         isPlaying.toggle()
+    }
+}
+
+// MARK: - Slide to Cancel Label
+
+/// Interactive slide-to-cancel label with shimmering highlight.
+struct SlideToCancelLabel: View {
+    @Injected(\.colors) private var colors
+    @Injected(\.fonts) private var fonts
+
+    let location: CGPoint
+
+    var body: some View {
+        HStack(spacing: 4) {
+            Text(L10n.Composer.Recording.slideToCancel)
+                .font(fonts.body)
+                .foregroundColor(.clear)
+                .overlay(
+                    LinearGradient(
+                        colors: [
+                            Color(colors.textPrimary),
+                            Color(colors.textTertiary)
+                        ],
+                        startPoint: .leading,
+                        endPoint: .trailing
+                    )
+                    .mask(
+                        Text(L10n.Composer.Recording.slideToCancel)
+                            .font(fonts.body)
+                    )
+                )
+            Image(systemName: "chevron.left")
+                .font(.system(size: 20))
+                .foregroundColor(Color(colors.textTertiary))
+        }
+        .shimmering(
+            duration: 2.0,
+            delay: 0.3,
+            direction: .trailingToLeading,
+            intensity: .subtle
+        )
+        .offset(x: slideOffset)
+        .animation(.interactiveSpring(response: 0.35, dampingFraction: 0.8), value: location.x)
+    }
+
+    private var slideOffset: CGFloat {
+        min(0, location.x)
     }
 }

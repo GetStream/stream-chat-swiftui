@@ -364,17 +364,12 @@ import SwiftUI
     /// - Returns: view displayed in the confirm edit button slot.
     func makeConfirmEditButton(options: ConfirmEditButtonOptions) -> ConfirmEditButtonType
     
-    associatedtype ComposerRecordingViewType: View
-    /// Creates a view shown when the composer is recording a voice message.
-    /// - Parameter options: the options for creating the composer recording view.
-    /// - Returns: view shown when the composer is recording.
-    func makeComposerRecordingView(options: ComposerRecordingViewOptions) -> ComposerRecordingViewType
-    
-    associatedtype ComposerRecordingLockedViewType: View
-    /// Creates a view shown when a voice recording is locked.
-    ///  - Parameter options: the options for creating the composer recording locked view.
-    ///  - Returns: view shown in the locked recording slot.
-    func makeComposerRecordingLockedView(options: ComposerRecordingLockedViewOptions) -> ComposerRecordingLockedViewType
+    associatedtype ComposerVoiceRecordingInputViewType: View
+    /// Creates a unified voice recording input view shown when the composer
+    /// is actively recording, locked, or stopped.
+    /// - Parameter options: the options for creating the voice recording input view.
+    /// - Returns: view shown in the voice recording input slot.
+    func makeComposerVoiceRecordingInputView(options: ComposerVoiceRecordingInputViewOptions) -> ComposerVoiceRecordingInputViewType
     
     associatedtype AttachmentPickerViewType: View
     /// Creates the attachment picker view.
