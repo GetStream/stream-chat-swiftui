@@ -32,7 +32,7 @@ import XCTest
         }.applyDefaultSize()
         
         // Then
-        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
+        AssertSnapshot(view)
     }
     
     func test_chatChannelInfoView_directChannelOfflineSnapshot() {
@@ -52,7 +52,7 @@ import XCTest
             .applyDefaultSize()
 
         // Then
-        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
+        AssertSnapshot(view)
     }
 
     func test_chatChannelInfoView_directChannelOnlineSnapshot() {
@@ -73,7 +73,7 @@ import XCTest
             .applyDefaultSize()
 
         // Then
-        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
+        AssertSnapshot(view)
     }
     
     func test_chatChannelInfoView_directChannelMoreMembersSnapshot() {
@@ -93,7 +93,7 @@ import XCTest
             .applyDefaultSize()
 
         // Then
-        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
+        AssertSnapshot(view)
     }
 
     func test_chatChannelInfoView_directChannelMutedSnapshot() {
@@ -114,7 +114,7 @@ import XCTest
             .applyDefaultSize()
 
         // Then
-        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
+        AssertSnapshot(view)
     }
 
     func test_chatChannelInfoView_groupCollapsedSnapshot() {
@@ -137,7 +137,7 @@ import XCTest
             .applyDefaultSize()
 
         // Then
-        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
+        AssertSnapshot(view)
     }
 
     func test_chatChannelInfoView_smallGroupSnapshot() {
@@ -160,7 +160,7 @@ import XCTest
             .applyDefaultSize()
 
         // Then
-        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
+        AssertSnapshot(view)
     }
     
     func test_chatChannelInfoView_smallGroupDeactivatedSnapshot() {
@@ -184,7 +184,7 @@ import XCTest
             .applyDefaultSize()
 
         // Then
-        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
+        AssertSnapshot(view)
     }
 
     func test_chatChannelInfoView_groupExpandedSnapshot() {
@@ -209,7 +209,7 @@ import XCTest
             .applyDefaultSize()
 
         // Then
-        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
+        AssertSnapshot(view)
     }
     
     func test_chatChannelInfoView_groupCollapsedDeactivatedSnapshot() {
@@ -234,7 +234,7 @@ import XCTest
             .applyDefaultSize()
 
         // Then
-        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
+        AssertSnapshot(view)
     }
     
     func test_chatChannelInfoView_groupCollapsedLargeDeactivatedSnapshot() {
@@ -259,7 +259,7 @@ import XCTest
             .applyDefaultSize()
 
         // Then
-        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
+        AssertSnapshot(view)
     }
 
     func test_chatChannelInfoView_navBarSnapshot() {
@@ -313,7 +313,7 @@ import XCTest
             .applyDefaultSize()
 
         // Then
-        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
+        AssertSnapshot(view)
     }
     
     func test_chatChannelInfoView_participantSelectedBasicActionsSnapshot() {
@@ -339,7 +339,7 @@ import XCTest
             .applyDefaultSize()
 
         // Then
-        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
+        AssertSnapshot(view)
     }
     
     func test_chatChannelInfoView_participantSelectedWithMuteActionsSnapshot() {
@@ -367,7 +367,7 @@ import XCTest
             .applyDefaultSize()
 
         // Then
-        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
+        AssertSnapshot(view)
     }
     
     func test_chatChannelInfoView_participantSelectedWithRemoveActionSnapshot() {
@@ -393,7 +393,7 @@ import XCTest
             .applyDefaultSize()
 
         // Then
-        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
+        AssertSnapshot(view)
     }
     
     func test_chatChannelInfoView_participantSelectedOfflineUserSnapshot() {
@@ -419,7 +419,7 @@ import XCTest
             .applyDefaultSize()
 
         // Then
-        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
+        AssertSnapshot(view)
     }
 
     func test_chatChannelInfoView_smallGroupWithLeaveButtonSnapshot() {
@@ -442,7 +442,7 @@ import XCTest
             .applyDefaultSize()
 
         // Then
-        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
+        AssertSnapshot(view)
     }
 
     func test_chatChannelInfoView_currentUserRowTappableSnapshot() {
@@ -468,7 +468,7 @@ import XCTest
             .applyDefaultSize()
 
         // Then - current user row is tappable and shows leave group action
-        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
+        AssertSnapshot(view)
     }
 
     func test_chatChannelInfoView_multiPersonDMSnapshot() {
@@ -489,6 +489,6 @@ import XCTest
             .applyDefaultSize()
 
         // Then - shows group-style layout with member list, not single DM header
-        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
+        AssertSnapshot(view)
     }
 }

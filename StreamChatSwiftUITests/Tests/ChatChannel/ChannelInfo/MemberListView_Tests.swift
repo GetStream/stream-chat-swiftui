@@ -32,7 +32,7 @@ import XCTest
             .applyDefaultSize()
 
         // Then
-        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
+        AssertSnapshot(view)
     }
 
     func test_memberListView_withoutAddButtonSnapshot() {
@@ -56,6 +56,6 @@ import XCTest
             .applyDefaultSize()
 
         // Then
-        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
+        AssertSnapshot(view)
     }
 }
