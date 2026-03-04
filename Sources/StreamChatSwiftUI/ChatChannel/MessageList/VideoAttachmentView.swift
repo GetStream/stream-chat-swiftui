@@ -166,6 +166,7 @@ struct VideoAttachmentContentView<Factory: ViewFactory>: View {
                 Image(uiImage: previewImage)
                     .resizable()
                     .scaledToFill()
+                    .frame(width: width, height: width * ratio)
                     .clipped()
                     .allowsHitTesting(false)
                     .accessibilityHidden(true)
@@ -194,7 +195,6 @@ struct VideoAttachmentContentView<Factory: ViewFactory>: View {
             }
         }
         .frame(width: width, height: width * ratio)
-        .clipShape(RoundedRectangle(cornerRadius: cornerRadius))
         .fullScreenCover(isPresented: $fullScreenShown) {
             factory.makeVideoPlayerView(
                 attachment: attachment,
