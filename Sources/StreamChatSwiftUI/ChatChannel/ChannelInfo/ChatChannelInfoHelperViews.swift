@@ -282,7 +282,7 @@ public struct MemberListView<Factory: ViewFactory>: View {
                             factory: factory,
                             participant: participant,
                             backgroundColor: colors.backgroundCoreApp,
-                            onAppear: { viewModel.onSheetMemberAppear(participant) },
+                            onAppear: { viewModel.onMemberAppear(participant) },
                             onTap: {
                                 selectedParticipant = participant
                             }
@@ -332,7 +332,10 @@ public struct MemberListView<Factory: ViewFactory>: View {
             factory.makeAddUsersView(
                 options: AddUsersViewOptions(
                     options: .init(loadedUserIds: viewModel.allMemberIds),
-                    onConfirm: viewModel.addUsersTapped(_:)
+                    onConfirm: { users in
+                        viewModel.addUsersTapped(users)
+                        addUsersShown = false
+                    }
                 )
             )
         }

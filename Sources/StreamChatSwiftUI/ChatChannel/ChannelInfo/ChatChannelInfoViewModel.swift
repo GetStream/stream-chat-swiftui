@@ -206,7 +206,7 @@ import SwiftUI
         loadAdditionalUsers()
     }
 
-    public func onSheetMemberAppear(_ participantInfo: ParticipantInfo) {
+    public func onMemberAppear(_ participantInfo: ParticipantInfo) {
         let all = allParticipants
         guard let index = all.firstIndex(where: { $0.id == participantInfo.id }) else { return }
         if index < all.count - 10 { return }

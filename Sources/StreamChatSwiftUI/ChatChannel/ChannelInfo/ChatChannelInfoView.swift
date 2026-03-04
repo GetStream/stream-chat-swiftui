@@ -20,6 +20,13 @@ public struct ChatChannelInfoView<Factory: ViewFactory>: View, KeyboardReadable 
 
     @Environment(\.presentationMode) var presentationMode
 
+    private enum AlertType: Identifiable {
+        case blockUser, leaveConversation, error
+        var id: Self { self }
+    }
+
+    @State private var alertType: AlertType?
+
     public init(
         factory: Factory = DefaultViewFactory.shared,
         viewModel: ChatChannelInfoViewModel? = nil,
@@ -91,6 +98,48 @@ public struct ChatChannelInfoView<Factory: ViewFactory>: View, KeyboardReadable 
                 viewModel.selectedParticipant = nil
             }
             .modifier(PresentationDetentsModifier(sheetSizes: [.custom(280), .medium]))
+        }
+        .onChange(of: viewModel.errorShown) { shown in
+            if shown { alertType = .error }
+        }
+        .alert(item: $alertType) { type -> Alert in
+            switch type {
+            case .blockUser:
+                return Alert(
+                    title: Text(viewModel.blockUserTitle),
+                    message: Text(
+                        viewModel.isDMUserBlocked
+                            ? L10n.Message.Actions.UserUnblock.confirmationMessage
+                            : L10n.Message.Actions.UserBlock.confirmationMessage
+                    ),
+                    primaryButton: .destructive(Text(viewModel.blockUserTitle)) {
+                        viewModel.blockUserTapped()
+                    },
+                    secondaryButton: .cancel()
+                )
+            case .leaveConversation:
+                return Alert(
+                    title: Text(viewModel.leaveButtonTitle),
+                    message: Text(viewModel.leaveConversationDescription),
+                    primaryButton: .destructive(Text(viewModel.leaveButtonTitle)) {
+                        viewModel.leaveConversationTapped {
+                            presentationMode.wrappedValue.dismiss()
+                            if shownFromMessageList {
+                                notifyChannelDismiss()
+                            }
+                        }
+                    },
+                    secondaryButton: .cancel()
+                )
+            case .error:
+                return Alert(
+                    title: Text(L10n.Alert.Error.title),
+                    message: Text(L10n.Alert.Error.message),
+                    dismissButton: .cancel(Text(L10n.Alert.Actions.ok)) {
+                        viewModel.errorShown = false
+                    }
+                )
+            }
         }
     }
 
@@ -221,15 +270,12 @@ public struct ChatChannelInfoView<Factory: ViewFactory>: View, KeyboardReadable 
                     leaveButton
                 }
             }
-            .alert(isPresented: $viewModel.errorShown) {
-                Alert.defaultErrorAlert
-            }
         }
     }
 
     private var blockButton: some View {
         Button {
-            viewModel.blockUserAlertShown = true
+            alertType = .blockUser
         } label: {
             HStack(spacing: tokens.spacingMd) {
                 Image(uiImage: images.messageActionBlockUser)
@@ -244,25 +290,11 @@ public struct ChatChannelInfoView<Factory: ViewFactory>: View, KeyboardReadable 
             .foregroundColor(Color(colors.textPrimary))
             .background(Color(colors.backgroundCoreSurfaceSubtle))
         }
-        .alert(isPresented: $viewModel.blockUserAlertShown) {
-            Alert(
-                title: Text(viewModel.blockUserTitle),
-                message: Text(
-                    viewModel.isDMUserBlocked
-                        ? L10n.Message.Actions.UserUnblock.confirmationMessage
-                        : L10n.Message.Actions.UserBlock.confirmationMessage
-                ),
-                primaryButton: .destructive(Text(viewModel.blockUserTitle)) {
-                    viewModel.blockUserTapped()
-                },
-                secondaryButton: .cancel()
-            )
-        }
     }
 
     private var leaveButton: some View {
         Button {
-            viewModel.leaveGroupAlertShown = true
+            alertType = .leaveConversation
         } label: {
             HStack(spacing: tokens.spacingMd) {
                 Image(systemName: viewModel.showSingleMemberDMView ? "trash" : "rectangle.portrait.and.arrow.right")
@@ -276,21 +308,6 @@ public struct ChatChannelInfoView<Factory: ViewFactory>: View, KeyboardReadable 
             .font(fonts.body)
             .foregroundColor(Color(colors.alert))
             .background(Color(colors.backgroundCoreSurfaceSubtle))
-        }
-        .alert(isPresented: $viewModel.leaveGroupAlertShown) {
-            Alert(
-                title: Text(viewModel.leaveButtonTitle),
-                message: Text(viewModel.leaveConversationDescription),
-                primaryButton: .destructive(Text(viewModel.leaveButtonTitle)) {
-                    viewModel.leaveConversationTapped {
-                        presentationMode.wrappedValue.dismiss()
-                        if shownFromMessageList {
-                            notifyChannelDismiss()
-                        }
-                    }
-                },
-                secondaryButton: .cancel()
-            )
         }
     }
 }
