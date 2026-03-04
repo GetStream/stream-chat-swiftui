@@ -18,9 +18,7 @@ struct RecordingWaveform: UIViewRepresentable {
         let view = WaveformView()
         view.onSliderChanged = onSliderChanged
         view.onSliderTapped = onSliderTapped
-        let thumbImage = roundedSliderThumbImage()
-        view.slider.setThumbImage(thumbImage, for: .normal)
-        view.slider.setThumbImage(thumbImage, for: .highlighted)
+        view.applyCustomSliderThumb()
         updateContent(for: view)
         return view
     }
@@ -38,46 +36,7 @@ struct RecordingWaveform: UIViewRepresentable {
             currentTime: currentTime,
             waveform: waveform
         )
-        let thumbImage = roundedSliderThumbImage()
-        view.slider.setThumbImage(thumbImage, for: .normal)
-        view.slider.setThumbImage(thumbImage, for: .highlighted)
+        view.applyCustomSliderThumb()
         view.slider.isUserInteractionEnabled = !isRecording
-    }
-
-    private func roundedSliderThumbImage() -> UIImage {
-        let colors = InjectedValues[\.colors]
-        let thumbDiameter: CGFloat = 12
-        let borderWidth: CGFloat = 1
-        let shadowBlur: CGFloat = 6
-        let shadowOffsetY: CGFloat = 2
-        let canvasSize = CGSize(
-            width: thumbDiameter + shadowBlur * 2,
-            height: thumbDiameter + shadowBlur * 2 + shadowOffsetY
-        )
-        let renderer = UIGraphicsImageRenderer(size: canvasSize)
-
-        return renderer.image { ctx in
-            let cgContext = ctx.cgContext
-            let thumbRect = CGRect(
-                x: (canvasSize.width - thumbDiameter) / 2,
-                y: (canvasSize.height - thumbDiameter - shadowOffsetY) / 2,
-                width: thumbDiameter,
-                height: thumbDiameter
-            )
-            let path = UIBezierPath(ovalIn: thumbRect)
-
-            cgContext.setShadow(
-                offset: CGSize(width: 0, height: shadowOffsetY),
-                blur: shadowBlur,
-                color: UIColor.black.withAlphaComponent(0.14).cgColor
-            )
-            colors.accentPrimary.setFill()
-            path.fill()
-
-            cgContext.setShadow(offset: .zero, blur: 0, color: nil)
-            UIColor.white.setStroke()
-            path.lineWidth = borderWidth
-            path.stroke()
-        }
     }
 }
