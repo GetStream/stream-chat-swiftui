@@ -419,11 +419,8 @@ public final class JumpToUnreadButtonOptions: Sendable {
 public final class SendInChannelViewOptions: Sendable {
     /// Binding to whether to show reply in channel.
     public let showReplyInChannel: Binding<Bool>
-    /// Whether this is a direct message.
-    public let isDirectMessage: Bool
     
-    public init(showReplyInChannel: Binding<Bool>, isDirectMessage: Bool) {
+    public init(showReplyInChannel: Binding<Bool>) {
         self.showReplyInChannel = showReplyInChannel
-        self.isDirectMessage = isDirectMessage
     }
 }

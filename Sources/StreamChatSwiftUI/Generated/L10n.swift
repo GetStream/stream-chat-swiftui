@@ -297,8 +297,6 @@ internal enum L10n {
     internal enum Checkmark {
       /// Also send in channel
       internal static var channelReply: String { L10n.tr("Localizable", "composer.checkmark.channel-reply") }
-      /// Also send as direct message
-      internal static var directMessageReply: String { L10n.tr("Localizable", "composer.checkmark.direct-message-reply") }
     }
     internal enum Commands {
       /// Giphy
