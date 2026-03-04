@@ -124,14 +124,14 @@ public struct ChatChannelInfoView<Factory: ViewFactory>: View, KeyboardReadable 
             }
 
             NavigatableChatInfoItemView(
-                icon: UIImage(systemName: "photo")!,
+                icon: images.imagePlaceholder,
                 title: L10n.ChatInfo.Media.title
             ) {
                 MediaAttachmentsView(factory: factory, channel: viewModel.channel)
             }
 
             NavigatableChatInfoItemView(
-                icon: UIImage(systemName: "folder")!,
+                icon: images.folder,
                 title: L10n.ChatInfo.Files.title
             ) {
                 FileAttachmentsView(channel: viewModel.channel)
@@ -146,7 +146,7 @@ public struct ChatChannelInfoView<Factory: ViewFactory>: View, KeyboardReadable 
         InfoSectionCard {
             membersCardHeader
 
-            ForEach(Array(viewModel.displayedParticipants.enumerated()), id: \.element.id) { _, participant in
+            ForEach(viewModel.displayedParticipants) { participant in
                 ChatInfoMemberView(
                     factory: factory,
                     participant: participant,

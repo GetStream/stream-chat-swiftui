@@ -280,8 +280,7 @@ public struct MemberListView<Factory: ViewFactory>: View {
         NavigationView {
             ScrollView {
                 LazyVStack(spacing: 0) {
-                    let allParticipants = viewModel.allParticipants
-                    ForEach(Array(allParticipants.enumerated()), id: \.element.id) { _, participant in
+                    ForEach(viewModel.allParticipants) { participant in
                         ChatInfoMemberView(
                             factory: factory,
                             participant: participant,
