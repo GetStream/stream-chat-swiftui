@@ -216,7 +216,7 @@ class MessageContainerView_Tests: StreamChatTestCase {
         .padding()
 
         // Then
-        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision), record: true)
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
 
     func test_videoAttachment_snapshotText() {
