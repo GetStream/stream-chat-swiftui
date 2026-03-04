@@ -86,7 +86,7 @@ struct ComposerVoiceRecordingInputView: View {
     }
 
     private var micIndicator: some View {
-        Image(systemName: "mic.fill")
+        Image(systemName: "mic")
             .font(.system(size: 20))
             .foregroundColor(.red)
             .frame(width: 48, height: 48)
@@ -135,7 +135,7 @@ struct ComposerVoiceRecordingInputView: View {
             Button {
                 viewModel.stopRecording()
             } label: {
-                Image(systemName: "mic.fill")
+                Image(systemName: "mic")
                     .font(.system(size: 20))
                     .foregroundColor(Color(colors.textPrimary))
                     .frame(width: 32, height: 32)
