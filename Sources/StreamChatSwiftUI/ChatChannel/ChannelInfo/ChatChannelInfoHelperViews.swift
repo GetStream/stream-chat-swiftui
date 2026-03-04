@@ -73,30 +73,28 @@ public struct ChatInfoDirectMessageView<Factory: ViewFactory>: View {
     @Injected(\.tokens) private var tokens
 
     let factory: Factory
-    var participant: ParticipantInfo?
+    let participant: ParticipantInfo
 
-    public init(factory: Factory = DefaultViewFactory.shared, participant: ParticipantInfo?) {
+    public init(factory: Factory = DefaultViewFactory.shared, participant: ParticipantInfo) {
         self.factory = factory
         self.participant = participant
     }
 
     public var body: some View {
         VStack(spacing: tokens.spacingXs) {
-            if let user = participant?.chatUser {
-                factory.makeUserAvatarView(
-                    options: UserAvatarViewOptions(
-                        user: user,
-                        size: AvatarSize.extraExtraLarge,
-                        showsIndicator: user.isOnline
-                    )
+            factory.makeUserAvatarView(
+                options: UserAvatarViewOptions(
+                    user: participant.chatUser,
+                    size: AvatarSize.extraExtraLarge,
+                    showsIndicator: participant.chatUser.isOnline
                 )
-            }
+            )
 
-            Text(participant?.displayName ?? "")
+            Text(participant.displayName)
                 .font(fonts.title3.weight(.semibold))
                 .foregroundColor(Color(colors.textPrimary))
 
-            Text(participant?.onlineInfoText ?? "")
+            Text(participant.onlineInfoText)
                 .font(fonts.footnote)
                 .foregroundColor(Color(colors.textSecondary))
         }
@@ -109,7 +107,7 @@ public struct ChatInfoDirectMessageView<Factory: ViewFactory>: View {
 
 /// A single row in the members section of the group info screen.
 /// Shows avatar, name, online status, and an admin badge when applicable.
-public struct ChatInfoMemberRow<Factory: ViewFactory>: View {
+public struct ChatInfoMemberView<Factory: ViewFactory>: View {
     @Injected(\.fonts) private var fonts
     @Injected(\.colors) private var colors
     @Injected(\.tokens) private var tokens
@@ -284,7 +282,7 @@ public struct MemberListView<Factory: ViewFactory>: View {
                 LazyVStack(spacing: 0) {
                     let allParticipants = viewModel.allParticipants
                     ForEach(Array(allParticipants.enumerated()), id: \.element.id) { _, participant in
-                        ChatInfoMemberRow(
+                        ChatInfoMemberView(
                             factory: factory,
                             participant: participant,
                             backgroundColor: colors.backgroundCoreApp,

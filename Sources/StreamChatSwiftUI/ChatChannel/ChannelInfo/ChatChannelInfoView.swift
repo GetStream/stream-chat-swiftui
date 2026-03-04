@@ -98,10 +98,10 @@ public struct ChatChannelInfoView<Factory: ViewFactory>: View, KeyboardReadable 
 
     @ViewBuilder
     private var headerSection: some View {
-        if viewModel.showSingleMemberDMView {
+        if viewModel.showSingleMemberDMView, let participant = viewModel.displayedParticipants.first {
             ChatInfoDirectMessageView(
                 factory: factory,
-                participant: viewModel.displayedParticipants.first
+                participant: participant
             )
         } else {
             ChatInfoGroupHeaderView(viewModel: viewModel)
@@ -147,7 +147,7 @@ public struct ChatChannelInfoView<Factory: ViewFactory>: View, KeyboardReadable 
             membersCardHeader
 
             ForEach(Array(viewModel.displayedParticipants.enumerated()), id: \.element.id) { _, participant in
-                ChatInfoMemberRow(
+                ChatInfoMemberView(
                     factory: factory,
                     participant: participant,
                     onAppear: { viewModel.onParticipantAppear(participant) },
