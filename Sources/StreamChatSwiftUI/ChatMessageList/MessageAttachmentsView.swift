@@ -19,6 +19,20 @@ public struct MessageAttachmentsView<Factory: ViewFactory>: View {
     let isFirst: Bool
     @Binding var scrolledId: String?
 
+    public init(
+        factory: Factory,
+        message: ChatMessage,
+        width: CGFloat,
+        isFirst: Bool,
+        scrolledId: Binding<String?>
+    ) {
+        self.factory = factory
+        self.message = message
+        self.width = width
+        self.isFirst = isFirst
+        self._scrolledId = scrolledId
+    }
+
     private var showsBubble: Bool {
         if !message.text.isEmpty {
             return true
@@ -51,18 +65,6 @@ public struct MessageAttachmentsView<Factory: ViewFactory>: View {
                     options: ChatQuotedMessageViewOptions(
                         quotedMessage: quotedMessage,
                         parentMessage: message,
-                        availableWidth: width,
-                        scrolledId: $scrolledId
-                    )
-                )
-            }
-
-            // Giphy
-            if messageTypeResolver.hasGiphyAttachment(message: message) {
-                factory.makeGiphyAttachmentView(
-                    options: GiphyAttachmentViewOptions(
-                        message: message,
-                        isFirst: isFirst,
                         availableWidth: width,
                         scrolledId: $scrolledId
                     )

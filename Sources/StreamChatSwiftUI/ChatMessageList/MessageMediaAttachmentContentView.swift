@@ -5,27 +5,17 @@
 import StreamChat
 import SwiftUI
 
-/// A preference key that tracks whether any media thumbnail is still loading.
-///
-/// Each ``MessageMediaAttachmentContentView`` reports `true` while its thumbnail
-/// has not yet loaded. The values are reduced with `||` so the container
-/// sees `true` as long as *any* child is still loading.
-struct ThumbnailLoadingKey: PreferenceKey {
-    static let defaultValue = false
-    static func reduce(value: inout Bool, nextValue: () -> Bool) {
-        value = value || nextValue()
-    }
-}
-
 /// A view that renders a single media attachment (image or video) thumbnail.
 ///
 /// Uses ``MediaAttachment/generateThumbnail(resize:preferredSize:completion:)``
 /// to load and display thumbnails.
 /// Shows a gradient placeholder while the thumbnail is loading.
 /// For video attachments, a play icon is overlaid on the thumbnail.
-public struct MessageMediaAttachmentContentView: View {
+public struct MessageMediaAttachmentContentView<Factory: ViewFactory>: View {
     @Injected(\.colors) private var colors
 
+    /// The view factory used to create subviews.
+    let factory: Factory
     /// The media attachment source to display.
     let source: MediaAttachment
     /// The width of the view.
@@ -41,6 +31,7 @@ public struct MessageMediaAttachmentContentView: View {
     @State private var error: Error?
 
     public init(
+        factory: Factory,
         source: MediaAttachment,
         width: CGFloat,
         height: CGFloat,
@@ -48,6 +39,7 @@ public struct MessageMediaAttachmentContentView: View {
         isOutgoing: Bool = false
     ) {
         @Injected(\.tokens) var tokens
+        self.factory = factory
         self.source = source
         self.width = width
         self.height = height
@@ -69,6 +61,11 @@ public struct MessageMediaAttachmentContentView: View {
                 placeholderGradient
             }
 
+            if image == nil && error == nil {
+                factory.makeLoadingView(options: .init(type: .spinner))
+                    .allowsHitTesting(false)
+            }
+
             if source.type == .video && width > 64 && source.uploadingState == nil {
                 VideoPlayIndicatorView(size: VideoPlayIndicatorSize.medium)
                     .allowsHitTesting(false)
@@ -88,7 +85,6 @@ public struct MessageMediaAttachmentContentView: View {
             }
         }
         .accessibilityIdentifier("MessageMediaAttachmentContentView")
-        .preference(key: ThumbnailLoadingKey.self, value: image == nil && error == nil)
     }
 
     private var placeholderGradient: some View {

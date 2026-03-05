@@ -59,8 +59,6 @@ public struct MessageMediaAttachmentsContainerView<Factory: ViewFactory>: View {
 
     @State private var galleryShown = false
     @State private var selectedIndex = 0
-    @State private var isThumbnailLoading = false
-
     private var spacing: CGFloat { tokens.spacingXxxs }
     private var cornerRadius: CGFloat { tokens.messageBubbleRadiusAttachment }
     private let maxDisplayedItems = 4
@@ -76,28 +74,20 @@ public struct MessageMediaAttachmentsContainerView<Factory: ViewFactory>: View {
     }
 
     public var body: some View {
-        ZStack {
-            galleryGrid
-            if isThumbnailLoading {
-                factory.makeLoadingView(options: .init(type: .spinner))
-            }
-        }
-        .onPreferenceChange(ThumbnailLoadingKey.self) { isLoading in
-            isThumbnailLoading = isLoading
-        }
-        .fullScreenCover(isPresented: $galleryShown, onDismiss: {
-            selectedIndex = 0
-        }) {
-            factory.makeGalleryView(
-                options: GalleryViewOptions(
-                    mediaAttachments: sources,
-                    message: message,
-                    isShown: $galleryShown,
-                    options: .init(selectedIndex: selectedIndex)
+        galleryGrid
+            .fullScreenCover(isPresented: $galleryShown, onDismiss: {
+                selectedIndex = 0
+            }) {
+                factory.makeGalleryView(
+                    options: GalleryViewOptions(
+                        mediaAttachments: sources,
+                        message: message,
+                        isShown: $galleryShown,
+                        options: .init(selectedIndex: selectedIndex)
+                    )
                 )
-            )
-        }
-        .accessibilityIdentifier("MessageMediaAttachmentsContainerView")
+            }
+            .accessibilityIdentifier("MessageMediaAttachmentsContainerView")
     }
 
     // MARK: - Layout
@@ -197,6 +187,7 @@ public struct MessageMediaAttachmentsContainerView<Factory: ViewFactory>: View {
         index: Int
     ) -> some View {
         MessageMediaAttachmentContentView(
+            factory: factory,
             source: item,
             width: width,
             height: height,
