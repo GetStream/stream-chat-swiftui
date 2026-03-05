@@ -64,20 +64,20 @@ struct ComposerVoiceRecordingAttachmentView: View {
             contentArea
             playbackSpeedToggle
         }
-        .padding(tokens.spacingSm)
+        .padding(.top, tokens.spacingMd)
+        .padding(.leading, tokens.spacingSm)
+        .padding(.bottom, tokens.spacingMd)
+        .padding(.trailing, tokens.spacingSm)
         .frame(height: 72)
         .background(Color(colors.backgroundElevationElevation1))
-        .clipShape(RoundedRectangle(cornerRadius: tokens.radiusLg))
+        .cornerRadius(tokens.radiusLg)
         .overlay(
             RoundedRectangle(cornerRadius: tokens.radiusLg)
-                .stroke(Color(colors.borderCoreDefault), lineWidth: 1)
+                .strokeBorder(Color(colors.borderCoreOpacity10), lineWidth: 1)
         )
-        .overlay(
-            DiscardAttachmentButton(
-                attachmentIdentifier: recording.url.absoluteString,
-                onDiscard: onDiscardAttachment
-            )
-        )
+        .dismissButtonOverlayModifier {
+            onDiscardAttachment(recording.url.absoluteString)
+        }
         .onReceive(handler.$context) { _ in
             handler.updatePlaybackState(for: recording.url)
         }
