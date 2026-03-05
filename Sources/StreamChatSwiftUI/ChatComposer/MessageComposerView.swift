@@ -83,6 +83,7 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
 
                 factory.makeComposerInputView(
                     options: ComposerInputViewOptions(
+                        viewModel: viewModel,
                         channelController: viewModel.channelController,
                         text: $viewModel.text,
                         selectedRangeLocation: $viewModel.selectedRangeLocation,
@@ -109,7 +110,6 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
                         showReplyInChannel: $viewModel.showReplyInChannel
                     )
                 )
-                .environmentObject(viewModel)
                 .alert(isPresented: $viewModel.attachmentSizeExceeded) {
                     Alert(
                         title: Text(L10n.Attachment.MaxSize.title),
@@ -125,7 +125,6 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
                         onTap: sendMessage
                     )
                 )
-                .environmentObject(viewModel)
                 .alert(isPresented: $viewModel.errorShown) {
                     Alert.defaultErrorAlert
                 }
@@ -374,7 +373,7 @@ public struct ComposerInputView<Factory: ViewFactory>: View, KeyboardReadable {
     @Injected(\.utils) private var utils
     @Injected(\.tokens) private var tokens
 
-    @EnvironmentObject var viewModel: MessageComposerViewModel
+    var viewModel: MessageComposerViewModel
 
     var factory: Factory
     var channelController: ChatChannelController
@@ -407,6 +406,7 @@ public struct ComposerInputView<Factory: ViewFactory>: View, KeyboardReadable {
 
     public init(
         factory: Factory,
+        viewModel: MessageComposerViewModel,
         channelController: ChatChannelController,
         text: Binding<String>,
         selectedRangeLocation: Binding<Int>,
@@ -433,6 +433,7 @@ public struct ComposerInputView<Factory: ViewFactory>: View, KeyboardReadable {
         showReplyInChannel: Binding<Bool>
     ) {
         self.factory = factory
+        self.viewModel = viewModel
         self.channelController = channelController
         self.addedVoiceRecordings = addedVoiceRecordings
         _text = text

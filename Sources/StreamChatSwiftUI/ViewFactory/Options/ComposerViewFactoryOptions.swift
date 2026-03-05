@@ -60,6 +60,8 @@ public final class LeadingComposerViewOptions: Sendable {
 
 /// Options for creating the composer input view.
 public final class ComposerInputViewOptions: Sendable {
+    /// The view model for the message composer.
+    public let viewModel: MessageComposerViewModel
     /// The channel controller.
     public let channelController: ChatChannelController
     /// Binding to the text input.
@@ -110,6 +112,7 @@ public final class ComposerInputViewOptions: Sendable {
     public let showReplyInChannel: Binding<Bool>
     
     public init(
+        viewModel: MessageComposerViewModel,
         channelController: ChatChannelController,
         text: Binding<String>,
         selectedRangeLocation: Binding<Int>,
@@ -135,6 +138,7 @@ public final class ComposerInputViewOptions: Sendable {
         sendInChannelShown: Bool,
         showReplyInChannel: Binding<Bool>
     ) {
+        self.viewModel = viewModel
         self.channelController = channelController
         self.text = text
         self.selectedRangeLocation = selectedRangeLocation

@@ -505,6 +505,7 @@ extension ViewFactory {
     ) -> some View {
         ComposerInputView(
             factory: self,
+            viewModel: options.viewModel,
             channelController: options.channelController,
             text: options.text,
             selectedRangeLocation: options.selectedRangeLocation,
