@@ -186,6 +186,14 @@ public struct MessageItemView<Factory: ViewFactory>: View {
 
 // MARK: - Swipe to Reply
 
+/// Areas that should not trigger swipe-to-reply (e.g. waveform sliders).
+struct SwipeToReplyExcludedFrameKey: PreferenceKey {
+    nonisolated(unsafe) static var defaultValue: [CGRect] = []
+    static func reduce(value: inout [CGRect], nextValue: () -> [CGRect]) {
+        value.append(contentsOf: nextValue())
+    }
+}
+
 private struct SwipeToReplyModifier: ViewModifier {
     let message: ChatMessage
     let channel: ChatChannel
@@ -196,22 +204,29 @@ private struct SwipeToReplyModifier: ViewModifier {
     @Injected(\.utils) private var utils
 
     @State private var offsetX: CGFloat = 0
+    @State private var swipeExcludedFrames: [CGRect] = []
     @GestureState private var offset: CGSize = .zero
 
     private let replyThreshold: CGFloat = 60
 
     func body(content: Content) -> some View {
         content
+            .coordinateSpace(name: "swipeToReply")
             .offset(x: min(offsetX, maximumHorizontalSwipeDisplacement))
             .simultaneousGesture(
                 DragGesture(
                     minimumDistance: minimumSwipeDistance,
-                    coordinateSpace: .local
+                    coordinateSpace: .named("swipeToReply")
                 )
                 .updating($offset) { (value, gestureState, _) in
                     guard isSwipeToQuoteReplyPossible else {
                         return
                     }
+
+                    if swipeExcludedFrames.contains(where: { $0.contains(value.startLocation) }) {
+                        return
+                    }
+
                     let diff = CGSize(
                         width: value.location.x - value.startLocation.x,
                         height: value.location.y - value.startLocation.y
@@ -235,6 +250,9 @@ private struct SwipeToReplyModifier: ViewModifier {
                     dragChanged(to: offset.width)
                 }
             })
+            .onPreferenceChange(SwipeToReplyExcludedFrameKey.self) { frames in
+                swipeExcludedFrames = frames
+            }
             .overlay(
                 offsetX > 0 ?
                     TopLeftView {

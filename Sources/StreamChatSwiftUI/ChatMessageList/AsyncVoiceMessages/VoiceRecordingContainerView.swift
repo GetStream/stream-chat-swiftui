@@ -177,6 +177,14 @@ struct VoiceRecordingView: View {
                 }
             )
             .frame(height: 20)
+            .background(
+                GeometryReader { proxy in
+                    Color.clear.preference(
+                        key: SwipeToReplyExcludedFrameKey.self,
+                        value: [proxy.frame(in: .named("swipeToReply"))]
+                    )
+                }
+            )
         }
     }
 }
