@@ -10,6 +10,7 @@ import SwiftUI
 /// A rounded card container used to group related rows in the channel info screen.
 public struct InfoSectionCard<Content: View>: View {
     @Injected(\.colors) private var colors
+    @Injected(\.tokens) private var tokens
 
     var content: Content
 
@@ -21,7 +22,7 @@ public struct InfoSectionCard<Content: View>: View {
         VStack(spacing: 0) {
             content
         }
-        .clipShape(RoundedRectangle(cornerRadius: 16))
+        .clipShape(RoundedRectangle(cornerRadius: tokens.radiusLg))
     }
 }
 
@@ -115,15 +116,15 @@ public struct ChatInfoMemberView<Factory: ViewFactory>: View {
     let factory: Factory
     let participant: ParticipantInfo
     var backgroundColor: UIColor?
-    var onAppear: () -> Void
-    var onTap: () -> Void
+    var onAppear: @MainActor () -> Void
+    var onTap: @MainActor () -> Void
 
     public init(
         factory: Factory = DefaultViewFactory.shared,
         participant: ParticipantInfo,
         backgroundColor: UIColor? = nil,
-        onAppear: @escaping () -> Void,
-        onTap: @escaping () -> Void
+        onAppear: @escaping @MainActor () -> Void,
+        onTap: @escaping @MainActor () -> Void
     ) {
         self.factory = factory
         self.participant = participant
@@ -306,14 +307,13 @@ public struct MemberListView<Factory: ViewFactory>: View {
                     }
                 }
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    StreamIconButton(role: .primary, style: .solid, size: .small) {
-                        addUsersShown = true
-                    } icon: {
-                        Image(systemName: "person.badge.plus")
+                    if viewModel.shouldShowAddUserButton {
+                        StreamIconButton(role: .primary, style: .solid, size: .small) {
+                            addUsersShown = true
+                        } icon: {
+                            Image(systemName: "person.badge.plus")
+                        }
                     }
-                    .opacity(viewModel.shouldShowAddUserButton ? 1 : 0)
-                    .allowsHitTesting(viewModel.shouldShowAddUserButton)
-                    .accessibilityHidden(!viewModel.shouldShowAddUserButton)
                 }
             }
             .navigationBarTitleDisplayMode(.inline)

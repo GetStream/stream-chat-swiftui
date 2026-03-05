@@ -35,7 +35,9 @@ public struct PinnedMessagesView<Factory: ViewFactory>: View {
 
     public var body: some View {
         ZStack {
-            if !viewModel.pinnedMessages.isEmpty {
+            if viewModel.isLoading {
+                ProgressView()
+            } else if !viewModel.pinnedMessages.isEmpty {
                 ScrollView {
                     LazyVStack(spacing: 0) {
                         ForEach(viewModel.pinnedMessages) { message in

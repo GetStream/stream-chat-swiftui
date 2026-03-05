@@ -20,6 +20,8 @@ struct ParticipantInfoView<Factory: ViewFactory>: View {
         didSet { alertShown = alertAction != nil }
     }
 
+    @State private var sheetDestination: AnyView?
+
     init(
         factory: Factory = DefaultViewFactory.shared,
         participant: ParticipantInfo,
@@ -79,13 +81,31 @@ struct ParticipantInfoView<Factory: ViewFactory>: View {
                 secondaryButton: .cancel()
             )
         }
+        .fullScreenCover(isPresented: Binding(
+            get: { sheetDestination != nil },
+            set: { if !$0 { sheetDestination = nil } }
+        )) {
+            NavigationView {
+                sheetDestination
+                    .toolbar {
+                        ToolbarItem(placement: .navigationBarLeading) {
+                            Button {
+                                sheetDestination = nil
+                            } label: {
+                                Image(uiImage: images.close)
+                                    .foregroundColor(Color(colors.textSecondary))
+                            }
+                        }
+                    }
+            }
+        }
     }
 
     @ViewBuilder
     private func actionRow(for action: ParticipantAction) -> some View {
         if let destination = action.navigationDestination {
-            NavigationLink {
-                destination
+            Button {
+                sheetDestination = destination
             } label: {
                 actionLabel(for: action)
             }

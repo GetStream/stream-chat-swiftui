@@ -14,12 +14,12 @@ public struct AddUsersView<Factory: ViewFactory>: View {
 
     private let factory: Factory
     @StateObject private var viewModel: AddUsersViewModel
-    var onConfirm: ([ChatUser]) -> Void
+    var onConfirm: @MainActor ([ChatUser]) -> Void
 
     public init(
         factory: Factory = DefaultViewFactory.shared,
         loadedUserIds: [String],
-        onConfirm: @escaping ([ChatUser]) -> Void
+        onConfirm: @escaping @MainActor ([ChatUser]) -> Void
     ) {
         _viewModel = StateObject(
             wrappedValue: AddUsersViewModel(loadedUserIds: loadedUserIds)
@@ -31,7 +31,7 @@ public struct AddUsersView<Factory: ViewFactory>: View {
     init(
         factory: Factory = DefaultViewFactory.shared,
         viewModel: AddUsersViewModel,
-        onConfirm: @escaping ([ChatUser]) -> Void
+        onConfirm: @escaping @MainActor ([ChatUser]) -> Void
     ) {
         _viewModel = StateObject(wrappedValue: viewModel)
         self.onConfirm = onConfirm
@@ -108,7 +108,7 @@ private struct AddMembersUserRow<Factory: ViewFactory>: View {
                     )
                 )
 
-                VStack(alignment: .leading, spacing: 2) {
+                VStack(alignment: .leading, spacing: tokens.spacingXxxs) {
                     Text(user.name ?? user.id)
                         .font(fonts.body)
                         .foregroundColor(Color(colors.textPrimary))
@@ -117,7 +117,7 @@ private struct AddMembersUserRow<Factory: ViewFactory>: View {
                     if isAlreadyMember {
                         Text(L10n.ChatInfo.Members.alreadyMember)
                             .font(fonts.footnote)
-                            .foregroundColor(Color(colors.textLowEmphasis))
+                            .foregroundColor(Color(colors.textTertiary))
                     }
                 }
 
@@ -144,7 +144,7 @@ private struct AddMembersUserRow<Factory: ViewFactory>: View {
                 Image(uiImage: images.selectionBadgeIcon)
                     .customizable()
                     .frame(width: tokens.iconSizeXs)
-                    .foregroundColor(.white)
+                    .foregroundColor(Color(colors.buttonPrimaryTextOnAccent))
             } else {
                 Circle()
                     .strokeBorder(Color(colors.borderCoreSubtle), lineWidth: 1.5)
@@ -200,7 +200,7 @@ private struct AddMembersToolbarModifier: ViewModifier {
                 Image(uiImage: images.selectionBadgeIcon)
                     .customizable()
                     .frame(width: tokens.iconSizeSm)
-                    .foregroundColor(.white)
+                    .foregroundColor(Color(colors.buttonPrimaryTextOnAccent))
             }
             .frame(width: tokens.buttonVisualHeightMd)
             .background(Circle().fill(Color(colors.accentPrimary)))
