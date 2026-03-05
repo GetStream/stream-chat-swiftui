@@ -10,14 +10,23 @@ public struct ChatChannelInfoView<Factory: ViewFactory>: View, KeyboardReadable 
     @Injected(\.images) private var images
     @Injected(\.colors) private var colors
     @Injected(\.fonts) private var fonts
+    @Injected(\.tokens) private var tokens
+    @Injected(\.chatClient) private var chatClient
 
     let factory: Factory
-    
+
     @StateObject private var viewModel: ChatChannelInfoViewModel
     private var shownFromMessageList: Bool
 
     @Environment(\.presentationMode) var presentationMode
-    
+
+    private enum AlertType: Identifiable {
+        case blockUser, leaveConversation, error
+        var id: Self { self }
+    }
+
+    @State private var alertType: AlertType?
+
     public init(
         factory: Factory = DefaultViewFactory.shared,
         viewModel: ChatChannelInfoViewModel? = nil,
@@ -41,107 +50,23 @@ public struct ChatChannelInfoView<Factory: ViewFactory>: View, KeyboardReadable 
     }
 
     public var body: some View {
-        ZStack {
-            ScrollView {
-                LazyVStack(spacing: 0) {
-                    if viewModel.showSingleMemberDMView {
-                        ChatInfoDirectChannelView(
-                            factory: factory,
-                            participant: viewModel.displayedParticipants.first
-                        )
-                    } else {
-                        ChatInfoParticipantsView(
-                            factory: factory,
-                            participants: viewModel.displayedParticipants,
-                            onItemAppear: viewModel.onParticipantAppear(_:),
-                            selectedParticipant: $viewModel.selectedParticipant
-                        )
+        ScrollView {
+            VStack(spacing: 0) {
+                headerSection
+                    .padding(.top, tokens.spacingXl)
+                    .padding(.bottom, tokens.spacingLg)
+
+                VStack(spacing: tokens.spacingSm) {
+                    navigationLinksCard
+
+                    if !viewModel.showSingleMemberDMView {
+                        membersCard
                     }
 
-                    if viewModel.showMoreUsersButton {
-                        ChatChannelInfoButton(
-                            title: viewModel.showMoreUsersButtonTitle,
-                            iconName: "chevron.down",
-                            foregroundColor: Color(colors.textLowEmphasis)
-                        ) {
-                            viewModel.memberListCollapsed = false
-                        }
-                    }
-
-                    ChannelInfoDivider()
-
-                    ChatInfoOptionsView(factory: factory, viewModel: viewModel)
-
-                    ChannelInfoDivider()
-                        .alert(isPresented: $viewModel.errorShown) {
-                            Alert.defaultErrorAlert
-                        }
-
-                    if viewModel.shouldShowLeaveConversationButton {
-                        ChatChannelInfoButton(
-                            title: viewModel.leaveButtonTitle,
-                            iconName: "person.fill.xmark",
-                            foregroundColor: Color(colors.alert)
-                        ) {
-                            viewModel.leaveGroupAlertShown = true
-                        }
-                        .alert(isPresented: $viewModel.leaveGroupAlertShown) {
-                            Alert(
-                                title: Text(viewModel.leaveButtonTitle),
-                                message: Text(viewModel.leaveConversationDescription),
-                                primaryButton: .destructive(Text(viewModel.leaveButtonTitle)) {
-                                    viewModel.leaveConversationTapped {
-                                        presentationMode.wrappedValue.dismiss()
-                                        if shownFromMessageList {
-                                            notifyChannelDismiss()
-                                        }
-                                    }
-                                },
-                                secondaryButton: .cancel()
-                            )
-                        }
-                    }
+                    actionsCard
                 }
-            }
-            .overlay(
-                popupShown ?
-                    Color.black.opacity(0.3).edgesIgnoringSafeArea(.all) : nil
-            )
-            .blur(radius: popupShown ? 6 : 0)
-            .allowsHitTesting(!popupShown)
-
-            if viewModel.addUsersShown {
-                VStack {
-                    Rectangle()
-                        .fill(Color.clear)
-                        .contentShape(Rectangle())
-                        .layoutPriority(-1)
-                        .onTapGesture {
-                            viewModel.addUsersShown = false
-                        }
-                        .accessibilityAction {
-                            viewModel.addUsersShown = false
-                        }
-                    
-                    factory.makeAddUsersView(
-                        options: AddUsersViewOptions(
-                            options: .init(loadedUsers: viewModel.participants.map(\.chatUser)),
-                            onUserTap: viewModel.addUserTapped(_:)
-                        )
-                    )
-                }
-            }
-            
-            if let selectedParticipant = viewModel.selectedParticipant {
-                ParticipantInfoView(
-                    factory: factory,
-                    participant: selectedParticipant,
-                    actions: viewModel.participantActions(for: selectedParticipant)
-                ) {
-                    withAnimation {
-                        viewModel.selectedParticipant = nil
-                    }
-                }
+                .padding(.horizontal, tokens.spacingMd)
+                .padding(.bottom, tokens.spacing2xl)
             }
         }
         .modifier(ChatChannelInfoViewHeaderViewModifier(viewModel: viewModel))
@@ -149,25 +74,257 @@ public struct ChatChannelInfoView<Factory: ViewFactory>: View, KeyboardReadable 
             viewModel.keyboardShown = visible
         }
         .dismissKeyboardOnTap(enabled: viewModel.keyboardShown)
-        .background(Color(colors.background).edgesIgnoringSafeArea(.bottom))
+        .background(Color(colors.backgroundCoreApp).edgesIgnoringSafeArea(.bottom))
+        .sheet(isPresented: $viewModel.memberListSheetShown) {
+            MemberListView(factory: factory, viewModel: viewModel)
+        }
+        .sheet(isPresented: $viewModel.editGroupShown) {
+            EditGroupView(viewModel: viewModel)
+        }
+        .sheet(isPresented: $viewModel.addUsersShown) {
+            factory.makeAddUsersView(
+                options: AddUsersViewOptions(
+                    options: .init(loadedUserIds: viewModel.allMemberIds),
+                    onConfirm: viewModel.addUsersTapped(_:)
+                )
+            )
+        }
+        .sheet(item: $viewModel.selectedParticipant) { participant in
+            ParticipantInfoView(
+                factory: factory,
+                participant: participant,
+                actions: viewModel.participantActions(for: participant)
+            ) {
+                viewModel.selectedParticipant = nil
+            }
+            .modifier(PresentationDetentsModifier(sheetSizes: [.custom(280), .medium]))
+        }
+        .onChange(of: viewModel.errorShown) { shown in
+            if shown { alertType = .error }
+        }
+        .alert(item: $alertType) { type -> Alert in
+            switch type {
+            case .blockUser:
+                return Alert(
+                    title: Text(viewModel.blockUserTitle),
+                    message: Text(
+                        viewModel.isDMUserBlocked
+                            ? L10n.Message.Actions.UserUnblock.confirmationMessage
+                            : L10n.Message.Actions.UserBlock.confirmationMessage
+                    ),
+                    primaryButton: .destructive(Text(viewModel.blockUserTitle)) {
+                        viewModel.blockUserTapped()
+                    },
+                    secondaryButton: .cancel()
+                )
+            case .leaveConversation:
+                return Alert(
+                    title: Text(viewModel.leaveButtonTitle),
+                    message: Text(viewModel.leaveConversationDescription),
+                    primaryButton: .destructive(Text(viewModel.leaveButtonTitle)) {
+                        viewModel.leaveConversationTapped {
+                            presentationMode.wrappedValue.dismiss()
+                            if shownFromMessageList {
+                                notifyChannelDismiss()
+                            }
+                        }
+                    },
+                    secondaryButton: .cancel()
+                )
+            case .error:
+                return Alert(
+                    title: Text(L10n.Alert.Error.title),
+                    message: Text(L10n.Alert.Error.message),
+                    dismissButton: .cancel(Text(L10n.Alert.Actions.ok)) {
+                        viewModel.errorShown = false
+                    }
+                )
+            }
+        }
     }
-    
-    private var popupShown: Bool {
-        viewModel.addUsersShown || viewModel.selectedParticipant != nil
+
+    // MARK: - Header
+
+    @ViewBuilder
+    private var headerSection: some View {
+        if viewModel.showSingleMemberDMView, let participant = viewModel.displayedParticipants.first {
+            ChatInfoDirectMessageView(
+                factory: factory,
+                participant: participant
+            )
+        } else {
+            ChatInfoGroupHeaderView(viewModel: viewModel)
+        }
+    }
+
+    // MARK: - Navigation Links Card
+
+    private var navigationLinksCard: some View {
+        InfoSectionCard {
+            NavigatableChatInfoItemView(
+                icon: images.pin,
+                title: L10n.ChatInfo.PinnedMessages.title
+            ) {
+                PinnedMessagesView(
+                    factory: factory,
+                    channel: viewModel.channel,
+                    channelController: viewModel.channelController
+                )
+            }
+
+            NavigatableChatInfoItemView(
+                icon: images.imagePlaceholder,
+                title: L10n.ChatInfo.Media.title
+            ) {
+                MediaAttachmentsView(factory: factory, channel: viewModel.channel)
+            }
+
+            NavigatableChatInfoItemView(
+                icon: images.folder,
+                title: L10n.ChatInfo.Files.title
+            ) {
+                FileAttachmentsView(channel: viewModel.channel)
+            }
+        }
+    }
+
+    // MARK: - Members Card
+
+    @ViewBuilder
+    private var membersCard: some View {
+        InfoSectionCard {
+            membersCardHeader
+
+            ForEach(viewModel.displayedParticipants) { participant in
+                ChatInfoMemberView(
+                    factory: factory,
+                    participant: participant,
+                    onAppear: { viewModel.onParticipantAppear(participant) },
+                    onTap: {
+                        withAnimation {
+                            viewModel.selectedParticipant = participant
+                        }
+                    }
+                )
+            }
+            if viewModel.showMoreUsersButton {
+                StreamTextButton(role: .secondary, style: .outline, size: .small) {
+                    viewModel.memberListSheetShown = true
+                } text: {
+                    Text(L10n.ChatInfo.Users.viewAll)
+                        .font(fonts.bodyBold)
+                }
+                .padding(.vertical, tokens.spacingXs)
+            }
+        }
+        .padding(.vertical, tokens.spacingXs)
+        .background(colors.backgroundCoreSurfaceSubtle.toColor)
+        .cornerRadius(16)
+    }
+
+    private var membersCardHeader: some View {
+        HStack {
+            Text(L10n.ChatInfo.Members.count(viewModel.channel.memberCount))
+                .font(fonts.headline)
+                .foregroundColor(Color(colors.textPrimary))
+
+            Spacer()
+
+            if viewModel.shouldShowAddUserButton {
+                StreamTextButton(role: .secondary, style: .outline, size: .small) {
+                    viewModel.addUsersShown = true
+                } text: {
+                    Text(L10n.ChatInfo.Members.add)
+                        .font(fonts.bodyBold)
+                        .foregroundColor(Color(colors.buttonSecondaryText))
+                }
+            }
+        }
+        .padding(.horizontal, tokens.spacingMd)
+        .padding(.vertical, tokens.spacingXs)
+        .background(Color(colors.backgroundCoreSurfaceSubtle))
+    }
+
+    // MARK: - Actions Card
+
+    @ViewBuilder
+    private var actionsCard: some View {
+        if viewModel.shouldShowMuteChannelButton || viewModel.shouldShowBlockUserButton || viewModel.shouldShowLeaveConversationButton {
+            InfoSectionCard {
+                if viewModel.shouldShowMuteChannelButton {
+                    ChannelInfoItemView(
+                        icon: images.muted,
+                        title: viewModel.mutedText
+                    ) {
+                        Toggle(isOn: $viewModel.muted) {
+                            EmptyView()
+                        }
+                    }
+                }
+
+                if viewModel.shouldShowBlockUserButton {
+                    blockButton
+                }
+
+                if viewModel.shouldShowLeaveConversationButton {
+                    leaveButton
+                }
+            }
+        }
+    }
+
+    private var blockButton: some View {
+        Button {
+            alertType = .blockUser
+        } label: {
+            HStack(spacing: tokens.spacingMd) {
+                Image(uiImage: images.messageActionBlockUser)
+                    .customizable()
+                    .frame(width: tokens.spacingLg)
+                Text(viewModel.blockUserTitle)
+                Spacer()
+            }
+            .padding(.horizontal, tokens.spacingMd)
+            .padding(.vertical, tokens.spacingMd)
+            .font(fonts.body)
+            .foregroundColor(Color(colors.textPrimary))
+            .background(Color(colors.backgroundCoreSurfaceSubtle))
+        }
+    }
+
+    private var leaveButton: some View {
+        Button {
+            alertType = .leaveConversation
+        } label: {
+            HStack(spacing: tokens.spacingMd) {
+                Image(systemName: viewModel.showSingleMemberDMView ? "trash" : "rectangle.portrait.and.arrow.right")
+                    .customizable()
+                    .frame(width: tokens.spacingLg)
+                Text(viewModel.leaveButtonTitle)
+                Spacer()
+            }
+            .padding(.horizontal, tokens.spacingMd)
+            .padding(.vertical, tokens.spacingMd)
+            .font(fonts.body)
+            .foregroundColor(Color(colors.alert))
+            .background(Color(colors.backgroundCoreSurfaceSubtle))
+        }
     }
 }
+
+// MARK: - Toolbar
 
 struct ChatChannelInfoViewHeaderViewModifier: ViewModifier {
     @Injected(\.colors) private var colors
     @Injected(\.fonts) private var fonts
-    
+
     @ObservedObject var viewModel: ChatChannelInfoViewModel
-    
+
     func body(content: Content) -> some View {
         if #available(iOS 26.0, *) {
             content
                 .toolbarThemed {
-                    toolbar(glyphSize: 24)
+                    toolbar()
                     #if compiler(>=6.2)
                         .sharedBackgroundVisibility(.hidden)
                     #endif
@@ -179,36 +336,21 @@ struct ChatChannelInfoViewHeaderViewModifier: ViewModifier {
                 }
         }
     }
-    
-    @ToolbarContentBuilder func toolbar(glyphSize: CGFloat? = nil) -> some ToolbarContent {
+
+    @ToolbarContentBuilder func toolbar() -> some ToolbarContent {
         ToolbarItem(placement: .principal) {
-            Group {
-                if viewModel.showSingleMemberDMView {
-                    Text(viewModel.displayedParticipants.first?.chatUser.name ?? "")
-                        .font(fonts.bodyBold)
-                        .foregroundColor(Color(colors.navigationBarTitle))
-                } else {
-                    ChannelTitleView(
-                        channel: viewModel.channel,
-                        shouldShowTypingIndicator: false
-                    )
-                    .id(viewModel.channelId)
-                }
-            }
+            Text(viewModel.showSingleMemberDMView ? L10n.ChatInfo.Contact.title : L10n.ChatInfo.Group.title)
+                .font(fonts.bodyBold)
+                .foregroundColor(Color(colors.navigationBarTitle))
         }
 
         ToolbarItem(placement: .navigationBarTrailing) {
-            if viewModel.shouldShowAddUserButton {
-                Button {
-                    viewModel.addUsersShown = true
-                } label: {
-                    Image(systemName: "person.badge.plus")
-                        .customizable()
-                        .frame(width: glyphSize, height: glyphSize)
-                        .foregroundColor(Color(colors.navigationBarGlyph))
-                        .padding(.all, 8)
-                        .background(Color(colors.navigationBarTintColor))
-                        .clipShape(Circle())
+            if !viewModel.showSingleMemberDMView {
+                StreamTextButton(role: .secondary, style: .outline, size: .small) {
+                    viewModel.editGroupShown = true
+                } text: {
+                    Text(L10n.ChatInfo.edit)
+                        .font(fonts.bodyBold)
                 }
             }
         }

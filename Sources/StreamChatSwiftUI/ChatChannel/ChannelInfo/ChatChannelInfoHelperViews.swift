@@ -5,173 +5,183 @@
 import StreamChat
 import SwiftUI
 
-public struct ChatChannelInfoButton: View {
+// MARK: - Section Card Container
+
+/// A rounded card container used to group related rows in the channel info screen.
+public struct InfoSectionCard<Content: View>: View {
     @Injected(\.colors) private var colors
-    @Injected(\.fonts) private var fonts
+    @Injected(\.tokens) private var tokens
 
-    var title: String
-    var iconName: String
-    var foregroundColor: Color
-    var buttonTapped: () -> Void
-    
-    public init(title: String, iconName: String, foregroundColor: Color, buttonTapped: @escaping () -> Void) {
-        self.title = title
-        self.iconName = iconName
-        self.foregroundColor = foregroundColor
-        self.buttonTapped = buttonTapped
-    }
-    
-    public var body: some View {
-        Button {
-            buttonTapped()
-        } label: {
-            HStack(spacing: 16) {
-                Image(systemName: iconName)
-                Text(title)
-                Spacer()
-            }
-        }
-        .padding()
-        .font(fonts.bodyBold)
-        .foregroundColor(foregroundColor)
-        .background(Color(colors.background8))
-    }
-}
+    var content: Content
 
-public struct ChannelInfoDivider: View {
-    @Injected(\.colors) private var colors
-
-    public init() {}
-    
-    public var body: some View {
-        Rectangle()
-            .fill(Color(colors.innerBorder))
-            .frame(height: 8)
-    }
-}
-
-public struct ChatInfoOptionsView<Factory: ViewFactory>: View {
-    @Injected(\.images) private var images
-    @Injected(\.colors) private var colors
-    @Injected(\.fonts) private var fonts
-
-    @StateObject var viewModel: ChatChannelInfoViewModel
-    let factory: Factory
-    
-    public init(
-        factory: Factory = DefaultViewFactory.shared,
-        viewModel: ChatChannelInfoViewModel
-    ) {
-        _viewModel = StateObject(wrappedValue: viewModel)
-        self.factory = factory
+    public init(@ViewBuilder content: () -> Content) {
+        self.content = content()
     }
 
     public var body: some View {
         VStack(spacing: 0) {
-            if viewModel.showSingleMemberDMView {
-                ChatInfoMentionText(participant: viewModel.displayedParticipants.first)
-            } else if !viewModel.channel.isDirectMessageChannel {
-                ChannelNameUpdateView(viewModel: viewModel)
-            }
-
-            Divider()
-
-            if viewModel.shouldShowMuteChannelButton {
-                ChannelInfoItemView(
-                    icon: images.muted,
-                    title: viewModel.mutedText,
-                    verticalPadding: 12
-                ) {
-                    Toggle(isOn: $viewModel.muted) {
-                        EmptyView()
-                    }
-                }
-            }
-
-            Divider()
-
-            NavigatableChatInfoItemView(
-                icon: images.pin,
-                title: L10n.ChatInfo.PinnedMessages.title
-            ) {
-                PinnedMessagesView(
-                    factory: factory,
-                    channel: viewModel.channel,
-                    channelController: viewModel.channelController
-                )
-            }
-
-            Divider()
-
-            NavigatableChatInfoItemView(
-                icon: UIImage(systemName: "photo")!,
-                title: L10n.ChatInfo.Media.title
-            ) {
-                MediaAttachmentsView(factory: factory, channel: viewModel.channel)
-            }
-
-            Divider()
-
-            NavigatableChatInfoItemView(
-                icon: UIImage(systemName: "folder")!,
-                title: L10n.ChatInfo.Files.title
-            ) {
-                FileAttachmentsView(channel: viewModel.channel)
-            }
+            content
         }
+        .clipShape(RoundedRectangle(cornerRadius: tokens.radiusLg))
     }
 }
 
-public struct ChannelNameUpdateView: View {
-    @Injected(\.images) private var images
-    @Injected(\.colors) private var colors
-    @Injected(\.fonts) private var fonts
+// MARK: - Group Header
 
-    @StateObject var viewModel: ChatChannelInfoViewModel
-    
+/// Header view shown at the top of the group info screen.
+/// Displays the channel avatar stack, channel name, and member count.
+public struct ChatInfoGroupHeaderView: View {
+    @Injected(\.fonts) private var fonts
+    @Injected(\.colors) private var colors
+    @Injected(\.tokens) private var tokens
+
+    @ObservedObject var viewModel: ChatChannelInfoViewModel
+
     public init(viewModel: ChatChannelInfoViewModel) {
-        _viewModel = StateObject(wrappedValue: viewModel)
+        self.viewModel = viewModel
     }
 
     public var body: some View {
-        HStack(spacing: 16) {
-            Text(L10n.ChatInfo.Rename.name)
-                .font(fonts.footnote)
-                .foregroundColor(Color(colors.textLowEmphasis))
+        VStack(spacing: tokens.spacingXs) {
+            ChannelAvatar(
+                channel: viewModel.channel,
+                size: AvatarSize.extraExtraLarge,
+                showsIndicator: false,
+                showsBorder: true
+            )
 
-            TextField(L10n.ChatInfo.Rename.placeholder, text: $viewModel.channelName)
-                .font(fonts.body)
-                .foregroundColor(Color(colors.text))
-                .disabled(!viewModel.canRenameChannel)
+            Text(viewModel.channelName)
+                .font(fonts.title3.weight(.semibold))
+                .foregroundColor(Color(colors.textPrimary))
+
+            let onlineCount = viewModel.participants.filter { $0.chatUser.isOnline }.count
+            Text(L10n.Message.Title.group(viewModel.channel.memberCount, onlineCount))
+                .font(fonts.footnote)
+                .foregroundColor(Color(colors.textSecondary))
+        }
+        .frame(maxWidth: .infinity)
+        .padding(.horizontal, tokens.spacingMd)
+    }
+}
+
+// MARK: - DM Header
+
+/// Header view shown at the top of the direct message info screen.
+/// Displays the user avatar with online indicator, name, and online status.
+public struct ChatInfoDirectMessageView<Factory: ViewFactory>: View {
+    @Injected(\.fonts) private var fonts
+    @Injected(\.colors) private var colors
+    @Injected(\.tokens) private var tokens
+
+    let factory: Factory
+    let participant: ParticipantInfo
+
+    public init(factory: Factory = DefaultViewFactory.shared, participant: ParticipantInfo) {
+        self.factory = factory
+        self.participant = participant
+    }
+
+    public var body: some View {
+        VStack(spacing: tokens.spacingXs) {
+            factory.makeUserAvatarView(
+                options: UserAvatarViewOptions(
+                    user: participant.chatUser,
+                    size: AvatarSize.extraExtraLarge,
+                    showsIndicator: participant.chatUser.isOnline
+                )
+            )
+
+            Text(participant.displayName)
+                .font(fonts.title3.weight(.semibold))
+                .foregroundColor(Color(colors.textPrimary))
+
+            Text(participant.onlineInfoText)
+                .font(fonts.footnote)
+                .foregroundColor(Color(colors.textSecondary))
+        }
+        .frame(maxWidth: .infinity)
+        .padding(.horizontal, tokens.spacingMd)
+    }
+}
+
+// MARK: - Member Row
+
+/// A single row in the members section of the group info screen.
+/// Shows avatar, name, online status, and an admin badge when applicable.
+public struct ChatInfoMemberView<Factory: ViewFactory>: View {
+    @Injected(\.fonts) private var fonts
+    @Injected(\.colors) private var colors
+    @Injected(\.tokens) private var tokens
+
+    let factory: Factory
+    let participant: ParticipantInfo
+    var backgroundColor: UIColor?
+    var onAppear: @MainActor () -> Void
+    var onTap: @MainActor () -> Void
+
+    public init(
+        factory: Factory = DefaultViewFactory.shared,
+        participant: ParticipantInfo,
+        backgroundColor: UIColor? = nil,
+        onAppear: @escaping @MainActor () -> Void,
+        onTap: @escaping @MainActor () -> Void
+    ) {
+        self.factory = factory
+        self.participant = participant
+        self.backgroundColor = backgroundColor
+        self.onAppear = onAppear
+        self.onTap = onTap
+    }
+
+    public var body: some View {
+        HStack(spacing: tokens.spacingSm) {
+            factory.makeUserAvatarView(
+                options: UserAvatarViewOptions(
+                    user: participant.chatUser,
+                    size: AvatarSize.medium,
+                    showsIndicator: participant.chatUser.isOnline
+                )
+            )
+
+            VStack(alignment: .leading, spacing: tokens.spacingXxxs) {
+                Text(participant.displayName)
+                    .lineLimit(1)
+                    .font(fonts.bodyBold)
+                    .foregroundColor(Color(colors.textPrimary))
+                Text(participant.onlineInfoText)
+                    .font(fonts.footnote)
+                    .foregroundColor(Color(colors.textSecondary))
+            }
 
             Spacer()
 
-            if viewModel.keyboardShown {
-                Button {
-                    viewModel.cancelGroupRenaming()
-                } label: {
-                    Image(systemName: "xmark.circle")
-                        .foregroundColor(Color(colors.textLowEmphasis))
-                }
-
-                Button {
-                    viewModel.confirmGroupRenaming()
-                } label: {
-                    Image(systemName: "checkmark")
-                        .foregroundColor(Color(colors.accentPrimary))
-                }
+            if isAdminOrOwner {
+                Text(L10n.ChatInfo.Member.admin)
+                    .font(fonts.footnote)
+                    .foregroundColor(Color(colors.textSecondary))
             }
         }
-        .padding()
-        .background(Color(colors.background))
+        .padding(.horizontal, tokens.spacingMd)
+        .padding(.vertical, tokens.spacingXs)
+        .background(Color(backgroundColor ?? colors.backgroundCoreSurfaceSubtle))
+        .contentShape(.rect)
+        .onAppear { onAppear() }
+        .onTapGesture { onTap() }
+    }
+
+    private var isAdminOrOwner: Bool {
+        guard let member = participant.chatUser as? ChatChannelMember else { return false }
+        return member.memberRole == .admin || member.memberRole == .owner || member.memberRole == .moderator
     }
 }
+
+// MARK: - Navigation Row
 
 public struct NavigatableChatInfoItemView<Destination: View>: View {
     let icon: UIImage
     let title: String
     var destination: () -> Destination
-    
+
     public init(
         icon: UIImage,
         title: String,
@@ -197,106 +207,137 @@ struct DisclosureIndicatorView: View {
     @Injected(\.colors) private var colors
 
     var body: some View {
-        Image(systemName: "chevron.right")
-            .foregroundColor(Color(colors.textLowEmphasis))
+        Image(systemName: "chevron.forward")
+            .foregroundColor(Color(colors.textSecondary))
     }
 }
+
+// MARK: - Item Row
 
 public struct ChannelInfoItemView<TrailingView: View>: View {
     @Injected(\.colors) private var colors
     @Injected(\.fonts) private var fonts
+    @Injected(\.tokens) private var tokens
 
     let icon: UIImage
     let title: String
-    var verticalPadding: CGFloat = 16
     var trailingView: () -> TrailingView
-    
+
     public init(
         icon: UIImage,
         title: String,
-        verticalPadding: CGFloat = 16,
         trailingView: @escaping () -> TrailingView
     ) {
         self.icon = icon
         self.title = title
-        self.verticalPadding = verticalPadding
         self.trailingView = trailingView
     }
 
     public var body: some View {
-        HStack(spacing: 16) {
+        HStack(spacing: tokens.spacingMd) {
             Image(uiImage: icon)
                 .customizable()
-                .frame(width: 24)
-                .foregroundColor(Color(colors.textLowEmphasis))
+                .frame(width: tokens.spacingLg)
+                .foregroundColor(Color(colors.textSecondary))
 
             Text(title)
-                .font(fonts.bodyBold)
-                .foregroundColor(Color(colors.text))
+                .font(fonts.body)
+                .foregroundColor(Color(colors.textPrimary))
 
             Spacer()
 
             trailingView()
         }
-        .padding(.horizontal)
-        .padding(.vertical, verticalPadding)
-        .background(Color(colors.background8))
+        .padding(.horizontal, tokens.spacingMd)
+        .padding(.vertical, tokens.spacingMd)
+        .background(Color(colors.backgroundCoreSurfaceSubtle))
     }
 }
 
-public struct ChatInfoDirectChannelView<Factory: ViewFactory>: View {
-    @Injected(\.fonts) private var fonts
+// MARK: - Member List View
+
+/// A view that displays the full member list for a group channel, presented as a sheet.
+public struct MemberListView<Factory: ViewFactory>: View {
     @Injected(\.colors) private var colors
+    @Injected(\.fonts) private var fonts
+    @Injected(\.tokens) private var tokens
+    @Injected(\.images) private var images
+    @Injected(\.chatClient) private var chatClient
 
     let factory: Factory
-    var participant: ParticipantInfo?
-    
-    public init(factory: Factory = DefaultViewFactory.shared, participant: ParticipantInfo?) {
+    @ObservedObject var viewModel: ChatChannelInfoViewModel
+    @State private var selectedParticipant: ParticipantInfo?
+    @State private var addUsersShown = false
+
+    public init(factory: Factory = DefaultViewFactory.shared, viewModel: ChatChannelInfoViewModel) {
         self.factory = factory
-        self.participant = participant
+        self.viewModel = viewModel
     }
 
     public var body: some View {
-        VStack {
-            if let user = participant?.chatUser {
-                factory.makeUserAvatarView(
-                    options: UserAvatarViewOptions(
-                        user: user,
-                        size: AvatarSize.extraExtraLarge,
-                        showsIndicator: true
-                    )
-                )
+        NavigationView {
+            ScrollView {
+                LazyVStack(spacing: 0) {
+                    ForEach(viewModel.allParticipants) { participant in
+                        ChatInfoMemberView(
+                            factory: factory,
+                            participant: participant,
+                            backgroundColor: colors.backgroundCoreApp,
+                            onAppear: { viewModel.onMemberAppear(participant) },
+                            onTap: {
+                                selectedParticipant = participant
+                            }
+                        )
+                    }
+                }
             }
-            
-            Text(participant?.onlineInfoText ?? "")
-                .font(fonts.footnote)
-                .foregroundColor(Color(colors.textLowEmphasis))
+            .background(Color(colors.backgroundCoreApp).edgesIgnoringSafeArea(.all))
+            .toolbarThemed {
+                ToolbarItem(placement: .principal) {
+                    Text(L10n.ChatInfo.Members.count(viewModel.channel.memberCount))
+                        .font(fonts.bodyBold)
+                        .foregroundColor(Color(colors.navigationBarTitle))
+                }
+                ToolbarItem(placement: .navigationBarLeading) {
+                    Button {
+                        viewModel.memberListSheetShown = false
+                    } label: {
+                        Image(uiImage: images.close)
+                            .foregroundColor(Color(colors.textSecondary))
+                    }
+                }
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    if viewModel.shouldShowAddUserButton {
+                        StreamIconButton(role: .primary, style: .solid, size: .small) {
+                            addUsersShown = true
+                        } icon: {
+                            Image(systemName: "person.badge.plus")
+                        }
+                    }
+                }
+            }
+            .navigationBarTitleDisplayMode(.inline)
         }
-        .padding(.bottom)
-    }
-}
-
-public struct ChatInfoMentionText: View {
-    @Injected(\.colors) private var colors
-
-    var participant: ParticipantInfo?
-    
-    public init(participant: ParticipantInfo? = nil) {
-        self.participant = participant
-    }
-
-    public var body: some View {
-        let mentionText = "@\(participant?.chatUser.mentionText ?? "")"
-        ChannelInfoItemView(
-            icon: UIImage(systemName: "person")!,
-            title: mentionText
-        ) {
-            Button {
-                UIPasteboard.general.string = mentionText
-            } label: {
-                Image(systemName: "doc.on.doc")
-                    .foregroundColor(Color(colors.textLowEmphasis))
+        .sheet(item: $selectedParticipant) { participant in
+            ParticipantInfoView(
+                factory: factory,
+                participant: participant,
+                actions: viewModel.participantActions(for: participant)
+            ) {
+                selectedParticipant = nil
             }
+            .modifier(PresentationDetentsModifier(sheetSizes: [.custom(280), .medium]))
+        }
+        .sheet(isPresented: $addUsersShown) {
+            factory.makeAddUsersView(
+                options: AddUsersViewOptions(
+                    options: .init(loadedUserIds: viewModel.allMemberIds),
+                    onConfirm: { users in
+                        viewModel.addUsersTapped(users)
+                        addUsersShown = false
+                    }
+                )
+            )
         }
     }
 }

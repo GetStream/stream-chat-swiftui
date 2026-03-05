@@ -634,7 +634,7 @@ public extension MessageAction {
         let blockUser = MessageAction(
             id: MessageActionId.block,
             title: L10n.Message.Actions.userBlock,
-            iconName: "circle.slash",
+            iconName: "icn_block_user",
             action: blockAction,
             confirmationPopup: ConfirmationPopup(
                 title: L10n.Message.Actions.userBlock,
@@ -712,7 +712,7 @@ public extension MessageAction {
         let unblockUser = MessageAction(
             id: MessageActionId.unblock,
             title: L10n.Message.Actions.userUnblock,
-            iconName: "circle.slash",
+            iconName: "icn_block_user",
             action: unblockAction,
             confirmationPopup: ConfirmationPopup(
                 title: L10n.Message.Actions.userUnblock,

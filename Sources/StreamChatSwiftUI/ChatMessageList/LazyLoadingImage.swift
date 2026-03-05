@@ -16,6 +16,7 @@ struct LazyLoadingImage: View {
     let height: CGFloat
     var resize: Bool = true
     var shouldSetFrame: Bool = true
+    var showVideoIcon: Bool = true
     var imageTapped: ((Int) -> Void)?
     var index: Int?
     var onImageLoaded: (UIImage) -> Void = { _ in /* Default implementation. */ }
@@ -54,7 +55,7 @@ struct LazyLoadingImage: View {
                 }
             }
 
-            if source.type == .video && width > 64 && source.uploadingState == nil {
+            if showVideoIcon && source.type == .video && width > 64 && source.uploadingState == nil {
                 VideoPlayIcon()
                     .accessibilityHidden(true)
             }
