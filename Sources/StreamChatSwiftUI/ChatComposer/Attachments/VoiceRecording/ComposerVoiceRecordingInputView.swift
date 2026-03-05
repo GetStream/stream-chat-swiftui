@@ -80,7 +80,7 @@ struct ComposerVoiceRecordingInputView<Factory: ViewFactory>: View {
     private var micIndicator: some View {
         Image(systemName: "mic")
             .font(.system(size: 20))
-            .foregroundColor(.red)
+            .foregroundColor(Color(colors.accentError))
             .frame(width: 48, height: 48)
             .accessibilityHidden(true)
     }
@@ -206,6 +206,7 @@ struct ComposerVoiceRecordingInputView<Factory: ViewFactory>: View {
         }
         .frame(width: 48, height: 48)
         .contentShape(Rectangle())
+        .accessibilityLabel(Text(L10n.Composer.Recording.voiceMessageDeleted))
     }
 
     private var stopControlButton: some View {
@@ -220,6 +221,7 @@ struct ComposerVoiceRecordingInputView<Factory: ViewFactory>: View {
         }
         .frame(width: 48, height: 48)
         .contentShape(Rectangle())
+        .accessibilityLabel(Text(L10n.Composer.AudioRecording.stop))
     }
 
     // MARK: - Helpers

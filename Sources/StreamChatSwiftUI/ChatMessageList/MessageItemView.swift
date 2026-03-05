@@ -188,7 +188,7 @@ public struct MessageItemView<Factory: ViewFactory>: View {
 
 /// Areas that should not trigger swipe-to-reply (e.g. waveform sliders).
 struct SwipeToReplyExcludedFrameKey: PreferenceKey {
-    nonisolated(unsafe) static var defaultValue: [CGRect] = []
+    nonisolated static let defaultValue: [CGRect] = []
     static func reduce(value: inout [CGRect], nextValue: () -> [CGRect]) {
         value.append(contentsOf: nextValue())
     }
@@ -208,6 +208,7 @@ private struct SwipeToReplyModifier: ViewModifier {
     @GestureState private var offset: CGSize = .zero
 
     private let replyThreshold: CGFloat = 60
+    private let feedbackGenerator = UIImpactFeedbackGenerator(style: .medium)
 
     func body(content: Content) -> some View {
         content
@@ -285,7 +286,7 @@ private struct SwipeToReplyModifier: ViewModifier {
         }
 
         if offsetX > replyThreshold && quotedMessage != message {
-            UIImpactFeedbackGenerator(style: .medium).impactOccurred()
+            feedbackGenerator.impactOccurred()
             withAnimation {
                 quotedMessage = message
             }

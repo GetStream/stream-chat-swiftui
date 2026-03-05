@@ -19,5 +19,6 @@ public struct PlayPauseButton: View {
             Image(systemName: isPlaying ? "pause.fill" : "play.fill")
                 .font(.system(size: 20))
         }
+        .accessibilityLabel(Text(isPlaying ? "Pause" : "Play"))
     }
 }
