@@ -212,6 +212,40 @@ import XCTest
         AssertSnapshot(view, size: size)
     }
 
+    func test_messageComposerView_voiceRecordingPlaying() {
+        // Given
+        let url = URL(string: "https://example.com/recording.m4a")!
+        let recording = AddedVoiceRecording(
+            url: url,
+            duration: 10,
+            waveform: [0, 0.1, 0.4, 0.7, 1.0, 0.8, 0.5, 0.3, 0.6, 0.9]
+        )
+        let handler = VoiceRecordingHandler()
+        handler.isPlaying = true
+        handler.context = AudioPlaybackContext(
+            assetLocation: url,
+            duration: 10,
+            currentTime: 4.2,
+            state: .playing,
+            rate: .normal,
+            isSeeking: false
+        )
+        let size = CGSize(width: composerWidth - 32, height: 100)
+
+        // When
+        let view = ComposerVoiceRecordingAttachmentView(
+            handler: handler,
+            recording: recording,
+            index: 0,
+            onDiscardAttachment: { _ in }
+        )
+        .frame(width: size.width)
+        .padding()
+
+        // Then
+        AssertSnapshot(view, variants: [.defaultLight], size: size)
+    }
+
     func test_composerInputView_slowMode() {
         // Given
         let factory = DefaultViewFactory.shared
@@ -220,6 +254,7 @@ import XCTest
         // When
         let view = ComposerInputView(
             factory: factory,
+            viewModel: MessageComposerTestUtils.makeComposerViewModel(chatClient: chatClient),
             channelController: channelController,
             text: .constant(""),
             selectedRangeLocation: .constant(0),
@@ -244,7 +279,6 @@ import XCTest
             sendInChannelShown: false,
             showReplyInChannel: .constant(false)
         )
-        .environmentObject(MessageComposerTestUtils.makeComposerViewModel(chatClient: chatClient))
         .frame(width: composerWidth, height: 200)
 
         // Then
@@ -487,6 +521,7 @@ import XCTest
         // When
         let view = ComposerInputView(
             factory: factory,
+            viewModel: viewModel,
             channelController: mockChannelController,
             text: .constant(""),
             selectedRangeLocation: .constant(0),
@@ -511,7 +546,6 @@ import XCTest
             sendInChannelShown: false,
             showReplyInChannel: .constant(false)
         )
-        .environmentObject(viewModel)
         .frame(width: composerWidth, height: 200)
 
         // Then
@@ -697,6 +731,7 @@ import XCTest
 
         let view = ComposerInputView(
             factory: factory,
+            viewModel: MessageComposerTestUtils.makeComposerViewModel(chatClient: chatClient),
             channelController: channelController,
             text: .constant(""),
             selectedRangeLocation: .constant(0),
@@ -721,7 +756,6 @@ import XCTest
             sendInChannelShown: false,
             showReplyInChannel: .constant(false)
         )
-        .environmentObject(MessageComposerTestUtils.makeComposerViewModel(chatClient: chatClient))
         .frame(width: size.width, height: size.height)
 
         AssertSnapshot(view, size: size)
@@ -740,6 +774,7 @@ import XCTest
 
         let view = ComposerInputView(
             factory: factory,
+            viewModel: MessageComposerTestUtils.makeComposerViewModel(chatClient: chatClient),
             channelController: channelController,
             text: .constant(""),
             selectedRangeLocation: .constant(0),
@@ -764,7 +799,6 @@ import XCTest
             sendInChannelShown: false,
             showReplyInChannel: .constant(false)
         )
-        .environmentObject(MessageComposerTestUtils.makeComposerViewModel(chatClient: chatClient))
         .frame(width: size.width, height: size.height)
 
         AssertSnapshot(view, variants: .onlyUserInterfaceStyles, size: size)
@@ -777,6 +811,7 @@ import XCTest
 
         let view = ComposerInputView(
             factory: factory,
+            viewModel: MessageComposerTestUtils.makeComposerViewModel(chatClient: chatClient),
             channelController: channelController,
             text: .constant(""),
             selectedRangeLocation: .constant(0),
@@ -801,7 +836,6 @@ import XCTest
             sendInChannelShown: false,
             showReplyInChannel: .constant(false)
         )
-        .environmentObject(MessageComposerTestUtils.makeComposerViewModel(chatClient: chatClient))
         .frame(width: size.width, height: size.height)
 
         AssertSnapshot(view, variants: .onlyUserInterfaceStyles, size: size)
