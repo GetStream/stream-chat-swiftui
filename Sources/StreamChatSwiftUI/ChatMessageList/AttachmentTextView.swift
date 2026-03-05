@@ -35,14 +35,6 @@ public struct AttachmentTextView<Factory: ViewFactory>: View {
         if let injectedBackgroundColor {
             return injectedBackgroundColor
         }
-        if message.isSentByCurrentUser {
-            if message.type == .ephemeral {
-                return colors.background8
-            } else {
-                return colors.chatBackgroundOutgoing
-            }
-        } else {
-            return colors.chatBackgroundIncoming
-        }
+        return message.isSentByCurrentUser ? colors.chatBackgroundOutgoing : colors.chatBackgroundIncoming
     }
 }
