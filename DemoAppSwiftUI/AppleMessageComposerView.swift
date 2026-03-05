@@ -81,6 +81,7 @@ struct AppleMessageComposerView<Factory: ViewFactory>: View, KeyboardReadable {
 
                 ComposerInputView(
                     factory: DefaultViewFactory.shared,
+                    viewModel: viewModel,
                     channelController: viewModel.channelController,
                     text: $viewModel.text,
                     selectedRangeLocation: $viewModel.selectedRangeLocation,
