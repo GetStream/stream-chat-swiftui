@@ -54,17 +54,13 @@ public struct VoiceRecordingContainerView<Factory: ViewFactory>: View {
                     ForEach(message.voiceRecordingAttachments, id: \.self) { attachment in
                         VoiceRecordingView(
                             handler: handler,
-                            textColor: textColor(for: message),
                             addedVoiceRecording: AddedVoiceRecording(
                                 url: attachment.payload.voiceRecordingURL,
                                 duration: attachment.payload.duration ?? 0,
                                 waveform: attachment.payload.waveformData ?? []
-                            ),
-                            index: index(for: attachment)
+                            )
                         )
                         .padding(.all, 8)
-                        .background(Color(colors.background8))
-                        .roundWithBorder(cornerRadius: 14)
                     }
                 }
             }
@@ -112,88 +108,24 @@ public struct VoiceRecordingContainerView<Factory: ViewFactory>: View {
 }
 
 struct VoiceRecordingView: View {
-    @Injected(\.utils) var utils
     @Injected(\.colors) var colors
-    @Injected(\.images) var images
+    @Injected(\.fonts) var fonts
+    @Injected(\.tokens) var tokens
+    @Injected(\.utils) var utils
 
     @State var loading: Bool = false
     @ObservedObject var handler: VoiceRecordingHandler
 
-    let textColor: Color
     let addedVoiceRecording: AddedVoiceRecording
-    let index: Int
 
     private var isActive: Bool { handler.isActive(for: addedVoiceRecording.url) }
     private var showContextDuration: Bool { isActive && handler.context.currentTime > 0 }
 
     var body: some View {
-        HStack {
-            Button {
-                handler.togglePlayback(for: addedVoiceRecording.url)
-            } label: {
-                Image(uiImage: handler.isPlaying && isActive ? images.pauseFill : images.playFill)
-                    .frame(width: 36, height: 36)
-                    .foregroundColor(.primary)
-                    .modifier(
-                        ShadowViewModifier(
-                            backgroundColor: colors.voiceMessageControlBackground,
-                            cornerRadius: 18,
-                            firstRadius: 2,
-                            firstY: 4
-                        )
-                    )
-            }
-            .opacity(loading ? 0 : 1)
-            .overlay(loading ? ProgressView() : nil)
-
-            VStack(alignment: .leading, spacing: 4) {
-                Text(
-                    utils.audioRecordingNameFormatter.title(
-                        forItemAtURL: addedVoiceRecording.url,
-                        index: index
-                    )
-                )
-                .bold()
-                .lineLimit(1)
-                .foregroundColor(textColor)
-
-                HStack {
-                    VoiceRecordingDurationView(
-                        duration: showContextDuration ? handler.context.currentTime : addedVoiceRecording.duration
-                    )
-                    WaveformViewSwiftUI(
-                        audioContext: handler.context,
-                        addedVoiceRecording: addedVoiceRecording,
-                        onSliderChanged: { timeInterval in
-                            handler.seek(to: timeInterval, loadingFrom: isActive ? nil : addedVoiceRecording.url)
-                        },
-                        onSliderTapped: {
-                            handler.togglePlayback(for: addedVoiceRecording.url)
-                        }
-                    )
-                    .frame(height: 30)
-                    Spacer()
-                }
-            }
-
-            if handler.isPlaying && isActive {
-                Button {
-                    handler.cycleRate()
-                } label: {
-                    Text(handler.rateTitle)
-                        .font(.caption)
-                        .padding(.all, 8)
-                        .padding(.horizontal, 2)
-                        .foregroundColor(.primary)
-                        .modifier(ShadowViewModifier(firstRadius: 2, firstY: 4))
-                }
-            } else {
-                Image(uiImage: images.fileAac)
-                    .resizable()
-                    .aspectRatio(contentMode: .fit)
-                    .frame(height: 40)
-                    .accessibilityHidden(true)
-            }
+        HStack(spacing: tokens.spacingXs) {
+            playButton
+            durationAndWaveform
+            PlaybackSpeedToggle(handler: handler)
         }
         .onReceive(handler.$context) { value in
             guard value.assetLocation == addedVoiceRecording.url else { return }
@@ -205,6 +137,62 @@ struct VoiceRecordingView: View {
             }
             handler.updatePlaybackState(for: addedVoiceRecording.url)
         }
+    }
+
+    private var playButton: some View {
+        StreamIconButton(role: .secondary, style: .outline, size: .medium) {
+            handler.togglePlayback(for: addedVoiceRecording.url)
+        } icon: {
+            Image(systemName: handler.isPlaying && isActive ? "pause.fill" : "play.fill")
+                .font(.system(size: 20))
+        }
+        .opacity(loading ? 0 : 1)
+        .overlay(loading ? ProgressView() : nil)
+    }
+
+    private var durationAndWaveform: some View {
+        HStack(spacing: tokens.spacingXs) {
+            Text(utils.videoDurationFormatter.format(showContextDuration ? handler.context.currentTime : addedVoiceRecording.duration) ?? "")
+                .font(fonts.footnote.monospacedDigit())
+                .foregroundColor(Color(handler.isPlaying && isActive ? colors.accentPrimary : colors.textPrimary))
+
+            WaveformViewSwiftUI(
+                audioContext: handler.context,
+                addedVoiceRecording: addedVoiceRecording,
+                onSliderChanged: { timeInterval in
+                    handler.seek(to: timeInterval, loadingFrom: isActive ? nil : addedVoiceRecording.url)
+                },
+                onSliderTapped: {
+                    handler.togglePlayback(for: addedVoiceRecording.url)
+                }
+            )
+            .frame(height: 20)
+        }
+    }
+}
+
+/// Reusable playback speed toggle (x0.5 / x1 / x2).
+struct PlaybackSpeedToggle: View {
+    @Injected(\.colors) private var colors
+    @Injected(\.fonts) private var fonts
+    @Injected(\.tokens) private var tokens
+
+    @ObservedObject var handler: VoiceRecordingHandler
+
+    var body: some View {
+        Button {
+            handler.cycleRate()
+        } label: {
+            Text(handler.rateTitle)
+                .font(fonts.footnote)
+                .foregroundColor(Color(colors.textPrimary))
+                .frame(width: 40, height: 24)
+                .overlay(
+                    Capsule()
+                        .stroke(Color(colors.borderCoreDefault), lineWidth: 1)
+                )
+        }
+        .frame(width: 40, height: 48)
     }
 }
 

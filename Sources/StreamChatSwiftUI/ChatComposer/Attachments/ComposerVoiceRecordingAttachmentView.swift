@@ -132,18 +132,6 @@ struct ComposerVoiceRecordingAttachmentView: View {
     // MARK: - Speed Toggle
 
     private var playbackSpeedToggle: some View {
-        Button {
-            handler.cycleRate()
-        } label: {
-            Text(handler.rateTitle)
-                .font(fonts.footnote)
-                .foregroundColor(Color(colors.textPrimary))
-                .frame(width: 40, height: 24)
-                .overlay(
-                    Capsule()
-                        .stroke(Color(colors.borderCoreDefault), lineWidth: 1)
-                )
-        }
-        .frame(width: 40, height: 48)
+        PlaybackSpeedToggle(handler: handler)
     }
 }
