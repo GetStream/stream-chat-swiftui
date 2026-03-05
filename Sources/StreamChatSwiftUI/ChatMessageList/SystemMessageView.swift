@@ -8,6 +8,7 @@ import SwiftUI
 public struct SystemMessageView: View {
     @Injected(\.fonts) private var fonts
     @Injected(\.colors) private var colors
+    @Injected(\.tokens) private var tokens
 
     var message: String
 
@@ -17,10 +18,17 @@ public struct SystemMessageView: View {
 
     public var body: some View {
         Text(message)
-            .font(fonts.caption1)
-            .bold()
-            .foregroundColor(Color(colors.textLowEmphasis))
-            .standardPadding()
+            .font(fonts.footnote)
+            .foregroundColor(Color(colors.chatTextSystem))
+            .padding(.vertical, tokens.spacingXs)
+            .padding(.horizontal, tokens.spacingSm)
             .accessibilityIdentifier("SystemMessageView")
+            .background(Color(colors.backgroundCoreSurfaceSubtle))
+            .cornerRadius(tokens.radiusXl)
+            .overlay(
+                RoundedRectangle(cornerRadius: tokens.radiusXl)
+                    .stroke(Color(colors.borderCoreSubtle), lineWidth: 1)
+            )
+            .standardPadding()
     }
 }
