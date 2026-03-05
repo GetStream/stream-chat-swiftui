@@ -146,11 +146,8 @@ struct VoiceRecordingView: View {
     }
 
     private var playButton: some View {
-        StreamIconButton(role: .secondary, style: .outline, size: .medium) {
+        PlayPauseButton(isPlaying: handler.isPlaying && isActive) {
             handler.togglePlayback(for: addedVoiceRecording.url)
-        } icon: {
-            Image(systemName: handler.isPlaying && isActive ? "pause.fill" : "play.fill")
-                .font(.system(size: 20))
         }
         .overlay(
             Group {
