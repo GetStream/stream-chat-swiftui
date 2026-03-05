@@ -525,9 +525,9 @@ public struct ComposerInputView<Factory: ViewFactory>: View, KeyboardReadable {
                 .opacity(recordingState.showsComposer ? 1 : 0)
                 .allowsHitTesting(recordingState.showsComposer)
 
-            voiceRecordingContent
-                .opacity(recordingState.showsComposer ? 0 : 1)
-                .allowsHitTesting(!recordingState.showsComposer)
+            if !recordingState.showsComposer {
+                voiceRecordingContent
+            }
         }
         .animation(.composerVoiceRecordingSpring, value: recordingState.showsComposer)
         .modifier(
