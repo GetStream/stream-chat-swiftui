@@ -28,7 +28,7 @@ public struct AttachmentTextView<Factory: ViewFactory>: View {
             Spacer()
         }
         .background(Color(backgroundColor))
-        .accessibilityIdentifier("AttachmentTextView")
+        .accessibilityIdentifier("MessageTextView")
     }
 
     private var backgroundColor: UIColor {
