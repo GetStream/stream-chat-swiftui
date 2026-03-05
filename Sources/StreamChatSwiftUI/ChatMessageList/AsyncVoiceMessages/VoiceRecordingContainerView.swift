@@ -58,7 +58,8 @@ public struct VoiceRecordingContainerView<Factory: ViewFactory>: View {
                                 url: attachment.payload.voiceRecordingURL,
                                 duration: attachment.payload.duration ?? 0,
                                 waveform: attachment.payload.waveformData ?? []
-                            )
+                            ),
+                            isSentByCurrentUser: message.isSentByCurrentUser
                         )
                         .padding(.all, 8)
                     }
@@ -117,15 +118,20 @@ struct VoiceRecordingView: View {
     @ObservedObject var handler: VoiceRecordingHandler
 
     let addedVoiceRecording: AddedVoiceRecording
+    var isSentByCurrentUser: Bool = false
 
     private var isActive: Bool { handler.isActive(for: addedVoiceRecording.url) }
     private var showContextDuration: Bool { isActive && handler.context.currentTime > 0 }
+
+    private var controlBorderColor: Color? {
+        isSentByCurrentUser ? Color(colors.accentPrimary) : nil
+    }
 
     var body: some View {
         HStack(spacing: tokens.spacingXs) {
             playButton
             durationAndWaveform
-            PlaybackSpeedToggle(handler: handler)
+            PlaybackSpeedToggle(handler: handler, borderColor: controlBorderColor)
         }
         .onReceive(handler.$context) { value in
             guard value.assetLocation == addedVoiceRecording.url else { return }
@@ -146,6 +152,13 @@ struct VoiceRecordingView: View {
             Image(systemName: handler.isPlaying && isActive ? "pause.fill" : "play.fill")
                 .font(.system(size: 20))
         }
+        .overlay(
+            Group {
+                if let controlBorderColor {
+                    Circle().stroke(controlBorderColor, lineWidth: 1)
+                }
+            }
+        )
         .opacity(loading ? 0 : 1)
         .overlay(loading ? ProgressView() : nil)
     }
@@ -178,6 +191,11 @@ struct PlaybackSpeedToggle: View {
     @Injected(\.tokens) private var tokens
 
     @ObservedObject var handler: VoiceRecordingHandler
+    var borderColor: Color?
+
+    private var resolvedBorderColor: Color {
+        borderColor ?? Color(colors.borderCoreDefault)
+    }
 
     var body: some View {
         Button {
@@ -189,7 +207,7 @@ struct PlaybackSpeedToggle: View {
                 .frame(width: 40, height: 24)
                 .overlay(
                     Capsule()
-                        .stroke(Color(colors.borderCoreDefault), lineWidth: 1)
+                        .stroke(resolvedBorderColor, lineWidth: 1)
                 )
         }
         .frame(width: 40, height: 48)
