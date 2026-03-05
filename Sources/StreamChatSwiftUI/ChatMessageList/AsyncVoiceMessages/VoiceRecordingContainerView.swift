@@ -169,6 +169,7 @@ struct VoiceRecordingView: View {
             WaveformViewSwiftUI(
                 audioContext: handler.context,
                 addedVoiceRecording: addedVoiceRecording,
+                isPlaying: handler.isPlaying && isActive,
                 onSliderChanged: { timeInterval in
                     handler.seek(to: timeInterval, loadingFrom: isActive ? nil : addedVoiceRecording.url)
                 },

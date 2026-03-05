@@ -146,6 +146,7 @@ struct ComposerVoiceRecordingInputView<Factory: ViewFactory>: View {
     private var lockedRecordingTrailing: some View {
         RecordingWaveform(
             isRecording: !isStopped,
+            isPlaying: handler.isPlaying,
             duration: viewModel.audioRecordingInfo.duration,
             currentTime: isStopped
                 ? handler.context.currentTime

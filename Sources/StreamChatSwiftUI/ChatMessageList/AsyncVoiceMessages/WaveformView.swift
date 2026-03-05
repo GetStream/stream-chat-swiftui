@@ -19,6 +19,9 @@ open class WaveformView: UIView {
         /// as new data arrive).
         public var isRecording: Bool
 
+        /// Whether audio playback is currently active.
+        public var isPlaying: Bool
+
         /// The duration of the Audio file that we are representing.
         public var duration: TimeInterval
 
@@ -30,6 +33,7 @@ open class WaveformView: UIView {
 
         public static let initial = Content(
             isRecording: false,
+            isPlaying: false,
             duration: 0,
             currentTime: 0,
             waveform: []
@@ -37,11 +41,13 @@ open class WaveformView: UIView {
 
         public init(
             isRecording: Bool,
+            isPlaying: Bool = false,
             duration: TimeInterval,
             currentTime: TimeInterval,
             waveform: [Float]
         ) {
             self.isRecording = isRecording
+            self.isPlaying = isPlaying
             self.duration = duration
             self.currentTime = currentTime
             self.waveform = waveform
@@ -86,7 +92,7 @@ open class WaveformView: UIView {
         setNeedsLayout()
         audioVisualizationView.backgroundColor = .clear
 
-        slider.setThumbImage(images.sliderThumb, for: .normal)
+        applySliderThumb(isPlaying: false)
         slider.minimumTrackTintColor = .clear
         slider.maximumTrackTintColor = .clear
     }
@@ -97,6 +103,8 @@ open class WaveformView: UIView {
         slider.maximumValue = Float(content.duration)
         slider.minimumValue = 0
         slider.value = Float(content.currentTime)
+
+        applySliderThumb(isPlaying: content.isPlaying)
 
         audioVisualizationView.audioVisualizationMode = content.isRecording ? .write : .read
         if audioVisualizationView.content != content.waveform {
@@ -140,28 +148,29 @@ open class WaveformView: UIView {
 
     // MARK: - Slider Thumb
 
-    private static var cachedThumbImage: UIImage?
+    private static var cachedActiveThumb: UIImage?
+    private static var cachedInactiveThumb: UIImage?
 
-    static func roundedSliderThumbImage() -> UIImage {
-        if let cachedThumbImage { return cachedThumbImage }
-        let colors = InjectedValues[\.colors]
-        let thumbDiameter: CGFloat = 12
+    private static func makeSliderThumbImage(
+        fillColor: UIColor,
+        borderColor: UIColor
+    ) -> UIImage {
+        let diameter: CGFloat = 12
         let borderWidth: CGFloat = 1
         let shadowBlur: CGFloat = 6
         let shadowOffsetY: CGFloat = 2
         let canvasSize = CGSize(
-            width: thumbDiameter + shadowBlur * 2,
-            height: thumbDiameter + shadowBlur * 2 + shadowOffsetY
+            width: diameter + shadowBlur * 2,
+            height: diameter + shadowBlur * 2 + shadowOffsetY
         )
         let renderer = UIGraphicsImageRenderer(size: canvasSize)
-
-        let image = renderer.image { ctx in
+        return renderer.image { ctx in
             let cgContext = ctx.cgContext
             let thumbRect = CGRect(
-                x: (canvasSize.width - thumbDiameter) / 2,
-                y: (canvasSize.height - thumbDiameter - shadowOffsetY) / 2,
-                width: thumbDiameter,
-                height: thumbDiameter
+                x: (canvasSize.width - diameter) / 2,
+                y: (canvasSize.height - diameter - shadowOffsetY) / 2,
+                width: diameter,
+                height: diameter
             )
             let path = UIBezierPath(ovalIn: thumbRect)
 
@@ -170,22 +179,42 @@ open class WaveformView: UIView {
                 blur: shadowBlur,
                 color: UIColor.black.withAlphaComponent(0.14).cgColor
             )
-            colors.accentPrimary.setFill()
+            fillColor.setFill()
             path.fill()
 
             cgContext.setShadow(offset: .zero, blur: 0, color: nil)
-            colors.backgroundCoreApp.setStroke()
+            borderColor.setStroke()
             path.lineWidth = borderWidth
             path.stroke()
         }
-        cachedThumbImage = image
-        return image
     }
 
-    func applyRounderSliderThumb() {
-        let thumbImage = Self.roundedSliderThumbImage()
-        slider.setThumbImage(thumbImage, for: .normal)
-        slider.setThumbImage(thumbImage, for: .highlighted)
+    func applySliderThumb(isPlaying: Bool) {
+        let colors = InjectedValues[\.colors]
+        let thumb: UIImage
+        if isPlaying {
+            if let cached = Self.cachedActiveThumb {
+                thumb = cached
+            } else {
+                thumb = Self.makeSliderThumbImage(
+                    fillColor: colors.accentPrimary,
+                    borderColor: colors.backgroundCoreApp
+                )
+                Self.cachedActiveThumb = thumb
+            }
+        } else {
+            if let cached = Self.cachedInactiveThumb {
+                thumb = cached
+            } else {
+                thumb = Self.makeSliderThumbImage(
+                    fillColor: colors.backgroundCoreApp,
+                    borderColor: colors.borderCoreOpacity25
+                )
+                Self.cachedInactiveThumb = thumb
+            }
+        }
+        slider.setThumbImage(thumb, for: .normal)
+        slider.setThumbImage(thumb, for: .highlighted)
     }
 }
 
@@ -193,6 +222,7 @@ open class WaveformView: UIView {
 /// Passes raw waveform data directly rather than an `AddedVoiceRecording`.
 struct RecordingWaveform: UIViewRepresentable {
     var isRecording: Bool
+    var isPlaying: Bool = false
     var duration: TimeInterval
     var currentTime: TimeInterval
     var waveform: [Float]
@@ -203,7 +233,6 @@ struct RecordingWaveform: UIViewRepresentable {
         let view = WaveformView()
         view.onSliderChanged = onSliderChanged
         view.onSliderTapped = onSliderTapped
-        view.applyRounderSliderThumb()
         updateContent(for: view)
         return view
     }
@@ -215,9 +244,9 @@ struct RecordingWaveform: UIViewRepresentable {
     }
     
     private func updateContent(for view: WaveformView) {
-        view.applyRounderSliderThumb()
         view.content = .init(
             isRecording: isRecording,
+            isPlaying: isPlaying,
             duration: duration,
             currentTime: currentTime,
             waveform: waveform
@@ -231,6 +260,7 @@ struct RecordingWaveform: UIViewRepresentable {
 struct WaveformViewSwiftUI: UIViewRepresentable {
     var audioContext: AudioPlaybackContext?
     var addedVoiceRecording: AddedVoiceRecording
+    var isPlaying: Bool = false
     var onSliderChanged: (TimeInterval) -> Void
     var onSliderTapped: () -> Void
     
@@ -238,7 +268,6 @@ struct WaveformViewSwiftUI: UIViewRepresentable {
         let view = WaveformView()
         view.onSliderTapped = onSliderTapped
         view.onSliderChanged = onSliderChanged
-        view.applyRounderSliderThumb()
         updateContent(for: view)
         return view
     }
@@ -250,10 +279,10 @@ struct WaveformViewSwiftUI: UIViewRepresentable {
     }
     
     private func updateContent(for view: WaveformView) {
-        view.applyRounderSliderThumb()
         if let audioContext, addedVoiceRecording.url == audioContext.assetLocation {
             view.content = .init(
                 isRecording: false,
+                isPlaying: isPlaying,
                 duration: audioContext.duration,
                 currentTime: audioContext.currentTime,
                 waveform: addedVoiceRecording.waveform

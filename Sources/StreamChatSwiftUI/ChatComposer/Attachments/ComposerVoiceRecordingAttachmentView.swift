@@ -114,6 +114,7 @@ struct ComposerVoiceRecordingAttachmentView: View {
                 WaveformViewSwiftUI(
                     audioContext: isActive ? handler.context : nil,
                     addedVoiceRecording: recording,
+                    isPlaying: handler.isPlaying && isActive,
                     onSliderChanged: { timeInterval in
                         handler.seek(to: timeInterval, loadingFrom: isActive ? nil : recording.url)
                     },
