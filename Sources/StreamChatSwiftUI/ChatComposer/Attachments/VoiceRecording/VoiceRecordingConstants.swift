@@ -5,7 +5,7 @@
 import StreamChat
 import SwiftUI
 
-enum RecordingConstants {
+enum VoiceRecordingConstants {
     static let lockMaxDistance: CGFloat = -36
     static let cancelMinDistance: CGFloat = -30
     static let cancelMaxDistance: CGFloat = -75

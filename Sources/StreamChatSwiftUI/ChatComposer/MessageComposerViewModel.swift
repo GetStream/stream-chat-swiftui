@@ -131,15 +131,15 @@ import SwiftUI
     @Published public var suggestions = [String: Any]()
     @Published public var cooldownDuration: Int = 0
     @Published public var attachmentSizeExceeded: Bool = false
-    @Published public var recordingState: RecordingState = .initial {
+    @Published public var recordingState: VoiceRecordingState = .initial {
         didSet {
             if recordingState.isLockedOrStopped {
                 pickerTypeState = .expanded(.none)
             }
             if case let .recording(location) = recordingState {
-                if location.y < RecordingConstants.lockMaxDistance {
+                if location.y < VoiceRecordingConstants.lockMaxDistance {
                     recordingState = .locked
-                } else if location.x < RecordingConstants.cancelMaxDistance {
+                } else if location.x < VoiceRecordingConstants.cancelMaxDistance {
                     audioRecordingInfo = .initial
                     recordingState = .initial
                     stopRecording()

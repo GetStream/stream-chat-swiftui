@@ -13,7 +13,7 @@ import SwiftUI
 ///
 /// Because `Capsule()` on a square frame produces a circle, the shape transition
 /// is automatic — no clip-shape swap needed.
-struct LockView: View {
+struct VoiceRecordingLockView: View {
     @Injected(\.colors) var colors
     @Injected(\.tokens) var tokens
 
@@ -26,7 +26,7 @@ struct LockView: View {
     private var lockProgress: CGFloat {
         if isLocked { return 1 }
         guard dragLocation.y < 0 else { return 0 }
-        return min(1, -dragLocation.y / -RecordingConstants.lockMaxDistance)
+        return min(1, -dragLocation.y / -VoiceRecordingConstants.lockMaxDistance)
     }
 
     private var lockSymbolName: String {

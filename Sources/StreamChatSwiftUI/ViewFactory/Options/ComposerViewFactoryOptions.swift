@@ -69,7 +69,7 @@ public final class ComposerInputViewOptions: Sendable {
     /// Binding to the current command.
     public let command: Binding<ComposerCommand?>
     /// Binding to the recording state.
-    public let recordingState: Binding<RecordingState>
+    public let recordingState: Binding<VoiceRecordingState>
     /// The composer assets (images + files in insertion order).
     public let composerAssets: [ComposerAsset]
     /// The added custom attachments.
@@ -112,7 +112,7 @@ public final class ComposerInputViewOptions: Sendable {
         text: Binding<String>,
         selectedRangeLocation: Binding<Int>,
         command: Binding<ComposerCommand?>,
-        recordingState: Binding<RecordingState>,
+        recordingState: Binding<VoiceRecordingState>,
         composerAssets: [ComposerAsset],
         addedCustomAttachments: [CustomAttachment],
         addedVoiceRecordings: [AddedVoiceRecording],
@@ -203,7 +203,7 @@ public final class ComposerInputTrailingViewOptions: @unchecked Sendable {
     /// Binding to the text input.
     @Binding public var text: String
     /// Binding to the recording state.
-    @Binding public var recordingState: RecordingState
+    @Binding public var recordingState: VoiceRecordingState
     /// The current composer's input view state.
     public let composerInputState: MessageComposerInputState
     /// The closure for starting a recording.
@@ -217,7 +217,7 @@ public final class ComposerInputTrailingViewOptions: @unchecked Sendable {
 
     public init(
         text: Binding<String>,
-        recordingState: Binding<RecordingState>,
+        recordingState: Binding<VoiceRecordingState>,
         composerInputState: MessageComposerInputState,
         startRecording: @escaping @MainActor () -> Void,
         stopRecording: @escaping @MainActor () -> Void,

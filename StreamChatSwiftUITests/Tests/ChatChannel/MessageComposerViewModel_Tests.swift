@@ -896,7 +896,7 @@ import XCTest
         let viewModel = makeComposerViewModel()
         
         // Then
-        viewModel.recordingState = .recording(.init(x: 0, y: RecordingConstants.lockMaxDistance - 1))
+        viewModel.recordingState = .recording(.init(x: 0, y: VoiceRecordingConstants.lockMaxDistance - 1))
         
         // Then
         XCTAssert(viewModel.recordingState == .locked)
@@ -907,7 +907,7 @@ import XCTest
         let viewModel = makeComposerViewModel()
         
         // Then
-        viewModel.recordingState = .recording(.init(x: RecordingConstants.cancelMaxDistance - 1, y: 0))
+        viewModel.recordingState = .recording(.init(x: VoiceRecordingConstants.cancelMaxDistance - 1, y: 0))
         
         // Then
         XCTAssert(viewModel.recordingState == .initial)

@@ -158,7 +158,7 @@ struct VoiceRecordingView: View {
                 .foregroundColor(textColor)
 
                 HStack {
-                    RecordingDurationView(
+                    VoiceRecordingDurationView(
                         duration: showContextDuration ? handler.context.currentTime : addedVoiceRecording.duration
                     )
                     WaveformViewSwiftUI(

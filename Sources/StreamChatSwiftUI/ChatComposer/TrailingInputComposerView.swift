@@ -8,7 +8,7 @@ struct TrailingInputComposerView<Factory: ViewFactory>: View {
     let factory: Factory
     
     @Binding var text: String
-    @Binding var recordingState: RecordingState
+    @Binding var recordingState: VoiceRecordingState
     var composerInputState: MessageComposerInputState
     var startRecording: @MainActor () -> Void
     var stopRecording: @MainActor () -> Void

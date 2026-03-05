@@ -58,7 +58,7 @@ public struct VoiceRecordingButton: View {
     @Injected(\.tokens) var tokens
     @Injected(\.images) var images
 
-    @Binding var recordingState: RecordingState
+    @Binding var recordingState: VoiceRecordingState
     var startRecording: () -> Void
     var stopRecording: () -> Void
     var showRecordingTip: () -> Void

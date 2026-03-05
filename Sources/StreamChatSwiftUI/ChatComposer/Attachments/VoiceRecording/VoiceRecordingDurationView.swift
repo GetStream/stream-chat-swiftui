@@ -5,7 +5,7 @@
 import StreamChat
 import SwiftUI
 
-struct RecordingDurationView: View {
+struct VoiceRecordingDurationView: View {
     @Injected(\.utils) private var utils
     @Injected(\.colors) private var colors
     @Injected(\.fonts) private var fonts

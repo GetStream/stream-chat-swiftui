@@ -4,14 +4,14 @@
 
 import Foundation
 
-public enum RecordingState: Equatable, Sendable {
+public enum VoiceRecordingState: Equatable, Sendable {
     case initial
     case recording(CGPoint)
     case locked
     case stopped
 }
 
-extension RecordingState {
+extension VoiceRecordingState {
     var showsComposer: Bool {
         self == .initial
     }

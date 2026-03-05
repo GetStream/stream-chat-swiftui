@@ -110,7 +110,7 @@ struct ComposerVoiceRecordingInputView<Factory: ViewFactory>: View {
                         ? L10n.Composer.AudioRecording.stop
                         : L10n.Composer.AudioRecording.start))
 
-                RecordingDurationView(
+                VoiceRecordingDurationView(
                     duration: handler.context.currentTime > 0
                         ? handler.context.currentTime
                         : viewModel.audioRecordingInfo.duration,
@@ -118,7 +118,7 @@ struct ComposerVoiceRecordingInputView<Factory: ViewFactory>: View {
                 )
             }
         } else {
-            RecordingDurationView(duration: viewModel.audioRecordingInfo.duration)
+            VoiceRecordingDurationView(duration: viewModel.audioRecordingInfo.duration)
         }
     }
 
@@ -232,8 +232,8 @@ struct ComposerVoiceRecordingInputView<Factory: ViewFactory>: View {
     // MARK: - Helpers
 
     private var opacityForSlideToCancel: CGFloat {
-        guard gestureLocation.x < RecordingConstants.cancelMinDistance else { return 1 }
-        return 1 - gestureLocation.x / RecordingConstants.cancelMaxDistance
+        guard gestureLocation.x < VoiceRecordingConstants.cancelMinDistance else { return 1 }
+        return 1 - gestureLocation.x / VoiceRecordingConstants.cancelMaxDistance
     }
 }
 

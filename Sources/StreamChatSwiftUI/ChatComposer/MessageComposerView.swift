@@ -143,7 +143,7 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
                     if showsRecordingOverlay {
                         HStack {
                             Spacer()
-                            LockView(
+                            VoiceRecordingLockView(
                                 dragLocation: currentDragLocation,
                                 isLocked: isLockedOrStopped
                             )
@@ -345,7 +345,7 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
 
         // Interpolate to the final locked position so the drag endpoint and
         // locked resting position are identical (no vertical snap).
-        let progress = min(1, -location.y / -RecordingConstants.lockMaxDistance)
+        let progress = min(1, -location.y / -VoiceRecordingConstants.lockMaxDistance)
         return Self.initialLockOffset + (lockedLockOffset - Self.initialLockOffset) * progress
     }
 
@@ -382,7 +382,7 @@ public struct ComposerInputView<Factory: ViewFactory>: View, KeyboardReadable {
     @Binding var text: String
     @Binding var selectedRangeLocation: Int
     @Binding var command: ComposerCommand?
-    @Binding var recordingState: RecordingState
+    @Binding var recordingState: VoiceRecordingState
     var composerAssets: [ComposerAsset]
     var addedCustomAttachments: [CustomAttachment]
     var addedVoiceRecordings: [AddedVoiceRecording]
@@ -411,7 +411,7 @@ public struct ComposerInputView<Factory: ViewFactory>: View, KeyboardReadable {
         text: Binding<String>,
         selectedRangeLocation: Binding<Int>,
         command: Binding<ComposerCommand?>,
-        recordingState: Binding<RecordingState>,
+        recordingState: Binding<VoiceRecordingState>,
         composerAssets: [ComposerAsset],
         addedCustomAttachments: [CustomAttachment],
         addedVoiceRecordings: [AddedVoiceRecording],
