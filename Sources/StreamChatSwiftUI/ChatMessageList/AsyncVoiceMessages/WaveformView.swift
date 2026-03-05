@@ -136,7 +136,7 @@ open class WaveformView: UIView {
         onSliderTapped?()
     }
 
-    // MARK: - Custom Slider Thumb
+    // MARK: - Slider Thumb
 
     static func roundedSliderThumbImage() -> UIImage {
         let colors = InjectedValues[\.colors]
@@ -175,7 +175,7 @@ open class WaveformView: UIView {
         }
     }
 
-    func applyCustomSliderThumb() {
+    func applyRounderSliderThumb() {
         let thumbImage = Self.roundedSliderThumbImage()
         slider.setThumbImage(thumbImage, for: .normal)
         slider.setThumbImage(thumbImage, for: .highlighted)
@@ -196,7 +196,7 @@ struct RecordingWaveform: UIViewRepresentable {
         let view = WaveformView()
         view.onSliderChanged = onSliderChanged
         view.onSliderTapped = onSliderTapped
-        view.applyCustomSliderThumb()
+        view.applyRounderSliderThumb()
         updateContent(for: view)
         return view
     }
@@ -214,7 +214,7 @@ struct RecordingWaveform: UIViewRepresentable {
             currentTime: currentTime,
             waveform: waveform
         )
-        view.applyCustomSliderThumb()
+        view.applyRounderSliderThumb()
         view.slider.isUserInteractionEnabled = !isRecording
     }
 }
@@ -231,7 +231,7 @@ struct WaveformViewSwiftUI: UIViewRepresentable {
         let view = WaveformView()
         view.onSliderTapped = onSliderTapped
         view.onSliderChanged = onSliderChanged
-        view.applyCustomSliderThumb()
+        view.applyRounderSliderThumb()
         updateContent(for: view)
         return view
     }
@@ -241,7 +241,7 @@ struct WaveformViewSwiftUI: UIViewRepresentable {
     }
     
     private func updateContent(for view: WaveformView) {
-        view.applyCustomSliderThumb()
+        view.applyRounderSliderThumb()
         if let audioContext, addedVoiceRecording.url == audioContext.assetLocation {
             view.content = .init(
                 isRecording: false,

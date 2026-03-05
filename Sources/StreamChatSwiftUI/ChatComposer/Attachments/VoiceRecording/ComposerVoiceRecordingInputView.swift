@@ -5,15 +5,8 @@
 import StreamChat
 import SwiftUI
 
-/// Unified voice recording input shown inside the composer when the user is
+/// Voice recording input shown inside the composer when the user is
 /// actively recording or has locked/stopped a recording.
-///
-/// Handles both states with seamless animations:
-/// - **Recording**: mic indicator, duration, slide-to-cancel, mic button
-/// - **Locked / Stopped**: mic indicator, duration (or playback), waveform, controls
-///
-/// The red mic icon and duration label stay in the same position across both
-/// states so the transition feels continuous.
 struct ComposerVoiceRecordingInputView<Factory: ViewFactory>: View {
     @Injected(\.colors) private var colors
     @Injected(\.fonts) private var fonts

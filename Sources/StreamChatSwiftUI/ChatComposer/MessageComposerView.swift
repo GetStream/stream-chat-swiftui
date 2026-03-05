@@ -356,7 +356,6 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
         return .zero
     }
 
-    /// Final locked circle sits outside the composer with 16pt gap.
     private var lockedLockOffset: CGFloat {
         let overlayCenterY = recordingViewHeight / 2
         let composerTopInset = tokens.spacingMd

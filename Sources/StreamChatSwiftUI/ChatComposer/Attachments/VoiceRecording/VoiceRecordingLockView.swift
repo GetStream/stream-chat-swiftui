@@ -10,9 +10,6 @@ import SwiftUI
 /// Morphs between two visual states with a single smooth animation:
 /// - **Unlocked** (capsule): lock.open ↔ lock + chevron.up arrow
 /// - **Locked** (circle): lock only, chevron collapses to zero height
-///
-/// Because `Capsule()` on a square frame produces a circle, the shape transition
-/// is automatic — no clip-shape swap needed.
 struct VoiceRecordingLockView: View {
     @Injected(\.colors) var colors
     @Injected(\.tokens) var tokens
