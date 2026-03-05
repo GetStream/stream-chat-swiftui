@@ -451,6 +451,15 @@ import SwiftUI
             !addedVoiceRecordings.isEmpty
     }
     
+    /// Whether the voice recording gesture overlay should be active.
+    ///
+    /// The overlay must only be shown when the mic button is visible (no content and voice
+    /// recording enabled) or while a recording is in progress.
+    public var shouldShowRecordingGestureOverlay: Bool {
+        guard utils.composerConfig.isVoiceRecordingEnabled else { return false }
+        return (recordingState == .initial && !hasContent) || recordingState.isRecording
+    }
+
     public var sendInChannelShown: Bool {
         messageController != nil
     }

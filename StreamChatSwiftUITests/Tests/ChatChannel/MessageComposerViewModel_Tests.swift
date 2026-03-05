@@ -942,6 +942,85 @@ import XCTest
         XCTAssert(viewModel.audioRecordingInfo == .initial)
     }
     
+    // MARK: - Recording Gesture Overlay Visibility
+
+    func test_shouldShowRecordingGestureOverlay_whenInitialAndNoContent_returnsTrue() {
+        // Given
+        let viewModel = makeComposerViewModel()
+        viewModel.recordingState = .initial
+
+        // Then
+        XCTAssertTrue(viewModel.shouldShowRecordingGestureOverlay)
+    }
+
+    func test_shouldShowRecordingGestureOverlay_whenInitialAndHasText_returnsFalse() {
+        // Given
+        let viewModel = makeComposerViewModel()
+        viewModel.recordingState = .initial
+        viewModel.text = "Hello"
+
+        // Then
+        XCTAssertFalse(viewModel.shouldShowRecordingGestureOverlay)
+    }
+
+    func test_shouldShowRecordingGestureOverlay_whenInitialAndHasAttachment_returnsFalse() {
+        // Given
+        let viewModel = makeComposerViewModel()
+        viewModel.recordingState = .initial
+        viewModel.imageTapped(defaultAsset)
+
+        // Then
+        XCTAssertFalse(viewModel.shouldShowRecordingGestureOverlay)
+    }
+
+    func test_shouldShowRecordingGestureOverlay_whenRecording_returnsTrue() {
+        // Given
+        let viewModel = makeComposerViewModel()
+        viewModel.recordingState = .recording
+
+        // Then
+        XCTAssertTrue(viewModel.shouldShowRecordingGestureOverlay)
+    }
+
+    func test_shouldShowRecordingGestureOverlay_whenRecordingAndHasText_returnsTrue() {
+        // Given
+        let viewModel = makeComposerViewModel()
+        viewModel.recordingState = .recording
+        viewModel.text = "Hello"
+
+        // Then
+        XCTAssertTrue(viewModel.shouldShowRecordingGestureOverlay)
+    }
+
+    func test_shouldShowRecordingGestureOverlay_whenLocked_returnsFalse() {
+        // Given
+        let viewModel = makeComposerViewModel()
+        viewModel.recordingState = .locked
+
+        // Then
+        XCTAssertFalse(viewModel.shouldShowRecordingGestureOverlay)
+    }
+
+    func test_shouldShowRecordingGestureOverlay_whenStopped_returnsFalse() {
+        // Given
+        let viewModel = makeComposerViewModel()
+        viewModel.recordingState = .stopped
+
+        // Then
+        XCTAssertFalse(viewModel.shouldShowRecordingGestureOverlay)
+    }
+
+    func test_shouldShowRecordingGestureOverlay_whenVoiceRecordingDisabled_returnsFalse() {
+        // Given
+        let utils = Utils(composerConfig: ComposerConfig(isVoiceRecordingEnabled: false))
+        streamChat = StreamChat(chatClient: chatClient, utils: utils)
+        let viewModel = makeComposerViewModel()
+        viewModel.recordingState = .initial
+
+        // Then
+        XCTAssertFalse(viewModel.shouldShowRecordingGestureOverlay)
+    }
+
     // MARK: - Snackbar
     
     func test_messageComposer_showRecordingTip_setsSnackBarText() {

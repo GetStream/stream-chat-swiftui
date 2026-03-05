@@ -160,8 +160,7 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
                         .transition(.opacity)
                     }
 
-                    if utils.composerConfig.isVoiceRecordingEnabled,
-                       viewModel.recordingState == .initial || viewModel.recordingState.isRecording {
+                    if viewModel.shouldShowRecordingGestureOverlay {
                         VoiceRecordingGestureOverlay(
                             recordingState: $viewModel.recordingState,
                             gestureLocation: $viewModel.recordingGestureLocation,
