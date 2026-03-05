@@ -124,7 +124,7 @@ struct VoiceRecordingView: View {
     private var showContextDuration: Bool { isActive && handler.context.currentTime > 0 }
 
     private var controlBorderColor: Color? {
-        isSentByCurrentUser ? Color(colors.accentPrimary) : nil
+        isSentByCurrentUser ? Color(colors.chatBorderOnChatOutgoing) : nil
     }
 
     var body: some View {
