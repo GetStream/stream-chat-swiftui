@@ -7,13 +7,21 @@ import SwiftUI
 struct ParticipantInfoView<Factory: ViewFactory>: View {
     @Injected(\.fonts) var fonts
     @Injected(\.colors) var colors
-    
+    @Injected(\.tokens) var tokens
+    @Injected(\.images) var images
+
     var factory: Factory
     let participant: ParticipantInfo
     var actions: [ParticipantAction]
-    
     var onDismiss: () -> Void
-    
+
+    @State private var alertShown = false
+    @State private var alertAction: ParticipantAction? {
+        didSet { alertShown = alertAction != nil }
+    }
+
+    @State private var sheetDestination: AnyView?
+
     init(
         factory: Factory = DefaultViewFactory.shared,
         participant: ParticipantInfo,
@@ -25,74 +33,42 @@ struct ParticipantInfoView<Factory: ViewFactory>: View {
         self.actions = actions
         self.onDismiss = onDismiss
     }
-    
-    @State private var alertShown = false
-    @State private var alertAction: ParticipantAction? {
-        didSet {
-            alertShown = alertAction != nil
-        }
-    }
-    
-    public var body: some View {
-        VStack {
-            Spacer()
-            VStack(spacing: 4) {
-                Text(participant.displayName)
-                    .font(fonts.bodyBold)
 
-                Text(participant.onlineInfoText)
-                    .font(fonts.footnote)
-                    .foregroundColor(Color(colors.textLowEmphasis))
-                
-                factory.makeUserAvatarView(
-                    options: .init(
-                        user: participant.chatUser,
-                        size: AvatarSize.extraExtraLarge,
-                        showsIndicator: true
-                    )
-                )
-                .padding()
-
-                VStack {
-                    ForEach(actions) { action in
-                        Divider()
-                            .padding(.horizontal, -16)
-
-                        if let destination = action.navigationDestination {
-                            NavigationLink {
-                                destination
-                            } label: {
-                                ActionItemView(
-                                    title: action.title,
-                                    iconName: action.iconName,
-                                    isDestructive: action.isDestructive
-                                )
-                            }
-                        } else {
-                            Button {
-                                if action.confirmationPopup != nil {
-                                    alertAction = action
-                                } else {
-                                    action.action()
-                                }
-                            } label: {
-                                ActionItemView(
-                                    title: action.title,
-                                    iconName: action.iconName,
-                                    isDestructive: action.isDestructive
-                                )
-                            }
+    var body: some View {
+        NavigationView {
+            ScrollView {
+                VStack(alignment: .leading, spacing: 0) {
+                    HStack(spacing: tokens.spacingMd) {
+                        factory.makeUserAvatarView(
+                            options: .init(
+                                user: participant.chatUser,
+                                size: AvatarSize.extraLarge,
+                                showsIndicator: true
+                            )
+                        )
+                        .padding(.top, tokens.spacingSm)
+                        
+                        VStack(alignment: .leading, spacing: tokens.spacingXxxs) {
+                            Text(participant.displayName)
+                                .font(fonts.title3.weight(.semibold))
+                                .foregroundColor(Color(colors.textPrimary))
+                            Text(participant.onlineInfoText)
+                                .font(fonts.footnote)
+                                .foregroundColor(Color(colors.textSecondary))
                         }
+                        Spacer()
                     }
+                    .padding(.all, tokens.spacingMd)
+
+                    ForEach(actions) { action in
+                        actionRow(for: action)
+                    }
+
+                    Spacer()
                 }
             }
-            .padding()
-            .frame(maxWidth: .infinity)
-            .background(Color(colors.background1))
-            .cornerRadius(16)
-            .padding(.all, 8)
-            .foregroundColor(Color(colors.text))
-            .opacity(alertShown ? 0 : 1)
+            .background(Color(colors.background).edgesIgnoringSafeArea(.all))
+            .navigationBarHidden(true)
         }
         .alert(isPresented: $alertShown) {
             Alert(
@@ -100,15 +76,75 @@ struct ParticipantInfoView<Factory: ViewFactory>: View {
                 message: Text(alertAction?.confirmationPopup?.message ?? ""),
                 primaryButton: .destructive(Text(alertAction?.confirmationPopup?.buttonTitle ?? "")) {
                     alertAction?.action()
+                    onDismiss()
                 },
                 secondaryButton: .cancel()
             )
         }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .contentShape(.rect)
-        .onTapGesture {
-            onDismiss()
+        .fullScreenCover(isPresented: Binding(
+            get: { sheetDestination != nil },
+            set: { if !$0 { sheetDestination = nil } }
+        )) {
+            NavigationView {
+                sheetDestination
+                    .toolbar {
+                        ToolbarItem(placement: .navigationBarLeading) {
+                            Button {
+                                sheetDestination = nil
+                            } label: {
+                                Image(uiImage: images.close)
+                                    .foregroundColor(Color(colors.textSecondary))
+                            }
+                        }
+                    }
+            }
         }
+    }
+
+    @ViewBuilder
+    private func actionRow(for action: ParticipantAction) -> some View {
+        if let destination = action.navigationDestination {
+            Button {
+                sheetDestination = destination
+            } label: {
+                actionLabel(for: action)
+            }
+        } else {
+            Button {
+                if action.confirmationPopup != nil {
+                    alertAction = action
+                } else {
+                    action.action()
+                    onDismiss()
+                }
+            } label: {
+                actionLabel(for: action)
+            }
+        }
+    }
+
+    private func actionLabel(for action: ParticipantAction) -> some View {
+        HStack(spacing: tokens.spacingMd) {
+            Image(uiImage: image(for: action.iconName))
+                .customizable()
+                .frame(width: tokens.spacingLg)
+                .foregroundColor(action.isDestructive ? Color(colors.accentError) : Color(colors.textSecondary))
+            Text(action.title)
+                .font(fonts.body)
+                .foregroundColor(action.isDestructive ? Color(colors.accentError) : Color(colors.textPrimary))
+            Spacer()
+        }
+        .padding(.all, tokens.spacingMd)
+    }
+
+    private func image(for iconName: String) -> UIImage {
+        if let image = UIImage(systemName: iconName) {
+            return image
+        }
+        if let image = UIImage(named: iconName, in: .streamChatCommonUI) {
+            return image
+        }
+        return images.imagePlaceholder
     }
 }
 

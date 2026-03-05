@@ -13,7 +13,7 @@ struct NoContentView: View {
     var title: String?
     var description: String
     var shouldRotateImage: Bool = false
-    var size: CGSize = CGSize(width: 100, height: 100)
+    var size: CGSize = CGSize(width: 32, height: 32)
 
     public var body: some View {
         VStack(spacing: 8) {
@@ -28,20 +28,21 @@ struct NoContentView: View {
                     .rotation3DEffect(
                         shouldRotateImage ? .degrees(180) : .zero, axis: (x: 0, y: 1, z: 0)
                     )
-                    .foregroundColor(Color(colors.textLowEmphasis))
+                    .foregroundColor(Color(colors.textTertiary))
                 title.map { Text($0) }
-                    .font(fonts.bodyBold)
+                    .font(fonts.headline)
+                    .foregroundColor(Color(colors.textPrimary))
                 Text(description)
                     .font(fonts.body)
                     .multilineTextAlignment(.center)
-                    .foregroundColor(Color(colors.subtitleText))
+                    .foregroundColor(Color(colors.textSecondary))
             }
             .padding(.horizontal, 32)
 
             Spacer()
         }
         .frame(maxWidth: .infinity)
-        .background(Color(colors.background1))
+        .background(Color(colors.backgroundCoreApp))
     }
 
     private var bottomButtonPadding: CGFloat {

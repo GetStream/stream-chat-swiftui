@@ -980,7 +980,7 @@ extension ViewFactory {
     public func makeAddUsersView(
         options: AddUsersViewOptions
     ) -> some View {
-        AddUsersView(loadedUserIds: options.options.loadedUsers.map(\.id), onUserTap: options.onUserTap)
+        AddUsersView(loadedUserIds: options.options.loadedUserIds, onConfirm: options.onConfirm)
     }
     
     public func makeAttachmentTextView(
