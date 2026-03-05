@@ -102,7 +102,9 @@ open class WaveformView: UIView {
         if audioVisualizationView.content != content.waveform {
             audioVisualizationView.content = content.waveform
         }
-        audioVisualizationView.currentGradientPercentage = max(0, min(1, Float(content.currentTime / content.duration)))
+        audioVisualizationView.currentGradientPercentage = content.duration > 0
+            ? max(0, min(1, Float(content.currentTime / content.duration)))
+            : 0
         audioVisualizationView.setNeedsLayout()
         audioVisualizationView.setNeedsDisplay()
     }
@@ -138,7 +140,10 @@ open class WaveformView: UIView {
 
     // MARK: - Slider Thumb
 
+    private static var cachedThumbImage: UIImage?
+
     static func roundedSliderThumbImage() -> UIImage {
+        if let cachedThumbImage { return cachedThumbImage }
         let colors = InjectedValues[\.colors]
         let thumbDiameter: CGFloat = 12
         let borderWidth: CGFloat = 1
@@ -150,7 +155,7 @@ open class WaveformView: UIView {
         )
         let renderer = UIGraphicsImageRenderer(size: canvasSize)
 
-        return renderer.image { ctx in
+        let image = renderer.image { ctx in
             let cgContext = ctx.cgContext
             let thumbRect = CGRect(
                 x: (canvasSize.width - thumbDiameter) / 2,
@@ -169,10 +174,12 @@ open class WaveformView: UIView {
             path.fill()
 
             cgContext.setShadow(offset: .zero, blur: 0, color: nil)
-            UIColor.white.setStroke()
+            colors.backgroundCoreApp.setStroke()
             path.lineWidth = borderWidth
             path.stroke()
         }
+        cachedThumbImage = image
+        return image
     }
 
     func applyRounderSliderThumb() {
@@ -208,13 +215,13 @@ struct RecordingWaveform: UIViewRepresentable {
     }
     
     private func updateContent(for view: WaveformView) {
+        view.applyRounderSliderThumb()
         view.content = .init(
             isRecording: isRecording,
             duration: duration,
             currentTime: currentTime,
             waveform: waveform
         )
-        view.applyRounderSliderThumb()
         view.slider.isUserInteractionEnabled = !isRecording
     }
 }
@@ -237,6 +244,8 @@ struct WaveformViewSwiftUI: UIViewRepresentable {
     }
     
     func updateUIView(_ uiView: WaveformView, context: Context) {
+        uiView.onSliderChanged = onSliderChanged
+        uiView.onSliderTapped = onSliderTapped
         updateContent(for: uiView)
     }
     
