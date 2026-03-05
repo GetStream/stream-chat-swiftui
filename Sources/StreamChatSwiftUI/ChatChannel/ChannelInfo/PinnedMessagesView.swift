@@ -35,7 +35,9 @@ public struct PinnedMessagesView<Factory: ViewFactory>: View {
 
     public var body: some View {
         ZStack {
-            if !viewModel.pinnedMessages.isEmpty {
+            if viewModel.isLoading {
+                ProgressView()
+            } else if !viewModel.pinnedMessages.isEmpty {
                 ScrollView {
                     LazyVStack(spacing: 0) {
                         ForEach(viewModel.pinnedMessages) { message in
@@ -66,10 +68,9 @@ public struct PinnedMessagesView<Factory: ViewFactory>: View {
                 }
             } else {
                 NoContentView(
-                    image: images.noContent,
+                    image: images.pin,
                     title: L10n.ChatInfo.PinnedMessages.emptyTitle,
-                    description: L10n.ChatInfo.PinnedMessages.emptyDesc,
-                    shouldRotateImage: true
+                    description: L10n.ChatInfo.PinnedMessages.emptyDesc
                 )
             }
         }
@@ -148,7 +149,7 @@ struct PinnedMessageView<Factory: ViewFactory>: View {
                 }
             }
         }
-        .padding(.all, 8)
+        .padding(.all, tokens.spacingMd)
     }
 
     private var previewAttachmentIconImage: UIImage? {
