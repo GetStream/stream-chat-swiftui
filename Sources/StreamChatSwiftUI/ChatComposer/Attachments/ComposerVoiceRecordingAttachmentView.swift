@@ -5,7 +5,7 @@
 import StreamChat
 import SwiftUI
 
-public struct AddedVoiceRecordingsView: View {
+public struct ComposerVoiceRecordingContainerView: View {
     @Injected(\.tokens) private var tokens
     @Injected(\.utils) private var utils
 
@@ -27,11 +27,11 @@ public struct AddedVoiceRecordingsView: View {
         VStack(spacing: tokens.spacingXxs) {
             ForEach(0..<addedVoiceRecordings.count, id: \.self) { i in
                 let recording = addedVoiceRecordings[i]
-                ComposerVoiceRecordingCard(
+                ComposerVoiceRecordingAttachmentView(
                     handler: voiceRecordingHandler,
                     recording: recording,
                     index: i,
-                    onDiscard: onDiscardAttachment
+                    onDiscardAttachment: onDiscardAttachment
                 )
             }
         }
@@ -41,9 +41,9 @@ public struct AddedVoiceRecordingsView: View {
     }
 }
 
-// MARK: - Composer Voice Recording Card
+// MARK: - Single Voice Recording Attachment
 
-struct ComposerVoiceRecordingCard: View {
+struct ComposerVoiceRecordingAttachmentView: View {
     @Injected(\.colors) private var colors
     @Injected(\.fonts) private var fonts
     @Injected(\.tokens) private var tokens
@@ -53,7 +53,7 @@ struct ComposerVoiceRecordingCard: View {
 
     let recording: AddedVoiceRecording
     let index: Int
-    var onDiscard: (String) -> Void
+    var onDiscardAttachment: (String) -> Void
 
     private var isActive: Bool { handler.isActive(for: recording.url) }
     private var showContextDuration: Bool { isActive && handler.context.currentTime > 0 }
@@ -75,7 +75,7 @@ struct ComposerVoiceRecordingCard: View {
         .overlay(
             DiscardAttachmentButton(
                 attachmentIdentifier: recording.url.absoluteString,
-                onDiscard: onDiscard
+                onDiscard: onDiscardAttachment
             )
         )
         .onReceive(handler.$context) { _ in

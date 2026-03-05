@@ -626,7 +626,7 @@ public struct ComposerInputView<Factory: ViewFactory>: View, KeyboardReadable {
             }
 
             if !addedVoiceRecordings.isEmpty {
-                AddedVoiceRecordingsView(
+                ComposerVoiceRecordingContainerView(
                     addedVoiceRecordings: addedVoiceRecordings,
                     onDiscardAttachment: removeAttachmentWithId
                 )
