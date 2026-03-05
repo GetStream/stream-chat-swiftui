@@ -83,7 +83,6 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
 
                 factory.makeComposerInputView(
                     options: ComposerInputViewOptions(
-                        viewModel: viewModel,
                         channelController: viewModel.channelController,
                         text: $viewModel.text,
                         selectedRangeLocation: $viewModel.selectedRangeLocation,
@@ -99,12 +98,17 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
                         cooldownDuration: viewModel.cooldownDuration,
                         hasContent: viewModel.hasContent,
                         canSendMessage: viewModel.canSendMessage,
+                        audioRecordingInfo: viewModel.audioRecordingInfo,
+                        pendingAudioRecordingURL: viewModel.pendingAudioRecording?.url,
                         onCustomAttachmentTap: viewModel.customAttachmentTapped(_:),
                         removeAttachmentWithId: viewModel.removeAttachment(with:),
                         sendMessage: sendMessage,
                         onImagePasted: viewModel.imagePasted,
                         startRecording: viewModel.startRecording,
                         stopRecording: viewModel.stopRecording,
+                        confirmRecording: viewModel.confirmRecording,
+                        discardRecording: viewModel.discardRecording,
+                        previewRecording: viewModel.previewRecording,
                         showRecordingTip: viewModel.showRecordingTip,
                         sendInChannelShown: viewModel.sendInChannelShown,
                         showReplyInChannel: $viewModel.showReplyInChannel
@@ -369,8 +373,6 @@ public struct ComposerInputView<Factory: ViewFactory>: View, KeyboardReadable {
     @Injected(\.utils) private var utils
     @Injected(\.tokens) private var tokens
 
-    var viewModel: MessageComposerViewModel
-
     var factory: Factory
     var channelController: ChatChannelController
     @Binding var text: String
@@ -387,12 +389,17 @@ public struct ComposerInputView<Factory: ViewFactory>: View, KeyboardReadable {
     var cooldownDuration: Int
     var hasContent: Bool
     var canSendMessage: Bool
+    var audioRecordingInfo: AudioRecordingInfo
+    var pendingAudioRecordingURL: URL?
     var onCustomAttachmentTap: @MainActor (CustomAttachment) -> Void
     var removeAttachmentWithId: (String) -> Void
     var sendMessage: @MainActor () -> Void
     var onImagePasted: @MainActor (UIImage) -> Void
     var startRecording: @MainActor () -> Void
     var stopRecording: @MainActor () -> Void
+    var confirmRecording: @MainActor () -> Void
+    var discardRecording: @MainActor () -> Void
+    var previewRecording: @MainActor () -> Void
     var showRecordingTip: @MainActor () -> Void
     var sendInChannelShown: Bool
     @Binding var showReplyInChannel: Bool
@@ -402,7 +409,6 @@ public struct ComposerInputView<Factory: ViewFactory>: View, KeyboardReadable {
 
     public init(
         factory: Factory,
-        viewModel: MessageComposerViewModel,
         channelController: ChatChannelController,
         text: Binding<String>,
         selectedRangeLocation: Binding<Int>,
@@ -418,18 +424,22 @@ public struct ComposerInputView<Factory: ViewFactory>: View, KeyboardReadable {
         cooldownDuration: Int,
         hasContent: Bool,
         canSendMessage: Bool,
+        audioRecordingInfo: AudioRecordingInfo,
+        pendingAudioRecordingURL: URL?,
         onCustomAttachmentTap: @escaping @MainActor (CustomAttachment) -> Void,
         removeAttachmentWithId: @escaping (String) -> Void,
         sendMessage: @escaping @MainActor () -> Void,
         onImagePasted: @escaping @MainActor (UIImage) -> Void,
         startRecording: @escaping @MainActor () -> Void,
         stopRecording: @escaping @MainActor () -> Void,
+        confirmRecording: @escaping @MainActor () -> Void,
+        discardRecording: @escaping @MainActor () -> Void,
+        previewRecording: @escaping @MainActor () -> Void,
         showRecordingTip: @escaping @MainActor () -> Void,
         sendInChannelShown: Bool,
         showReplyInChannel: Binding<Bool>
     ) {
         self.factory = factory
-        self.viewModel = viewModel
         self.channelController = channelController
         self.addedVoiceRecordings = addedVoiceRecordings
         _text = text
@@ -441,6 +451,8 @@ public struct ComposerInputView<Factory: ViewFactory>: View, KeyboardReadable {
         self.addedCustomAttachments = addedCustomAttachments
         self.canSendMessage = canSendMessage
         self.hasContent = hasContent
+        self.audioRecordingInfo = audioRecordingInfo
+        self.pendingAudioRecordingURL = pendingAudioRecordingURL
         self.quotedMessage = quotedMessage
         self.editedMessage = editedMessage
         self.maxMessageLength = maxMessageLength
@@ -451,6 +463,9 @@ public struct ComposerInputView<Factory: ViewFactory>: View, KeyboardReadable {
         self.onImagePasted = onImagePasted
         self.startRecording = startRecording
         self.stopRecording = stopRecording
+        self.confirmRecording = confirmRecording
+        self.discardRecording = discardRecording
+        self.previewRecording = previewRecording
         self.showRecordingTip = showRecordingTip
         self.sendInChannelShown = sendInChannelShown
         _showReplyInChannel = showReplyInChannel
@@ -488,8 +503,14 @@ public struct ComposerInputView<Factory: ViewFactory>: View, KeyboardReadable {
     private var voiceRecordingContent: some View {
         factory.makeComposerVoiceRecordingInputView(
             options: ComposerVoiceRecordingInputViewOptions(
-                viewModel: viewModel,
-                gestureLocation: currentGestureLocation
+                recordingState: recordingState,
+                audioRecordingInfo: audioRecordingInfo,
+                pendingAudioRecordingURL: pendingAudioRecordingURL,
+                gestureLocation: currentGestureLocation,
+                stopRecording: stopRecording,
+                confirmRecording: confirmRecording,
+                discardRecording: discardRecording,
+                previewRecording: previewRecording
             )
         )
     }

@@ -81,7 +81,6 @@ struct AppleMessageComposerView<Factory: ViewFactory>: View, KeyboardReadable {
 
                 ComposerInputView(
                     factory: DefaultViewFactory.shared,
-                    viewModel: viewModel,
                     channelController: viewModel.channelController,
                     text: $viewModel.text,
                     selectedRangeLocation: $viewModel.selectedRangeLocation,
@@ -97,12 +96,17 @@ struct AppleMessageComposerView<Factory: ViewFactory>: View, KeyboardReadable {
                     cooldownDuration: viewModel.cooldownDuration,
                     hasContent: viewModel.hasContent,
                     canSendMessage: viewModel.canSendMessage,
+                    audioRecordingInfo: viewModel.audioRecordingInfo,
+                    pendingAudioRecordingURL: viewModel.pendingAudioRecording?.url,
                     onCustomAttachmentTap: viewModel.customAttachmentTapped(_:),
                     removeAttachmentWithId: viewModel.removeAttachment(with:),
                     sendMessage: {},
                     onImagePasted: viewModel.imagePasted,
                     startRecording: viewModel.startRecording,
                     stopRecording: viewModel.stopRecording,
+                    confirmRecording: viewModel.confirmRecording,
+                    discardRecording: viewModel.discardRecording,
+                    previewRecording: viewModel.previewRecording,
                     showRecordingTip: viewModel.showRecordingTip,
                     sendInChannelShown: viewModel.sendInChannelShown,
                     showReplyInChannel: $viewModel.showReplyInChannel

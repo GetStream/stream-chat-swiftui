@@ -14,19 +14,25 @@ struct ComposerVoiceRecordingInputView<Factory: ViewFactory>: View {
     @Injected(\.utils) private var utils
 
     let factory: Factory
-    @ObservedObject var viewModel: MessageComposerViewModel
+    var recordingState: VoiceRecordingState
+    var audioRecordingInfo: AudioRecordingInfo
+    var pendingAudioRecordingURL: URL?
     var gestureLocation: CGPoint
+    var stopRecording: @MainActor () -> Void
+    var confirmRecording: @MainActor () -> Void
+    var discardRecording: @MainActor () -> Void
+    var previewRecording: @MainActor () -> Void
 
     @StateObject private var handler = VoiceRecordingHandler()
 
     private var player: AudioPlaying { utils.audioPlayer }
 
     private var isLockedOrStopped: Bool {
-        viewModel.recordingState.isLockedOrStopped
+        recordingState.isLockedOrStopped
     }
 
     private var isStopped: Bool {
-        viewModel.recordingState == .stopped
+        recordingState == .stopped
     }
 
     var body: some View {
@@ -44,7 +50,7 @@ struct ComposerVoiceRecordingInputView<Factory: ViewFactory>: View {
         }
         .onAppear { player.subscribe(handler) }
         .onReceive(handler.$context) { _ in
-            if let url = viewModel.pendingAudioRecording?.url {
+            if let url = pendingAudioRecordingURL {
                 handler.updatePlaybackState(for: url)
             }
         }
@@ -86,7 +92,7 @@ struct ComposerVoiceRecordingInputView<Factory: ViewFactory>: View {
         if isStopped {
             HStack(spacing: 0) {
                 Button {
-                    if let url = viewModel.pendingAudioRecording?.url {
+                    if let url = pendingAudioRecordingURL {
                         handler.togglePlayback(for: url)
                     }
                 } label: {
@@ -102,12 +108,12 @@ struct ComposerVoiceRecordingInputView<Factory: ViewFactory>: View {
                 VoiceRecordingDurationView(
                     duration: handler.context.currentTime > 0
                         ? handler.context.currentTime
-                        : viewModel.audioRecordingInfo.duration,
+                        : audioRecordingInfo.duration,
                     usesAccentColor: handler.isPlaying
                 )
             }
         } else {
-            VoiceRecordingDurationView(duration: viewModel.audioRecordingInfo.duration)
+            VoiceRecordingDurationView(duration: audioRecordingInfo.duration)
         }
     }
 
@@ -125,7 +131,7 @@ struct ComposerVoiceRecordingInputView<Factory: ViewFactory>: View {
             Spacer()
 
             Button {
-                viewModel.stopRecording()
+                stopRecording()
             } label: {
                 Image(systemName: "mic")
                     .font(.system(size: 20))
@@ -143,13 +149,13 @@ struct ComposerVoiceRecordingInputView<Factory: ViewFactory>: View {
         RecordingWaveform(
             isRecording: !isStopped,
             isPlaying: handler.isPlaying,
-            duration: viewModel.audioRecordingInfo.duration,
+            duration: audioRecordingInfo.duration,
             currentTime: isStopped
                 ? handler.context.currentTime
-                : viewModel.audioRecordingInfo.duration,
-            waveform: viewModel.audioRecordingInfo.waveform,
+                : audioRecordingInfo.duration,
+            waveform: audioRecordingInfo.waveform,
             onSliderChanged: { timeInterval in
-                guard let url = viewModel.pendingAudioRecording?.url else { return }
+                guard let url = pendingAudioRecordingURL else { return }
                 handler.seek(to: timeInterval, loadingFrom: handler.isActive(for: url) ? nil : url)
             }
         )
@@ -169,7 +175,7 @@ struct ComposerVoiceRecordingInputView<Factory: ViewFactory>: View {
             Spacer()
 
             stopControlButton
-                .opacity(viewModel.recordingState == .locked ? 1 : 0)
+                .opacity(recordingState == .locked ? 1 : 0)
 
             Spacer()
 
@@ -178,7 +184,7 @@ struct ComposerVoiceRecordingInputView<Factory: ViewFactory>: View {
                     enabled: true,
                     onTap: {
                         withAnimation(.composerVoiceRecordingSpring) {
-                            viewModel.confirmRecording()
+                            confirmRecording()
                         }
                     }
                 )
@@ -191,7 +197,7 @@ struct ComposerVoiceRecordingInputView<Factory: ViewFactory>: View {
     private var trashControlButton: some View {
         StreamIconButton(role: .secondary, style: .outline, size: .small) {
             withAnimation(.composerVoiceRecordingSpring) {
-                viewModel.discardRecording()
+                discardRecording()
             }
         } icon: {
             Image(systemName: "trash")
@@ -205,7 +211,7 @@ struct ComposerVoiceRecordingInputView<Factory: ViewFactory>: View {
     private var stopControlButton: some View {
         StreamIconButton(role: .destructive, style: .outline, size: .medium) {
             withAnimation(.composerVoiceRecordingSpring) {
-                viewModel.previewRecording()
+                previewRecording()
             }
         } icon: {
             Image(systemName: "stop.fill")

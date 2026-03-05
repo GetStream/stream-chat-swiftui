@@ -870,16 +870,18 @@ import XCTest
     func test_viewFactory_makeComposerVoiceRecordingInputView() {
         // Given
         let viewFactory = DefaultViewFactory.shared
-        let controller = ChatChannelTestHelpers.makeChannelController(
-            chatClient: chatClient
-        )
-        let viewModel = MessageComposerViewModel(channelController: controller, messageController: nil)
         
         // When
         let view = viewFactory.makeComposerVoiceRecordingInputView(
             options: ComposerVoiceRecordingInputViewOptions(
-                viewModel: viewModel,
-                gestureLocation: .zero
+                recordingState: .recording,
+                audioRecordingInfo: .initial,
+                pendingAudioRecordingURL: nil,
+                gestureLocation: .zero,
+                stopRecording: {},
+                confirmRecording: {},
+                discardRecording: {},
+                previewRecording: {}
             )
         )
         

@@ -59,9 +59,7 @@ public final class LeadingComposerViewOptions: Sendable {
 }
 
 /// Options for creating the composer input view.
-public final class ComposerInputViewOptions: Sendable {
-    /// The view model for the message composer.
-    public let viewModel: MessageComposerViewModel
+public final class ComposerInputViewOptions: @unchecked Sendable {
     /// The channel controller.
     public let channelController: ChatChannelController
     /// Binding to the text input.
@@ -92,6 +90,10 @@ public final class ComposerInputViewOptions: Sendable {
     public let hasContent: Bool
     /// Whether sending a message is enabled.
     public let canSendMessage: Bool
+    /// The current audio recording info (waveform and duration).
+    public let audioRecordingInfo: AudioRecordingInfo
+    /// The URL for a pending audio recording available for playback.
+    public let pendingAudioRecordingURL: URL?
     /// Callback when a custom attachment is tapped.
     public let onCustomAttachmentTap: @MainActor (CustomAttachment) -> Void
     /// Callback to remove an attachment by ID.
@@ -104,6 +106,12 @@ public final class ComposerInputViewOptions: Sendable {
     public let startRecording: @MainActor () -> Void
     /// Stop a recording.
     public let stopRecording: @MainActor () -> Void
+    /// Confirm and attach the stopped recording.
+    public let confirmRecording: @MainActor () -> Void
+    /// Discard the current recording.
+    public let discardRecording: @MainActor () -> Void
+    /// Stop recording and preview the result.
+    public let previewRecording: @MainActor () -> Void
     /// Shows the recording tip snackbar.
     public let showRecordingTip: @MainActor () -> Void
     /// Whether the send in channel view should be shown.
@@ -112,7 +120,6 @@ public final class ComposerInputViewOptions: Sendable {
     public let showReplyInChannel: Binding<Bool>
     
     public init(
-        viewModel: MessageComposerViewModel,
         channelController: ChatChannelController,
         text: Binding<String>,
         selectedRangeLocation: Binding<Int>,
@@ -128,17 +135,21 @@ public final class ComposerInputViewOptions: Sendable {
         cooldownDuration: Int,
         hasContent: Bool,
         canSendMessage: Bool,
+        audioRecordingInfo: AudioRecordingInfo,
+        pendingAudioRecordingURL: URL?,
         onCustomAttachmentTap: @escaping @MainActor (CustomAttachment) -> Void,
         removeAttachmentWithId: @escaping @MainActor (String) -> Void,
         sendMessage: @escaping @MainActor () -> Void,
         onImagePasted: @escaping @MainActor (UIImage) -> Void,
         startRecording: @escaping @MainActor () -> Void,
         stopRecording: @escaping @MainActor () -> Void,
+        confirmRecording: @escaping @MainActor () -> Void,
+        discardRecording: @escaping @MainActor () -> Void,
+        previewRecording: @escaping @MainActor () -> Void,
         showRecordingTip: @escaping @MainActor () -> Void,
         sendInChannelShown: Bool,
         showReplyInChannel: Binding<Bool>
     ) {
-        self.viewModel = viewModel
         self.channelController = channelController
         self.text = text
         self.selectedRangeLocation = selectedRangeLocation
@@ -154,12 +165,17 @@ public final class ComposerInputViewOptions: Sendable {
         self.cooldownDuration = cooldownDuration
         self.hasContent = hasContent
         self.canSendMessage = canSendMessage
+        self.audioRecordingInfo = audioRecordingInfo
+        self.pendingAudioRecordingURL = pendingAudioRecordingURL
         self.onCustomAttachmentTap = onCustomAttachmentTap
         self.removeAttachmentWithId = removeAttachmentWithId
         self.sendMessage = sendMessage
         self.onImagePasted = onImagePasted
         self.startRecording = startRecording
         self.stopRecording = stopRecording
+        self.confirmRecording = confirmRecording
+        self.discardRecording = discardRecording
+        self.previewRecording = previewRecording
         self.showRecordingTip = showRecordingTip
         self.sendInChannelShown = sendInChannelShown
         self.showReplyInChannel = showReplyInChannel
@@ -291,15 +307,34 @@ public final class ConfirmEditButtonOptions: Sendable {
 // MARK: - Composer Recording Options
 
 /// Options for creating the unified voice recording input view.
-public final class ComposerVoiceRecordingInputViewOptions: Sendable {
-    /// The view model for the composer.
-    public let viewModel: MessageComposerViewModel
-    /// The current gesture location during active recording.
+public final class ComposerVoiceRecordingInputViewOptions: @unchecked Sendable {
+    public let recordingState: VoiceRecordingState
+    public let audioRecordingInfo: AudioRecordingInfo
+    public let pendingAudioRecordingURL: URL?
     public let gestureLocation: CGPoint
-    
-    public init(viewModel: MessageComposerViewModel, gestureLocation: CGPoint) {
-        self.viewModel = viewModel
+    public let stopRecording: @MainActor () -> Void
+    public let confirmRecording: @MainActor () -> Void
+    public let discardRecording: @MainActor () -> Void
+    public let previewRecording: @MainActor () -> Void
+
+    public init(
+        recordingState: VoiceRecordingState,
+        audioRecordingInfo: AudioRecordingInfo,
+        pendingAudioRecordingURL: URL?,
+        gestureLocation: CGPoint,
+        stopRecording: @escaping @MainActor () -> Void,
+        confirmRecording: @escaping @MainActor () -> Void,
+        discardRecording: @escaping @MainActor () -> Void,
+        previewRecording: @escaping @MainActor () -> Void
+    ) {
+        self.recordingState = recordingState
+        self.audioRecordingInfo = audioRecordingInfo
+        self.pendingAudioRecordingURL = pendingAudioRecordingURL
         self.gestureLocation = gestureLocation
+        self.stopRecording = stopRecording
+        self.confirmRecording = confirmRecording
+        self.discardRecording = discardRecording
+        self.previewRecording = previewRecording
     }
 }
 

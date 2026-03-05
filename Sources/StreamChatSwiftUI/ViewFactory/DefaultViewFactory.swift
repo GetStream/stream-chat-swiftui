@@ -505,7 +505,6 @@ extension ViewFactory {
     ) -> some View {
         ComposerInputView(
             factory: self,
-            viewModel: options.viewModel,
             channelController: options.channelController,
             text: options.text,
             selectedRangeLocation: options.selectedRangeLocation,
@@ -521,12 +520,17 @@ extension ViewFactory {
             cooldownDuration: options.cooldownDuration,
             hasContent: options.hasContent,
             canSendMessage: options.canSendMessage,
+            audioRecordingInfo: options.audioRecordingInfo,
+            pendingAudioRecordingURL: options.pendingAudioRecordingURL,
             onCustomAttachmentTap: options.onCustomAttachmentTap,
             removeAttachmentWithId: options.removeAttachmentWithId,
             sendMessage: options.sendMessage,
             onImagePasted: options.onImagePasted,
             startRecording: options.startRecording,
             stopRecording: options.stopRecording,
+            confirmRecording: options.confirmRecording,
+            discardRecording: options.discardRecording,
+            previewRecording: options.previewRecording,
             showRecordingTip: options.showRecordingTip,
             sendInChannelShown: options.sendInChannelShown,
             showReplyInChannel: options.showReplyInChannel
@@ -594,8 +598,14 @@ extension ViewFactory {
     ) -> some View {
         ComposerVoiceRecordingInputView(
             factory: self,
-            viewModel: options.viewModel,
-            gestureLocation: options.gestureLocation
+            recordingState: options.recordingState,
+            audioRecordingInfo: options.audioRecordingInfo,
+            pendingAudioRecordingURL: options.pendingAudioRecordingURL,
+            gestureLocation: options.gestureLocation,
+            stopRecording: options.stopRecording,
+            confirmRecording: options.confirmRecording,
+            discardRecording: options.discardRecording,
+            previewRecording: options.previewRecording
         )
     }
     

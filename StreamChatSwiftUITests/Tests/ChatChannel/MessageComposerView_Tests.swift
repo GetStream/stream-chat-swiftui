@@ -253,7 +253,6 @@ import XCTest
         // When
         let view = ComposerInputView(
             factory: factory,
-            viewModel: MessageComposerTestUtils.makeComposerViewModel(chatClient: chatClient),
             channelController: channelController,
             text: .constant(""),
             selectedRangeLocation: .constant(0),
@@ -268,12 +267,17 @@ import XCTest
             cooldownDuration: 15,
             hasContent: true,
             canSendMessage: true,
+            audioRecordingInfo: .initial,
+            pendingAudioRecordingURL: nil,
             onCustomAttachmentTap: { _ in },
             removeAttachmentWithId: { _ in },
             sendMessage: {},
             onImagePasted: { _ in },
             startRecording: {},
             stopRecording: {},
+            confirmRecording: {},
+            discardRecording: {},
+            previewRecording: {},
             showRecordingTip: {},
             sendInChannelShown: false,
             showReplyInChannel: .constant(false)
@@ -515,12 +519,10 @@ import XCTest
         let factory = DefaultViewFactory.shared
         let mockChannelController = ChatChannelTestHelpers.makeChannelController(chatClient: chatClient)
         mockChannelController.channel_mock = .mockDMChannel(ownCapabilities: [.uploadFile, .readEvents])
-        let viewModel = MessageComposerViewModel(channelController: mockChannelController, messageController: nil)
 
         // When
         let view = ComposerInputView(
             factory: factory,
-            viewModel: viewModel,
             channelController: mockChannelController,
             text: .constant(""),
             selectedRangeLocation: .constant(0),
@@ -535,12 +537,17 @@ import XCTest
             cooldownDuration: 0,
             hasContent: true,
             canSendMessage: true,
+            audioRecordingInfo: .initial,
+            pendingAudioRecordingURL: nil,
             onCustomAttachmentTap: { _ in },
             removeAttachmentWithId: { _ in },
             sendMessage: {},
             onImagePasted: { _ in },
             startRecording: {},
             stopRecording: {},
+            confirmRecording: {},
+            discardRecording: {},
+            previewRecording: {},
             showRecordingTip: {},
             sendInChannelShown: false,
             showReplyInChannel: .constant(false)
@@ -730,7 +737,6 @@ import XCTest
 
         let view = ComposerInputView(
             factory: factory,
-            viewModel: MessageComposerTestUtils.makeComposerViewModel(chatClient: chatClient),
             channelController: channelController,
             text: .constant(""),
             selectedRangeLocation: .constant(0),
@@ -745,12 +751,17 @@ import XCTest
             cooldownDuration: 0,
             hasContent: true,
             canSendMessage: true,
+            audioRecordingInfo: .initial,
+            pendingAudioRecordingURL: nil,
             onCustomAttachmentTap: { _ in },
             removeAttachmentWithId: { _ in },
             sendMessage: {},
             onImagePasted: { _ in },
             startRecording: {},
             stopRecording: {},
+            confirmRecording: {},
+            discardRecording: {},
+            previewRecording: {},
             showRecordingTip: {},
             sendInChannelShown: false,
             showReplyInChannel: .constant(false)
@@ -773,7 +784,6 @@ import XCTest
 
         let view = ComposerInputView(
             factory: factory,
-            viewModel: MessageComposerTestUtils.makeComposerViewModel(chatClient: chatClient),
             channelController: channelController,
             text: .constant(""),
             selectedRangeLocation: .constant(0),
@@ -788,12 +798,17 @@ import XCTest
             cooldownDuration: 0,
             hasContent: false,
             canSendMessage: true,
+            audioRecordingInfo: .initial,
+            pendingAudioRecordingURL: nil,
             onCustomAttachmentTap: { _ in },
             removeAttachmentWithId: { _ in },
             sendMessage: {},
             onImagePasted: { _ in },
             startRecording: {},
             stopRecording: {},
+            confirmRecording: {},
+            discardRecording: {},
+            previewRecording: {},
             showRecordingTip: {},
             sendInChannelShown: false,
             showReplyInChannel: .constant(false)
@@ -810,7 +825,6 @@ import XCTest
 
         let view = ComposerInputView(
             factory: factory,
-            viewModel: MessageComposerTestUtils.makeComposerViewModel(chatClient: chatClient),
             channelController: channelController,
             text: .constant(""),
             selectedRangeLocation: .constant(0),
@@ -825,12 +839,17 @@ import XCTest
             cooldownDuration: 0,
             hasContent: false,
             canSendMessage: true,
+            audioRecordingInfo: .initial,
+            pendingAudioRecordingURL: nil,
             onCustomAttachmentTap: { _ in },
             removeAttachmentWithId: { _ in },
             sendMessage: {},
             onImagePasted: { _ in },
             startRecording: {},
             stopRecording: {},
+            confirmRecording: {},
+            discardRecording: {},
+            previewRecording: {},
             showRecordingTip: {},
             sendInChannelShown: false,
             showReplyInChannel: .constant(false)
