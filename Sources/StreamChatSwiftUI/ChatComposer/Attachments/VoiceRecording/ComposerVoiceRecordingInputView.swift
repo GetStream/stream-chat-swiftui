@@ -32,6 +32,10 @@ struct ComposerVoiceRecordingInputView<Factory: ViewFactory>: View {
     var body: some View {
         VStack(spacing: tokens.spacingNone) {
             recordingBar
+                .animation(
+                    .interactiveSpring(response: 0.35, dampingFraction: 0.88),
+                    value: isLockedOrStopped
+                )
 
             recordingControls
                 .frame(height: isLockedOrStopped ? recordingControlsHeight : 0, alignment: .top)
@@ -42,10 +46,6 @@ struct ComposerVoiceRecordingInputView<Factory: ViewFactory>: View {
                     value: isLockedOrStopped
                 )
         }
-        .animation(
-            .interactiveSpring(response: 0.35, dampingFraction: 0.88),
-            value: isLockedOrStopped
-        )
         .onAppear { player.subscribe(handler) }
         .onReceive(handler.$context) { _ in
             if let url = viewModel.pendingAudioRecording?.url {
@@ -258,7 +258,7 @@ struct SlideToCancelLabel: View {
                             .font(fonts.body)
                     )
                 )
-            Image(systemName: "chevron.left")
+            Image(systemName: "chevron.backward")
                 .font(.system(size: 20))
                 .foregroundColor(Color(colors.textTertiary))
         }
