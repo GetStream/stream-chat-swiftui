@@ -9,13 +9,14 @@ public struct PollAttachmentView<Factory: ViewFactory>: View {
     @Injected(\.chatClient) var chatClient
     @Injected(\.fonts) var fonts
     @Injected(\.colors) var colors
-    
+    @Injected(\.tokens) var tokens
+
     private let factory: Factory
     private let message: ChatMessage
     private let isFirst: Bool
-    
+
     @StateObject var viewModel: PollAttachmentViewModel
-    
+
     public init(
         factory: Factory,
         message: ChatMessage,
@@ -32,17 +33,17 @@ public struct PollAttachmentView<Factory: ViewFactory>: View {
             )
         )
     }
-    
+
     public var body: some View {
-        VStack(spacing: 16) {
-            VStack(alignment: .leading, spacing: 2) {
+        VStack(spacing: tokens.spacingLg) {
+            VStack(alignment: .leading, spacing: tokens.spacingXxs) {
                 HStack {
                     Text(poll.name)
                         .font(fonts.bodyBold)
                         .foregroundColor(textColor(for: message))
                     Spacer()
                 }
-                
+
                 HStack {
                     Text(subtitleText)
                         .font(fonts.caption1)
@@ -50,105 +51,113 @@ public struct PollAttachmentView<Factory: ViewFactory>: View {
                     Spacer()
                 }
             }
-            
-            ForEach(options.prefix(PollAttachmentViewModel.numberOfVisibleOptionsShown)) { option in
-                PollOptionView(
-                    viewModel: viewModel,
-                    factory: factory,
-                    option: option,
-                    optionVotes: poll.voteCount(for: option),
-                    maxVotes: poll.currentMaximumVoteCount,
-                    textColor: textColor(for: message)
-                )
-                .layoutPriority(1) // do not compress long text
+
+            VStack(spacing: tokens.spacingMd) {
+                ForEach(options.prefix(PollAttachmentViewModel.numberOfVisibleOptionsShown)) { option in
+                    PollOptionView(
+                        viewModel: viewModel,
+                        factory: factory,
+                        option: option,
+                        optionVotes: poll.voteCount(for: option),
+                        maxVotes: poll.currentMaximumVoteCount,
+                        message: message
+                    )
+                    .layoutPriority(1) // do not compress long text
+                }
             }
-            
-            if options.count > PollAttachmentViewModel.numberOfVisibleOptionsShown {
-                Button {
-                    viewModel.allOptionsShown = true
-                } label: {
-                    Text(
-                        L10n.Message.Polls.Button
-                            .seeMoreOptions(options.count - PollAttachmentViewModel.numberOfVisibleOptionsShown)
+
+            VStack(spacing: tokens.spacingXs) {
+                if options.count > PollAttachmentViewModel.numberOfVisibleOptionsShown {
+                    StreamTextButton(role: .secondary, style: .ghost, size: .small) {
+                        viewModel.allOptionsShown = true
+                    } text: {
+                        Text(
+                            L10n.Message.Polls.Button
+                                .seeMoreOptions(options.count - PollAttachmentViewModel.numberOfVisibleOptionsShown)
+                        )
+                    }
+                    .fullScreenCover(isPresented: $viewModel.allOptionsShown) {
+                        PollAllOptionsView(viewModel: viewModel, factory: factory)
+                    }
+                }
+
+                if viewModel.showSuggestOptionButton {
+                    StreamTextButton(role: .secondary, style: .ghost, size: .small) {
+                        viewModel.suggestOptionShown = true
+                    } text: {
+                        Text(L10n.Message.Polls.Button.suggestAnOption)
+                    }
+                    .uiAlert(
+                        title: L10n.Alert.Title.suggestAnOption,
+                        isPresented: $viewModel.suggestOptionShown,
+                        text: $viewModel.suggestOptionText,
+                        placeholder: L10n.Alert.TextField.pollsNewOption,
+                        accept: L10n.Alert.Actions.send,
+                        action: { viewModel.suggest(option: viewModel.suggestOptionText) }
                     )
                 }
-                .fullScreenCover(isPresented: $viewModel.allOptionsShown) {
-                    PollAllOptionsView(viewModel: viewModel, factory: factory)
-                }
-            }
-            
-            if viewModel.showSuggestOptionButton {
-                Button {
-                    viewModel.suggestOptionShown = true
-                } label: {
-                    Text(L10n.Message.Polls.Button.suggestAnOption)
-                }
-                .uiAlert(
-                    title: L10n.Alert.Title.suggestAnOption,
-                    isPresented: $viewModel.suggestOptionShown,
-                    text: $viewModel.suggestOptionText,
-                    placeholder: L10n.Alert.TextField.pollsNewOption,
-                    accept: L10n.Alert.Actions.send,
-                    action: { viewModel.suggest(option: viewModel.suggestOptionText) }
-                )
-            }
-            
-            if viewModel.showAddCommentButton {
-                Button {
-                    viewModel.addCommentShown = true
-                } label: {
-                    Text(L10n.Message.Polls.Button.addComment)
-                }
-                .uiAlert(
-                    title: L10n.Alert.Title.addComment,
-                    isPresented: $viewModel.addCommentShown,
-                    text: $viewModel.commentText,
-                    accept: L10n.Alert.Actions.send,
-                    action: { viewModel.add(comment: viewModel.commentText) }
-                )
-            }
-            
-            if viewModel.poll.answersCount > 0 {
-                Button {
-                    viewModel.allCommentsShown = true
-                } label: {
-                    Text(L10n.Message.Polls.Button.viewNumberOfComments(viewModel.poll.answersCount))
-                }
-                .fullScreenCover(isPresented: $viewModel.allCommentsShown) {
-                    PollCommentsView(factory: factory, poll: viewModel.poll, pollController: viewModel.pollController)
-                }
-            }
-            
-            Button {
-                viewModel.pollResultsShown = true
-            } label: {
-                Text(L10n.Message.Polls.Button.viewResults)
-            }
-            .fullScreenCover(isPresented: $viewModel.pollResultsShown) {
-                PollResultsView(viewModel: viewModel, factory: factory)
-            }
-            
-            if viewModel.showEndVoteButton {
-                Button {
-                    viewModel.endVoteConfirmationShown = true
-                } label: {
-                    Text(L10n.Message.Polls.Button.endVote)
-                }
-                .actionSheet(isPresented: $viewModel.endVoteConfirmationShown) {
-                    ActionSheet(
-                        title: Text(L10n.Alert.Title.endPoll),
-                        buttons: [
-                            .destructive(Text(L10n.Alert.Actions.end)) {
-                                viewModel.endVote()
-                            },
-                            .cancel(Text(L10n.Alert.Actions.cancel))
-                        ]
+
+                if viewModel.showAddCommentButton {
+                    StreamTextButton(role: .secondary, style: .ghost, size: .small) {
+                        viewModel.addCommentShown = true
+                    } text: {
+                        Text(L10n.Message.Polls.Button.addComment)
+                    }
+                    .uiAlert(
+                        title: L10n.Alert.Title.addComment,
+                        isPresented: $viewModel.addCommentShown,
+                        text: $viewModel.commentText,
+                        accept: L10n.Alert.Actions.send,
+                        action: { viewModel.add(comment: viewModel.commentText) }
                     )
+                }
+
+                if viewModel.poll.answersCount > 0 {
+                    StreamTextButton(role: .secondary, style: .ghost, size: .small) {
+                        viewModel.allCommentsShown = true
+                    } text: {
+                        Text(L10n.Message.Polls.Button.viewNumberOfComments(viewModel.poll.answersCount))
+                    }
+                    .fullScreenCover(isPresented: $viewModel.allCommentsShown) {
+                        PollCommentsView(factory: factory, poll: viewModel.poll, pollController: viewModel.pollController)
+                    }
+                }
+
+                StreamTextButton(role: outlineButtonRole, style: .outline, size: .small) {
+                    viewModel.pollResultsShown = true
+                } text: {
+                    Text(L10n.Message.Polls.Button.viewResults)
+                        .foregroundColor(Color(colors.buttonSecondaryText))
+                }
+                .fullScreenCover(isPresented: $viewModel.pollResultsShown) {
+                    PollResultsView(viewModel: viewModel, factory: factory)
+                }
+
+                if viewModel.showEndVoteButton {
+                    StreamTextButton(role: outlineButtonRole, style: .outline, size: .small) {
+                        viewModel.endVoteConfirmationShown = true
+                    } text: {
+                        Text(L10n.Message.Polls.Button.endVote)
+                            .foregroundColor(Color(colors.buttonSecondaryText))
+                    }
+                    .actionSheet(isPresented: $viewModel.endVoteConfirmationShown) {
+                        ActionSheet(
+                            title: Text(L10n.Alert.Title.endPoll),
+                            buttons: [
+                                .destructive(Text(L10n.Alert.Actions.end)) {
+                                    viewModel.endVote()
+                                },
+                                .cancel(Text(L10n.Alert.Actions.cancel))
+                            ]
+                        )
+                    }
                 }
             }
         }
         .disabled(!viewModel.canInteract)
-        .padding()
+        .padding(.horizontal, tokens.spacingMd)
+        .padding(.top, tokens.spacingMd)
+        .padding(.bottom, tokens.spacingLg)
         .modifier(
             factory.styles.makeMessageViewModifier(
                 for: MessageModifierInfo(
@@ -158,15 +167,19 @@ public struct PollAttachmentView<Factory: ViewFactory>: View {
             )
         )
     }
-    
+
+    private var outlineButtonRole: StreamButtonRole {
+        message.isSentByCurrentUser ? .primary : .secondary
+    }
+
     private var poll: Poll {
         viewModel.poll
     }
-    
+
     private var options: [PollOption] {
         poll.options
     }
-    
+
     private var subtitleText: String {
         if poll.isClosed == true {
             L10n.Message.Polls.Subtitle.voteEnded
@@ -181,38 +194,40 @@ public struct PollAttachmentView<Factory: ViewFactory>: View {
 }
 
 struct PollOptionView<Factory: ViewFactory>: View {
+    @Injected(\.colors) var colors
+    @Injected(\.tokens) var tokens
+    @Injected(\.fonts) var fonts
+
     @ObservedObject var viewModel: PollAttachmentViewModel
-    
+
     let factory: Factory
     let option: PollOption
     var optionFont: Font = InjectedValues[\.fonts].body
     var optionVotes: Int?
     var maxVotes: Int?
-    var textColor: Color
+    var message: ChatMessage
     /// If true, only option name and vote count is shown, otherwise votes indicator and avatars appear as well.
     var alternativeStyle: Bool = false
-    /// The spacing between the checkbox and the option name.
-    /// By default it is 4. For All Options View is 8.
-    var checkboxButtonSpacing: CGFloat = 4
 
     var body: some View {
-        HStack(alignment: .top, spacing: checkboxButtonSpacing) {
+        HStack(alignment: .top, spacing: tokens.spacingSm) {
             if !viewModel.poll.isClosed {
                 Button {
                     togglePollVote()
                 } label: {
-                    if viewModel.optionVotedByCurrentUser(option) {
-                        Image(systemName: "checkmark.circle.fill")
-                    } else {
-                        Image(systemName: "circle")
-                    }
+                    RadioCheckView(
+                        isSelected: viewModel.optionVotedByCurrentUser(option),
+                        borderColorOverride: message.isSentByCurrentUser
+                            ? colors.chatBorderOnChatOutgoing
+                            : colors.chatBorderOnChatIncoming
+                    )
                 }
             }
-            VStack(spacing: 4) {
-                HStack(alignment: .top) {
+            VStack(spacing: tokens.spacingXxs) {
+                HStack(alignment: .top, spacing: tokens.spacingXs) {
                     Text(option.text)
                         .font(optionFont)
-                        .foregroundColor(textColor)
+                        .foregroundColor(textColor(for: message))
                     Spacer()
                     if !alternativeStyle, viewModel.showVoterAvatars {
                         HStack(spacing: -4) {
@@ -230,13 +245,15 @@ struct PollOptionView<Factory: ViewFactory>: View {
                         }
                     }
                     Text("\(viewModel.poll.voteCountsByOption?[option.id] ?? 0)")
-                        .foregroundColor(textColor)
+                        .font(fonts.caption1)
+                        .foregroundColor(textColor(for: message))
                 }
                 if !alternativeStyle {
                     PollVotesIndicatorView(
                         alternativeStyle: viewModel.poll.isClosed && viewModel.hasMostVotes(for: option),
                         optionVotes: optionVotes ?? 0,
-                        maxVotes: maxVotes ?? 0
+                        maxVotes: maxVotes ?? 0,
+                        isOutgoing: message.isSentByCurrentUser
                     )
                 }
             }
@@ -258,28 +275,41 @@ struct PollOptionView<Factory: ViewFactory>: View {
 
 struct PollVotesIndicatorView: View {
     @Injected(\.colors) var colors
-    
+    @Injected(\.tokens) var tokens
+
     let alternativeStyle: Bool
     let optionVotes: Int
     let maxVotes: Int
-    
-    private let height: CGFloat = 4
-    
+    var isOutgoing: Bool = false
+
+    private let height: CGFloat = 8
+
     var body: some View {
         GeometryReader { reader in
             ZStack(alignment: .leading) {
-                RoundedRectangle(cornerRadius: 8)
-                    .fill(Color(colors.background2))
+                RoundedRectangle(cornerRadius: tokens.radiusMax)
+                    .fill(Color(trackColor))
                     .frame(width: reader.size.width, height: height)
 
-                RoundedRectangle(cornerRadius: 8)
-                    .fill(alternativeStyle ? Color(colors.alternativeActiveTint) : (Color(colors.accentPrimary)))
+                RoundedRectangle(cornerRadius: tokens.radiusMax)
+                    .fill(Color(fillColor))
                     .frame(width: reader.size.width * ratio, height: height)
             }
         }
         .frame(height: height)
     }
-    
+
+    private var trackColor: UIColor {
+        isOutgoing ? colors.chatPollProgressTrackOutgoing : colors.chatPollProgressTrackIncoming
+    }
+
+    private var fillColor: UIColor {
+        if alternativeStyle {
+            return colors.alternativeActiveTint
+        }
+        return isOutgoing ? colors.chatPollProgressFillOutgoing : colors.chatPollProgressFillIncoming
+    }
+
     var ratio: CGFloat {
         CGFloat(optionVotes) / CGFloat(max(maxVotes, 1))
     }

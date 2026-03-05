@@ -33,9 +33,8 @@ struct PollAllOptionsView<Factory: ViewFactory>: View {
                                 factory: factory,
                                 option: option,
                                 optionFont: fonts.headline,
-                                textColor: Color(colors.text),
-                                alternativeStyle: true,
-                                checkboxButtonSpacing: 8
+                                message: viewModel.message,
+                                alternativeStyle: true
                             )
                         }
                     }
