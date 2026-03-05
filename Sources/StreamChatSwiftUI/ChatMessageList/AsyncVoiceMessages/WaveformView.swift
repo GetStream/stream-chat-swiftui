@@ -19,6 +19,9 @@ open class WaveformView: UIView {
         /// as new data arrive).
         public var isRecording: Bool
 
+        /// Whether audio playback is currently active.
+        public var isPlaying: Bool
+
         /// The duration of the Audio file that we are representing.
         public var duration: TimeInterval
 
@@ -30,6 +33,7 @@ open class WaveformView: UIView {
 
         public static let initial = Content(
             isRecording: false,
+            isPlaying: false,
             duration: 0,
             currentTime: 0,
             waveform: []
@@ -37,11 +41,13 @@ open class WaveformView: UIView {
 
         public init(
             isRecording: Bool,
+            isPlaying: Bool = false,
             duration: TimeInterval,
             currentTime: TimeInterval,
             waveform: [Float]
         ) {
             self.isRecording = isRecording
+            self.isPlaying = isPlaying
             self.duration = duration
             self.currentTime = currentTime
             self.waveform = waveform
@@ -86,7 +92,7 @@ open class WaveformView: UIView {
         setNeedsLayout()
         audioVisualizationView.backgroundColor = .clear
 
-        slider.setThumbImage(images.sliderThumb, for: .normal)
+        applySliderThumb(isPlaying: false)
         slider.minimumTrackTintColor = .clear
         slider.maximumTrackTintColor = .clear
     }
@@ -98,11 +104,15 @@ open class WaveformView: UIView {
         slider.minimumValue = 0
         slider.value = Float(content.currentTime)
 
+        applySliderThumb(isPlaying: content.isPlaying)
+
         audioVisualizationView.audioVisualizationMode = content.isRecording ? .write : .read
         if audioVisualizationView.content != content.waveform {
             audioVisualizationView.content = content.waveform
         }
-        audioVisualizationView.currentGradientPercentage = max(0, min(1, Float(content.currentTime / content.duration)))
+        audioVisualizationView.currentGradientPercentage = content.duration > 0
+            ? max(0, min(1, Float(content.currentTime / content.duration)))
+            : 0
         audioVisualizationView.setNeedsLayout()
         audioVisualizationView.setNeedsDisplay()
     }
@@ -135,11 +145,122 @@ open class WaveformView: UIView {
     ) {
         onSliderTapped?()
     }
+
+    // MARK: - Slider Thumb
+
+    private static var cachedActiveThumb: UIImage?
+    private static var cachedInactiveThumb: UIImage?
+
+    private static func makeSliderThumbImage(
+        fillColor: UIColor,
+        borderColor: UIColor
+    ) -> UIImage {
+        let diameter: CGFloat = 12
+        let borderWidth: CGFloat = 1
+        let shadowBlur: CGFloat = 6
+        let shadowOffsetY: CGFloat = 2
+        let canvasSize = CGSize(
+            width: diameter + shadowBlur * 2,
+            height: diameter + shadowBlur * 2 + shadowOffsetY
+        )
+        let renderer = UIGraphicsImageRenderer(size: canvasSize)
+        return renderer.image { ctx in
+            let cgContext = ctx.cgContext
+            let thumbRect = CGRect(
+                x: (canvasSize.width - diameter) / 2,
+                y: (canvasSize.height - diameter - shadowOffsetY) / 2,
+                width: diameter,
+                height: diameter
+            )
+            let path = UIBezierPath(ovalIn: thumbRect)
+
+            cgContext.setShadow(
+                offset: CGSize(width: 0, height: shadowOffsetY),
+                blur: shadowBlur,
+                color: UIColor.black.withAlphaComponent(0.14).cgColor
+            )
+            fillColor.setFill()
+            path.fill()
+
+            cgContext.setShadow(offset: .zero, blur: 0, color: nil)
+            borderColor.setStroke()
+            path.lineWidth = borderWidth
+            path.stroke()
+        }
+    }
+
+    func applySliderThumb(isPlaying: Bool) {
+        let colors = InjectedValues[\.colors]
+        let thumb: UIImage
+        if isPlaying {
+            if let cached = Self.cachedActiveThumb {
+                thumb = cached
+            } else {
+                thumb = Self.makeSliderThumbImage(
+                    fillColor: colors.accentPrimary,
+                    borderColor: colors.backgroundCoreApp
+                )
+                Self.cachedActiveThumb = thumb
+            }
+        } else {
+            if let cached = Self.cachedInactiveThumb {
+                thumb = cached
+            } else {
+                thumb = Self.makeSliderThumbImage(
+                    fillColor: colors.backgroundCoreApp,
+                    borderColor: colors.borderCoreOpacity25
+                )
+                Self.cachedInactiveThumb = thumb
+            }
+        }
+        slider.setThumbImage(thumb, for: .normal)
+        slider.setThumbImage(thumb, for: .highlighted)
+    }
 }
 
+/// SwiftUI wrapper used during active recording (locked/stopped states in the composer).
+/// Passes raw waveform data directly rather than an `AddedVoiceRecording`.
+struct RecordingWaveform: UIViewRepresentable {
+    var isRecording: Bool
+    var isPlaying: Bool = false
+    var duration: TimeInterval
+    var currentTime: TimeInterval
+    var waveform: [Float]
+    var onSliderChanged: (TimeInterval) -> Void = { _ in }
+    var onSliderTapped: () -> Void = {}
+    
+    func makeUIView(context: Context) -> WaveformView {
+        let view = WaveformView()
+        view.onSliderChanged = onSliderChanged
+        view.onSliderTapped = onSliderTapped
+        updateContent(for: view)
+        return view
+    }
+    
+    func updateUIView(_ uiView: WaveformView, context: Context) {
+        uiView.onSliderChanged = onSliderChanged
+        uiView.onSliderTapped = onSliderTapped
+        updateContent(for: uiView)
+    }
+    
+    private func updateContent(for view: WaveformView) {
+        view.content = .init(
+            isRecording: isRecording,
+            isPlaying: isPlaying,
+            duration: duration,
+            currentTime: currentTime,
+            waveform: waveform
+        )
+        view.slider.isUserInteractionEnabled = !isRecording
+    }
+}
+
+/// SwiftUI wrapper used for completed voice recordings (message list, composer attachments).
+/// Reads playback state from an `AddedVoiceRecording` and optional `AudioPlaybackContext`.
 struct WaveformViewSwiftUI: UIViewRepresentable {
     var audioContext: AudioPlaybackContext?
     var addedVoiceRecording: AddedVoiceRecording
+    var isPlaying: Bool = false
     var onSliderChanged: (TimeInterval) -> Void
     var onSliderTapped: () -> Void
     
@@ -152,6 +273,8 @@ struct WaveformViewSwiftUI: UIViewRepresentable {
     }
     
     func updateUIView(_ uiView: WaveformView, context: Context) {
+        uiView.onSliderChanged = onSliderChanged
+        uiView.onSliderTapped = onSliderTapped
         updateContent(for: uiView)
     }
     
@@ -159,6 +282,7 @@ struct WaveformViewSwiftUI: UIViewRepresentable {
         if let audioContext, addedVoiceRecording.url == audioContext.assetLocation {
             view.content = .init(
                 isRecording: false,
+                isPlaying: isPlaying,
                 duration: audioContext.duration,
                 currentTime: audioContext.currentTime,
                 waveform: addedVoiceRecording.waveform

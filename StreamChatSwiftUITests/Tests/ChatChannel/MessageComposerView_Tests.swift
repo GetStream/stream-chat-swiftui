@@ -50,13 +50,16 @@ import XCTest
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
     
+    // MARK: - Voice Recording
+
     func test_messageComposerView_recording() {
         // Given
+        let size = CGSize(width: composerWidth, height: 250)
         let factory = DefaultViewFactory.shared
         let channelController = ChatChannelTestHelpers.makeChannelController(chatClient: chatClient)
         let viewModel = MessageComposerViewModel(channelController: channelController, messageController: nil)
-        viewModel.recordingState = .recording(.zero)
-        
+        viewModel.recordingState = .recording
+
         // When
         let view = MessageComposerView(
             viewFactory: factory,
@@ -67,19 +70,49 @@ import XCTest
             editedMessage: .constant(nil),
             onMessageSent: {}
         )
-        .frame(width: composerWidth, height: 250)
+        .frame(width: size.width, height: size.height)
 
         // Then
-        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
+        AssertSnapshot(view, size: size)
     }
-    
+
+    func test_messageComposerView_recordingSlideToCancel() {
+        // Given
+        let size = CGSize(width: composerWidth, height: 250)
+        let factory = DefaultViewFactory.shared
+        let channelController = ChatChannelTestHelpers.makeChannelController(chatClient: chatClient)
+        let viewModel = MessageComposerViewModel(channelController: channelController, messageController: nil)
+        viewModel.recordingState = .recording
+        viewModel.recordingGestureLocation = CGPoint(x: -50, y: 0)
+
+        // When
+        let view = MessageComposerView(
+            viewFactory: factory,
+            viewModel: viewModel,
+            channelController: channelController,
+            messageController: nil,
+            quotedMessage: .constant(nil),
+            editedMessage: .constant(nil),
+            onMessageSent: {}
+        )
+        .frame(width: size.width, height: size.height)
+
+        // Then
+        AssertSnapshot(view, size: size)
+    }
+
     func test_messageComposerView_recordingLocked() {
         // Given
+        let size = CGSize(width: composerWidth, height: 120)
         let factory = DefaultViewFactory.shared
         let channelController = ChatChannelTestHelpers.makeChannelController(chatClient: chatClient)
         let viewModel = MessageComposerViewModel(channelController: channelController, messageController: nil)
         viewModel.recordingState = .locked
-        
+        viewModel.audioRecordingInfo = AudioRecordingInfo(
+            waveform: [0, 0.2, 0.5, 0.8, 1.0, 0.6, 0.3, 0.1, 0.4, 0.7],
+            duration: 5.0
+        )
+
         // When
         let view = MessageComposerView(
             viewFactory: factory,
@@ -90,19 +123,29 @@ import XCTest
             editedMessage: .constant(nil),
             onMessageSent: {}
         )
-        .frame(width: composerWidth, height: 120)
+        .frame(width: size.width, height: size.height)
 
         // Then
-        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
+        AssertSnapshot(view, size: size)
     }
-    
-    func test_messageComposerView_recordingTip() {
+
+    func test_messageComposerView_recordingStopped() {
         // Given
+        let size = CGSize(width: composerWidth, height: 120)
         let factory = DefaultViewFactory.shared
         let channelController = ChatChannelTestHelpers.makeChannelController(chatClient: chatClient)
         let viewModel = MessageComposerViewModel(channelController: channelController, messageController: nil)
-        viewModel.recordingState = .showingTip
-        
+        viewModel.recordingState = .stopped
+        viewModel.audioRecordingInfo = AudioRecordingInfo(
+            waveform: [0, 0.2, 0.5, 0.8, 1.0, 0.6, 0.3, 0.1, 0.4, 0.7],
+            duration: 12.5
+        )
+        viewModel.pendingAudioRecording = AddedVoiceRecording(
+            url: .localYodaImage,
+            duration: 12.5,
+            waveform: [0, 0.2, 0.5, 0.8, 1.0, 0.6, 0.3, 0.1, 0.4, 0.7]
+        )
+
         // When
         let view = MessageComposerView(
             viewFactory: factory,
@@ -113,19 +156,46 @@ import XCTest
             editedMessage: .constant(nil),
             onMessageSent: {}
         )
-        .frame(width: composerWidth, height: 120)
+        .frame(width: size.width, height: size.height)
 
         // Then
-        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
+        AssertSnapshot(view, size: size)
     }
-    
+
+    func test_messageComposerView_recordingTipSnackbar() {
+        // Given
+        let size = CGSize(width: composerWidth, height: 200)
+        let factory = DefaultViewFactory.shared
+        let channelController = ChatChannelTestHelpers.makeChannelController(chatClient: chatClient)
+        let viewModel = MessageComposerViewModel(channelController: channelController, messageController: nil)
+        viewModel.showRecordingTip()
+
+        // When
+        let view = MessageComposerView(
+            viewFactory: factory,
+            viewModel: viewModel,
+            channelController: channelController,
+            messageController: nil,
+            quotedMessage: .constant(nil),
+            editedMessage: .constant(nil),
+            onMessageSent: {}
+        )
+        .frame(width: size.width, height: size.height)
+
+        // Then
+        AssertSnapshot(view, size: size)
+    }
+
     func test_messageComposerView_addedVoiceRecording() {
         // Given
+        let size = CGSize(width: composerWidth, height: 200)
         let factory = DefaultViewFactory.shared
         let channelController = ChatChannelTestHelpers.makeChannelController(chatClient: chatClient)
         let viewModel = MessageComposerViewModel(channelController: channelController, messageController: nil)
-        viewModel.addedVoiceRecordings = [AddedVoiceRecording(url: .localYodaImage, duration: 5, waveform: [0, 0.1, 0.6, 1.0])]
-        
+        viewModel.addedVoiceRecordings = [
+            AddedVoiceRecording(url: .localYodaImage, duration: 5, waveform: [0, 0.1, 0.6, 1.0])
+        ]
+
         // When
         let view = MessageComposerView(
             viewFactory: factory,
@@ -136,10 +206,43 @@ import XCTest
             editedMessage: .constant(nil),
             onMessageSent: {}
         )
-        .frame(width: composerWidth, height: 200)
+        .frame(width: size.width, height: size.height)
 
         // Then
-        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
+        AssertSnapshot(view, size: size)
+    }
+
+    func test_messageComposerView_voiceRecordingPlaying() {
+        // Given
+        let url = URL(string: "https://example.com/recording.m4a")!
+        let recording = AddedVoiceRecording(
+            url: url,
+            duration: 10,
+            waveform: [0, 0.1, 0.4, 0.7, 1.0, 0.8, 0.5, 0.3, 0.6, 0.9]
+        )
+        let handler = VoiceRecordingHandler()
+        handler.isPlaying = true
+        handler.context = AudioPlaybackContext(
+            assetLocation: url,
+            duration: 10,
+            currentTime: 4.2,
+            state: .playing,
+            rate: .normal,
+            isSeeking: false
+        )
+        let size = CGSize(width: composerWidth - 32, height: 100)
+
+        // When
+        let view = ComposerVoiceRecordingAttachmentView(
+            handler: handler,
+            recording: recording,
+            onDiscardAttachment: { _ in }
+        )
+        .frame(width: size.width)
+        .padding()
+
+        // Then
+        AssertSnapshot(view, variants: [.defaultLight], size: size)
     }
 
     func test_composerInputView_slowMode() {
@@ -155,6 +258,7 @@ import XCTest
             selectedRangeLocation: .constant(0),
             command: .constant(nil),
             recordingState: .constant(.initial),
+            recordingGestureLocation: .constant(.zero),
             composerAssets: [],
             addedCustomAttachments: [],
             addedVoiceRecordings: [],
@@ -163,16 +267,21 @@ import XCTest
             cooldownDuration: 15,
             hasContent: true,
             canSendMessage: true,
+            audioRecordingInfo: .initial,
+            pendingAudioRecordingURL: nil,
             onCustomAttachmentTap: { _ in },
             removeAttachmentWithId: { _ in },
             sendMessage: {},
             onImagePasted: { _ in },
             startRecording: {},
             stopRecording: {},
+            confirmRecording: {},
+            discardRecording: {},
+            previewRecording: {},
+            showRecordingTip: {},
             sendInChannelShown: false,
             showReplyInChannel: .constant(false)
         )
-        .environmentObject(MessageComposerTestUtils.makeComposerViewModel(chatClient: chatClient))
         .frame(width: composerWidth, height: 200)
 
         // Then
@@ -410,7 +519,6 @@ import XCTest
         let factory = DefaultViewFactory.shared
         let mockChannelController = ChatChannelTestHelpers.makeChannelController(chatClient: chatClient)
         mockChannelController.channel_mock = .mockDMChannel(ownCapabilities: [.uploadFile, .readEvents])
-        let viewModel = MessageComposerViewModel(channelController: mockChannelController, messageController: nil)
 
         // When
         let view = ComposerInputView(
@@ -420,6 +528,7 @@ import XCTest
             selectedRangeLocation: .constant(0),
             command: .constant(nil),
             recordingState: .constant(.initial),
+            recordingGestureLocation: .constant(.zero),
             composerAssets: [],
             addedCustomAttachments: [],
             addedVoiceRecordings: [],
@@ -428,16 +537,21 @@ import XCTest
             cooldownDuration: 0,
             hasContent: true,
             canSendMessage: true,
+            audioRecordingInfo: .initial,
+            pendingAudioRecordingURL: nil,
             onCustomAttachmentTap: { _ in },
             removeAttachmentWithId: { _ in },
             sendMessage: {},
             onImagePasted: { _ in },
             startRecording: {},
             stopRecording: {},
+            confirmRecording: {},
+            discardRecording: {},
+            previewRecording: {},
+            showRecordingTip: {},
             sendInChannelShown: false,
             showReplyInChannel: .constant(false)
         )
-        .environmentObject(viewModel)
         .frame(width: composerWidth, height: 200)
 
         // Then
@@ -628,6 +742,7 @@ import XCTest
             selectedRangeLocation: .constant(0),
             command: .constant(ComposerCommandFactory.shared.giphy()),
             recordingState: .constant(.initial),
+            recordingGestureLocation: .constant(.zero),
             composerAssets: [],
             addedCustomAttachments: [],
             addedVoiceRecordings: [],
@@ -636,16 +751,21 @@ import XCTest
             cooldownDuration: 0,
             hasContent: true,
             canSendMessage: true,
+            audioRecordingInfo: .initial,
+            pendingAudioRecordingURL: nil,
             onCustomAttachmentTap: { _ in },
             removeAttachmentWithId: { _ in },
             sendMessage: {},
             onImagePasted: { _ in },
             startRecording: {},
             stopRecording: {},
+            confirmRecording: {},
+            discardRecording: {},
+            previewRecording: {},
+            showRecordingTip: {},
             sendInChannelShown: false,
             showReplyInChannel: .constant(false)
         )
-        .environmentObject(MessageComposerTestUtils.makeComposerViewModel(chatClient: chatClient))
         .frame(width: size.width, height: size.height)
 
         AssertSnapshot(view, size: size)
@@ -669,6 +789,7 @@ import XCTest
             selectedRangeLocation: .constant(0),
             command: .constant(ComposerCommandFactory.shared.giphy()),
             recordingState: .constant(.initial),
+            recordingGestureLocation: .constant(.zero),
             composerAssets: [],
             addedCustomAttachments: [],
             addedVoiceRecordings: [],
@@ -677,16 +798,21 @@ import XCTest
             cooldownDuration: 0,
             hasContent: false,
             canSendMessage: true,
+            audioRecordingInfo: .initial,
+            pendingAudioRecordingURL: nil,
             onCustomAttachmentTap: { _ in },
             removeAttachmentWithId: { _ in },
             sendMessage: {},
             onImagePasted: { _ in },
             startRecording: {},
             stopRecording: {},
+            confirmRecording: {},
+            discardRecording: {},
+            previewRecording: {},
+            showRecordingTip: {},
             sendInChannelShown: false,
             showReplyInChannel: .constant(false)
         )
-        .environmentObject(MessageComposerTestUtils.makeComposerViewModel(chatClient: chatClient))
         .frame(width: size.width, height: size.height)
 
         AssertSnapshot(view, variants: .onlyUserInterfaceStyles, size: size)
@@ -704,6 +830,7 @@ import XCTest
             selectedRangeLocation: .constant(0),
             command: .constant(ComposerCommandFactory.shared.mute()),
             recordingState: .constant(.initial),
+            recordingGestureLocation: .constant(.zero),
             composerAssets: [],
             addedCustomAttachments: [],
             addedVoiceRecordings: [],
@@ -712,16 +839,21 @@ import XCTest
             cooldownDuration: 0,
             hasContent: false,
             canSendMessage: true,
+            audioRecordingInfo: .initial,
+            pendingAudioRecordingURL: nil,
             onCustomAttachmentTap: { _ in },
             removeAttachmentWithId: { _ in },
             sendMessage: {},
             onImagePasted: { _ in },
             startRecording: {},
             stopRecording: {},
+            confirmRecording: {},
+            discardRecording: {},
+            previewRecording: {},
+            showRecordingTip: {},
             sendInChannelShown: false,
             showReplyInChannel: .constant(false)
         )
-        .environmentObject(MessageComposerTestUtils.makeComposerViewModel(chatClient: chatClient))
         .frame(width: size.width, height: size.height)
 
         AssertSnapshot(view, variants: .onlyUserInterfaceStyles, size: size)

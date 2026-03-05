@@ -510,6 +510,7 @@ extension ViewFactory {
             selectedRangeLocation: options.selectedRangeLocation,
             command: options.command,
             recordingState: options.recordingState,
+            recordingGestureLocation: options.recordingGestureLocation,
             composerAssets: options.composerAssets,
             addedCustomAttachments: options.addedCustomAttachments,
             addedVoiceRecordings: options.addedVoiceRecordings,
@@ -519,12 +520,18 @@ extension ViewFactory {
             cooldownDuration: options.cooldownDuration,
             hasContent: options.hasContent,
             canSendMessage: options.canSendMessage,
+            audioRecordingInfo: options.audioRecordingInfo,
+            pendingAudioRecordingURL: options.pendingAudioRecordingURL,
             onCustomAttachmentTap: options.onCustomAttachmentTap,
             removeAttachmentWithId: options.removeAttachmentWithId,
             sendMessage: options.sendMessage,
             onImagePasted: options.onImagePasted,
             startRecording: options.startRecording,
             stopRecording: options.stopRecording,
+            confirmRecording: options.confirmRecording,
+            discardRecording: options.discardRecording,
+            previewRecording: options.previewRecording,
+            showRecordingTip: options.showRecordingTip,
             sendInChannelShown: options.sendInChannelShown,
             showReplyInChannel: options.showReplyInChannel
         )
@@ -555,6 +562,7 @@ extension ViewFactory {
             composerInputState: options.composerInputState,
             startRecording: options.startRecording,
             stopRecording: options.stopRecording,
+            showRecordingTip: options.showRecordingTip,
             sendMessage: options.sendMessage
         )
     }
@@ -585,24 +593,22 @@ extension ViewFactory {
         )
     }
     
-    public func makeComposerRecordingView(
-        options: ComposerRecordingViewOptions
+    public func makeComposerVoiceRecordingInputView(
+        options: ComposerVoiceRecordingInputViewOptions
     ) -> some View {
-        RecordingView(location: options.gestureLocation, audioRecordingInfo: options.viewModel.audioRecordingInfo) {
-            options.viewModel.stopRecording()
-        }
+        ComposerVoiceRecordingInputView(
+            factory: self,
+            recordingState: options.recordingState,
+            audioRecordingInfo: options.audioRecordingInfo,
+            pendingAudioRecordingURL: options.pendingAudioRecordingURL,
+            gestureLocation: options.gestureLocation,
+            stopRecording: options.stopRecording,
+            confirmRecording: options.confirmRecording,
+            discardRecording: options.discardRecording,
+            previewRecording: options.previewRecording
+        )
     }
     
-    public func makeComposerRecordingLockedView(
-        options: ComposerRecordingLockedViewOptions
-    ) -> some View {
-        LockedView(viewModel: options.viewModel)
-    }
-    
-    public func makeComposerRecordingTipView(options: ComposerRecordingTipViewOptions) -> some View {
-        RecordingTipView()
-    }
-
     public func makeAttachmentPickerView(
         options: AttachmentPickerViewOptions
     ) -> some View {
