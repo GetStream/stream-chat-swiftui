@@ -998,6 +998,12 @@ extension ViewFactory {
     public func makeAttachmentTextView(
         options: AttachmentTextViewOptions
     ) -> some View {
+        AttachmentTextView(factory: self, message: options.message)
+    }
+
+    public func makeStreamTextView(
+        options: StreamTextViewOptions
+    ) -> some View {
         StreamTextView(message: options.message)
     }
 }

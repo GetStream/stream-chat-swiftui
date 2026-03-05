@@ -153,7 +153,7 @@ public struct MessageTextView<Factory: ViewFactory>: View {
             alignment: message.alignmentInBubble,
             spacing: 0
         ) {
-            factory.makeAttachmentTextView(options: .init(mesage: message))
+            factory.makeStreamTextView(options: .init(message: message))
                 .padding(.leading, leadingPadding)
                 .padding(.trailing, trailingPadding)
                 .padding(.top, topPadding)
@@ -231,16 +231,6 @@ struct StreamTextView: View {
                 .foregroundColor(textColor(for: message))
                 .font(fonts.body)
         }
-    }
-}
-
-// Options for the attachment text view.
-public class AttachmentTextViewOptions {
-    // The message to display the text for.
-    public let message: ChatMessage
-    
-    public init(mesage: ChatMessage) {
-        self.message = mesage
     }
 }
 

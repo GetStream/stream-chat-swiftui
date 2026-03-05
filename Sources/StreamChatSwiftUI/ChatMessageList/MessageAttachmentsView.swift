@@ -120,7 +120,9 @@ public struct MessageAttachmentsView<Factory: ViewFactory>: View {
             }
             // Text caption
             if !message.text.isEmpty {
-                AttachmentTextView(factory: factory, message: message)
+                factory.makeAttachmentTextView(
+                    options: AttachmentTextViewOptions(message: message)
+                )
             }
         }
         .if(showsBubble) { view in

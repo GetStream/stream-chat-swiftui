@@ -625,10 +625,21 @@ import SwiftUI
     func makeAddUsersView(options: AddUsersViewOptions) -> AddUsersViewType
     
     associatedtype AttachmentTextViewType: View
-    /// Creates a view for displaying the text of an attachment.
-    /// - Parameter options: Configuration options for the attachment text view, such as message.
-    /// - Returns: The view shown in the attachment text slot.
+    /// Creates a text caption view displayed below attachments inside ``MessageAttachmentsView``.
+    /// - Parameter options: Configuration options for the attachment text view.
+    /// - Returns: The text caption view shown beneath attachments.
     func makeAttachmentTextView(
         options: AttachmentTextViewOptions
     ) -> AttachmentTextViewType
+
+    associatedtype StreamTextViewType: View
+    /// Creates a reusable text view for displaying message text.
+    ///
+    /// This view is shared across multiple message layouts, including
+    /// standalone text messages and text captions within attachment views.
+    /// - Parameter options: Configuration options such as the message to display.
+    /// - Returns: The view shown in the text slot.
+    func makeStreamTextView(
+        options: StreamTextViewOptions
+    ) -> StreamTextViewType
 }

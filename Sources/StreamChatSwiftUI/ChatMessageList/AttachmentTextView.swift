@@ -22,7 +22,7 @@ public struct AttachmentTextView<Factory: ViewFactory>: View {
 
     public var body: some View {
         HStack {
-            factory.makeAttachmentTextView(options: .init(mesage: message))
+            factory.makeStreamTextView(options: .init(message: message))
                 .padding(.horizontal, tokens.spacingXxs)
                 .fixedSize(horizontal: false, vertical: true)
             Spacer()
