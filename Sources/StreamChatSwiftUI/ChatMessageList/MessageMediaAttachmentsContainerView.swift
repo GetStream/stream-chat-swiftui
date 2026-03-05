@@ -14,7 +14,7 @@ public enum MediaGalleryOrientation: Sendable {
 
     /// Initializes the orientation from the given pixel dimensions.
     ///
-    /// Uses a tolerance of 20% around a 1:1 ratio to classify near-square
+    /// Uses a tolerance of 5% around a 1:1 ratio to classify near-square
     /// images as ``square``. Falls back to ``landscape`` when dimensions
     /// are unavailable.
     public init(width: Double?, height: Double?) {
@@ -23,9 +23,9 @@ public enum MediaGalleryOrientation: Sendable {
             return
         }
         let ratio = width / height
-        if ratio > 1.2 {
+        if ratio > 1.05 {
             self = .landscape
-        } else if ratio < 0.8 {
+        } else if ratio < 0.95 {
             self = .portrait
         } else {
             self = .square
