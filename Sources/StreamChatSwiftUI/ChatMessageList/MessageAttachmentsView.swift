@@ -135,6 +135,7 @@ public struct MessageAttachmentsView<Factory: ViewFactory>: View {
                     )
                 )
         }
+        .accessibilityElement(children: .contain)
         .accessibilityIdentifier("MessageAttachmentsView")
     }
 }
