@@ -236,7 +236,6 @@ import XCTest
         let view = ComposerVoiceRecordingAttachmentView(
             handler: handler,
             recording: recording,
-            index: 0,
             onDiscardAttachment: { _ in }
         )
         .frame(width: size.width)

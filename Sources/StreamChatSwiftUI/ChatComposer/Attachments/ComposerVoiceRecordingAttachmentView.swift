@@ -25,12 +25,10 @@ public struct ComposerVoiceRecordingContainerView: View {
 
     public var body: some View {
         VStack(spacing: tokens.spacingXxs) {
-            ForEach(0..<addedVoiceRecordings.count, id: \.self) { i in
-                let recording = addedVoiceRecordings[i]
+            ForEach(addedVoiceRecordings) { recording in
                 ComposerVoiceRecordingAttachmentView(
                     handler: voiceRecordingHandler,
                     recording: recording,
-                    index: i,
                     onDiscardAttachment: onDiscardAttachment
                 )
             }
@@ -52,7 +50,6 @@ struct ComposerVoiceRecordingAttachmentView: View {
     @ObservedObject var handler: VoiceRecordingHandler
 
     let recording: AddedVoiceRecording
-    let index: Int
     var onDiscardAttachment: (String) -> Void
 
     private var isActive: Bool { handler.isActive(for: recording.url) }
@@ -94,36 +91,23 @@ struct ComposerVoiceRecordingAttachmentView: View {
     // MARK: - Content Area
 
     private var contentArea: some View {
-        VStack(alignment: .leading, spacing: tokens.spacingXxs) {
-            Text(
-                utils.audioRecordingNameFormatter.title(
-                    forItemAtURL: recording.url,
-                    index: index
-                )
+        HStack(spacing: tokens.spacingXs) {
+            Text(utils.videoDurationFormatter.format(showContextDuration ? handler.context.currentTime : recording.duration) ?? "")
+                .font(fonts.footnote.monospacedDigit())
+                .foregroundColor(Color(colors.textSecondary))
+
+            WaveformViewSwiftUI(
+                audioContext: isActive ? handler.context : nil,
+                addedVoiceRecording: recording,
+                isPlaying: handler.isPlaying && isActive,
+                onSliderChanged: { timeInterval in
+                    handler.seek(to: timeInterval, loadingFrom: isActive ? nil : recording.url)
+                },
+                onSliderTapped: {
+                    handler.togglePlayback(for: recording.url)
+                }
             )
-            .font(fonts.footnote.weight(.semibold))
-            .foregroundColor(Color(colors.textPrimary))
-            .lineLimit(1)
-            .truncationMode(.tail)
-
-            HStack(spacing: tokens.spacingXs) {
-                Text(utils.videoDurationFormatter.format(showContextDuration ? handler.context.currentTime : recording.duration) ?? "")
-                    .font(fonts.footnote.monospacedDigit())
-                    .foregroundColor(Color(colors.textSecondary))
-
-                WaveformViewSwiftUI(
-                    audioContext: isActive ? handler.context : nil,
-                    addedVoiceRecording: recording,
-                    isPlaying: handler.isPlaying && isActive,
-                    onSliderChanged: { timeInterval in
-                        handler.seek(to: timeInterval, loadingFrom: isActive ? nil : recording.url)
-                    },
-                    onSliderTapped: {
-                        handler.togglePlayback(for: recording.url)
-                    }
-                )
-                .frame(height: 20)
-            }
+            .frame(height: 20)
         }
     }
 
