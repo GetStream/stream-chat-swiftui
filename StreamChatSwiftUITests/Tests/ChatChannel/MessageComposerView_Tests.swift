@@ -58,7 +58,7 @@ import XCTest
         let factory = DefaultViewFactory.shared
         let channelController = ChatChannelTestHelpers.makeChannelController(chatClient: chatClient)
         let viewModel = MessageComposerViewModel(channelController: channelController, messageController: nil)
-        viewModel.recordingState = .recording(.zero)
+        viewModel.recordingState = .recording
 
         // When
         let view = MessageComposerView(
@@ -82,7 +82,8 @@ import XCTest
         let factory = DefaultViewFactory.shared
         let channelController = ChatChannelTestHelpers.makeChannelController(chatClient: chatClient)
         let viewModel = MessageComposerViewModel(channelController: channelController, messageController: nil)
-        viewModel.recordingState = .recording(CGPoint(x: -50, y: 0))
+        viewModel.recordingState = .recording
+        viewModel.recordingGestureLocation = CGPoint(x: -50, y: 0)
 
         // When
         let view = MessageComposerView(
@@ -224,6 +225,7 @@ import XCTest
             selectedRangeLocation: .constant(0),
             command: .constant(nil),
             recordingState: .constant(.initial),
+            recordingGestureLocation: .constant(.zero),
             composerAssets: [],
             addedCustomAttachments: [],
             addedVoiceRecordings: [],
@@ -490,6 +492,7 @@ import XCTest
             selectedRangeLocation: .constant(0),
             command: .constant(nil),
             recordingState: .constant(.initial),
+            recordingGestureLocation: .constant(.zero),
             composerAssets: [],
             addedCustomAttachments: [],
             addedVoiceRecordings: [],
@@ -699,6 +702,7 @@ import XCTest
             selectedRangeLocation: .constant(0),
             command: .constant(ComposerCommandFactory.shared.giphy()),
             recordingState: .constant(.initial),
+            recordingGestureLocation: .constant(.zero),
             composerAssets: [],
             addedCustomAttachments: [],
             addedVoiceRecordings: [],
@@ -741,6 +745,7 @@ import XCTest
             selectedRangeLocation: .constant(0),
             command: .constant(ComposerCommandFactory.shared.giphy()),
             recordingState: .constant(.initial),
+            recordingGestureLocation: .constant(.zero),
             composerAssets: [],
             addedCustomAttachments: [],
             addedVoiceRecordings: [],
@@ -777,6 +782,7 @@ import XCTest
             selectedRangeLocation: .constant(0),
             command: .constant(ComposerCommandFactory.shared.mute()),
             recordingState: .constant(.initial),
+            recordingGestureLocation: .constant(.zero),
             composerAssets: [],
             addedCustomAttachments: [],
             addedVoiceRecordings: [],

@@ -8,8 +8,10 @@ import SwiftUI
 /// so the drag can extend beyond the mic button bounds (e.g. drag up to lock).
 struct VoiceRecordingGestureOverlay: View {
     @Binding var recordingState: VoiceRecordingState
+    @Binding var gestureLocation: CGPoint
     var startRecording: () -> Void
     var stopRecording: () -> Void
+    var discardRecording: () -> Void
     var showRecordingTip: () -> Void
 
     @State private var longPressed = false
@@ -27,18 +29,19 @@ struct VoiceRecordingGestureOverlay: View {
                 DragGesture(minimumDistance: 0)
                     .onChanged { value in
                         let translation = CGPoint(x: value.translation.width, y: value.translation.height)
-                        triggerHapticFeedback(style: .medium)
                         if !longPressed {
                             longPressStarted = Date()
                             longPressed = true
+                            triggerHapticFeedback(style: .medium)
                             DispatchQueue.main.asyncAfter(deadline: .now() + 0.7) {
                                 if longPressed {
-                                    recordingState = .recording(translation)
+                                    recordingState = .recording
+                                    gestureLocation = translation
                                     startRecording()
                                 }
                             }
-                        } else if case .recording = recordingState {
-                            recordingState = .recording(translation)
+                        } else if recordingState.isRecording {
+                            gestureLocation = translation
                         }
                     }
                     .onEnded { _ in
@@ -48,10 +51,15 @@ struct VoiceRecordingGestureOverlay: View {
                             self.longPressStarted = nil
                             return
                         }
-                        if case .recording = recordingState {
-                            withAnimation(.interactiveSpring(response: 0.35, dampingFraction: 0.88)) {
-                                recordingState = .locked
+                        if recordingState.isRecording {
+                            if gestureLocation.x < VoiceRecordingConstants.cancelMinDistance {
+                                discardRecording()
+                            } else {
+                                withAnimation(.interactiveSpring(response: 0.35, dampingFraction: 0.88)) {
+                                    recordingState = .locked
+                                }
                             }
+                            gestureLocation = .zero
                         } else if recordingState != .locked {
                             stopRecording()
                         }

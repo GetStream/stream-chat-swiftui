@@ -70,6 +70,8 @@ public final class ComposerInputViewOptions: Sendable {
     public let command: Binding<ComposerCommand?>
     /// Binding to the recording state.
     public let recordingState: Binding<VoiceRecordingState>
+    /// Binding to the current gesture location during active recording.
+    public let recordingGestureLocation: Binding<CGPoint>
     /// The composer assets (images + files in insertion order).
     public let composerAssets: [ComposerAsset]
     /// The added custom attachments.
@@ -113,6 +115,7 @@ public final class ComposerInputViewOptions: Sendable {
         selectedRangeLocation: Binding<Int>,
         command: Binding<ComposerCommand?>,
         recordingState: Binding<VoiceRecordingState>,
+        recordingGestureLocation: Binding<CGPoint>,
         composerAssets: [ComposerAsset],
         addedCustomAttachments: [CustomAttachment],
         addedVoiceRecordings: [AddedVoiceRecording],
@@ -137,6 +140,7 @@ public final class ComposerInputViewOptions: Sendable {
         self.selectedRangeLocation = selectedRangeLocation
         self.command = command
         self.recordingState = recordingState
+        self.recordingGestureLocation = recordingGestureLocation
         self.composerAssets = composerAssets
         self.addedCustomAttachments = addedCustomAttachments
         self.addedVoiceRecordings = addedVoiceRecordings

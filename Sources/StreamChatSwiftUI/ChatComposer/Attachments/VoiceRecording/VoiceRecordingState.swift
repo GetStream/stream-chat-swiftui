@@ -6,7 +6,7 @@ import Foundation
 
 public enum VoiceRecordingState: Equatable, Sendable {
     case initial
-    case recording(CGPoint)
+    case recording
     case locked
     case stopped
 }
@@ -18,8 +18,7 @@ extension VoiceRecordingState {
 
     /// Whether the user is actively recording (finger down, not yet locked).
     var isRecording: Bool {
-        if case .recording = self { return true }
-        return false
+        self == .recording
     }
 
     /// Whether the recording is locked or stopped (shows locked UI).

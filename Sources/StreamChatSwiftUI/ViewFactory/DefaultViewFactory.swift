@@ -510,6 +510,7 @@ extension ViewFactory {
             selectedRangeLocation: options.selectedRangeLocation,
             command: options.command,
             recordingState: options.recordingState,
+            recordingGestureLocation: options.recordingGestureLocation,
             composerAssets: options.composerAssets,
             addedCustomAttachments: options.addedCustomAttachments,
             addedVoiceRecordings: options.addedVoiceRecordings,

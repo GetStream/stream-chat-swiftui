@@ -849,7 +849,7 @@ import XCTest
     func test_messageComposer_discardRecording() {
         // Given
         let viewModel = makeComposerViewModel()
-        viewModel.recordingState = .recording(.zero)
+        viewModel.recordingState = .recording
         
         // When
         viewModel.discardRecording()
@@ -882,7 +882,7 @@ import XCTest
     func test_messageComposer_previewRecording() {
         // Given
         let viewModel = makeComposerViewModel()
-        viewModel.recordingState = .recording(.zero)
+        viewModel.recordingState = .recording
         
         // When
         viewModel.previewRecording()
@@ -894,9 +894,10 @@ import XCTest
     func test_messageComposer_lockRecording() {
         // Given
         let viewModel = makeComposerViewModel()
+        viewModel.recordingState = .recording
         
-        // Then
-        viewModel.recordingState = .recording(.init(x: 0, y: VoiceRecordingConstants.lockMaxDistance - 1))
+        // When
+        viewModel.recordingGestureLocation = .init(x: 0, y: VoiceRecordingConstants.lockMaxDistance - 1)
         
         // Then
         XCTAssert(viewModel.recordingState == .locked)
@@ -905,9 +906,10 @@ import XCTest
     func test_messageComposer_cancelRecording() {
         // Given
         let viewModel = makeComposerViewModel()
+        viewModel.recordingState = .recording
         
-        // Then
-        viewModel.recordingState = .recording(.init(x: VoiceRecordingConstants.cancelMaxDistance - 1, y: 0))
+        // When
+        viewModel.recordingGestureLocation = .init(x: VoiceRecordingConstants.cancelMaxDistance - 1, y: 0)
         
         // Then
         XCTAssert(viewModel.recordingState == .initial)
@@ -930,7 +932,7 @@ import XCTest
     func test_messageComposer_recordingError() {
         // Given
         let viewModel = makeComposerViewModel()
-        viewModel.recordingState = .recording(.zero)
+        viewModel.recordingState = .recording
         
         // When
         viewModel.audioRecorder(viewModel.audioRecorder, didFailWithError: ClientError.Unexpected())
@@ -971,7 +973,7 @@ import XCTest
     func test_messageComposer_recordingError_setsSnackBarText() {
         // Given
         let viewModel = makeComposerViewModel()
-        viewModel.recordingState = .recording(.zero)
+        viewModel.recordingState = .recording
         XCTAssertNil(viewModel.snackBarText)
         
         // When

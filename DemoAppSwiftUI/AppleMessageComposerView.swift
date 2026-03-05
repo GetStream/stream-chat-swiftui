@@ -86,6 +86,7 @@ struct AppleMessageComposerView<Factory: ViewFactory>: View, KeyboardReadable {
                     selectedRangeLocation: $viewModel.selectedRangeLocation,
                     command: $viewModel.composerCommand,
                     recordingState: $viewModel.recordingState,
+                    recordingGestureLocation: $viewModel.recordingGestureLocation,
                     composerAssets: viewModel.composerAssets,
                     addedCustomAttachments: viewModel.addedCustomAttachments,
                     addedVoiceRecordings: viewModel.addedVoiceRecordings,

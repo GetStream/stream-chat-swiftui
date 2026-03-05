@@ -88,6 +88,7 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
                         selectedRangeLocation: $viewModel.selectedRangeLocation,
                         command: $viewModel.composerCommand,
                         recordingState: $viewModel.recordingState,
+                        recordingGestureLocation: $viewModel.recordingGestureLocation,
                         composerAssets: viewModel.composerAssets,
                         addedCustomAttachments: viewModel.addedCustomAttachments,
                         addedVoiceRecordings: viewModel.addedVoiceRecordings,
@@ -167,8 +168,10 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
                        viewModel.recordingState == .initial || viewModel.recordingState.isRecording {
                         VoiceRecordingGestureOverlay(
                             recordingState: $viewModel.recordingState,
+                            gestureLocation: $viewModel.recordingGestureLocation,
                             startRecording: viewModel.startRecording,
                             stopRecording: viewModel.stopRecording,
+                            discardRecording: viewModel.discardRecording,
                             showRecordingTip: viewModel.showRecordingTip
                         )
                     }
@@ -350,10 +353,7 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
     }
 
     private var currentDragLocation: CGPoint {
-        if case let .recording(location) = viewModel.recordingState {
-            return location
-        }
-        return .zero
+        viewModel.recordingGestureLocation
     }
 
     private var lockedLockOffset: CGFloat {
@@ -382,6 +382,7 @@ public struct ComposerInputView<Factory: ViewFactory>: View, KeyboardReadable {
     @Binding var selectedRangeLocation: Int
     @Binding var command: ComposerCommand?
     @Binding var recordingState: VoiceRecordingState
+    @Binding var recordingGestureLocation: CGPoint
     var composerAssets: [ComposerAsset]
     var addedCustomAttachments: [CustomAttachment]
     var addedVoiceRecordings: [AddedVoiceRecording]
@@ -411,6 +412,7 @@ public struct ComposerInputView<Factory: ViewFactory>: View, KeyboardReadable {
         selectedRangeLocation: Binding<Int>,
         command: Binding<ComposerCommand?>,
         recordingState: Binding<VoiceRecordingState>,
+        recordingGestureLocation: Binding<CGPoint>,
         composerAssets: [ComposerAsset],
         addedCustomAttachments: [CustomAttachment],
         addedVoiceRecordings: [AddedVoiceRecording],
@@ -437,6 +439,7 @@ public struct ComposerInputView<Factory: ViewFactory>: View, KeyboardReadable {
         _selectedRangeLocation = selectedRangeLocation
         _command = command
         _recordingState = recordingState
+        _recordingGestureLocation = recordingGestureLocation
         self.composerAssets = composerAssets
         self.addedCustomAttachments = addedCustomAttachments
         self.canSendMessage = canSendMessage
@@ -489,14 +492,13 @@ public struct ComposerInputView<Factory: ViewFactory>: View, KeyboardReadable {
         factory.makeComposerVoiceRecordingInputView(
             options: ComposerVoiceRecordingInputViewOptions(
                 viewModel: viewModel,
-                gestureLocation: recordingGestureLocation
+                gestureLocation: currentGestureLocation
             )
         )
     }
 
-    private var recordingGestureLocation: CGPoint {
-        if case let .recording(location) = recordingState { return location }
-        return .zero
+    private var currentGestureLocation: CGPoint {
+        recordingGestureLocation
     }
 
     public var body: some View {

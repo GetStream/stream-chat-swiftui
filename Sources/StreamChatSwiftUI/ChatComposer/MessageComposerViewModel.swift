@@ -136,14 +136,23 @@ import SwiftUI
             if recordingState.isLockedOrStopped {
                 pickerTypeState = .expanded(.none)
             }
-            if case let .recording(location) = recordingState {
-                if location.y < VoiceRecordingConstants.lockMaxDistance {
-                    recordingState = .locked
-                } else if location.x < VoiceRecordingConstants.cancelMaxDistance {
-                    audioRecordingInfo = .initial
-                    recordingState = .initial
-                    stopRecording()
-                }
+        }
+    }
+
+    /// The current drag location during an active recording gesture.
+    /// Kept separate from `recordingState` to avoid triggering full-view
+    /// diffs on every pixel of finger movement.
+    @Published public var recordingGestureLocation: CGPoint = .zero {
+        didSet {
+            guard recordingState.isRecording else { return }
+            if recordingGestureLocation.y < VoiceRecordingConstants.lockMaxDistance {
+                recordingState = .locked
+                recordingGestureLocation = .zero
+            } else if recordingGestureLocation.x < VoiceRecordingConstants.cancelMaxDistance {
+                audioRecordingInfo = .initial
+                recordingState = .initial
+                recordingGestureLocation = .zero
+                stopRecording()
             }
         }
     }

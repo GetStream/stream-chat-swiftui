@@ -72,7 +72,7 @@ public struct VoiceRecordingButton: View {
             .accessibilityAddTraits(.isButton)
             .accessibilityLabel(Text(L10n.Composer.AudioRecording.start))
             .accessibilityAction {
-                recordingState = .recording(.zero)
+                recordingState = .recording
                 startRecording()
             }
     }
