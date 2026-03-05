@@ -132,10 +132,7 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
                 .frame(width: viewModel.recordingState.showsComposer ? nil : 0)
                 .animation(.easeInOut(duration: 0.25), value: viewModel.recordingState.showsComposer)
             }
-            .animation(
-                .interactiveSpring(response: 0.35, dampingFraction: 0.88, blendDuration: 0.12),
-                value: viewModel.recordingState.showsComposer
-            )
+            .animation(.composerVoiceRecordingSpring, value: viewModel.recordingState.showsComposer)
             .padding(.top, tokens.spacingMd)
             .padding(.horizontal, tokens.spacingMd)
             .overlay(
@@ -512,10 +509,7 @@ public struct ComposerInputView<Factory: ViewFactory>: View, KeyboardReadable {
                 .opacity(recordingState.showsComposer ? 0 : 1)
                 .allowsHitTesting(!recordingState.showsComposer)
         }
-        .animation(
-            .interactiveSpring(response: 0.35, dampingFraction: 0.88, blendDuration: 0.12),
-            value: recordingState.showsComposer
-        )
+        .animation(.composerVoiceRecordingSpring, value: recordingState.showsComposer)
         .modifier(
             factory.styles.makeComposerInputViewModifier(
                 options: .init(keyboardShown: keyboardShown)

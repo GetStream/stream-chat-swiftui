@@ -55,7 +55,7 @@ struct VoiceRecordingGestureOverlay: View {
                             if gestureLocation.x < VoiceRecordingConstants.cancelMinDistance {
                                 discardRecording()
                             } else {
-                                withAnimation(.interactiveSpring(response: 0.35, dampingFraction: 0.88)) {
+                                withAnimation(.composerVoiceRecordingSpring) {
                                     recordingState = .locked
                                 }
                             }

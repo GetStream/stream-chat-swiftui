@@ -32,17 +32,13 @@ struct ComposerVoiceRecordingInputView<Factory: ViewFactory>: View {
     var body: some View {
         VStack(spacing: tokens.spacingNone) {
             recordingBar
-                .animation(
-                    .interactiveSpring(response: 0.35, dampingFraction: 0.88),
-                    value: isLockedOrStopped
-                )
+                .animation(.composerVoiceRecordingSpring, value: isLockedOrStopped)
 
             recordingControls
                 .frame(height: isLockedOrStopped ? recordingControlsHeight : 0, alignment: .top)
                 .clipped()
                 .animation(
-                    .interactiveSpring(response: 0.35, dampingFraction: 0.88)
-                        .delay(isLockedOrStopped ? controlsRevealDelay : 0),
+                    .composerVoiceRecordingSpring.delay(isLockedOrStopped ? controlsRevealDelay : 0),
                     value: isLockedOrStopped
                 )
         }
@@ -166,10 +162,6 @@ struct ComposerVoiceRecordingInputView<Factory: ViewFactory>: View {
     private let recordingControlsHeight: CGFloat = 48
     private let controlsRevealDelay: TimeInterval = 0.12
 
-    private static var recordingControlAnimation: Animation {
-        .interactiveSpring(response: 0.35, dampingFraction: 0.88)
-    }
-
     private var recordingControls: some View {
         HStack {
             trashControlButton
@@ -185,7 +177,7 @@ struct ComposerVoiceRecordingInputView<Factory: ViewFactory>: View {
                 options: ConfirmEditButtonOptions(
                     enabled: true,
                     onTap: {
-                        withAnimation(Self.recordingControlAnimation) {
+                        withAnimation(.composerVoiceRecordingSpring) {
                             viewModel.confirmRecording()
                         }
                     }
@@ -198,7 +190,7 @@ struct ComposerVoiceRecordingInputView<Factory: ViewFactory>: View {
 
     private var trashControlButton: some View {
         StreamIconButton(role: .secondary, style: .outline, size: .small) {
-            withAnimation(Self.recordingControlAnimation) {
+            withAnimation(.composerVoiceRecordingSpring) {
                 viewModel.discardRecording()
             }
         } icon: {
@@ -212,7 +204,7 @@ struct ComposerVoiceRecordingInputView<Factory: ViewFactory>: View {
 
     private var stopControlButton: some View {
         StreamIconButton(role: .destructive, style: .outline, size: .medium) {
-            withAnimation(Self.recordingControlAnimation) {
+            withAnimation(.composerVoiceRecordingSpring) {
                 viewModel.previewRecording()
             }
         } icon: {

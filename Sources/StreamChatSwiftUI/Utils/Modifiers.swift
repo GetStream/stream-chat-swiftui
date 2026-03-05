@@ -118,3 +118,9 @@ extension Image {
             .scaledToFit()
     }
 }
+
+extension Animation {
+    static var composerVoiceRecordingSpring: Animation {
+        .interactiveSpring(response: 0.35, dampingFraction: 0.88)
+    }
+}
