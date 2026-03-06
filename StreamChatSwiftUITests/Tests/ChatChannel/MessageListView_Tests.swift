@@ -94,6 +94,38 @@ import XCTest
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
     
+    func test_messageListView_systemMessage() {
+        // Given
+        let channel = ChatChannel.mockDMChannel()
+        let systemMessage = ChatMessage.mock(
+            id: .unique,
+            cid: channel.cid,
+            text: "Martin created the channel",
+            type: .system,
+            author: .mock(id: .unique)
+        )
+        let view = MessageListView(
+            factory: DefaultViewFactory.shared,
+            channel: channel,
+            messages: [systemMessage],
+            messagesGroupingInfo: [:],
+            scrolledId: .constant(nil),
+            showScrollToLatestButton: .constant(false),
+            quotedMessage: .constant(nil),
+            currentDateString: nil,
+            listId: "listId",
+            isMessageThread: false,
+            shouldShowTypingIndicator: false,
+            onMessageAppear: { _, _ in },
+            onScrollToBottom: {},
+            onLongPress: { _ in }
+        )
+        .applyDefaultSize()
+
+        // Then
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
+    }
+
     func test_messageListView_jumpToUnreadButton() {
         // Given
         let channelConfig = ChannelConfig(reactionsEnabled: true)
