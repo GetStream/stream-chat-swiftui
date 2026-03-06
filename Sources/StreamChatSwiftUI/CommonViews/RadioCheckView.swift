@@ -23,7 +23,7 @@ struct RadioCheckView: View {
                 unselectedView
             }
         }
-        .frame(width: 24, height: 24)
+        .frame(width: tokens.buttonVisualHeightXs, height: tokens.buttonVisualHeightXs)
         .accessibilityIdentifier("RadioCheckView")
     }
 
