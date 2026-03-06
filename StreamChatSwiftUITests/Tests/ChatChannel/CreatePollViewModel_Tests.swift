@@ -171,6 +171,137 @@ import XCTest
         XCTAssertFalse(viewModel.maxVotesEnabled)
     }
 
+    // MARK: - Initial State
+
+    func test_initialState_hasOneEmptyOption() {
+        let viewModel = makeViewModel()
+        XCTAssertEqual(viewModel.options.count, 1)
+        XCTAssertEqual(viewModel.optionTexts, [""])
+    }
+
+    func test_initialState_defaultPropertyValues() {
+        let viewModel = makeViewModel()
+        XCTAssertEqual(viewModel.question, "")
+        XCTAssertTrue(viewModel.optionsErrorIndices.isEmpty)
+        XCTAssertFalse(viewModel.discardConfirmationShown)
+        XCTAssertFalse(viewModel.errorShown)
+    }
+
+    // MARK: - Option Accessors
+
+    func test_optionTexts_returnsTextValues() {
+        let viewModel = makeViewModel()
+        viewModel.replaceAllOptions(["Red", "Blue", "Green"])
+        XCTAssertEqual(viewModel.optionTexts, ["Red", "Blue", "Green"])
+    }
+
+    func test_isLastOption_returnsTrueForLastOption() {
+        let viewModel = makeViewModel()
+        viewModel.replaceAllOptions(["A", "B", ""])
+        XCTAssertFalse(viewModel.isLastOption(viewModel.options[0]))
+        XCTAssertFalse(viewModel.isLastOption(viewModel.options[1]))
+        XCTAssertTrue(viewModel.isLastOption(viewModel.options[2]))
+    }
+
+    func test_isLastOption_singleOption() {
+        let viewModel = makeViewModel()
+        XCTAssertTrue(viewModel.isLastOption(viewModel.options[0]))
+    }
+
+    // MARK: - Option Mutations: updateOption
+
+    func test_updateOption_updatesTextAtCorrectId() {
+        let viewModel = makeViewModel()
+        viewModel.replaceAllOptions(["A", "B", ""])
+        let targetId = viewModel.options[1].id
+        viewModel.updateOption(id: targetId, value: "Updated")
+        XCTAssertEqual(viewModel.optionTexts, ["A", "Updated", ""])
+    }
+
+    func test_updateOption_appendsNewEntryWhenEditingLastOption() {
+        let viewModel = makeViewModel()
+        let lastId = viewModel.options.last!.id
+        viewModel.updateOption(id: lastId, value: "New")
+        XCTAssertEqual(viewModel.options.count, 2)
+        XCTAssertEqual(viewModel.options[0].text, "New")
+        XCTAssertEqual(viewModel.options[1].text, "")
+    }
+
+    func test_updateOption_doesNotAppendWhenEditingNonLastOption() {
+        let viewModel = makeViewModel()
+        viewModel.replaceAllOptions(["A", "B", ""])
+        let firstId = viewModel.options[0].id
+        viewModel.updateOption(id: firstId, value: "Updated")
+        XCTAssertEqual(viewModel.options.count, 3)
+        XCTAssertEqual(viewModel.optionTexts, ["Updated", "B", ""])
+    }
+
+    func test_updateOption_doesNotAppendWhenLastOptionIsWhitespace() {
+        let viewModel = makeViewModel()
+        let lastId = viewModel.options.last!.id
+        viewModel.updateOption(id: lastId, value: "   ")
+        XCTAssertEqual(viewModel.options.count, 1)
+    }
+
+    func test_updateOption_doesNothingForUnknownId() {
+        let viewModel = makeViewModel()
+        viewModel.replaceAllOptions(["A", "B"])
+        viewModel.updateOption(id: UUID(), value: "Unknown")
+        XCTAssertEqual(viewModel.optionTexts, ["A", "B"])
+    }
+
+    // MARK: - Option Mutations: removeOption
+
+    func test_removeOption_removesCorrectOption() {
+        let viewModel = makeViewModel()
+        viewModel.replaceAllOptions(["A", "B", "C"])
+        let targetId = viewModel.options[1].id
+        viewModel.removeOption(id: targetId)
+        XCTAssertEqual(viewModel.optionTexts, ["A", "C"])
+    }
+
+    func test_removeOption_doesNothingForUnknownId() {
+        let viewModel = makeViewModel()
+        viewModel.replaceAllOptions(["A", "B"])
+        viewModel.removeOption(id: UUID())
+        XCTAssertEqual(viewModel.optionTexts, ["A", "B"])
+    }
+
+    // MARK: - Option Mutations: moveOptions
+
+    func test_moveOptions_reordersCorrectly() {
+        let viewModel = makeViewModel()
+        viewModel.replaceAllOptions(["A", "B", "C", ""])
+        viewModel.moveOptions(from: IndexSet(integer: 2), to: 0)
+        XCTAssertEqual(viewModel.optionTexts, ["C", "A", "B", ""])
+    }
+
+    func test_moveOptions_preservesStableIdentity() {
+        let viewModel = makeViewModel()
+        viewModel.replaceAllOptions(["A", "B", "C"])
+        let originalIds = viewModel.options.map(\.id)
+        viewModel.moveOptions(from: IndexSet(integer: 2), to: 0)
+        XCTAssertEqual(viewModel.options[0].id, originalIds[2])
+        XCTAssertEqual(viewModel.options[1].id, originalIds[0])
+        XCTAssertEqual(viewModel.options[2].id, originalIds[1])
+    }
+
+    // MARK: - Option Mutations: replaceAllOptions
+
+    func test_replaceAllOptions_replacesWithNewEntries() {
+        let viewModel = makeViewModel()
+        viewModel.replaceAllOptions(["X", "Y"])
+        XCTAssertEqual(viewModel.options.count, 2)
+        XCTAssertEqual(viewModel.optionTexts, ["X", "Y"])
+    }
+
+    func test_replaceAllOptions_assignsUniqueIds() {
+        let viewModel = makeViewModel()
+        viewModel.replaceAllOptions(["A", "A", "A"])
+        let ids = viewModel.options.map(\.id)
+        XCTAssertEqual(Set(ids).count, 3)
+    }
+
     // MARK: - Duplicate Option Errors
 
     func test_optionsErrorIndices_ignoreWhitespaceAndCase() {
@@ -191,6 +322,13 @@ import XCTest
         XCTAssertFalse(viewModel.showsOptionError(for: viewModel.options[0]))
         XCTAssertTrue(viewModel.showsOptionError(for: viewModel.options[1]))
         XCTAssertFalse(viewModel.showsOptionError(for: viewModel.options[2]))
+    }
+
+    func test_showsOptionError_returnsFalseForUnknownOption() {
+        let viewModel = makeViewModel()
+        viewModel.replaceAllOptions(["A", "a"])
+        let unknownOption = PollOptionEntry(text: "a")
+        XCTAssertFalse(viewModel.showsOptionError(for: unknownOption))
     }
 
     // MARK: - Max Votes Stepper
