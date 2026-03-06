@@ -30,7 +30,7 @@ public struct FileAttachmentsContainer<Factory: ViewFactory>: View {
 
     public var body: some View {
         VStack(spacing: tokens.spacingXxs) {
-            ForEach(message.fileAttachments, id: \.self) { attachment in
+            ForEach(message.fileAttachments) { attachment in
                 FileAttachmentView(
                     attachment: attachment,
                     width: width,

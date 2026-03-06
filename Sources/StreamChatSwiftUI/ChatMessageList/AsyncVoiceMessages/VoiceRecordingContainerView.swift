@@ -41,7 +41,7 @@ public struct VoiceRecordingContainerView<Factory: ViewFactory>: View {
     
     public var body: some View {
         VStack(spacing: tokens.spacingXxxs) {
-            ForEach(message.voiceRecordingAttachments, id: \.self) { attachment in
+            ForEach(message.voiceRecordingAttachments) { attachment in
                 VoiceRecordingView(
                     handler: handler,
                     addedVoiceRecording: AddedVoiceRecording(
