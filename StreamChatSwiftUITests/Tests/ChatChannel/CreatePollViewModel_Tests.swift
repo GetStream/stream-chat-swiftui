@@ -7,253 +7,406 @@
 import XCTest
 
 @MainActor final class CreatePollViewModel_Tests: StreamChatTestCase {
-    // MARK: - Can Show Discard Confirmation
-    
-    func test_canShowDiscardConfirmation_whenEmpty() {
-        // Given
-        // When
-        let viewModel = CreatePollViewModel(chatController: chatClient.channelController(for: .unique), messageController: nil)
-        
-        // Then
-        XCTAssertEqual(viewModel.canShowDiscardConfirmation, false)
-    }
-    
-    func test_canShowDiscardConfirmation_whenToggleChangesButNoTextEntry() {
-        // Given
-        // When
-        let viewModel = CreatePollViewModel(chatController: chatClient.channelController(for: .unique), messageController: nil)
-        viewModel.allowComments.toggle()
-        
-        // Then
-        XCTAssertEqual(viewModel.canShowDiscardConfirmation, false)
-    }
-    
-    func test_canShowDiscardConfirmation_whenQuestionFilled() {
-        // Given
-        // When
-        let viewModel = CreatePollViewModel(chatController: chatClient.channelController(for: .unique), messageController: nil)
-        viewModel.question = "A"
-        
-        // Then
-        XCTAssertEqual(viewModel.canShowDiscardConfirmation, true)
-    }
-    
-    func test_canShowDiscardConfirmation_whenQuestionOnlyWhitespace() {
-        // Given
-        // When
-        let viewModel = CreatePollViewModel(chatController: chatClient.channelController(for: .unique), messageController: nil)
-        viewModel.question = "              "
-        
-        // Then
-        XCTAssertEqual(viewModel.canShowDiscardConfirmation, false)
-    }
-    
-    func test_canShowDiscardConfirmation_whenOptionAdded() {
-        // Given
-        // When
-        let viewModel = CreatePollViewModel(chatController: chatClient.channelController(for: .unique), messageController: nil)
-        viewModel.options = ["A"]
-        
-        // Then
-        XCTAssertEqual(viewModel.canShowDiscardConfirmation, true)
-    }
-    
-    // MARK: - Can Create Poll
-    
-    func test_canCreatePoll_whenRequiredInformationAdded() {
-        // Given
-        // When
-        let viewModel = CreatePollViewModel(chatController: chatClient.channelController(for: .unique), messageController: nil)
-        viewModel.question = " A  "
-        viewModel.options = ["O     "]
-        
-        // Then
-        XCTAssertEqual(viewModel.canCreatePoll, true)
-    }
-    
-    func test_canCreatePoll_whenEmptyOrChangedToggles() {
-        // Given
-        // When
-        let viewModel = CreatePollViewModel(chatController: chatClient.channelController(for: .unique), messageController: nil)
-        viewModel.allowComments.toggle()
-        
-        // Then
-        XCTAssertEqual(viewModel.canCreatePoll, false)
-    }
-    
-    func test_canCreatePoll_whenInsertingInformation() {
-        let viewModel = CreatePollViewModel(chatController: chatClient.channelController(for: .unique), messageController: nil)
-        XCTAssertEqual(viewModel.canCreatePoll, false)
-        viewModel.question = "A"
-        XCTAssertEqual(viewModel.canCreatePoll, false)
-        viewModel.options = ["A", "a"] // duplicate error
-        XCTAssertEqual(viewModel.canCreatePoll, false)
-        viewModel.options = ["A", "aa"]
-        XCTAssertEqual(viewModel.canCreatePoll, true)
-    }
-    
-    // MARK: - Computed variables
-    
-    func test_multipleAnswersShown_defaultConfig() {
-        let viewModel = CreatePollViewModel(
+    private func makeViewModel(
+        pollsConfig: PollsConfig? = nil
+    ) -> CreatePollViewModel {
+        if let pollsConfig {
+            let utils = Utils(pollsConfig: pollsConfig)
+            streamChat = StreamChat(chatClient: chatClient, utils: utils)
+        }
+        return CreatePollViewModel(
             chatController: chatClient.channelController(for: .unique),
             messageController: nil
         )
+    }
+
+    // MARK: - Can Show Discard Confirmation
+
+    func test_canShowDiscardConfirmation_whenEmpty() {
+        let viewModel = makeViewModel()
+        XCTAssertFalse(viewModel.canShowDiscardConfirmation)
+    }
+
+    func test_canShowDiscardConfirmation_whenToggleChangesButNoTextEntry() {
+        let viewModel = makeViewModel()
+        viewModel.allowComments.toggle()
+        XCTAssertFalse(viewModel.canShowDiscardConfirmation)
+    }
+
+    func test_canShowDiscardConfirmation_whenQuestionFilled() {
+        let viewModel = makeViewModel()
+        viewModel.question = "A"
+        XCTAssertTrue(viewModel.canShowDiscardConfirmation)
+    }
+
+    func test_canShowDiscardConfirmation_whenQuestionOnlyWhitespace() {
+        let viewModel = makeViewModel()
+        viewModel.question = "              "
+        XCTAssertFalse(viewModel.canShowDiscardConfirmation)
+    }
+
+    func test_canShowDiscardConfirmation_whenOptionAdded() {
+        let viewModel = makeViewModel()
+        viewModel.replaceAllOptions(["A"])
+        XCTAssertTrue(viewModel.canShowDiscardConfirmation)
+    }
+
+    // MARK: - Can Create Poll
+
+    func test_canCreatePoll_whenRequiredInformationAdded() {
+        let viewModel = makeViewModel()
+        viewModel.question = " A  "
+        viewModel.replaceAllOptions(["O     "])
+        XCTAssertTrue(viewModel.canCreatePoll)
+    }
+
+    func test_canCreatePoll_whenEmptyOrChangedToggles() {
+        let viewModel = makeViewModel()
+        viewModel.allowComments.toggle()
+        XCTAssertFalse(viewModel.canCreatePoll)
+    }
+
+    func test_canCreatePoll_whenQuestionOnlyWhitespace() {
+        let viewModel = makeViewModel()
+        viewModel.question = "   "
+        viewModel.replaceAllOptions(["Option"])
+        XCTAssertFalse(viewModel.canCreatePoll)
+    }
+
+    func test_canCreatePoll_whenOptionsOnlyWhitespace() {
+        let viewModel = makeViewModel()
+        viewModel.question = "Question"
+        viewModel.replaceAllOptions(["   ", "  "])
+        XCTAssertFalse(viewModel.canCreatePoll)
+    }
+
+    func test_canCreatePoll_whenInsertingInformation() {
+        let viewModel = makeViewModel()
+        XCTAssertFalse(viewModel.canCreatePoll)
+        viewModel.question = "A"
+        XCTAssertFalse(viewModel.canCreatePoll)
+        viewModel.replaceAllOptions(["A", "a"])
+        XCTAssertFalse(viewModel.canCreatePoll)
+        viewModel.replaceAllOptions(["A", "aa"])
+        XCTAssertTrue(viewModel.canCreatePoll)
+    }
+
+    // MARK: - Config Visibility
+
+    func test_multipleAnswersShown_defaultConfig() {
+        let viewModel = makeViewModel()
         XCTAssertTrue(viewModel.multipleAnswersShown)
         XCTAssertFalse(viewModel.multipleAnswers)
     }
-    
+
     func test_multipleAnswersShown_hidden() {
-        let utils = Utils(
+        let viewModel = makeViewModel(
             pollsConfig: .init(multipleAnswers: .init(configurable: false, defaultValue: false))
-        )
-        streamChat = StreamChat(chatClient: chatClient, utils: utils)
-        let viewModel = CreatePollViewModel(
-            chatController: chatClient.channelController(for: .unique),
-            messageController: nil
         )
         XCTAssertFalse(viewModel.multipleAnswersShown)
         XCTAssertFalse(viewModel.multipleAnswers)
     }
-    
-    func test_anonymousPollShown_defaultConfig() {
-        let viewModel = CreatePollViewModel(
-            chatController: chatClient.channelController(for: .unique),
-            messageController: nil
+
+    func test_multipleAnswersShown_enabledByDefault() {
+        let viewModel = makeViewModel(
+            pollsConfig: .init(multipleAnswers: .init(configurable: true, defaultValue: true))
         )
+        XCTAssertTrue(viewModel.multipleAnswersShown)
+        XCTAssertTrue(viewModel.multipleAnswers)
+    }
+
+    func test_anonymousPollShown_defaultConfig() {
+        let viewModel = makeViewModel()
         XCTAssertTrue(viewModel.anonymousPollShown)
         XCTAssertFalse(viewModel.anonymousPoll)
     }
-    
+
     func test_anonymousPollShown_hidden() {
-        let utils = Utils(
+        let viewModel = makeViewModel(
             pollsConfig: .init(anonymousPoll: .init(configurable: false, defaultValue: false))
-        )
-        streamChat = StreamChat(chatClient: chatClient, utils: utils)
-        let viewModel = CreatePollViewModel(
-            chatController: chatClient.channelController(for: .unique),
-            messageController: nil
         )
         XCTAssertFalse(viewModel.anonymousPollShown)
         XCTAssertFalse(viewModel.anonymousPoll)
     }
-    
+
     func test_suggestAnOptionShown_defaultConfig() {
-        let viewModel = CreatePollViewModel(
-            chatController: chatClient.channelController(for: .unique),
-            messageController: nil
-        )
+        let viewModel = makeViewModel()
         XCTAssertTrue(viewModel.suggestAnOptionShown)
         XCTAssertFalse(viewModel.suggestAnOption)
     }
-    
+
     func test_suggestAnOptionShown_hidden() {
-        let utils = Utils(
+        let viewModel = makeViewModel(
             pollsConfig: .init(suggestAnOption: .init(configurable: false, defaultValue: false))
-        )
-        streamChat = StreamChat(chatClient: chatClient, utils: utils)
-        let viewModel = CreatePollViewModel(
-            chatController: chatClient.channelController(for: .unique),
-            messageController: nil
         )
         XCTAssertFalse(viewModel.suggestAnOptionShown)
         XCTAssertFalse(viewModel.suggestAnOption)
     }
-    
+
     func test_addCommentsShown_defaultConfig() {
-        let viewModel = CreatePollViewModel(
-            chatController: chatClient.channelController(for: .unique),
-            messageController: nil
-        )
+        let viewModel = makeViewModel()
         XCTAssertTrue(viewModel.addCommentsShown)
         XCTAssertFalse(viewModel.allowComments)
     }
-    
+
     func test_addCommentsShown_hidden() {
-        let utils = Utils(
+        let viewModel = makeViewModel(
             pollsConfig: .init(addComments: .init(configurable: false, defaultValue: false))
-        )
-        streamChat = StreamChat(chatClient: chatClient, utils: utils)
-        let viewModel = CreatePollViewModel(
-            chatController: chatClient.channelController(for: .unique),
-            messageController: nil
         )
         XCTAssertFalse(viewModel.addCommentsShown)
         XCTAssertFalse(viewModel.allowComments)
     }
-    
+
     func test_maxVotesShown_defaultConfig() {
-        let viewModel = CreatePollViewModel(
-            chatController: chatClient.channelController(for: .unique),
-            messageController: nil
-        )
+        let viewModel = makeViewModel()
         XCTAssertTrue(viewModel.maxVotesShown)
         XCTAssertFalse(viewModel.maxVotesEnabled)
     }
-    
+
     func test_maxVotesShown_hidden() {
-        let utils = Utils(
+        let viewModel = makeViewModel(
             pollsConfig: .init(maxVotesPerPerson: .init(configurable: false, defaultValue: false))
-        )
-        streamChat = StreamChat(chatClient: chatClient, utils: utils)
-        let viewModel = CreatePollViewModel(
-            chatController: chatClient.channelController(for: .unique),
-            messageController: nil
         )
         XCTAssertFalse(viewModel.maxVotesShown)
         XCTAssertFalse(viewModel.maxVotesEnabled)
     }
-    
-    // MARK: - Input Errors
-    
+
+    // MARK: - Initial State
+
+    func test_initialState_hasOneEmptyOption() {
+        let viewModel = makeViewModel()
+        XCTAssertEqual(viewModel.options.count, 1)
+        XCTAssertEqual(viewModel.optionTexts, [""])
+    }
+
+    func test_initialState_defaultPropertyValues() {
+        let viewModel = makeViewModel()
+        XCTAssertEqual(viewModel.question, "")
+        XCTAssertTrue(viewModel.optionsErrorIndices.isEmpty)
+        XCTAssertFalse(viewModel.discardConfirmationShown)
+        XCTAssertFalse(viewModel.errorShown)
+    }
+
+    // MARK: - Option Accessors
+
+    func test_optionTexts_returnsTextValues() {
+        let viewModel = makeViewModel()
+        viewModel.replaceAllOptions(["Red", "Blue", "Green"])
+        XCTAssertEqual(viewModel.optionTexts, ["Red", "Blue", "Green"])
+    }
+
+    func test_isLastOption_returnsTrueForLastOption() {
+        let viewModel = makeViewModel()
+        viewModel.replaceAllOptions(["A", "B", ""])
+        XCTAssertFalse(viewModel.isLastOption(viewModel.options[0]))
+        XCTAssertFalse(viewModel.isLastOption(viewModel.options[1]))
+        XCTAssertTrue(viewModel.isLastOption(viewModel.options[2]))
+    }
+
+    func test_isLastOption_singleOption() {
+        let viewModel = makeViewModel()
+        XCTAssertTrue(viewModel.isLastOption(viewModel.options[0]))
+    }
+
+    // MARK: - Option Mutations: updateOption
+
+    func test_updateOption_updatesTextAtCorrectId() {
+        let viewModel = makeViewModel()
+        viewModel.replaceAllOptions(["A", "B", ""])
+        let targetId = viewModel.options[1].id
+        viewModel.updateOption(id: targetId, value: "Updated")
+        XCTAssertEqual(viewModel.optionTexts, ["A", "Updated", ""])
+    }
+
+    func test_updateOption_appendsNewEntryWhenEditingLastOption() {
+        let viewModel = makeViewModel()
+        let lastId = viewModel.options.last!.id
+        viewModel.updateOption(id: lastId, value: "New")
+        XCTAssertEqual(viewModel.options.count, 2)
+        XCTAssertEqual(viewModel.options[0].text, "New")
+        XCTAssertEqual(viewModel.options[1].text, "")
+    }
+
+    func test_updateOption_doesNotAppendWhenEditingNonLastOption() {
+        let viewModel = makeViewModel()
+        viewModel.replaceAllOptions(["A", "B", ""])
+        let firstId = viewModel.options[0].id
+        viewModel.updateOption(id: firstId, value: "Updated")
+        XCTAssertEqual(viewModel.options.count, 3)
+        XCTAssertEqual(viewModel.optionTexts, ["Updated", "B", ""])
+    }
+
+    func test_updateOption_doesNotAppendWhenLastOptionIsWhitespace() {
+        let viewModel = makeViewModel()
+        let lastId = viewModel.options.last!.id
+        viewModel.updateOption(id: lastId, value: "   ")
+        XCTAssertEqual(viewModel.options.count, 1)
+    }
+
+    func test_updateOption_doesNothingForUnknownId() {
+        let viewModel = makeViewModel()
+        viewModel.replaceAllOptions(["A", "B"])
+        viewModel.updateOption(id: UUID(), value: "Unknown")
+        XCTAssertEqual(viewModel.optionTexts, ["A", "B"])
+    }
+
+    // MARK: - Option Mutations: removeOption
+
+    func test_removeOption_removesCorrectOption() {
+        let viewModel = makeViewModel()
+        viewModel.replaceAllOptions(["A", "B", "C"])
+        let targetId = viewModel.options[1].id
+        viewModel.removeOption(id: targetId)
+        XCTAssertEqual(viewModel.optionTexts, ["A", "C"])
+    }
+
+    func test_removeOption_doesNothingForUnknownId() {
+        let viewModel = makeViewModel()
+        viewModel.replaceAllOptions(["A", "B"])
+        viewModel.removeOption(id: UUID())
+        XCTAssertEqual(viewModel.optionTexts, ["A", "B"])
+    }
+
+    // MARK: - Option Mutations: moveOptions
+
+    func test_moveOptions_reordersCorrectly() {
+        let viewModel = makeViewModel()
+        viewModel.replaceAllOptions(["A", "B", "C", ""])
+        viewModel.moveOptions(from: IndexSet(integer: 2), to: 0)
+        XCTAssertEqual(viewModel.optionTexts, ["C", "A", "B", ""])
+    }
+
+    func test_moveOptions_preservesStableIdentity() {
+        let viewModel = makeViewModel()
+        viewModel.replaceAllOptions(["A", "B", "C"])
+        let originalIds = viewModel.options.map(\.id)
+        viewModel.moveOptions(from: IndexSet(integer: 2), to: 0)
+        XCTAssertEqual(viewModel.options[0].id, originalIds[2])
+        XCTAssertEqual(viewModel.options[1].id, originalIds[0])
+        XCTAssertEqual(viewModel.options[2].id, originalIds[1])
+    }
+
+    // MARK: - Option Mutations: replaceAllOptions
+
+    func test_replaceAllOptions_replacesWithNewEntries() {
+        let viewModel = makeViewModel()
+        viewModel.replaceAllOptions(["X", "Y"])
+        XCTAssertEqual(viewModel.options.count, 2)
+        XCTAssertEqual(viewModel.optionTexts, ["X", "Y"])
+    }
+
+    func test_replaceAllOptions_assignsUniqueIds() {
+        let viewModel = makeViewModel()
+        viewModel.replaceAllOptions(["A", "A", "A"])
+        let ids = viewModel.options.map(\.id)
+        XCTAssertEqual(Set(ids).count, 3)
+    }
+
+    // MARK: - Duplicate Option Errors
+
     func test_optionsErrorIndices_ignoreWhitespaceAndCase() {
-        let viewModel = CreatePollViewModel(
-            chatController: chatClient.channelController(for: .unique),
-            messageController: nil
-        )
-        viewModel.options = ["   123ab   "]
-        viewModel.options.append("123Ab")
-        viewModel.options.append("123AB ")
+        let viewModel = makeViewModel()
+        viewModel.replaceAllOptions(["   123ab   ", "123Ab", "123AB "])
         XCTAssertEqual(Set([1, 2]), viewModel.optionsErrorIndices)
     }
-    
-    func test_showsMaxVotesError_whenMaxVotesEnabledAndInvalidValue_thenShown() {
-        let viewModel = CreatePollViewModel(
-            chatController: chatClient.channelController(for: .unique),
-            messageController: nil
-        )
-        viewModel.maxVotesEnabled = true
-        viewModel.maxVotes = "11"
-        XCTAssertEqual(true, viewModel.showsMaxVotesError)
+
+    func test_optionsErrorIndices_emptyDuplicatesIgnored() {
+        let viewModel = makeViewModel()
+        viewModel.replaceAllOptions(["", "", "A"])
+        XCTAssertTrue(viewModel.optionsErrorIndices.isEmpty)
     }
-    
-    func test_showsMaxVotesError_whenMaxVotesDisabledAndInvalidValue_thenHidden() {
-        let viewModel = CreatePollViewModel(
-            chatController: chatClient.channelController(for: .unique),
-            messageController: nil
-        )
-        viewModel.maxVotesEnabled = false
-        viewModel.maxVotes = "11"
-        XCTAssertEqual(false, viewModel.showsMaxVotesError)
+
+    func test_showsOptionError_returnsCorrectValue() {
+        let viewModel = makeViewModel()
+        viewModel.replaceAllOptions(["A", "a", "B"])
+        XCTAssertFalse(viewModel.showsOptionError(for: viewModel.options[0]))
+        XCTAssertTrue(viewModel.showsOptionError(for: viewModel.options[1]))
+        XCTAssertFalse(viewModel.showsOptionError(for: viewModel.options[2]))
     }
-    
-    func test_showsMaxVotesError_whenMaxVotesEnabledAndValidValue_thenHidden() {
-        let viewModel = CreatePollViewModel(
-            chatController: chatClient.channelController(for: .unique),
-            messageController: nil
-        )
-        viewModel.maxVotesEnabled = false
-        viewModel.maxVotes = "10"
-        XCTAssertEqual(false, viewModel.showsMaxVotesError)
+
+    func test_showsOptionError_returnsFalseForUnknownOption() {
+        let viewModel = makeViewModel()
+        viewModel.replaceAllOptions(["A", "a"])
+        let unknownOption = PollOptionEntry(text: "a")
+        XCTAssertFalse(viewModel.showsOptionError(for: unknownOption))
     }
-    
-    func test_showsMaxVotesError_whenMaxVotesEnabledAndInvalidZeroValue_thenShown() {
-        let viewModel = CreatePollViewModel(
-            chatController: chatClient.channelController(for: .unique),
-            messageController: nil
-        )
-        viewModel.maxVotesEnabled = true
-        viewModel.maxVotes = "0"
-        XCTAssertEqual(true, viewModel.showsMaxVotesError)
+
+    // MARK: - Max Votes Stepper
+
+    func test_maxVotesText_returnsStringRepresentation() {
+        let viewModel = makeViewModel()
+        XCTAssertEqual(viewModel.maxVotesText, "2")
+    }
+
+    func test_canDecrementMaxVotes_atMinimum_returnsFalse() {
+        let viewModel = makeViewModel()
+        XCTAssertFalse(viewModel.canDecrementMaxVotes)
+    }
+
+    func test_canDecrementMaxVotes_aboveMinimum_returnsTrue() {
+        let viewModel = makeViewModel()
+        viewModel.incrementMaxVotes()
+        XCTAssertTrue(viewModel.canDecrementMaxVotes)
+    }
+
+    func test_canIncrementMaxVotes_atMaximum_returnsFalse() {
+        let viewModel = makeViewModel()
+        for _ in 0..<20 {
+            viewModel.incrementMaxVotes()
+        }
+        XCTAssertEqual(viewModel.maxVotes, 10)
+        XCTAssertFalse(viewModel.canIncrementMaxVotes)
+    }
+
+    func test_canIncrementMaxVotes_belowMaximum_returnsTrue() {
+        let viewModel = makeViewModel()
+        XCTAssertTrue(viewModel.canIncrementMaxVotes)
+    }
+
+    func test_incrementMaxVotes_incrementsByOne() {
+        let viewModel = makeViewModel()
+        XCTAssertEqual(viewModel.maxVotes, 2)
+        viewModel.incrementMaxVotes()
+        XCTAssertEqual(viewModel.maxVotes, 3)
+        XCTAssertEqual(viewModel.maxVotesText, "3")
+    }
+
+    func test_incrementMaxVotes_clampsAtMaximum() {
+        let viewModel = makeViewModel()
+        for _ in 0..<20 {
+            viewModel.incrementMaxVotes()
+        }
+        XCTAssertEqual(viewModel.maxVotes, 10)
+    }
+
+    func test_decrementMaxVotes_decrementsByOne() {
+        let viewModel = makeViewModel()
+        viewModel.incrementMaxVotes()
+        viewModel.incrementMaxVotes()
+        XCTAssertEqual(viewModel.maxVotes, 4)
+        viewModel.decrementMaxVotes()
+        XCTAssertEqual(viewModel.maxVotes, 3)
+        XCTAssertEqual(viewModel.maxVotesText, "3")
+    }
+
+    func test_decrementMaxVotes_clampsAtMinimum() {
+        let viewModel = makeViewModel()
+        viewModel.decrementMaxVotes()
+        XCTAssertEqual(viewModel.maxVotes, 2)
+    }
+
+    func test_maxVotesStepper_fullRange() {
+        let viewModel = makeViewModel()
+        XCTAssertEqual(viewModel.maxVotes, 2)
+        XCTAssertFalse(viewModel.canDecrementMaxVotes)
+        XCTAssertTrue(viewModel.canIncrementMaxVotes)
+
+        for expected in 3...10 {
+            viewModel.incrementMaxVotes()
+            XCTAssertEqual(viewModel.maxVotes, expected)
+        }
+
+        XCTAssertTrue(viewModel.canDecrementMaxVotes)
+        XCTAssertFalse(viewModel.canIncrementMaxVotes)
     }
 }
