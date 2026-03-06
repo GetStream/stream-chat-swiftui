@@ -19,7 +19,7 @@ import XCTest
             author: .mock(id: .unique),
             poll: poll
         )
-        
+
         // When
         let view = PollAttachmentView(
             factory: DefaultViewFactory.shared,
@@ -28,11 +28,11 @@ import XCTest
             isFirst: true
         )
         .frame(width: defaultScreenSize.width, height: 240)
-        
+
         // Then
         AssertSnapshot(view, variants: .onlyUserInterfaceStyles)
     }
-    
+
     func test_pollAttachmentView_snapshotUniqueVotes() {
         // Given
         let poll = Poll.mock(
@@ -47,7 +47,7 @@ import XCTest
             author: .mock(id: .unique),
             poll: poll
         )
-        
+
         // When
         let view = PollAttachmentView(
             factory: DefaultViewFactory.shared,
@@ -55,12 +55,12 @@ import XCTest
             poll: poll,
             isFirst: true
         )
-        .frame(width: defaultScreenSize.width, height: 150)
-        
+        .frame(width: defaultScreenSize.width, height: 180)
+
         // Then
         AssertSnapshot(view, variants: .onlyUserInterfaceStyles)
     }
-    
+
     func test_pollAttachmentView_closedPoll() {
         // Given
         let poll = Poll.mock(
@@ -76,7 +76,7 @@ import XCTest
             author: .mock(id: .unique),
             poll: poll
         )
-        
+
         // When
         let view = PollAttachmentView(
             factory: DefaultViewFactory.shared,
@@ -84,57 +84,57 @@ import XCTest
             poll: poll,
             isFirst: true
         )
-        .frame(width: defaultScreenSize.width, height: 150)
-        
+        .frame(width: defaultScreenSize.width, height: 170)
+
         // Then
         AssertSnapshot(view, variants: .onlyUserInterfaceStyles)
     }
-    
+
     func test_pollAttachmentView_resultsSnapshot() {
         // Given
         let poll = Poll.mock()
         let viewModel = PollAttachmentViewModel(message: .mock(poll: poll), poll: poll)
-        
+
         // When
         let view = PollResultsView(viewModel: viewModel, factory: DefaultViewFactory.shared)
             .applyDefaultSize()
-        
+
         // Then
         AssertSnapshot(view, variants: .onlyUserInterfaceStyles)
     }
-    
+
     func test_pollAttachmentView_allOptions() {
         // Given
         let poll = Poll.mock()
         let viewModel = PollAttachmentViewModel(message: .mock(poll: poll), poll: poll)
-        
+
         // When
         let view = PollAllOptionsView(viewModel: viewModel, factory: DefaultViewFactory.shared)
             .applyDefaultSize()
-        
+
         // Then
         AssertSnapshot(view, variants: .onlyUserInterfaceStyles)
     }
-    
+
     func test_pollAttachmentView_allVotes() {
         // Given
         let poll = Poll.mock()
-        
+
         // When
         let view = PollOptionAllVotesView(factory: DefaultViewFactory.shared, poll: poll, option: poll.options[0])
             .applyDefaultSize()
-        
+
         // Then
         AssertSnapshot(view, variants: .onlyUserInterfaceStyles)
     }
-    
+
     func test_pollAttachmentView_allComments() {
         // Given
         let poll = Poll.mock()
         let pollController = PollController(client: chatClient, messageId: .unique, pollId: poll.id)
         let viewModel = PollCommentsViewModel(poll: poll, pollController: pollController)
         viewModel.comments = [.mock(pollId: poll.id, optionId: nil, isAnswer: true, answerText: "Test comment")]
-        
+
         // When
         let view = PollCommentsView(
             factory: DefaultViewFactory.shared,
@@ -143,7 +143,7 @@ import XCTest
             viewModel: viewModel
         )
         .applyDefaultSize()
-        
+
         // Then
         AssertSnapshot(view, variants: .onlyUserInterfaceStyles)
     }
