@@ -234,9 +234,11 @@ public struct CreatePollView: View {
     @ViewBuilder
     private func pollOptionRow(for index: Int) -> some View {
         HStack(spacing: tokens.spacingXs) {
-            Image(systemName: "line.3.horizontal")
-                .font(.system(size: tokens.iconSizeSm))
-                .foregroundColor(Color(colors.textTertiary))
+            if viewModel.options[index].isEmpty == false {
+                Image(uiImage: images.pollReorderIcon)
+                    .font(.system(size: tokens.iconSizeSm))
+                    .foregroundColor(Color(colors.textTertiary))
+            }
             TextField(L10n.Composer.Polls.addOption, text: Binding(
                 get: { viewModel.options[index] },
                 set: { newValue in
@@ -259,6 +261,7 @@ public struct CreatePollView: View {
                         .font(.system(size: tokens.iconSizeSm))
                         .foregroundColor(Color(colors.textTertiary))
                 }
+                .frame(width: tokens.iconSizeSm, height: tokens.iconSizeSm)
             }
         }
         .padding(.horizontal, tokens.spacingMd)
