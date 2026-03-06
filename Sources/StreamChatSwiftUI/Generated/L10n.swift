@@ -377,6 +377,8 @@ internal enum L10n {
       internal static var addComment: String { L10n.tr("Localizable", "composer.polls.add-comment") }
       /// Add an option
       internal static var addOption: String { L10n.tr("Localizable", "composer.polls.add-option") }
+      /// Allow others to add comments
+      internal static var allowOthersToAddComments: String { L10n.tr("Localizable", "composer.polls.allow-others-to-add-comments") }
       /// Anonymous poll
       internal static var anonymousPoll: String { L10n.tr("Localizable", "composer.polls.anonymous-poll") }
       /// Ask a question
@@ -387,6 +389,10 @@ internal enum L10n {
       internal static var createPollDescription: String { L10n.tr("Localizable", "composer.polls.create-poll-description") }
       /// This is already an option
       internal static var duplicateOption: String { L10n.tr("Localizable", "composer.polls.duplicate-option") }
+      /// Hide who voted
+      internal static var hideWhoVoted: String { L10n.tr("Localizable", "composer.polls.hide-who-voted") }
+      /// Let others add options
+      internal static var letOthersAddOptions: String { L10n.tr("Localizable", "composer.polls.let-others-add-options") }
       /// Maximum votes per person
       internal static var maximumVotesPerPerson: String { L10n.tr("Localizable", "composer.polls.maximum-votes-per-person") }
       /// Multiple answers
@@ -395,6 +401,8 @@ internal enum L10n {
       internal static var options: String { L10n.tr("Localizable", "composer.polls.options") }
       /// Question
       internal static var question: String { L10n.tr("Localizable", "composer.polls.question") }
+      /// Select more than one option
+      internal static var selectMoreThanOneOption: String { L10n.tr("Localizable", "composer.polls.select-more-than-one-option") }
       /// Suggest an option
       internal static var suggestOption: String { L10n.tr("Localizable", "composer.polls.suggest-option") }
       /// Type a number from 2 and 10

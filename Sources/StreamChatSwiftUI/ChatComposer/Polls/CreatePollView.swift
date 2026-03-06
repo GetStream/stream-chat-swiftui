@@ -60,109 +60,116 @@ public struct CreatePollView: View {
     public var body: some View {
         NavigationContainerView(embedInNavigationView: true) {
             List {
-                VStack(alignment: .leading, spacing: 8) {
+                // Question group
+                VStack(alignment: .leading, spacing: tokens.spacingXs) {
                     Text(L10n.Composer.Polls.question)
-                        .modifier(ListRowModifier())
-                        .padding(.bottom, 4)
+                        .font(fonts.body)
+                        .foregroundColor(Color(colors.textPrimary))
                     TextField(L10n.Composer.Polls.askQuestion, text: $viewModel.question)
-                        .modifier(CreatePollItemModifier())
+                        .font(fonts.body)
+                        .foregroundColor(Color(colors.inputTextDefault))
+                        .padding(.horizontal, tokens.spacingMd)
+                        .padding(.vertical, tokens.spacingSm)
+                        .frame(minHeight: 48)
+                        .background(
+                            RoundedRectangle(cornerRadius: tokens.radiusLg)
+                                .strokeBorder(Color(colors.borderCoreDefault), lineWidth: 1)
+                        )
                 }
-                .modifier(ListRowModifier())
-                                
+                .modifier(CreatePollRowModifier(
+                    topSpacing: tokens.spacingXxs,
+                    bottomSpacing: tokens.spacingSm
+                ))
+
+                // Options group
                 Text(L10n.Composer.Polls.options)
-                    .modifier(ListRowModifier())
-                    .padding(.bottom, -16)
-                
+                    .font(fonts.body)
+                    .foregroundColor(Color(colors.textPrimary))
+                    .modifier(CreatePollRowModifier(
+                        topSpacing: tokens.spacingSm,
+                        bottomSpacing: tokens.spacingXxs
+                    ))
+
                 ForEach(viewModel.options.indices, id: \.self) { index in
-                    HStack {
-                        VStack(alignment: .leading, spacing: 2) {
-                            if viewModel.showsOptionError(for: index) {
-                                Text(L10n.Composer.Polls.duplicateOption)
-                                    .foregroundColor(Color(colors.alert))
-                                    .font(fonts.caption1)
-                                    .transition(.opacity)
-                            }
-                            TextField(L10n.Composer.Polls.addOption, text: Binding(
-                                get: { viewModel.options[index] },
-                                set: { newValue in
-                                    viewModel.options[index] = newValue
-                                    // Check if the current text field is the last one
-                                    if index == viewModel.options.count - 1,
-                                       !newValue.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
-                                        // Add a new text field
-                                        withAnimation {
-                                            viewModel.options.append("")
-                                        }
-                                    }
-                                }
-                            ))
-                        }
-                        Spacer()
-                        if index < viewModel.options.count - 1 {
-                            Image(systemName: "equal")
-                                .foregroundColor(Color(colors.textLowEmphasis))
-                        }
-                    }
-                    .padding(.vertical, viewModel.showsOptionError(for: index) ? -8 : 0)
-                    .modifier(CreatePollItemModifier())
-                    .moveDisabled(index == viewModel.options.count - 1)
-                    .animation(.easeIn, value: viewModel.optionsErrorIndices)
+                    pollOptionRow(for: index)
                 }
                 .onMove(perform: move)
-                .onDelete { indices in
-                    // Allow deletion of any text field
-                    viewModel.options.remove(atOffsets: indices)
-                }
-                .modifier(ListRowModifier())
-                                
+                .modifier(CreatePollRowModifier(
+                    topSpacing: tokens.spacingXxs,
+                    bottomSpacing: tokens.spacingXxs
+                ))
+
+                // Spacer bridging 32pt gap between Options and Settings
+                Color.clear
+                    .frame(height: tokens.spacingLg)
+                    .modifier(CreatePollRowModifier(topSpacing: 0, bottomSpacing: 0))
+
+                // Settings cards
                 if viewModel.multipleAnswersShown {
-                    VStack(alignment: .leading, spacing: 8) {
-                        Toggle(L10n.Composer.Polls.multipleAnswers, isOn: $viewModel.multipleAnswers)
-                        if viewModel.multipleAnswers {
-                            HStack(alignment: .textFieldToggle) {
-                                VStack(alignment: .leading, spacing: 6) {
-                                    Text(L10n.Composer.Polls.typeNumberMinMaxRange)
-                                        .foregroundColor(Color(colors.alert))
-                                        .font(fonts.caption1)
-                                        .offset(y: viewModel.showsMaxVotesError ? 0 : 6)
-                                        .opacity(viewModel.showsMaxVotesError ? 1 : 0)
-                                        .animation(.easeIn, value: viewModel.showsMaxVotesError)
-                                    TextField(L10n.Composer.Polls.maximumVotesPerPerson, text: $viewModel.maxVotes)
-                                        .alignmentGuide(.textFieldToggle, computeValue: { $0[VerticalAlignment.center] })
-                                        .disabled(!viewModel.maxVotesEnabled)
+                    pollOptionCard(
+                        title: L10n.Composer.Polls.multipleAnswers,
+                        subtitle: L10n.Composer.Polls.selectMoreThanOneOption
+                    ) {
+                        VStack(alignment: .leading, spacing: tokens.spacingXs) {
+                            Toggle("", isOn: $viewModel.multipleAnswers)
+                                .labelsHidden()
+                            if viewModel.multipleAnswers {
+                                HStack(alignment: .textFieldToggle) {
+                                    VStack(alignment: .leading, spacing: 6) {
+                                        Text(L10n.Composer.Polls.typeNumberMinMaxRange)
+                                            .foregroundColor(Color(colors.alert))
+                                            .font(fonts.caption1)
+                                            .offset(y: viewModel.showsMaxVotesError ? 0 : 6)
+                                            .opacity(viewModel.showsMaxVotesError ? 1 : 0)
+                                            .animation(.easeIn, value: viewModel.showsMaxVotesError)
+                                        TextField(L10n.Composer.Polls.maximumVotesPerPerson, text: $viewModel.maxVotes)
+                                            .alignmentGuide(.textFieldToggle, computeValue: { $0[VerticalAlignment.center] })
+                                            .disabled(!viewModel.maxVotesEnabled)
+                                    }
+                                    .accessibilityElement(children: .combine)
+                                    if viewModel.maxVotesShown {
+                                        Toggle("", isOn: $viewModel.maxVotesEnabled)
+                                            .alignmentGuide(.textFieldToggle, computeValue: { $0[VerticalAlignment.center] })
+                                            .frame(width: 64)
+                                    }
                                 }
-                                .accessibilityElement(children: .combine)
-                                if viewModel.maxVotesShown {
-                                    Toggle("", isOn: $viewModel.maxVotesEnabled)
-                                        .alignmentGuide(.textFieldToggle, computeValue: { $0[VerticalAlignment.center] })
-                                        .frame(width: 64)
-                                }
+                                .padding(.top, tokens.spacingXs)
                             }
-                            .padding(.top, 8)
                         }
                     }
-                    .modifier(CreatePollItemModifier())
-                    .padding(.top, 16)
                 }
-                
+
                 if viewModel.anonymousPollShown {
-                    Toggle(L10n.Composer.Polls.anonymousPoll, isOn: $viewModel.anonymousPoll)
-                        .modifier(CreatePollItemModifier())
+                    pollOptionCard(
+                        title: L10n.Composer.Polls.anonymousPoll,
+                        subtitle: L10n.Composer.Polls.hideWhoVoted
+                    ) {
+                        Toggle("", isOn: $viewModel.anonymousPoll).labelsHidden()
+                    }
                 }
-                
+
                 if viewModel.suggestAnOptionShown {
-                    Toggle(L10n.Composer.Polls.suggestOption, isOn: $viewModel.suggestAnOption)
-                        .modifier(CreatePollItemModifier())
+                    pollOptionCard(
+                        title: L10n.Composer.Polls.suggestOption,
+                        subtitle: L10n.Composer.Polls.letOthersAddOptions
+                    ) {
+                        Toggle("", isOn: $viewModel.suggestAnOption).labelsHidden()
+                    }
                 }
-                
+
                 if viewModel.addCommentsShown {
-                    Toggle(L10n.Composer.Polls.addComment, isOn: $viewModel.allowComments)
-                        .modifier(CreatePollItemModifier())
+                    pollOptionCard(
+                        title: L10n.Composer.Polls.addComment,
+                        subtitle: L10n.Composer.Polls.allowOthersToAddComments
+                    ) {
+                        Toggle("", isOn: $viewModel.allowComments).labelsHidden()
+                    }
                 }
-                
+
                 Spacer()
-                    .modifier(ListRowModifier())
+                    .modifier(CreatePollRowModifier(topSpacing: 0, bottomSpacing: 0))
             }
+            .environment(\.defaultMinListRowHeight, 1)
             .background(Color(colors.background).ignoresSafeArea())
             .listStyle(.plain)
             .id(listId)
@@ -223,14 +230,100 @@ public struct CreatePollView: View {
         viewModel.options.move(fromOffsets: source, toOffset: destination)
         listId = UUID()
     }
+
+    @ViewBuilder
+    private func pollOptionRow(for index: Int) -> some View {
+        HStack(spacing: tokens.spacingXs) {
+            Image(systemName: "line.3.horizontal")
+                .font(.system(size: tokens.iconSizeSm))
+                .foregroundColor(Color(colors.textTertiary))
+            TextField(L10n.Composer.Polls.addOption, text: Binding(
+                get: { viewModel.options[index] },
+                set: { newValue in
+                    viewModel.options[index] = newValue
+                    if index == viewModel.options.count - 1,
+                       !newValue.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+                        withAnimation {
+                            viewModel.options.append("")
+                        }
+                    }
+                }
+            ))
+            .font(fonts.body)
+            .foregroundColor(Color(colors.inputTextDefault))
+            if index < viewModel.options.count - 1 {
+                Button {
+                    viewModel.options.remove(at: index)
+                } label: {
+                    Image(systemName: "minus.circle")
+                        .font(.system(size: tokens.iconSizeSm))
+                        .foregroundColor(Color(colors.textTertiary))
+                }
+            }
+        }
+        .padding(.horizontal, tokens.spacingMd)
+        .padding(.vertical, tokens.spacingSm)
+        .frame(minHeight: 48)
+        .background(
+            RoundedRectangle(cornerRadius: tokens.radiusLg)
+                .strokeBorder(Color(colors.borderCoreDefault), lineWidth: 1)
+        )
+        .moveDisabled(index == viewModel.options.count - 1)
+        .animation(.easeIn, value: viewModel.optionsErrorIndices)
+    }
+
+    @ViewBuilder
+    private func pollOptionCard<Content: View>(
+        title: String,
+        subtitle: String,
+        @ViewBuilder content: () -> Content
+    ) -> some View {
+        HStack(alignment: .top, spacing: tokens.spacingMd) {
+            VStack(alignment: .leading, spacing: tokens.spacingXxs) {
+                Text(title)
+                    .font(fonts.body)
+                    .foregroundColor(Color(colors.textPrimary))
+                Text(subtitle)
+                    .font(fonts.caption1)
+                    .foregroundColor(Color(colors.textTertiary))
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+            content()
+        }
+        .padding(tokens.spacingMd)
+        .background(Color(colors.backgroundCoreSurfaceCard))
+        .cornerRadius(tokens.radiusLg)
+        .modifier(CreatePollRowModifier(
+            topSpacing: tokens.spacingXs,
+            bottomSpacing: tokens.spacingXs
+        ))
+    }
 }
 
-struct CreatePollItemModifier: ViewModifier {
+private struct CreatePollRowModifier: ViewModifier {
+    @Injected(\.colors) var colors
+    @Injected(\.tokens) var tokens
+
+    var topSpacing: CGFloat
+    var bottomSpacing: CGFloat
+
     func body(content: Content) -> some View {
-        content
-            .modifier(ListRowModifier())
-            .withPollsBackground()
-            .padding(.vertical, -4)
+        if #available(iOS 15.0, *) {
+            content
+                .listRowSeparator(.hidden)
+                .listRowBackground(Color(colors.background))
+                .listRowInsets(EdgeInsets(
+                    top: topSpacing,
+                    leading: tokens.spacingMd,
+                    bottom: bottomSpacing,
+                    trailing: tokens.spacingMd
+                ))
+        } else {
+            content
+                .padding(.horizontal, tokens.spacingMd)
+                .padding(.top, topSpacing)
+                .padding(.bottom, bottomSpacing)
+        }
     }
 }
 
