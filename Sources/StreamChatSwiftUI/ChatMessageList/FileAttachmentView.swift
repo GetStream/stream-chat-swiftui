@@ -29,26 +29,18 @@ public struct FileAttachmentsContainer<Factory: ViewFactory>: View {
     }
 
     public var body: some View {
-        VStack(spacing: 4) {
+        VStack(spacing: tokens.spacingXxs) {
             ForEach(message.fileAttachments, id: \.self) { attachment in
                 FileAttachmentView(
                     attachment: attachment,
                     width: width,
                     isFirst: isFirst
                 )
-                .background(backgroundColor)
+                .background(MessageAttachmentsBubbleConfiguration.attachmentBackgroundColor(for: message))
                 .roundWithBorder(cornerRadius: tokens.messageBubbleRadiusAttachment)
             }
         }
         .accessibilityIdentifier("FileAttachmentsContainer")
-    }
-    
-    private var backgroundColor: Color {
-        let attachmentCounts = message.attachmentCounts
-        if message.text.isEmpty, attachmentCounts.count == 1, attachmentCounts[.file] == 1 {
-            return .clear
-        }
-        return Color(message.isSentByCurrentUser ? colors.chatBackgroundAttachmentOutgoing : colors.chatBackgroundAttachmentIncoming)
     }
 }
 

@@ -33,28 +33,6 @@ public struct MessageAttachmentsView<Factory: ViewFactory>: View {
         self._scrolledId = scrolledId
     }
 
-    private var showsBubble: Bool {
-        if !message.text.isEmpty {
-            return true
-        }
-        let totalAttachments = message.imageAttachments.count
-            + message.videoAttachments.count
-        if totalAttachments == 1 {
-            return false
-        }
-        return true
-    }
-    
-    private var padding: CGFloat {
-        guard showsBubble else { return 0 }
-        // Single voice and file don't have extra padding
-        let attachmentCounts = message.attachmentCounts
-        if message.text.isEmpty, attachmentCounts.count == 1, attachmentCounts[.file] == 1 || attachmentCounts[.voiceRecording] == 1 {
-            return 0
-        }
-        return tokens.spacingXs
-    }
-
     public var body: some View {
         VStack(alignment: message.alignmentInBubble, spacing: tokens.spacingXs) {
             VStack(alignment: message.isRightAligned ? .trailing : .leading, spacing: tokens.spacingXs) {
@@ -125,9 +103,9 @@ public struct MessageAttachmentsView<Factory: ViewFactory>: View {
                 )
             }
         }
-        .if(showsBubble) { view in
+        .if(MessageAttachmentsBubbleConfiguration.isBubbleShown(for: message)) { view in
             view
-                .padding(padding)
+                .padding(MessageAttachmentsBubbleConfiguration.bubbleContentPadding(for: message))
                 .modifier(
                     factory.styles.makeMessageViewModifier(
                         for: MessageModifierInfo(
@@ -139,5 +117,46 @@ public struct MessageAttachmentsView<Factory: ViewFactory>: View {
         }
         .accessibilityElement(children: .contain)
         .accessibilityIdentifier("MessageAttachmentsView")
+    }
+}
+
+/// Bubble styling configuration for stacked attachments.
+enum MessageAttachmentsBubbleConfiguration {
+    @MainActor static func isBubbleShown(for message: ChatMessage) -> Bool {
+        if message.hasSingleMediaAttachmentWithoutCaption {
+            return false
+        }
+        return true
+    }
+    
+    @MainActor static func bubbleContentPadding(for message: ChatMessage) -> CGFloat {
+        guard isBubbleShown(for: message) else { return 0 }
+        // Single voice and file don't have extra padding
+        if message.hasSingleFileOrVoiceAttachmentWithoutCaption {
+            return 0
+        }
+        @Injected(\.tokens) var tokens
+        return tokens.spacingXs
+    }
+    
+    @MainActor static func attachmentBackgroundColor(for message: ChatMessage) -> Color {
+        // Single file and voice attachments are rendered in a bubble, but attachment itself does not have additional darker background
+        if message.hasSingleFileOrVoiceAttachmentWithoutCaption {
+            return .clear
+        }
+        @Injected(\.colors) var colors
+        return Color(message.isSentByCurrentUser ? colors.chatBackgroundAttachmentOutgoing : colors.chatBackgroundAttachmentIncoming)
+    }
+}
+
+private extension ChatMessage {
+    var hasSingleFileOrVoiceAttachmentWithoutCaption: Bool {
+        guard text.isEmpty else { return false }
+        return attachmentCounts.count == 1 && (attachmentCounts[.file] == 1 || attachmentCounts[.voiceRecording] == 1)
+    }
+    
+    var hasSingleMediaAttachmentWithoutCaption: Bool {
+        guard text.isEmpty else { return false }
+        return attachmentCounts.count == 1 && (attachmentCounts[.image] == 1 || attachmentCounts[.video] == 1)
     }
 }

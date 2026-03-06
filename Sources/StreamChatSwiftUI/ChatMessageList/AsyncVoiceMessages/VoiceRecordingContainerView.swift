@@ -52,7 +52,7 @@ public struct VoiceRecordingContainerView<Factory: ViewFactory>: View {
                     isSentByCurrentUser: message.isSentByCurrentUser
                 )
                 .padding(.all, tokens.spacingXs)
-                .background(backgroundColor)
+                .background(MessageAttachmentsBubbleConfiguration.attachmentBackgroundColor(for: message))
                 .roundWithBorder(cornerRadius: tokens.messageBubbleRadiusAttachment)
             }
         }
@@ -81,14 +81,6 @@ public struct VoiceRecordingContainerView<Factory: ViewFactory>: View {
     
     private func index(for attachment: ChatMessageVoiceRecordingAttachment) -> Int {
         message.voiceRecordingAttachments.firstIndex(of: attachment) ?? 0
-    }
-    
-    private var backgroundColor: Color {
-        let attachmentCounts = message.attachmentCounts
-        if message.text.isEmpty, attachmentCounts.count == 1, attachmentCounts[.voiceRecording] == 1 {
-            return .clear
-        }
-        return Color(message.isSentByCurrentUser ? colors.chatBackgroundAttachmentOutgoing : colors.chatBackgroundAttachmentIncoming)
     }
 }
 

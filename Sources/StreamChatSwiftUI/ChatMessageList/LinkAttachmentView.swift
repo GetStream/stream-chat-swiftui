@@ -35,14 +35,6 @@ public struct LinkAttachmentContainer<Factory: ViewFactory>: View {
         _scrolledId = scrolledId
     }
 
-    private var bubbleColor: Color {
-        Color(
-            message.isSentByCurrentUser
-                ? colors.chatBackgroundAttachmentOutgoing
-                : colors.chatBackgroundAttachmentIncoming
-        )
-    }
-
     public var body: some View {
         if !message.linkAttachments.isEmpty {
             LinkAttachmentView(
@@ -51,7 +43,7 @@ public struct LinkAttachmentContainer<Factory: ViewFactory>: View {
                 isFirst: isFirst,
                 onImageTap: onImageTap
             )
-            .background(bubbleColor)
+            .background(MessageAttachmentsBubbleConfiguration.attachmentBackgroundColor(for: message))
             .roundWithBorder()
         }
     }
