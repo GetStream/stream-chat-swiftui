@@ -14,16 +14,8 @@ extension ViewFactory {
         NoChannelsView()
     }
     
-    @ViewBuilder
     public func makeLoadingView(options: LoadingViewOptions) -> some View {
-        switch options.type {
-        case .redactedChannelList:
-            RedactedLoadingView(factory: self)
-        case .spinner:
-            LoadingSpinnerView(size: LoadingSpinnerSize.large, bordered: true)
-        case .progressIndicator:
-            LoadingView()
-        }
+        RedactedLoadingView(factory: self)
     }
     
     public func navigationBarDisplayMode() -> NavigationBarItem.TitleDisplayMode {

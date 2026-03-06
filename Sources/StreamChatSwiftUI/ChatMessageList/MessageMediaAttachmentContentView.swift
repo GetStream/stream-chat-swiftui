@@ -62,7 +62,7 @@ public struct MessageMediaAttachmentContentView<Factory: ViewFactory>: View {
             }
 
             if image == nil && error == nil {
-                factory.makeLoadingView(options: .init(type: .spinner))
+                LoadingSpinnerView(size: LoadingSpinnerSize.large, bordered: true)
                     .allowsHitTesting(false)
             }
 

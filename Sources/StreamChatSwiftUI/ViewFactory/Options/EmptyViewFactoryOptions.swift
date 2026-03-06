@@ -12,19 +12,9 @@ public final class NoChannelsViewOptions: Sendable {
     public init() {}
 }
 
-/// The type of loading view to display.
-public enum LoadingViewType: Sendable {
-    case redactedChannelList
-    case spinner
-    case progressIndicator
-}
-
 /// Options for creating the loading view.
 public final class LoadingViewOptions: Sendable {
-    public let type: LoadingViewType
-    public init(type: LoadingViewType) {
-        self.type = type
-    }
+    public init() {}
 }
 
 /// Options for creating the channel list divider item.
