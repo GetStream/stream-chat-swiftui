@@ -289,10 +289,10 @@ extension ViewFactory {
         )
     }
 
-    public func makeImageAttachmentView(
-        options: ImageAttachmentViewOptions
+    public func makeMessageAttachmentsView(
+        options: MessageAttachmentsViewOptions
     ) -> some View {
-        ImageAttachmentContainer(
+        MessageAttachmentsView(
             factory: self,
             message: options.message,
             width: options.availableWidth,
@@ -300,7 +300,17 @@ extension ViewFactory {
             scrolledId: options.scrolledId
         )
     }
-    
+
+    public func makeImageAttachmentView(
+        options: ImageAttachmentViewOptions
+    ) -> some View {
+        MessageMediaAttachmentsContainerView(
+            factory: self,
+            message: options.message,
+            width: options.availableWidth
+        )
+    }
+
     public func makeGiphyAttachmentView(
         options: GiphyAttachmentViewOptions
     ) -> some View {
@@ -312,7 +322,7 @@ extension ViewFactory {
             scrolledId: options.scrolledId
         )
     }
-    
+
     public func makeLinkAttachmentView(
         options: LinkAttachmentViewOptions
     ) -> some View {
@@ -324,7 +334,7 @@ extension ViewFactory {
             scrolledId: options.scrolledId
         )
     }
-    
+
     public func makeFileAttachmentView(
         options: FileAttachmentViewOptions
     ) -> some View {
@@ -336,15 +346,14 @@ extension ViewFactory {
             scrolledId: options.scrolledId
         )
     }
-    
+
     public func makeVideoAttachmentView(
         options: VideoAttachmentViewOptions
     ) -> some View {
-        VideoAttachmentsContainer(
+        MessageMediaAttachmentsContainerView(
             factory: self,
             message: options.message,
-            width: options.availableWidth,
-            scrolledId: options.scrolledId
+            width: options.availableWidth
         )
     }
     
@@ -818,6 +827,7 @@ extension ViewFactory {
             factory: self,
             quotedMessage: options.quotedMessage,
             parentMessage: options.parentMessage,
+            availableWidth: options.availableWidth,
             scrolledId: options.scrolledId
         )
     }
@@ -995,6 +1005,12 @@ extension ViewFactory {
     
     public func makeAttachmentTextView(
         options: AttachmentTextViewOptions
+    ) -> some View {
+        AttachmentTextView(factory: self, message: options.message)
+    }
+
+    public func makeStreamTextView(
+        options: StreamTextViewOptions
     ) -> some View {
         StreamTextView(message: options.message)
     }

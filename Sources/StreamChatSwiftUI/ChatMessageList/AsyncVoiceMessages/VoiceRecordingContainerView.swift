@@ -9,6 +9,7 @@ import SwiftUI
 public struct VoiceRecordingContainerView<Factory: ViewFactory>: View {
     @Injected(\.colors) var colors
     @Injected(\.images) var images
+    @Injected(\.tokens) var tokens
     @Injected(\.utils) var utils
     
     let factory: Factory
@@ -39,38 +40,22 @@ public struct VoiceRecordingContainerView<Factory: ViewFactory>: View {
     }
     
     public var body: some View {
-        VStack(spacing: 0) {
-            VStack {
-                if let quotedMessage = message.quotedMessage {
-                    factory.makeChatQuotedMessageView(
-                        options: ChatQuotedMessageViewOptions(
-                            quotedMessage: quotedMessage,
-                            parentMessage: message,
-                            scrolledId: $scrolledId
-                        )
-                    )
-                }
-                VStack(spacing: 2) {
-                    ForEach(message.voiceRecordingAttachments, id: \.self) { attachment in
-                        VoiceRecordingView(
-                            handler: handler,
-                            addedVoiceRecording: AddedVoiceRecording(
-                                url: attachment.payload.voiceRecordingURL,
-                                duration: attachment.payload.duration ?? 0,
-                                waveform: attachment.payload.waveformData ?? []
-                            ),
-                            isSentByCurrentUser: message.isSentByCurrentUser
-                        )
-                        .padding(.all, 8)
-                    }
-                }
-            }
-            if !message.text.isEmpty {
-                AttachmentTextView(factory: factory, message: message)
-                    .frame(maxWidth: .infinity)
+        VStack(spacing: tokens.spacingXxxs) {
+            ForEach(message.voiceRecordingAttachments) { attachment in
+                VoiceRecordingView(
+                    handler: handler,
+                    addedVoiceRecording: AddedVoiceRecording(
+                        url: attachment.payload.voiceRecordingURL,
+                        duration: attachment.payload.duration ?? 0,
+                        waveform: attachment.payload.waveformData ?? []
+                    ),
+                    isSentByCurrentUser: message.isSentByCurrentUser
+                )
+                .padding(.all, tokens.spacingXs)
+                .background(MessageAttachmentsBubbleConfiguration.attachmentBackgroundColor(for: message))
+                .roundWithBorder(cornerRadius: tokens.messageBubbleRadiusAttachment)
             }
         }
-        .padding(.all, 2)
         .onReceive(handler.$context, perform: { value in
             guard message.voiceRecordingAttachments.count > 1 else { return }
             if value.state == .playing {
@@ -92,15 +77,6 @@ public struct VoiceRecordingContainerView<Factory: ViewFactory>: View {
         .onAppear {
             player.subscribe(handler)
         }
-        .modifier(
-            factory.styles.makeMessageViewModifier(
-                for: MessageModifierInfo(
-                    message: message,
-                    isFirst: isFirst,
-                    cornerRadius: 16
-                )
-            )
-        )
     }
     
     private func index(for attachment: ChatMessageVoiceRecordingAttachment) -> Int {
@@ -124,7 +100,7 @@ struct VoiceRecordingView: View {
     private var showContextDuration: Bool { isActive && handler.context.currentTime > 0 }
 
     private var controlBorderColor: Color? {
-        isSentByCurrentUser ? Color(colors.chatBorderOnChatOutgoing) : nil
+        isSentByCurrentUser ? Color(colors.chatBorderOnChatOutgoing) : Color(colors.chatBorderOnChatIncoming)
     }
 
     var body: some View {

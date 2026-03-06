@@ -14,6 +14,18 @@ import XCTest
 @MainActor class MessageItemView_Tests: StreamChatTestCase {
     @Injected(\.colors) private var colors
 
+    override func setUp() {
+        super.setUp()
+
+        let imageLoader = TestImagesLoader_Mock()
+        let utils = Utils(
+            videoPreviewLoader: VideoPreviewLoader_Mock(),
+            imageLoader: imageLoader,
+            composerConfig: ComposerConfig(isVoiceRecordingEnabled: true)
+        )
+        streamChat = StreamChat(chatClient: chatClient, utils: utils)
+    }
+
     func test_messageContainerViewSentThisUser_snapshot() {
         // Given
         let message = ChatMessage.mock(
@@ -201,21 +213,16 @@ import XCTest
 
     func test_videoAttachment_snapshotNoText() {
         // Given
-        let attachment = ChatChannelTestHelpers.videoAttachment
         let message = ChatMessage.mock(
             id: .unique,
             cid: .unique,
             text: "",
-            author: .mock(id: .unique)
+            author: .mock(id: .unique),
+            attachments: ChatChannelTestHelpers.videoAttachments
         )
 
         // When
-        let view = VideoAttachmentView(
-            attachment: attachment,
-            message: message,
-            width: 2 * defaultScreenSize.width / 3
-        )
-        .applyDefaultSize()
+        let view = testMessageViewContainer(message: message, height: 300)
 
         // Then
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
@@ -232,67 +239,72 @@ import XCTest
         )
 
         // When
-        let view = VideoAttachmentsContainer(
-            factory: DefaultViewFactory.shared,
-            message: message,
-            width: 2 * defaultScreenSize.width / 3,
-            scrolledId: .constant(nil)
-        )
-        .frame(width: 200)
-        .padding()
+        let view = testMessageViewContainer(message: message, height: 300)
 
         // Then
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
 
-    func test_imageAttachments_snapshot() {
-        // Given
-        let message = ChatMessage.mock(
-            id: .unique,
-            cid: .unique,
-            text: "Test message",
-            author: .mock(id: .unique),
-            attachments: ChatChannelTestHelpers.imageAttachments
-        )
+    // MARK: - Media Gallery (orientation × count)
 
-        // When
-        let view = ImageAttachmentContainer(
-            factory: DefaultViewFactory.shared,
-            message: message,
-            width: 200,
-            isFirst: true,
-            scrolledId: .constant(nil)
-        )
-        .frame(width: 200)
-
-        // Then
-        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
+    func test_mediaGallery_landscape_1_snapshot() {
+        assertMediaGallerySnapshot(orientation: .landscape, count: 1)
     }
 
-    func test_imageAttachments_snapshotFiveImages() {
-        // Given
-        let attachment = ChatChannelTestHelpers.imageAttachments[0]
-        let attachments = [AnyChatMessageAttachment](repeating: attachment, count: 5)
-        let message = ChatMessage.mock(
-            id: .unique,
-            cid: .unique,
-            text: "Test message",
-            author: .mock(id: .unique),
-            attachments: attachments
-        )
+    func test_mediaGallery_landscape_2_snapshot() {
+        assertMediaGallerySnapshot(orientation: .landscape, count: 2)
+    }
 
-        // When
-        let view = ImageAttachmentContainer(
-            factory: DefaultViewFactory.shared,
-            message: message,
-            width: 200,
-            isFirst: true,
-            scrolledId: .constant(nil)
-        )
-        .frame(width: 200)
+    func test_mediaGallery_landscape_3_snapshot() {
+        assertMediaGallerySnapshot(orientation: .landscape, count: 3)
+    }
 
-        // Then
-        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
+    func test_mediaGallery_landscape_4_snapshot() {
+        assertMediaGallerySnapshot(orientation: .landscape, count: 4)
+    }
+
+    func test_mediaGallery_landscape_5_snapshot() {
+        assertMediaGallerySnapshot(orientation: .landscape, count: 5)
+    }
+
+    func test_mediaGallery_portrait_1_snapshot() {
+        assertMediaGallerySnapshot(orientation: .portrait, count: 1)
+    }
+
+    func test_mediaGallery_portrait_2_snapshot() {
+        assertMediaGallerySnapshot(orientation: .portrait, count: 2)
+    }
+
+    func test_mediaGallery_portrait_3_snapshot() {
+        assertMediaGallerySnapshot(orientation: .portrait, count: 3)
+    }
+
+    func test_mediaGallery_portrait_4_snapshot() {
+        assertMediaGallerySnapshot(orientation: .portrait, count: 4)
+    }
+
+    func test_mediaGallery_portrait_5_snapshot() {
+        assertMediaGallerySnapshot(orientation: .portrait, count: 5)
+    }
+
+    func test_mediaGallery_square_1_snapshot() {
+        assertMediaGallerySnapshot(orientation: .square, count: 1)
+    }
+
+    func test_mediaGallery_square_2_snapshot() {
+        assertMediaGallerySnapshot(orientation: .square, count: 2)
+    }
+
+    func test_mediaGallery_square_3_snapshot() {
+        assertMediaGallerySnapshot(orientation: .square, count: 3)
+    }
+
+    func test_mediaGallery_square_4_snapshot() {
+        assertMediaGallerySnapshot(orientation: .square, count: 4)
+    }
+
+    func test_mediaGallery_square_5_snapshot() {
+        assertMediaGallerySnapshot(orientation: .square, count: 5)
     }
 
     func test_imageAttachments_failed_snapshot() {
@@ -307,7 +319,7 @@ import XCTest
         )
 
         // When
-        let view = testMessageViewContainer(message: message, channel: .mockNonDMChannel())
+        let view = testMessageViewContainer(message: message, channel: .mockNonDMChannel(), height: 300)
 
         // Then
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
@@ -325,7 +337,7 @@ import XCTest
         )
 
         // When
-        let view = testMessageViewContainer(message: message, channel: .mockNonDMChannel())
+        let view = testMessageViewContainer(message: message, channel: .mockNonDMChannel(), height: 300)
 
         // Then
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
@@ -851,7 +863,8 @@ import XCTest
         channel: ChatChannel? = nil,
         shownAsPreview: Bool = false,
         messageViewModel: MessageViewModel? = nil,
-        highlightedMessageId: String? = nil
+        highlightedMessageId: String? = nil,
+        height: CGFloat = 200
     ) -> some View {
         MessageItemView(
             factory: DefaultViewFactory.shared,
@@ -868,7 +881,46 @@ import XCTest
             viewModel: messageViewModel ?? MessageViewModel(message: message, channel: channel ?? .mockDMChannel())
         )
         .environment(\.highlightedMessageId, highlightedMessageId)
-        .frame(width: 375, height: 200)
+        .frame(width: 375, height: height)
+    }
+
+    private func assertMediaGallerySnapshot(
+        orientation: MediaGalleryOrientation,
+        count: Int,
+        file: StaticString = #filePath,
+        testName: String = #function,
+        line: UInt = #line
+    ) {
+        let dimensions: (width: Double, height: Double) = {
+            switch orientation {
+            case .landscape: return (1600, 1200)
+            case .portrait: return (1200, 1600)
+            case .square: return (1200, 1200)
+            }
+        }()
+
+        let attachments = ChatChannelTestHelpers.imageAttachments(
+            count: count,
+            originalWidth: dimensions.width,
+            originalHeight: dimensions.height
+        )
+
+        let message = ChatMessage.mock(
+            id: .unique,
+            cid: .unique,
+            text: "",
+            author: .mock(id: .unique),
+            attachments: attachments
+        )
+
+        let view = testMessageViewContainer(message: message, height: 300)
+        assertSnapshot(
+            matching: view,
+            as: .image(perceptualPrecision: precision),
+            file: file,
+            testName: testName,
+            line: line
+        )
     }
 }
 

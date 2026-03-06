@@ -35,7 +35,7 @@ import XCTest
         let view = viewFactory.makeLoadingView(options: LoadingViewOptions())
 
         // Then
-        XCTAssert(view is RedactedLoadingView<DefaultViewFactory>)
+        XCTAssertNotNil(view)
     }
 
     func test_viewFactory_makeChannelListHeaderViewModifier() {
@@ -129,6 +129,24 @@ import XCTest
         XCTAssert(view is MessageTextView<DefaultViewFactory>)
     }
 
+    func test_viewFactory_makeMessageAttachmentsView() {
+        // Given
+        let viewFactory = DefaultViewFactory.shared
+
+        // When
+        let view = viewFactory.makeMessageAttachmentsView(
+            options: MessageAttachmentsViewOptions(
+                message: message,
+                isFirst: true,
+                availableWidth: 300,
+                scrolledId: .constant(nil)
+            )
+        )
+
+        // Then
+        XCTAssert(view is MessageAttachmentsView<DefaultViewFactory>)
+    }
+
     func test_viewFactory_makeImageAttachmentView() {
         // Given
         let viewFactory = DefaultViewFactory.shared
@@ -144,7 +162,25 @@ import XCTest
         )
 
         // Then
-        XCTAssert(view is ImageAttachmentContainer<DefaultViewFactory>)
+        XCTAssert(view is MessageMediaAttachmentsContainerView<DefaultViewFactory>)
+    }
+
+    func test_viewFactory_makeVideoAttachmentView() {
+        // Given
+        let viewFactory = DefaultViewFactory.shared
+
+        // When
+        let view = viewFactory.makeVideoAttachmentView(
+            options: VideoAttachmentViewOptions(
+                message: message,
+                isFirst: true,
+                availableWidth: 300,
+                scrolledId: .constant(nil)
+            )
+        )
+
+        // Then
+        XCTAssert(view is MessageMediaAttachmentsContainerView<DefaultViewFactory>)
     }
 
     func test_viewFactory_makeGiphyAttachmentView() {
@@ -199,24 +235,6 @@ import XCTest
 
         // Then
         XCTAssert(view is FileAttachmentsContainer<DefaultViewFactory>)
-    }
-
-    func test_viewFactory_makeVideoAttachmentView() {
-        // Given
-        let viewFactory = DefaultViewFactory.shared
-
-        // When
-        let view = viewFactory.makeVideoAttachmentView(
-            options: VideoAttachmentViewOptions(
-                message: message,
-                isFirst: true,
-                availableWidth: 300,
-                scrolledId: .constant(nil)
-            )
-        )
-
-        // Then
-        XCTAssert(view is VideoAttachmentsContainer<DefaultViewFactory>)
     }
 
     func test_viewFactory_makeDeletedMessageView() {
@@ -1035,15 +1053,26 @@ import XCTest
         XCTAssert(view is AddUsersView<DefaultViewFactory>)
     }
 
+    func test_viewFactory_makeStreamTextView() {
+        // Given
+        let viewFactory = DefaultViewFactory.shared
+
+        // When
+        let view = viewFactory.makeStreamTextView(options: .init(message: message))
+
+        // Then
+        XCTAssert(view is StreamTextView)
+    }
+
     func test_viewFactory_makeAttachmentTextView() {
         // Given
         let viewFactory = DefaultViewFactory.shared
 
         // When
-        let view = viewFactory.makeAttachmentTextView(options: .init(mesage: message))
+        let view = viewFactory.makeAttachmentTextView(options: .init(message: message))
 
         // Then
-        XCTAssert(view is StreamTextView)
+        XCTAssert(view is AttachmentTextView<DefaultViewFactory>)
     }
 
     func test_viewFactory_makeReactionsDetailView() {

@@ -655,11 +655,12 @@ import XCTest
             id: .unique,
             cid: .unique,
             text: "https://getstream.io",
-            author: .mock(id: .unique)
+            author: .mock(id: .unique),
+            attachments: ChatChannelTestHelpers.linkAttachments
         )
-        
+
         // When
-        let view = LinkAttachmentContainer(
+        let view = MessageAttachmentsView(
             factory: DefaultViewFactory.shared,
             message: message,
             width: defaultScreenSize.width,
@@ -667,7 +668,7 @@ import XCTest
             scrolledId: .constant(nil)
         )
         .applyDefaultSize()
-        
+
         // Then
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }

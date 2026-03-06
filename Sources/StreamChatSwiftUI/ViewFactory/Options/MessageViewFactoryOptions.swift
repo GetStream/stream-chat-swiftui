@@ -137,6 +137,29 @@ public final class MessageTextViewOptions: Sendable {
     }
 }
 
+/// Options for the reusable stream text view.
+///
+/// Used by ``ViewFactory/makeStreamTextView(options:)`` which is shared
+/// across standalone text messages and attachment text captions.
+public class StreamTextViewOptions {
+    /// The message whose text should be displayed.
+    public let message: ChatMessage
+
+    public init(message: ChatMessage) {
+        self.message = message
+    }
+}
+
+/// Options for the attachment text caption view shown inside ``MessageAttachmentsView``.
+public class AttachmentTextViewOptions {
+    /// The message whose text caption should be displayed.
+    public let message: ChatMessage
+
+    public init(message: ChatMessage) {
+        self.message = message
+    }
+}
+
 // MARK: - Message Date Options
 
 /// Options for creating the message date view.
