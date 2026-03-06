@@ -106,37 +106,7 @@ public struct CreatePollView: View {
 
                 // Settings cards
                 if viewModel.multipleAnswersShown {
-                    pollOptionCard(
-                        title: L10n.Composer.Polls.multipleAnswers,
-                        subtitle: L10n.Composer.Polls.selectMoreThanOneOption
-                    ) {
-                        VStack(alignment: .leading, spacing: tokens.spacingXs) {
-                            Toggle("", isOn: $viewModel.multipleAnswers)
-                                .labelsHidden()
-                            if viewModel.multipleAnswers {
-                                HStack(alignment: .textFieldToggle) {
-                                    VStack(alignment: .leading, spacing: 6) {
-                                        Text(L10n.Composer.Polls.typeNumberMinMaxRange)
-                                            .foregroundColor(Color(colors.alert))
-                                            .font(fonts.caption1)
-                                            .offset(y: viewModel.showsMaxVotesError ? 0 : 6)
-                                            .opacity(viewModel.showsMaxVotesError ? 1 : 0)
-                                            .animation(.easeIn, value: viewModel.showsMaxVotesError)
-                                        TextField(L10n.Composer.Polls.maximumVotesPerPerson, text: $viewModel.maxVotes)
-                                            .alignmentGuide(.textFieldToggle, computeValue: { $0[VerticalAlignment.center] })
-                                            .disabled(!viewModel.maxVotesEnabled)
-                                    }
-                                    .accessibilityElement(children: .combine)
-                                    if viewModel.maxVotesShown {
-                                        Toggle("", isOn: $viewModel.maxVotesEnabled)
-                                            .alignmentGuide(.textFieldToggle, computeValue: { $0[VerticalAlignment.center] })
-                                            .frame(width: 64)
-                                    }
-                                }
-                                .padding(.top, tokens.spacingXs)
-                            }
-                        }
-                    }
+                    multipleVotesCard
                 }
 
                 if viewModel.anonymousPollShown {
@@ -292,6 +262,102 @@ public struct CreatePollView: View {
     }
 
     @ViewBuilder
+    private var multipleVotesCard: some View {
+        VStack(alignment: .leading, spacing: tokens.spacingMd) {
+            HStack(spacing: tokens.spacingMd) {
+                VStack(alignment: .leading, spacing: tokens.spacingXxs) {
+                    Text(L10n.Composer.Polls.multipleAnswers)
+                        .font(fonts.body)
+                        .foregroundColor(Color(colors.textPrimary))
+                    Text(L10n.Composer.Polls.selectMoreThanOneOption)
+                        .font(fonts.subheadline)
+                        .foregroundColor(Color(colors.textTertiary))
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+                Toggle("", isOn: $viewModel.multipleAnswers)
+                    .labelsHidden()
+            }
+            
+            if viewModel.multipleAnswers, viewModel.maxVotesShown {
+                VStack(alignment: .leading, spacing: tokens.spacingXs) {
+                    HStack(spacing: tokens.spacingSm) {
+                        VStack(alignment: .leading, spacing: tokens.spacingXxs) {
+                            Text(L10n.Composer.Polls.maximumVotesPerPerson)
+                                .font(fonts.body)
+                                .foregroundColor(Color(colors.textPrimary))
+                            Text(L10n.Composer.Polls.typeNumberMinMaxRange)
+                                .font(fonts.subheadline)
+                                .foregroundColor(Color(colors.textTertiary))
+                        }
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        Toggle("", isOn: $viewModel.maxVotesEnabled)
+                            .labelsHidden()
+                    }
+                    .padding(.vertical, tokens.spacingXxxs)
+                    
+                    if viewModel.maxVotesEnabled {
+                        maxVotesStepper
+                    }
+                }
+            }
+        }
+        .padding(tokens.spacingMd)
+        .background(Color(colors.backgroundCoreSurfaceCard))
+        .clipShape(RoundedRectangle(cornerRadius: tokens.radiusLg))
+        .modifier(CreatePollRowModifier(
+            topSpacing: tokens.spacingXs,
+            bottomSpacing: tokens.spacingXs
+        ))
+    }
+    
+    private var maxVotesStepper: some View {
+        HStack(spacing: tokens.spacingXxs) {
+            stepperButton(
+                systemName: "minus",
+                enabled: viewModel.canDecrementMaxVotes,
+                action: viewModel.decrementMaxVotes
+            )
+            
+            Text(viewModel.maxVotesText)
+                .font(fonts.body)
+                .foregroundColor(Color(colors.textPrimary))
+                .frame(width: tokens.buttonVisualHeightMd, height: tokens.buttonVisualHeightLg)
+            
+            stepperButton(
+                systemName: "plus",
+                enabled: viewModel.canIncrementMaxVotes,
+                action: viewModel.incrementMaxVotes
+            )
+        }
+    }
+    
+    private func stepperButton(
+        systemName: String,
+        enabled: Bool,
+        action: @escaping () -> Void
+    ) -> some View {
+        Button {
+            guard enabled else { return }
+            action()
+        } label: {
+            Image(systemName: systemName)
+                .font(.system(size: tokens.iconSizeSm))
+                .foregroundColor(Color(enabled ? colors.textPrimary : colors.textTertiary))
+                .frame(width: tokens.buttonVisualHeightMd, height: tokens.buttonVisualHeightMd)
+                .background(
+                    Circle()
+                        .strokeBorder(
+                            Color(enabled ? colors.buttonSecondaryBorder : colors.borderUtilityDisabled),
+                            lineWidth: 1
+                        )
+                )
+                .contentShape(Circle())
+        }
+        .buttonStyle(.borderless)
+        .frame(width: tokens.buttonVisualHeightLg, height: tokens.buttonVisualHeightLg)
+    }
+
+    @ViewBuilder
     private func pollOptionCard<Content: View>(
         title: String,
         subtitle: String,
@@ -358,17 +424,4 @@ struct ListRowModifier: ViewModifier {
             content
         }
     }
-}
-
-private extension VerticalAlignment {
-    private final class TextFieldToggleAlignment: AlignmentID {
-        static func defaultValue(in context: ViewDimensions) -> CGFloat {
-            context[VerticalAlignment.center]
-        }
-    }
-
-    /// Alignment for a text field with extra text and a toggle.
-    static let textFieldToggle = VerticalAlignment(
-        TextFieldToggleAlignment.self
-    )
 }

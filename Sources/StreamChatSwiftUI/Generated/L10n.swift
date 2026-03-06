@@ -393,9 +393,9 @@ internal enum L10n {
       internal static var hideWhoVoted: String { L10n.tr("Localizable", "composer.polls.hide-who-voted") }
       /// Let others add options
       internal static var letOthersAddOptions: String { L10n.tr("Localizable", "composer.polls.let-others-add-options") }
-      /// Maximum votes per person
+      /// Limit votes per person
       internal static var maximumVotesPerPerson: String { L10n.tr("Localizable", "composer.polls.maximum-votes-per-person") }
-      /// Multiple answers
+      /// Multiple votes
       internal static var multipleAnswers: String { L10n.tr("Localizable", "composer.polls.multiple-answers") }
       /// Options
       internal static var options: String { L10n.tr("Localizable", "composer.polls.options") }
@@ -405,7 +405,7 @@ internal enum L10n {
       internal static var selectMoreThanOneOption: String { L10n.tr("Localizable", "composer.polls.select-more-than-one-option") }
       /// Suggest an option
       internal static var suggestOption: String { L10n.tr("Localizable", "composer.polls.suggest-option") }
-      /// Type a number from 2 and 10
+      /// Choose between 2–10 options
       internal static var typeNumberMinMaxRange: String { L10n.tr("Localizable", "composer.polls.type-number-min-max-range") }
     }
     internal enum Quoted {

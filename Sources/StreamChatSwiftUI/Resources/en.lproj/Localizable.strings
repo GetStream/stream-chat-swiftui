@@ -175,11 +175,11 @@
 "composer.polls.create-poll" = "Create Poll";
 "composer.polls.options" = "Options";
 "composer.polls.question" = "Question";
-"composer.polls.maximum-votes-per-person" = "Maximum votes per person";
+"composer.polls.maximum-votes-per-person" = "Limit votes per person";
 "composer.polls.duplicate-option" = "Option already exists";
-"composer.polls.multiple-answers" = "Multiple answers";
+"composer.polls.multiple-answers" = "Multiple votes";
 "composer.polls.suggest-option" = "Suggest an option";
-"composer.polls.type-number-min-max-range" = "Type a number from 2 and 10";
+"composer.polls.type-number-min-max-range" = "Choose between 2–10 options";
 "composer.polls.select-more-than-one-option" = "Select more than one option";
 "composer.polls.hide-who-voted" = "Hide who voted";
 "composer.polls.let-others-add-options" = "Let others add options";
