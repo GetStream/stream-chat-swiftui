@@ -47,10 +47,23 @@ public struct MessageAttachmentsView<Factory: ViewFactory>: View {
                     )
                 }
                 
-                // Media (images and/or videos)
-                if messageTypeResolver.hasImageAttachment(message: message) || messageTypeResolver.hasVideoAttachment(message: message) {
-                    factory.makeMediaAttachmentsView(
-                        options: MediaAttachmentsViewOptions(
+                // Images or images and videos
+                if messageTypeResolver.hasImageAttachment(message: message) {
+                    factory.makeImageAttachmentView(
+                        options: ImageAttachmentViewOptions(
+                            message: message,
+                            isFirst: isFirst,
+                            availableWidth: width,
+                            scrolledId: $scrolledId
+                        )
+                    )
+                }
+
+                // Only videos
+                if messageTypeResolver.hasVideoAttachment(message: message)
+                    && !messageTypeResolver.hasImageAttachment(message: message) {
+                    factory.makeVideoAttachmentView(
+                        options: VideoAttachmentViewOptions(
                             message: message,
                             isFirst: isFirst,
                             availableWidth: width,

@@ -147,13 +147,31 @@ import XCTest
         XCTAssert(view is MessageAttachmentsView<DefaultViewFactory>)
     }
 
-    func test_viewFactory_makeMediaAttachmentsView() {
+    func test_viewFactory_makeImageAttachmentView() {
         // Given
         let viewFactory = DefaultViewFactory.shared
 
         // When
-        let view = viewFactory.makeMediaAttachmentsView(
-            options: MediaAttachmentsViewOptions(
+        let view = viewFactory.makeImageAttachmentView(
+            options: ImageAttachmentViewOptions(
+                message: message,
+                isFirst: true,
+                availableWidth: 300,
+                scrolledId: .constant(nil)
+            )
+        )
+
+        // Then
+        XCTAssert(view is MessageMediaAttachmentsContainerView<DefaultViewFactory>)
+    }
+
+    func test_viewFactory_makeVideoAttachmentView() {
+        // Given
+        let viewFactory = DefaultViewFactory.shared
+
+        // When
+        let view = viewFactory.makeVideoAttachmentView(
+            options: VideoAttachmentViewOptions(
                 message: message,
                 isFirst: true,
                 availableWidth: 300,

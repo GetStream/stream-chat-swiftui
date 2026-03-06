@@ -7,11 +7,11 @@ import Photos
 import StreamChat
 import SwiftUI
 
-// MARK: - Media Attachments Options
+// MARK: - Image Attachment Options
 
-/// Options for creating the media attachments view (images and videos).
-public final class MediaAttachmentsViewOptions: Sendable {
-    /// The message containing the media attachments.
+/// Options for creating the image attachment view.
+public final class ImageAttachmentViewOptions: Sendable {
+    /// The message containing the image attachment.
     public let message: ChatMessage
     /// Whether this is the first message in a group.
     public let isFirst: Bool
@@ -111,6 +111,32 @@ public final class FileAttachmentViewOptions: Sendable {
     /// Binding to the currently scrolled message ID.
     public let scrolledId: Binding<String?>
     
+    public init(
+        message: ChatMessage,
+        isFirst: Bool,
+        availableWidth: CGFloat,
+        scrolledId: Binding<String?>
+    ) {
+        self.message = message
+        self.isFirst = isFirst
+        self.availableWidth = availableWidth
+        self.scrolledId = scrolledId
+    }
+}
+
+// MARK: - Video Attachment Options
+
+/// Options for creating the video attachment view.
+public final class VideoAttachmentViewOptions: Sendable {
+    /// The message containing the video attachment.
+    public let message: ChatMessage
+    /// Whether this is the first message in a group.
+    public let isFirst: Bool
+    /// The available width for the attachment.
+    public let availableWidth: CGFloat
+    /// Binding to the currently scrolled message ID.
+    public let scrolledId: Binding<String?>
+
     public init(
         message: ChatMessage,
         isFirst: Bool,

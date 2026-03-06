@@ -301,8 +301,8 @@ extension ViewFactory {
         )
     }
 
-    public func makeMediaAttachmentsView(
-        options: MediaAttachmentsViewOptions
+    public func makeImageAttachmentView(
+        options: ImageAttachmentViewOptions
     ) -> some View {
         MessageMediaAttachmentsContainerView(
             factory: self,
@@ -310,7 +310,7 @@ extension ViewFactory {
             width: options.availableWidth
         )
     }
-    
+
     public func makeGiphyAttachmentView(
         options: GiphyAttachmentViewOptions
     ) -> some View {
@@ -322,7 +322,7 @@ extension ViewFactory {
             scrolledId: options.scrolledId
         )
     }
-    
+
     public func makeLinkAttachmentView(
         options: LinkAttachmentViewOptions
     ) -> some View {
@@ -334,7 +334,7 @@ extension ViewFactory {
             scrolledId: options.scrolledId
         )
     }
-    
+
     public func makeFileAttachmentView(
         options: FileAttachmentViewOptions
     ) -> some View {
@@ -344,6 +344,16 @@ extension ViewFactory {
             width: options.availableWidth,
             isFirst: options.isFirst,
             scrolledId: options.scrolledId
+        )
+    }
+
+    public func makeVideoAttachmentView(
+        options: VideoAttachmentViewOptions
+    ) -> some View {
+        MessageMediaAttachmentsContainerView(
+            factory: self,
+            message: options.message,
+            width: options.availableWidth
         )
     }
     
