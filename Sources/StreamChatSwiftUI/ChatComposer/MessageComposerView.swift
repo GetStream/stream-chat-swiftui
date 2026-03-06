@@ -23,7 +23,8 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
     @Binding var quotedMessage: ChatMessage?
     @Binding var editedMessage: ChatMessage?
 
-    private let recordingViewHeight: CGFloat = 80
+    /// Height when recording is locked (shows full LockedView with controls).
+    private let recordingViewHeight: CGFloat = 112
 
     public init(
         viewFactory: Factory,
@@ -52,6 +53,19 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
 
     var onMessageSent: () -> Void
 
+    private var showsLeadingComposer: Bool {
+        viewModel.recordingState.showsComposer
+            && viewModel.composerCommand?.displayInfo?.isInstant != true
+    }
+
+    private var isLockedOrStopped: Bool {
+        viewModel.recordingState.isLockedOrStopped
+    }
+
+    private var showsRecordingOverlay: Bool {
+        viewModel.recordingState.isRecording || isLockedOrStopped
+    }
+
     public var body: some View {
         VStack(spacing: tokens.spacingSm) {
             HStack(alignment: .bottom, spacing: tokens.spacingXs) {
@@ -62,6 +76,10 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
                         isCommandActive: viewModel.composerCommand?.displayInfo?.isInstant == true
                     )
                 )
+                .opacity(viewModel.recordingState.showsComposer ? 1 : 0)
+                .frame(width: viewModel.recordingState.showsComposer ? nil : 0)
+                .allowsHitTesting(viewModel.recordingState.showsComposer)
+                .animation(.interactiveSpring(response: 0.32, dampingFraction: 0.88), value: showsLeadingComposer)
 
                 factory.makeComposerInputView(
                     options: ComposerInputViewOptions(
@@ -70,6 +88,7 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
                         selectedRangeLocation: $viewModel.selectedRangeLocation,
                         command: $viewModel.composerCommand,
                         recordingState: $viewModel.recordingState,
+                        recordingGestureLocation: $viewModel.recordingGestureLocation,
                         composerAssets: viewModel.composerAssets,
                         addedCustomAttachments: viewModel.addedCustomAttachments,
                         addedVoiceRecordings: viewModel.addedVoiceRecordings,
@@ -79,17 +98,22 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
                         cooldownDuration: viewModel.cooldownDuration,
                         hasContent: viewModel.hasContent,
                         canSendMessage: viewModel.canSendMessage,
+                        audioRecordingInfo: viewModel.audioRecordingInfo,
+                        pendingAudioRecordingURL: viewModel.pendingAudioRecording?.url,
                         onCustomAttachmentTap: viewModel.customAttachmentTapped(_:),
                         removeAttachmentWithId: viewModel.removeAttachment(with:),
                         sendMessage: sendMessage,
                         onImagePasted: viewModel.imagePasted,
                         startRecording: viewModel.startRecording,
                         stopRecording: viewModel.stopRecording,
+                        confirmRecording: viewModel.confirmRecording,
+                        discardRecording: viewModel.discardRecording,
+                        previewRecording: viewModel.previewRecording,
+                        showRecordingTip: viewModel.showRecordingTip,
                         sendInChannelShown: viewModel.sendInChannelShown,
                         showReplyInChannel: $viewModel.showReplyInChannel
                     )
                 )
-                .environmentObject(viewModel)
                 .alert(isPresented: $viewModel.attachmentSizeExceeded) {
                     Alert(
                         title: Text(L10n.Attachment.MaxSize.title),
@@ -105,38 +129,57 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
                         onTap: sendMessage
                     )
                 )
-                .environmentObject(viewModel)
                 .alert(isPresented: $viewModel.errorShown) {
                     Alert.defaultErrorAlert
                 }
+                .opacity(viewModel.recordingState.showsComposer ? 1 : 0)
+                .frame(width: viewModel.recordingState.showsComposer ? nil : 0)
+                .animation(.easeInOut(duration: 0.25), value: viewModel.recordingState.showsComposer)
             }
+            .animation(.composerVoiceRecordingSpring, value: viewModel.recordingState.showsComposer)
             .padding(.top, tokens.spacingMd)
             .padding(.horizontal, tokens.spacingMd)
-            .opacity(viewModel.recordingState.showsComposer ? 1 : 0)
             .overlay(
                 ZStack {
-                    if case let .recording(location) = viewModel.recordingState {
-                        factory.makeComposerRecordingView(
-                            options: ComposerRecordingViewOptions(
-                                viewModel: viewModel,
-                                gestureLocation: location
+                    if showsRecordingOverlay {
+                        HStack {
+                            Spacer()
+                            VoiceRecordingLockView(
+                                dragLocation: currentDragLocation,
+                                isLocked: isLockedOrStopped
                             )
+                            .offset(y: isLockedOrStopped
+                                ? lockedLockOffset
+                                : lockViewOffset(for: currentDragLocation))
+                            .animation(
+                                .interactiveSpring(response: 0.35, dampingFraction: 0.8),
+                                value: currentDragLocation
+                            )
+                        }
+                        .padding(.trailing, tokens.spacingMd)
+                        .animation(
+                            .interactiveSpring(response: 0.4, dampingFraction: 0.85),
+                            value: isLockedOrStopped
                         )
-                        .frame(height: 60)
-                    } else if viewModel.recordingState == .locked || viewModel.recordingState == .stopped {
-                        factory.makeComposerRecordingLockedView(
-                            options: ComposerRecordingLockedViewOptions(viewModel: viewModel)
+                        .transition(.opacity)
+                    }
+
+                    if viewModel.shouldShowRecordingGestureOverlay {
+                        VoiceRecordingGestureOverlay(
+                            recordingState: $viewModel.recordingState,
+                            gestureLocation: $viewModel.recordingGestureLocation,
+                            startRecording: viewModel.startRecording,
+                            stopRecording: viewModel.stopRecording,
+                            discardRecording: viewModel.discardRecording,
+                            showRecordingTip: viewModel.showRecordingTip
                         )
-                        .frame(height: recordingViewHeight)
-                    } else if viewModel.recordingState == .showingTip {
-                        factory.makeComposerRecordingTipView(options: ComposerRecordingTipViewOptions())
-                            .offset(y: -composerHeight + 12)
-                    } else {
-                        EmptyView()
                     }
                 }
+                .animation(
+                    .interactiveSpring(response: 0.4, dampingFraction: 0.85),
+                    value: isLockedOrStopped
+                )
             )
-            .frame(height: viewModel.recordingState.showsComposer ? nil : recordingViewHeight)
 
             factory.makeAttachmentPickerView(
                 options: AttachmentPickerViewOptions(
@@ -294,6 +337,32 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
             editedMessage = nil
         }
     }
+
+    private static var initialLockOffset: CGFloat { -70 }
+
+    private func lockViewOffset(for location: CGPoint) -> CGFloat {
+        if location.y > 0 {
+            return Self.initialLockOffset
+        }
+
+        // Interpolate to the final locked position so the drag endpoint and
+        // locked resting position are identical (no vertical snap).
+        let progress = min(1, -location.y / -VoiceRecordingConstants.lockMaxDistance)
+        return Self.initialLockOffset + (lockedLockOffset - Self.initialLockOffset) * progress
+    }
+
+    private var currentDragLocation: CGPoint {
+        viewModel.recordingGestureLocation
+    }
+
+    private var lockedLockOffset: CGFloat {
+        let overlayCenterY = recordingViewHeight / 2
+        let composerTopInset = tokens.spacingMd
+        let desiredGapFromComposer = tokens.spacingMd * 2
+        let lockRadius: CGFloat = 20
+        let lockCenterY = composerTopInset - desiredGapFromComposer - lockRadius
+        return lockCenterY - overlayCenterY
+    }
 }
 
 /// View for the composer's input (text and media).
@@ -309,7 +378,8 @@ public struct ComposerInputView<Factory: ViewFactory>: View, KeyboardReadable {
     @Binding var text: String
     @Binding var selectedRangeLocation: Int
     @Binding var command: ComposerCommand?
-    @Binding var recordingState: RecordingState
+    @Binding var recordingState: VoiceRecordingState
+    @Binding var recordingGestureLocation: CGPoint
     var composerAssets: [ComposerAsset]
     var addedCustomAttachments: [CustomAttachment]
     var addedVoiceRecordings: [AddedVoiceRecording]
@@ -319,12 +389,18 @@ public struct ComposerInputView<Factory: ViewFactory>: View, KeyboardReadable {
     var cooldownDuration: Int
     var hasContent: Bool
     var canSendMessage: Bool
+    var audioRecordingInfo: AudioRecordingInfo
+    var pendingAudioRecordingURL: URL?
     var onCustomAttachmentTap: @MainActor (CustomAttachment) -> Void
     var removeAttachmentWithId: (String) -> Void
     var sendMessage: @MainActor () -> Void
     var onImagePasted: @MainActor (UIImage) -> Void
     var startRecording: @MainActor () -> Void
     var stopRecording: @MainActor () -> Void
+    var confirmRecording: @MainActor () -> Void
+    var discardRecording: @MainActor () -> Void
+    var previewRecording: @MainActor () -> Void
+    var showRecordingTip: @MainActor () -> Void
     var sendInChannelShown: Bool
     @Binding var showReplyInChannel: Bool
 
@@ -337,7 +413,8 @@ public struct ComposerInputView<Factory: ViewFactory>: View, KeyboardReadable {
         text: Binding<String>,
         selectedRangeLocation: Binding<Int>,
         command: Binding<ComposerCommand?>,
-        recordingState: Binding<RecordingState>,
+        recordingState: Binding<VoiceRecordingState>,
+        recordingGestureLocation: Binding<CGPoint>,
         composerAssets: [ComposerAsset],
         addedCustomAttachments: [CustomAttachment],
         addedVoiceRecordings: [AddedVoiceRecording],
@@ -347,12 +424,18 @@ public struct ComposerInputView<Factory: ViewFactory>: View, KeyboardReadable {
         cooldownDuration: Int,
         hasContent: Bool,
         canSendMessage: Bool,
+        audioRecordingInfo: AudioRecordingInfo,
+        pendingAudioRecordingURL: URL?,
         onCustomAttachmentTap: @escaping @MainActor (CustomAttachment) -> Void,
         removeAttachmentWithId: @escaping (String) -> Void,
         sendMessage: @escaping @MainActor () -> Void,
         onImagePasted: @escaping @MainActor (UIImage) -> Void,
         startRecording: @escaping @MainActor () -> Void,
         stopRecording: @escaping @MainActor () -> Void,
+        confirmRecording: @escaping @MainActor () -> Void,
+        discardRecording: @escaping @MainActor () -> Void,
+        previewRecording: @escaping @MainActor () -> Void,
+        showRecordingTip: @escaping @MainActor () -> Void,
         sendInChannelShown: Bool,
         showReplyInChannel: Binding<Bool>
     ) {
@@ -363,10 +446,13 @@ public struct ComposerInputView<Factory: ViewFactory>: View, KeyboardReadable {
         _selectedRangeLocation = selectedRangeLocation
         _command = command
         _recordingState = recordingState
+        _recordingGestureLocation = recordingGestureLocation
         self.composerAssets = composerAssets
         self.addedCustomAttachments = addedCustomAttachments
         self.canSendMessage = canSendMessage
         self.hasContent = hasContent
+        self.audioRecordingInfo = audioRecordingInfo
+        self.pendingAudioRecordingURL = pendingAudioRecordingURL
         self.quotedMessage = quotedMessage
         self.editedMessage = editedMessage
         self.maxMessageLength = maxMessageLength
@@ -377,6 +463,10 @@ public struct ComposerInputView<Factory: ViewFactory>: View, KeyboardReadable {
         self.onImagePasted = onImagePasted
         self.startRecording = startRecording
         self.stopRecording = stopRecording
+        self.confirmRecording = confirmRecording
+        self.discardRecording = discardRecording
+        self.previewRecording = previewRecording
+        self.showRecordingTip = showRecordingTip
         self.sendInChannelShown = sendInChannelShown
         _showReplyInChannel = showReplyInChannel
     }
@@ -396,7 +486,7 @@ public struct ComposerInputView<Factory: ViewFactory>: View, KeyboardReadable {
         return textHeight
     }
 
-    public var body: some View {
+    private var regularInputContent: some View {
         VStack(spacing: tokens.spacingXxs) {
             referenceMessageView
                 .padding(.top, tokens.spacingXxs)
@@ -408,6 +498,38 @@ public struct ComposerInputView<Factory: ViewFactory>: View, KeyboardReadable {
             inputView
                 .padding(.leading, tokens.spacingXs)
         }
+    }
+
+    private var voiceRecordingContent: some View {
+        factory.makeComposerVoiceRecordingInputView(
+            options: ComposerVoiceRecordingInputViewOptions(
+                recordingState: recordingState,
+                audioRecordingInfo: audioRecordingInfo,
+                pendingAudioRecordingURL: pendingAudioRecordingURL,
+                gestureLocation: currentGestureLocation,
+                stopRecording: stopRecording,
+                confirmRecording: confirmRecording,
+                discardRecording: discardRecording,
+                previewRecording: previewRecording
+            )
+        )
+    }
+
+    private var currentGestureLocation: CGPoint {
+        recordingGestureLocation
+    }
+
+    public var body: some View {
+        ZStack(alignment: .bottomLeading) {
+            regularInputContent
+                .opacity(recordingState.showsComposer ? 1 : 0)
+                .allowsHitTesting(recordingState.showsComposer)
+
+            if !recordingState.showsComposer {
+                voiceRecordingContent
+            }
+        }
+        .animation(.composerVoiceRecordingSpring, value: recordingState.showsComposer)
         .modifier(
             factory.styles.makeComposerInputViewModifier(
                 options: .init(keyboardShown: keyboardShown)
@@ -471,6 +593,7 @@ public struct ComposerInputView<Factory: ViewFactory>: View, KeyboardReadable {
                     composerInputState: composerInputState,
                     startRecording: startRecording,
                     stopRecording: stopRecording,
+                    showRecordingTip: showRecordingTip,
                     sendMessage: sendMessage
                 )
             )
@@ -519,7 +642,7 @@ public struct ComposerInputView<Factory: ViewFactory>: View, KeyboardReadable {
             }
 
             if !addedVoiceRecordings.isEmpty {
-                AddedVoiceRecordingsView(
+                ComposerVoiceRecordingContainerView(
                     addedVoiceRecordings: addedVoiceRecordings,
                     onDiscardAttachment: removeAttachmentWithId
                 )
@@ -586,7 +709,7 @@ public struct ComposerInputView<Factory: ViewFactory>: View, KeyboardReadable {
     }
 
     private var isInputDisabled: Bool {
-        isInCooldown || isChannelFrozen
+        isInCooldown || isChannelFrozen || recordingState.isRecording || recordingState.isLockedOrStopped
     }
 }
 

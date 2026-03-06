@@ -131,20 +131,28 @@ import SwiftUI
     @Published public var suggestions = [String: Any]()
     @Published public var cooldownDuration: Int = 0
     @Published public var attachmentSizeExceeded: Bool = false
-    @Published public var recordingState: RecordingState = .initial {
+    @Published public var recordingState: VoiceRecordingState = .initial {
         didSet {
-            if case let .recording(location) = recordingState {
-                if location.y < RecordingConstants.lockMaxDistance {
-                    recordingState = .locked
-                } else if location.x < RecordingConstants.cancelMaxDistance {
-                    audioRecordingInfo = .initial
-                    recordingState = .initial
-                    stopRecording()
-                }
-            } else if recordingState == .showingTip {
-                DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) { [weak self] in
-                    self?.recordingState = .initial
-                }
+            if recordingState.isLockedOrStopped {
+                pickerTypeState = .expanded(.none)
+            }
+        }
+    }
+
+    /// The current drag location during an active recording gesture.
+    /// Kept separate from `recordingState` to avoid triggering full-view
+    /// diffs on every pixel of finger movement.
+    @Published public var recordingGestureLocation: CGPoint = .zero {
+        didSet {
+            guard recordingState.isRecording else { return }
+            if recordingGestureLocation.y < VoiceRecordingConstants.lockMaxDistance {
+                recordingState = .locked
+                recordingGestureLocation = .zero
+            } else if recordingGestureLocation.x < VoiceRecordingConstants.cancelMaxDistance {
+                audioRecordingInfo = .initial
+                recordingState = .initial
+                recordingGestureLocation = .zero
+                stopRecording()
             }
         }
     }
@@ -443,6 +451,15 @@ import SwiftUI
             !addedVoiceRecordings.isEmpty
     }
     
+    /// Whether the voice recording gesture overlay should be active.
+    ///
+    /// The overlay must only be shown when the mic button is visible (no content and voice
+    /// recording enabled) or while a recording is in progress.
+    public var shouldShowRecordingGestureOverlay: Bool {
+        guard utils.composerConfig.isVoiceRecordingEnabled else { return false }
+        return (recordingState == .initial && !hasContent) || recordingState.isRecording
+    }
+
     public var sendInChannelShown: Bool {
         messageController != nil
     }

@@ -5,16 +5,17 @@
 import StreamChat
 import SwiftUI
 
-struct RecordingDurationView: View {
+struct VoiceRecordingDurationView: View {
     @Injected(\.utils) private var utils
     @Injected(\.colors) private var colors
-    
+    @Injected(\.fonts) private var fonts
+
     var duration: TimeInterval
-    
+    var usesAccentColor: Bool = false
+
     var body: some View {
         Text(utils.videoDurationFormatter.format(duration) ?? "")
-            .font(.caption.monospacedDigit())
-            .fontWeight(.semibold)
-            .foregroundColor(Color(colors.textLowEmphasis))
+            .font(fonts.subheadline.monospacedDigit())
+            .foregroundColor(Color(usesAccentColor ? colors.accentPrimary : colors.textPrimary))
     }
 }

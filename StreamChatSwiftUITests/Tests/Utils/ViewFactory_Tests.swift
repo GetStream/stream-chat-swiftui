@@ -867,52 +867,26 @@ import XCTest
         XCTAssert(view is ReactionsContainer)
     }
     
-    func test_viewFactory_makeComposerRecordingView() {
+    func test_viewFactory_makeComposerVoiceRecordingInputView() {
         // Given
         let viewFactory = DefaultViewFactory.shared
-        let controller = ChatChannelTestHelpers.makeChannelController(
-            chatClient: chatClient
-        )
-        let viewModel = MessageComposerViewModel(channelController: controller, messageController: nil)
         
         // When
-        let view = viewFactory.makeComposerRecordingView(
-            options: ComposerRecordingViewOptions(
-                viewModel: viewModel,
-                gestureLocation: .zero
+        let view = viewFactory.makeComposerVoiceRecordingInputView(
+            options: ComposerVoiceRecordingInputViewOptions(
+                recordingState: .recording,
+                audioRecordingInfo: .initial,
+                pendingAudioRecordingURL: nil,
+                gestureLocation: .zero,
+                stopRecording: {},
+                confirmRecording: {},
+                discardRecording: {},
+                previewRecording: {}
             )
         )
         
         // Then
-        XCTAssert(view is RecordingView)
-    }
-    
-    func test_viewFactory_makeComposerRecordingTipView() {
-        // Given
-        let viewFactory = DefaultViewFactory.shared
-
-        // When
-        let view = viewFactory.makeComposerRecordingTipView(options: ComposerRecordingTipViewOptions())
-
-        // Then
-        XCTAssert(view is RecordingTipView)
-    }
-    
-    func test_viewFactory_makeComposerRecordingLockedView() {
-        // Given
-        let viewFactory = DefaultViewFactory.shared
-        let controller = ChatChannelTestHelpers.makeChannelController(
-            chatClient: chatClient
-        )
-        let viewModel = MessageComposerViewModel(channelController: controller, messageController: nil)
-        
-        // When
-        let view = viewFactory.makeComposerRecordingLockedView(
-            options: ComposerRecordingLockedViewOptions(viewModel: viewModel)
-        )
-        
-        // Then
-        XCTAssert(view is LockedView)
+        XCTAssert(view is ComposerVoiceRecordingInputView<DefaultViewFactory>)
     }
     
     func test_viewFactory_makeChannelLoadingView() {
