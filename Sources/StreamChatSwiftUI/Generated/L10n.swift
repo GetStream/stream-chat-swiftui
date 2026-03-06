@@ -632,7 +632,7 @@ internal enum L10n {
       internal enum Button {
         /// Add a Comment
         internal static var addComment: String { L10n.tr("Localizable", "message.polls.button.addComment") }
-        /// End Vote
+        /// End Poll
         internal static var endVote: String { L10n.tr("Localizable", "message.polls.button.endVote") }
         /// See %d More Options
         internal static func seeMoreOptions(_ p1: Int) -> String {

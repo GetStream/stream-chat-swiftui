@@ -78,7 +78,7 @@
 
 "message.polls.button.addComment" = "Add a Comment";
 "message.polls.button.updateComment" = "Update Your Comment";
-"message.polls.button.endVote" = "End Vote";
+"message.polls.button.endVote" = "End Poll";
 "message.polls.button.seeMoreOptions" = "See %d More Options";
 "message.polls.button.show-all" = "Show All";
 "message.polls.button.suggestAnOption" = "Suggest an Option";
