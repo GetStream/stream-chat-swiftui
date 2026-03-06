@@ -45,6 +45,7 @@ public struct LinkAttachmentContainer<Factory: ViewFactory>: View {
             )
             .background(MessageAttachmentsBubbleConfiguration.attachmentBackgroundColor(for: message))
             .roundWithBorder()
+            .accessibilityIdentifier("LinkAttachmentContainer")
         }
     }
 }
