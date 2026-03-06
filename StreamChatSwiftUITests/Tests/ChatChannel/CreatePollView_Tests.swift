@@ -75,10 +75,4 @@ final class CreatePollView_Tests: StreamChatTestCase {
         let view = makeCreatePollView().applyDefaultSize()
         AssertSnapshot(view, variants: .onlyUserInterfaceStyles)
     }
-
-    func test_createPollView_themedNavigationBarSnapshot() {
-        setThemedNavigationBarAppearance()
-        let view = makeCreatePollView().applyDefaultSize()
-        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
-    }
 }

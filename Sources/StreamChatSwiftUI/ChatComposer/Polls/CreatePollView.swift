@@ -26,7 +26,23 @@ public struct CreatePollView: View {
     }
 
     public var body: some View {
-        NavigationContainerView(embedInNavigationView: true) {
+        VStack(spacing: 0) {
+            CreatePollHeader(
+                canCreatePoll: viewModel.canCreatePoll,
+                onClose: {
+                    if viewModel.canShowDiscardConfirmation {
+                        viewModel.discardConfirmationShown = true
+                    } else {
+                        presentationMode.wrappedValue.dismiss()
+                    }
+                },
+                onConfirm: {
+                    viewModel.createPoll {
+                        presentationMode.wrappedValue.dismiss()
+                    }
+                }
+            )
+
             List {
                 questionSection
                 optionsSection
@@ -36,14 +52,23 @@ public struct CreatePollView: View {
                     .modifier(CreatePollRowModifier(topSpacing: 0, bottomSpacing: 0))
             }
             .environment(\.defaultMinListRowHeight, 1)
-            .background(Color(colors.background).ignoresSafeArea())
             .listStyle(.plain)
             .id(listId)
-            .toolbarThemed { toolbarContent }
-            .navigationBarTitleDisplayMode(.inline)
-            .alert(isPresented: $viewModel.errorShown) {
-                Alert.defaultErrorAlert
-            }
+        }
+        .background(Color(colors.background).ignoresSafeArea())
+        .actionSheet(isPresented: $viewModel.discardConfirmationShown) {
+            ActionSheet(
+                title: Text(L10n.Composer.Polls.actionSheetDiscardTitle),
+                buttons: [
+                    .destructive(Text(L10n.Alert.Actions.discardChanges)) {
+                        presentationMode.wrappedValue.dismiss()
+                    },
+                    .default(Text(L10n.Alert.Actions.keepEditing))
+                ]
+            )
+        }
+        .alert(isPresented: $viewModel.errorShown) {
+            Alert.defaultErrorAlert
         }
     }
 
@@ -206,55 +231,56 @@ public struct CreatePollView: View {
             bottomSpacing: tokens.spacingXs
         ))
     }
+}
 
-    // MARK: - Toolbar
+// MARK: - Header
 
-    @ToolbarContentBuilder
-    private var toolbarContent: some ToolbarContent {
-        ToolbarItem(placement: .cancellationAction) {
-            Button {
-                if viewModel.canShowDiscardConfirmation {
-                    viewModel.discardConfirmationShown = true
-                } else {
-                    presentationMode.wrappedValue.dismiss()
-                }
-            } label: {
+private struct CreatePollHeader: View {
+    @Injected(\.colors) private var colors
+    @Injected(\.images) private var images
+    @Injected(\.fonts) private var fonts
+    @Injected(\.tokens) private var tokens
+
+    let canCreatePoll: Bool
+    let onClose: () -> Void
+    let onConfirm: () -> Void
+
+    var body: some View {
+        HStack(spacing: tokens.spacingSm) {
+            Button(action: onClose) {
                 Image(uiImage: images.close)
+                    .renderingMode(.template)
+                    .font(.system(size: 10))
+                    .frame(width: tokens.iconSizeMd, height: tokens.iconSizeMd)
+                    .foregroundColor(Color(colors.buttonSecondaryText))
+                    .frame(width: tokens.buttonVisualHeightMd, height: tokens.buttonVisualHeightMd)
+                    .background(
+                        Circle()
+                            .strokeBorder(Color(colors.buttonSecondaryBorder), lineWidth: 1)
+                    )
             }
-            .actionSheet(isPresented: $viewModel.discardConfirmationShown) {
-                ActionSheet(
-                    title: Text(L10n.Composer.Polls.actionSheetDiscardTitle),
-                    buttons: [
-                        .destructive(Text(L10n.Alert.Actions.discardChanges)) {
-                            presentationMode.wrappedValue.dismiss()
-                        },
-                        .default(Text(L10n.Alert.Actions.keepEditing))
-                    ]
-                )
-            }
-        }
+            .frame(width: tokens.buttonHitTargetMinWidth, height: tokens.buttonHitTargetMinHeight)
 
-        ToolbarItem(placement: .principal) {
             Text(L10n.Composer.Polls.createPoll)
-                .bold()
-                .foregroundColor(Color(colors.navigationBarTitle))
-        }
+                .font(fonts.body.bold())
+                .foregroundColor(Color(colors.textPrimary))
+                .frame(maxWidth: .infinity)
 
-        ToolbarItem(placement: .topBarTrailing) {
-            Button {
-                viewModel.createPoll {
-                    presentationMode.wrappedValue.dismiss()
-                }
-            } label: {
+            Button(action: onConfirm) {
                 Image(systemName: "checkmark")
-                    .font(.system(size: tokens.iconSizeSm, weight: .semibold))
-                    .foregroundColor(Color(colors.buttonPrimaryTextOnAccent))
+                    .font(.system(size: tokens.iconSizeMd, weight: .regular))
+                    .foregroundColor(Color(canCreatePoll ? colors.buttonPrimaryTextOnAccent : colors.textDisabled))
+                    .frame(width: tokens.buttonVisualHeightMd, height: tokens.buttonVisualHeightMd)
+                    .background(
+                        Circle().fill(Color(canCreatePoll ? colors.buttonPrimaryBackground : colors.backgroundCoreDisabled))
+                    )
+                    .clipShape(Circle())
             }
-            .frame(width: tokens.buttonVisualHeightSm, height: tokens.buttonVisualHeightSm)
-            .background(Circle().fill(Color(colors.buttonPrimaryBackground)))
-            .clipShape(Circle())
-            .disabled(!viewModel.canCreatePoll)
+            .frame(width: tokens.buttonHitTargetMinWidth, height: tokens.buttonHitTargetMinHeight)
+            .disabled(!canCreatePoll)
         }
+        .padding(tokens.spacingSm)
+        .background(Color(colors.background))
     }
 }
 
@@ -278,6 +304,7 @@ private struct CreatePollOptionRow: View {
             HStack(spacing: tokens.spacingXs) {
                 if showsReorderIcon {
                     Image(uiImage: images.pollReorderIcon)
+                        .renderingMode(.template)
                         .font(.system(size: tokens.iconSizeSm))
                         .foregroundColor(Color(colors.textTertiary))
                 }
