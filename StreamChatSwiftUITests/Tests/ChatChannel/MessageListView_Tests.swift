@@ -97,17 +97,25 @@ import XCTest
     func test_messageListView_systemMessage() {
         // Given
         let channel = ChatChannel.mockDMChannel()
+        let author1 = ChatUser.mock(id: "martin", name: "Martin")
+        let author2 = ChatUser.mock(id: "system", name: "system")
         let systemMessage = ChatMessage.mock(
             id: .unique,
             cid: channel.cid,
             text: "Martin created the channel",
             type: .system,
-            author: .mock(id: .unique)
+            author: author2
         )
+        let messages: [ChatMessage] = [
+            systemMessage,
+            .mock(id: .unique, cid: channel.cid, text: "Hey, welcome everyone!", author: author1),
+            .mock(id: .unique, cid: channel.cid, text: "Thanks for adding me!", author: author1),
+            .mock(id: .unique, cid: channel.cid, text: "Hello!", author: author1)
+        ]
         let view = MessageListView(
             factory: DefaultViewFactory.shared,
             channel: channel,
-            messages: [systemMessage],
+            messages: messages,
             messagesGroupingInfo: [:],
             scrolledId: .constant(nil),
             showScrollToLatestButton: .constant(false),
