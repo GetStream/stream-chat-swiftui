@@ -40,35 +40,20 @@ public struct VoiceRecordingContainerView<Factory: ViewFactory>: View {
     }
     
     public var body: some View {
-        VStack(spacing: 0) {
-            VStack {
-                if let quotedMessage = message.quotedMessage {
-                    factory.makeChatQuotedMessageView(
-                        options: ChatQuotedMessageViewOptions(
-                            quotedMessage: quotedMessage,
-                            parentMessage: message,
-                            scrolledId: $scrolledId
-                        )
-                    )
-                }
-                VStack(spacing: 2) {
-                    ForEach(message.voiceRecordingAttachments, id: \.self) { attachment in
-                        VoiceRecordingView(
-                            handler: handler,
-                            addedVoiceRecording: AddedVoiceRecording(
-                                url: attachment.payload.voiceRecordingURL,
-                                duration: attachment.payload.duration ?? 0,
-                                waveform: attachment.payload.waveformData ?? []
-                            ),
-                            isSentByCurrentUser: message.isSentByCurrentUser
-                        )
-                        .padding(.all, 8)
-                    }
-                }
-            }
-            if !message.text.isEmpty {
-                AttachmentTextView(factory: factory, message: message)
-                    .frame(maxWidth: .infinity)
+        VStack(spacing: tokens.spacingXxxs) {
+            ForEach(message.voiceRecordingAttachments, id: \.self) { attachment in
+                VoiceRecordingView(
+                    handler: handler,
+                    addedVoiceRecording: AddedVoiceRecording(
+                        url: attachment.payload.voiceRecordingURL,
+                        duration: attachment.payload.duration ?? 0,
+                        waveform: attachment.payload.waveformData ?? []
+                    ),
+                    isSentByCurrentUser: message.isSentByCurrentUser
+                )
+                .padding(.all, tokens.spacingXs)
+                .background(backgroundColor)
+                .roundWithBorder(cornerRadius: tokens.messageBubbleRadiusAttachment)
             }
         }
         .onReceive(handler.$context, perform: { value in
@@ -123,7 +108,7 @@ struct VoiceRecordingView: View {
     private var showContextDuration: Bool { isActive && handler.context.currentTime > 0 }
 
     private var controlBorderColor: Color? {
-        isSentByCurrentUser ? Color(colors.chatBorderOnChatOutgoing) : nil
+        isSentByCurrentUser ? Color(colors.chatBorderOnChatOutgoing) : Color(colors.chatBorderOnChatIncoming)
     }
 
     var body: some View {
