@@ -1541,8 +1541,8 @@
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/GetStream/stream-chat-swift.git";
 			requirement = {
-				branch = "add/v5-poll-drag-icon";
-				kind = branch;
+				kind = revision;
+				revision = 5fa05f4151d4a0a680d0f86aef1d7a393352f983;
 			};
 		};
 		E3A1C01A282BAC66002D1E26 /* XCRemoteSwiftPackageReference "sentry-cocoa" */ = {
