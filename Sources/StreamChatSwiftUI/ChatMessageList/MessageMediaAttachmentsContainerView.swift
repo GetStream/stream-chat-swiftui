@@ -104,11 +104,11 @@ public struct MessageMediaAttachmentsContainerView<Factory: ViewFactory>: View {
             case 1:
                 singleItemLayout(items[0], width: size.width, height: size.height)
             case 2:
-                twoItemLayout(items, height: size.height)
+                twoItemLayout(items, size: size)
             case 3:
-                threeItemLayout(items, height: size.height)
+                threeItemLayout(items, size: size)
             default:
-                fourPlusItemLayout(items, height: size.height)
+                fourPlusItemLayout(items, size: size)
             }
         }
         .frame(width: size.width, height: size.height)
@@ -122,60 +122,111 @@ public struct MessageMediaAttachmentsContainerView<Factory: ViewFactory>: View {
         mediaCell(item, width: width, height: height, index: 0)
     }
 
+    @ViewBuilder
     private func twoItemLayout(
         _ items: [MediaAttachment],
-        height: CGFloat
+        size: CGSize
     ) -> some View {
-        let cellWidth = (width - spacing) / 2
-        return HStack(spacing: spacing) {
-            mediaCell(items[0], width: cellWidth, height: height, index: 0)
-            mediaCell(items[1], width: cellWidth, height: height, index: 1)
+        if orientation == .landscape {
+            // Landscape: stacked vertically
+            let cellHeight = (size.height - spacing) / 2
+            VStack(spacing: spacing) {
+                mediaCell(items[0], width: size.width, height: cellHeight, index: 0)
+                mediaCell(items[1], width: size.width, height: cellHeight, index: 1)
+            }
+        } else {
+            // Portrait / Square: side by side
+            let cellWidth = (size.width - spacing) / 2
+            HStack(spacing: spacing) {
+                mediaCell(items[0], width: cellWidth, height: size.height, index: 0)
+                mediaCell(items[1], width: cellWidth, height: size.height, index: 1)
+            }
         }
     }
 
+    @ViewBuilder
     private func threeItemLayout(
         _ items: [MediaAttachment],
-        height: CGFloat
+        size: CGSize
     ) -> some View {
-        let cellWidth = (width - spacing) / 2
-        let cellHeight = (height - spacing) / 2
-        return HStack(spacing: spacing) {
-            mediaCell(items[0], width: cellWidth, height: height, index: 0)
+        if orientation == .landscape {
+            // Landscape: top item full width, bottom two side by side
+            let cellWidth = (size.width - spacing) / 2
+            let cellHeight = (size.height - spacing) / 2
             VStack(spacing: spacing) {
-                mediaCell(items[1], width: cellWidth, height: cellHeight, index: 1)
-                mediaCell(items[2], width: cellWidth, height: cellHeight, index: 2)
+                mediaCell(items[0], width: size.width, height: cellHeight, index: 0)
+                HStack(spacing: spacing) {
+                    mediaCell(items[1], width: cellWidth, height: cellHeight, index: 1)
+                    mediaCell(items[2], width: cellWidth, height: cellHeight, index: 2)
+                }
+            }
+        } else {
+            // Portrait / Square: left item full height, right two stacked
+            let cellWidth = (size.width - spacing) / 2
+            let cellHeight = (size.height - spacing) / 2
+            HStack(spacing: spacing) {
+                mediaCell(items[0], width: cellWidth, height: size.height, index: 0)
+                VStack(spacing: spacing) {
+                    mediaCell(items[1], width: cellWidth, height: cellHeight, index: 1)
+                    mediaCell(items[2], width: cellWidth, height: cellHeight, index: 2)
+                }
             }
         }
     }
 
+    @ViewBuilder
     private func fourPlusItemLayout(
         _ items: [MediaAttachment],
-        height: CGFloat
+        size: CGSize
     ) -> some View {
-        let cellWidth = (width - spacing) / 2
-        let cellHeight = (height - spacing) / 2
-        return HStack(spacing: spacing) {
+        let cellWidth = (size.width - spacing) / 2
+        let cellHeight = (size.height - spacing) / 2
+        if orientation == .landscape {
+            // Landscape: two rows (VStack of HStacks)
             VStack(spacing: spacing) {
-                mediaCell(items[0], width: cellWidth, height: cellHeight, index: 0)
-                mediaCell(items[2], width: cellWidth, height: cellHeight, index: 2)
-            }
-            VStack(spacing: spacing) {
-                mediaCell(items[1], width: cellWidth, height: cellHeight, index: 1)
-                ZStack {
-                    mediaCell(items[3], width: cellWidth, height: cellHeight, index: 3)
-                    if remainingCount > 0 {
-                        Color.black.opacity(0.4)
-                            .clipShape(RoundedRectangle(cornerRadius: cornerRadius, style: .continuous))
-                            .allowsHitTesting(false)
-                        Text("+\(remainingCount)")
-                            .foregroundColor(Color(colors.staticColorText))
-                            .font(fonts.title)
-                            .allowsHitTesting(false)
-                    }
+                HStack(spacing: spacing) {
+                    mediaCell(items[0], width: cellWidth, height: cellHeight, index: 0)
+                    mediaCell(items[1], width: cellWidth, height: cellHeight, index: 1)
                 }
-                .frame(width: cellWidth, height: cellHeight)
+                HStack(spacing: spacing) {
+                    mediaCell(items[2], width: cellWidth, height: cellHeight, index: 2)
+                    overflowCell(items[3], width: cellWidth, height: cellHeight, index: 3)
+                }
+            }
+        } else {
+            // Portrait / Square: two columns (HStack of VStacks)
+            HStack(spacing: spacing) {
+                VStack(spacing: spacing) {
+                    mediaCell(items[0], width: cellWidth, height: cellHeight, index: 0)
+                    mediaCell(items[2], width: cellWidth, height: cellHeight, index: 2)
+                }
+                VStack(spacing: spacing) {
+                    mediaCell(items[1], width: cellWidth, height: cellHeight, index: 1)
+                    overflowCell(items[3], width: cellWidth, height: cellHeight, index: 3)
+                }
             }
         }
+    }
+
+    private func overflowCell(
+        _ item: MediaAttachment,
+        width: CGFloat,
+        height: CGFloat,
+        index: Int
+    ) -> some View {
+        ZStack {
+            mediaCell(item, width: width, height: height, index: index)
+            if remainingCount > 0 {
+                Color.black.opacity(0.4)
+                    .clipShape(RoundedRectangle(cornerRadius: cornerRadius, style: .continuous))
+                    .allowsHitTesting(false)
+                Text("+\(remainingCount)")
+                    .foregroundColor(Color(colors.staticColorText))
+                    .font(fonts.title)
+                    .allowsHitTesting(false)
+            }
+        }
+        .frame(width: width, height: height)
     }
 
     // MARK: - Cell
@@ -246,20 +297,21 @@ public struct MessageMediaAttachmentsContainerView<Factory: ViewFactory>: View {
 
     private func containerSize(for itemCount: Int) -> CGSize {
         guard itemCount > 0 else { return .zero }
+        let maxItemWidth = width
         if itemCount == 1 {
             switch orientation {
             case .landscape:
                 // Width-constrained: 256×192 at max width
-                return CGSize(width: width, height: width * 3.0 / 4.0)
+                return CGSize(width: maxItemWidth, height: maxItemWidth * 3.0 / 4.0)
             case .portrait:
                 // Height-constrained: 192×256 at max width
-                return CGSize(width: width * 3.0 / 4.0, height: width)
+                return CGSize(width: maxItemWidth * 3.0 / 4.0, height: maxItemWidth)
             case .square:
-                return CGSize(width: width, height: width)
+                return CGSize(width: maxItemWidth, height: maxItemWidth)
             }
         } else {
             // Multi-item always uses landscape ratio
-            return CGSize(width: width, height: width * 3.0 / 4.0)
+            return CGSize(width: maxItemWidth, height: maxItemWidth * 3.0 / 4.0)
         }
     }
 

@@ -245,40 +245,66 @@ import XCTest
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
 
-    func test_imageAttachments_snapshot() {
-        // Given
-        let message = ChatMessage.mock(
-            id: .unique,
-            cid: .unique,
-            text: "Test message",
-            author: .mock(id: .unique),
-            attachments: ChatChannelTestHelpers.imageAttachments
-        )
+    // MARK: - Media Gallery (orientation × count)
 
-        // When
-        let view = testMessageViewContainer(message: message, height: 300)
-
-        // Then
-        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
+    func test_mediaGallery_landscape_1_snapshot() {
+        assertMediaGallerySnapshot(orientation: .landscape, count: 1)
     }
 
-    func test_imageAttachments_snapshotFiveImages() {
-        // Given
-        let attachment = ChatChannelTestHelpers.imageAttachments[0]
-        let attachments = [AnyChatMessageAttachment](repeating: attachment, count: 5)
-        let message = ChatMessage.mock(
-            id: .unique,
-            cid: .unique,
-            text: "Test message",
-            author: .mock(id: .unique),
-            attachments: attachments
-        )
+    func test_mediaGallery_landscape_2_snapshot() {
+        assertMediaGallerySnapshot(orientation: .landscape, count: 2)
+    }
 
-        // When
-        let view = testMessageViewContainer(message: message, height: 300)
+    func test_mediaGallery_landscape_3_snapshot() {
+        assertMediaGallerySnapshot(orientation: .landscape, count: 3)
+    }
 
-        // Then
-        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
+    func test_mediaGallery_landscape_4_snapshot() {
+        assertMediaGallerySnapshot(orientation: .landscape, count: 4)
+    }
+
+    func test_mediaGallery_landscape_5_snapshot() {
+        assertMediaGallerySnapshot(orientation: .landscape, count: 5)
+    }
+
+    func test_mediaGallery_portrait_1_snapshot() {
+        assertMediaGallerySnapshot(orientation: .portrait, count: 1)
+    }
+
+    func test_mediaGallery_portrait_2_snapshot() {
+        assertMediaGallerySnapshot(orientation: .portrait, count: 2)
+    }
+
+    func test_mediaGallery_portrait_3_snapshot() {
+        assertMediaGallerySnapshot(orientation: .portrait, count: 3)
+    }
+
+    func test_mediaGallery_portrait_4_snapshot() {
+        assertMediaGallerySnapshot(orientation: .portrait, count: 4)
+    }
+
+    func test_mediaGallery_portrait_5_snapshot() {
+        assertMediaGallerySnapshot(orientation: .portrait, count: 5)
+    }
+
+    func test_mediaGallery_square_1_snapshot() {
+        assertMediaGallerySnapshot(orientation: .square, count: 1)
+    }
+
+    func test_mediaGallery_square_2_snapshot() {
+        assertMediaGallerySnapshot(orientation: .square, count: 2)
+    }
+
+    func test_mediaGallery_square_3_snapshot() {
+        assertMediaGallerySnapshot(orientation: .square, count: 3)
+    }
+
+    func test_mediaGallery_square_4_snapshot() {
+        assertMediaGallerySnapshot(orientation: .square, count: 4)
+    }
+
+    func test_mediaGallery_square_5_snapshot() {
+        assertMediaGallerySnapshot(orientation: .square, count: 5)
     }
 
     func test_imageAttachments_failed_snapshot() {
@@ -856,6 +882,45 @@ import XCTest
         )
         .environment(\.highlightedMessageId, highlightedMessageId)
         .frame(width: 375, height: height)
+    }
+
+    private func assertMediaGallerySnapshot(
+        orientation: MediaGalleryOrientation,
+        count: Int,
+        file: StaticString = #filePath,
+        testName: String = #function,
+        line: UInt = #line
+    ) {
+        let dimensions: (width: Double, height: Double) = {
+            switch orientation {
+            case .landscape: return (1600, 1200)
+            case .portrait: return (1200, 1600)
+            case .square: return (1200, 1200)
+            }
+        }()
+
+        let attachments = ChatChannelTestHelpers.imageAttachments(
+            count: count,
+            originalWidth: dimensions.width,
+            originalHeight: dimensions.height
+        )
+
+        let message = ChatMessage.mock(
+            id: .unique,
+            cid: .unique,
+            text: "",
+            author: .mock(id: .unique),
+            attachments: attachments
+        )
+
+        let view = testMessageViewContainer(message: message, height: 300)
+        assertSnapshot(
+            matching: view,
+            as: .image(perceptualPrecision: precision),
+            file: file,
+            testName: testName,
+            line: line
+        )
     }
 }
 

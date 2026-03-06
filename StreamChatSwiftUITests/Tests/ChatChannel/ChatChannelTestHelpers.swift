@@ -93,6 +93,56 @@ class ChatChannelTestHelpers {
         .asAnyAttachment
     }
 
+    static func imageAttachment(
+        url: URL = testURL,
+        originalWidth: Double? = nil,
+        originalHeight: Double? = nil,
+        state: LocalAttachmentState = .pendingUpload
+    ) -> AnyChatMessageAttachment {
+        let attachmentFile = AttachmentFile(type: .png, size: 0, mimeType: "image/png")
+        let uploadingState = AttachmentUploadingState(
+            localFileURL: url,
+            state: state,
+            file: attachmentFile
+        )
+        return ChatMessageImageAttachment(
+            id: .unique,
+            type: .image,
+            payload: ImageAttachmentPayload(
+                title: "test",
+                imageRemoteURL: url,
+                file: attachmentFile,
+                originalWidth: originalWidth,
+                originalHeight: originalHeight,
+                extraData: [:]
+            ),
+            downloadingState: nil,
+            uploadingState: uploadingState
+        )
+        .asAnyAttachment
+    }
+
+    static func imageAttachments(
+        count: Int,
+        originalWidth: Double? = nil,
+        originalHeight: Double? = nil
+    ) -> [AnyChatMessageAttachment] {
+        let urls = [
+            XCTestCase.TestImages.yoda.url,
+            XCTestCase.TestImages.chewbacca.url,
+            XCTestCase.TestImages.r2.url,
+            XCTestCase.TestImages.vader.url,
+            XCTestCase.TestImages.yoda.url
+        ]
+        return (0..<count).map { index in
+            imageAttachment(
+                url: urls[index % urls.count],
+                originalWidth: originalWidth,
+                originalHeight: originalHeight
+            )
+        }
+    }
+
     static var giphyAttachments: [AnyChatMessageAttachment] = {
         let attachmentFile = AttachmentFile(type: .gif, size: 0, mimeType: "image/gif")
         let uploadingState = AttachmentUploadingState(
