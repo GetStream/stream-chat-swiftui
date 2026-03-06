@@ -9,12 +9,7 @@ import SwiftUI
 import XCTest
 
 final class CreatePollView_Tests: StreamChatTestCase {
-    private func makeCreatePollView() -> CreatePollView {
-        CreatePollView(
-            chatController: .init(channelQuery: .init(cid: .unique), channelListQuery: nil, client: chatClient),
-            messageController: nil
-        )
-    }
+    // MARK: - Empty State
 
     func test_createPollView_snapshot() {
         let view = makeCreatePollView().applyDefaultSize()
@@ -74,5 +69,53 @@ final class CreatePollView_Tests: StreamChatTestCase {
         )
         let view = makeCreatePollView().applyDefaultSize()
         AssertSnapshot(view, variants: .onlyUserInterfaceStyles)
+    }
+
+    // MARK: - Filled State
+
+    func test_createPollView_filledQuestionAndOptionsSnapshot() {
+        let view = makeCreatePollView(
+            question: "What's your favorite color?",
+            options: ["Red", "Blue", "Green", ""]
+        ).applyDefaultSize()
+        AssertSnapshot(view, variants: .onlyUserInterfaceStyles)
+    }
+
+    func test_createPollView_duplicateOptionsSnapshot() {
+        let view = makeCreatePollView(
+            question: "Pick a number",
+            options: ["One", "Two", "One", ""]
+        ).applyDefaultSize()
+        AssertSnapshot(view, variants: .onlyUserInterfaceStyles)
+    }
+
+    func test_createPollView_manyOptionsSnapshot() {
+        let view = makeCreatePollView(
+            question: "Best programming language?",
+            options: ["Swift", "Kotlin", "TypeScript", "Rust", "Go", ""]
+        ).applyDefaultSize()
+        AssertSnapshot(view, variants: .onlyUserInterfaceStyles)
+    }
+
+    // MARK: - Helpers
+
+    private func makeCreatePollView() -> CreatePollView {
+        CreatePollView(
+            chatController: .init(channelQuery: .init(cid: .unique), channelListQuery: nil, client: chatClient),
+            messageController: nil
+        )
+    }
+
+    private func makeCreatePollView(
+        question: String,
+        options: [String]
+    ) -> CreatePollView {
+        let viewModel = CreatePollViewModel(
+            chatController: .init(channelQuery: .init(cid: .unique), channelListQuery: nil, client: chatClient),
+            messageController: nil
+        )
+        viewModel.question = question
+        viewModel.replaceAllOptions(options)
+        return CreatePollView(viewModel: viewModel)
     }
 }

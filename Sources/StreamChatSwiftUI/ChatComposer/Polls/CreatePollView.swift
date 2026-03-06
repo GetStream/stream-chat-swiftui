@@ -25,6 +25,10 @@ public struct CreatePollView: View {
         )
     }
 
+    init(viewModel: CreatePollViewModel) {
+        _viewModel = StateObject(wrappedValue: viewModel)
+    }
+
     public var body: some View {
         VStack(spacing: 0) {
             CreatePollHeader(
