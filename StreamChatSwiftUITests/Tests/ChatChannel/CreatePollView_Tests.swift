@@ -9,39 +9,32 @@ import SwiftUI
 import XCTest
 
 final class CreatePollView_Tests: StreamChatTestCase {
-    func test_createPollView_snapshot() {
-        // Given
-        let view = CreatePollView(
+    private func makeCreatePollView() -> CreatePollView {
+        CreatePollView(
             chatController: .init(channelQuery: .init(cid: .unique), channelListQuery: nil, client: chatClient),
             messageController: nil
         )
-        .applyDefaultSize()
-        
-        // Then
+    }
+
+    func test_createPollView_snapshot() {
+        let view = makeCreatePollView().applyDefaultSize()
         AssertSnapshot(view, variants: .onlyUserInterfaceStyles)
     }
 
     func test_createPollView_allOptionsDisabledSnapshot() {
-        // Given
         let hidden = PollsEntryConfig(configurable: false, defaultValue: false)
         streamChat?.utils.pollsConfig = PollsConfig(
             multipleAnswers: hidden,
             anonymousPoll: hidden,
             suggestAnOption: hidden,
-            addComments: hidden
+            addComments: hidden,
+            maxVotesPerPerson: hidden
         )
-        let view = CreatePollView(
-            chatController: .init(channelQuery: .init(cid: .unique), channelListQuery: nil, client: chatClient),
-            messageController: nil
-        )
-        .applyDefaultSize()
-        
-        // Then
+        let view = makeCreatePollView().applyDefaultSize()
         AssertSnapshot(view, variants: .onlyUserInterfaceStyles)
     }
-    
+
     func test_createPollView_allOptionsEnabledSnapshot() {
-        // Given
         let enabled = PollsEntryConfig(configurable: true, defaultValue: true)
         streamChat?.utils.pollsConfig = PollsConfig(
             multipleAnswers: enabled,
@@ -50,22 +43,28 @@ final class CreatePollView_Tests: StreamChatTestCase {
             addComments: enabled,
             maxVotesPerPerson: enabled
         )
-        let view = CreatePollView(
-            chatController: .init(channelQuery: .init(cid: .unique), channelListQuery: nil, client: chatClient),
-            messageController: nil
-        )
-        .applyDefaultSize()
-        
-        // Then
+        let view = makeCreatePollView().applyDefaultSize()
         AssertSnapshot(view, variants: .onlyUserInterfaceStyles)
     }
-    
+
+    func test_createPollView_multipleVotesWithoutMaxVotesSnapshot() {
+        let enabled = PollsEntryConfig(configurable: true, defaultValue: true)
+        let hidden = PollsEntryConfig(configurable: false, defaultValue: false)
+        streamChat?.utils.pollsConfig = PollsConfig(
+            multipleAnswers: enabled,
+            anonymousPoll: hidden,
+            suggestAnOption: hidden,
+            addComments: hidden,
+            maxVotesPerPerson: hidden
+        )
+        let view = makeCreatePollView().applyDefaultSize()
+        AssertSnapshot(view, variants: .onlyUserInterfaceStyles)
+    }
+
     func test_createPollView_mixedOptionsSnapshot() {
-        // Given
         let enabled = PollsEntryConfig(configurable: true, defaultValue: true)
         let hidden = PollsEntryConfig(configurable: false, defaultValue: false)
         let disabled = PollsEntryConfig(configurable: true, defaultValue: false)
-        
         streamChat?.utils.pollsConfig = PollsConfig(
             multipleAnswers: enabled,
             anonymousPoll: hidden,
@@ -73,26 +72,13 @@ final class CreatePollView_Tests: StreamChatTestCase {
             addComments: disabled,
             maxVotesPerPerson: enabled
         )
-        let view = CreatePollView(
-            chatController: .init(channelQuery: .init(cid: .unique), channelListQuery: nil, client: chatClient),
-            messageController: nil
-        )
-        .applyDefaultSize()
-        
-        // Then
+        let view = makeCreatePollView().applyDefaultSize()
         AssertSnapshot(view, variants: .onlyUserInterfaceStyles)
     }
-    
+
     func test_createPollView_themedNavigationBarSnapshot() {
-        // Given
         setThemedNavigationBarAppearance()
-        let view = CreatePollView(
-            chatController: .init(channelQuery: .init(cid: .unique), channelListQuery: nil, client: chatClient),
-            messageController: nil
-        )
-        .applyDefaultSize()
-        
-        // Then
+        let view = makeCreatePollView().applyDefaultSize()
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
 }
