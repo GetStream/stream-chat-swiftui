@@ -233,46 +233,62 @@ public struct CreatePollView: View {
 
     @ViewBuilder
     private func pollOptionRow(for index: Int) -> some View {
-        HStack(spacing: tokens.spacingXs) {
-            if viewModel.options[index].isEmpty == false {
-                Image(uiImage: images.pollReorderIcon)
-                    .font(.system(size: tokens.iconSizeSm))
-                    .foregroundColor(Color(colors.textTertiary))
-            }
-            TextField(L10n.Composer.Polls.addOption, text: Binding(
-                get: { viewModel.options[index] },
-                set: { newValue in
-                    viewModel.options[index] = newValue
-                    if index == viewModel.options.count - 1,
-                       !newValue.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
-                        withAnimation {
-                            viewModel.options.append("")
-                        }
-                    }
-                }
-            ))
-            .font(fonts.body)
-            .foregroundColor(Color(colors.inputTextDefault))
-            if index < viewModel.options.count - 1 {
-                Button {
-                    viewModel.options.remove(at: index)
-                } label: {
-                    Image(systemName: "minus.circle")
+        let showsError = viewModel.showsOptionError(for: index)
+        
+        VStack(alignment: .leading, spacing: 0) {
+            HStack(spacing: tokens.spacingXs) {
+                if viewModel.options[index].isEmpty == false {
+                    Image(uiImage: images.pollReorderIcon)
                         .font(.system(size: tokens.iconSizeSm))
                         .foregroundColor(Color(colors.textTertiary))
                 }
-                .frame(width: tokens.iconSizeSm, height: tokens.iconSizeSm)
+                TextField(L10n.Composer.Polls.addOption, text: Binding(
+                    get: { viewModel.options[index] },
+                    set: { newValue in
+                        viewModel.options[index] = newValue
+                        if index == viewModel.options.count - 1,
+                           !newValue.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+                            withAnimation {
+                                viewModel.options.append("")
+                            }
+                        }
+                    }
+                ))
+                .font(fonts.body)
+                .foregroundColor(Color(colors.inputTextDefault))
+                if index < viewModel.options.count - 1 {
+                    Button {
+                        viewModel.options.remove(at: index)
+                    } label: {
+                        Image(systemName: "minus.circle")
+                            .font(.system(size: tokens.iconSizeSm))
+                            .foregroundColor(Color(colors.textTertiary))
+                    }
+                    .frame(width: tokens.iconSizeSm, height: tokens.iconSizeSm)
+                }
             }
+            .padding(.horizontal, tokens.spacingMd)
+            .padding(.vertical, tokens.spacingSm)
+            .frame(minHeight: 48)
+            
+            HStack(spacing: tokens.spacingXs) {
+                Image(systemName: "exclamationmark.circle")
+                    .font(.system(size: tokens.iconSizeSm))
+                Text(L10n.Composer.Polls.duplicateOption)
+                    .font(fonts.subheadline)
+            }
+            .foregroundColor(Color(colors.alert))
+            .padding(.horizontal, tokens.spacingMd)
+            .padding(.bottom, showsError ? tokens.spacingSm : 0)
+            .frame(height: showsError ? nil : 0, alignment: .top)
+            .clipped()
+            .opacity(showsError ? 1 : 0)
         }
-        .padding(.horizontal, tokens.spacingMd)
-        .padding(.vertical, tokens.spacingSm)
-        .frame(minHeight: 48)
         .background(
             RoundedRectangle(cornerRadius: tokens.radiusLg)
                 .strokeBorder(Color(colors.borderCoreDefault), lineWidth: 1)
         )
         .moveDisabled(index == viewModel.options.count - 1)
-        .animation(.easeIn, value: viewModel.optionsErrorIndices)
     }
 
     @ViewBuilder

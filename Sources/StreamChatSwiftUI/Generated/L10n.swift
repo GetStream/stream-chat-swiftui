@@ -387,7 +387,7 @@ internal enum L10n {
       internal static var createPoll: String { L10n.tr("Localizable", "composer.polls.create-poll") }
       /// Create a poll and share
       internal static var createPollDescription: String { L10n.tr("Localizable", "composer.polls.create-poll-description") }
-      /// This is already an option
+      /// Option already exists
       internal static var duplicateOption: String { L10n.tr("Localizable", "composer.polls.duplicate-option") }
       /// Hide who voted
       internal static var hideWhoVoted: String { L10n.tr("Localizable", "composer.polls.hide-who-voted") }

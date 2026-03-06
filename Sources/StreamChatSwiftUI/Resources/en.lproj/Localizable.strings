@@ -176,7 +176,7 @@
 "composer.polls.options" = "Options";
 "composer.polls.question" = "Question";
 "composer.polls.maximum-votes-per-person" = "Maximum votes per person";
-"composer.polls.duplicate-option" = "This is already an option";
+"composer.polls.duplicate-option" = "Option already exists";
 "composer.polls.multiple-answers" = "Multiple answers";
 "composer.polls.suggest-option" = "Suggest an option";
 "composer.polls.type-number-min-max-range" = "Type a number from 2 and 10";
