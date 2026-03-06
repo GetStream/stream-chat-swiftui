@@ -27,7 +27,7 @@ import XCTest
             poll: poll,
             isFirst: true
         )
-        .frame(width: 393, height: 280)
+        .frame(width: defaultScreenSize.width, height: 240)
 
         // Then
         AssertSnapshot(view, variants: .onlyUserInterfaceStyles)
@@ -55,7 +55,7 @@ import XCTest
             poll: poll,
             isFirst: true
         )
-        .frame(width: 393, height: 180)
+        .frame(width: defaultScreenSize.width, height: 180)
 
         // Then
         AssertSnapshot(view, variants: .onlyUserInterfaceStyles)
@@ -84,7 +84,7 @@ import XCTest
             poll: poll,
             isFirst: true
         )
-        .frame(width: 393, height: 170)
+        .frame(width: defaultScreenSize.width, height: 170)
 
         // Then
         AssertSnapshot(view, variants: .onlyUserInterfaceStyles)
