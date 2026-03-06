@@ -14,8 +14,6 @@ public struct CreatePollView: View {
     @StateObject private var viewModel: CreatePollViewModel
     @Environment(\.presentationMode) private var presentationMode
 
-    @State private var listId = UUID()
-
     public init(chatController: ChatChannelController, messageController: ChatMessageController?) {
         _viewModel = StateObject(
             wrappedValue: CreatePollViewModel(
@@ -57,7 +55,6 @@ public struct CreatePollView: View {
             }
             .environment(\.defaultMinListRowHeight, 1)
             .listStyle(.plain)
-            .id(listId)
         }
         .background(Color(colors.background).ignoresSafeArea())
         .actionSheet(isPresented: $viewModel.discardConfirmationShown) {
@@ -110,28 +107,30 @@ public struct CreatePollView: View {
                 bottomSpacing: tokens.spacingXxs
             ))
 
-        ForEach(viewModel.options.indices, id: \.self) { index in
+        ForEach(viewModel.options) { option in
+            let isLast = viewModel.isLastOption(option)
             CreatePollOptionRow(
-                text: viewModel.options[index],
-                showsReorderIcon: !viewModel.options[index].isEmpty,
-                showsDeleteButton: index < viewModel.options.count - 1,
-                showsError: viewModel.showsOptionError(for: index),
-                onTextChanged: { newValue in
+                text: option.text,
+                showsReorderIcon: !option.text.isEmpty,
+                showsDeleteButton: !isLast,
+                showsError: viewModel.showsOptionError(for: option),
+                onTextChanged: { newText in
+                    let id = option.id
                     Task { @MainActor in
-                        viewModel.updateOption(at: index, value: newValue)
+                        viewModel.updateOption(id: id, value: newText)
                     }
                 },
                 onDelete: {
+                    let id = option.id
                     Task { @MainActor in
-                        viewModel.removeOption(at: index)
+                        viewModel.removeOption(id: id)
                     }
                 }
             )
         }
-        .onMove { from, to in
+        .onMove { indices, newOffset in
             Task { @MainActor in
-                viewModel.moveOptions(from: from, to: to)
-                listId = UUID()
+                viewModel.moveOptions(from: indices, to: newOffset)
             }
         }
         .modifier(CreatePollRowModifier(

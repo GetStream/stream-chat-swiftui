@@ -188,9 +188,9 @@ import XCTest
     func test_showsOptionError_returnsCorrectValue() {
         let viewModel = makeViewModel()
         viewModel.replaceAllOptions(["A", "a", "B"])
-        XCTAssertFalse(viewModel.showsOptionError(for: 0))
-        XCTAssertTrue(viewModel.showsOptionError(for: 1))
-        XCTAssertFalse(viewModel.showsOptionError(for: 2))
+        XCTAssertFalse(viewModel.showsOptionError(for: viewModel.options[0]))
+        XCTAssertTrue(viewModel.showsOptionError(for: viewModel.options[1]))
+        XCTAssertFalse(viewModel.showsOptionError(for: viewModel.options[2]))
     }
 
     // MARK: - Max Votes Stepper
