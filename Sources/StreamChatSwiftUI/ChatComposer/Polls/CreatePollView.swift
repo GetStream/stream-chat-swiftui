@@ -36,7 +36,9 @@ struct ComposerPollView: View {
 
 public struct CreatePollView: View {
     @Injected(\.colors) var colors
+    @Injected(\.images) var images
     @Injected(\.fonts) var fonts
+    @Injected(\.tokens) var tokens
     
     @StateObject var viewModel: CreatePollViewModel
     
@@ -173,7 +175,7 @@ public struct CreatePollView: View {
                             presentationMode.wrappedValue.dismiss()
                         }
                     } label: {
-                        Text(L10n.Alert.Actions.cancel)
+                        Image(uiImage: images.close)
                     }
                     .actionSheet(isPresented: $viewModel.discardConfirmationShown) {
                         ActionSheet(
@@ -194,14 +196,19 @@ public struct CreatePollView: View {
                         .foregroundColor(Color(colors.navigationBarTitle))
                 }
                 
-                ToolbarItem(placement: .navigationBarTrailing) {
+                ToolbarItem(placement: .topBarTrailing) {
                     Button {
                         viewModel.createPoll {
                             presentationMode.wrappedValue.dismiss()
                         }
                     } label: {
-                        Image(systemName: "paperplane.fill")
+                        Image(systemName: "checkmark")
+                            .font(.system(size: tokens.iconSizeSm, weight: .semibold))
+                            .foregroundColor(Color(colors.buttonPrimaryTextOnAccent))
                     }
+                    .frame(width: tokens.buttonVisualHeightSm, height: tokens.buttonVisualHeightSm)
+                    .background(Circle().fill(Color(colors.buttonPrimaryBackground)))
+                    .clipShape(Circle())
                     .disabled(!viewModel.canCreatePoll)
                 }
             }
