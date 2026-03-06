@@ -46,8 +46,8 @@ public struct PollAttachmentView<Factory: ViewFactory>: View {
 
                 HStack {
                     Text(subtitleText)
-                        .font(fonts.caption1)
-                        .foregroundColor(Color(colors.textLowEmphasis))
+                        .font(fonts.subheadline)
+                        .foregroundColor(textColor(for: message))
                     Spacer()
                 }
             }
@@ -202,7 +202,7 @@ struct PollOptionView<Factory: ViewFactory>: View {
 
     let factory: Factory
     let option: PollOption
-    var optionFont: Font = InjectedValues[\.fonts].body
+    var optionFont: Font = InjectedValues[\.fonts].subheadline
     var optionVotes: Int?
     var maxVotes: Int?
     var message: ChatMessage
@@ -224,7 +224,7 @@ struct PollOptionView<Factory: ViewFactory>: View {
                 }
             }
             VStack(spacing: tokens.spacingXxs) {
-                HStack(alignment: .top, spacing: tokens.spacingXs) {
+                HStack(spacing: tokens.spacingXs) {
                     Text(option.text)
                         .font(optionFont)
                         .foregroundColor(textColor(for: message))
@@ -245,7 +245,7 @@ struct PollOptionView<Factory: ViewFactory>: View {
                         }
                     }
                     Text("\(viewModel.poll.voteCountsByOption?[option.id] ?? 0)")
-                        .font(fonts.caption1)
+                        .font(fonts.footnote)
                         .foregroundColor(textColor(for: message))
                 }
                 if !alternativeStyle {
