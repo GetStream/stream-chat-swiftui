@@ -307,7 +307,7 @@ private struct CreatePollOptionRow: View {
         VStack(alignment: .leading, spacing: 0) {
             HStack(spacing: tokens.spacingXs) {
                 if showsReorderIcon {
-                    Image(uiImage: images.pollReorderIcon)
+                    Image(uiImage: images.pollOptionDragIcon)
                         .renderingMode(.template)
                         .font(.system(size: tokens.iconSizeSm))
                         .foregroundColor(Color(colors.textTertiary))
