@@ -47,7 +47,7 @@ import XCTest
 
     func test_canShowDiscardConfirmation_whenOptionAdded() {
         let viewModel = makeViewModel()
-        viewModel.options = ["A"]
+        viewModel.replaceAllOptions(["A"])
         XCTAssertTrue(viewModel.canShowDiscardConfirmation)
     }
 
@@ -56,7 +56,7 @@ import XCTest
     func test_canCreatePoll_whenRequiredInformationAdded() {
         let viewModel = makeViewModel()
         viewModel.question = " A  "
-        viewModel.options = ["O     "]
+        viewModel.replaceAllOptions(["O     "])
         XCTAssertTrue(viewModel.canCreatePoll)
     }
 
@@ -69,14 +69,14 @@ import XCTest
     func test_canCreatePoll_whenQuestionOnlyWhitespace() {
         let viewModel = makeViewModel()
         viewModel.question = "   "
-        viewModel.options = ["Option"]
+        viewModel.replaceAllOptions(["Option"])
         XCTAssertFalse(viewModel.canCreatePoll)
     }
 
     func test_canCreatePoll_whenOptionsOnlyWhitespace() {
         let viewModel = makeViewModel()
         viewModel.question = "Question"
-        viewModel.options = ["   ", "  "]
+        viewModel.replaceAllOptions(["   ", "  "])
         XCTAssertFalse(viewModel.canCreatePoll)
     }
 
@@ -85,9 +85,9 @@ import XCTest
         XCTAssertFalse(viewModel.canCreatePoll)
         viewModel.question = "A"
         XCTAssertFalse(viewModel.canCreatePoll)
-        viewModel.options = ["A", "a"]
+        viewModel.replaceAllOptions(["A", "a"])
         XCTAssertFalse(viewModel.canCreatePoll)
-        viewModel.options = ["A", "aa"]
+        viewModel.replaceAllOptions(["A", "aa"])
         XCTAssertTrue(viewModel.canCreatePoll)
     }
 
@@ -175,21 +175,19 @@ import XCTest
 
     func test_optionsErrorIndices_ignoreWhitespaceAndCase() {
         let viewModel = makeViewModel()
-        viewModel.options = ["   123ab   "]
-        viewModel.options.append("123Ab")
-        viewModel.options.append("123AB ")
+        viewModel.replaceAllOptions(["   123ab   ", "123Ab", "123AB "])
         XCTAssertEqual(Set([1, 2]), viewModel.optionsErrorIndices)
     }
 
     func test_optionsErrorIndices_emptyDuplicatesIgnored() {
         let viewModel = makeViewModel()
-        viewModel.options = ["", "", "A"]
+        viewModel.replaceAllOptions(["", "", "A"])
         XCTAssertTrue(viewModel.optionsErrorIndices.isEmpty)
     }
 
     func test_showsOptionError_returnsCorrectValue() {
         let viewModel = makeViewModel()
-        viewModel.options = ["A", "a", "B"]
+        viewModel.replaceAllOptions(["A", "a", "B"])
         XCTAssertFalse(viewModel.showsOptionError(for: 0))
         XCTAssertTrue(viewModel.showsOptionError(for: 1))
         XCTAssertFalse(viewModel.showsOptionError(for: 2))
