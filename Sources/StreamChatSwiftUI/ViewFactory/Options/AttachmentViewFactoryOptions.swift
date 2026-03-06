@@ -19,7 +19,7 @@ public final class ImageAttachmentViewOptions: Sendable {
     public let availableWidth: CGFloat
     /// Binding to the currently scrolled message ID.
     public let scrolledId: Binding<String?>
-    
+
     public init(
         message: ChatMessage,
         isFirst: Bool,
@@ -136,7 +136,7 @@ public final class VideoAttachmentViewOptions: Sendable {
     public let availableWidth: CGFloat
     /// Binding to the currently scrolled message ID.
     public let scrolledId: Binding<String?>
-    
+
     public init(
         message: ChatMessage,
         isFirst: Bool,
@@ -163,6 +163,32 @@ public final class VoiceRecordingViewOptions: Sendable {
     /// Binding to the currently scrolled message ID.
     public let scrolledId: Binding<String?>
     
+    public init(
+        message: ChatMessage,
+        isFirst: Bool,
+        availableWidth: CGFloat,
+        scrolledId: Binding<String?>
+    ) {
+        self.message = message
+        self.isFirst = isFirst
+        self.availableWidth = availableWidth
+        self.scrolledId = scrolledId
+    }
+}
+
+// MARK: - Message Attachments Options
+
+/// Options for creating the message attachments view.
+public final class MessageAttachmentsViewOptions: Sendable {
+    /// The message containing the attachments.
+    public let message: ChatMessage
+    /// Whether this is the first message in a group.
+    public let isFirst: Bool
+    /// The available width for the attachments.
+    public let availableWidth: CGFloat
+    /// Binding to the currently scrolled message ID.
+    public let scrolledId: Binding<String?>
+
     public init(
         message: ChatMessage,
         isFirst: Bool,

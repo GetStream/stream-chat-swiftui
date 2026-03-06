@@ -437,10 +437,14 @@ internal enum L10n {
       }
     }
     internal enum Recording {
+      /// Recording stopped
+      internal static var recordingStopped: String { L10n.tr("Localizable", "composer.recording.recordingStopped") }
       /// Slide to cancel
       internal static var slideToCancel: String { L10n.tr("Localizable", "composer.recording.slide-to-cancel") }
-      /// Hold to record, release to send
+      /// Hold to record. Release to send
       internal static var tip: String { L10n.tr("Localizable", "composer.recording.tip") }
+      /// Voice message deleted
+      internal static var voiceMessageDeleted: String { L10n.tr("Localizable", "composer.recording.voiceMessageDeleted") }
     }
     internal enum Suggestions {
       internal enum Commands {

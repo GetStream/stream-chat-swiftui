@@ -212,15 +212,15 @@ class MessageListPage {
         }
 
         static func image(in messageCell: XCUIElement) -> XCUIElement {
-            messageCell.images["ImageAttachmentContainer"]
+            messageCell.images["MessageMediaAttachmentsContainerView"]
         }
 
         static func imagePreloader(in messageCell: XCUIElement) -> XCUIElement {
-            messageCell.activityIndicators["ImageAttachmentContainer"]
+            messageCell.activityIndicators["MessageMediaAttachmentsContainerView"]
         }
 
         static func video(in messageCell: XCUIElement) -> XCUIElement {
-            messageCell.images["VideoAttachmentsContainer"]
+            messageCell.images["MessageMediaAttachmentsContainerView"]
         }
 
         static func fullscreenImage() -> XCUIElement {

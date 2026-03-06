@@ -849,7 +849,7 @@ import XCTest
     func test_messageComposer_discardRecording() {
         // Given
         let viewModel = makeComposerViewModel()
-        viewModel.recordingState = .recording(.zero)
+        viewModel.recordingState = .recording
         
         // When
         viewModel.discardRecording()
@@ -882,7 +882,7 @@ import XCTest
     func test_messageComposer_previewRecording() {
         // Given
         let viewModel = makeComposerViewModel()
-        viewModel.recordingState = .recording(.zero)
+        viewModel.recordingState = .recording
         
         // When
         viewModel.previewRecording()
@@ -894,9 +894,10 @@ import XCTest
     func test_messageComposer_lockRecording() {
         // Given
         let viewModel = makeComposerViewModel()
+        viewModel.recordingState = .recording
         
-        // Then
-        viewModel.recordingState = .recording(.init(x: 0, y: RecordingConstants.lockMaxDistance - 1))
+        // When
+        viewModel.recordingGestureLocation = .init(x: 0, y: VoiceRecordingConstants.lockMaxDistance - 1)
         
         // Then
         XCTAssert(viewModel.recordingState == .locked)
@@ -905,9 +906,10 @@ import XCTest
     func test_messageComposer_cancelRecording() {
         // Given
         let viewModel = makeComposerViewModel()
+        viewModel.recordingState = .recording
         
-        // Then
-        viewModel.recordingState = .recording(.init(x: RecordingConstants.cancelMaxDistance - 1, y: 0))
+        // When
+        viewModel.recordingGestureLocation = .init(x: VoiceRecordingConstants.cancelMaxDistance - 1, y: 0)
         
         // Then
         XCTAssert(viewModel.recordingState == .initial)
@@ -930,14 +932,147 @@ import XCTest
     func test_messageComposer_recordingError() {
         // Given
         let viewModel = makeComposerViewModel()
-        viewModel.recordingState = .recording(.zero)
+        viewModel.recordingState = .recording
         
-        // Then
+        // When
         viewModel.audioRecorder(viewModel.audioRecorder, didFailWithError: ClientError.Unexpected())
         
         // Then
         XCTAssert(viewModel.recordingState == .initial)
         XCTAssert(viewModel.audioRecordingInfo == .initial)
+    }
+    
+    // MARK: - Recording Gesture Overlay Visibility
+
+    func test_shouldShowRecordingGestureOverlay_whenInitialAndNoContent_returnsTrue() {
+        // Given
+        let viewModel = makeComposerViewModel()
+        viewModel.recordingState = .initial
+
+        // Then
+        XCTAssertTrue(viewModel.shouldShowRecordingGestureOverlay)
+    }
+
+    func test_shouldShowRecordingGestureOverlay_whenInitialAndHasText_returnsFalse() {
+        // Given
+        let viewModel = makeComposerViewModel()
+        viewModel.recordingState = .initial
+        viewModel.text = "Hello"
+
+        // Then
+        XCTAssertFalse(viewModel.shouldShowRecordingGestureOverlay)
+    }
+
+    func test_shouldShowRecordingGestureOverlay_whenInitialAndHasAttachment_returnsFalse() {
+        // Given
+        let viewModel = makeComposerViewModel()
+        viewModel.recordingState = .initial
+        viewModel.imageTapped(defaultAsset)
+
+        // Then
+        XCTAssertFalse(viewModel.shouldShowRecordingGestureOverlay)
+    }
+
+    func test_shouldShowRecordingGestureOverlay_whenRecording_returnsTrue() {
+        // Given
+        let viewModel = makeComposerViewModel()
+        viewModel.recordingState = .recording
+
+        // Then
+        XCTAssertTrue(viewModel.shouldShowRecordingGestureOverlay)
+    }
+
+    func test_shouldShowRecordingGestureOverlay_whenRecordingAndHasText_returnsTrue() {
+        // Given
+        let viewModel = makeComposerViewModel()
+        viewModel.recordingState = .recording
+        viewModel.text = "Hello"
+
+        // Then
+        XCTAssertTrue(viewModel.shouldShowRecordingGestureOverlay)
+    }
+
+    func test_shouldShowRecordingGestureOverlay_whenLocked_returnsFalse() {
+        // Given
+        let viewModel = makeComposerViewModel()
+        viewModel.recordingState = .locked
+
+        // Then
+        XCTAssertFalse(viewModel.shouldShowRecordingGestureOverlay)
+    }
+
+    func test_shouldShowRecordingGestureOverlay_whenStopped_returnsFalse() {
+        // Given
+        let viewModel = makeComposerViewModel()
+        viewModel.recordingState = .stopped
+
+        // Then
+        XCTAssertFalse(viewModel.shouldShowRecordingGestureOverlay)
+    }
+
+    func test_shouldShowRecordingGestureOverlay_whenVoiceRecordingDisabled_returnsFalse() {
+        // Given
+        let utils = Utils(composerConfig: ComposerConfig(isVoiceRecordingEnabled: false))
+        streamChat = StreamChat(chatClient: chatClient, utils: utils)
+        let viewModel = makeComposerViewModel()
+        viewModel.recordingState = .initial
+
+        // Then
+        XCTAssertFalse(viewModel.shouldShowRecordingGestureOverlay)
+    }
+
+    // MARK: - Snackbar
+    
+    func test_messageComposer_showRecordingTip_setsSnackBarText() {
+        // Given
+        let viewModel = makeComposerViewModel()
+        XCTAssertNil(viewModel.snackBarText)
+        
+        // When
+        viewModel.showRecordingTip()
+        
+        // Then
+        XCTAssertEqual(viewModel.snackBarText, L10n.Composer.Recording.tip)
+    }
+    
+    func test_messageComposer_discardRecording_setsSnackBarText() {
+        // Given
+        let viewModel = makeComposerViewModel()
+        viewModel.recordingState = .locked
+        XCTAssertNil(viewModel.snackBarText)
+        
+        // When
+        viewModel.discardRecording()
+        
+        // Then
+        XCTAssertEqual(viewModel.snackBarText, L10n.Composer.Recording.voiceMessageDeleted)
+        XCTAssertEqual(viewModel.recordingState, .initial)
+    }
+    
+    func test_messageComposer_recordingError_setsSnackBarText() {
+        // Given
+        let viewModel = makeComposerViewModel()
+        viewModel.recordingState = .recording
+        XCTAssertNil(viewModel.snackBarText)
+        
+        // When
+        viewModel.audioRecorder(viewModel.audioRecorder, didFailWithError: ClientError.Unexpected())
+        
+        // Then
+        XCTAssertEqual(viewModel.snackBarText, L10n.Composer.Recording.recordingStopped)
+    }
+    
+    func test_messageComposer_recordingError_whenNotRecording_doesNotSetSnackBarText() {
+        // Given
+        let viewModel = makeComposerViewModel()
+        viewModel.recordingState = .initial
+        XCTAssertNil(viewModel.snackBarText)
+        
+        // When
+        viewModel.audioRecorder(viewModel.audioRecorder, didFailWithError: ClientError.Unexpected())
+        
+        // Then
+        XCTAssertNil(viewModel.snackBarText)
     }
     
     // MARK: - Draft Message Tests

@@ -198,8 +198,10 @@
 "composer.suggestions.commands.header" = "Instant Commands";
 "message.sending.attachment-uploading-failed" = "UPLOADING FAILED";
 
-"composer.recording.tip" = "Hold to record, release to send";
+"composer.recording.tip" = "Hold to record. Release to send";
 "composer.recording.slide-to-cancel" = "Slide to cancel";
+"composer.recording.recordingStopped" = "Recording stopped";
+"composer.recording.voiceMessageDeleted" = "Voice message deleted";
 
 "attachment.max-size.title" = "Attachment size exceed the limit";
 "attachment.max-size.message" = "Please select a smaller attachment.";

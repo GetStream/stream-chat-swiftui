@@ -41,10 +41,11 @@ extension MessageComposerViewModel: AudioRecordingDelegate {
             fromAudioURL: location,
             for: waveformTargetSamples,
             completionHandler: { [weak self] result in
-                guard let self else { return }
-                switch result {
-                case let .success(waveform):
-                    DispatchQueue.main.async {
+                Task { @MainActor [weak self] in
+                    guard let self else { return }
+                    guard self.audioRecordingInfo != .initial else { return }
+                    switch result {
+                    case let .success(waveform):
                         let recording = AddedVoiceRecording(
                             url: location,
                             duration: self.audioRecordingInfo.duration,
@@ -58,10 +59,8 @@ extension MessageComposerViewModel: AudioRecordingDelegate {
                             self.recordingState = .initial
                             self.audioRecordingInfo = .initial
                         }
-                    }
-                case let .failure(error):
-                    log.error(error)
-                    Task { @MainActor in
+                    case let .failure(error):
+                        log.error(error)
                         self.recordingState = .initial
                     }
                 }
@@ -74,12 +73,20 @@ extension MessageComposerViewModel: AudioRecordingDelegate {
         didFailWithError error: Error
     ) {
         log.error(error)
+        let wasRecording = recordingState != .initial
         recordingState = .initial
         audioRecordingInfo = .initial
+        if wasRecording {
+            snackBarText = L10n.Composer.Recording.recordingStopped
+        }
     }
 }
 
 extension MessageComposerViewModel {
+    public func showRecordingTip() {
+        snackBarText = L10n.Composer.Recording.tip
+    }
+
     public func startRecording() {
         utils.audioSessionFeedbackGenerator.feedbackForBeginRecording()
         audioRecorder.beginRecording {
@@ -105,9 +112,11 @@ extension MessageComposerViewModel {
 
 extension MessageComposerViewModel {
     public func discardRecording() {
+        stopRecording()
         recordingState = .initial
         audioRecordingInfo = .initial
-        stopRecording()
+        recordingGestureLocation = .zero
+        snackBarText = L10n.Composer.Recording.voiceMessageDeleted
     }
     
     public func confirmRecording() {

@@ -6,6 +6,8 @@ import StreamChat
 import SwiftUI
 
 public struct FileAttachmentsContainer<Factory: ViewFactory>: View {
+    @Injected(\.colors) var colors
+    @Injected(\.tokens) var tokens
     var factory: Factory
     var message: ChatMessage
     var width: CGFloat
@@ -27,46 +29,17 @@ public struct FileAttachmentsContainer<Factory: ViewFactory>: View {
     }
 
     public var body: some View {
-        VStack(alignment: message.alignmentInBubble) {
-            if let quotedMessage = message.quotedMessage {
-                factory.makeChatQuotedMessageView(
-                    options: ChatQuotedMessageViewOptions(
-                        quotedMessage: quotedMessage,
-                        parentMessage: message,
-                        scrolledId: $scrolledId
-                    )
-                )
-            }
-
-            VStack(spacing: 0) {
-                VStack(spacing: 4) {
-                    ForEach(message.fileAttachments, id: \.self) { attachment in
-                        FileAttachmentView(
-                            attachment: attachment,
-                            width: width,
-                            isFirst: isFirst
-                        )
-                    }
-                }
-                if !message.text.isEmpty {
-                    HStack {
-                        Text(message.adjustedText)
-                            .foregroundColor(textColor(for: message))
-                            .standardPadding()
-                        Spacer()
-                    }
-                }
-            }
-            .padding(.all, 4)
-        }
-        .modifier(
-            factory.styles.makeMessageViewModifier(
-                for: MessageModifierInfo(
-                    message: message,
+        VStack(spacing: tokens.spacingXxs) {
+            ForEach(message.fileAttachments) { attachment in
+                FileAttachmentView(
+                    attachment: attachment,
+                    width: width,
                     isFirst: isFirst
                 )
-            )
-        )
+                .background(MessageAttachmentsBubbleConfiguration.attachmentBackgroundColor(for: message))
+                .roundWithBorder(cornerRadius: tokens.messageBubbleRadiusAttachment)
+            }
+        }
         .accessibilityIdentifier("FileAttachmentsContainer")
     }
 }
@@ -76,6 +49,7 @@ public struct FileAttachmentView: View {
     @Injected(\.images) private var images
     @Injected(\.fonts) private var fonts
     @Injected(\.colors) private var colors
+    @Injected(\.tokens) private var tokens
     @Injected(\.chatClient) private var chatClient
 
     @State private var fullScreenShown = false
@@ -110,10 +84,8 @@ public struct FileAttachmentView: View {
                 DownloadShareAttachmentView(attachment: attachment)
             }
         }
-        .padding(.all, 8)
-        .background(Color(colors.background))
+        .padding(.all, tokens.spacingSm)
         .frame(width: width)
-        .roundWithBorder()
         .withUploadingStateIndicator(for: attachment.uploadingState, url: attachment.assetURL)
         .withDownloadingStateIndicator(for: attachment.downloadingState, url: attachment.assetURL)
         .sheet(isPresented: $fullScreenShown) {
@@ -135,6 +107,7 @@ public struct FileAttachmentDisplayView: View {
     @Injected(\.images) private var images
     @Injected(\.fonts) private var fonts
     @Injected(\.colors) private var colors
+    @Injected(\.tokens) private var tokens
 
     var url: URL
     var title: String
@@ -147,13 +120,13 @@ public struct FileAttachmentDisplayView: View {
     }
 
     public var body: some View {
-        HStack {
+        HStack(spacing: tokens.spacingSm) {
             Image(uiImage: previewImage)
                 .resizable()
                 .aspectRatio(contentMode: .fit)
                 .frame(width: 34, height: 40)
                 .accessibilityHidden(true)
-            VStack(alignment: .leading, spacing: 8) {
+            VStack(alignment: .leading, spacing: tokens.spacingXxs) {
                 Text(title)
                     .font(fonts.bodyBold)
                     .lineLimit(1)

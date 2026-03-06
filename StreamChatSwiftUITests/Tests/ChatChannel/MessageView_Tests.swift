@@ -565,7 +565,43 @@ import XCTest
             size: CGSize(width: defaultScreenSize.width, height: 250)
         )
     }
-    
+
+    func test_voiceRecordingViewPlaying_snapshot() {
+        // Given
+        let url = URL(string: "https://example.com/recording.m4a")!
+        let recording = AddedVoiceRecording(
+            url: url,
+            duration: 10,
+            waveform: [0, 0.1, 0.4, 0.7, 1.0, 0.8, 0.5, 0.3, 0.6, 0.9]
+        )
+        let handler = VoiceRecordingHandler()
+        handler.isPlaying = true
+        handler.context = AudioPlaybackContext(
+            assetLocation: url,
+            duration: 10,
+            currentTime: 4.2,
+            state: .playing,
+            rate: .normal,
+            isSeeking: false
+        )
+
+        // When
+        let view = VoiceRecordingView(
+            handler: handler,
+            addedVoiceRecording: recording,
+            isSentByCurrentUser: true
+        )
+        .frame(width: defaultScreenSize.width - 60, height: 48)
+        .padding()
+
+        // Then
+        AssertSnapshot(
+            view,
+            variants: [.defaultLight],
+            size: CGSize(width: defaultScreenSize.width, height: 80)
+        )
+    }
+
     func test_messageViewFileText_snapshot() {
         // Given
         let fileMessage = ChatMessage.mock(
@@ -619,11 +655,12 @@ import XCTest
             id: .unique,
             cid: .unique,
             text: "https://getstream.io",
-            author: .mock(id: .unique)
+            author: .mock(id: .unique),
+            attachments: ChatChannelTestHelpers.linkAttachments
         )
-        
+
         // When
-        let view = LinkAttachmentContainer(
+        let view = MessageAttachmentsView(
             factory: DefaultViewFactory.shared,
             message: message,
             width: defaultScreenSize.width,
@@ -631,7 +668,7 @@ import XCTest
             scrolledId: .constant(nil)
         )
         .applyDefaultSize()
-        
+
         // Then
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }

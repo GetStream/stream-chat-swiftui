@@ -186,6 +186,11 @@ import SwiftUI
     /// - Returns: view shown in the header of the last message.
     func makeLastInGroupHeaderView(options: LastInGroupHeaderViewOptions) -> LastInGroupHeaderView
 
+    associatedtype MessageAttachmentsViewType: View
+    /// Creates the message attachments view.
+    /// - Parameter options: the options for creating the message attachments view.
+    func makeMessageAttachmentsView(options: MessageAttachmentsViewOptions) -> MessageAttachmentsViewType
+
     associatedtype ImageAttachmentViewType: View
     /// Creates the image attachment view.
     /// - Parameter options: the options for creating the image attachment view.
@@ -215,7 +220,7 @@ import SwiftUI
     /// - Parameter options: the options for creating the video attachment view.
     ///  - Returns: view displayed in the video attachment slot.
     func makeVideoAttachmentView(options: VideoAttachmentViewOptions) -> VideoAttachmentViewType
-    
+
     associatedtype GalleryViewType: View
     /// Creates the gallery view.
     /// - Parameter options: the options for creating the gallery view.
@@ -364,23 +369,13 @@ import SwiftUI
     /// - Returns: view displayed in the confirm edit button slot.
     func makeConfirmEditButton(options: ConfirmEditButtonOptions) -> ConfirmEditButtonType
     
-    associatedtype ComposerRecordingViewType: View
-    /// Creates a view shown when the composer is recording a voice message.
-    /// - Parameter options: the options for creating the composer recording view.
-    /// - Returns: view shown when the composer is recording.
-    func makeComposerRecordingView(options: ComposerRecordingViewOptions) -> ComposerRecordingViewType
+    associatedtype ComposerVoiceRecordingInputViewType: View
+    /// Creates a unified voice recording input view shown when the composer
+    /// is actively recording, locked, or stopped.
+    /// - Parameter options: the options for creating the voice recording input view.
+    /// - Returns: view shown in the voice recording input slot.
+    func makeComposerVoiceRecordingInputView(options: ComposerVoiceRecordingInputViewOptions) -> ComposerVoiceRecordingInputViewType
     
-    associatedtype ComposerRecordingLockedViewType: View
-    /// Creates a view shown when a voice recording is locked.
-    ///  - Parameter options: the options for creating the composer recording locked view.
-    ///  - Returns: view shown in the locked recording slot.
-    func makeComposerRecordingLockedView(options: ComposerRecordingLockedViewOptions) -> ComposerRecordingLockedViewType
-    
-    associatedtype ComposerRecordingTipViewType: View
-    /// Creates a view shown when a recording tip is displayed.
-    /// - Returns: view shown in the recording tip slot.
-    func makeComposerRecordingTipView(options: ComposerRecordingTipViewOptions) -> ComposerRecordingTipViewType
-
     associatedtype AttachmentPickerViewType: View
     /// Creates the attachment picker view.
     /// - Parameter options: the options for creating the attachment picker view.
@@ -626,10 +621,21 @@ import SwiftUI
     func makeAddUsersView(options: AddUsersViewOptions) -> AddUsersViewType
     
     associatedtype AttachmentTextViewType: View
-    /// Creates a view for displaying the text of an attachment.
-    /// - Parameter options: Configuration options for the attachment text view, such as message.
-    /// - Returns: The view shown in the attachment text slot.
+    /// Creates a text caption view displayed below attachments inside ``MessageAttachmentsView``.
+    /// - Parameter options: Configuration options for the attachment text view.
+    /// - Returns: The text caption view shown beneath attachments.
     func makeAttachmentTextView(
         options: AttachmentTextViewOptions
     ) -> AttachmentTextViewType
+
+    associatedtype StreamTextViewType: View
+    /// Creates a reusable text view for displaying message text.
+    ///
+    /// This view is shared across multiple message layouts, including
+    /// standalone text messages and text captions within attachment views.
+    /// - Parameter options: Configuration options such as the message to display.
+    /// - Returns: The view shown in the text slot.
+    func makeStreamTextView(
+        options: StreamTextViewOptions
+    ) -> StreamTextViewType
 }

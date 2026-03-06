@@ -67,11 +67,6 @@ public final class ChannelLoadingViewOptions: Sendable {
     public init() {}
 }
 
-/// Options for creating the composer recording tip view.
-public final class ComposerRecordingTipViewOptions: Sendable {
-    public init() {}
-}
-
 /// Options for creating the composer view modifier.
 public final class ComposerViewModifierOptions: Sendable {
     public init() {}
