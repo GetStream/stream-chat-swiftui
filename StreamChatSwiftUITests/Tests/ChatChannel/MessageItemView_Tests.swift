@@ -222,7 +222,15 @@ import XCTest
         )
 
         // When
-        let view = testMessageViewContainer(message: message, height: 300)
+        let view = VideoAttachmentsContainer(
+            factory: DefaultViewFactory.shared,
+            message: message,
+            width: 2 * defaultScreenSize.width / 3,
+            isFirst: true,
+            scrolledId: .constant(nil)
+        )
+        .frame(width: 200)
+        .padding()
 
         // Then
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
@@ -239,7 +247,65 @@ import XCTest
         )
 
         // When
-        let view = testMessageViewContainer(message: message, height: 300)
+        let view = VideoAttachmentsContainer(
+            factory: DefaultViewFactory.shared,
+            message: message,
+            width: 2 * defaultScreenSize.width / 3,
+            isFirst: true,
+            scrolledId: .constant(nil)
+        )
+        .frame(width: 200)
+        .padding()
+
+        // Then
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
+    }
+
+    func test_videoAttachmentsContainer_isFirstFalse_snapshot() {
+        // Given
+        let message = ChatMessage.mock(
+            id: .unique,
+            cid: .unique,
+            text: "Test message",
+            author: .mock(id: .unique),
+            attachments: ChatChannelTestHelpers.videoAttachments
+        )
+
+        // When
+        let view = VideoAttachmentsContainer(
+            factory: DefaultViewFactory.shared,
+            message: message,
+            width: 2 * defaultScreenSize.width / 3,
+            isFirst: false,
+            scrolledId: .constant(nil)
+        )
+        .frame(width: 200)
+        .padding()
+
+        // Then
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
+    }
+
+    func test_videoAttachment_noText_isFirstFalse_snapshot() {
+        // Given
+        let message = ChatMessage.mock(
+            id: .unique,
+            cid: .unique,
+            text: "",
+            author: .mock(id: .unique),
+            attachments: ChatChannelTestHelpers.videoAttachments
+        )
+
+        // When
+        let view = VideoAttachmentsContainer(
+            factory: DefaultViewFactory.shared,
+            message: message,
+            width: 2 * defaultScreenSize.width / 3,
+            isFirst: false,
+            scrolledId: .constant(nil)
+        )
+        .frame(width: 200)
+        .padding()
 
         // Then
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
@@ -864,11 +930,13 @@ import XCTest
         shownAsPreview: Bool = false,
         messageViewModel: MessageViewModel? = nil,
         highlightedMessageId: String? = nil,
-        height: CGFloat = 200
+        height: CGFloat = 200,
+        showsAllInfo: Bool = true
     ) -> some View {
-        MessageItemView(
+        let channelOrMock = channel ?? .mockDMChannel()
+        return MessageItemView(
             factory: DefaultViewFactory.shared,
-            channel: channel ?? .mockDMChannel(),
+            channel: channelOrMock,
             message: message,
             width: defaultScreenSize.width,
             showsAllInfo: true,
@@ -878,7 +946,7 @@ import XCTest
             scrolledId: .constant(nil),
             quotedMessage: .constant(nil),
             onLongPress: { _ in },
-            viewModel: messageViewModel ?? MessageViewModel(message: message, channel: channel ?? .mockDMChannel())
+            viewModel: messageViewModel ?? MessageViewModel(message: message, channel: channelOrMock)
         )
         .environment(\.highlightedMessageId, highlightedMessageId)
         .frame(width: 375, height: height)

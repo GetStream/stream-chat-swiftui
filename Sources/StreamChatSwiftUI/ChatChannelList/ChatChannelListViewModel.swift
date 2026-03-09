@@ -115,6 +115,10 @@ import UIKit
     /// The message search controller which should be created only by ``performMessageSearch()``.
     public var messageSearchController: ChatMessageSearchController?
 
+    /// Sort order for message search results. When set (e.g. from the channel list's sort), it is passed to the search API.
+    /// When `nil`, the controller uses its default (newest first).
+    public var messageSearchSort: [Sorting<MessageSearchSortingKey>]?
+
     /// Serial queue used to process the search results.
     private let queue = DispatchQueue(label: "com.getstream.stream-chat-swiftui.ChatChannelListViewModel")
 
@@ -441,7 +445,7 @@ import UIKit
     open func performMessageSearch() {
         messageSearchController = chatClient.messageSearchController()
         loadingSearchResults = true
-        messageSearchController?.search(text: searchText) { [weak self] _ in
+        messageSearchController?.search(text: searchText, sort: messageSearchSort) { [weak self] _ in
             self?.loadingSearchResults = false
             self?.messageSearchController?.delegate = self
             self?.updateMessageSearchResults()
