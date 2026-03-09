@@ -157,6 +157,7 @@
 				"Infrastructure/Shared/XCTestCase+MockJSON.swift",
 				Infrastructure/TestTools/ChatClient_Mock.swift,
 				Infrastructure/TestTools/ViewFrameUtils.swift,
+				Resources/Assets.xcassets,
 				Tests/ChatChannel/AttachmentCommandsPickerView_Tests.swift,
 				Tests/ChatChannel/AttachmentFilePickerView_Tests.swift,
 				Tests/ChatChannel/ChannelControllerFactory_Tests.swift,
@@ -313,7 +314,6 @@
 			membershipExceptions = (
 				"/Localized: StreamChatSwiftUI/Resources/Localizable.strings",
 				"/Localized: StreamChatSwiftUI/Resources/Localizable.stringsdict",
-				StreamChatSwiftUI/Resources/Assets.xcassets,
 			);
 			target = 8465FBBC2746873A00AF091E /* StreamChatSwiftUITests */;
 		};
