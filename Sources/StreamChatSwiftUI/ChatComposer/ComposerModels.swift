@@ -29,11 +29,11 @@ public final class AddedAsset: Identifiable, Equatable, Sendable {
     public let extraData: [String: RawJSON]
 
     /// Original width in pixels (for images and videos). Available at selection time without extra computation.
-    public var originalWidth: Double?
+    public let originalWidth: Double?
     /// Original height in pixels (for images and videos). Available at selection time without extra computation.
-    public var originalHeight: Double?
+    public let originalHeight: Double?
     /// Duration in seconds (for videos only). Available at selection time without extra computation.
-    public var duration: TimeInterval?
+    public let duration: TimeInterval?
 
     /// The payload of the attachment, in case the attachment has been uploaded to server already.
     /// This is mostly used when editing an existing message that contains attachments.
