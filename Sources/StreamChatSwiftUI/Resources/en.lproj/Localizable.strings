@@ -106,7 +106,7 @@
 
 "alert.actions.cancel" = "Cancel";
 "alert.actions.delete" = "Delete";
-"alert.actions.end" = "End";
+"alert.actions.endPoll" = "End Poll";
 "alert.actions.ok" = "OK";
 "alert.actions.discard-changes" = "Discard Changes";
 "alert.actions.delete-channel-title" = "Delete conversation";
@@ -135,7 +135,8 @@
 "alert.actions.unblock-user" = "Unblock User";
 "alert.text-field.polls-new-option" = "Enter a new option";
 "alert.title.add-comment" = "Add a comment";
-"alert.title.end-poll" = "Nobody will be able to vote in this poll anymore.";
+"alert.title.end-poll" = "End this poll?";
+"alert.message.end-poll" = "Do you want to end this poll now? Nobody will be able to vote in this poll anymore.";
 "alert.title.suggest-an-option" = "Suggest an option";
 
 "message.only-visible-to-you" = "Only visible to you";

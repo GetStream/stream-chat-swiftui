@@ -29,8 +29,8 @@ internal enum L10n {
       internal static var deleteChannelTitle: String { L10n.tr("Localizable", "alert.actions.delete-channel-title") }
       /// Discard Changes
       internal static var discardChanges: String { L10n.tr("Localizable", "alert.actions.discard-changes") }
-      /// End
-      internal static var end: String { L10n.tr("Localizable", "alert.actions.end") }
+      /// End Poll
+      internal static var endPoll: String { L10n.tr("Localizable", "alert.actions.endPoll") }
       /// Keep Editing
       internal static var keepEditing: String { L10n.tr("Localizable", "alert.actions.keep-editing") }
       /// Leave Conversation
@@ -74,6 +74,10 @@ internal enum L10n {
       /// Something went wrong.
       internal static var title: String { L10n.tr("Localizable", "alert.error.title") }
     }
+    internal enum Message {
+      /// Do you want to end this poll now? Nobody will be able to vote in this poll anymore.
+      internal static var endPoll: String { L10n.tr("Localizable", "alert.message.end-poll") }
+    }
     internal enum TextField {
       /// Enter a new option
       internal static var pollsNewOption: String { L10n.tr("Localizable", "alert.text-field.polls-new-option") }
@@ -81,7 +85,7 @@ internal enum L10n {
     internal enum Title {
       /// Add a comment
       internal static var addComment: String { L10n.tr("Localizable", "alert.title.add-comment") }
-      /// Nobody will be able to vote in this poll anymore.
+      /// End this poll?
       internal static var endPoll: String { L10n.tr("Localizable", "alert.title.end-poll") }
       /// Suggest an option
       internal static var suggestAnOption: String { L10n.tr("Localizable", "alert.title.suggest-an-option") }
