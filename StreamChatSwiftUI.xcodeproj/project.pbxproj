@@ -210,6 +210,7 @@
 				Tests/ChatChannel/MessageTypeResolver_Tests.swift,
 				Tests/ChatChannel/MessageView_Tests.swift,
 				Tests/ChatChannel/MessageViewMultiRowReactions_Tests.swift,
+				Tests/ChatChannel/PollAllOptionsView_Tests.swift,
 				Tests/ChatChannel/PollAttachmentView_Tests.swift,
 				Tests/ChatChannel/PollAttachmentViewModel_Tests.swift,
 				Tests/ChatChannel/PollCommentsView_Tests.swift,
