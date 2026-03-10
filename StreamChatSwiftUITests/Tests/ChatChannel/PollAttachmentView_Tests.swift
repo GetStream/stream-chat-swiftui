@@ -118,10 +118,23 @@ import XCTest
 
     func test_pollAttachmentView_allVotes() {
         // Given
-        let poll = Poll.mock()
+        let pollId = "all-votes"
+        let users = (1...4).map { ChatUser.mock(id: "user\($0)", name: "User \($0)") }
+        let optionId = "opt1"
+        let votes = users.map {
+            PollVote.mock(pollId: pollId, optionId: optionId, user: $0)
+        }
+        let option = PollOption.mock(id: optionId, text: "Barcelona", latestVotes: votes)
+        let poll = Poll.mock(pollId: pollId, options: [
+            option,
+            PollOption.mock(id: "opt2", text: "Lisbon", latestVotes: [])
+        ])
+
+        let viewModel = PollOptionAllVotesViewModel(poll: poll, option: option)
+        viewModel.pollVotes = votes
 
         // When
-        let view = PollOptionAllVotesView(factory: DefaultViewFactory.shared, poll: poll, option: poll.options[0])
+        let view = PollOptionAllVotesView(factory: DefaultViewFactory.shared, viewModel: viewModel)
             .applyDefaultSize()
 
         // Then
