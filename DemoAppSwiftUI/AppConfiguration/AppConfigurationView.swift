@@ -12,6 +12,12 @@ struct AppConfigurationView: View {
     @State private var reactionsPlacement = AppConfiguration.default.reactionsPlacement
     @State private var appStyle = AppConfiguration.default.appStyle
 
+    var forceRTL: Binding<Bool> = Binding {
+        AppConfiguration.default.forceRTL
+    } set: { newValue in
+        AppConfiguration.default.forceRTL = newValue
+    }
+
     var body: some View {
         NavigationView {
             List {
@@ -36,6 +42,9 @@ struct AppConfigurationView: View {
                         Text("Regular").tag(AppConfiguration.AppStyle.regular)
                         Text("Liquid Glass").tag(AppConfiguration.AppStyle.liquidGlass)
                     }
+                }
+                Section("Layout") {
+                    Toggle("Force RTL (preview)", isOn: forceRTL)
                 }
             }
             .navigationBarTitleDisplayMode(.inline)

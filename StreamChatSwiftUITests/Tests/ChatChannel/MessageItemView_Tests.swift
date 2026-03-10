@@ -222,7 +222,13 @@ import XCTest
         )
 
         // When
-        let view = testMessageViewContainer(message: message, height: 300)
+        let view = MessageMediaAttachmentsContainerView(
+            factory: DefaultViewFactory.shared,
+            message: message,
+            width: 2 * defaultScreenSize.width / 3
+        )
+        .frame(width: 200)
+        .padding()
 
         // Then
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
@@ -239,7 +245,13 @@ import XCTest
         )
 
         // When
-        let view = testMessageViewContainer(message: message, height: 300)
+        let view = MessageMediaAttachmentsContainerView(
+            factory: DefaultViewFactory.shared,
+            message: message,
+            width: 2 * defaultScreenSize.width / 3
+        )
+        .frame(width: 200)
+        .padding()
 
         // Then
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
@@ -864,11 +876,13 @@ import XCTest
         shownAsPreview: Bool = false,
         messageViewModel: MessageViewModel? = nil,
         highlightedMessageId: String? = nil,
-        height: CGFloat = 200
+        height: CGFloat = 200,
+        showsAllInfo: Bool = true
     ) -> some View {
-        MessageItemView(
+        let channelOrMock = channel ?? .mockDMChannel()
+        return MessageItemView(
             factory: DefaultViewFactory.shared,
-            channel: channel ?? .mockDMChannel(),
+            channel: channelOrMock,
             message: message,
             width: defaultScreenSize.width,
             showsAllInfo: true,
@@ -878,7 +892,7 @@ import XCTest
             scrolledId: .constant(nil),
             quotedMessage: .constant(nil),
             onLongPress: { _ in },
-            viewModel: messageViewModel ?? MessageViewModel(message: message, channel: channel ?? .mockDMChannel())
+            viewModel: messageViewModel ?? MessageViewModel(message: message, channel: channelOrMock)
         )
         .environment(\.highlightedMessageId, highlightedMessageId)
         .frame(width: 375, height: height)

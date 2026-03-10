@@ -843,7 +843,211 @@ import XCTest
         XCTAssert(extraData?["test"] == "test")
         try! FileManager.default.removeItem(at: url)
     }
-    
+
+    func test_addedAsset_toAttachmentPayload_includesOriginalWidthHeightForImage() throws {
+        let image = UIImage(systemName: "person")!
+        let url = URL.newTemporaryFileURL()
+        defer { try? FileManager.default.removeItem(at: url) }
+        try image.pngData()?.write(to: url)
+
+        let addedAsset = AddedAsset(
+            image: image,
+            id: "imageId",
+            url: url,
+            type: .image,
+            originalWidth: 800,
+            originalHeight: 600
+        )
+
+        let attachment = try addedAsset.toAttachmentPayload()
+        let payload = try XCTUnwrap(attachment.payload as? ImageAttachmentPayload)
+        XCTAssertEqual(payload.originalWidth, 800)
+        XCTAssertEqual(payload.originalHeight, 600)
+    }
+
+    func test_addedAsset_toAttachmentPayload_includesWidthHeightDurationForVideo() throws {
+        let thumbnail = UIImage(systemName: "video")!
+        let url = URL.newTemporaryFileURL().appendingPathExtension("mp4")
+        defer { try? FileManager.default.removeItem(at: url) }
+        try Data(count: 100).write(to: url)
+
+        let addedAsset = AddedAsset(
+            image: thumbnail,
+            id: "videoId",
+            url: url,
+            type: .video,
+            originalWidth: 1920,
+            originalHeight: 1080,
+            duration: 120.5
+        )
+
+        let attachment = try addedAsset.toAttachmentPayload()
+        let payload = try XCTUnwrap(attachment.payload as? VideoAttachmentPayload)
+        XCTAssertEqual(payload.originalWidth, 1920)
+        XCTAssertEqual(payload.originalHeight, 1080)
+        XCTAssertEqual(payload.duration, 120.5)
+    }
+
+    func test_addedAsset_toAttachmentPayload_whenPayloadExists_returnsExistingPayload() throws {
+        let image = UIImage(systemName: "person")!
+        let url = URL.newTemporaryFileURL()
+        defer { try? FileManager.default.removeItem(at: url) }
+        try image.pngData()?.write(to: url)
+        let existingPayload = ImageAttachmentPayload(
+            title: "existing",
+            imageRemoteURL: URL(string: "https://example.com/image.png")!,
+            file: try AttachmentFile(url: url),
+            originalWidth: 100,
+            originalHeight: 200
+        )
+
+        let addedAsset = AddedAsset(
+            image: image,
+            id: "id",
+            url: url,
+            type: .image,
+            payload: existingPayload
+        )
+
+        let attachment = try addedAsset.toAttachmentPayload()
+        XCTAssertNil(attachment.localFileURL)
+        let payload = try XCTUnwrap(attachment.payload as? ImageAttachmentPayload)
+        XCTAssertEqual(payload.originalWidth, 100)
+        XCTAssertEqual(payload.originalHeight, 200)
+    }
+
+    func test_addedAsset_toAttachmentPayload_videoWithOnlyDuration_setsDurationOnPayload() throws {
+        let thumbnail = UIImage(systemName: "video")!
+        let url = URL.newTemporaryFileURL().appendingPathExtension("mp4")
+        defer { try? FileManager.default.removeItem(at: url) }
+        try Data(count: 100).write(to: url)
+
+        let addedAsset = AddedAsset(
+            image: thumbnail,
+            id: "videoId",
+            url: url,
+            type: .video,
+            originalWidth: nil,
+            originalHeight: nil,
+            duration: 45.0
+        )
+
+        let attachment = try addedAsset.toAttachmentPayload()
+        let payload = try XCTUnwrap(attachment.payload as? VideoAttachmentPayload)
+        XCTAssertNil(payload.originalWidth)
+        XCTAssertNil(payload.originalHeight)
+        XCTAssertEqual(payload.duration, 45.0)
+    }
+
+    func test_addedAsset_toAttachmentPayload_withNoMetadata_passesNilLocalMetadata() throws {
+        let image = UIImage(systemName: "person")!
+        let url = URL.newTemporaryFileURL()
+        defer { try? FileManager.default.removeItem(at: url) }
+        try image.pngData()?.write(to: url)
+
+        let addedAsset = AddedAsset(
+            image: image,
+            id: "id",
+            url: url,
+            type: .image,
+            originalWidth: nil,
+            originalHeight: nil,
+            duration: nil
+        )
+
+        let attachment = try addedAsset.toAttachmentPayload()
+        let payload = try XCTUnwrap(attachment.payload as? ImageAttachmentPayload)
+        XCTAssertNotNil(payload.imageURL)
+        XCTAssertNil(payload.originalWidth)
+        XCTAssertNil(payload.originalHeight)
+    }
+
+    func test_imagePasted_setsOriginalWidthAndHeightOnAddedAsset() {
+        let viewModel = makeComposerViewModel()
+        let image = UIImage(systemName: "person.fill")!
+
+        viewModel.imagePasted(image)
+
+        let added: AddedAsset? = viewModel.composerAssets.compactMap {
+            if case .addedAsset(let asset) = $0 { return asset }
+            return nil
+        }.last
+        XCTAssertNotNil(added)
+        XCTAssertEqual(added?.type, .image)
+        XCTAssertNotNil(added?.originalWidth)
+        XCTAssertNotNil(added?.originalHeight)
+        XCTAssertEqual(added?.originalWidth, Double(image.size.width * image.scale))
+        XCTAssertEqual(added?.originalHeight, Double(image.size.height * image.scale))
+    }
+
+    func test_cameraImageAdded_preservesAssetMetadata() {
+        let viewModel = makeComposerViewModel()
+        let image = UIImage(systemName: "video")!
+        let url = URL.newTemporaryFileURL()
+        defer { try? FileManager.default.removeItem(at: url) }
+        try? Data(count: 10).write(to: url)
+        let assetWithMetadata = AddedAsset(
+            image: image,
+            id: "cam",
+            url: url,
+            type: .video,
+            originalWidth: 640,
+            originalHeight: 480,
+            duration: 12.5
+        )
+
+        viewModel.cameraImageAdded(assetWithMetadata)
+
+        let addedAssets = viewModel.composerAssets.compactMap {
+            if case .addedAsset(let asset) = $0 { return asset }
+            return nil
+        }
+        XCTAssertEqual(addedAssets.count, 1)
+        XCTAssertEqual(addedAssets.first?.originalWidth, 640)
+        XCTAssertEqual(addedAssets.first?.originalHeight, 480)
+        XCTAssertEqual(addedAssets.first?.duration, 12.5)
+    }
+
+    func test_convertAddedAssetsToPayloads_includesMetadataInPayloads() throws {
+        let viewModel = makeComposerViewModel()
+        let image = UIImage(systemName: "person")!
+        let url = URL.newTemporaryFileURL()
+        defer { try? FileManager.default.removeItem(at: url) }
+        try image.pngData()?.write(to: url)
+        viewModel.updateAddedAssets([
+            AddedAsset(
+                image: image,
+                id: "1",
+                url: url,
+                type: .image,
+                originalWidth: 300,
+                originalHeight: 200
+            )
+        ])
+
+        let payloads = try viewModel.convertAddedAssetsToPayloads()
+        let imagePayload = try XCTUnwrap(payloads.first?.payload as? ImageAttachmentPayload)
+        XCTAssertEqual(imagePayload.originalWidth, 300)
+        XCTAssertEqual(imagePayload.originalHeight, 200)
+    }
+
+    func test_imagePickerCoordinator_imageSelection_setsOriginalWidthAndHeightOnAsset() throws {
+        var captured: AddedAsset?
+        let view = AttachmentImagePickerView(sourceType: .photoLibrary, onAssetPicked: { captured = $0 })
+        let coordinator = view.makeCoordinator()
+        let image = UIGraphicsImageRenderer(size: CGSize(width: 100, height: 80)).image { _ in }
+
+        coordinator.imagePickerController(
+            UIImagePickerController(),
+            didFinishPickingMediaWithInfo: [.originalImage: image]
+        )
+
+        let asset = try XCTUnwrap(captured)
+        XCTAssertEqual(asset.type, .image)
+        XCTAssertEqual(asset.originalWidth, Double(image.size.width * image.scale))
+        XCTAssertEqual(asset.originalHeight, Double(image.size.height * image.scale))
+    }
+
     // MARK: - Recording
     
     func test_messageComposer_discardRecording() {
