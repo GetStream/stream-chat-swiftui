@@ -247,6 +247,13 @@ import SwiftUI
             name: UIApplication.willEnterForegroundNotification,
             object: nil
         )
+
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(onShowChannelSnackBar(_:)),
+            name: .showChannelSnackBarNotification,
+            object: nil
+        )
     }
 
     /// Appends the file to the attachments in the composer input view.
@@ -916,6 +923,13 @@ import SwiftUI
     private func applicationWillEnterForeground() {
         if (imageAssets?.count ?? 0) > 0 {
             fetchAssets()
+        }
+    }
+
+    @objc
+    private func onShowChannelSnackBar(_ notification: Notification) {
+        if let text = notification.object as? String {
+            snackBarText = text
         }
     }
 }

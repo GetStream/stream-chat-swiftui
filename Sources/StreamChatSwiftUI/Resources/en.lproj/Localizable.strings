@@ -99,6 +99,7 @@
 "message.polls.vote-singular" = "%d vote";
 "message.polls.votes" = "%d votes";
 "message.polls.votes-total" = "%d votes total";
+"message.polls.snackbar.poll-ended" = "Poll ended";
 
 "message.translatedTo" = "Translated to %@";
 "message.showOriginal" = "Show Original";

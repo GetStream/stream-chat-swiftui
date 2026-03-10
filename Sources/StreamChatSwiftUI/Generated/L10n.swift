@@ -697,6 +697,10 @@ internal enum L10n {
           return L10n.tr("Localizable", "message.polls.date.weeks-ago", p1)
         }
       }
+      internal enum Snackbar {
+        /// Poll ended
+        internal static var pollEnded: String { L10n.tr("Localizable", "message.polls.snackbar.poll-ended") }
+      }
       internal enum Subtitle {
         /// Select one
         internal static var selectOne: String { L10n.tr("Localizable", "message.polls.subtitle.selectOne") }
