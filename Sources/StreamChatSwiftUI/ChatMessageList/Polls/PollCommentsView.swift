@@ -207,6 +207,6 @@ struct PollCommentsView<Factory: ViewFactory>: View {
         let formatter = InjectedValues[\.utils].pollsDateFormatter
         let day = formatter.formatDay(date)
         let time = formatter.formatTime(date)
-        return [day, time].joined(separator: " ")
+        return L10n.Message.Polls.Date.dayAtTime(day, time)
     }
 }

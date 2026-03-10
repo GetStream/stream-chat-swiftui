@@ -91,6 +91,7 @@
 "message.polls.toolbar.options-title" = "Poll Options";
 "message.polls.toolbar.results-title" = "Poll Results";
 "message.polls.unknown-vote-author" = "Anonymous";
+"message.polls.date.day-at-time" = "%@ at %@";
 "message.polls.date.days-ago" = "%dd ago";
 "message.polls.date.weeks-ago" = "%dw ago";
 "message.polls.option" = "Option %d";

@@ -680,6 +680,10 @@ internal enum L10n {
         internal static var viewResults: String { L10n.tr("Localizable", "message.polls.button.viewResults") }
       }
       internal enum Date {
+        /// %@ at %@
+        internal static func dayAtTime(_ p1: Any, _ p2: Any) -> String {
+          return L10n.tr("Localizable", "message.polls.date.day-at-time", String(describing: p1), String(describing: p2))
+        }
         /// %dd ago
         internal static func daysAgo(_ p1: Int) -> String {
           return L10n.tr("Localizable", "message.polls.date.days-ago", p1)
