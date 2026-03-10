@@ -968,7 +968,10 @@ import XCTest
 
         viewModel.imagePasted(image)
 
-        let added = viewModel.addedAssets.last
+        let added: AddedAsset? = viewModel.composerAssets.compactMap {
+            if case .addedAsset(let asset) = $0 { return asset }
+            return nil
+        }.last
         XCTAssertNotNil(added)
         XCTAssertEqual(added?.type, .image)
         XCTAssertNotNil(added?.originalWidth)
@@ -995,10 +998,14 @@ import XCTest
 
         viewModel.cameraImageAdded(assetWithMetadata)
 
-        XCTAssertEqual(viewModel.addedAssets.count, 1)
-        XCTAssertEqual(viewModel.addedAssets.first?.originalWidth, 640)
-        XCTAssertEqual(viewModel.addedAssets.first?.originalHeight, 480)
-        XCTAssertEqual(viewModel.addedAssets.first?.duration, 12.5)
+        let addedAssets = viewModel.composerAssets.compactMap {
+            if case .addedAsset(let asset) = $0 { return asset }
+            return nil
+        }
+        XCTAssertEqual(addedAssets.count, 1)
+        XCTAssertEqual(addedAssets.first?.originalWidth, 640)
+        XCTAssertEqual(addedAssets.first?.originalHeight, 480)
+        XCTAssertEqual(addedAssets.first?.duration, 12.5)
     }
 
     func test_convertAddedAssetsToPayloads_includesMetadataInPayloads() throws {
@@ -1026,7 +1033,7 @@ import XCTest
 
     func test_imagePickerCoordinator_imageSelection_setsOriginalWidthAndHeightOnAsset() throws {
         var captured: AddedAsset?
-        let view = ImagePickerView(sourceType: .photoLibrary, onAssetPicked: { captured = $0 })
+        let view = AttachmentImagePickerView(sourceType: .photoLibrary, onAssetPicked: { captured = $0 })
         let coordinator = view.makeCoordinator()
         let image = UIGraphicsImageRenderer(size: CGSize(width: 100, height: 80)).image { _ in }
 
