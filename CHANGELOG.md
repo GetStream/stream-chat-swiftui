@@ -4,8 +4,20 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 # Upcoming
 
 ### ✅ Added
-- Add public init for `ImageContainerView` [#1174](https://github.com/GetStream/stream-chat-swiftui/pull/1174)
-- Expose Keyboard Handling methods [#1175](https://github.com/GetStream/stream-chat-swiftui/pull/1175)
+- `AddedAsset` now has `originalWidth`, `originalHeight`, and `duration` (videos), set at selection time and passed into image/video attachment payloads for custom CDN uploads [#1255](https://github.com/GetStream/stream-chat-swiftui/pull/1255)
+
+### 🐞 Fixed
+- Align video attachments' bubble corner radius and corner shape with image attachments [#1260](https://github.com/GetStream/stream-chat-swiftui/pull/1260)
+
+# [4.98.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/4.98.0)
+_February 26, 2026_
+
+### ✅ Added
+- Add support for optional sort in channel list message search [#1237](https://github.com/GetStream/stream-chat-swiftui/pull/1237)
+
+### 🐞 Fixed
+- Fix composer text, placeholder and icons not respecting layout direction in RTL [#1206](https://github.com/GetStream/stream-chat-swiftui/pull/1206)
+- Use `chevron.forward` instead of `chevron.right` for channel info disclosure indicator in RTL [#1206](https://github.com/GetStream/stream-chat-swiftui/pull/1206)
 
 # [4.97.1](https://github.com/GetStream/stream-chat-swiftui/releases/tag/4.97.1)
 _February 11, 2026_
@@ -16,6 +28,10 @@ _February 11, 2026_
 ### ✅ Added
 - Add public init for `ImageContainerView` [#1174](https://github.com/GetStream/stream-chat-swiftui/pull/1174)
 - Expose Keyboard Handling methods [#1175](https://github.com/GetStream/stream-chat-swiftui/pull/1175)
+
+### ⚡️ Performance
+- Reduction of the SDK size by 2MB [#1173
+](https://github.com/GetStream/stream-chat-swiftui/pull/1173)
 
 # [4.97.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/4.97.0)
 _January 27, 2026_

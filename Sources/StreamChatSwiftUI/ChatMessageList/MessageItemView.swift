@@ -19,6 +19,7 @@ public struct MessageItemView<Factory: ViewFactory>: View {
     let channel: ChatChannel
     let message: ChatMessage
     let width: CGFloat?
+    let fixedContentWidth: CGFloat?
     let showsAllInfo: Bool
     let shownAsPreview: Bool
     let isInThread: Bool
@@ -49,6 +50,7 @@ public struct MessageItemView<Factory: ViewFactory>: View {
         channel: ChatChannel,
         message: ChatMessage,
         width: CGFloat? = nil,
+        fixedContentWidth: CGFloat? = nil,
         showsAllInfo: Bool,
         shownAsPreview: Bool = false,
         isInThread: Bool,
@@ -62,6 +64,7 @@ public struct MessageItemView<Factory: ViewFactory>: View {
         self.channel = channel
         self.message = message
         self.width = width
+        self.fixedContentWidth = fixedContentWidth
         self.showsAllInfo = showsAllInfo
         self.shownAsPreview = shownAsPreview
         self.isInThread = isInThread
@@ -144,6 +147,9 @@ public struct MessageItemView<Factory: ViewFactory>: View {
     // MARK: - Computed Properties
 
     private var contentWidth: CGFloat {
+        if let fixedContentWidth {
+            return fixedContentWidth
+        }
         let minimumWidth: CGFloat = 240
         let padding = messageListConfig.messagePaddings.horizontal
         let avatarWithSpacing = AvatarSize.medium + tokens.spacingXs

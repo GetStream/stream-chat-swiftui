@@ -53,7 +53,7 @@ public struct ActionItemView: View {
         }
 
         // Check if it's bundled.
-        if let image = UIImage(named: iconName, in: .streamChatUI) {
+        if let image = UIImage(named: iconName, in: .streamChatCommonUI) {
             return image
         }
 

@@ -71,13 +71,19 @@ public struct AttachmentMediaPickerItemView: View {
                                 withAnimation {
                                     let resolvedURL = asset.mediaType == .image ? assetJpgURL() : assetURL
                                     if let url = resolvedURL {
+                                        let width = Double(asset.pixelWidth)
+                                        let height = Double(asset.pixelHeight)
+                                        let durationSeconds: TimeInterval? = asset.mediaType == .video ? asset.duration : nil
                                         onImageTap(
                                             AddedAsset(
                                                 image: image,
                                                 id: asset.localIdentifier,
                                                 url: url,
                                                 type: assetType,
-                                                extraData: asset.mediaType == .video ? ["duration": .number(asset.duration)] : [:]
+                                                extraData: asset.mediaType == .video ? ["duration": .number(asset.duration)] : [:],
+                                                originalWidth: width > 0 ? width : nil,
+                                                originalHeight: height > 0 ? height : nil,
+                                                duration: durationSeconds
                                             )
                                         )
                                     }

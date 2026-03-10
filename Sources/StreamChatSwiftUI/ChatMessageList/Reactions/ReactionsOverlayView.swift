@@ -91,7 +91,8 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
                         options: MessageItemViewOptions(
                             channel: channel,
                             message: messageDisplayInfo.message,
-                            width: reader.size.width,
+                            width: messageDisplayInfo.frame.width,
+                            fixedContentWidth: messageDisplayInfo.contentWidth,
                             showsAllInfo: messageDisplayInfo.isFirst,
                             shownAsPreview: true,
                             isInThread: false,
@@ -109,6 +110,7 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
                     .animation(willPopOut ? .easeInOut : popInAnimation, value: popIn)
                     messageActionsView(reader: reader)
                 }
+                .frame(width: overlayContentWidth, alignment: isRightAligned ? .trailing : .leading)
                 .frame(height: measuredTotalContentHeight > 0 ? min(measuredTotalContentHeight, allowedTotalContentHeight) : nil)
                 .background(
                     GeometryReader { proxy in
@@ -118,7 +120,7 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
                         )
                     }
                 )
-                .offset(y: contentOffsetY)
+                .offset(x: contentOffsetX(reader: reader), y: contentOffsetY)
             }
         }
         .onPreferenceChange(HeightPreferenceKey.self) { value in
@@ -172,12 +174,15 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
                 Image(uiImage: currentSnapshot)
                     .overlay(
                         Color(colors.backgroundCoreScrim)
+                            .edgesIgnoringSafeArea(.all)
                             .opacity(popIn ? 1 : 0)
                     )
                     .blur(radius: popIn ? 4 : 0)
+                    .edgesIgnoringSafeArea(.all)
                     .offset(y: overlayOffsetY)
             } else {
                 Color(colors.backgroundCoreScrim)
+                    .edgesIgnoringSafeArea(.all)
             }
         }
         .transition(.opacity)
@@ -296,6 +301,10 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
         return width
     }
 
+    private var overlayContentWidth: CGFloat {
+        messageDisplayInfo.frame.width
+    }
+
     // MARK: - Animation
 
     private var popInAnimation: Animation {
@@ -322,6 +331,13 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
         let maxOrigin = originalMessageMatchingOffsetY + measuredTotalContentHeight
         let bottomClippingAvoidingOffset = min(screenHeight - bottomContentSpacing - maxOrigin, 0)
         return max(topContentSpacing, originalMessageMatchingOffsetY + bottomClippingAvoidingOffset)
+    }
+
+    private func contentOffsetX(reader: GeometryProxy) -> CGFloat {
+        let overlayFrame = reader.frame(in: .global)
+        let originalMessageOriginX = messageDisplayInfo.frame.minX - overlayFrame.minX
+        let maxAllowedOffset = max(0, reader.size.width - overlayContentWidth)
+        return min(max(0, originalMessageOriginX), maxAllowedOffset)
     }
 
     private var topReactionsWithPickerHeight: CGFloat {

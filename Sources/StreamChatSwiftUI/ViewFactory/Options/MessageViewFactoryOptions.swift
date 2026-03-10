@@ -67,6 +67,8 @@ public final class MessageItemViewOptions: Sendable {
     public let message: ChatMessage
     /// The available width for the message.
     public let width: CGFloat?
+    /// Optional fixed content width used to preserve an existing message layout.
+    public let fixedContentWidth: CGFloat?
     /// Whether to show all message information.
     public let showsAllInfo: Bool
     /// Whether the message is shown as a preview (e.g. in the reactions overlay).
@@ -88,6 +90,7 @@ public final class MessageItemViewOptions: Sendable {
         channel: ChatChannel,
         message: ChatMessage,
         width: CGFloat?,
+        fixedContentWidth: CGFloat? = nil,
         showsAllInfo: Bool,
         shownAsPreview: Bool = false,
         isInThread: Bool,
@@ -100,6 +103,7 @@ public final class MessageItemViewOptions: Sendable {
         self.channel = channel
         self.message = message
         self.width = width
+        self.fixedContentWidth = fixedContentWidth
         self.showsAllInfo = showsAllInfo
         self.shownAsPreview = shownAsPreview
         self.isInThread = isInThread

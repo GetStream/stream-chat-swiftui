@@ -522,11 +522,14 @@ import SwiftUI
             log.error("Failed to write image to local temporary file")
             return
         }
+        let scale = image.scale
         let addedImage = AddedAsset(
             image: image,
             id: UUID().uuidString,
             url: imageURL,
-            type: .image
+            type: .image,
+            originalWidth: Double(image.size.width * scale),
+            originalHeight: Double(image.size.height * scale)
         )
         composerAssets.append(.addedAsset(addedImage))
     }
@@ -1118,7 +1121,11 @@ final class FileAddedAsset {
                 id: videoAttachment.id.rawValue,
                 url: localUrl,
                 type: .video,
-                extraData: videoAttachment.extraData ?? [:]
+                extraData: videoAttachment.extraData ?? [:],
+                originalWidth: videoAttachment.originalWidth,
+                originalHeight: videoAttachment.originalHeight,
+                duration: videoAttachment.duration,
+                payload: nil
             )
         }
 
@@ -1128,6 +1135,9 @@ final class FileAddedAsset {
             url: videoAttachment.videoURL,
             type: .video,
             extraData: videoAttachment.extraData ?? [:],
+            originalWidth: videoAttachment.originalWidth,
+            originalHeight: videoAttachment.originalHeight,
+            duration: videoAttachment.duration,
             payload: videoAttachment.payload
         )
     }
@@ -1148,7 +1158,10 @@ final class FileAddedAsset {
                 id: imageAttachment.id.rawValue,
                 url: localFileUrl,
                 type: .image,
-                extraData: imageAttachment.extraData ?? [:]
+                extraData: imageAttachment.extraData ?? [:],
+                originalWidth: imageAttachment.originalWidth,
+                originalHeight: imageAttachment.originalHeight,
+                payload: nil
             )
             completion(imageAsset)
             return
@@ -1167,6 +1180,8 @@ final class FileAddedAsset {
                     url: imageAttachment.imageURL,
                     type: .image,
                     extraData: imageAttachment.extraData ?? [:],
+                    originalWidth: imageAttachment.originalWidth,
+                    originalHeight: imageAttachment.originalHeight,
                     payload: imageAttachment.payload
                 )
                 completion(imageAsset)
