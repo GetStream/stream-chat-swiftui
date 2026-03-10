@@ -222,12 +222,10 @@ import XCTest
         )
 
         // When
-        let view = VideoAttachmentsContainer(
+        let view = MessageMediaAttachmentsContainerView(
             factory: DefaultViewFactory.shared,
             message: message,
-            width: 2 * defaultScreenSize.width / 3,
-            isFirst: true,
-            scrolledId: .constant(nil)
+            width: 2 * defaultScreenSize.width / 3
         )
         .frame(width: 200)
         .padding()
@@ -247,62 +245,10 @@ import XCTest
         )
 
         // When
-        let view = VideoAttachmentsContainer(
+        let view = MessageMediaAttachmentsContainerView(
             factory: DefaultViewFactory.shared,
             message: message,
-            width: 2 * defaultScreenSize.width / 3,
-            isFirst: true,
-            scrolledId: .constant(nil)
-        )
-        .frame(width: 200)
-        .padding()
-
-        // Then
-        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
-    }
-
-    func test_videoAttachmentsContainer_isFirstFalse_snapshot() {
-        // Given
-        let message = ChatMessage.mock(
-            id: .unique,
-            cid: .unique,
-            text: "Test message",
-            author: .mock(id: .unique),
-            attachments: ChatChannelTestHelpers.videoAttachments
-        )
-
-        // When
-        let view = VideoAttachmentsContainer(
-            factory: DefaultViewFactory.shared,
-            message: message,
-            width: 2 * defaultScreenSize.width / 3,
-            isFirst: false,
-            scrolledId: .constant(nil)
-        )
-        .frame(width: 200)
-        .padding()
-
-        // Then
-        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
-    }
-
-    func test_videoAttachment_noText_isFirstFalse_snapshot() {
-        // Given
-        let message = ChatMessage.mock(
-            id: .unique,
-            cid: .unique,
-            text: "",
-            author: .mock(id: .unique),
-            attachments: ChatChannelTestHelpers.videoAttachments
-        )
-
-        // When
-        let view = VideoAttachmentsContainer(
-            factory: DefaultViewFactory.shared,
-            message: message,
-            width: 2 * defaultScreenSize.width / 3,
-            isFirst: false,
-            scrolledId: .constant(nil)
+            width: 2 * defaultScreenSize.width / 3
         )
         .frame(width: 200)
         .padding()
