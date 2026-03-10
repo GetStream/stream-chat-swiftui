@@ -174,7 +174,9 @@ final class ImagePickerCoordinator: NSObject, UIImagePickerControllerDelegate, U
                 image: uiImage,
                 id: UUID().uuidString,
                 url: imageURL,
-                type: .image
+                type: .image,
+                originalWidth: Double(uiImage.size.width * uiImage.scale),
+                originalHeight: Double(uiImage.size.height * uiImage.scale)
             )
             parent.onAssetPicked(addedImage)
         } else if let videoURL = info[UIImagePickerController.InfoKey.mediaURL] as? URL {
@@ -187,11 +189,17 @@ final class ImagePickerCoordinator: NSObject, UIImagePickerControllerDelegate, U
                     actualTime: nil
                 )
                 let thumbnail = UIImage(cgImage: cgImage)
+                let duration = CMTimeGetSeconds(asset.duration)
+                let videoTrack = asset.tracks(withMediaType: .video).first
+                let naturalSize = videoTrack?.naturalSize ?? .zero
                 let addedVideo = AddedAsset(
                     image: thumbnail,
                     id: UUID().uuidString,
                     url: videoURL,
-                    type: .video
+                    type: .video,
+                    originalWidth: Double(naturalSize.width),
+                    originalHeight: Double(naturalSize.height),
+                    duration: duration.isFinite ? duration : nil
                 )
                 parent.onAssetPicked(addedVideo)
             } catch {
