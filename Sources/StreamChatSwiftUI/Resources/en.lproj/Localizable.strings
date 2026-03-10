@@ -80,7 +80,7 @@
 "message.polls.button.updateComment" = "Update Your Comment";
 "message.polls.button.endVote" = "End Poll";
 "message.polls.button.seeMoreOptions" = "See %d More Options";
-"message.polls.button.show-all" = "Show All";
+"message.polls.button.show-all" = "View all";
 "message.polls.button.suggestAnOption" = "Suggest an Option";
 "message.polls.button.viewResults" = "View Results";
 "message.polls.subtitle.selectOne" = "Select one";
@@ -91,7 +91,13 @@
 "message.polls.toolbar.options-title" = "Poll Options";
 "message.polls.toolbar.results-title" = "Poll Results";
 "message.polls.unknown-vote-author" = "Anonymous";
+"message.polls.date.days-ago" = "%dd ago";
+"message.polls.date.weeks-ago" = "%dw ago";
+"message.polls.option" = "Option %d";
+"message.polls.question" = "Question";
+"message.polls.vote-singular" = "%d vote";
 "message.polls.votes" = "%d votes";
+"message.polls.votes-total" = "%d votes total";
 
 "message.translatedTo" = "Translated to %@";
 "message.showOriginal" = "Show Original";

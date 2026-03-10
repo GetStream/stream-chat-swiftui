@@ -635,11 +635,25 @@ internal enum L10n {
       }
     }
     internal enum Polls {
+      /// Option %d
+      internal static func option(_ p1: Int) -> String {
+        return L10n.tr("Localizable", "message.polls.option", p1)
+      }
+      /// Question
+      internal static var question: String { L10n.tr("Localizable", "message.polls.question") }
       /// Anonymous
       internal static var unknownVoteAuthor: String { L10n.tr("Localizable", "message.polls.unknown-vote-author") }
+      /// %d vote
+      internal static func voteSingular(_ p1: Int) -> String {
+        return L10n.tr("Localizable", "message.polls.vote-singular", p1)
+      }
       /// %d votes
       internal static func votes(_ p1: Int) -> String {
         return L10n.tr("Localizable", "message.polls.votes", p1)
+      }
+      /// %d votes total
+      internal static func votesTotal(_ p1: Int) -> String {
+        return L10n.tr("Localizable", "message.polls.votes-total", p1)
       }
       internal enum Button {
         /// Add a Comment
@@ -650,7 +664,7 @@ internal enum L10n {
         internal static func seeMoreOptions(_ p1: Int) -> String {
           return L10n.tr("Localizable", "message.polls.button.seeMoreOptions", p1)
         }
-        /// Show All
+        /// View all
         internal static var showAll: String { L10n.tr("Localizable", "message.polls.button.show-all") }
         /// Suggest an Option
         internal static var suggestAnOption: String { L10n.tr("Localizable", "message.polls.button.suggestAnOption") }
@@ -662,6 +676,16 @@ internal enum L10n {
         }
         /// View Results
         internal static var viewResults: String { L10n.tr("Localizable", "message.polls.button.viewResults") }
+      }
+      internal enum Date {
+        /// %dd ago
+        internal static func daysAgo(_ p1: Int) -> String {
+          return L10n.tr("Localizable", "message.polls.date.days-ago", p1)
+        }
+        /// %dw ago
+        internal static func weeksAgo(_ p1: Int) -> String {
+          return L10n.tr("Localizable", "message.polls.date.weeks-ago", p1)
+        }
       }
       internal enum Subtitle {
         /// Select one
