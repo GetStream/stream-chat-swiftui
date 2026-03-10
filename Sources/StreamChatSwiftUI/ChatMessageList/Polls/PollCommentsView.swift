@@ -51,18 +51,19 @@ struct PollCommentsView<Factory: ViewFactory>: View {
             .padding(.top, tokens.spacingMd)
             .padding(.bottom, tokens.spacing3xl)
         }
+        .uiAlert(
+            title: commentAlertTitle,
+            isPresented: $viewModel.addCommentShown,
+            text: $viewModel.newCommentText,
+            accept: commentAlertAcceptAction,
+            action: { viewModel.add(comment: viewModel.newCommentText) }
+        )
         .background(Color(colors.background).ignoresSafeArea())
         .alertBanner(
             isPresented: $viewModel.errorShown,
             action: viewModel.refresh
         )
         .toolbarThemed {
-            ToolbarItem(placement: .principal) {
-                Text(L10n.Message.Polls.Toolbar.commentsTitle)
-                    .font(fonts.bodyBold)
-                    .foregroundColor(Color(colors.navigationBarTitle))
-            }
-
             ToolbarItem(placement: .navigationBarLeading) {
                 Button {
                     presentationMode.wrappedValue.dismiss()
@@ -71,7 +72,13 @@ struct PollCommentsView<Factory: ViewFactory>: View {
                 }
             }
 
-            ToolbarItem(placement: .navigationBarTrailing) {
+            ToolbarItem(placement: .principal) {
+                Text(L10n.Message.Polls.Toolbar.commentsTitle)
+                    .font(fonts.bodyBold)
+                    .foregroundColor(Color(colors.navigationBarTitle))
+            }
+
+            ToolbarItem(placement: .confirmationAction) {
                 if viewModel.showsAddCommentButton && !viewModel.currentUserAddedComment {
                     addCommentButton
                 }
@@ -146,38 +153,45 @@ struct PollCommentsView<Factory: ViewFactory>: View {
                     .frame(maxWidth: .infinity)
                     .frame(height: tokens.buttonHitTargetMinHeight)
             }
-            .uiAlert(
-                title: L10n.Message.Polls.Button.updateComment,
-                isPresented: $viewModel.addCommentShown,
-                text: $viewModel.newCommentText,
-                accept: L10n.Alert.Actions.send,
-                action: { viewModel.add(comment: viewModel.newCommentText) }
-            )
         }
         .padding(.horizontal, tokens.spacingMd)
     }
 
+    @ViewBuilder
     private var addCommentButton: some View {
-        Button {
-            viewModel.addCommentShown = true
-        } label: {
-            Image(systemName: "pencil")
-                .font(.system(size: tokens.iconSizeMd, weight: .medium))
-                .foregroundColor(.white)
-                .frame(width: tokens.buttonHitTargetMinHeight, height: tokens.buttonHitTargetMinHeight)
-                .background(Color(colors.accentPrimary))
-                .clipShape(Circle())
+        if #available(iOS 26, *) {
+            Button(L10n.Message.Polls.Button.addComment, systemImage: "pencil") {
+                viewModel.addCommentShown = true
+            }
+            .tint(Color(colors.accentPrimary))
+        } else {
+            Button {
+                viewModel.addCommentShown = true
+            } label: {
+                Image(systemName: "pencil")
+                    .font(.system(size: tokens.iconSizeMd, weight: .medium))
+                    .foregroundColor(Color(colors.buttonPrimaryTextOnAccent))
+                    .frame(width: tokens.buttonVisualHeightMd, height: tokens.buttonVisualHeightMd)
+                    .background(Color(colors.accentPrimary))
+                    .clipShape(Circle())
+            }
+            .buttonStyle(.plain)
         }
-        .uiAlert(
-            title: L10n.Message.Polls.Button.addComment,
-            isPresented: $viewModel.addCommentShown,
-            text: $viewModel.newCommentText,
-            accept: L10n.Alert.Actions.send,
-            action: { viewModel.add(comment: viewModel.newCommentText) }
-        )
     }
 
     // MARK: - Helpers
+
+    private var commentAlertTitle: String {
+        viewModel.currentUserAddedComment
+            ? L10n.Message.Polls.Button.updateComment
+            : L10n.Message.Polls.Button.addComment
+    }
+
+    private var commentAlertAcceptAction: String {
+        viewModel.currentUserAddedComment
+            ? L10n.Alert.Actions.update
+            : L10n.Alert.Actions.send
+    }
 
     private func authorTitle(for comment: PollVote) -> String {
         if viewModel.pollController.poll?.votingVisibility == .anonymous {

@@ -63,6 +63,8 @@ internal enum L10n {
       internal static var unmuteChannelTitle: String { L10n.tr("Localizable", "alert.actions.unmute-channel-title") }
       /// Unmute User
       internal static var unmuteUser: String { L10n.tr("Localizable", "alert.actions.unmute-user") }
+      /// Update
+      internal static var update: String { L10n.tr("Localizable", "alert.actions.update") }
       /// View info
       internal static var viewInfoTitle: String { L10n.tr("Localizable", "alert.actions.view-info-title") }
     }

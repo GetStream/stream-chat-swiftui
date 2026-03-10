@@ -112,6 +112,7 @@
 "alert.actions.delete-channel-message" = "Are you sure you want to delete this conversation?";
 "alert.actions.keep-editing" = "Keep Editing";
 "alert.actions.send" = "Send";
+"alert.actions.update" = "Update";
 "alert.error.title" = "Something went wrong.";
 "alert.error.message" = "The operation couldn't be completed.";
 "alert.actions.mute-channel-title" = "Are you sure you want to mute this";
