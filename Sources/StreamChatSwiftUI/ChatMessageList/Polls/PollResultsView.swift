@@ -3,6 +3,7 @@
 //
 
 import StreamChat
+import StreamChatCommonUI
 import SwiftUI
 
 struct PollResultsView<Factory: ViewFactory>: View {
@@ -60,7 +61,7 @@ struct PollResultsView<Factory: ViewFactory>: View {
                 .font(fonts.subheadline)
                 .foregroundColor(Color(colors.textTertiary))
             Text(viewModel.poll.name)
-                .font(fonts.title3.weight(.semibold)) // TODO: Move to common module
+                .font(fonts.title3.weight(.semibold))
                 .foregroundColor(Color(colors.textPrimary))
         }
         .frame(maxWidth: .infinity, alignment: .leading)
@@ -100,6 +101,7 @@ struct PollOptionResultsView<Factory: ViewFactory>: View {
     @Injected(\.colors) var colors
     @Injected(\.fonts) var fonts
     @Injected(\.tokens) var tokens
+    @Injected(\.utils) var utils
 
     let factory: Factory
     var poll: Poll
@@ -109,8 +111,6 @@ struct PollOptionResultsView<Factory: ViewFactory>: View {
     var hasMostVotes: Bool = false
     var allButtonShown = false
     var onVoteAppear: ((PollVote) -> Void)?
-
-    private let dateFormatter = PollResultsTimestampFormatter()
 
     var body: some View {
         VStack(spacing: 0) {
@@ -137,7 +137,7 @@ struct PollOptionResultsView<Factory: ViewFactory>: View {
             }
             HStack(spacing: tokens.spacingMd) {
                 Text(option.text)
-                    .font(fonts.title3.weight(.semibold)) // TODO: Move to common module
+                    .font(fonts.title3.weight(.semibold))
                     .foregroundColor(Color(colors.textPrimary))
                 Spacer()
                 votesLabel
@@ -199,7 +199,7 @@ struct PollOptionResultsView<Factory: ViewFactory>: View {
                 .foregroundColor(Color(colors.textPrimary))
                 .lineLimit(1)
             Spacer()
-            Text(dateFormatter.formatDay(vote.createdAt))
+            Text(utils.pollsDateFormatter.formatDay(vote.createdAt))
                 .font(fonts.body)
                 .foregroundColor(Color(colors.textTertiary))
                 .frame(width: 120, alignment: .trailing)
