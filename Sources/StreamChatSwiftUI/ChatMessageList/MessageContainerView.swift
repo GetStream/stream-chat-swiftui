@@ -92,6 +92,7 @@ struct MessageContainerView<Factory: ViewFactory>: View {
             }
         }
         .frame(maxWidth: .infinity, alignment: messageViewModel.isRightAligned ? .trailing : .leading)
+        .padding(.top, messageViewModel.topReactionsShown && !messageViewModel.isPinned ? messageListConfig.messageDisplayOptions.reactionsTopPadding(message) : 0)
         .padding(.horizontal, messageListConfig.messagePaddings.horizontal)
         .padding(.bottom, showsAllInfo || messageViewModel.annotationsShown ? paddingValue : groupMessageInterItemSpacing)
         .padding(.top, isLast ? paddingValue : 0)
