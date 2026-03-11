@@ -7,7 +7,6 @@
 import XCTest
 
 class VideoPreviewLoader_Tests: StreamChatTestCase {
-
     private let testURL = URL(string: "https://example.com/video.mp4")!
     private let thumbnailURL = URL(string: "https://example.com/thumbnail.jpg")!
 
