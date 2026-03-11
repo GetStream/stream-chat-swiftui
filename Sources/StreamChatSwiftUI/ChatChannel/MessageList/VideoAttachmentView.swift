@@ -204,7 +204,7 @@ struct VideoAttachmentContentView<Factory: ViewFactory>: View {
             )
         }
         .onAppear {
-            videoPreviewLoader.loadPreviewForVideo(at: attachment.videoURL) { result in
+            videoPreviewLoader.loadPreviewForVideo(with: attachment) { result in
                 switch result {
                 case let .success(image):
                     self.previewImage = image
