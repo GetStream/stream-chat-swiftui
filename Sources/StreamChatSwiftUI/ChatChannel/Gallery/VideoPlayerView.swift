@@ -55,10 +55,10 @@ public struct VideoPlayerView<Factory: ViewFactory>: View {
             )
         }
         .onAppear {
-            fileCDN.adjustedURL(for: attachment.payload.videoURL) { result in
+            fileCDN.player(for: attachment.payload.videoURL) { result in
                 switch result {
-                case let .success(url):
-                    self.avPlayer = AVPlayer(url: url)
+                case let .success(player):
+                    self.avPlayer = player
                     try? AVAudioSession.sharedInstance().setCategory(.playback, options: [])
                     self.avPlayer?.play()
                 case let .failure(error):

@@ -2,6 +2,7 @@
 // Copyright © 2026 Stream.io Inc. All rights reserved.
 //
 
+import AVKit
 import Foundation
 import StreamChat
 
@@ -16,6 +17,35 @@ public protocol FileCDN: AnyObject {
         for url: URL,
         completion: @escaping ((Result<URL, Error>) -> Void)
     )
+
+    /// Creates and returns an `AVPlayer` for the given video URL.
+    ///
+    /// The default implementation calls ``adjustedURL(for:completion:)`` and creates
+    /// an `AVPlayer` from the resulting URL. Override this method to provide a custom
+    /// player configuration, such as injecting authentication headers via a custom `AVURLAsset`.
+    /// - Parameters:
+    ///   - url: A video URL.
+    ///   - completion: A completion that is called when the player is ready or an error occurred.
+    func player(
+        for url: URL,
+        completion: @escaping ((Result<AVPlayer, Error>) -> Void)
+    )
+}
+
+extension FileCDN {
+    public func player(
+        for url: URL,
+        completion: @escaping ((Result<AVPlayer, Error>) -> Void)
+    ) {
+        adjustedURL(for: url) { result in
+            switch result {
+            case let .success(adjustedURL):
+                completion(.success(AVPlayer(url: adjustedURL)))
+            case let .failure(error):
+                completion(.failure(error))
+            }
+        }
+    }
 }
 
 /// The `DefaultFileCDN` implemenation used by default.
