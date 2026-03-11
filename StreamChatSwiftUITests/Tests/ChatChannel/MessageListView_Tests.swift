@@ -181,6 +181,89 @@ import XCTest
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
 
+    func test_messageListView_groupChannel_withReactions() {
+        // Given
+        let channelConfig = ChannelConfig(reactionsEnabled: true)
+        let channel = ChatChannel.mockNonDMChannel(config: channelConfig)
+        let author1 = ChatUser.mock(id: "alice", name: "Alice")
+        let author2 = ChatUser.mock(id: "bob", name: "Bob")
+        let author3 = ChatUser.mock(id: "charlie", name: "Charlie")
+        let messages: [ChatMessage] = [
+            .mock(
+                id: .unique,
+                cid: channel.cid,
+                text: "Hey everyone, good morning!",
+                author: author1,
+                reactionScores: [
+                    MessageReactionType(rawValue: "like"): 3,
+                    MessageReactionType(rawValue: "love"): 1
+                ],
+                reactionCounts: [
+                    MessageReactionType(rawValue: "like"): 3,
+                    MessageReactionType(rawValue: "love"): 1
+                ]
+            ),
+            .mock(
+                id: .unique,
+                cid: channel.cid,
+                text: "Good morning! Hope you all have a great day.",
+                author: author2,
+                reactionScores: [
+                    MessageReactionType(rawValue: "like"): 1
+                ],
+                reactionCounts: [
+                    MessageReactionType(rawValue: "like"): 1
+                ]
+            ),
+            .mock(
+                id: .unique,
+                cid: channel.cid,
+                text: "Same to you!",
+                author: author3
+            ),
+            .mock(
+                id: .unique,
+                cid: channel.cid,
+                text: "Has anyone seen the latest updates?",
+                author: author1,
+                reactionScores: [
+                    MessageReactionType(rawValue: "haha"): 2,
+                    MessageReactionType(rawValue: "like"): 4
+                ],
+                reactionCounts: [
+                    MessageReactionType(rawValue: "haha"): 2,
+                    MessageReactionType(rawValue: "like"): 4
+                ]
+            ),
+            .mock(
+                id: .unique,
+                cid: channel.cid,
+                text: "Yes, they look amazing!",
+                author: author2
+            )
+        ]
+        let view = MessageListView(
+            factory: DefaultViewFactory.shared,
+            channel: channel,
+            messages: messages,
+            messagesGroupingInfo: [:],
+            scrolledId: .constant(nil),
+            showScrollToLatestButton: .constant(false),
+            quotedMessage: .constant(nil),
+            currentDateString: nil,
+            listId: "listId",
+            isMessageThread: false,
+            shouldShowTypingIndicator: false,
+            onMessageAppear: { _, _ in },
+            onScrollToBottom: {},
+            onLongPress: { _ in }
+        )
+        .applyDefaultSize()
+
+        // Then
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
+    }
+
     // MARK: - private
 
     func makeMessageListView(

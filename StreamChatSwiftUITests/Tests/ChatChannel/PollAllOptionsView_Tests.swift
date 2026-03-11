@@ -128,17 +128,20 @@ import XCTest
 
         let options = [
             PollOption.mock(
-                id: "opt1", text: "Amsterdam",
+                id: "opt1",
+                text: "Amsterdam",
                 latestVotes: [PollVote.mock(pollId: pollId, optionId: "opt1", user: user1)]
             ),
             PollOption.mock(
-                id: "opt2", text: "Berlin",
+                id: "opt2",
+                text: "Berlin",
                 latestVotes: [PollVote.mock(pollId: pollId, optionId: "opt2", user: user2)]
             ),
             PollOption.mock(id: "opt3", text: "Copenhagen", latestVotes: []),
             PollOption.mock(id: "opt4", text: "Dublin", latestVotes: []),
             PollOption.mock(
-                id: "opt5", text: "Edinburgh",
+                id: "opt5",
+                text: "Edinburgh",
                 latestVotes: [
                     PollVote.mock(pollId: pollId, optionId: "opt5", user: user1),
                     PollVote.mock(pollId: pollId, optionId: "opt5", user: user2)
