@@ -200,7 +200,7 @@ struct SwipeToReplyExcludedFrameKey: PreferenceKey {
     }
 }
 
-private struct SwipeToReplyModifier: ViewModifier {
+struct SwipeToReplyModifier: ViewModifier {
     let message: ChatMessage
     let channel: ChatChannel
     let isSwipeToQuoteReplyPossible: Bool
@@ -208,12 +208,29 @@ private struct SwipeToReplyModifier: ViewModifier {
 
     @Injected(\.images) private var images
     @Injected(\.utils) private var utils
+    @Injected(\.colors) private var colors
+    @Injected(\.tokens) private var tokens
 
-    @State private var offsetX: CGFloat = 0
+    @State private var offsetX: CGFloat
     @State private var swipeExcludedFrames: [CGRect] = []
     @GestureState private var offset: CGSize = .zero
 
     private let replyThreshold: CGFloat = 60
+
+    init(
+        message: ChatMessage,
+        channel: ChatChannel,
+        isSwipeToQuoteReplyPossible: Bool,
+        quotedMessage: Binding<ChatMessage?>,
+        initialOffsetX: CGFloat = 0
+    ) {
+        self.message = message
+        self.channel = channel
+        self.isSwipeToQuoteReplyPossible = isSwipeToQuoteReplyPossible
+        self._quotedMessage = quotedMessage
+        self._offsetX = State(initialValue: initialOffsetX)
+    }
+
     private let feedbackGenerator = UIImpactFeedbackGenerator(style: .medium)
 
     func body(content: Content) -> some View {
@@ -261,12 +278,15 @@ private struct SwipeToReplyModifier: ViewModifier {
                 swipeExcludedFrames = frames
             }
             .overlay(
-                offsetX > 0 ?
-                    TopLeftView {
-                        Image(uiImage: images.messageActionInlineReply)
-                    }
-                    .offset(x: -32)
-                    : nil
+                offsetX > 20 ? HStack {
+                    Image(systemName: "arrowshape.turn.up.left")
+                        .foregroundColor(colors.buttonSecondaryTextOnAccent.toColor)
+                        .padding(.all, tokens.spacingXs)
+                        .background(colors.buttonSecondaryBackground.toColor)
+                        .clipShape(Circle())
+                        .offset(x: min(offsetX / 2, 50))
+                    Spacer()
+                } : nil
             )
     }
 
