@@ -7,9 +7,10 @@ import SwiftUI
 struct MoreReactionsView: View {
     @Injected(\.colors) private var colors
     @Injected(\.images) private var images
+    @Injected(\.tokens) private var tokens
 
     private let columns: [GridItem] = Array(
-        repeating: GridItem(.fixed(56), spacing: 12, alignment: .center),
+        repeating: GridItem(.fixed(52), spacing: 12, alignment: .center),
         count: 6
     )
 
@@ -37,13 +38,14 @@ struct MoreReactionsView: View {
                         .accessibilityLabel(entry.value)
                     }
                 }
-                .padding(.vertical, 8)
+                .padding(.all, tokens.spacingXs)
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding()
         .accessibilityIdentifier("MoreReactionsView")
         .background(Color(colors.background).edgesIgnoringSafeArea(.bottom))
+        .edgesIgnoringSafeArea(.bottom)
     }
 }
 
