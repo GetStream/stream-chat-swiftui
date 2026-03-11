@@ -159,6 +159,10 @@ struct StreamVideoPlayer: View {
         utils.fileCDN
     }
 
+    private var avPlayerProvider: AVPlayerProvider {
+        utils.avPlayerProvider
+    }
+
     let url: URL
 
     @State var avPlayer: AVPlayer?
@@ -180,12 +184,19 @@ struct StreamVideoPlayer: View {
                 avPlayer?.play()
                 return
             }
-            fileCDN.player(for: url) { result in
+            fileCDN.adjustedURL(for: url) { result in
                 switch result {
-                case let .success(player):
-                    self.avPlayer = player
-                    try? AVAudioSession.sharedInstance().setCategory(.playback, options: [])
-                    self.avPlayer?.play()
+                case let .success(url):
+                    self.avPlayerProvider.player(for: url) { result in
+                        switch result {
+                        case let .success(player):
+                            self.avPlayer = player
+                            try? AVAudioSession.sharedInstance().setCategory(.playback, options: [])
+                            self.avPlayer?.play()
+                        case let .failure(error):
+                            self.error = error
+                        }
+                    }
                 case let .failure(error):
                     self.error = error
                 }

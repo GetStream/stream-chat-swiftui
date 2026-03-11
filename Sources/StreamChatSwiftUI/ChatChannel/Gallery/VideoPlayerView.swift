@@ -18,6 +18,10 @@ public struct VideoPlayerView<Factory: ViewFactory>: View {
         utils.fileCDN
     }
 
+    private var avPlayerProvider: AVPlayerProvider {
+        utils.avPlayerProvider
+    }
+
     private let viewFactory: Factory
     let attachment: ChatMessageVideoAttachment
     let author: ChatUser
@@ -55,12 +59,19 @@ public struct VideoPlayerView<Factory: ViewFactory>: View {
             )
         }
         .onAppear {
-            fileCDN.player(for: attachment.payload.videoURL) { result in
+            fileCDN.adjustedURL(for: attachment.payload.videoURL) { result in
                 switch result {
-                case let .success(player):
-                    self.avPlayer = player
-                    try? AVAudioSession.sharedInstance().setCategory(.playback, options: [])
-                    self.avPlayer?.play()
+                case let .success(url):
+                    self.avPlayerProvider.player(for: url) { result in
+                        switch result {
+                        case let .success(player):
+                            self.avPlayer = player
+                            try? AVAudioSession.sharedInstance().setCategory(.playback, options: [])
+                            self.avPlayer?.play()
+                        case let .failure(error):
+                            self.error = error
+                        }
+                    }
                 case let .failure(error):
                     self.error = error
                 }
