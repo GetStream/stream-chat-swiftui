@@ -941,6 +941,9 @@ extension Notification.Name {
     /// A notification for notifying when an error occured and an alert banner should be shown at the top of the message list.
     static let showChannelAlertBannerNotification = Notification.Name("showChannelAlertBannerNotification")
     
+    /// A notification for showing a snack bar at the bottom of the channel. The `object` should be a `String` with the text.
+    static let showChannelSnackBarNotification = Notification.Name("showChannelSnackBarNotification")
+    
     /// A notification for notifying when message dismissed a sheet.
     static let messageSheetHiddenNotification = Notification.Name("messageSheetHiddenNotification")
     

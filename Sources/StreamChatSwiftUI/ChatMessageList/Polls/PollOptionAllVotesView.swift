@@ -7,9 +7,12 @@ import SwiftUI
 
 struct PollOptionAllVotesView<Factory: ViewFactory>: View {
     @Injected(\.colors) var colors
+    @Injected(\.fonts) var fonts
+    @Injected(\.tokens) var tokens
+
     @StateObject var viewModel: PollOptionAllVotesViewModel
     let factory: Factory
-    
+
     init(factory: Factory, poll: Poll, option: PollOption) {
         self.factory = factory
         _viewModel = StateObject(
@@ -19,10 +22,15 @@ struct PollOptionAllVotesView<Factory: ViewFactory>: View {
             )
         )
     }
-    
+
+    init(factory: Factory, viewModel: PollOptionAllVotesViewModel) {
+        self.factory = factory
+        _viewModel = StateObject(wrappedValue: viewModel)
+    }
+
     var body: some View {
         ScrollView {
-            LazyVStack {
+            LazyVStack(spacing: 0) {
                 PollOptionResultsView(
                     factory: factory,
                     poll: viewModel.poll,
@@ -31,7 +39,11 @@ struct PollOptionAllVotesView<Factory: ViewFactory>: View {
                     onVoteAppear: viewModel.onAppear(vote:)
                 )
             }
+            .padding(.horizontal, tokens.spacingMd)
+            .padding(.top, tokens.spacingMd)
+            .padding(.bottom, tokens.spacing3xl)
         }
+        .background(Color(colors.background).ignoresSafeArea())
         .alertBanner(
             isPresented: $viewModel.errorShown,
             action: viewModel.refresh
@@ -39,9 +51,10 @@ struct PollOptionAllVotesView<Factory: ViewFactory>: View {
         .toolbarThemed {
             ToolbarItem(placement: .principal) {
                 Text(viewModel.option.text)
-                    .bold()
+                    .font(fonts.bodyBold)
                     .foregroundColor(Color(colors.navigationBarTitle))
             }
         }
+        .navigationBarTitleDisplayMode(.inline)
     }
 }

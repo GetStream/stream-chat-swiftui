@@ -211,10 +211,13 @@
 				Tests/ChatChannel/MessageTypeResolver_Tests.swift,
 				Tests/ChatChannel/MessageView_Tests.swift,
 				Tests/ChatChannel/MessageViewMultiRowReactions_Tests.swift,
+				Tests/ChatChannel/PollAllOptionsView_Tests.swift,
 				Tests/ChatChannel/PollAttachmentView_Tests.swift,
 				Tests/ChatChannel/PollAttachmentViewModel_Tests.swift,
+				Tests/ChatChannel/PollCommentsView_Tests.swift,
 				Tests/ChatChannel/PollCommentsViewModel_Tests.swift,
 				Tests/ChatChannel/PollOptionAllVotesViewModel_Tests.swift,
+				Tests/ChatChannel/PollResultsView_Tests.swift,
 				Tests/ChatChannel/QuotedMessageView_Tests.swift,
 				Tests/ChatChannel/ReactionsDetailView_Tests.swift,
 				Tests/ChatChannel/ReactionsDetailViewModel_Tests.swift,
@@ -1545,7 +1548,7 @@
 			repositoryURL = "https://github.com/GetStream/stream-chat-swift.git";
 			requirement = {
 				kind = revision;
-				revision = 32607035721cc7981208eae85383f3debc693ef4;
+				revision = 2359f4a2f814e15f92ec6bdbf3506eaac3e6f5eb;
 			};
 		};
 		E3A1C01A282BAC66002D1E26 /* XCRemoteSwiftPackageReference "sentry-cocoa" */ = {

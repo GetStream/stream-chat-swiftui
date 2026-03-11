@@ -60,7 +60,7 @@ import SwiftUI
     
     private let createdByCurrentUser: Bool
         
-    /// If true, an action sheet is shown for closing the poll, otherwise hidden.
+    /// If true, an alert is shown for closing the poll, otherwise hidden.
     @Published public var endVoteConfirmationShown = false
     
     @available(*, deprecated, message: "Replaced with inline alert banners displayed by the showChannelAlertBannerNotification")
@@ -192,6 +192,11 @@ import SwiftUI
             if let error {
                 log.error("Error closing the poll \(error.localizedDescription)")
                 NotificationCenter.default.post(name: .showChannelAlertBannerNotification, object: nil)
+            } else {
+                NotificationCenter.default.post(
+                    name: .showChannelSnackBarNotification,
+                    object: L10n.Message.Polls.Snackbar.pollEnded
+                )
             }
         }
     }

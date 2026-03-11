@@ -3,6 +3,7 @@
 //
 
 import StreamChat
+import StreamChatCommonUI
 import SwiftUI
 
 private struct PollsBackgroundModifier: ViewModifier {
@@ -39,6 +40,6 @@ struct PollDateIndicatorView: View {
         let formatter = utils.pollsDateFormatter
         let voteDay = formatter.formatDay(date)
         let voteTime = formatter.formatTime(date)
-        return [voteDay, voteTime].joined(separator: " ")
+        return L10n.Message.Polls.Date.dayAtTime(voteDay, voteTime)
     }
 }

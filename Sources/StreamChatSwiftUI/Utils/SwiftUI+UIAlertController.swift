@@ -76,13 +76,13 @@ private struct UIAlertControllerView: UIViewControllerRepresentable {
                 }
             )
             let textField = alert.textFields?.first
-            alert.addAction(
-                UIAlertAction(title: accept, style: .default) { _ in
-                    text = textField?.text?.trimmed ?? ""
-                    isPresented = false
-                    action()
-                }
-            )
+            let acceptAction = UIAlertAction(title: accept, style: .default) { _ in
+                text = textField?.text?.trimmed ?? ""
+                isPresented = false
+                action()
+            }
+            alert.addAction(acceptAction)
+            alert.preferredAction = acceptAction
             DispatchQueue.main.async {
                 uiViewController.present(alert, animated: true)
             }

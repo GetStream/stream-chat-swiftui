@@ -80,7 +80,7 @@
 "message.polls.button.updateComment" = "Update Your Comment";
 "message.polls.button.endVote" = "End Poll";
 "message.polls.button.seeMoreOptions" = "See %d More Options";
-"message.polls.button.show-all" = "Show All";
+"message.polls.button.show-all" = "View all";
 "message.polls.button.suggestAnOption" = "Suggest an Option";
 "message.polls.button.viewResults" = "View Results";
 "message.polls.subtitle.selectOne" = "Select one";
@@ -91,7 +91,15 @@
 "message.polls.toolbar.options-title" = "Poll Options";
 "message.polls.toolbar.results-title" = "Poll Results";
 "message.polls.unknown-vote-author" = "Anonymous";
+"message.polls.date.day-at-time" = "%@ at %@";
+"message.polls.date.days-ago" = "%dd ago";
+"message.polls.date.weeks-ago" = "%dw ago";
+"message.polls.option" = "Option %d";
+"message.polls.question" = "Question";
+"message.polls.vote-singular" = "%d vote";
 "message.polls.votes" = "%d votes";
+"message.polls.votes-total" = "%d votes total";
+"message.polls.snackbar.poll-ended" = "Poll ended";
 
 "message.translatedTo" = "Translated to %@";
 "message.showOriginal" = "Show Original";
@@ -99,13 +107,14 @@
 
 "alert.actions.cancel" = "Cancel";
 "alert.actions.delete" = "Delete";
-"alert.actions.end" = "End";
+"alert.actions.endPoll" = "End Poll";
 "alert.actions.ok" = "OK";
 "alert.actions.discard-changes" = "Discard Changes";
 "alert.actions.delete-channel-title" = "Delete conversation";
 "alert.actions.delete-channel-message" = "Are you sure you want to delete this conversation?";
 "alert.actions.keep-editing" = "Keep Editing";
 "alert.actions.send" = "Send";
+"alert.actions.update" = "Update";
 "alert.error.title" = "Something went wrong.";
 "alert.error.message" = "The operation couldn't be completed.";
 "alert.actions.mute-channel-title" = "Are you sure you want to mute this";
@@ -127,7 +136,8 @@
 "alert.actions.unblock-user" = "Unblock User";
 "alert.text-field.polls-new-option" = "Enter a new option";
 "alert.title.add-comment" = "Add a comment";
-"alert.title.end-poll" = "Nobody will be able to vote in this poll anymore.";
+"alert.title.end-poll" = "End this poll?";
+"alert.message.end-poll" = "Do you want to end this poll now? Nobody will be able to vote in this poll anymore.";
 "alert.title.suggest-an-option" = "Suggest an option";
 
 "message.only-visible-to-you" = "Only visible to you";

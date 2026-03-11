@@ -140,15 +140,14 @@ public struct PollAttachmentView<Factory: ViewFactory>: View {
                         Text(L10n.Message.Polls.Button.endVote)
                             .foregroundColor(Color(colors.buttonSecondaryText))
                     }
-                    .actionSheet(isPresented: $viewModel.endVoteConfirmationShown) {
-                        ActionSheet(
+                    .alert(isPresented: $viewModel.endVoteConfirmationShown) {
+                        Alert(
                             title: Text(L10n.Alert.Title.endPoll),
-                            buttons: [
-                                .destructive(Text(L10n.Alert.Actions.end)) {
-                                    viewModel.endVote()
-                                },
-                                .cancel(Text(L10n.Alert.Actions.cancel))
-                            ]
+                            message: Text(L10n.Alert.Message.endPoll),
+                            primaryButton: .destructive(Text(L10n.Alert.Actions.endPoll)) {
+                                viewModel.endVote()
+                            },
+                            secondaryButton: .cancel(Text(L10n.Alert.Actions.cancel))
                         )
                     }
                 }
