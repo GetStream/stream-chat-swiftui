@@ -5,6 +5,7 @@
 import SnapshotTesting
 @testable import StreamChat
 @testable import StreamChatSwiftUI
+@testable import StreamChatCommonUI
 import SwiftUI
 import XCTest
 
@@ -177,14 +178,14 @@ import XCTest
     // MARK: - PollResultsTimestampFormatter
 
     func test_pollResultsTimestampFormatter_today() {
-        let formatter = PollResultsTimestampFormatter()
+        let formatter = DefaultPollTimestampFormatter()
         let result = formatter.formatDay(Date())
         XCTAssertFalse(result.isEmpty)
         XCTAssertFalse(result.contains("ago"))
     }
 
     func test_pollResultsTimestampFormatter_yesterday() {
-        let formatter = PollResultsTimestampFormatter()
+        let formatter = DefaultPollTimestampFormatter()
         let yesterday = Calendar.current.date(byAdding: .day, value: -1, to: Date())!
         let result = formatter.formatDay(yesterday)
         XCTAssertFalse(result.isEmpty)
@@ -192,7 +193,7 @@ import XCTest
     }
 
     func test_pollResultsTimestampFormatter_daysAgo() {
-        let formatter = PollResultsTimestampFormatter()
+        let formatter = DefaultPollTimestampFormatter()
         for dayOffset in 2...6 {
             let date = Calendar.current.date(byAdding: .day, value: -dayOffset, to: Date())!
             let result = formatter.formatDay(date)
@@ -201,7 +202,7 @@ import XCTest
     }
 
     func test_pollResultsTimestampFormatter_weeksAgo() {
-        let formatter = PollResultsTimestampFormatter()
+        let formatter = DefaultPollTimestampFormatter()
         for weekOffset in 1...3 {
             let date = Calendar.current.date(byAdding: .day, value: -(weekOffset * 7), to: Date())!
             let result = formatter.formatDay(date)
@@ -210,7 +211,7 @@ import XCTest
     }
 
     func test_pollResultsTimestampFormatter_absoluteDate() {
-        let formatter = PollResultsTimestampFormatter()
+        let formatter = DefaultPollTimestampFormatter()
         let date = Calendar.current.date(byAdding: .day, value: -30, to: Date())!
         let result = formatter.formatDay(date)
         XCTAssertFalse(result.contains("ago"), "Expected absolute date format for 30 days ago, got '\(result)'")
