@@ -18,7 +18,6 @@ public protocol VideoPreviewLoader: AnyObject {
     ///
     /// The default implementation calls ``loadPreviewForVideo(at:completion:)`` with the video URL.
     /// Override this method to use the attachment's thumbnail URL or other metadata for preview generation.
-    /// 
     /// - Parameters:
     ///   - attachment: A video attachment containing the video URL and optional thumbnail URL.
     ///   - completion: A completion that is called when a preview is loaded. Must be invoked on main queue.
