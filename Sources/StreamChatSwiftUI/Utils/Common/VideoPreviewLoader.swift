@@ -8,16 +8,17 @@ import UIKit
 
 /// A protocol the video preview uploader implementation must conform to.
 public protocol VideoPreviewLoader: AnyObject {
-    /// Loads a preview for the video at given URL.
+    /// Loads a preview for a local video attachment at a given URL.
     /// - Parameters:
-    ///   - url: A video URL.
+    ///   - url: The video URL.
     ///   - completion: A completion that is called when a preview is loaded. Must be invoked on main queue.
     func loadPreviewForVideo(at url: URL, completion: @escaping (Result<UIImage, Error>) -> Void)
 
-    /// Loads a preview for the given video attachment.
+    /// Loads a preview for the given remote video attachment.
     ///
     /// The default implementation calls ``loadPreviewForVideo(at:completion:)`` with the video URL.
     /// Override this method to use the attachment's thumbnail URL or other metadata for preview generation.
+    /// 
     /// - Parameters:
     ///   - attachment: A video attachment containing the video URL and optional thumbnail URL.
     ///   - completion: A completion that is called when a preview is loaded. Must be invoked on main queue.
