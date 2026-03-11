@@ -105,6 +105,146 @@ class VideoPreviewLoader_Tests: StreamChatTestCase {
         XCTAssertEqual(loader.receivedAttachment?.payload.thumbnailURL, thumbnailURL)
     }
 
+    // MARK: - DefaultVideoPreviewLoader with attachment
+
+    func test_defaultLoader_withAttachment_whenThumbnailURLExists_loadsThumbnailImage() {
+        // Given
+        let imageLoader = ConfigurableImageLoader(result: .success(ConfigurableImageLoader.thumbnailImage))
+        streamChat = StreamChat(
+            chatClient: chatClient,
+            utils: Utils(imageLoader: imageLoader)
+        )
+        let loader = DefaultVideoPreviewLoader()
+        let attachment = makeVideoAttachment(thumbnailURL: thumbnailURL)
+
+        // When
+        let expectation = expectation(description: "Completion called")
+        var receivedImage: UIImage?
+        loader.loadPreviewForVideo(with: attachment) { result in
+            receivedImage = try? result.get()
+            expectation.fulfill()
+        }
+
+        // Then
+        waitForExpectations(timeout: 1)
+        XCTAssertTrue(imageLoader.loadImageCalled)
+        XCTAssertEqual(imageLoader.receivedURL, thumbnailURL)
+        XCTAssertEqual(receivedImage, ConfigurableImageLoader.thumbnailImage)
+    }
+
+    func test_defaultLoader_withAttachment_whenThumbnailURLExists_cachesResult() {
+        // Given
+        let imageLoader = ConfigurableImageLoader(result: .success(ConfigurableImageLoader.thumbnailImage))
+        streamChat = StreamChat(
+            chatClient: chatClient,
+            utils: Utils(imageLoader: imageLoader)
+        )
+        let loader = DefaultVideoPreviewLoader()
+        let attachment = makeVideoAttachment(thumbnailURL: thumbnailURL)
+
+        // When - first call to populate cache
+        let firstExpectation = expectation(description: "First completion called")
+        loader.loadPreviewForVideo(with: attachment) { _ in
+            firstExpectation.fulfill()
+        }
+        waitForExpectations(timeout: 1)
+
+        // Reset tracker
+        imageLoader.loadImageCalled = false
+        imageLoader.receivedURL = nil
+
+        // When - second call should hit cache
+        let secondExpectation = expectation(description: "Second completion called")
+        var receivedImage: UIImage?
+        loader.loadPreviewForVideo(with: attachment) { result in
+            receivedImage = try? result.get()
+            secondExpectation.fulfill()
+        }
+
+        // Then
+        waitForExpectations(timeout: 1)
+        XCTAssertFalse(imageLoader.loadImageCalled)
+        XCTAssertEqual(receivedImage, ConfigurableImageLoader.thumbnailImage)
+    }
+
+    func test_defaultLoader_withAttachment_whenNoThumbnailURL_doesNotCallImageLoader() {
+        // Given
+        let imageLoader = ConfigurableImageLoader(result: .success(ConfigurableImageLoader.thumbnailImage))
+        streamChat = StreamChat(
+            chatClient: chatClient,
+            utils: Utils(imageLoader: imageLoader)
+        )
+        let loader = DefaultVideoPreviewLoader()
+        let attachment = makeVideoAttachment(thumbnailURL: nil)
+
+        // When
+        let expectation = expectation(description: "Completion called")
+        loader.loadPreviewForVideo(with: attachment) { _ in
+            expectation.fulfill()
+        }
+
+        // Then
+        waitForExpectations(timeout: 5)
+        XCTAssertFalse(imageLoader.loadImageCalled)
+    }
+
+    func test_defaultLoader_withAttachment_whenThumbnailLoadFails_fallsBackToVideoPreview() {
+        // Given
+        let imageLoader = ConfigurableImageLoader(result: .failure(NSError(domain: "test", code: -1)))
+        streamChat = StreamChat(
+            chatClient: chatClient,
+            utils: Utils(imageLoader: imageLoader)
+        )
+        let loader = DefaultVideoPreviewLoader()
+        let attachment = makeVideoAttachment(thumbnailURL: thumbnailURL)
+
+        // When
+        let expectation = expectation(description: "Completion called")
+        var receivedImage: UIImage?
+        loader.loadPreviewForVideo(with: attachment) { result in
+            receivedImage = try? result.get()
+            expectation.fulfill()
+        }
+
+        // Then - image loader was called but failed, so it fell back to video frame extraction
+        waitForExpectations(timeout: 5)
+        XCTAssertTrue(imageLoader.loadImageCalled)
+        XCTAssertNotEqual(receivedImage, ConfigurableImageLoader.thumbnailImage)
+    }
+
+    func test_defaultLoader_withAttachment_whenCached_returnsCachedWithoutLoadingThumbnail() {
+        // Given
+        let imageLoader = ConfigurableImageLoader(result: .success(ConfigurableImageLoader.thumbnailImage))
+        streamChat = StreamChat(
+            chatClient: chatClient,
+            utils: Utils(imageLoader: imageLoader)
+        )
+        let loader = DefaultVideoPreviewLoader()
+        let attachment = makeVideoAttachment(thumbnailURL: thumbnailURL)
+
+        // Pre-populate via the URL-based method (which also populates the cache for the same URL)
+        let setupExpectation = expectation(description: "Setup completion called")
+        loader.loadPreviewForVideo(with: attachment) { _ in
+            setupExpectation.fulfill()
+        }
+        waitForExpectations(timeout: 1)
+
+        imageLoader.loadImageCalled = false
+
+        // When - second call with attachment should use cache
+        let expectation = expectation(description: "Completion called")
+        var receivedImage: UIImage?
+        loader.loadPreviewForVideo(with: attachment) { result in
+            receivedImage = try? result.get()
+            expectation.fulfill()
+        }
+
+        // Then
+        waitForExpectations(timeout: 1)
+        XCTAssertFalse(imageLoader.loadImageCalled)
+        XCTAssertNotNil(receivedImage)
+    }
+
     // MARK: - Helpers
 
     private func makeVideoAttachment(
@@ -162,5 +302,41 @@ private class FullVideoPreviewLoader: VideoPreviewLoader {
         loadPreviewWithAttachmentCalled = true
         receivedAttachment = attachment
         completion(.success(UIImage()))
+    }
+}
+
+/// Configurable image loader that can be set to succeed or fail.
+private class ConfigurableImageLoader: ImageLoading {
+    static let thumbnailImage = UIImage(systemName: "star.fill")!
+
+    var loadImageCalled = false
+    var receivedURL: URL?
+    private let result: Result<UIImage, Error>
+
+    init(result: Result<UIImage, Error>) {
+        self.result = result
+    }
+
+    func loadImage(
+        url: URL?,
+        imageCDN: ImageCDN,
+        resize: Bool,
+        preferredSize: CGSize?,
+        completion: @escaping ((Result<UIImage, Error>) -> Void)
+    ) {
+        loadImageCalled = true
+        receivedURL = url
+        completion(result)
+    }
+
+    func loadImages(
+        from urls: [URL],
+        placeholders: [UIImage],
+        loadThumbnails: Bool,
+        thumbnailSize: CGSize,
+        imageCDN: ImageCDN,
+        completion: @escaping (([UIImage]) -> Void)
+    ) {
+        completion([])
     }
 }
