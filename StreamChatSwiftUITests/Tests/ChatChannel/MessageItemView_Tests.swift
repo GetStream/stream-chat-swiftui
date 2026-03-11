@@ -868,6 +868,35 @@ import XCTest
         AssertSnapshot(view, size: CGSize(width: 375, height: 200))
     }
 
+    // MARK: - Swipe to reply indicator
+
+    func test_swipeToReplyIndicator_snapshot() {
+        // Given
+        let message = ChatMessage.mock(
+            id: .unique,
+            cid: .unique,
+            text: "Swipe to reply message",
+            author: .mock(id: .unique, name: "Martin"),
+            localState: nil
+        )
+        let channel = ChatChannel.mockDMChannel(config: .mock(repliesEnabled: true))
+        let offset: CGFloat = 50
+
+        let view = testMessageViewContainer(message: message, channel: channel)
+            .modifier(SwipeToReplyModifier(
+                message: message,
+                channel: channel,
+                isSwipeToQuoteReplyPossible: true,
+                quotedMessage: .constant(nil),
+                initialOffsetX: offset
+            )
+            )
+            .offset(x: offset)
+
+        // Then
+        AssertSnapshot(view, size: CGSize(width: 375, height: 200))
+    }
+
     // MARK: - private
 
     func testMessageViewContainer(

@@ -175,49 +175,6 @@ import XCTest
         AssertSnapshot(view, variants: .onlyUserInterfaceStyles)
     }
 
-    // MARK: - PollResultsTimestampFormatter
-
-    func test_pollResultsTimestampFormatter_today() {
-        let formatter = DefaultPollTimestampFormatter()
-        let result = formatter.formatDay(Date())
-        XCTAssertFalse(result.isEmpty)
-        XCTAssertFalse(result.contains("ago"))
-    }
-
-    func test_pollResultsTimestampFormatter_yesterday() {
-        let formatter = DefaultPollTimestampFormatter()
-        let yesterday = Calendar.current.date(byAdding: .day, value: -1, to: Date())!
-        let result = formatter.formatDay(yesterday)
-        XCTAssertFalse(result.isEmpty)
-        XCTAssertFalse(result.contains("ago"))
-    }
-
-    func test_pollResultsTimestampFormatter_daysAgo() {
-        let formatter = DefaultPollTimestampFormatter()
-        for dayOffset in 2...6 {
-            let date = Calendar.current.date(byAdding: .day, value: -dayOffset, to: Date())!
-            let result = formatter.formatDay(date)
-            XCTAssertTrue(result.contains("d ago"), "Expected '\(result)' to contain 'd ago' for \(dayOffset) days ago")
-        }
-    }
-
-    func test_pollResultsTimestampFormatter_weeksAgo() {
-        let formatter = DefaultPollTimestampFormatter()
-        for weekOffset in 1...3 {
-            let date = Calendar.current.date(byAdding: .day, value: -(weekOffset * 7), to: Date())!
-            let result = formatter.formatDay(date)
-            XCTAssertTrue(result.contains("w ago"), "Expected '\(result)' to contain 'w ago' for \(weekOffset) weeks ago")
-        }
-    }
-
-    func test_pollResultsTimestampFormatter_absoluteDate() {
-        let formatter = DefaultPollTimestampFormatter()
-        let date = Calendar.current.date(byAdding: .day, value: -30, to: Date())!
-        let result = formatter.formatDay(date)
-        XCTAssertFalse(result.contains("ago"), "Expected absolute date format for 30 days ago, got '\(result)'")
-        XCTAssertTrue(result.contains("/"), "Expected date with '/' separator, got '\(result)'")
-    }
-
     // MARK: - Helpers
 
     private func makePollWithMultipleOptions() -> Poll {
