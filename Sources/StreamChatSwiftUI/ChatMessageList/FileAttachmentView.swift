@@ -135,7 +135,7 @@ public struct FileAttachmentDisplayView: View {
 
     private var previewImage: UIImage {
         let iconName = url.pathExtension
-        return images.documentPreviews[iconName] ?? images.fileFallback
+        return images.fileIconPreviews[iconName] ?? images.iconOther
     }
 }
 
