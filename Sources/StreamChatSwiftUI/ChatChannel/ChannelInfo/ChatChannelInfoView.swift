@@ -208,13 +208,7 @@ public struct ChatChannelInfoView<Factory: ViewFactory>: View, KeyboardReadable 
                 )
             }
             if viewModel.showMoreUsersButton {
-                StreamTextButton(role: .secondary, style: .outline, size: .small) {
-                    viewModel.memberListSheetShown = true
-                } text: {
-                    Text(L10n.ChatInfo.Users.viewAll)
-                        .font(fonts.bodyBold)
-                }
-                .padding(.vertical, tokens.spacingXs)
+                viewAllButton
             }
         }
         .padding(.vertical, tokens.spacingXs)
@@ -243,6 +237,23 @@ public struct ChatChannelInfoView<Factory: ViewFactory>: View, KeyboardReadable 
         .padding(.horizontal, tokens.spacingMd)
         .padding(.vertical, tokens.spacingXs)
         .background(Color(colors.backgroundCoreSurfaceSubtle))
+    }
+
+    private var viewAllButton: some View {
+        VStack(spacing: 0) {
+            Divider()
+                .background(Color(colors.borderCoreDefault))
+            Button {
+                viewModel.memberListSheetShown = true
+            } label: {
+                Text(L10n.ChatInfo.Users.viewAll)
+                    .font(fonts.body)
+                    .foregroundColor(Color(colors.buttonSecondaryText))
+                    .frame(maxWidth: .infinity)
+                    .frame(height: tokens.buttonHitTargetMinHeight)
+            }
+        }
+        .padding(.horizontal, tokens.spacingMd)
     }
 
     // MARK: - Actions Card
