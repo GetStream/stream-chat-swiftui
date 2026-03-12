@@ -12,21 +12,13 @@ public struct MediaAttachmentsView<Factory: ViewFactory>: View {
     @Injected(\.colors) private var colors
     @Injected(\.fonts) private var fonts
     @Injected(\.images) private var images
+    @Injected(\.tokens) private var tokens
 
     @StateObject private var viewModel: MediaAttachmentsViewModel
         
     let factory: Factory
 
-    private static var itemWidth: CGFloat {
-        let spacing: CGFloat = 2
-        if UIDevice.current.userInterfaceIdiom == .phone {
-            return (UIScreen.main.bounds.size.width / 3) - spacing * 3
-        } else {
-            return 120
-        }
-    }
-
-    private let columns = [GridItem(.adaptive(minimum: itemWidth), spacing: 2)]
+    private let columnCount = 3
 
     public init(factory: Factory = DefaultViewFactory.shared, channel: ChatChannel) {
         _viewModel = StateObject(
@@ -53,50 +45,61 @@ public struct MediaAttachmentsView<Factory: ViewFactory>: View {
                     description: L10n.ChatInfo.Media.emptyDesc
                 )
             } else {
-                ScrollView {
-                    LazyVGrid(columns: columns, spacing: 2) {
-                        ForEach(0..<viewModel.mediaItems.count, id: \.self) { mediaItemIndex in
-                            let mediaItem = viewModel.mediaItems[mediaItemIndex]
-                            ZStack {
-                                if let mediaAttachment = mediaItem.mediaAttachment {
-                                    let index = viewModel.allMediaAttachments.firstIndex { $0.id == mediaAttachment.id
-                                    } ?? 0
-                                    MediaAttachmentContentView(
-                                        factory: factory,
-                                        mediaItem: mediaItem,
-                                        mediaAttachment: mediaAttachment,
-                                        allMediaAttachments: viewModel.allMediaAttachments,
-                                        itemWidth: Self.itemWidth,
-                                        index: index
-                                    )
-                                }
-                            }
-                            .overlay(
-                                TopLeftView {
-                                    factory.makeUserAvatarView(
-                                        options: UserAvatarViewOptions(
-                                            user: mediaItem.message.author,
-                                            size: AvatarSize.small,
-                                            showsIndicator: false
+                GeometryReader { geometry in
+                    let spacing = tokens.spacingXxxs
+                    let totalSpacing = spacing * CGFloat(columnCount - 1)
+                    let itemWidth = (geometry.size.width - totalSpacing) / CGFloat(columnCount)
+
+                    ScrollView {
+                        LazyVGrid(
+                            columns: Array(
+                                repeating: GridItem(.flexible(), spacing: spacing),
+                                count: columnCount
+                            ),
+                            spacing: spacing
+                        ) {
+                            ForEach(0..<viewModel.mediaItems.count, id: \.self) { mediaItemIndex in
+                                let mediaItem = viewModel.mediaItems[mediaItemIndex]
+                                ZStack {
+                                    if let mediaAttachment = mediaItem.mediaAttachment {
+                                        let index = viewModel.allMediaAttachments.firstIndex { $0.id == mediaAttachment.id
+                                        } ?? 0
+                                        MediaAttachmentContentView(
+                                            factory: factory,
+                                            mediaItem: mediaItem,
+                                            mediaAttachment: mediaAttachment,
+                                            allMediaAttachments: viewModel.allMediaAttachments,
+                                            itemWidth: itemWidth,
+                                            index: index
                                         )
-                                    )
-                                    .overlay(
-                                        Circle()
-                                            .stroke(
-                                                Color.white,
-                                                lineWidth: 1
-                                            )
-                                    )
-                                    .padding(.all, 8)
+                                    }
                                 }
-                            )
-                            .onAppear {
-                                viewModel.onMediaAttachmentAppear(with: mediaItemIndex)
+                                .overlay(
+                                    TopLeftView {
+                                        factory.makeUserAvatarView(
+                                            options: UserAvatarViewOptions(
+                                                user: mediaItem.message.author,
+                                                size: AvatarSize.small,
+                                                showsIndicator: false
+                                            )
+                                        )
+                                        .overlay(
+                                            Circle()
+                                                .stroke(
+                                                    Color.white,
+                                                    lineWidth: 1
+                                                )
+                                        )
+                                        .padding(.all, 8)
+                                    }
+                                )
+                                .onAppear {
+                                    viewModel.onMediaAttachmentAppear(with: mediaItemIndex)
+                                }
                             }
                         }
+                        .animation(nil)
                     }
-                    .padding(.horizontal, 2)
-                    .animation(nil)
                 }
             }
         }
