@@ -18,7 +18,7 @@ public struct MediaAttachmentsView<Factory: ViewFactory>: View {
         
     let factory: Factory
 
-    private let columnCount = 3
+    private let targetItemWidth: CGFloat = 120
 
     public init(factory: Factory = DefaultViewFactory.shared, channel: ChatChannel) {
         _viewModel = StateObject(
@@ -47,6 +47,7 @@ public struct MediaAttachmentsView<Factory: ViewFactory>: View {
             } else {
                 GeometryReader { geometry in
                     let spacing = tokens.spacingXxxs
+                    let columnCount = max(3, Int((geometry.size.width + spacing) / (targetItemWidth + spacing)))
                     let totalSpacing = spacing * CGFloat(columnCount - 1)
                     let itemWidth = (geometry.size.width - totalSpacing) / CGFloat(columnCount)
 

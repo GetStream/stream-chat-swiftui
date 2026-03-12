@@ -101,9 +101,7 @@ import SwiftUI
                 result.append(mediaItem)
             }
         }
-        withAnimation {
-            self.mediaItems = result
-        }
+        self.mediaItems = result
     }
 }
 
