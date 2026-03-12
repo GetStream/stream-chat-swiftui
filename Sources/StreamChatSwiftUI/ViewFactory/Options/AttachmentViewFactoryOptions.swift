@@ -263,7 +263,7 @@ public final class CustomAttachmentPreviewViewOptions: Sendable {
 // MARK: - Gallery Options
 
 /// Options for creating the gallery view.
-public final class GalleryViewOptions: Sendable {
+public final class MediaViewerOptions: Sendable {
     /// The media attachments to display.
     public let mediaAttachments: [MediaAttachment]
     /// The message containing the attachments.
@@ -287,7 +287,7 @@ public final class GalleryViewOptions: Sendable {
 }
 
 /// Options for creating the gallery header view.
-public final class GalleryHeaderViewOptions: Sendable {
+public final class MediaViewerHeaderOptions: Sendable {
     /// The title to display in the header.
     public let title: String
     /// The subtitle to display in the header.

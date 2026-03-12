@@ -7,6 +7,10 @@ import SwiftUI
 
 /// View used for displaying media in a grid.
 struct GridMediaView: View {
+    @Injected(\.fonts) private var fonts
+    @Injected(\.colors) private var colors
+    @Injected(\.tokens) private var tokens
+    
     var attachments: [MediaAttachment]
     @Binding var isShown: Bool
 
@@ -24,10 +28,10 @@ struct GridMediaView: View {
 
     var body: some View {
         VStack {
-            TitleWithCloseButton(
-                title: L10n.Message.Gallery.photos,
-                isShown: $isShown
-            )
+            Text(L10n.Message.Gallery.photos)
+                .font(fonts.bodyBold)
+                .padding(.all, tokens.spacingXl)
+            
             ScrollView {
                 LazyVGrid(columns: columns, spacing: 2) {
                     ForEach(attachments) { attachment in
@@ -46,7 +50,9 @@ struct GridMediaView: View {
                 .padding(.horizontal, 2)
                 .animation(nil)
             }
+            
             Spacer()
         }
+        .background(colors.backgroundCoreApp.toColor)
     }
 }

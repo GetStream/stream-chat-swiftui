@@ -9,19 +9,19 @@ import StreamSwiftTestHelpers
 import SwiftUI
 import XCTest
 
-class GalleryView_Tests: StreamChatTestCase {
-    func test_galleryView_snapshotLoading() {
+class MediaViewer_Tests: StreamChatTestCase {
+    func test_mediaViewer_snapshotLoading() {
         // Given
         let imageMessage = ChatMessage.mock(
             id: .unique,
             cid: .unique,
             text: "test message",
-            author: .mock(id: .unique),
+            author: .mock(id: .unique, name: "Test"),
             attachments: ChatChannelTestHelpers.imageAttachments
         )
 
         // When
-        let view = GalleryView(
+        let view = MediaViewer(
             imageAttachments: imageMessage.imageAttachments,
             author: imageMessage.author,
             isShown: .constant(true),
@@ -33,9 +33,9 @@ class GalleryView_Tests: StreamChatTestCase {
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
 
-    func test_galleryHeader_snapshot() {
+    func test_mediaViewerHeader_snapshot() {
         // Given
-        let header = GalleryHeaderView(
+        let header = MediaViewerHeader(
             title: "Test",
             subtitle: "Subtitle",
             isShown: .constant(true)
@@ -46,19 +46,19 @@ class GalleryView_Tests: StreamChatTestCase {
         assertSnapshot(matching: header, as: .image(perceptualPrecision: precision))
     }
 
-    func test_galleryHeader_withMessageCreatedToday_snapshot() {
+    func test_mediaViewerHeader_withMessageCreatedToday_snapshot() {
         // Given
         let imageMessage = ChatMessage.mock(
             id: .unique,
             cid: .unique,
             text: "test message",
-            author: .mock(id: .unique),
+            author: .mock(id: .unique, name: "Test"),
             createdAt: .now,
             attachments: ChatChannelTestHelpers.imageAttachments
         )
 
         // When
-        let view = GalleryView(
+        let view = MediaViewer(
             imageAttachments: imageMessage.imageAttachments,
             author: imageMessage.author,
             isShown: .constant(true),
@@ -71,19 +71,19 @@ class GalleryView_Tests: StreamChatTestCase {
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
 
-    func test_galleryHeader_withMessageExactDate_snapshot() {
+    func test_mediaViewerHeader_withMessageExactDate_snapshot() {
         // Given
         let imageMessage = ChatMessage.mock(
             id: .unique,
             cid: .unique,
             text: "test message",
-            author: .mock(id: .unique),
+            author: .mock(id: .unique, name: "Test"),
             createdAt: Date(timeIntervalSince1970: 1_726_662_904),
             attachments: ChatChannelTestHelpers.imageAttachments
         )
 
         // When
-        let view = GalleryView(
+        let view = MediaViewer(
             imageAttachments: imageMessage.imageAttachments,
             author: imageMessage.author,
             isShown: .constant(true),

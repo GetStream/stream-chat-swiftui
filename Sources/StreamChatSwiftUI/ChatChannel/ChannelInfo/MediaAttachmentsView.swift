@@ -185,8 +185,8 @@ public struct MediaAttachmentContentView<Factory: ViewFactory>: View {
             durationTask = nil
         }
         .fullScreenCover(isPresented: $galleryShown) {
-            factory.makeGalleryView(
-                options: GalleryViewOptions(
+            factory.makeMediaViewer(
+                options: MediaViewerOptions(
                     mediaAttachments: allMediaAttachments,
                     message: mediaItem.message,
                     isShown: $galleryShown,
