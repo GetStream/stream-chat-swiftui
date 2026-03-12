@@ -89,17 +89,9 @@ public struct FileAttachmentView: View {
         .withUploadingStateIndicator(for: attachment.uploadingState, url: attachment.assetURL)
         .withDownloadingStateIndicator(for: attachment.downloadingState, url: attachment.assetURL)
         .sheet(isPresented: $fullScreenShown) {
-            FileAttachmentPreview(title: attachment.title, url: previewURL)
+            FileAttachmentPreview(attachment: attachment)
         }
         .accessibilityIdentifier("FileAttachmentView")
-    }
-
-    private var previewURL: URL {
-        if attachment.downloadingState?.state == .downloaded,
-           let localFileURL = attachment.downloadingState?.localFileURL {
-            return localFileURL
-        }
-        return attachment.assetURL
     }
 }
 
@@ -153,14 +145,23 @@ struct DownloadShareAttachmentView<Payload: DownloadableAttachmentPayload>: View
     @Injected(\.chatClient) var chatClient
 
     @State private var shareSheetShown = false
+    @State private var downloadButtonShown: Bool
+    @State private var shareButtonShown: Bool
 
     var attachment: ChatMessageAttachment<Payload>
+    
+    init(attachment: ChatMessageAttachment<Payload>) {
+        self.attachment = attachment
+        let downloadButtonShown: Bool = (attachment.uploadingState == nil || attachment.uploadingState?.state == .uploaded) && attachment.downloadingState == nil
+        _downloadButtonShown = .init(initialValue: downloadButtonShown)
+        _shareButtonShown = .init(initialValue: attachment.downloadingState?.state == .downloaded)
+    }
 
     var body: some View {
         Group {
-            if shouldShowDownloadButton {
+            if downloadButtonShown {
                 downloadButton
-            } else if shouldShowShareButton {
+            } else if shareButtonShown {
                 shareButton
             }
         }
@@ -171,19 +172,11 @@ struct DownloadShareAttachmentView<Payload: DownloadableAttachmentPayload>: View
         }
     }
 
-    private var shouldShowShareButton: Bool {
-        attachment.downloadingState?.state == .downloaded
-    }
-
-    private var shouldShowDownloadButton: Bool {
-        (attachment.uploadingState == nil || attachment.uploadingState?.state == .uploaded) && attachment.downloadingState == nil
-    }
-
     private var downloadButton: some View {
         Button(action: { downloadAttachment() }) {
             Image(uiImage: images.download)
                 .renderingMode(.template)
-                .foregroundColor(Color(colors.accentPrimary))
+                .foregroundColor(Color(colors.textPrimary))
                 .frame(width: 24, height: 24)
         }
         .accessibilityLabel("Download")
@@ -193,7 +186,7 @@ struct DownloadShareAttachmentView<Payload: DownloadableAttachmentPayload>: View
         Button(action: { shareSheetShown = true }) {
             Image(uiImage: images.share)
                 .renderingMode(.template)
-                .foregroundColor(Color(colors.accentPrimary))
+                .foregroundColor(Color(colors.textPrimary))
                 .frame(width: 24, height: 24)
         }
         .accessibilityLabel("Share")
@@ -203,7 +196,14 @@ struct DownloadShareAttachmentView<Payload: DownloadableAttachmentPayload>: View
         let messageId = attachment.id.messageId
         let cid = attachment.id.cid
         let messageController = chatClient.messageController(cid: cid, messageId: messageId)
-        messageController.downloadAttachment(attachment) { _ in }
+        messageController.downloadAttachment(attachment) { result in
+            if case .failure(let error) = result {
+                log.error("Error downloading attachment \(error.localizedDescription)")
+            } else {
+                downloadButtonShown = false
+                shareButtonShown = true
+            }
+        }
     }
 }
 

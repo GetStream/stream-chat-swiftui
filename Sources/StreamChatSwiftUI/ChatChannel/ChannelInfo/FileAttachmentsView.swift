@@ -52,9 +52,6 @@ public struct FileAttachmentsView: View {
                                             sizeString: attachment.file.sizeString
                                         )
                                         Spacer()
-                                        if utils.messageListConfig.downloadFileAttachmentsEnabled {
-                                            DownloadShareAttachmentView(attachment: attachment)
-                                        }
                                     }
                                     .onAppear {
                                         viewModel.loadAdditionalAttachments(
@@ -67,7 +64,7 @@ public struct FileAttachmentsView: View {
                                 .padding(.horizontal)
                                 .withDownloadingStateIndicator(for: attachment.downloadingState, url: attachment.assetURL)
                                 .sheet(item: $viewModel.selectedAttachment) { item in
-                                    FileAttachmentPreview(title: item.title, url: item.assetURL)
+                                    FileAttachmentPreview(attachment: item)
                                 }
                             }
                         }

@@ -2,6 +2,7 @@
 // Copyright © 2026 Stream.io Inc. All rights reserved.
 //
 
+import StreamChat
 import SwiftUI
 
 /// View previewing file attachments.
@@ -17,13 +18,20 @@ public struct FileAttachmentPreview: View {
         utils.fileCDN
     }
 
-    let title: String?
-    var url: URL
-
+    let attachment: ChatMessageFileAttachment
+    
     @State private var adjustedUrl: URL?
     @State private var isLoading = false
     @State private var webViewTitle: String?
     @State private var error: Error?
+    
+    var title: String? {
+        attachment.title
+    }
+    
+    var url: URL {
+        attachment.assetURL
+    }
     
     var navigationTitle: String {
         if let title, !title.isEmpty { return title }
@@ -78,6 +86,12 @@ public struct FileAttachmentPreview: View {
                     } label: {
                         Image(uiImage: images.close)
                             .renderingMode(.template)
+                    }
+                }
+                
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    if utils.messageListConfig.downloadFileAttachmentsEnabled {
+                        DownloadShareAttachmentView(attachment: attachment)
                     }
                 }
             }
