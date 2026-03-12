@@ -346,12 +346,27 @@ struct ChatChannelInfoViewHeaderViewModifier: ViewModifier {
 
         ToolbarItem(placement: .navigationBarTrailing) {
             if !viewModel.showSingleMemberDMView {
-                StreamTextButton(role: .secondary, style: .outline, size: .small) {
-                    viewModel.editGroupShown = true
-                } text: {
-                    Text(L10n.ChatInfo.edit)
-                        .font(fonts.bodyBold)
-                }
+                editButton
+            }
+        }
+    }
+
+    @ViewBuilder
+    private var editButton: some View {
+        if #available(iOS 26.0, *) {
+            StreamTextButton(role: .secondary, style: .ghost, size: .small) {
+                viewModel.editGroupShown = true
+            } text: {
+                Text(L10n.ChatInfo.edit)
+                    .font(fonts.bodyBold)
+            }
+            .modifier(LiquidGlassModifier(shape: Capsule(), isInteractive: true))
+        } else {
+            StreamTextButton(role: .secondary, style: .outline, size: .small) {
+                viewModel.editGroupShown = true
+            } text: {
+                Text(L10n.ChatInfo.edit)
+                    .font(fonts.bodyBold)
             }
         }
     }
