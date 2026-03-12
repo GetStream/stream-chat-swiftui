@@ -354,7 +354,7 @@ struct ChatChannelInfoViewHeaderViewModifier: ViewModifier {
     @ViewBuilder
     private var editButton: some View {
         if #available(iOS 26.0, *) {
-            StreamTextButton(role: .secondary, style: .ghost, size: .small) {
+            StreamTextButton(role: .secondary, style: .ghost, size: .medium) {
                 viewModel.editGroupShown = true
             } text: {
                 Text(L10n.ChatInfo.edit)
@@ -362,7 +362,7 @@ struct ChatChannelInfoViewHeaderViewModifier: ViewModifier {
             }
             .modifier(LiquidGlassModifier(shape: Capsule(), isInteractive: true))
         } else {
-            StreamTextButton(role: .secondary, style: .outline, size: .small) {
+            StreamTextButton(role: .secondary, style: .outline, size: .medium) {
                 viewModel.editGroupShown = true
             } text: {
                 Text(L10n.ChatInfo.edit)
