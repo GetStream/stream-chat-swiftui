@@ -2,6 +2,7 @@
 // Copyright © 2026 Stream.io Inc. All rights reserved.
 //
 
+import AVKit
 import Foundation
 import StreamChat
 
@@ -23,6 +24,7 @@ public class Utils {
     public var imageProcessor: ImageProcessor
     public var imageMerger: ImageMerging
     public var fileCDN: FileCDN
+    public var avPlayerProvider: AVPlayerProvider
     public var channelNamer: ChatChannelNamer
     public var chatUserNamer: ChatUserNamer
     public var channelAvatarsMerger: ChannelAvatarsMerging
@@ -86,6 +88,7 @@ public class Utils {
         imageProcessor: ImageProcessor = NukeImageProcessor(),
         imageMerger: ImageMerging = DefaultImageMerger(),
         fileCDN: FileCDN = DefaultFileCDN(),
+        avPlayerProvider: AVPlayerProvider = DefaultAVPlayerProvider(),
         channelAvatarsMerger: ChannelAvatarsMerging = ChannelAvatarsMerger(),
         messageTypeResolver: MessageTypeResolving = MessageTypeResolver(),
         messageActionResolver: MessageActionsResolving = MessageActionsResolver(),
@@ -115,6 +118,7 @@ public class Utils {
         self.imageProcessor = imageProcessor
         self.imageMerger = imageMerger
         self.fileCDN = fileCDN
+        self.avPlayerProvider = avPlayerProvider
         self.channelNamer = channelNamer
         self.chatUserNamer = chatUserNamer
         self.channelAvatarsMerger = channelAvatarsMerger
@@ -138,5 +142,35 @@ public class Utils {
     
     public static var defaultSortReactions: (MessageReactionType, MessageReactionType) -> Bool {
         { $0.rawValue < $1.rawValue }
+    }
+}
+
+/// Provides a custom `AVPlayer` for a given video URL.
+///
+/// Conform to this protocol to provide a custom player configuration,
+/// such as injecting authentication headers via a custom `AVURLAsset`.
+///
+/// The URL passed to ``player(for:completion:)`` has already been resolved
+/// through ``FileCDN/adjustedURL(for:completion:)``.
+public protocol AVPlayerProvider {
+    /// Creates and returns an `AVPlayer` for the given video URL.
+    /// - Parameters:
+    ///   - url: A video URL already resolved through `FileCDN`.
+    ///   - completion: A completion that is called when the player is ready or an error occurred.
+    func player(
+        for url: URL,
+        completion: @escaping ((Result<AVPlayer, Error>) -> Void)
+    )
+}
+
+/// The default implementation that creates an `AVPlayer` directly from the provided URL.
+public final class DefaultAVPlayerProvider: AVPlayerProvider {
+    public init() {}
+
+    public func player(
+        for url: URL,
+        completion: @escaping ((Result<AVPlayer, Error>) -> Void)
+    ) {
+        completion(.success(AVPlayer(url: url)))
     }
 }
