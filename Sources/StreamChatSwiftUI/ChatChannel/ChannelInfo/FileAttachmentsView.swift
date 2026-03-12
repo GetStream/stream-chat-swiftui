@@ -13,6 +13,7 @@ public struct FileAttachmentsView: View {
     @Injected(\.fonts) private var fonts
     @Injected(\.images) private var images
     @Injected(\.utils) private var utils
+    @Injected(\.tokens) private var tokens
 
     public init(channel: ChatChannel) {
         _viewModel = StateObject(
@@ -38,8 +39,6 @@ public struct FileAttachmentsView: View {
                 ScrollView {
                     LazyVStack(spacing: 0) {
                         ForEach(viewModel.attachmentsDataSource) { monthlyDataSource in
-                            MonthlyAttachmentsHeader(monthlyDataSource: monthlyDataSource)
-
                             ForEach(monthlyDataSource.attachments, id: \.self) { attachment in
                                 let url = attachment.assetURL
 
@@ -63,21 +62,20 @@ public struct FileAttachmentsView: View {
                                             latest: attachment
                                         )
                                     }
-                                    .padding(.horizontal, 8)
-                                    .padding(.vertical)
                                 }
+                                .padding(.vertical, tokens.spacingSm)
+                                .padding(.horizontal)
                                 .withDownloadingStateIndicator(for: attachment.downloadingState, url: attachment.assetURL)
                                 .sheet(item: $viewModel.selectedAttachment) { item in
                                     FileAttachmentPreview(title: item.title, url: item.assetURL)
                                 }
-
-                                Divider()
                             }
                         }
                     }
                 }
             }
         }
+        .background(colors.backgroundCoreApp.toColor)
         .toolbarThemed {
             ToolbarItem(placement: .principal) {
                 Text(L10n.ChatInfo.Files.title)

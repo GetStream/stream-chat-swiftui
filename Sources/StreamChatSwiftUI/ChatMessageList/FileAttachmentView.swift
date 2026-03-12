@@ -124,17 +124,17 @@ public struct FileAttachmentDisplayView: View {
             Image(uiImage: previewImage)
                 .resizable()
                 .aspectRatio(contentMode: .fit)
-                .frame(width: 34, height: 40)
+                .frame(width: 32, height: 40)
                 .accessibilityHidden(true)
             VStack(alignment: .leading, spacing: tokens.spacingXxs) {
                 Text(title)
-                    .font(fonts.bodyBold)
+                    .font(fonts.body)
                     .lineLimit(1)
-                    .foregroundColor(Color(colors.text))
+                    .foregroundColor(Color(colors.textPrimary))
                 Text(sizeString)
-                    .font(fonts.footnote)
+                    .font(fonts.subheadline)
                     .lineLimit(1)
-                    .foregroundColor(Color(colors.textLowEmphasis))
+                    .foregroundColor(Color(colors.textTertiary))
             }
             Spacer()
         }
