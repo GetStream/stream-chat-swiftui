@@ -79,7 +79,7 @@ public struct ChatChannelInfoView<Factory: ViewFactory>: View, KeyboardReadable 
             MemberListView(factory: factory, viewModel: viewModel)
         }
         .sheet(isPresented: $viewModel.editGroupShown) {
-            EditGroupView(viewModel: viewModel)
+            EditGroupView(factory: factory, viewModel: viewModel)
         }
         .sheet(isPresented: $viewModel.addUsersShown) {
             factory.makeAddUsersView(

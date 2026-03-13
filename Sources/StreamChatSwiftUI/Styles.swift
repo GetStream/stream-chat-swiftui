@@ -18,6 +18,10 @@ public protocol Styles {
     associatedtype ScrollToBottomButtonViewModifier: ViewModifier
     func makeScrollToBottomButtonModifier(options: ScrollToBottomButtonModifierOptions) -> ScrollToBottomButtonViewModifier
     
+    associatedtype ToolbarConfirmActionViewModifier: ViewModifier
+    /// Returns a view modifier applied to toolbar confirm action buttons.
+    func makeToolbarConfirmActionModifier(options: ToolbarConfirmActionModifierOptions) -> ToolbarConfirmActionViewModifier
+    
     associatedtype ChannelListContentModifier: ViewModifier
     /// Returns a view modifier applied to the channel list content (including both header and footer views).
     func makeChannelListContentModifier(options: ChannelListContentModifierOptions) -> ChannelListContentModifier
@@ -94,6 +98,10 @@ extension Styles {
     public func makeScrollToBottomButtonModifier(options: ScrollToBottomButtonModifierOptions) -> some ViewModifier {
         RegularScrollToBottomButtonModifier()
     }
+    
+    public func makeToolbarConfirmActionModifier(options: ToolbarConfirmActionModifierOptions) -> some ViewModifier {
+        DefaultToolbarConfirmActionModifier()
+    }
 }
 
 public class LiquidGlassStyles: Styles {
@@ -139,7 +147,7 @@ public class RegularStyles: Styles {
     public func makeScrollToBottomButtonModifier(options: ScrollToBottomButtonModifierOptions) -> some ViewModifier {
         RegularScrollToBottomButtonModifier()
     }
-
+    
     public func makeComposerViewModifier(options: ComposerViewModifierOptions) -> some ViewModifier {
         ComposerBackgroundRegularViewModifier()
     }
@@ -191,6 +199,10 @@ public class ComposerButtonModifierOptions {
 }
 
 public class ScrollToBottomButtonModifierOptions {
+    public init() {}
+}
+
+public class ToolbarConfirmActionModifierOptions {
     public init() {}
 }
 
@@ -256,6 +268,40 @@ public struct RegularScrollToBottomButtonModifier: ViewModifier {
                         y: tokens.lightElevation3.y
                     )
             )
+    }
+}
+
+/// Styles a toolbar confirm action button using the native platform appearance.
+///
+/// On iOS 26+, applies a glass button style with the accent tint.
+/// On earlier versions, falls back to a solid primary ``StreamButtonStyle``.
+public struct DefaultToolbarConfirmActionModifier: ViewModifier {
+    @Injected(\.colors) private var colors
+
+    public init() {}
+
+    public func body(content: Content) -> some View {
+        #if swift(>=6.2)
+        if #available(iOS 26.0, *) {
+            content
+                .tint(Color(colors.accentPrimary))
+        } else {
+            solidStyle(content: content)
+        }
+        #else
+        solidStyle(content: content)
+        #endif
+    }
+
+    private func solidStyle(content: Content) -> some View {
+        content.buttonStyle(
+            StreamButtonStyle(
+                role: .primary,
+                style: .solid,
+                size: .medium,
+                isIconOnly: true
+            )
+        )
     }
 }
 

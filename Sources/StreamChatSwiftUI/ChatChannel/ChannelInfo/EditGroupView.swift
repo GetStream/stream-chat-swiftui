@@ -7,11 +7,12 @@ import SwiftUI
 
 /// Sheet presented when the user taps "Edit" on a group channel info screen.
 /// Allows changing the group avatar and name.
-public struct EditGroupView: View {
+public struct EditGroupView<Factory: ViewFactory>: View {
     @Injected(\.colors) private var colors
     @Injected(\.fonts) private var fonts
     @Injected(\.tokens) private var tokens
 
+    let factory: Factory
     @ObservedObject var viewModel: ChatChannelInfoViewModel
 
     @State private var name: String
@@ -20,7 +21,8 @@ public struct EditGroupView: View {
     @State private var cameraPickerShown = false
     @State private var libraryPickerShown = false
 
-    public init(viewModel: ChatChannelInfoViewModel) {
+    public init(factory: Factory = DefaultViewFactory.shared, viewModel: ChatChannelInfoViewModel) {
+        self.factory = factory
         self.viewModel = viewModel
         _name = State(initialValue: viewModel.channelName)
     }
@@ -36,6 +38,7 @@ public struct EditGroupView: View {
             .background(Color(colors.backgroundCoreApp).edgesIgnoringSafeArea(.all))
             .modifier(
                 EditGroupToolbarModifier(
+                    factory: factory,
                     viewModel: viewModel,
                     name: name,
                     selectedImage: selectedImage
@@ -201,12 +204,13 @@ struct GroupAvatarPickerSheetView: View {
 
 // MARK: - Toolbar
 
-private struct EditGroupToolbarModifier: ViewModifier {
+private struct EditGroupToolbarModifier<Factory: ViewFactory>: ViewModifier {
     @Injected(\.colors) private var colors
     @Injected(\.fonts) private var fonts
     @Injected(\.images) private var images
     @Injected(\.tokens) private var tokens
 
+    let factory: Factory
     @ObservedObject var viewModel: ChatChannelInfoViewModel
 
     let name: String
@@ -225,6 +229,9 @@ private struct EditGroupToolbarModifier: ViewModifier {
                 viewModel.editGroupShown = false
             } label: {
                 Image(systemName: "xmark")
+                    .renderingMode(.template)
+                    .font(.system(size: 12))
+                    .foregroundColor(Color(colors.buttonSecondaryText))
             }
         }
 
@@ -244,26 +251,13 @@ private struct EditGroupToolbarModifier: ViewModifier {
         }
     }
 
-    @ViewBuilder
     private var confirmButton: some View {
-        if #available(iOS 26, *) {
-            Button(L10n.ChatInfo.Edit.save, systemImage: "checkmark") {
-                viewModel.saveGroupEdit(name: name, image: selectedImage)
-            }
-            .tint(Color(colors.accentPrimary))
-        } else {
-            StreamIconButton(
-                role: .primary,
-                style: .solid,
-                size: .medium,
-                action: { viewModel.saveGroupEdit(name: name, image: selectedImage) }
-            ) {
-                Image(systemName: "checkmark")
-                    .font(.system(size: 16))
-            }
-            .accessibilityLabel(Text(L10n.ChatInfo.Edit.save))
-            .accessibilityIdentifier("EditGroupConfirmButton")
+        Button(L10n.ChatInfo.Edit.save, systemImage: "checkmark") {
+            viewModel.saveGroupEdit(name: name, image: selectedImage)
         }
+        .modifier(factory.styles.makeToolbarConfirmActionModifier(options: .init()))
+        .accessibilityLabel(Text(L10n.ChatInfo.Edit.save))
+        .accessibilityIdentifier("EditGroupConfirmButton")
     }
 }
 
