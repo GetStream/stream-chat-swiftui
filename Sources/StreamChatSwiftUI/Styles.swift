@@ -281,16 +281,13 @@ public struct DefaultToolbarConfirmActionModifier: ViewModifier {
     public init() {}
 
     public func body(content: Content) -> some View {
-        #if swift(>=6.2)
-        if #available(iOS 26.0, *) {
+        if #available(iOS 16.0, *) {
             content
+                .buttonStyle(.borderedProminent)
                 .tint(Color(colors.accentPrimary))
         } else {
             solidStyle(content: content)
         }
-        #else
-        solidStyle(content: content)
-        #endif
     }
 
     private func solidStyle(content: Content) -> some View {

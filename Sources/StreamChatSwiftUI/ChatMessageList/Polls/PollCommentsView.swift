@@ -78,7 +78,7 @@ struct PollCommentsView<Factory: ViewFactory>: View {
                     .foregroundColor(Color(colors.navigationBarTitle))
             }
 
-            ToolbarItem(placement: .confirmationAction) {
+            ToolbarItem(placement: .topBarTrailing) {
                 if viewModel.showsAddCommentButton && !viewModel.currentUserAddedComment {
                     addCommentButton
                 }
@@ -158,8 +158,13 @@ struct PollCommentsView<Factory: ViewFactory>: View {
     }
 
     private var addCommentButton: some View {
-        Button(L10n.Message.Polls.Button.addComment, systemImage: "pencil") {
+        Button {
             viewModel.addCommentShown = true
+        } label: {
+            Image(systemName: "pencil")
+                .renderingMode(.template)
+                .font(.system(size: 16))
+                .foregroundColor(Color(colors.buttonPrimaryTextOnAccent))
         }
         .modifier(factory.styles.makeToolbarConfirmActionModifier(options: .init()))
         .accessibilityLabel(Text(L10n.Message.Polls.Button.addComment))

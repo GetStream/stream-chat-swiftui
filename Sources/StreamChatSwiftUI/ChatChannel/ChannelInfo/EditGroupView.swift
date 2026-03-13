@@ -241,7 +241,7 @@ private struct EditGroupToolbarModifier<Factory: ViewFactory>: ViewModifier {
                 .foregroundColor(Color(colors.navigationBarTitle))
         }
 
-        ToolbarItem(placement: .confirmationAction) {
+        ToolbarItem(placement: .topBarTrailing) {
             if viewModel.isUploadingGroupAvatar {
                 ProgressView()
                     .frame(width: tokens.iconSizeLg, height: tokens.iconSizeLg)
@@ -252,8 +252,13 @@ private struct EditGroupToolbarModifier<Factory: ViewFactory>: ViewModifier {
     }
 
     private var confirmButton: some View {
-        Button(L10n.ChatInfo.Edit.save, systemImage: "checkmark") {
+        Button {
             viewModel.saveGroupEdit(name: name, image: selectedImage)
+        } label: {
+            Image(systemName: "checkmark")
+                .renderingMode(.template)
+                .font(.system(size: 16))
+                .foregroundColor(Color(colors.buttonPrimaryTextOnAccent))
         }
         .modifier(factory.styles.makeToolbarConfirmActionModifier(options: .init()))
         .accessibilityLabel(Text(L10n.ChatInfo.Edit.save))
