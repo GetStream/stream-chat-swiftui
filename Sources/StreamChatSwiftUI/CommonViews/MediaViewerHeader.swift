@@ -6,7 +6,7 @@ import StreamChat
 import SwiftUI
 
 /// View used for the gallery header, for images and videos.
-struct GalleryHeaderView: View {
+struct MediaViewerHeader: View {
     @Injected(\.colors) private var colors
     @Injected(\.fonts) private var fonts
     @Injected(\.images) private var images
@@ -19,26 +19,26 @@ struct GalleryHeaderView: View {
     var body: some View {
         ZStack {
             HStack {
-                Button {
+                StreamIconButton(role: .primary, style: .ghost, size: .medium) {
                     isShown = false
-                } label: {
-                    Image(uiImage: images.close)
+                } icon: {
+                    Image(uiImage: images.back)
                         .customizable()
+                        .foregroundColor(closeImageColor)
                         .frame(height: 16)
                 }
                 .padding()
-                .foregroundColor(closeImageColor)
 
                 Spacer()
             }
 
             VStack {
                 Text(title)
-                    .font(fonts.bodyBold)
-                    .foregroundColor(Color(colors.navigationBarTitle))
+                    .font(fonts.headline)
+                    .foregroundColor(Color(colors.textPrimary))
                 Text(subtitle)
-                    .font(fonts.footnote)
-                    .foregroundColor(Color(colors.navigationBarSubtitle))
+                    .font(fonts.subheadline)
+                    .foregroundColor(Color(colors.textSecondary))
             }
         }
         .modifier(GalleryHeaderViewAppearanceViewModifier())

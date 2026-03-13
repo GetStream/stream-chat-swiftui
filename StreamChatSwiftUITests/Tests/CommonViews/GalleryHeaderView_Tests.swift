@@ -13,7 +13,7 @@ final class GalleryHeaderView_Tests: StreamChatTestCase {
     
     func test_default_snapshot() {
         // When
-        let view = GalleryHeaderView(title: "Title", subtitle: "Subtitle", isShown: .constant(false))
+        let view = MediaViewerHeader(title: "Title", subtitle: "Subtitle", isShown: .constant(false))
             .applySize(size)
         
         // Then
@@ -23,7 +23,7 @@ final class GalleryHeaderView_Tests: StreamChatTestCase {
     func test_customized_snapshot() {
         // When
         setThemedNavigationBarAppearance()
-        let view = GalleryHeaderView(title: "Title", subtitle: "Subtitle", isShown: .constant(false))
+        let view = MediaViewerHeader(title: "Title", subtitle: "Subtitle", isShown: .constant(false))
             .applySize(size)
         
         // Then

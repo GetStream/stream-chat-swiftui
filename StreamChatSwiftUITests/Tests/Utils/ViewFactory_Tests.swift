@@ -967,13 +967,13 @@ import XCTest
         XCTAssert(view is ChannelAvatar)
     }
     
-    func test_viewFactory_makeGalleryView() {
+    func test_viewFactory_makeMediaViewer() {
         // Given
         let viewFactory = DefaultViewFactory.shared
         
         // When
-        let view = viewFactory.makeGalleryView(
-            options: GalleryViewOptions(
+        let view = viewFactory.makeMediaViewer(
+            options: MediaViewerOptions(
                 mediaAttachments: [],
                 message: .mock(),
                 isShown: .constant(true),
@@ -982,16 +982,16 @@ import XCTest
         )
             
         // Then
-        XCTAssert(view is GalleryView<DefaultViewFactory>)
+        XCTAssert(view is MediaViewer<DefaultViewFactory>)
     }
     
-    func test_viewFactory_makeGalleryHeaderView() {
+    func test_viewFactory_makeMediaViewerHeader() {
         // Given
         let viewFactory = DefaultViewFactory.shared
         
         // When
-        let view = viewFactory.makeGalleryHeaderView(
-            options: GalleryHeaderViewOptions(
+        let view = viewFactory.makeMediaViewerHeader(
+            options: MediaViewerHeaderOptions(
                 title: .unique,
                 subtitle: .unique,
                 shown: .constant(true)
@@ -999,7 +999,7 @@ import XCTest
         )
             
         // Then
-        XCTAssert(view is GalleryHeaderView)
+        XCTAssert(view is MediaViewerHeader)
     }
     
     func test_viewFactory_makeVideoPlayerView() {
@@ -1034,7 +1034,7 @@ import XCTest
         )
             
         // Then
-        XCTAssert(view is GalleryHeaderView)
+        XCTAssert(view is MediaViewerHeader)
     }
     
     func test_viewFactory_makeAddUsersView() {
