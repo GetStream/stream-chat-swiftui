@@ -186,6 +186,38 @@ import XCTest
         AssertSnapshot(view, variants: .onlyUserInterfaceStyles)
     }
 
+    func test_pollCommentsView_addCommentButtonVisible() {
+        let comments = [
+            makeComment(
+                pollId: "add-btn",
+                text: "I think option A is the best.",
+                user: .mock(id: "user1", name: "Alice")
+            ),
+            makeComment(
+                pollId: "add-btn",
+                text: "I prefer option B instead.",
+                user: .mock(id: "user2", name: "Bob"),
+                timeOffset: -3600
+            )
+        ]
+
+        let (viewModel, poll, pollController) = makeViewModel(
+            pollId: "add-btn",
+            setPollOnController: true,
+            comments: comments
+        )
+
+        let view = PollCommentsView(
+            factory: DefaultTestViewFactory.shared,
+            poll: poll,
+            pollController: pollController,
+            viewModel: viewModel
+        )
+        .applyDefaultSize()
+
+        AssertSnapshot(view, variants: .onlyUserInterfaceStyles)
+    }
+
     // MARK: - Helpers
 
     private let referenceDate = Date(timeIntervalSince1970: 1_700_000_000)

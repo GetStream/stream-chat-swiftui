@@ -157,26 +157,12 @@ struct PollCommentsView<Factory: ViewFactory>: View {
         .padding(.horizontal, tokens.spacingMd)
     }
 
-    @ViewBuilder
     private var addCommentButton: some View {
-        if #available(iOS 26, *) {
-            Button(L10n.Message.Polls.Button.addComment, systemImage: "pencil") {
-                viewModel.addCommentShown = true
-            }
-            .tint(Color(colors.accentPrimary))
-        } else {
-            Button {
-                viewModel.addCommentShown = true
-            } label: {
-                Image(systemName: "pencil")
-                    .font(.system(size: tokens.iconSizeMd, weight: .medium))
-                    .foregroundColor(Color(colors.buttonPrimaryTextOnAccent))
-                    .frame(width: tokens.buttonVisualHeightMd, height: tokens.buttonVisualHeightMd)
-                    .background(Color(colors.accentPrimary))
-                    .clipShape(Circle())
-            }
-            .buttonStyle(.plain)
+        Button(L10n.Message.Polls.Button.addComment, systemImage: "pencil") {
+            viewModel.addCommentShown = true
         }
+        .modifier(factory.styles.makeToolbarConfirmActionModifier(options: .init()))
+        .accessibilityLabel(Text(L10n.Message.Polls.Button.addComment))
     }
 
     // MARK: - Helpers
