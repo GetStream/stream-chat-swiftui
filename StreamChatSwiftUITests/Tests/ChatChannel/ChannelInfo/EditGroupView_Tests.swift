@@ -35,7 +35,7 @@ import XCTest
             .applyDefaultSize()
 
         // Then
-        AssertSnapshot(view)
+        AssertSnapshot(view, variants: [.smallDark])
     }
 
     // MARK: - GroupAvatarPickerSheetView snapshots
