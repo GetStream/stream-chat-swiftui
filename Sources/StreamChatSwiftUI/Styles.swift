@@ -18,10 +18,6 @@ public protocol Styles {
     associatedtype ScrollToBottomButtonViewModifier: ViewModifier
     func makeScrollToBottomButtonModifier(options: ScrollToBottomButtonModifierOptions) -> ScrollToBottomButtonViewModifier
     
-    associatedtype ToolbarConfirmActionViewModifier: ViewModifier
-    /// Returns a view modifier applied to toolbar confirm action buttons.
-    func makeToolbarConfirmActionModifier(options: ToolbarConfirmActionModifierOptions) -> ToolbarConfirmActionViewModifier
-    
     associatedtype ChannelListContentModifier: ViewModifier
     /// Returns a view modifier applied to the channel list content (including both header and footer views).
     func makeChannelListContentModifier(options: ChannelListContentModifierOptions) -> ChannelListContentModifier
@@ -58,6 +54,10 @@ public protocol Styles {
     associatedtype SuggestionsContainerModifier: ViewModifier
     /// Creates the suggestions container modifier applied to the suggestions overlay.
     func makeSuggestionsContainerModifier(options: SuggestionsContainerModifierOptions) -> SuggestionsContainerModifier
+
+    associatedtype ToolbarConfirmActionViewModifier: ViewModifier
+    /// Returns a view modifier applied to toolbar confirm action buttons.
+    func makeToolbarConfirmActionModifier(options: ToolbarConfirmActionModifierOptions) -> ToolbarConfirmActionViewModifier
 }
 
 extension Styles {

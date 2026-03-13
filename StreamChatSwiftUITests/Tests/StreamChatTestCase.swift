@@ -2,6 +2,7 @@
 // Copyright © 2026 Stream.io Inc. All rights reserved.
 //
 
+import SwiftUI
 @testable import StreamChat
 @testable import StreamChatCommonUI
 @testable import StreamChatSwiftUI
@@ -71,9 +72,32 @@ struct RegularToolbarConfirmActionModifier: ViewModifier {
     }
 }
 
-/// Test styles that override the toolbar confirm action to always use the solid style.
-class DefaultTestStyles: RegularStyles {
-    override func makeToolbarConfirmActionModifier(options: ToolbarConfirmActionModifierOptions) -> some ViewModifier {
+/// Test styles that mirror ``RegularStyles`` but force the solid toolbar confirm action,
+/// preventing Liquid Glass from appearing in snapshot tests.
+class DefaultTestStyles: Styles {
+    var composerPlacement: ComposerPlacement = .docked
+
+    func makeComposerInputViewModifier(options: ComposerInputModifierOptions) -> some ViewModifier {
+        RegularInputViewModifier()
+    }
+
+    func makeComposerButtonViewModifier(options: ComposerButtonModifierOptions) -> some ViewModifier {
+        RegularButtonViewModifier()
+    }
+
+    func makeScrollToBottomButtonModifier(options: ScrollToBottomButtonModifierOptions) -> some ViewModifier {
+        RegularScrollToBottomButtonModifier()
+    }
+
+    func makeComposerViewModifier(options: ComposerViewModifierOptions) -> some ViewModifier {
+        ComposerBackgroundRegularViewModifier()
+    }
+
+    func makeSuggestionsContainerModifier(options: SuggestionsContainerModifierOptions) -> some ViewModifier {
+        SuggestionsRegularContainerModifier()
+    }
+
+    func makeToolbarConfirmActionModifier(options: ToolbarConfirmActionModifierOptions) -> some ViewModifier {
         RegularToolbarConfirmActionModifier()
     }
 }
