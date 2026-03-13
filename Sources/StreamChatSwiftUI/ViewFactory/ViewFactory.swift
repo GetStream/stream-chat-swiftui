@@ -221,17 +221,17 @@ import SwiftUI
     ///  - Returns: view displayed in the video attachment slot.
     func makeVideoAttachmentView(options: VideoAttachmentViewOptions) -> VideoAttachmentViewType
 
-    associatedtype GalleryViewType: View
+    associatedtype MediaViewerType: View
     /// Creates the gallery view.
     /// - Parameter options: the options for creating the gallery view.
     ///  - Returns: view displayed in the gallery slot.
-    func makeGalleryView(options: GalleryViewOptions) -> GalleryViewType
+    func makeMediaViewer(options: MediaViewerOptions) -> MediaViewerType
     
-    associatedtype GalleryHeaderViewType: View
+    associatedtype MediaViewerHeaderType: View
     /// Creates the gallery header view presented with a sheet.
     /// - Parameter options: the options for creating the gallery header view.
     /// - Returns: View displayed in the gallery header slot.
-    func makeGalleryHeaderView(options: GalleryHeaderViewOptions) -> GalleryHeaderViewType
+    func makeMediaViewerHeader(options: MediaViewerHeaderOptions) -> MediaViewerHeaderType
     
     associatedtype VideoPlayerViewType: View
     /// Creates the video player view.

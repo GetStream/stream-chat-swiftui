@@ -7,13 +7,14 @@ import StreamChat
 import SwiftUI
 
 /// View used for displaying image attachments in a gallery.
-public struct GalleryView<Factory: ViewFactory>: View {
+public struct MediaViewer<Factory: ViewFactory>: View {
     @Environment(\.presentationMode) var presentationMode
 
     @Injected(\.colors) private var colors
     @Injected(\.fonts) private var fonts
     @Injected(\.images) private var images
     @Injected(\.utils) private var utils
+    @Injected(\.tokens) private var tokens
 
     private let viewFactory: Factory
     var mediaAttachments: [MediaAttachment]
@@ -62,8 +63,8 @@ public struct GalleryView<Factory: ViewFactory>: View {
     public var body: some View {
         GeometryReader { reader in
             VStack {
-                viewFactory.makeGalleryHeaderView(
-                    options: GalleryHeaderViewOptions(
+                viewFactory.makeMediaViewerHeader(
+                    options: MediaViewerHeaderOptions(
                         title: author.name ?? "",
                         subtitle: message.map {
                             utils.galleryHeaderViewDateFormatter.format($0.createdAt)
@@ -71,6 +72,8 @@ public struct GalleryView<Factory: ViewFactory>: View {
                         shown: $isShown
                     )
                 )
+                
+                Divider()
 
                 TabView(selection: $selected) {
                     ForEach(0..<mediaAttachments.count, id: \.self) { index in
@@ -104,7 +107,7 @@ public struct GalleryView<Factory: ViewFactory>: View {
                     }
                 }
                 .tabViewStyle(.page(indexDisplayMode: .never))
-                .background(Color(colors.background1))
+                .background(Color(colors.backgroundCoreApp))
                 .gesture(
                     DragGesture().onEnded { value in
                         if value.location.y - value.startLocation.y > 100 {
@@ -112,35 +115,39 @@ public struct GalleryView<Factory: ViewFactory>: View {
                         }
                     }
                 )
+                
+                Divider()
 
                 HStack {
                     ShareButtonView(content: sharingContent)
-                        .standardPadding()
 
                     Spacer()
 
                     Text("\(selected + 1) of \(mediaAttachments.count)")
-                        .font(fonts.bodyBold)
+                        .font(fonts.subheadline)
+                        .fontWeight(.semibold)
+                        .foregroundColor(colors.textPrimary.toColor)
 
                     Spacer()
 
-                    Button {
+                    StreamIconButton(role: .primary, style: .ghost, size: .small) {
                         gridShown = true
-                    } label: {
+                    } icon: {
                         Image(uiImage: images.gallery)
                             .renderingMode(.template)
                             .resizable()
                             .frame(width: 16, height: 16, alignment: .center)
+                            .foregroundColor(Color(colors.textSecondary))
                     }
-                    .standardPadding()
                 }
-                .foregroundColor(Color(colors.text))
+                .padding(.all, tokens.spacingXl)
             }
             .sheet(isPresented: $gridShown) {
                 GridMediaView(
-                    attachments: mediaAttachments,
-                    isShown: $gridShown
+                    factory: viewFactory,
+                    attachments: mediaAttachments
                 )
+                .modifier(PresentationDetentsModifier(sheetSizes: [.medium, .large]))
             }
         }
     }
@@ -151,6 +158,32 @@ public struct GalleryView<Factory: ViewFactory>: View {
         } else {
             []
         }
+    }
+}
+
+struct GridMediaView<Factory: ViewFactory>: View {
+    @Injected(\.colors) private var colors
+    @Injected(\.fonts) private var fonts
+    @Injected(\.tokens) private var tokens
+
+    let factory: Factory
+    let attachments: [MediaAttachment]
+
+    var body: some View {
+        VStack(spacing: tokens.spacingLg) {
+            Text(L10n.ChatInfo.Media.title)
+                .font(fonts.bodyBold)
+                .foregroundColor(Color(colors.navigationBarTitle))
+
+            MediaAttachmentsGridView(
+                factory: factory,
+                attachments: attachments,
+                showAvatars: false
+            )
+        }
+        .padding(.horizontal, tokens.spacingSm)
+        .padding(.vertical, tokens.spacing2xl)
+        .background(colors.backgroundElevationElevation1.toColor.edgesIgnoringSafeArea(.all))
     }
 }
 

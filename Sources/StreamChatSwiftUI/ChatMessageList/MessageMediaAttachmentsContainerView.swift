@@ -78,8 +78,8 @@ public struct MessageMediaAttachmentsContainerView<Factory: ViewFactory>: View {
             .fullScreenCover(isPresented: $galleryShown, onDismiss: {
                 selectedIndex = 0
             }) {
-                factory.makeGalleryView(
-                    options: GalleryViewOptions(
+                factory.makeMediaViewer(
+                    options: MediaViewerOptions(
                         mediaAttachments: sources,
                         message: message,
                         isShown: $galleryShown,

@@ -18,8 +18,6 @@ public struct MediaAttachmentsView<Factory: ViewFactory>: View {
         
     let factory: Factory
 
-    private let targetItemWidth: CGFloat = 120
-
     public init(factory: Factory = DefaultViewFactory.shared, channel: ChatChannel) {
         _viewModel = StateObject(
             wrappedValue: MediaAttachmentsViewModel(channel: channel)
@@ -45,63 +43,13 @@ public struct MediaAttachmentsView<Factory: ViewFactory>: View {
                     description: L10n.ChatInfo.Media.emptyDesc
                 )
             } else {
-                GeometryReader { geometry in
-                    let spacing = tokens.spacingXxxs
-                    let columnCount = max(3, Int((geometry.size.width + spacing) / (targetItemWidth + spacing)))
-                    let totalSpacing = spacing * CGFloat(columnCount - 1)
-                    let itemWidth = (geometry.size.width - totalSpacing) / CGFloat(columnCount)
-
-                    ScrollView {
-                        LazyVGrid(
-                            columns: Array(
-                                repeating: GridItem(.flexible(), spacing: spacing),
-                                count: columnCount
-                            ),
-                            spacing: spacing
-                        ) {
-                            ForEach(0..<viewModel.mediaItems.count, id: \.self) { mediaItemIndex in
-                                let mediaItem = viewModel.mediaItems[mediaItemIndex]
-                                ZStack {
-                                    if let mediaAttachment = mediaItem.mediaAttachment {
-                                        let index = viewModel.allMediaAttachments.firstIndex { $0.id == mediaAttachment.id
-                                        } ?? 0
-                                        MediaAttachmentContentView(
-                                            factory: factory,
-                                            mediaItem: mediaItem,
-                                            mediaAttachment: mediaAttachment,
-                                            allMediaAttachments: viewModel.allMediaAttachments,
-                                            itemWidth: itemWidth,
-                                            index: index
-                                        )
-                                    }
-                                }
-                                .overlay(
-                                    TopLeftView {
-                                        factory.makeUserAvatarView(
-                                            options: UserAvatarViewOptions(
-                                                user: mediaItem.message.author,
-                                                size: AvatarSize.small,
-                                                showsIndicator: false
-                                            )
-                                        )
-                                        .overlay(
-                                            Circle()
-                                                .stroke(
-                                                    Color.white,
-                                                    lineWidth: 1
-                                                )
-                                        )
-                                        .padding(.all, 8)
-                                    }
-                                )
-                                .onAppear {
-                                    viewModel.onMediaAttachmentAppear(with: mediaItemIndex)
-                                }
-                            }
-                        }
-                        .animation(nil)
-                    }
-                }
+                MediaAttachmentsGridView(
+                    factory: factory,
+                    attachments: viewModel.allMediaAttachments,
+                    mediaItems: viewModel.mediaItems,
+                    showAvatars: true,
+                    onItemAppear: viewModel.onMediaAttachmentAppear
+                )
             }
         }
         .toolbarThemed {
@@ -112,6 +60,112 @@ public struct MediaAttachmentsView<Factory: ViewFactory>: View {
             }
         }
         .navigationBarTitleDisplayMode(.inline)
+    }
+}
+
+/// View displaying a grid of media attachments using an adaptive column layout.
+struct MediaAttachmentsGridView<Factory: ViewFactory>: View {
+    @Injected(\.tokens) private var tokens
+
+    let factory: Factory
+    let attachments: [MediaAttachment]
+    let mediaItems: [MediaItem]?
+    let showAvatars: Bool
+    let onItemAppear: ((Int) -> Void)?
+
+    private let targetItemWidth: CGFloat = 120
+
+    init(
+        factory: Factory = DefaultViewFactory.shared,
+        attachments: [MediaAttachment],
+        mediaItems: [MediaItem]? = nil,
+        showAvatars: Bool = true,
+        onItemAppear: ((Int) -> Void)? = nil
+    ) {
+        self.factory = factory
+        self.attachments = attachments
+        self.mediaItems = mediaItems
+        self.showAvatars = showAvatars
+        self.onItemAppear = onItemAppear
+    }
+
+    public var body: some View {
+        GeometryReader { geometry in
+            let spacing = tokens.spacingXxxs
+            let columnCount = max(3, Int((geometry.size.width + spacing) / (targetItemWidth + spacing)))
+            let totalSpacing = spacing * CGFloat(columnCount - 1)
+            let rawWidth = (geometry.size.width - totalSpacing) / CGFloat(columnCount)
+            let itemWidth: CGFloat? = rawWidth > 0 ? rawWidth : nil
+
+            ScrollView {
+                LazyVGrid(
+                    columns: Array(
+                        repeating: GridItem(.flexible(), spacing: spacing),
+                        count: columnCount
+                    ),
+                    spacing: spacing
+                ) {
+                    ForEach(0..<attachments.count, id: \.self) { index in
+                        if let itemWidth {
+                            cellView(for: index, itemWidth: itemWidth)
+                                .onAppear {
+                                    onItemAppear?(index)
+                                }
+                        }
+                    }
+                }
+                .animation(nil)
+            }
+        }
+    }
+
+    @ViewBuilder
+    private func cellView(for index: Int, itemWidth: CGFloat) -> some View {
+        if let mediaItems, index < mediaItems.count {
+            let mediaItem = mediaItems[index]
+            ZStack {
+                if let mediaAttachment = mediaItem.mediaAttachment {
+                    let attachmentIndex = attachments.firstIndex { $0.id == mediaAttachment.id } ?? 0
+                    MediaAttachmentContentView(
+                        factory: factory,
+                        mediaItem: mediaItem,
+                        mediaAttachment: mediaAttachment,
+                        allMediaAttachments: attachments,
+                        itemWidth: itemWidth,
+                        index: attachmentIndex
+                    )
+                }
+            }
+            .overlay(
+                Group {
+                    if showAvatars {
+                        TopLeftView {
+                            factory.makeUserAvatarView(
+                                options: UserAvatarViewOptions(
+                                    user: mediaItem.message.author,
+                                    size: AvatarSize.small,
+                                    showsIndicator: false
+                                )
+                            )
+                            .overlay(
+                                Circle()
+                                    .stroke(Color.white, lineWidth: 1)
+                            )
+                            .padding(.all, 8)
+                        }
+                    }
+                }
+            )
+        } else {
+            LazyLoadingImage(
+                source: attachments[index],
+                width: itemWidth,
+                height: itemWidth,
+                showVideoIcon: false
+            )
+            .frame(width: itemWidth, height: itemWidth)
+            .clipped()
+        }
     }
 }
 
@@ -189,8 +243,8 @@ public struct MediaAttachmentContentView<Factory: ViewFactory>: View {
             durationTask = nil
         }
         .fullScreenCover(isPresented: $galleryShown) {
-            factory.makeGalleryView(
-                options: GalleryViewOptions(
+            factory.makeMediaViewer(
+                options: MediaViewerOptions(
                     mediaAttachments: allMediaAttachments,
                     message: mediaItem.message,
                     isShown: $galleryShown,

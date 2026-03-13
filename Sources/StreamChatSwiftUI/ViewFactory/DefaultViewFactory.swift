@@ -357,10 +357,10 @@ extension ViewFactory {
         )
     }
     
-    public func makeGalleryView(
-        options: GalleryViewOptions
+    public func makeMediaViewer(
+        options: MediaViewerOptions
     ) -> some View {
-        GalleryView(
+        MediaViewer(
             viewFactory: self,
             mediaAttachments: options.mediaAttachments,
             author: options.message.author,
@@ -370,10 +370,10 @@ extension ViewFactory {
         )
     }
     
-    public func makeGalleryHeaderView(
-        options: GalleryHeaderViewOptions
+    public func makeMediaViewerHeader(
+        options: MediaViewerHeaderOptions
     ) -> some View {
-        GalleryHeaderView(title: options.title, subtitle: options.subtitle, isShown: options.shown)
+        MediaViewerHeader(title: options.title, subtitle: options.subtitle, isShown: options.shown)
     }
     
     public func makeVideoPlayerView(
@@ -390,7 +390,7 @@ extension ViewFactory {
     public func makeVideoPlayerHeaderView(
         options: VideoPlayerHeaderViewOptions
     ) -> some View {
-        GalleryHeaderView(title: options.title, subtitle: options.subtitle, isShown: options.shown)
+        MediaViewerHeader(title: options.title, subtitle: options.subtitle, isShown: options.shown)
     }
     
     public func makeVideoPlayerFooterView(
