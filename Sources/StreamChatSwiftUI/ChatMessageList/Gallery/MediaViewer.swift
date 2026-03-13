@@ -144,8 +144,8 @@ public struct MediaViewer<Factory: ViewFactory>: View {
             }
             .sheet(isPresented: $gridShown) {
                 GridMediaView(
-                    attachments: mediaAttachments,
-                    isShown: $gridShown
+                    factory: viewFactory,
+                    attachments: mediaAttachments
                 )
                 .modifier(PresentationDetentsModifier(sheetSizes: [.medium, .large]))
             }
@@ -158,6 +158,32 @@ public struct MediaViewer<Factory: ViewFactory>: View {
         } else {
             []
         }
+    }
+}
+
+struct GridMediaView<Factory: ViewFactory>: View {
+    @Injected(\.colors) private var colors
+    @Injected(\.fonts) private var fonts
+    @Injected(\.tokens) private var tokens
+
+    let factory: Factory
+    let attachments: [MediaAttachment]
+
+    var body: some View {
+        VStack(spacing: tokens.spacingLg) {
+            Text(L10n.ChatInfo.Media.title)
+                .font(fonts.bodyBold)
+                .foregroundColor(Color(colors.navigationBarTitle))
+
+            MediaAttachmentsGridView(
+                factory: factory,
+                attachments: attachments,
+                showAvatars: false
+            )
+        }
+        .padding(.horizontal, tokens.spacingSm)
+        .padding(.vertical, tokens.spacing2xl)
+        .background(colors.backgroundElevationElevation1.toColor.edgesIgnoringSafeArea(.all))
     }
 }
 

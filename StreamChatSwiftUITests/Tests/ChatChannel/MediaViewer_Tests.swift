@@ -99,23 +99,23 @@ class MediaViewer_Tests: StreamChatTestCase {
     func test_gridView_snapshotLoading() {
         // Given
         let view = GridMediaView(
-            attachments: [MediaAttachment(url: ChatChannelTestHelpers.testURL, type: .image)],
-            isShown: .constant(true)
+            factory: DefaultViewFactory.shared,
+            attachments: [MediaAttachment(url: ChatChannelTestHelpers.testURL, type: .image)]
         )
         .applyDefaultSize()
 
         // Then
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
-    
+
     func test_gridViewVideoAndImage_snapshotLoading() {
         // Given
         let view = GridMediaView(
+            factory: DefaultViewFactory.shared,
             attachments: [
                 MediaAttachment(url: ChatChannelTestHelpers.testURL, type: .image),
                 MediaAttachment(url: ChatChannelTestHelpers.testURL.appendingPathComponent("test"), type: .video)
-            ],
-            isShown: .constant(true)
+            ]
         )
         .applyDefaultSize()
 
