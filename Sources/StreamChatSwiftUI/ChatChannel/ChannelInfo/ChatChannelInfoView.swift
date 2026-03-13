@@ -54,9 +54,9 @@ public struct ChatChannelInfoView<Factory: ViewFactory>: View, KeyboardReadable 
             VStack(spacing: 0) {
                 headerSection
                     .padding(.top, tokens.spacingXl)
-                    .padding(.bottom, tokens.spacingLg)
+                    .padding(.bottom, tokens.spacingXl)
 
-                VStack(spacing: tokens.spacingSm) {
+                VStack(spacing: tokens.spacingMd) {
                     navigationLinksCard
 
                     if !viewModel.showSingleMemberDMView {
@@ -195,23 +195,15 @@ public struct ChatChannelInfoView<Factory: ViewFactory>: View, KeyboardReadable 
         InfoSectionCard {
             membersCardHeader
 
-            ForEach(viewModel.displayedParticipants) { participant in
-                ChatInfoMemberView(
-                    factory: factory,
-                    participant: participant,
-                    onAppear: { viewModel.onParticipantAppear(participant) },
-                    onTap: {
-                        withAnimation {
-                            viewModel.selectedParticipant = participant
-                        }
-                    }
-                )
-            }
+            membersList
+
+            Spacer()
+                .frame(height: tokens.spacingSm)
+
             if viewModel.showMoreUsersButton {
                 viewAllButton
             }
         }
-        .padding(.vertical, tokens.spacingXs)
         .background(colors.backgroundCoreSurfaceSubtle.toColor)
         .cornerRadius(16)
     }
@@ -235,8 +227,24 @@ public struct ChatChannelInfoView<Factory: ViewFactory>: View, KeyboardReadable 
             }
         }
         .padding(.horizontal, tokens.spacingMd)
-        .padding(.vertical, tokens.spacingXs)
+        .padding(.top, tokens.spacingMd)
+        .padding(.bottom, tokens.spacingXs)
         .background(Color(colors.backgroundCoreSurfaceSubtle))
+    }
+
+    private var membersList: some View {
+        ForEach(viewModel.displayedParticipants) { participant in
+            ChatInfoMemberView(
+                factory: factory,
+                participant: participant,
+                onAppear: { viewModel.onParticipantAppear(participant) },
+                onTap: {
+                    withAnimation {
+                        viewModel.selectedParticipant = participant
+                    }
+                }
+            )
+        }
     }
 
     private var viewAllButton: some View {
@@ -247,13 +255,12 @@ public struct ChatChannelInfoView<Factory: ViewFactory>: View, KeyboardReadable 
                 viewModel.memberListSheetShown = true
             } label: {
                 Text(L10n.ChatInfo.Users.viewAll)
-                    .font(fonts.body)
+                    .font(fonts.body.weight(.semibold))
                     .foregroundColor(Color(colors.buttonSecondaryText))
                     .frame(maxWidth: .infinity)
                     .frame(height: tokens.buttonHitTargetMinHeight)
             }
         }
-        .padding(.horizontal, tokens.spacingMd)
     }
 
     // MARK: - Actions Card
