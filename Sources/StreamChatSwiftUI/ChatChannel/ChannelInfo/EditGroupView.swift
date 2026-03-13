@@ -213,52 +213,56 @@ private struct EditGroupToolbarModifier: ViewModifier {
     let selectedImage: UIImage?
 
     func body(content: Content) -> some View {
-        if #available(iOS 26.0, *) {
-            content
-                .toolbarThemed {
-                    toolbarContent()
-                    #if compiler(>=6.2)
-                        .sharedBackgroundVisibility(.hidden)
-                    #endif
-                }
-        } else {
-            content
-                .toolbarThemed {
-                    toolbarContent()
-                }
-        }
+        content
+            .toolbarThemed {
+                toolbarContent()
+            }
     }
 
     @ToolbarContentBuilder private func toolbarContent() -> some ToolbarContent {
+        ToolbarItem(placement: .navigationBarLeading) {
+            Button {
+                viewModel.editGroupShown = false
+            } label: {
+                Image(systemName: "xmark")
+            }
+        }
+
         ToolbarItem(placement: .principal) {
             Text(L10n.ChatInfo.edit)
                 .font(fonts.bodyBold)
                 .foregroundColor(Color(colors.navigationBarTitle))
         }
-        ToolbarItem(placement: .navigationBarLeading) {
-            Button {
-                viewModel.editGroupShown = false
-            } label: {
-                Image(uiImage: images.close)
-                    .foregroundColor(Color(colors.textSecondary))
+
+        ToolbarItem(placement: .confirmationAction) {
+            if viewModel.isUploadingGroupAvatar {
+                ProgressView()
+                    .frame(width: tokens.iconSizeLg, height: tokens.iconSizeLg)
+            } else {
+                confirmButton
             }
         }
-        ToolbarItem(placement: .navigationBarTrailing) {
-            Button {
+    }
+
+    @ViewBuilder
+    private var confirmButton: some View {
+        if #available(iOS 26, *) {
+            Button(L10n.ChatInfo.Edit.save, systemImage: "checkmark") {
                 viewModel.saveGroupEdit(name: name, image: selectedImage)
-            } label: {
-                if viewModel.isUploadingGroupAvatar {
-                    ProgressView()
-                        .frame(width: tokens.iconSizeLg, height: tokens.iconSizeLg)
-                } else {
-                    Image(uiImage: images.bigConfirmCheckmark)
-                        .resizable()
-                        .aspectRatio(contentMode: .fit)
-                        .frame(height: tokens.iconSizeLg)
-                        .foregroundColor(Color(colors.accentPrimary))
-                }
             }
-            .disabled(viewModel.isUploadingGroupAvatar)
+            .tint(Color(colors.accentPrimary))
+        } else {
+            StreamIconButton(
+                role: .primary,
+                style: .solid,
+                size: .medium,
+                action: { viewModel.saveGroupEdit(name: name, image: selectedImage) }
+            ) {
+                Image(systemName: "checkmark")
+                    .font(.system(size: 16))
+            }
+            .accessibilityLabel(Text(L10n.ChatInfo.Edit.save))
+            .accessibilityIdentifier("EditGroupConfirmButton")
         }
     }
 }

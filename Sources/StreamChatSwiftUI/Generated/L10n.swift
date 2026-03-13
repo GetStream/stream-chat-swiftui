@@ -202,6 +202,8 @@ internal enum L10n {
     internal enum Edit {
       /// Group name
       internal static var groupName: String { L10n.tr("Localizable", "chat-info.edit.group-name") }
+      /// Save
+      internal static var save: String { L10n.tr("Localizable", "chat-info.edit.save") }
       /// Upload
       internal static var upload: String { L10n.tr("Localizable", "chat-info.edit.upload") }
       internal enum Picture {
