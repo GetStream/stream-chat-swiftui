@@ -112,15 +112,15 @@ public struct EditGroupView<Factory: ViewFactory>: View {
             .font(fonts.body)
             .foregroundColor(Color(colors.textPrimary))
             .padding(tokens.spacingMd)
-        .background(
-            RoundedRectangle(cornerRadius: tokens.radiusLg)
-                .fill(Color(colors.backgroundCoreApp))
-                .overlay(
-                    RoundedRectangle(cornerRadius: tokens.radiusLg)
-                        .stroke(Color(colors.borderCoreSubtle), lineWidth: 1)
-                )
-        )
-        .padding(.horizontal, tokens.spacingMd)
+            .background(
+                RoundedRectangle(cornerRadius: tokens.radiusLg)
+                    .fill(Color(colors.backgroundCoreApp))
+                    .overlay(
+                        RoundedRectangle(cornerRadius: tokens.radiusLg)
+                            .stroke(Color(colors.borderCoreSubtle), lineWidth: 1)
+                    )
+            )
+            .padding(.horizontal, tokens.spacingMd)
     }
 }
 

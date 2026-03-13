@@ -2,12 +2,12 @@
 // Copyright © 2026 Stream.io Inc. All rights reserved.
 //
 
-import SwiftUI
 @testable import StreamChat
 @testable import StreamChatCommonUI
 @testable import StreamChatSwiftUI
 @_exported @testable import StreamChatTestTools
 @_exported import StreamSwiftTestHelpers
+import SwiftUI
 import XCTest
 
 /// Base class that sets up the `StreamChat` object.
