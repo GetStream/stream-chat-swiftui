@@ -55,3 +55,33 @@ import XCTest
         }
     }
 }
+
+// Forces the solid primary button style regardless of platform,
+/// preventing Liquid Glass from appearing in snapshot tests.
+struct RegularToolbarConfirmActionModifier: ViewModifier {
+    func body(content: Content) -> some View {
+        content.buttonStyle(
+            StreamButtonStyle(
+                role: .primary,
+                style: .solid,
+                size: .medium,
+                isIconOnly: true
+            )
+        )
+    }
+}
+
+/// Test styles that override the toolbar confirm action to always use the solid style.
+class DefaultTestStyles: RegularStyles {
+    override func makeToolbarConfirmActionModifier(options: ToolbarConfirmActionModifierOptions) -> some ViewModifier {
+        RegularToolbarConfirmActionModifier()
+    }
+}
+
+/// Test view factory that uses ``DefaultTestStyles`` to avoid Liquid Glass in snapshot tests.
+class DefaultTestViewFactory: ViewFactory {
+    @Injected(\.chatClient) var chatClient
+    var styles = DefaultTestStyles()
+
+    static let shared = DefaultTestViewFactory()
+}
