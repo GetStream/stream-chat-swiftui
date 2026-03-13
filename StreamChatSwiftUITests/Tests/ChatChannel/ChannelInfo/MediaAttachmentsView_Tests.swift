@@ -14,8 +14,8 @@ import XCTest
     func test_mediaAttachmentsView_notEmptySnapshot() {
         // Given
         let messages = ChannelInfoMockUtils.generateMessagesWithAttachments(
-            withImages: 10,
-            withVideos: 5
+            withImages: 6,
+            withVideos: 6
         )
         let messageSearchController = ChatMessageSearchController_Mock.mock(client: chatClient)
         messageSearchController.messages_mock = messages
@@ -29,7 +29,7 @@ import XCTest
             .applyDefaultSize()
 
         // Then
-        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
+        AssertSnapshot(view)
     }
 
     func test_mediaAttachmentsView_emptySnapshot() {
@@ -42,7 +42,7 @@ import XCTest
             .applyDefaultSize()
 
         // Then
-        AssertSnapshot(view, size: .defaultAvatarSize)
+        AssertSnapshot(view)
     }
 
     func test_mediaAttachmentsView_loading() {
@@ -55,15 +55,15 @@ import XCTest
             .applyDefaultSize()
 
         // Then
-        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
+        AssertSnapshot(view)
     }
     
     func test_mediaAttachmentsView_themedSnapshot() {
         // Given
         setThemedNavigationBarAppearance()
         let messages = ChannelInfoMockUtils.generateMessagesWithAttachments(
-            withImages: 10,
-            withVideos: 5
+            withImages: 6,
+            withVideos: 6
         )
         let messageSearchController = ChatMessageSearchController_Mock.mock(client: chatClient)
         messageSearchController.messages_mock = messages
@@ -78,6 +78,28 @@ import XCTest
         }.applyDefaultSize()
 
         // Then
-        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
+        AssertSnapshot(view)
+    }
+
+    func test_mediaAttachmentsView_iPadSnapshot() {
+        // Given
+        let iPadSize = CGSize(width: 820, height: 1180)
+        let messages = ChannelInfoMockUtils.generateMessagesWithAttachments(
+            withImages: 6,
+            withVideos: 6
+        )
+        let messageSearchController = ChatMessageSearchController_Mock.mock(client: chatClient)
+        messageSearchController.messages_mock = messages
+        let viewModel = MediaAttachmentsViewModel(
+            channel: .mockDMChannel(),
+            messageSearchController: messageSearchController
+        )
+
+        // When
+        let view = MediaAttachmentsView(viewModel: viewModel)
+            .applySize(iPadSize)
+
+        // Then
+        AssertSnapshot(view, size: iPadSize)
     }
 }

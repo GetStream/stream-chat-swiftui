@@ -67,7 +67,7 @@ struct ParticipantInfoView<Factory: ViewFactory>: View {
                     Spacer()
                 }
             }
-            .background(Color(colors.background).edgesIgnoringSafeArea(.all))
+            .background(Color(colors.backgroundElevationElevation1).edgesIgnoringSafeArea(.all))
             .navigationBarHidden(true)
         }
         .alert(isPresented: $alertShown) {
