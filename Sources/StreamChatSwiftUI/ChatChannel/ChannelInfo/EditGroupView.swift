@@ -7,11 +7,12 @@ import SwiftUI
 
 /// Sheet presented when the user taps "Edit" on a group channel info screen.
 /// Allows changing the group avatar and name.
-public struct EditGroupView: View {
+public struct EditGroupView<Factory: ViewFactory>: View {
     @Injected(\.colors) private var colors
     @Injected(\.fonts) private var fonts
     @Injected(\.tokens) private var tokens
 
+    let factory: Factory
     @ObservedObject var viewModel: ChatChannelInfoViewModel
 
     @State private var name: String
@@ -20,7 +21,8 @@ public struct EditGroupView: View {
     @State private var cameraPickerShown = false
     @State private var libraryPickerShown = false
 
-    public init(viewModel: ChatChannelInfoViewModel) {
+    public init(factory: Factory = DefaultViewFactory.shared, viewModel: ChatChannelInfoViewModel) {
+        self.factory = factory
         self.viewModel = viewModel
         _name = State(initialValue: viewModel.channelName)
     }
@@ -36,6 +38,7 @@ public struct EditGroupView: View {
             .background(Color(colors.backgroundCoreApp).edgesIgnoringSafeArea(.all))
             .modifier(
                 EditGroupToolbarModifier(
+                    factory: factory,
                     viewModel: viewModel,
                     name: name,
                     selectedImage: selectedImage
@@ -105,29 +108,19 @@ public struct EditGroupView: View {
     }
 
     private var nameField: some View {
-        Group {
-            if viewModel.channel.isDirectMessageChannel {
-                Text(name)
-                    .font(fonts.body)
-                    .foregroundColor(Color(colors.textPrimary))
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .padding(tokens.spacingMd)
-            } else {
-                TextField(L10n.ChatInfo.Edit.groupName, text: $name)
-                    .font(fonts.body)
-                    .foregroundColor(Color(colors.textPrimary))
-                    .padding(tokens.spacingMd)
-            }
-        }
-        .background(
-            RoundedRectangle(cornerRadius: tokens.radiusLg)
-                .fill(Color(colors.backgroundCoreApp))
-                .overlay(
-                    RoundedRectangle(cornerRadius: tokens.radiusLg)
-                        .stroke(Color(colors.borderCoreSubtle), lineWidth: 1)
-                )
-        )
-        .padding(.horizontal, tokens.spacingMd)
+        TextField(L10n.ChatInfo.Edit.groupName, text: $name)
+            .font(fonts.body)
+            .foregroundColor(Color(colors.textPrimary))
+            .padding(tokens.spacingMd)
+            .background(
+                RoundedRectangle(cornerRadius: tokens.radiusLg)
+                    .fill(Color(colors.backgroundCoreApp))
+                    .overlay(
+                        RoundedRectangle(cornerRadius: tokens.radiusLg)
+                            .stroke(Color(colors.borderCoreSubtle), lineWidth: 1)
+                    )
+            )
+            .padding(.horizontal, tokens.spacingMd)
     }
 }
 
@@ -211,65 +204,65 @@ struct GroupAvatarPickerSheetView: View {
 
 // MARK: - Toolbar
 
-private struct EditGroupToolbarModifier: ViewModifier {
+private struct EditGroupToolbarModifier<Factory: ViewFactory>: ViewModifier {
     @Injected(\.colors) private var colors
     @Injected(\.fonts) private var fonts
     @Injected(\.images) private var images
     @Injected(\.tokens) private var tokens
 
+    let factory: Factory
     @ObservedObject var viewModel: ChatChannelInfoViewModel
 
     let name: String
     let selectedImage: UIImage?
 
     func body(content: Content) -> some View {
-        if #available(iOS 26.0, *) {
-            content
-                .toolbarThemed {
-                    toolbarContent()
-                    #if compiler(>=6.2)
-                        .sharedBackgroundVisibility(.hidden)
-                    #endif
-                }
-        } else {
-            content
-                .toolbarThemed {
-                    toolbarContent()
-                }
-        }
+        content
+            .toolbarThemed {
+                toolbarContent()
+            }
     }
 
     @ToolbarContentBuilder private func toolbarContent() -> some ToolbarContent {
+        ToolbarItem(placement: .navigationBarLeading) {
+            Button {
+                viewModel.editGroupShown = false
+            } label: {
+                Image(systemName: "xmark")
+                    .renderingMode(.template)
+                    .font(.system(size: 12))
+                    .foregroundColor(Color(colors.buttonSecondaryText))
+            }
+        }
+
         ToolbarItem(placement: .principal) {
             Text(L10n.ChatInfo.edit)
                 .font(fonts.bodyBold)
                 .foregroundColor(Color(colors.navigationBarTitle))
         }
-        ToolbarItem(placement: .navigationBarLeading) {
-            Button {
-                viewModel.editGroupShown = false
-            } label: {
-                Image(uiImage: images.close)
-                    .foregroundColor(Color(colors.textSecondary))
+
+        ToolbarItem(placement: .topBarTrailing) {
+            if viewModel.isUploadingGroupAvatar {
+                ProgressView()
+                    .frame(width: tokens.iconSizeLg, height: tokens.iconSizeLg)
+            } else {
+                confirmButton
             }
         }
-        ToolbarItem(placement: .navigationBarTrailing) {
-            Button {
-                viewModel.saveGroupEdit(name: name, image: selectedImage)
-            } label: {
-                if viewModel.isUploadingGroupAvatar {
-                    ProgressView()
-                        .frame(width: tokens.iconSizeLg, height: tokens.iconSizeLg)
-                } else {
-                    Image(uiImage: images.bigConfirmCheckmark)
-                        .resizable()
-                        .aspectRatio(contentMode: .fit)
-                        .frame(height: tokens.iconSizeLg)
-                        .foregroundColor(Color(colors.accentPrimary))
-                }
-            }
-            .disabled(viewModel.isUploadingGroupAvatar)
+    }
+
+    private var confirmButton: some View {
+        Button {
+            viewModel.saveGroupEdit(name: name, image: selectedImage)
+        } label: {
+            Image(systemName: "checkmark")
+                .renderingMode(.template)
+                .font(.system(size: 16))
+                .foregroundColor(Color(colors.buttonPrimaryTextOnAccent))
         }
+        .modifier(factory.styles.makeToolbarConfirmActionModifier(options: .init()))
+        .accessibilityLabel(Text(L10n.ChatInfo.Edit.save))
+        .accessibilityIdentifier("EditGroupConfirmButton")
     }
 }
 

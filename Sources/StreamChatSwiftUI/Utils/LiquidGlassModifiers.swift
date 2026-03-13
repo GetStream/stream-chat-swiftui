@@ -16,7 +16,7 @@ public struct LiquidGlassModifier<BackgroundShape: Shape>: ViewModifier {
         self.shape = shape
         self.isInteractive = isInteractive
     }
-    
+
     public func body(content: Content) -> some View {
         #if swift(>=6.2)
         if #available(iOS 26.0, *) {

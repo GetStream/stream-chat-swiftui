@@ -54,6 +54,10 @@ public protocol Styles {
     associatedtype SuggestionsContainerModifier: ViewModifier
     /// Creates the suggestions container modifier applied to the suggestions overlay.
     func makeSuggestionsContainerModifier(options: SuggestionsContainerModifierOptions) -> SuggestionsContainerModifier
+
+    associatedtype ToolbarConfirmActionViewModifier: ViewModifier
+    /// Returns a view modifier applied to toolbar confirm action buttons.
+    func makeToolbarConfirmActionModifier(options: ToolbarConfirmActionModifierOptions) -> ToolbarConfirmActionViewModifier
 }
 
 extension Styles {
@@ -93,6 +97,10 @@ extension Styles {
 
     public func makeScrollToBottomButtonModifier(options: ScrollToBottomButtonModifierOptions) -> some ViewModifier {
         RegularScrollToBottomButtonModifier()
+    }
+    
+    public func makeToolbarConfirmActionModifier(options: ToolbarConfirmActionModifierOptions) -> some ViewModifier {
+        DefaultToolbarConfirmActionModifier()
     }
 }
 
@@ -139,7 +147,7 @@ public class RegularStyles: Styles {
     public func makeScrollToBottomButtonModifier(options: ScrollToBottomButtonModifierOptions) -> some ViewModifier {
         RegularScrollToBottomButtonModifier()
     }
-
+    
     public func makeComposerViewModifier(options: ComposerViewModifierOptions) -> some ViewModifier {
         ComposerBackgroundRegularViewModifier()
     }
@@ -191,6 +199,10 @@ public class ComposerButtonModifierOptions {
 }
 
 public class ScrollToBottomButtonModifierOptions {
+    public init() {}
+}
+
+public class ToolbarConfirmActionModifierOptions {
     public init() {}
 }
 
@@ -256,6 +268,37 @@ public struct RegularScrollToBottomButtonModifier: ViewModifier {
                         y: tokens.lightElevation3.y
                     )
             )
+    }
+}
+
+/// Styles a toolbar confirm action button using the native platform appearance.
+///
+/// On iOS 26+, applies a glass button style with the accent tint.
+/// On earlier versions, falls back to a solid primary ``StreamButtonStyle``.
+public struct DefaultToolbarConfirmActionModifier: ViewModifier {
+    @Injected(\.colors) private var colors
+
+    public init() {}
+
+    public func body(content: Content) -> some View {
+        if #available(iOS 16.0, *) {
+            content
+                .buttonStyle(.borderedProminent)
+                .tint(Color(colors.accentPrimary))
+        } else {
+            solidStyle(content: content)
+        }
+    }
+
+    private func solidStyle(content: Content) -> some View {
+        content.buttonStyle(
+            StreamButtonStyle(
+                role: .primary,
+                style: .solid,
+                size: .medium,
+                isIconOnly: true
+            )
+        )
     }
 }
 

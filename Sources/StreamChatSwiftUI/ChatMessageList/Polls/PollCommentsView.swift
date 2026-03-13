@@ -78,7 +78,7 @@ struct PollCommentsView<Factory: ViewFactory>: View {
                     .foregroundColor(Color(colors.navigationBarTitle))
             }
 
-            ToolbarItem(placement: .confirmationAction) {
+            ToolbarItem(placement: .topBarTrailing) {
                 if viewModel.showsAddCommentButton && !viewModel.currentUserAddedComment {
                     addCommentButton
                 }
@@ -157,26 +157,17 @@ struct PollCommentsView<Factory: ViewFactory>: View {
         .padding(.horizontal, tokens.spacingMd)
     }
 
-    @ViewBuilder
     private var addCommentButton: some View {
-        if #available(iOS 26, *) {
-            Button(L10n.Message.Polls.Button.addComment, systemImage: "pencil") {
-                viewModel.addCommentShown = true
-            }
-            .tint(Color(colors.accentPrimary))
-        } else {
-            Button {
-                viewModel.addCommentShown = true
-            } label: {
-                Image(systemName: "pencil")
-                    .font(.system(size: tokens.iconSizeMd, weight: .medium))
-                    .foregroundColor(Color(colors.buttonPrimaryTextOnAccent))
-                    .frame(width: tokens.buttonVisualHeightMd, height: tokens.buttonVisualHeightMd)
-                    .background(Color(colors.accentPrimary))
-                    .clipShape(Circle())
-            }
-            .buttonStyle(.plain)
+        Button {
+            viewModel.addCommentShown = true
+        } label: {
+            Image(systemName: "pencil")
+                .renderingMode(.template)
+                .font(.system(size: 16))
+                .foregroundColor(Color(colors.buttonPrimaryTextOnAccent))
         }
+        .modifier(factory.styles.makeToolbarConfirmActionModifier(options: .init()))
+        .accessibilityLabel(Text(L10n.Message.Polls.Button.addComment))
     }
 
     // MARK: - Helpers

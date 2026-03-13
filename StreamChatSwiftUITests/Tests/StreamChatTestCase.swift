@@ -7,6 +7,7 @@
 @testable import StreamChatSwiftUI
 @_exported @testable import StreamChatTestTools
 @_exported import StreamSwiftTestHelpers
+import SwiftUI
 import XCTest
 
 /// Base class that sets up the `StreamChat` object.
@@ -54,4 +55,57 @@ import XCTest
             appearance.colorPalette.navigationBarGlyph = .green
         }
     }
+}
+
+// Forces the solid primary button style regardless of platform,
+/// preventing Liquid Glass from appearing in snapshot tests.
+struct RegularToolbarConfirmActionModifier: ViewModifier {
+    func body(content: Content) -> some View {
+        content.buttonStyle(
+            StreamButtonStyle(
+                role: .primary,
+                style: .solid,
+                size: .medium,
+                isIconOnly: true
+            )
+        )
+    }
+}
+
+/// Test styles that mirror ``RegularStyles`` but force the solid toolbar confirm action,
+/// preventing Liquid Glass from appearing in snapshot tests.
+class DefaultTestStyles: Styles {
+    var composerPlacement: ComposerPlacement = .docked
+
+    func makeComposerInputViewModifier(options: ComposerInputModifierOptions) -> some ViewModifier {
+        RegularInputViewModifier()
+    }
+
+    func makeComposerButtonViewModifier(options: ComposerButtonModifierOptions) -> some ViewModifier {
+        RegularButtonViewModifier()
+    }
+
+    func makeScrollToBottomButtonModifier(options: ScrollToBottomButtonModifierOptions) -> some ViewModifier {
+        RegularScrollToBottomButtonModifier()
+    }
+
+    func makeComposerViewModifier(options: ComposerViewModifierOptions) -> some ViewModifier {
+        ComposerBackgroundRegularViewModifier()
+    }
+
+    func makeSuggestionsContainerModifier(options: SuggestionsContainerModifierOptions) -> some ViewModifier {
+        SuggestionsRegularContainerModifier()
+    }
+
+    func makeToolbarConfirmActionModifier(options: ToolbarConfirmActionModifierOptions) -> some ViewModifier {
+        RegularToolbarConfirmActionModifier()
+    }
+}
+
+/// Test view factory that uses ``DefaultTestStyles`` to avoid Liquid Glass in snapshot tests.
+class DefaultTestViewFactory: ViewFactory {
+    @Injected(\.chatClient) var chatClient
+    var styles = DefaultTestStyles()
+
+    static let shared = DefaultTestViewFactory()
 }

@@ -273,6 +273,7 @@
 "chat-info.contact.title" = "Contact Info";
 "chat-info.users.view-all" = "View all";
 "chat-info.edit" = "Edit";
+"chat-info.edit.save" = "Save";
 "chat-info.edit.upload" = "Upload";
 "chat-info.edit.group-name" = "Group name";
 "chat-info.edit.picture.title" = "Edit Group Picture";

@@ -18,7 +18,7 @@ import XCTest
         let viewModel = mockGroupViewModel()
 
         // When
-        let view = EditGroupView(viewModel: viewModel)
+        let view = EditGroupView(factory: DefaultTestViewFactory.shared, viewModel: viewModel)
             .applyDefaultSize()
 
         // Then
@@ -31,11 +31,11 @@ import XCTest
         viewModel.isUploadingGroupAvatar = true
 
         // When
-        let view = EditGroupView(viewModel: viewModel)
+        let view = EditGroupView(factory: DefaultTestViewFactory.shared, viewModel: viewModel)
             .applyDefaultSize()
 
         // Then
-        AssertSnapshot(view)
+        AssertSnapshot(view, variants: [.smallDark])
     }
 
     // MARK: - GroupAvatarPickerSheetView snapshots
