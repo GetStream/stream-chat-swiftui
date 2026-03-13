@@ -105,20 +105,10 @@ public struct EditGroupView: View {
     }
 
     private var nameField: some View {
-        Group {
-            if viewModel.channel.isDirectMessageChannel {
-                Text(name)
-                    .font(fonts.body)
-                    .foregroundColor(Color(colors.textPrimary))
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .padding(tokens.spacingMd)
-            } else {
-                TextField(L10n.ChatInfo.Edit.groupName, text: $name)
-                    .font(fonts.body)
-                    .foregroundColor(Color(colors.textPrimary))
-                    .padding(tokens.spacingMd)
-            }
-        }
+        TextField(L10n.ChatInfo.Edit.groupName, text: $name)
+            .font(fonts.body)
+            .foregroundColor(Color(colors.textPrimary))
+            .padding(tokens.spacingMd)
         .background(
             RoundedRectangle(cornerRadius: tokens.radiusLg)
                 .fill(Color(colors.backgroundCoreApp))
