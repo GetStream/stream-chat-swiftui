@@ -54,9 +54,9 @@ public struct ChatChannelInfoView<Factory: ViewFactory>: View, KeyboardReadable 
             VStack(spacing: 0) {
                 headerSection
                     .padding(.top, tokens.spacingXl)
-                    .padding(.bottom, tokens.spacingLg)
+                    .padding(.bottom, tokens.spacingXl)
 
-                VStack(spacing: tokens.spacingSm) {
+                VStack(spacing: tokens.spacingMd) {
                     navigationLinksCard
 
                     if !viewModel.showSingleMemberDMView {
@@ -195,29 +195,15 @@ public struct ChatChannelInfoView<Factory: ViewFactory>: View, KeyboardReadable 
         InfoSectionCard {
             membersCardHeader
 
-            ForEach(viewModel.displayedParticipants) { participant in
-                ChatInfoMemberView(
-                    factory: factory,
-                    participant: participant,
-                    onAppear: { viewModel.onParticipantAppear(participant) },
-                    onTap: {
-                        withAnimation {
-                            viewModel.selectedParticipant = participant
-                        }
-                    }
-                )
-            }
+            membersList
+
+            Spacer()
+                .frame(height: tokens.spacingSm)
+
             if viewModel.showMoreUsersButton {
-                StreamTextButton(role: .secondary, style: .outline, size: .small) {
-                    viewModel.memberListSheetShown = true
-                } text: {
-                    Text(L10n.ChatInfo.Users.viewAll)
-                        .font(fonts.bodyBold)
-                }
-                .padding(.vertical, tokens.spacingXs)
+                viewAllButton
             }
         }
-        .padding(.vertical, tokens.spacingXs)
         .background(colors.backgroundCoreSurfaceSubtle.toColor)
         .cornerRadius(16)
     }
@@ -241,8 +227,40 @@ public struct ChatChannelInfoView<Factory: ViewFactory>: View, KeyboardReadable 
             }
         }
         .padding(.horizontal, tokens.spacingMd)
-        .padding(.vertical, tokens.spacingXs)
+        .padding(.top, tokens.spacingMd)
+        .padding(.bottom, tokens.spacingXs)
         .background(Color(colors.backgroundCoreSurfaceSubtle))
+    }
+
+    private var membersList: some View {
+        ForEach(viewModel.displayedParticipants) { participant in
+            ChatInfoMemberView(
+                factory: factory,
+                participant: participant,
+                onAppear: { viewModel.onParticipantAppear(participant) },
+                onTap: {
+                    withAnimation {
+                        viewModel.selectedParticipant = participant
+                    }
+                }
+            )
+        }
+    }
+
+    private var viewAllButton: some View {
+        VStack(spacing: 0) {
+            Divider()
+                .background(Color(colors.borderCoreDefault))
+            Button {
+                viewModel.memberListSheetShown = true
+            } label: {
+                Text(L10n.ChatInfo.Users.viewAll)
+                    .font(fonts.body.weight(.semibold))
+                    .foregroundColor(Color(colors.buttonSecondaryText))
+                    .frame(maxWidth: .infinity)
+                    .frame(height: tokens.buttonHitTargetMinHeight)
+            }
+        }
     }
 
     // MARK: - Actions Card
@@ -346,12 +364,27 @@ struct ChatChannelInfoViewHeaderViewModifier: ViewModifier {
 
         ToolbarItem(placement: .navigationBarTrailing) {
             if !viewModel.showSingleMemberDMView {
-                StreamTextButton(role: .secondary, style: .outline, size: .small) {
-                    viewModel.editGroupShown = true
-                } text: {
-                    Text(L10n.ChatInfo.edit)
-                        .font(fonts.bodyBold)
-                }
+                editButton
+            }
+        }
+    }
+
+    @ViewBuilder
+    private var editButton: some View {
+        if #available(iOS 26.0, *) {
+            StreamTextButton(role: .secondary, style: .ghost, size: .medium) {
+                viewModel.editGroupShown = true
+            } text: {
+                Text(L10n.ChatInfo.edit)
+                    .font(fonts.bodyBold)
+            }
+            .modifier(LiquidGlassModifier(shape: Capsule(), isInteractive: true))
+        } else {
+            StreamTextButton(role: .secondary, style: .outline, size: .medium) {
+                viewModel.editGroupShown = true
+            } text: {
+                Text(L10n.ChatInfo.edit)
+                    .font(fonts.bodyBold)
             }
         }
     }

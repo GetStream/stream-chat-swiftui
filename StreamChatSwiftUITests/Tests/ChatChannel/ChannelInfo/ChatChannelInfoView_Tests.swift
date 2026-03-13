@@ -105,7 +105,7 @@ import XCTest
     func test_chatChannelInfoView_directChannelMoreMembersSnapshot() {
         // Given
         let members = ChannelInfoMockUtils.setupMockMembers(
-            count: 4,
+            count: 3,
             currentUserId: chatClient.currentUserId!
         )
         let channel = ChatChannel.mockDMChannel(
@@ -345,7 +345,7 @@ import XCTest
     func test_chatChannelInfoView_participantSelectedBasicActionsSnapshot() {
         // Given
         let members = ChannelInfoMockUtils.setupMockMembers(
-            count: 4,
+            count: 3,
             currentUserId: chatClient.currentUserId!,
             onlineUserIndexes: [0, 1]
         )
@@ -371,7 +371,7 @@ import XCTest
     func test_chatChannelInfoView_participantSelectedWithMuteActionsSnapshot() {
         // Given
         let members = ChannelInfoMockUtils.setupMockMembers(
-            count: 4,
+            count: 3,
             currentUserId: chatClient.currentUserId!,
             onlineUserIndexes: [0, 1]
         )
@@ -399,7 +399,7 @@ import XCTest
     func test_chatChannelInfoView_participantSelectedWithRemoveActionSnapshot() {
         // Given
         let members = ChannelInfoMockUtils.setupMockMembers(
-            count: 4,
+            count: 3,
             currentUserId: chatClient.currentUserId!,
             onlineUserIndexes: [0, 1]
         )
@@ -425,7 +425,7 @@ import XCTest
     func test_chatChannelInfoView_participantSelectedOfflineUserSnapshot() {
         // Given
         let members = ChannelInfoMockUtils.setupMockMembers(
-            count: 4,
+            count: 3,
             currentUserId: chatClient.currentUserId!,
             onlineUserIndexes: [0] // Only current user is online
         )
@@ -474,7 +474,7 @@ import XCTest
     func test_chatChannelInfoView_currentUserRowTappableSnapshot() {
         // Given - current user (shown as "You") is visible and tappable in the member list
         let members = ChannelInfoMockUtils.setupMockMembers(
-            count: 4,
+            count: 3,
             currentUserId: chatClient.currentUserId!,
             onlineUserIndexes: [0]
         )
@@ -500,7 +500,7 @@ import XCTest
     func test_chatChannelInfoView_multiPersonDMSnapshot() {
         // Given - a DM channel with more than 2 members (multi-person DM)
         let members = ChannelInfoMockUtils.setupMockMembers(
-            count: 4,
+            count: 3,
             currentUserId: chatClient.currentUserId!,
             onlineUserIndexes: [0, 1]
         )
