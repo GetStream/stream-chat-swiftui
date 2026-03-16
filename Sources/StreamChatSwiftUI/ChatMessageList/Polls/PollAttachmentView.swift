@@ -75,7 +75,9 @@ public struct PollAttachmentView<Factory: ViewFactory>: View {
                             L10n.Message.Polls.Button
                                 .seeMoreOptions(options.count - PollAttachmentViewModel.numberOfVisibleOptionsShown)
                         )
+                        .frame(maxWidth: .infinity)
                     }
+                    .frame(maxWidth: .infinity)
                     .fullScreenCover(isPresented: $viewModel.allOptionsShown) {
                         PollAllOptionsView(viewModel: viewModel, factory: factory)
                     }
@@ -86,7 +88,9 @@ public struct PollAttachmentView<Factory: ViewFactory>: View {
                         viewModel.suggestOptionShown = true
                     } text: {
                         Text(L10n.Message.Polls.Button.suggestAnOption)
+                            .frame(maxWidth: .infinity)
                     }
+                    .frame(maxWidth: .infinity)
                     .uiAlert(
                         title: L10n.Alert.Title.suggestAnOption,
                         isPresented: $viewModel.suggestOptionShown,
@@ -102,7 +106,9 @@ public struct PollAttachmentView<Factory: ViewFactory>: View {
                         viewModel.addCommentShown = true
                     } text: {
                         Text(L10n.Message.Polls.Button.addComment)
+                            .frame(maxWidth: .infinity)
                     }
+                    .frame(maxWidth: .infinity)
                     .uiAlert(
                         title: L10n.Alert.Title.addComment,
                         isPresented: $viewModel.addCommentShown,
@@ -117,7 +123,9 @@ public struct PollAttachmentView<Factory: ViewFactory>: View {
                         viewModel.allCommentsShown = true
                     } text: {
                         Text(L10n.Message.Polls.Button.viewNumberOfComments(viewModel.poll.answersCount))
+                            .frame(maxWidth: .infinity)
                     }
+                    .frame(maxWidth: .infinity)
                     .fullScreenCover(isPresented: $viewModel.allCommentsShown) {
                         PollCommentsView(factory: factory, poll: viewModel.poll, pollController: viewModel.pollController)
                     }
@@ -128,7 +136,9 @@ public struct PollAttachmentView<Factory: ViewFactory>: View {
                 } text: {
                     Text(L10n.Message.Polls.Button.viewResults)
                         .foregroundColor(Color(colors.buttonSecondaryText))
+                        .frame(maxWidth: .infinity)
                 }
+                .frame(maxWidth: .infinity)
                 .fullScreenCover(isPresented: $viewModel.pollResultsShown) {
                     PollResultsView(viewModel: viewModel, factory: factory)
                 }
@@ -139,7 +149,9 @@ public struct PollAttachmentView<Factory: ViewFactory>: View {
                     } text: {
                         Text(L10n.Message.Polls.Button.endVote)
                             .foregroundColor(Color(colors.buttonSecondaryText))
+                            .frame(maxWidth: .infinity)
                     }
+                    .frame(maxWidth: .infinity)
                     .alert(isPresented: $viewModel.endVoteConfirmationShown) {
                         Alert(
                             title: Text(L10n.Alert.Title.endPoll),
