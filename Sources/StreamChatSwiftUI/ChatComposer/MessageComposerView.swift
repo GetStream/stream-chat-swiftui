@@ -487,12 +487,11 @@ public struct ComposerInputView<Factory: ViewFactory>: View, KeyboardReadable {
     }
 
     private var regularInputContent: some View {
-        VStack(spacing: tokens.spacingXxs) {
+        VStack(spacing: 0) {
             referenceMessageView
-                .padding(.top, tokens.spacingXxs)
 
             attachmentsTray
-                .padding(.top, tokens.spacingXxs)
+                .padding(.top, tokens.spacingXs)
                 .padding(.leading, tokens.spacingXs)
 
             inputView
@@ -646,8 +645,9 @@ public struct ComposerInputView<Factory: ViewFactory>: View, KeyboardReadable {
                     addedVoiceRecordings: addedVoiceRecordings,
                     onDiscardAttachment: removeAttachmentWithId
                 )
-                .padding(.trailing, 8)
-                .padding(.top, 8)
+                .padding(.top, tokens.spacingXxs)
+                .padding(.leading, tokens.spacingXxs)
+                .padding(.trailing, tokens.spacingSm)
             }
 
             if !addedCustomAttachments.isEmpty {
