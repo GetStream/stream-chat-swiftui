@@ -127,7 +127,6 @@ struct AttachmentImagePickerView: UIViewControllerRepresentable {
     let sourceType: UIImagePickerController.SourceType
 
     var onAssetPicked: (AddedAsset) -> Void
-    @Environment(\.presentationMode) var presentationMode
 
     func makeUIViewController(context: Context) -> UIImagePickerController {
         let pickerController = UIImagePickerController()
@@ -155,6 +154,8 @@ struct AttachmentImagePickerView: UIViewControllerRepresentable {
     func makeCoordinator() -> ImagePickerCoordinator {
         Coordinator(self)
     }
+
+    typealias Coordinator = ImagePickerCoordinator
 }
 
 final class ImagePickerCoordinator: NSObject, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
@@ -207,14 +208,14 @@ final class ImagePickerCoordinator: NSObject, UIImagePickerControllerDelegate, U
             }
         }
 
-        dismiss()
+        dismiss(picker)
     }
 
     func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
-        dismiss()
+        dismiss(picker)
     }
 
-    private func dismiss() {
-        parent.presentationMode.wrappedValue.dismiss()
+    private func dismiss(_ picker: UIImagePickerController) {
+        picker.dismiss(animated: true)
     }
 }

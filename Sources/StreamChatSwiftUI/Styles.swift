@@ -231,7 +231,7 @@ public struct SuggestionsRegularContainerModifier: ViewModifier {
             Divider()
             content
         }
-        .background(Color(colors.background))
+        .background(Color(colors.backgroundElevationElevation1))
     }
 }
 

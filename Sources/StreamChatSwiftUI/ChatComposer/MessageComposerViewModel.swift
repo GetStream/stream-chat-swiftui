@@ -478,13 +478,13 @@ import SwiftUI
     public var showSuggestionsOverlay: Bool {
         guard !suggestions.isEmpty else { return false }
 
-        let isMentionsSuggestions = composerCommand?.id == "mentions"
-        if isMentionsSuggestions {
+        if suggestions.keys.contains("mentions") {
             if let users = suggestions["mentions"] as? [ChatUser], !users.isEmpty {
                 return true
             }
             return false
         }
+
         let commandAvailable = composerCommand != nil
         let configuredCommandsAvailable = channelController.channel?.config.commands.count ?? 0 > 0
         return commandAvailable && configuredCommandsAvailable
