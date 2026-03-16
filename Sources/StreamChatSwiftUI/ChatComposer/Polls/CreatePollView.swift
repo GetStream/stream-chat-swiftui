@@ -5,7 +5,7 @@
 import StreamChat
 import SwiftUI
 
-public struct CreatePollView: View {
+public struct CreatePollView<Factory: ViewFactory>: View {
     @Injected(\.colors) private var colors
     @Injected(\.images) private var images
     @Injected(\.fonts) private var fonts
@@ -14,7 +14,14 @@ public struct CreatePollView: View {
     @StateObject private var viewModel: CreatePollViewModel
     @Environment(\.presentationMode) private var presentationMode
 
-    public init(chatController: ChatChannelController, messageController: ChatMessageController?) {
+    let factory: Factory
+
+    public init(
+        factory: Factory = DefaultViewFactory.shared,
+        chatController: ChatChannelController,
+        messageController: ChatMessageController?
+    ) {
+        self.factory = factory
         _viewModel = StateObject(
             wrappedValue: CreatePollViewModel(
                 chatController: chatController,
@@ -23,40 +30,46 @@ public struct CreatePollView: View {
         )
     }
 
-    init(viewModel: CreatePollViewModel) {
+    init(factory: Factory = DefaultViewFactory.shared, viewModel: CreatePollViewModel) {
+        self.factory = factory
         _viewModel = StateObject(wrappedValue: viewModel)
     }
 
     public var body: some View {
-        VStack(spacing: 0) {
-            CreatePollHeader(
-                canCreatePoll: viewModel.canCreatePoll,
-                onClose: {
-                    if viewModel.canShowDiscardConfirmation {
-                        viewModel.discardConfirmationShown = true
-                    } else {
-                        presentationMode.wrappedValue.dismiss()
-                    }
-                },
-                onConfirm: {
-                    viewModel.createPoll {
-                        presentationMode.wrappedValue.dismiss()
-                    }
+        NavigationView {
+            VStack(spacing: 0) {
+                List {
+                    questionSection
+                    optionsSection
+                    settingsSpacer
+                    settingsSection
+                    Spacer()
+                        .modifier(CreatePollRowModifier(topSpacing: 0, bottomSpacing: 0))
                 }
-            )
-
-            List {
-                questionSection
-                optionsSection
-                settingsSpacer
-                settingsSection
-                Spacer()
-                    .modifier(CreatePollRowModifier(topSpacing: 0, bottomSpacing: 0))
+                .environment(\.defaultMinListRowHeight, 1)
+                .listStyle(.plain)
             }
-            .environment(\.defaultMinListRowHeight, 1)
-            .listStyle(.plain)
+            .background(Color(colors.background).ignoresSafeArea())
+            .modifier(
+                CreatePollToolbarModifier(
+                    factory: factory,
+                    canCreatePoll: viewModel.canCreatePoll,
+                    onClose: {
+                        if viewModel.canShowDiscardConfirmation {
+                            viewModel.discardConfirmationShown = true
+                        } else {
+                            presentationMode.wrappedValue.dismiss()
+                        }
+                    },
+                    onConfirm: {
+                        viewModel.createPoll {
+                            presentationMode.wrappedValue.dismiss()
+                        }
+                    }
+                )
+            )
+            .navigationBarTitleDisplayMode(.inline)
         }
-        .background(Color(colors.background).ignoresSafeArea())
         .actionSheet(isPresented: $viewModel.discardConfirmationShown) {
             ActionSheet(
                 title: Text(L10n.Composer.Polls.actionSheetDiscardTitle),
@@ -236,54 +249,51 @@ public struct CreatePollView: View {
     }
 }
 
-// MARK: - Header
+// MARK: - Toolbar
 
-private struct CreatePollHeader: View {
+private struct CreatePollToolbarModifier<Factory: ViewFactory>: ViewModifier {
     @Injected(\.colors) private var colors
-    @Injected(\.images) private var images
     @Injected(\.fonts) private var fonts
     @Injected(\.tokens) private var tokens
 
+    let factory: Factory
     let canCreatePoll: Bool
     let onClose: () -> Void
     let onConfirm: () -> Void
 
-    var body: some View {
-        HStack(spacing: tokens.spacingSm) {
-            Button(action: onClose) {
-                Image(uiImage: images.close)
-                    .renderingMode(.template)
-                    .font(.system(size: 10))
-                    .frame(width: tokens.iconSizeMd, height: tokens.iconSizeMd)
-                    .foregroundColor(Color(colors.buttonSecondaryText))
-                    .frame(width: tokens.buttonVisualHeightMd, height: tokens.buttonVisualHeightMd)
-                    .background(
-                        Circle()
-                            .strokeBorder(Color(colors.buttonSecondaryBorder), lineWidth: 1)
-                    )
+    func body(content: Content) -> some View {
+        content
+            .toolbarThemed {
+                toolbarContent()
             }
-            .frame(width: tokens.buttonHitTargetMinWidth, height: tokens.buttonHitTargetMinHeight)
+    }
 
+    @ToolbarContentBuilder private func toolbarContent() -> some ToolbarContent {
+        ToolbarItem(placement: .navigationBarLeading) {
+            Button(action: onClose) {
+                Image(systemName: "xmark")
+                    .renderingMode(.template)
+                    .font(.system(size: 12))
+                    .foregroundColor(Color(colors.buttonSecondaryText))
+            }
+        }
+
+        ToolbarItem(placement: .principal) {
             Text(L10n.Composer.Polls.createPoll)
-                .font(fonts.body.bold())
-                .foregroundColor(Color(colors.textPrimary))
-                .frame(maxWidth: .infinity)
+                .font(fonts.bodyBold)
+                .foregroundColor(Color(colors.navigationBarTitle))
+        }
 
+        ToolbarItem(placement: .topBarTrailing) {
             Button(action: onConfirm) {
                 Image(systemName: "checkmark")
-                    .font(.system(size: tokens.iconSizeMd, weight: .regular))
-                    .foregroundColor(Color(canCreatePoll ? colors.buttonPrimaryTextOnAccent : colors.textDisabled))
-                    .frame(width: tokens.buttonVisualHeightMd, height: tokens.buttonVisualHeightMd)
-                    .background(
-                        Circle().fill(Color(canCreatePoll ? colors.buttonPrimaryBackground : colors.backgroundCoreDisabled))
-                    )
-                    .clipShape(Circle())
+                    .renderingMode(.template)
+                    .font(.system(size: 16))
+                    .foregroundColor(Color(colors.buttonPrimaryTextOnAccent))
             }
-            .frame(width: tokens.buttonHitTargetMinWidth, height: tokens.buttonHitTargetMinHeight)
+            .modifier(factory.styles.makeToolbarConfirmActionModifier(options: .init()))
             .disabled(!canCreatePoll)
         }
-        .padding(tokens.spacingSm)
-        .background(Color(colors.background))
     }
 }
 
@@ -502,7 +512,7 @@ struct ComposerPollView: View {
             }
             Spacer()
         }
-        .fullScreenCover(isPresented: $showsCreatePoll) {
+        .sheet(isPresented: $showsCreatePoll) {
             CreatePollView(chatController: channelController, messageController: messageController)
         }
         .onAppear {

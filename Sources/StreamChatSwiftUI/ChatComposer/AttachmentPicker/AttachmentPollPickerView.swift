@@ -7,7 +7,7 @@ import SwiftUI
 
 /// View for the poll attachment picker.
 /// Shows a prompt to create a poll, and presents the poll
-/// creation view in a full-screen cover.
+/// creation view in a sheet.
 struct AttachmentPollPickerView: View {
     @State private var showsCreatePoll = false
 
@@ -18,7 +18,7 @@ struct AttachmentPollPickerView: View {
         PollCreatePromptView(onTap: {
             showsCreatePoll = true
         })
-        .fullScreenCover(isPresented: $showsCreatePoll) {
+        .sheet(isPresented: $showsCreatePoll) {
             CreatePollView(
                 chatController: channelController,
                 messageController: messageController
