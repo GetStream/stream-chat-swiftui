@@ -373,7 +373,7 @@ private struct CreatePollSettingCard<Content: View>: View {
                     .font(fonts.body)
                     .foregroundColor(Color(colors.textPrimary))
                 Text(subtitle)
-                    .font(fonts.caption1)
+                    .font(fonts.subheadline)
                     .foregroundColor(Color(colors.textTertiary))
             }
             .frame(maxWidth: .infinity, alignment: .leading)
