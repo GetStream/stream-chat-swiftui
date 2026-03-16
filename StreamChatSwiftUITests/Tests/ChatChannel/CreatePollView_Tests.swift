@@ -99,8 +99,9 @@ final class CreatePollView_Tests: StreamChatTestCase {
 
     // MARK: - Helpers
 
-    private func makeCreatePollView() -> CreatePollView {
+    private func makeCreatePollView() -> CreatePollView<DefaultTestViewFactory> {
         CreatePollView(
+            factory: DefaultTestViewFactory.shared,
             chatController: .init(channelQuery: .init(cid: .unique), channelListQuery: nil, client: chatClient),
             messageController: nil
         )
@@ -109,13 +110,13 @@ final class CreatePollView_Tests: StreamChatTestCase {
     private func makeCreatePollView(
         question: String,
         options: [String]
-    ) -> CreatePollView {
+    ) -> CreatePollView<DefaultTestViewFactory> {
         let viewModel = CreatePollViewModel(
             chatController: .init(channelQuery: .init(cid: .unique), channelListQuery: nil, client: chatClient),
             messageController: nil
         )
         viewModel.question = question
         viewModel.replaceAllOptions(options)
-        return CreatePollView(viewModel: viewModel)
+        return CreatePollView(factory: DefaultTestViewFactory.shared, viewModel: viewModel)
     }
 }
