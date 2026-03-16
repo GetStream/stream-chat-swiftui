@@ -1,6 +1,6 @@
 Pod::Spec.new do |spec|
   spec.name = 'StreamChatSwiftUI'
-  spec.version = '4.98.0'
+  spec.version = '4.99.0'
   spec.summary = 'StreamChat SwiftUI Chat Components'
   spec.description = 'StreamChatSwiftUI SDK offers flexible SwiftUI components able to display data provided by StreamChat SDK.'
 

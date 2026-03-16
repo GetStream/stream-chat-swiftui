@@ -3,6 +3,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 # Upcoming
 
+### 🔄 Changed
+
+# [4.99.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/4.99.0)
+_March 16, 2026_
+
 ### ✅ Added
 - `AddedAsset` now has `originalWidth`, `originalHeight`, and `duration` (videos), set at selection time and passed into image/video attachment payloads for custom CDN uploads [#1255](https://github.com/GetStream/stream-chat-swiftui/pull/1255)
 - Introduce `AVPlayerProvider` in `Utils` to be able to provide a custom `AVPlayer` configuration [#1284](https://github.com/GetStream/stream-chat-swiftui/pull/1284)
