@@ -752,6 +752,48 @@ import XCTest
         XCTAssertFalse(viewModel.showSuggestionsOverlay)
     }
 
+    func test_showSuggestionsOverlay_whenCommandWithMentionUsers_returnsTrue() {
+        // Given
+        let channelController = makeChannelController()
+        let viewModel = MessageComposerViewModel(
+            channelController: channelController,
+            messageController: nil
+        )
+
+        // When
+        let channelConfig = ChannelConfig(commands: [.init()])
+        channelController.channel_mock = .mock(
+            cid: .unique,
+            config: channelConfig
+        )
+        viewModel.composerCommand = .init(id: "/giphy", typingSuggestion: .empty, displayInfo: nil)
+        viewModel.suggestions = ["mentions": [ChatUser.mock(id: "test-user")]]
+
+        // Then
+        XCTAssertTrue(viewModel.showSuggestionsOverlay)
+    }
+
+    func test_showSuggestionsOverlay_whenCommandWithNoMentionUsers_returnsFalse() {
+        // Given
+        let channelController = makeChannelController()
+        let viewModel = MessageComposerViewModel(
+            channelController: channelController,
+            messageController: nil
+        )
+
+        // When
+        let channelConfig = ChannelConfig(commands: [.init()])
+        channelController.channel_mock = .mock(
+            cid: .unique,
+            config: channelConfig
+        )
+        viewModel.composerCommand = .init(id: "/giphy", typingSuggestion: .empty, displayInfo: nil)
+        viewModel.suggestions = ["mentions": [ChatUser]()]
+
+        // Then
+        XCTAssertFalse(viewModel.showSuggestionsOverlay)
+    }
+
     func test_messageComposerVM_checkChannelCooldown_whenNoLastMessageFromCurrentUser_keepsCooldownDisabled() {
         // Given
         let channelController = makeChannelController()
