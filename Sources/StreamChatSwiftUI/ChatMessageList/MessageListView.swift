@@ -254,7 +254,6 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
                                             factory.makeLastInGroupHeaderView(options: LastInGroupHeaderViewOptions(message: message))
                                             .frame(maxHeight: lastInGroupHeaderSize)
                                             : nil
-
                                         Spacer()
                                     }
                                     : nil
