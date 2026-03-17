@@ -26,12 +26,12 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
     var isMessageThread: Bool
     var shouldShowTypingIndicator: Bool
     var bottomInset: CGFloat
-    
+
     var onMessageAppear: (Int, ScrollDirection) -> Void
     var onScrollToBottom: @MainActor () -> Void
     var onLongPress: (MessageDisplayInfo) -> Void
     var onJumpToMessage: ((String) -> Bool)?
-    
+
     @State private var width: CGFloat?
     @State private var keyboardShown = false
     @State private var pendingKeyboardUpdate: Bool?
@@ -57,7 +57,7 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
     private var lastInGroupHeaderSize: CGFloat {
         messageListConfig.messageDisplayOptions.lastInGroupHeaderSize
     }
-    
+
     private var newMessagesSeparatorSize: CGFloat {
         messageListConfig.messageDisplayOptions.newMessagesSeparatorSize
     }
@@ -116,7 +116,7 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
             self.messages = messages.filter { !skipRenderingMessageIds.contains($0.id) }
         }
     }
-    
+
     public init(
         factory: Factory = DefaultViewFactory.shared,
         channel: ChatChannel,
@@ -218,10 +218,10 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
                             .padding(
                                 .top,
                                 messageDate != nil ?
-                                    offsetForDateIndicator(
-                                        showsLastInGroupInfo: showsLastInGroupInfo,
-                                        showUnreadSeparator: showUnreadSeparator
-                                    ) :
+                                offsetForDateIndicator(
+                                    showsLastInGroupInfo: showsLastInGroupInfo,
+                                    showUnreadSeparator: showUnreadSeparator
+                                ) :
                                     additionalTopPadding(
                                         showsLastInGroupInfo: showsLastInGroupInfo,
                                         showUnreadSeparator: showUnreadSeparator
@@ -229,34 +229,34 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
                             )
                             .overlay(
                                 (messageDate != nil || showsLastInGroupInfo || showUnreadSeparator) ?
-                                    VStack(spacing: 0) {
-                                        messageDate != nil ?
-                                            factory.makeMessageListDateIndicator(options: MessageListDateIndicatorViewOptions(date: messageDate!))
-                                            .frame(maxHeight: messageListConfig.messageDisplayOptions.dateLabelSize)
-                                            : nil
+                                VStack(spacing: 0) {
+                                    messageDate != nil ?
+                                    factory.makeMessageListDateIndicator(options: MessageListDateIndicatorViewOptions(date: messageDate!))
+                                        .frame(maxHeight: messageListConfig.messageDisplayOptions.dateLabelSize)
+                                    : nil
 
-                                        showUnreadSeparator ?
-                                            factory.makeNewMessagesIndicatorView(
-                                                options: NewMessagesIndicatorViewOptions(
-                                                    newMessagesStartId: $firstUnreadMessageId,
-                                                    count: newMessagesCount(for: index, message: message)
-                                                )
-                                            )
-                                            .onAppear {
-                                                unreadMessagesBannerShown = true
-                                            }
-                                            .onDisappear {
-                                                unreadMessagesBannerShown = false
-                                            }
-                                            : nil
-
-                                        showsLastInGroupInfo ?
-                                            factory.makeLastInGroupHeaderView(options: LastInGroupHeaderViewOptions(message: message))
-                                            .frame(maxHeight: lastInGroupHeaderSize)
-                                            : nil
-
+                                    showUnreadSeparator ?
+                                    factory.makeNewMessagesIndicatorView(
+                                        options: NewMessagesIndicatorViewOptions(
+                                            newMessagesStartId: $firstUnreadMessageId,
+                                            count: newMessagesCount(for: index, message: message)
+                                        )
+                                    )
+                                    .onAppear {
+                                        unreadMessagesBannerShown = true
                                     }
-                                    : nil,
+                                    .onDisappear {
+                                        unreadMessagesBannerShown = false
+                                    }
+                                    : nil
+
+                                    showsLastInGroupInfo ?
+                                    factory.makeLastInGroupHeaderView(options: LastInGroupHeaderViewOptions(message: message))
+                                        .frame(maxHeight: lastInGroupHeaderSize)
+                                    : nil
+
+                                }
+                                : nil,
                                 alignment: .top
                             )
                             .flippedUpsideDown()
@@ -383,18 +383,18 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
         })
         .overlay(
             (channel.unreadCount.messages > 0 && !unreadMessagesBannerShown && !isMessageThread && !unreadButtonDismissed) ?
-                factory.makeJumpToUnreadButton(
-                    options: JumpToUnreadButtonOptions(
-                        channel: channel,
-                        onJumpToMessage: {
-                            _ = onJumpToMessage?(firstUnreadMessageId ?? .unknownMessageId)
-                        },
-                        onClose: {
-                            chatClient.channelController(for: channel.cid).markRead()
-                            unreadButtonDismissed = true
-                        }
-                    )
-                ) : nil
+            factory.makeJumpToUnreadButton(
+                options: JumpToUnreadButtonOptions(
+                    channel: channel,
+                    onJumpToMessage: {
+                        _ = onJumpToMessage?(firstUnreadMessageId ?? .unknownMessageId)
+                    },
+                    onClose: {
+                        chatClient.channelController(for: channel.cid).markRead()
+                        unreadButtonDismissed = true
+                    }
+                )
+            ) : nil
         )
         .modifier(factory.styles.makeMessageListContainerModifier(options: MessageListContainerModifierOptions()))
         .onDisappear {
@@ -403,7 +403,7 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
         .accessibilityElement(children: .contain)
         .accessibilityIdentifier("MessageListView")
     }
-    
+
     private func additionalTopPadding(showsLastInGroupInfo: Bool, showUnreadSeparator: Bool) -> CGFloat {
         var padding = showsLastInGroupInfo ? lastInGroupHeaderSize : 0
         if showUnreadSeparator {
@@ -417,7 +417,7 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
         offset += additionalTopPadding(showsLastInGroupInfo: showsLastInGroupInfo, showUnreadSeparator: showUnreadSeparator)
         return offset
     }
-    
+
     private func newMessagesCount(for index: Int?, message: ChatMessage) -> Int {
         channel.unreadCount.messages
     }
@@ -435,8 +435,8 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
         channel: ChatChannel
     ) -> Bool {
         guard channel.memberCount > 2
-            && !message.isSentByCurrentUser
-            && (lastInGroupHeaderSize > 0) else {
+                && !message.isSentByCurrentUser
+                && (lastInGroupHeaderSize > 0) else {
             return false
         }
         let groupInfo = messagesGroupingInfo[message.id] ?? []
@@ -471,9 +471,9 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
 
 struct ScrollPositionModifier: ViewModifier {
     @Binding var scrollPosition: String?
-    
+
     func body(content: Content) -> some View {
-        #if swift(>=5.9)
+#if swift(>=5.9)
         if #available(iOS 17, *) {
             content
                 .scrollPosition(id: $scrollPosition, anchor: .top)
@@ -488,7 +488,7 @@ struct ScrollPositionModifier: ViewModifier {
 
 struct ScrollTargetLayoutModifier: ViewModifier {
     var enabled: Bool
-    
+
     func body(content: Content) -> some View {
         if !enabled {
             return content
@@ -514,15 +514,15 @@ public enum ScrollDirection {
 
 public struct NewMessagesIndicator: View {
     @Injected(\.colors) var colors
-    
+
     @Binding var newMessagesStartId: String?
     var count: Int
-    
+
     public init(newMessagesStartId: Binding<String?>, count: Int) {
         _newMessagesStartId = newMessagesStartId
         self.count = count
     }
-    
+
     public var body: some View {
         HStack {
             Text("\(L10n.MessageList.newMessages(count))")
@@ -658,7 +658,7 @@ extension EnvironmentValues {
             self[ChannelTranslationLanguageKey.self] = newValue
         }
     }
-
+    
     var messageViewModel: MessageViewModel? {
         get {
             self[MessageViewModelKey.self]
