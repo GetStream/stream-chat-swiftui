@@ -253,10 +253,10 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
                                         showsLastInGroupInfo ?
                                             factory.makeLastInGroupHeaderView(options: LastInGroupHeaderViewOptions(message: message))
                                             .frame(maxHeight: lastInGroupHeaderSize)
-                                            : nil
+                                        : nil
                                         Spacer()
                                     }
-                                    : nil
+                                : nil
                             )
                             .flippedUpsideDown()
                             .animation(nil, value: messageDate != nil)
