@@ -22,19 +22,11 @@ public struct RedactedLoadingView<Factory: ViewFactory>: View {
 
     public var body: some View {
         ScrollView {
-            VStack(spacing: 0) {
-                factory.makeChannelListTopView(
-                    options: ChannelListTopViewOptions(
-                        searchText: .constant("")
-                    )
-                )
-
-                LazyVStack(spacing: 0) {
-                    ForEach(0..<20) { _ in
-                        RedactedChannelCell()
-                            .shimmering()
-                        Divider()
-                    }
+            LazyVStack(spacing: 0) {
+                ForEach(0..<20) { _ in
+                    RedactedChannelCell()
+                        .shimmering()
+                    Divider()
                 }
             }
         }

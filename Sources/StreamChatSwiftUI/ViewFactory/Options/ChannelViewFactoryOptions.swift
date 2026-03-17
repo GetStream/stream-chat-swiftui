@@ -199,16 +199,6 @@ public final class LeadingSwipeActionsViewOptions: Sendable {
     }
 }
 
-/// Options for creating the channel list top view.
-public final class ChannelListTopViewOptions: Sendable {
-    /// Binding to the search text.
-    public let searchText: Binding<String>
-    
-    public init(searchText: Binding<String>) {
-        self.searchText = searchText
-    }
-}
-
 /// Options for creating the search results view.
 public final class SearchResultsViewOptions: Sendable {
     /// Binding to the currently selected channel.

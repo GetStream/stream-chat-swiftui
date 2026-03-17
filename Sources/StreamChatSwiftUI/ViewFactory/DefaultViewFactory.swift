@@ -115,12 +115,6 @@ extension ViewFactory {
         EmptyView()
     }
     
-    public func makeChannelListTopView(
-        options: ChannelListTopViewOptions
-    ) -> some View {
-        SearchBar(text: options.searchText)
-    }
-    
     public func makeChannelListFooterView(options: ChannelListFooterViewOptions) -> some View {
         EmptyView()
     }

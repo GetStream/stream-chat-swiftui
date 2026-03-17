@@ -217,10 +217,6 @@ public struct ChatChannelListContentView<Factory: ViewFactory>: View {
     public var body: some View {
         VStack(spacing: 0) {
             if viewModel.isSearching {
-                viewFactory.makeChannelListTopView(
-                    options: ChannelListTopViewOptions(searchText: $viewModel.searchText)
-                )
-
                 viewFactory.makeSearchResultsView(
                     options: SearchResultsViewOptions(
                         selectedChannel: $viewModel.selectedChannel,
@@ -236,10 +232,6 @@ public struct ChatChannelListContentView<Factory: ViewFactory>: View {
             } else {
                 ScrollViewReader { scrollView in
                     ScrollView {
-                        viewFactory.makeChannelListTopView(
-                            options: ChannelListTopViewOptions(searchText: $viewModel.searchText)
-                        )
-
                         ChannelList(
                             factory: viewFactory,
                             channels: viewModel.channels,
@@ -272,6 +264,9 @@ public struct ChatChannelListContentView<Factory: ViewFactory>: View {
 
             viewFactory.makeChannelListStickyFooterView(options: ChannelListStickyFooterViewOptions())
         }
+        .modifier(viewFactory.styles.makeSearchableModifier(
+            options: SearchableModifierOptions(searchText: $viewModel.searchText)
+        ))
         .background(Color(colors.backgroundElevationElevation0))
         .modifier(viewFactory.styles.makeChannelListContentModifier(options: ChannelListContentModifierOptions()))
     }

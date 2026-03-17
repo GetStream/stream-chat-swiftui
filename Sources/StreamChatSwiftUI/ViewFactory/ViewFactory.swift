@@ -73,12 +73,6 @@ import SwiftUI
     /// - Returns: View displayed in the leading swipe area of a channel item.
     func makeLeadingSwipeActionsView(options: LeadingSwipeActionsViewOptions) -> LeadingSwipeActionsViewType
 
-    associatedtype ChannelListTopViewType: View
-    /// Creates the view shown at the top of the channel list. Suitable for search bar.
-    /// - Parameter options: the options for creating the channel list top view.
-    /// - Returns: view shown above the channel list.
-    func makeChannelListTopView(options: ChannelListTopViewOptions) -> ChannelListTopViewType
-
     associatedtype ChannelListFooterViewType: View
     /// Creates the view shown at the bottom of the channel list.
     /// - Returns: view shown at the bottom of the channel list.
