@@ -190,6 +190,8 @@ extension ChatChannelListView where Factory == DefaultViewFactory {
 }
 
 public struct ChatChannelListContentView<Factory: ViewFactory>: View {
+    @Injected(\.colors) private var colors
+    
     @Environment(\.horizontalSizeClass) var horizontalSizeClass
 
     private var viewFactory: Factory
@@ -270,6 +272,7 @@ public struct ChatChannelListContentView<Factory: ViewFactory>: View {
 
             viewFactory.makeChannelListStickyFooterView(options: ChannelListStickyFooterViewOptions())
         }
+        .background(Color(colors.backgroundElevationElevation0))
         .modifier(viewFactory.styles.makeChannelListContentModifier(options: ChannelListContentModifierOptions()))
     }
 }
