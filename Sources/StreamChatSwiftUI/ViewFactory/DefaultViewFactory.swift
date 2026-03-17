@@ -90,11 +90,7 @@ extension ViewFactory {
         options: ChannelListItemBackgroundOptions
     ) -> some View {
         let colors = InjectedValues[\.colors]
-        if options.isSelected && isIPad {
-            return Color(colors.background6)
-        }
-
-        return Color(colors.background)
+        return Color(colors.backgroundElevationElevation0)
     }
 
     public func makeChannelListDividerItem(options: ChannelListDividerItemOptions) -> some View {

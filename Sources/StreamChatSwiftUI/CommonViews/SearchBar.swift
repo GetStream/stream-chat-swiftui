@@ -77,6 +77,7 @@ struct SearchBar: View, KeyboardReadable {
         .padding(.top, tokens.spacingMd)
         .padding(.bottom, tokens.spacingXs)
         .padding(.horizontal, tokens.spacingMd)
+        .background(Color(colors.backgroundElevationElevation0))
         .onReceive(keyboardWillChangePublisher) { shown in
             if shown {
                 isEditing = true
