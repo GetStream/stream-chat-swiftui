@@ -135,6 +135,7 @@ public struct MessageItemView<Factory: ViewFactory>: View {
                 }
             }
         )
+        .padding(.bottom, messageViewModel.isPinned && !shownAsPreview ? tokens.spacingXs : 0)
         .transition(
             message.isSentByCurrentUser ?
                 messageListConfig.messageDisplayOptions.currentUserMessageTransition :
