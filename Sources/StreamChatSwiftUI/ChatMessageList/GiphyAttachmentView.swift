@@ -124,27 +124,34 @@ struct LazyGiphyView: View {
     let width: CGFloat
 
     var body: some View {
-        LazyImage(imageURL: source) { state in
-            if let imageContainer = state.imageContainer {
-                if imageContainer.type == .gif {
-                    AnimatedGifView(imageContainer: imageContainer)
-                } else {
-                    state.image
+        Color.clear
+            .aspectRatio(4 / 3, contentMode: .fit)
+            .frame(minHeight: 192)
+            .frame(width: width)
+            .overlay(
+                LazyImage(imageURL: source) { state in
+                    if let imageContainer = state.imageContainer {
+                        if imageContainer.type == .gif {
+                            AnimatedGifView(imageContainer: imageContainer)
+                        } else {
+                            state.image?
+                                .resizable()
+                                .scaledToFill()
+                        }
+                    } else if state.error != nil {
+                        Color(.secondarySystemBackground)
+                    } else {
+                        ZStack {
+                            Color(.secondarySystemBackground)
+                            ProgressView()
+                        }
+                    }
                 }
-            } else if state.error != nil {
-                Color(.secondarySystemBackground)
-            } else {
-                ZStack {
-                    Color(.secondarySystemBackground)
-                    ProgressView()
-                }
-            }
-        }
-        .onDisappear(.cancel)
-        .processors([ImageProcessors.Resize(width: width)])
-        .priority(.high)
-        .aspectRatio(contentMode: .fit)
-        .frame(width: width)
+                .onDisappear(.cancel)
+                .processors([ImageProcessors.Resize(width: width)])
+                .priority(.high)
+            )
+            .clipped()
     }
 }
 
@@ -155,7 +162,8 @@ private struct AnimatedGifView: UIViewRepresentable {
 
     func makeUIView(context: Context) -> UIImageView {
         let imageView = UIImageView()
-        imageView.contentMode = .scaleAspectFit
+        imageView.contentMode = .scaleAspectFill
+        imageView.clipsToBounds = true
         if let gifData = imageContainer.data, let image = try? UIImage(gifData: gifData) {
             imageView.setGifImage(image)
         }
