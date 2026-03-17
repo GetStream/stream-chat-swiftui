@@ -233,7 +233,7 @@ extension ViewFactory {
     public func makeMessageListBackground(
         options: MessageListBackgroundOptions
     ) -> some View {
-        Color(InjectedValues[\.colors].background)
+        Color(InjectedValues[\.colors].backgroundCoreApp)
     }
     
     public func makeMessageItemView(
