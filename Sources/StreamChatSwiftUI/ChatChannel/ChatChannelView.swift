@@ -130,12 +130,6 @@ public struct ChatChannelView<Factory: ViewFactory>: View, KeyboardReadable {
 
                     if composerPlacement == .docked {
                         composerView
-                            .overlay(
-                                Rectangle()
-                                    .frame(width: nil, height: 1, alignment: .top)
-                                    .foregroundColor(Color(colors.borderCoreDefault)), alignment: .top
-                            )
-
                             .opacity((
                                 utils.messageListConfig.messagePopoverEnabled && messageDisplayInfo != nil && !viewModel
                                     .reactionsShown && viewModel.channel?.isFrozen == false

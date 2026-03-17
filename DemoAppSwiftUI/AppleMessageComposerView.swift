@@ -8,11 +8,7 @@ import SwiftUI
 
 @available(iOS 15.0, *)
 struct AppleMessageComposerView<Factory: ViewFactory>: View, KeyboardReadable {
-    @State var text = ""
-    @State var shouldShow = false
-    
     @Injected(\.colors) private var colors
-    @Injected(\.fonts) private var fonts
 
     // Initial popup size, before the keyboard is shown.
     @State private var popupSize: CGFloat = 350
@@ -24,7 +20,7 @@ struct AppleMessageComposerView<Factory: ViewFactory>: View, KeyboardReadable {
     private var channelConfig: ChannelConfig?
     @Binding var quotedMessage: ChatMessage?
     @Binding var editedMessage: ChatMessage?
-    
+
     @State private var state: AnimationState = .initial
     @State private var listScale: CGFloat = 0
 
@@ -44,9 +40,7 @@ struct AppleMessageComposerView<Factory: ViewFactory>: View, KeyboardReadable {
             messageController: messageController,
             quotedMessage: quotedMessage
         )
-        _viewModel = StateObject(
-            wrappedValue: vm
-        )
+        _viewModel = StateObject(wrappedValue: vm)
         _quotedMessage = quotedMessage
         _editedMessage = editedMessage
         self.onMessageSent = onMessageSent
@@ -55,7 +49,7 @@ struct AppleMessageComposerView<Factory: ViewFactory>: View, KeyboardReadable {
     @StateObject var viewModel: MessageComposerViewModel
 
     var onMessageSent: () -> Void
-    
+
     var body: some View {
         VStack(spacing: 0) {
             HStack(alignment: .bottom) {
@@ -72,47 +66,45 @@ struct AppleMessageComposerView<Factory: ViewFactory>: View, KeyboardReadable {
                     }
                 } label: {
                     Image(systemName: "plus")
-                        .padding(.all, 8)
+                        .padding(.all, 12)
                         .foregroundColor(Color.gray)
                         .background(Color(colors.background1))
                         .clipShape(Circle())
                 }
                 .padding(.bottom, 4)
 
-                ComposerInputView(
-                    factory: DefaultViewFactory.shared,
-                    channelController: viewModel.channelController,
-                    text: $viewModel.text,
-                    selectedRangeLocation: $viewModel.selectedRangeLocation,
-                    command: $viewModel.composerCommand,
-                    recordingState: $viewModel.recordingState,
-                    recordingGestureLocation: $viewModel.recordingGestureLocation,
-                    composerAssets: viewModel.composerAssets,
-                    addedCustomAttachments: viewModel.addedCustomAttachments,
-                    addedVoiceRecordings: viewModel.addedVoiceRecordings,
-                    quotedMessage: $quotedMessage,
-                    editedMessage: $editedMessage,
-                    maxMessageLength: channelConfig?.maxMessageLength,
-                    cooldownDuration: viewModel.cooldownDuration,
-                    hasContent: viewModel.hasContent,
-                    canSendMessage: viewModel.canSendMessage,
-                    audioRecordingInfo: viewModel.audioRecordingInfo,
-                    pendingAudioRecordingURL: viewModel.pendingAudioRecording?.url,
-                    onCustomAttachmentTap: viewModel.customAttachmentTapped(_:),
-                    removeAttachmentWithId: viewModel.removeAttachment(with:),
-                    sendMessage: {},
-                    onImagePasted: viewModel.imagePasted,
-                    startRecording: viewModel.startRecording,
-                    stopRecording: viewModel.stopRecording,
-                    confirmRecording: viewModel.confirmRecording,
-                    discardRecording: viewModel.discardRecording,
-                    previewRecording: viewModel.previewRecording,
-                    showRecordingTip: viewModel.showRecordingTip,
-                    sendInChannelShown: viewModel.sendInChannelShown,
-                    showReplyInChannel: $viewModel.showReplyInChannel
-                )
-                .overlay(
-                    viewModel.hasContent ? sendButton : nil
+                factory.makeComposerInputView(
+                    options: ComposerInputViewOptions(
+                        channelController: viewModel.channelController,
+                        text: $viewModel.text,
+                        selectedRangeLocation: $viewModel.selectedRangeLocation,
+                        command: $viewModel.composerCommand,
+                        recordingState: $viewModel.recordingState,
+                        recordingGestureLocation: $viewModel.recordingGestureLocation,
+                        composerAssets: viewModel.composerAssets,
+                        addedCustomAttachments: viewModel.addedCustomAttachments,
+                        addedVoiceRecordings: viewModel.addedVoiceRecordings,
+                        quotedMessage: $quotedMessage,
+                        editedMessage: $editedMessage,
+                        maxMessageLength: channelConfig?.maxMessageLength,
+                        cooldownDuration: viewModel.cooldownDuration,
+                        hasContent: viewModel.hasContent,
+                        canSendMessage: viewModel.canSendMessage,
+                        audioRecordingInfo: viewModel.audioRecordingInfo,
+                        pendingAudioRecordingURL: viewModel.pendingAudioRecording?.url,
+                        onCustomAttachmentTap: viewModel.customAttachmentTapped(_:),
+                        removeAttachmentWithId: viewModel.removeAttachment(with:),
+                        sendMessage: sendMessage,
+                        onImagePasted: viewModel.imagePasted,
+                        startRecording: viewModel.startRecording,
+                        stopRecording: viewModel.stopRecording,
+                        confirmRecording: viewModel.confirmRecording,
+                        discardRecording: viewModel.discardRecording,
+                        previewRecording: viewModel.previewRecording,
+                        showRecordingTip: viewModel.showRecordingTip,
+                        sendInChannelShown: viewModel.sendInChannelShown,
+                        showReplyInChannel: $viewModel.showReplyInChannel
+                    )
                 )
             }
             .padding(.all, 8)
@@ -151,18 +143,17 @@ struct AppleMessageComposerView<Factory: ViewFactory>: View, KeyboardReadable {
                             command: $viewModel.composerCommand,
                             extraData: ["instantCommand": command]
                         )
-                        NotificationCenter.default.post(
-                            name: NSNotification.Name(getStreamFirstResponderNotification),
-                            object: nil
-                        )
+                        becomeFirstResponder()
                     }
                 )
             )
+            .offset(y: viewModel.overlayShown ? 0 : popupSize)
+            .opacity(viewModel.overlayShown ? 1 : 0)
+            .animation(.easeInOut(duration: 0.25))
         }
         .background(
             GeometryReader { proxy in
-                let frame = proxy.frame(in: .local)
-                let height = frame.height
+                let height = proxy.frame(in: .local).height
                 Color.clear.preference(key: HeightPreferenceKey.self, value: height)
             }
         )
@@ -189,31 +180,33 @@ struct AppleMessageComposerView<Factory: ViewFactory>: View, KeyboardReadable {
                 popupSize = height - bottomSafeArea
             }
         }
-        .overlay(
-            viewModel.showSuggestionsOverlay ?
-                factory.makeSuggestionsContainerView(
-                    options: SuggestionsContainerViewOptions(
-                        suggestions: viewModel.suggestions,
-                        handleCommand: { commandInfo in
-                            viewModel.handleCommand(
-                                for: $viewModel.text,
-                                selectedRangeLocation: $viewModel.selectedRangeLocation,
-                                command: $viewModel.composerCommand,
-                                extraData: commandInfo
-                            )
-                        }
+        .modifier(factory.styles.makeComposerViewModifier(options: ComposerViewModifierOptions()))
+        .background(
+            Group {
+                if viewModel.showSuggestionsOverlay {
+                    factory.makeSuggestionsContainerView(
+                        options: SuggestionsContainerViewOptions(
+                            suggestions: viewModel.suggestions,
+                            handleCommand: { commandInfo in
+                                viewModel.handleCommand(
+                                    for: $viewModel.text,
+                                    selectedRangeLocation: $viewModel.selectedRangeLocation,
+                                    command: $viewModel.composerCommand,
+                                    extraData: commandInfo
+                                )
+                            }
+                        )
                     )
-                )
-                .offset(y: -composerHeight)
-                .animation(.none, value: viewModel.showSuggestionsOverlay) : nil,
+                }
+            }
+            .offset(y: -composerHeight),
             alignment: .bottom
         )
-        .modifier(factory.styles.makeComposerViewModifier(options: ComposerViewModifierOptions()))
         .onChange(of: editedMessage) { _ in
-            viewModel.text = editedMessage?.text ?? ""
+            viewModel.fillEditedMessage(editedMessage)
             if editedMessage != nil {
+                becomeFirstResponder()
                 editedMessageWillShow = true
-                viewModel.selectedRangeLocation = editedMessage?.text.count ?? 0
             }
         }
         .accessibilityElement(children: .contain)
@@ -223,22 +216,12 @@ struct AppleMessageComposerView<Factory: ViewFactory>: View, KeyboardReadable {
                 .allowsHitTesting(state == .expanded)
         )
     }
-    
-    private var sendButton: some View {
-        BottomRightView {
-            Button {
-                viewModel.sendMessage(quotedMessage: nil, editedMessage: nil) {
-                    onMessageSent()
-                }
-            } label: {
-                Image(systemName: "arrow.up.circle.fill")
-                    .resizable()
-                    .aspectRatio(contentMode: .fit)
-                    .frame(width: 24)
-                    .foregroundColor(.blue)
-            }
-            .padding(.trailing, 4)
-            .padding(.bottom, !viewModel.composerAssets.isEmpty ? 16 : 8)
+
+    private func sendMessage() {
+        onMessageSent()
+        viewModel.sendMessage(quotedMessage: quotedMessage, editedMessage: editedMessage) {
+            quotedMessage = nil
+            editedMessage = nil
         }
     }
 }
@@ -274,7 +257,7 @@ struct ComposerAction: Equatable, Identifiable {
     static func == (lhs: ComposerAction, rhs: ComposerAction) -> Bool {
         lhs.id == rhs.id
     }
-    
+
     var imageName: String
     var text: String
     var color: Color
@@ -287,19 +270,19 @@ struct ComposerAction: Equatable, Identifiable {
 @available(iOS 15.0, *)
 struct ComposerActionsView: View {
     @ObservedObject var viewModel: MessageComposerViewModel
-    
+
     @State var composerActions: [ComposerAction] = []
-    
+
     @Binding var state: AnimationState
     @Binding var listScale: CGFloat
-    
+
     var body: some View {
         ZStack(alignment: .bottomLeading) {
             Color.white.opacity(state == .initial ? 0.2 : 0.5)
-            
+
             BlurredBackground()
                 .opacity(state == .initial ? 0.0 : 1)
-            
+
             VStack(alignment: .leading, spacing: 30) {
                 ForEach(composerActions) { composerAction in
                     Button {
@@ -342,7 +325,7 @@ struct ComposerActionsView: View {
             }
         }
     }
-    
+
     private func setupComposerActions() {
         let imageAction: () -> Void = {
             viewModel.pickerTypeState = .expanded(.media)
@@ -391,9 +374,9 @@ struct ComposerActionsView: View {
 
 struct ComposerActionView: View {
     private let imageSize: CGFloat = 34
-    
+
     var composerAction: ComposerAction
-    
+
     var body: some View {
         HStack(spacing: 20) {
             Image(systemName: composerAction.imageName)
@@ -401,7 +384,7 @@ struct ComposerActionView: View {
                 .scaledToFit()
                 .foregroundColor(composerAction.color)
                 .frame(width: imageSize, height: imageSize)
-            
+
             Text(composerAction.text)
                 .foregroundColor(.primary)
                 .font(.title2)
