@@ -29,11 +29,13 @@ private struct NavigationBarBackgroundViewModifier: ViewModifier {
     @Injected(\.colors) var colors
     
     func body(content: Content) -> some View {
-        if #available(iOS 16.0, *), let background = colors.navigationBarBackground {
+        if #available(iOS 16.0, *) {
             content
-                .toolbarBackground(Color(background), for: .navigationBar)
+                .toolbarBackground(
+                    Color(colors.navigationBarBackground ?? colors.backgroundElevationElevation1),
+                    for: .navigationBar
+                )
                 .toolbarBackground(.visible, for: .navigationBar)
-            
         } else {
             content
         }
