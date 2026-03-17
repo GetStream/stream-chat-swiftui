@@ -33,9 +33,8 @@ The complete documentation and capabilities of the SwiftUI SDK can be found [her
 
 ## Architecture
 
-The SwiftUI SDK offers three types of components:
+The SwiftUI SDK offers two types of components:
 
-- Screens - Easiest to integrate, but offer small customizations, like branding and text changes.
 - Stateful components - Offer more customization options and possibility to inject custom views. Also fairly simple to integrate, if the extension points are suitable for your chat use-case. These components come with view models.
 - Stateless components - These are the building blocks for the other two types of components. In order to use them, you would have to provide the state and data. Using these components only make sense if you want to implement completely custom chat experience.
 
