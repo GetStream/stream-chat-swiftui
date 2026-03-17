@@ -76,7 +76,7 @@ struct SingleReactionView: View {
     }
 
     private var backgroundColor: Color {
-        isSentByCurrentUser ? Color(colors.background) : Color(colors.background6)
+        isSentByCurrentUser ? Color(colors.backgroundElevationElevation1) : Color(colors.background6)
     }
 
     var body: some View {
