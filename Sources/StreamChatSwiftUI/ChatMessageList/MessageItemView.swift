@@ -112,9 +112,12 @@ public struct MessageItemView<Factory: ViewFactory>: View {
                         handleGestureForMessage(showsMessageActions: true)
                     }
                 }
-                .onLongPressGesture(perform: {
-                    handleGestureForMessage(showsMessageActions: true)
-                })
+                .simultaneousGesture(
+                    LongPressGesture(minimumDuration: 0.3)
+                        .onEnded { _ in
+                            handleGestureForMessage(showsMessageActions: true)
+                        }
+                )
                 .modifier(SwipeToReplyModifier(
                     message: message,
                     channel: channel,
