@@ -255,9 +255,9 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
                                             .frame(maxHeight: lastInGroupHeaderSize)
                                             : nil
 
-                                        Spacer()
                                     }
-                                    : nil
+                                    : nil,
+                                alignment: .top
                             )
                             .flippedUpsideDown()
                             .animation(nil, value: messageDate != nil)
@@ -592,18 +592,15 @@ public struct DateIndicatorView: View {
     }
 
     public var body: some View {
-        VStack {
-            Text(dateString)
-                .font(fonts.footnote)
-                .padding(.vertical, tokens.spacingXs)
-                .padding(.horizontal, tokens.spacingSm)
-                .foregroundColor(colors.chatTextSystem.toColor)
-                .background(Color(colors.backgroundCoreSurfaceSubtle))
-                .cornerRadius(tokens.radiusMax)
-                .padding(.all, tokens.spacingXs)
-            Spacer()
-        }
-        .accessibilityAddTraits(.isHeader)
+        Text(dateString)
+            .font(fonts.footnote.weight(.semibold))
+            .padding(.vertical, tokens.spacingXxs)
+            .padding(.horizontal, tokens.spacingXs)
+            .foregroundColor(colors.chatTextSystem.toColor)
+            .background(Color(colors.backgroundCoreSurfaceSubtle))
+            .cornerRadius(tokens.radiusMax)
+            .padding(.vertical, tokens.spacingXs)
+            .accessibilityAddTraits(.isHeader)
     }
 }
 
