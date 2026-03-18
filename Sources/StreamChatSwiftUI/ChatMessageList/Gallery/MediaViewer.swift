@@ -7,14 +7,13 @@ import StreamChat
 import SwiftUI
 
 /// View used for displaying image attachments in a gallery.
-public struct MediaViewer<Factory: ViewFactory>: View {
+public struct GalleryView<Factory: ViewFactory>: View {
     @Environment(\.presentationMode) var presentationMode
 
     @Injected(\.colors) private var colors
     @Injected(\.fonts) private var fonts
     @Injected(\.images) private var images
     @Injected(\.utils) private var utils
-    @Injected(\.tokens) private var tokens
 
     private let viewFactory: Factory
     var mediaAttachments: [MediaAttachment]
@@ -63,17 +62,13 @@ public struct MediaViewer<Factory: ViewFactory>: View {
     public var body: some View {
         GeometryReader { reader in
             VStack {
-                viewFactory.makeMediaViewerHeader(
-                    options: MediaViewerHeaderOptions(
-                        title: author.name ?? "",
-                        subtitle: message.map {
-                            utils.galleryHeaderViewDateFormatter.format($0.createdAt)
-                        } ?? author.onlineText,
-                        shown: $isShown
-                    )
+                viewFactory.makeGalleryHeaderView(
+                    title: author.name ?? "",
+                    subtitle: message.map {
+                        utils.galleryHeaderViewDateFormatter.string(from: $0.createdAt)
+                    } ?? author.onlineText,
+                    shown: $isShown
                 )
-                
-                Divider()
 
                 TabView(selection: $selected) {
                     ForEach(0..<mediaAttachments.count, id: \.self) { index in
@@ -107,7 +102,7 @@ public struct MediaViewer<Factory: ViewFactory>: View {
                     }
                 }
                 .tabViewStyle(.page(indexDisplayMode: .never))
-                .background(Color(colors.backgroundCoreApp))
+                .background(Color(colors.background1))
                 .gesture(
                     DragGesture().onEnded { value in
                         if value.location.y - value.startLocation.y > 100 {
@@ -115,75 +110,45 @@ public struct MediaViewer<Factory: ViewFactory>: View {
                         }
                     }
                 )
-                
-                Divider()
 
                 HStack {
                     ShareButtonView(content: sharingContent)
+                        .standardPadding()
 
                     Spacer()
 
                     Text("\(selected + 1) of \(mediaAttachments.count)")
-                        .font(fonts.subheadline)
-                        .fontWeight(.semibold)
-                        .foregroundColor(colors.textPrimary.toColor)
+                        .font(fonts.bodyBold)
 
                     Spacer()
 
-                    StreamIconButton(role: .primary, style: .ghost, size: .small) {
+                    Button {
                         gridShown = true
-                    } icon: {
+                    } label: {
                         Image(uiImage: images.gallery)
                             .renderingMode(.template)
                             .resizable()
                             .frame(width: 16, height: 16, alignment: .center)
-                            .foregroundColor(Color(colors.textSecondary))
                     }
+                    .standardPadding()
                 }
-                .padding(.all, tokens.spacingXl)
+                .foregroundColor(Color(colors.text))
             }
             .sheet(isPresented: $gridShown) {
                 GridMediaView(
-                    factory: viewFactory,
-                    attachments: mediaAttachments
+                    attachments: mediaAttachments,
+                    isShown: $gridShown
                 )
-                .modifier(PresentationDetentsModifier(sheetSizes: [.medium, .large]))
             }
         }
     }
 
     private var sharingContent: [UIImage] {
         if let image = loadedImages[selected] {
-            [image]
+            return [image]
         } else {
-            []
+            return []
         }
-    }
-}
-
-struct GridMediaView<Factory: ViewFactory>: View {
-    @Injected(\.colors) private var colors
-    @Injected(\.fonts) private var fonts
-    @Injected(\.tokens) private var tokens
-
-    let factory: Factory
-    let attachments: [MediaAttachment]
-
-    var body: some View {
-        VStack(spacing: tokens.spacingLg) {
-            Text(L10n.ChatInfo.Media.title)
-                .font(fonts.bodyBold)
-                .foregroundColor(Color(colors.navigationBarTitle))
-
-            MediaAttachmentsGridView(
-                factory: factory,
-                attachments: attachments,
-                showAvatars: false
-            )
-        }
-        .padding(.horizontal, tokens.spacingSm)
-        .padding(.vertical, tokens.spacing2xl)
-        .background(colors.backgroundElevationElevation1.toColor.edgesIgnoringSafeArea(.all))
     }
 }
 
@@ -192,6 +157,10 @@ struct StreamVideoPlayer: View {
 
     private var fileCDN: FileCDN {
         utils.fileCDN
+    }
+
+    private var avPlayerProvider: AVPlayerProvider {
+        utils.avPlayerProvider
     }
 
     let url: URL
@@ -218,9 +187,16 @@ struct StreamVideoPlayer: View {
             fileCDN.adjustedURL(for: url) { result in
                 switch result {
                 case let .success(url):
-                    avPlayer = AVPlayer(url: url)
-                    try? AVAudioSession.sharedInstance().setCategory(.playback, options: [])
-                    avPlayer?.play()
+                    self.avPlayerProvider.player(for: url) { result in
+                        switch result {
+                        case let .success(player):
+                            self.avPlayer = player
+                            try? AVAudioSession.sharedInstance().setCategory(.playback, options: [])
+                            self.avPlayer?.play()
+                        case let .failure(error):
+                            self.error = error
+                        }
+                    }
                 case let .failure(error):
                     self.error = error
                 }

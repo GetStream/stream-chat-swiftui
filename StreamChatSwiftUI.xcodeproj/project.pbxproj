@@ -270,6 +270,7 @@
 				Tests/Utils/StreamChat_Utils_Tests.swift,
 				Tests/Utils/StringExtensions_Tests.swift,
 				Tests/Utils/URLUtils_Tests.swift,
+				Tests/Utils/VideoPreviewLoader_Tests.swift,
 				Tests/Utils/ViewFactory_Tests.swift,
 			);
 			target = 8465FBBC2746873A00AF091E /* StreamChatSwiftUITests */;
