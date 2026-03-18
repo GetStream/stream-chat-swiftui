@@ -239,6 +239,7 @@ public struct ChatChannelListContentView<Factory: ViewFactory>: View {
                     channels: viewModel.channels,
                     selectedChannel: $viewModel.selectedChannel,
                     swipedChannelId: $viewModel.swipedChannelId,
+                    scrolledChannelId: $viewModel.scrolledChannelId,
                     scrollable: true,
                     onItemTap: onItemTap,
                     onItemAppear: { index in
