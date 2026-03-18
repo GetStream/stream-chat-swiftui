@@ -83,23 +83,3 @@ public struct FileAttachmentsView: View {
         .navigationBarTitleDisplayMode(.inline)
     }
 }
-
-struct MonthlyAttachmentsHeader: View {
-    @Injected(\.colors) private var colors
-    @Injected(\.fonts) private var fonts
-
-    var monthlyDataSource: MonthlyFileAttachments
-
-    var body: some View {
-        HStack {
-            Text(monthlyDataSource.monthAndYear)
-                .font(fonts.bodyBold)
-                .foregroundColor(Color(colors.textLowEmphasis))
-                .padding(.horizontal, 8)
-                .padding(.vertical, 4)
-
-            Spacer()
-        }
-        .background(Color(colors.background6))
-    }
-}

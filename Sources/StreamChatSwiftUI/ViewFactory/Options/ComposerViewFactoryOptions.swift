@@ -427,16 +427,6 @@ public final class MessageAttachmentPreviewViewOptions: Sendable {
     }
 }
 
-/// Options for creating the custom attachment quoted view.
-public final class CustomAttachmentQuotedViewOptions: Sendable {
-    /// The message containing the custom attachment.
-    public let message: ChatMessage
-    
-    public init(message: ChatMessage) {
-        self.message = message
-    }
-}
-
 /// Options for creating the edited message header view.
 public final class EditedMessageHeaderViewOptions: Sendable {
     /// Binding to the edited message.
