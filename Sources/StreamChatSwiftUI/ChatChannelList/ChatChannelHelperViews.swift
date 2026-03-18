@@ -44,24 +44,6 @@ public struct TopRightView<Content: View>: View {
     }
 }
 
-/// View representing the user's avatar.
-public struct AvatarView: View {
-    var avatar: UIImage
-    var size: CGSize = .defaultAvatarSize
-
-    public var body: some View {
-        Image(uiImage: avatar)
-            .renderingMode(.original)
-            .resizable()
-            .aspectRatio(contentMode: .fill)
-            .frame(
-                width: size.width,
-                height: size.height
-            )
-            .clipShape(Circle())
-    }
-}
-
 public struct ChatTitleView: View {
     @Injected(\.fonts) private var fonts
     @Injected(\.colors) private var colors

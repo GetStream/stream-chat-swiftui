@@ -341,3 +341,26 @@ public struct MemberListView<Factory: ViewFactory>: View {
         }
     }
 }
+
+public final class ParticipantInfo: Identifiable {
+    public var id: String {
+        chatUser.id
+    }
+
+    public let chatUser: ChatUser
+    public let displayName: String
+    public let onlineInfoText: String
+    public let isDeactivated: Bool
+
+    public init(
+        chatUser: ChatUser,
+        displayName: String,
+        onlineInfoText: String,
+        isDeactivated: Bool = false
+    ) {
+        self.chatUser = chatUser
+        self.displayName = displayName
+        self.onlineInfoText = onlineInfoText
+        self.isDeactivated = isDeactivated
+    }
+}
