@@ -58,6 +58,13 @@ public protocol Styles {
     associatedtype ToolbarConfirmActionViewModifier: ViewModifier
     /// Returns a view modifier applied to toolbar confirm action buttons.
     func makeToolbarConfirmActionModifier(options: ToolbarConfirmActionModifierOptions) -> ToolbarConfirmActionViewModifier
+
+    associatedtype SearchableModifierType: ViewModifier
+    /// Returns a view modifier that adds search functionality to a view.
+    ///
+    /// On iOS 17+, this uses the native `.searchable` API integrated in the navigation bar.
+    /// On older versions, this falls back to a custom inline ``SearchBar``.
+    func makeSearchableModifier(options: SearchableModifierOptions) -> SearchableModifierType
 }
 
 extension Styles {
@@ -101,6 +108,10 @@ extension Styles {
     
     public func makeToolbarConfirmActionModifier(options: ToolbarConfirmActionModifierOptions) -> some ViewModifier {
         DefaultToolbarConfirmActionModifier()
+    }
+
+    public func makeSearchableModifier(options: SearchableModifierOptions) -> some ViewModifier {
+        DefaultSearchableModifier(searchText: options.searchText, prompt: options.prompt)
     }
 }
 
@@ -309,6 +320,50 @@ public struct LiquidGlassScrollToBottomButtonModifier: ViewModifier {
         content
             .modifier(LiquidGlassModifier(shape: .circle, isInteractive: true))
             .offset(y: 12)
+    }
+}
+
+// MARK: - Searchable
+
+/// Options for creating the searchable view modifier.
+public final class SearchableModifierOptions {
+    public let searchText: Binding<String>
+    public let prompt: String
+
+    public init(
+        searchText: Binding<String>,
+        prompt: String? = nil
+    ) {
+        self.searchText = searchText
+        self.prompt = prompt ?? L10n.Message.Search.title
+    }
+}
+
+/// A view modifier that adds search functionality using the native `.searchable` API
+/// on iOS 17+ and falls back to an inline ``SearchBar`` on older versions.
+public struct DefaultSearchableModifier: ViewModifier {
+    @Binding var searchText: String
+    let prompt: String
+
+    public init(searchText: Binding<String>, prompt: String) {
+        _searchText = searchText
+        self.prompt = prompt
+    }
+
+    public func body(content: Content) -> some View {
+        if #available(iOS 17.0, *) {
+            content
+                .searchable(
+                    text: $searchText,
+                    placement: .navigationBarDrawer(displayMode: .automatic),
+                    prompt: Text(prompt)
+                )
+        } else {
+            VStack(spacing: 0) {
+                SearchBar(text: $searchText)
+                content
+            }
+        }
     }
 }
 

@@ -23,11 +23,7 @@ public struct RedactedLoadingView<Factory: ViewFactory>: View {
     public var body: some View {
         ScrollView {
             VStack(spacing: 0) {
-                factory.makeChannelListTopView(
-                    options: ChannelListTopViewOptions(
-                        searchText: .constant("")
-                    )
-                )
+                factory.makeChannelListTopView(options: .init())
 
                 LazyVStack(spacing: 0) {
                     ForEach(0..<20) { _ in

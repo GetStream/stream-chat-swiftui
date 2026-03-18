@@ -58,7 +58,7 @@ struct PollCommentsView<Factory: ViewFactory>: View {
             accept: commentAlertAcceptAction,
             action: { viewModel.add(comment: viewModel.newCommentText) }
         )
-        .background(Color(colors.background).ignoresSafeArea())
+        .background(Color(colors.backgroundElevationElevation1).ignoresSafeArea())
         .alertBanner(
             isPresented: $viewModel.errorShown,
             action: viewModel.refresh

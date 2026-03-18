@@ -65,7 +65,7 @@ public struct ChatInfoParticipantsView<Factory: ViewFactory>: View {
                 }
             }
         }
-        .background(Color(colors.background))
+        .background(Color(colors.backgroundElevationElevation1))
     }
 }
 

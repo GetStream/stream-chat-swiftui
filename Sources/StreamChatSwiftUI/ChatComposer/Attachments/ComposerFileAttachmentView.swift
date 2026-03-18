@@ -34,7 +34,7 @@ struct ComposerFileAttachmentView: View {
         .padding(.leading, tokens.spacingMd)
         .padding(.bottom, tokens.spacingMd)
         .padding(.trailing, tokens.spacingSm)
-        .background(Color(colors.background))
+        .background(Color(colors.backgroundElevationElevation1))
         .cornerRadius(tokens.radiusLg)
         .overlay(
             RoundedRectangle(cornerRadius: tokens.radiusLg)

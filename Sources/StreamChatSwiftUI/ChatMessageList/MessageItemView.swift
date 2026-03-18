@@ -106,14 +106,19 @@ public struct MessageItemView<Factory: ViewFactory>: View {
                             })
                     }
                 )
+                .contentShape(Rectangle())
+                .allowsHitTesting(!shownAsPreview)
                 .onTapGesture(count: 2) {
                     if messageViewModel.isDoubleTapOverlayEnabled {
                         handleGestureForMessage(showsMessageActions: true)
                     }
                 }
-                .onLongPressGesture(perform: {
-                    handleGestureForMessage(showsMessageActions: true)
-                })
+                .simultaneousGesture(
+                    LongPressGesture(minimumDuration: 0.3)
+                        .onEnded { _ in
+                            handleGestureForMessage(showsMessageActions: true)
+                        }
+                )
                 .modifier(SwipeToReplyModifier(
                     message: message,
                     channel: channel,
@@ -131,6 +136,7 @@ public struct MessageItemView<Factory: ViewFactory>: View {
                 }
             }
         )
+        .padding(.bottom, messageViewModel.isPinned && !shownAsPreview ? tokens.spacingXs : 0)
         .transition(
             message.isSentByCurrentUser ?
                 messageListConfig.messageDisplayOptions.currentUserMessageTransition :

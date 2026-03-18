@@ -26,12 +26,12 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
     var isMessageThread: Bool
     var shouldShowTypingIndicator: Bool
     var bottomInset: CGFloat
-    
+
     var onMessageAppear: (Int, ScrollDirection) -> Void
     var onScrollToBottom: @MainActor () -> Void
     var onLongPress: (MessageDisplayInfo) -> Void
     var onJumpToMessage: ((String) -> Bool)?
-    
+
     @State private var width: CGFloat?
     @State private var keyboardShown = false
     @State private var pendingKeyboardUpdate: Bool?
@@ -57,7 +57,7 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
     private var lastInGroupHeaderSize: CGFloat {
         messageListConfig.messageDisplayOptions.lastInGroupHeaderSize
     }
-    
+
     private var newMessagesSeparatorSize: CGFloat {
         messageListConfig.messageDisplayOptions.newMessagesSeparatorSize
     }
@@ -116,7 +116,7 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
             self.messages = messages.filter { !skipRenderingMessageIds.contains($0.id) }
         }
     }
-    
+
     public init(
         factory: Factory = DefaultViewFactory.shared,
         channel: ChatChannel,
@@ -254,9 +254,9 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
                                             factory.makeLastInGroupHeaderView(options: LastInGroupHeaderViewOptions(message: message))
                                             .frame(maxHeight: lastInGroupHeaderSize)
                                             : nil
-                                        Spacer()
                                     }
-                                    : nil
+                                    : nil,
+                                alignment: .top
                             )
                             .flippedUpsideDown()
                             .animation(nil, value: messageDate != nil)
@@ -402,7 +402,7 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
         .accessibilityElement(children: .contain)
         .accessibilityIdentifier("MessageListView")
     }
-    
+
     private func additionalTopPadding(showsLastInGroupInfo: Bool, showUnreadSeparator: Bool) -> CGFloat {
         var padding = showsLastInGroupInfo ? lastInGroupHeaderSize : 0
         if showUnreadSeparator {
@@ -416,7 +416,7 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
         offset += additionalTopPadding(showsLastInGroupInfo: showsLastInGroupInfo, showUnreadSeparator: showUnreadSeparator)
         return offset
     }
-    
+
     private func newMessagesCount(for index: Int?, message: ChatMessage) -> Int {
         channel.unreadCount.messages
     }
@@ -470,7 +470,7 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
 
 struct ScrollPositionModifier: ViewModifier {
     @Binding var scrollPosition: String?
-    
+
     func body(content: Content) -> some View {
         #if swift(>=5.9)
         if #available(iOS 17, *) {
@@ -487,7 +487,7 @@ struct ScrollPositionModifier: ViewModifier {
 
 struct ScrollTargetLayoutModifier: ViewModifier {
     var enabled: Bool
-    
+
     func body(content: Content) -> some View {
         if !enabled {
             return content
@@ -513,15 +513,15 @@ public enum ScrollDirection {
 
 public struct NewMessagesIndicator: View {
     @Injected(\.colors) var colors
-    
+
     @Binding var newMessagesStartId: String?
     var count: Int
-    
+
     public init(newMessagesStartId: Binding<String?>, count: Int) {
         _newMessagesStartId = newMessagesStartId
         self.count = count
     }
-    
+
     public var body: some View {
         HStack {
             Text("\(L10n.MessageList.newMessages(count))")
@@ -591,18 +591,15 @@ public struct DateIndicatorView: View {
     }
 
     public var body: some View {
-        VStack {
-            Text(dateString)
-                .font(fonts.footnote)
-                .padding(.vertical, tokens.spacingXs)
-                .padding(.horizontal, tokens.spacingSm)
-                .foregroundColor(colors.chatTextSystem.toColor)
-                .background(Color(colors.backgroundCoreSurfaceSubtle))
-                .cornerRadius(tokens.radiusMax)
-                .padding(.all, tokens.spacingXs)
-            Spacer()
-        }
-        .accessibilityAddTraits(.isHeader)
+        Text(dateString)
+            .font(fonts.footnote.weight(.semibold))
+            .padding(.vertical, tokens.spacingXxs)
+            .padding(.horizontal, tokens.spacingXs)
+            .foregroundColor(colors.chatTextSystem.toColor)
+            .background(Color(colors.backgroundCoreSurfaceSubtle))
+            .cornerRadius(tokens.radiusMax)
+            .padding(.vertical, tokens.spacingXs)
+            .accessibilityAddTraits(.isHeader)
     }
 }
 
@@ -660,7 +657,7 @@ extension EnvironmentValues {
             self[ChannelTranslationLanguageKey.self] = newValue
         }
     }
-
+    
     var messageViewModel: MessageViewModel? {
         get {
             self[MessageViewModelKey.self]

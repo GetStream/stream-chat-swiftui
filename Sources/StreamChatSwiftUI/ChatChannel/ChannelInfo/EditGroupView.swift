@@ -160,7 +160,7 @@ struct GroupAvatarPickerSheetView: View {
                 )
                 Spacer()
             }
-            .background(Color(colors.background).edgesIgnoringSafeArea(.all))
+            .background(Color(colors.backgroundElevationElevation1).edgesIgnoringSafeArea(.all))
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .principal) {

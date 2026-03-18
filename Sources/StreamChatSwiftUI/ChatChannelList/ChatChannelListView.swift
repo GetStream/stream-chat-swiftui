@@ -190,6 +190,8 @@ extension ChatChannelListView where Factory == DefaultViewFactory {
 }
 
 public struct ChatChannelListContentView<Factory: ViewFactory>: View {
+    @Injected(\.colors) private var colors
+    
     @Environment(\.horizontalSizeClass) var horizontalSizeClass
 
     private var viewFactory: Factory
@@ -215,9 +217,9 @@ public struct ChatChannelListContentView<Factory: ViewFactory>: View {
     public var body: some View {
         VStack(spacing: 0) {
             viewFactory.makeChannelListTopView(
-                options: ChannelListTopViewOptions(searchText: $viewModel.searchText)
+                options: ChannelListTopViewOptions()
             )
-
+            
             if viewModel.isSearching {
                 viewFactory.makeSearchResultsView(
                     options: SearchResultsViewOptions(
@@ -238,6 +240,7 @@ public struct ChatChannelListContentView<Factory: ViewFactory>: View {
                     selectedChannel: $viewModel.selectedChannel,
                     swipedChannelId: $viewModel.swipedChannelId,
                     scrolledChannelId: $viewModel.scrolledChannelId,
+                    scrollable: true,
                     onItemTap: onItemTap,
                     onItemAppear: { index in
                         viewModel.checkTabBarAppearance()
@@ -246,7 +249,7 @@ public struct ChatChannelListContentView<Factory: ViewFactory>: View {
                     channelDestination: viewFactory.makeChannelDestination(options: ChannelDestinationOptions()),
                     trailingSwipeRightButtonTapped: viewModel.onDeleteTapped(channel:),
                     trailingSwipeLeftButtonTapped: viewModel.onMoreTapped(channel:),
-                    leadingSwipeButtonTapped: { _ in /* No leading button by default. */ }
+                    leadingSwipeButtonTapped: { _ in }
                 )
                 .onAppear {
                     viewModel.preselectChannelIfNeeded()
@@ -255,6 +258,10 @@ public struct ChatChannelListContentView<Factory: ViewFactory>: View {
 
             viewFactory.makeChannelListStickyFooterView(options: ChannelListStickyFooterViewOptions())
         }
+        .modifier(viewFactory.styles.makeSearchableModifier(
+            options: SearchableModifierOptions(searchText: $viewModel.searchText)
+        ))
+        .background(Color(colors.backgroundElevationElevation0))
         .modifier(viewFactory.styles.makeChannelListContentModifier(options: ChannelListContentModifierOptions()))
     }
 }

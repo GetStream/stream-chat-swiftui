@@ -90,11 +90,7 @@ extension ViewFactory {
         options: ChannelListItemBackgroundOptions
     ) -> some View {
         let colors = InjectedValues[\.colors]
-        if options.isSelected && isIPad {
-            return Color(colors.background6)
-        }
-
-        return Color(colors.background)
+        return Color(colors.backgroundElevationElevation0)
     }
 
     public func makeChannelListDividerItem(options: ChannelListDividerItemOptions) -> some View {
@@ -122,9 +118,9 @@ extension ViewFactory {
     public func makeChannelListTopView(
         options: ChannelListTopViewOptions
     ) -> some View {
-        SearchBar(text: options.searchText)
+        EmptyView()
     }
-    
+
     public func makeChannelListFooterView(options: ChannelListFooterViewOptions) -> some View {
         EmptyView()
     }
@@ -233,7 +229,7 @@ extension ViewFactory {
     public func makeMessageListBackground(
         options: MessageListBackgroundOptions
     ) -> some View {
-        Color(InjectedValues[\.colors].background)
+        Color(InjectedValues[\.colors].backgroundCoreApp)
     }
     
     public func makeMessageItemView(
@@ -978,7 +974,7 @@ extension ViewFactory {
     }
 
     public func makeThreadListBackground(options: ThreadListBackgroundOptions) -> some View {
-        Color(options.colors.background)
+        Color(options.colors.backgroundElevationElevation1)
             .edgesIgnoringSafeArea(.bottom)
     }
 
@@ -986,11 +982,7 @@ extension ViewFactory {
         options: ThreadListItemBackgroundOptions
     ) -> some View {
         let colors = InjectedValues[\.colors]
-        if options.isSelected && isIPad {
-            return Color(colors.background6)
-        }
-
-        return Color(colors.background)
+        return Color(colors.backgroundElevationElevation1)
     }
 
     public func makeThreadListDividerItem(options: ThreadListDividerItemOptions) -> some View {

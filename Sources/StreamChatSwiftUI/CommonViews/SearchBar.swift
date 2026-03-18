@@ -21,8 +21,7 @@ struct SearchBar: View, KeyboardReadable {
                     .customizable()
                     .foregroundColor(Color(colors.inputTextIcon))
                     .frame(width: tokens.iconSizeMd, height: tokens.iconSizeMd)
-                    .padding(.leading, tokens.spacingXs)
-                
+
                 if #available(iOS 15.0, *) {
                     TextField(
                         "",
@@ -30,6 +29,7 @@ struct SearchBar: View, KeyboardReadable {
                         prompt: Text(L10n.Message.Search.title)
                             .foregroundColor(Color(colors.inputTextPlaceholder))
                     )
+                    .font(fonts.body)
                     .foregroundColor(Color(colors.textPrimary))
                 } else {
                     TextField(L10n.Message.Search.title, text: $text)
@@ -48,15 +48,14 @@ struct SearchBar: View, KeyboardReadable {
                     }
                 }
             }
-            .padding(.horizontal, tokens.spacingSm)
+            .padding(.horizontal, tokens.spacingMd)
             .padding(.vertical, tokens.spacingSm)
-            .background(Color(colors.backgroundElevationElevation1))
+            .frame(height: 48)
             .clipShape(RoundedRectangle(cornerRadius: tokens.radiusMax, style: .continuous))
             .overlay(
                 RoundedRectangle(cornerRadius: tokens.radiusMax, style: .continuous)
                     .stroke(Color(colors.inputBorderDefault), lineWidth: 1)
             )
-            .padding(.horizontal, tokens.spacingXs)
             .transition(.identity)
             .animation(.easeInOut, value: isEditing)
 
@@ -71,12 +70,14 @@ struct SearchBar: View, KeyboardReadable {
                         .foregroundColor(Color(colors.accentPrimary))
                 }
                 .frame(height: tokens.iconSizeLg)
-                .padding(.trailing, tokens.spacingXs)
                 .transition(.move(edge: .trailing))
                 .animation(.easeInOut)
             }
         }
-        .padding(.all, tokens.spacingXs)
+        .padding(.top, tokens.spacingMd)
+        .padding(.bottom, tokens.spacingXs)
+        .padding(.horizontal, tokens.spacingMd)
+        .background(Color(colors.backgroundElevationElevation0))
         .onReceive(keyboardWillChangePublisher) { shown in
             if shown {
                 isEditing = true
