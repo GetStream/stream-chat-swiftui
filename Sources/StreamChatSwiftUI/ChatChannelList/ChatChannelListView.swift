@@ -216,11 +216,11 @@ public struct ChatChannelListContentView<Factory: ViewFactory>: View {
 
     public var body: some View {
         VStack(spacing: 0) {
+            viewFactory.makeChannelListTopView(
+                options: ChannelListTopViewOptions()
+            )
+            
             if viewModel.isSearching {
-                viewFactory.makeChannelListTopView(
-                    options: ChannelListTopViewOptions()
-                )
-
                 viewFactory.makeSearchResultsView(
                     options: SearchResultsViewOptions(
                         selectedChannel: $viewModel.selectedChannel,
@@ -234,10 +234,6 @@ public struct ChatChannelListContentView<Factory: ViewFactory>: View {
                     )
                 )
             } else {
-                viewFactory.makeChannelListTopView(
-                    options: ChannelListTopViewOptions()
-                )
-
                 ChannelList(
                     factory: viewFactory,
                     channels: viewModel.channels,
