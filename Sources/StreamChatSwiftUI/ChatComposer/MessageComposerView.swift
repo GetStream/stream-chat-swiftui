@@ -294,6 +294,10 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
             text: $viewModel.snackBarText,
             bottomOffset: composerHeight + tokens.spacingMd
         )
+        .overlay(
+            factory.styles.composerPlacement == .docked ? composerDivider : nil,
+            alignment: .top
+        )
         .onChange(of: editedMessage) { _ in
             viewModel.fillEditedMessage(editedMessage)
             if editedMessage != nil {
@@ -362,6 +366,12 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
         let lockRadius: CGFloat = 20
         let lockCenterY = composerTopInset - desiredGapFromComposer - lockRadius
         return lockCenterY - overlayCenterY
+    }
+    
+    private var composerDivider: some View {
+        Rectangle()
+            .frame(width: nil, height: 1, alignment: .top)
+            .foregroundColor(Color(colors.borderCoreDefault))
     }
 }
 
