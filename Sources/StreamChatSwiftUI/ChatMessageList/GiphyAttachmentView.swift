@@ -146,6 +146,7 @@ struct LazyGiphyView: View {
         .aspectRatio(contentMode: .fit)
         .frame(width: width)
         .frame(maxHeight: 250)
+        .clipped()
     }
 }
 
