@@ -217,6 +217,10 @@ public struct ChatChannelListContentView<Factory: ViewFactory>: View {
     public var body: some View {
         VStack(spacing: 0) {
             if viewModel.isSearching {
+                viewFactory.makeChannelListTopView(
+                    options: ChannelListTopViewOptions()
+                )
+
                 viewFactory.makeSearchResultsView(
                     options: SearchResultsViewOptions(
                         selectedChannel: $viewModel.selectedChannel,
@@ -230,31 +234,26 @@ public struct ChatChannelListContentView<Factory: ViewFactory>: View {
                     )
                 )
             } else {
-                ScrollViewReader { scrollView in
-                    ChannelList(
-                        factory: viewFactory,
-                        channels: viewModel.channels,
-                        selectedChannel: $viewModel.selectedChannel,
-                        swipedChannelId: $viewModel.swipedChannelId,
-                        scrollable: true,
-                        onItemTap: onItemTap,
-                        onItemAppear: { index in
-                            viewModel.checkTabBarAppearance()
-                            viewModel.checkForChannels(index: index)
-                        },
-                        channelDestination: viewFactory.makeChannelDestination(options: ChannelDestinationOptions()),
-                        trailingSwipeRightButtonTapped: viewModel.onDeleteTapped(channel:),
-                        trailingSwipeLeftButtonTapped: viewModel.onMoreTapped(channel:),
-                        leadingSwipeButtonTapped: { _ in }
-                    )
-                    .onChange(of: viewModel.scrolledChannelId) { newValue in
-                        if let newValue {
-                            withAnimation {
-                                scrollView.scrollTo(newValue, anchor: .bottom)
-                            }
-                        }
-                    }
-                }
+                viewFactory.makeChannelListTopView(
+                    options: ChannelListTopViewOptions()
+                )
+
+                ChannelList(
+                    factory: viewFactory,
+                    channels: viewModel.channels,
+                    selectedChannel: $viewModel.selectedChannel,
+                    swipedChannelId: $viewModel.swipedChannelId,
+                    scrollable: true,
+                    onItemTap: onItemTap,
+                    onItemAppear: { index in
+                        viewModel.checkTabBarAppearance()
+                        viewModel.checkForChannels(index: index)
+                    },
+                    channelDestination: viewFactory.makeChannelDestination(options: ChannelDestinationOptions()),
+                    trailingSwipeRightButtonTapped: viewModel.onDeleteTapped(channel:),
+                    trailingSwipeLeftButtonTapped: viewModel.onMoreTapped(channel:),
+                    leadingSwipeButtonTapped: { _ in }
+                )
                 .onAppear {
                     viewModel.preselectChannelIfNeeded()
                 }

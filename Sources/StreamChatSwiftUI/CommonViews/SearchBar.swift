@@ -50,7 +50,7 @@ struct SearchBar: View, KeyboardReadable {
             }
             .padding(.horizontal, tokens.spacingMd)
             .padding(.vertical, tokens.spacingSm)
-            .frame(minHeight: 48)
+            .frame(height: 48)
             .clipShape(RoundedRectangle(cornerRadius: tokens.radiusMax, style: .continuous))
             .overlay(
                 RoundedRectangle(cornerRadius: tokens.radiusMax, style: .continuous)

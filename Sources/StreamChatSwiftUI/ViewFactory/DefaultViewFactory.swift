@@ -115,6 +115,12 @@ extension ViewFactory {
         EmptyView()
     }
     
+    public func makeChannelListTopView(
+        options: ChannelListTopViewOptions
+    ) -> some View {
+        EmptyView()
+    }
+
     public func makeChannelListFooterView(options: ChannelListFooterViewOptions) -> some View {
         EmptyView()
     }
