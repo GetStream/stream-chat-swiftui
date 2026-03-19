@@ -6,52 +6,6 @@ import StreamChat
 import StreamChatCommonUI
 import SwiftUI
 
-public struct TrailingComposerView<Factory: ViewFactory>: View {
-    @Injected(\.utils) private var utils
-
-    var factory: Factory
-    @ObservedObject var viewModel: MessageComposerViewModel
-    var onTap: @MainActor @Sendable () -> Void
-    
-    public init(
-        factory: Factory,
-        viewModel: MessageComposerViewModel,
-        onTap: @escaping @MainActor @Sendable () -> Void
-    ) {
-        self.factory = factory
-        self.onTap = onTap
-        self.viewModel = viewModel
-    }
-    
-    public var body: some View {
-        Group {
-            if viewModel.cooldownDuration == 0 && viewModel.canSendMessage {
-                HStack(spacing: 16) {
-                    factory.makeSendMessageButton(
-                        options: SendMessageButtonOptions(
-                            enabled: viewModel.hasContent,
-                            onTap: onTap
-                        )
-                    )
-                    if utils.composerConfig.isVoiceRecordingEnabled {
-                        VoiceRecordingButton(
-                            recordingState: $viewModel.recordingState,
-                            startRecording: viewModel.startRecording,
-                            stopRecording: viewModel.stopRecording,
-                            showRecordingTip: viewModel.showRecordingTip
-                        )
-                    }
-                }
-                .padding(.bottom, 8)
-            } else if viewModel.cooldownDuration > 0 {
-                SlowModeView(
-                    cooldownDuration: viewModel.cooldownDuration
-                )
-            }
-        }
-    }
-}
-
 /// The button responsible to start voice recording.
 public struct VoiceRecordingButton: View {
     @Injected(\.colors) var colors
