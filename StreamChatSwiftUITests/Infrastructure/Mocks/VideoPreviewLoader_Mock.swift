@@ -22,7 +22,7 @@ class VideoPreviewLoader_Mock: VideoPreviewLoader {
 
     func loadPreviewForVideo(
         with attachment: ChatMessageVideoAttachment,
-        completion: @escaping (Result<UIImage, Error>) -> Void
+        completion: @escaping @MainActor (Result<UIImage, Error>) -> Void
     ) {
         loadPreviewVideoWithAttachmentCalled = true
 

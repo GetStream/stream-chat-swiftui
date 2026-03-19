@@ -23,14 +23,14 @@ import UIKit
     ///   - completion: A completion that is called when a preview is loaded. Must be invoked on main queue.
     func loadPreviewForVideo(
         with attachment: ChatMessageVideoAttachment,
-        completion: @escaping (Result<UIImage, Error>) -> Void
+        completion: @Sendable @escaping @MainActor (Result<UIImage, Error>) -> Void
     )
 }
 
 extension VideoPreviewLoader {
     public func loadPreviewForVideo(
         with attachment: ChatMessageVideoAttachment,
-        completion: @Sendable @escaping (Result<UIImage, Error>) -> Void
+        completion: @Sendable @escaping @MainActor (Result<UIImage, Error>) -> Void
     ) {
         loadPreviewForVideo(at: attachment.videoURL, completion: completion)
     }
@@ -70,11 +70,14 @@ public final class DefaultVideoPreviewLoader: VideoPreviewLoader {
 
     public func loadPreviewForVideo(
         with attachment: ChatMessageVideoAttachment,
-        completion: @escaping (Result<UIImage, Error>) -> Void
+        completion: @Sendable @escaping @MainActor (Result<UIImage, Error>) -> Void
     ) {
         let videoURL = attachment.videoURL
         if let cached = cache[videoURL] {
-            return call(completion, with: .success(cached))
+            Task { @MainActor in
+                completion(.success(cached))
+            }
+            return
         }
 
         if let thumbnailURL = attachment.payload.thumbnailURL {
@@ -88,7 +91,9 @@ public final class DefaultVideoPreviewLoader: VideoPreviewLoader {
                 switch result {
                 case let .success(image):
                     self.cache[videoURL] = image
-                    self.call(completion, with: .success(image))
+                    Task { @MainActor in
+                        completion(.success(image))
+                    }
                 case .failure:
                     self.generateVideoPreview(for: videoURL, completion: completion)
                 }
@@ -98,7 +103,10 @@ public final class DefaultVideoPreviewLoader: VideoPreviewLoader {
         }
     }
 
-    private func generateVideoPreview(for url: URL, completion: @escaping (Result<UIImage, Error>) -> Void) {
+    private func generateVideoPreview(
+        for url: URL,
+        completion: @escaping @MainActor (Result<UIImage, Error>) -> Void
+    ) {
         utils.fileCDN.adjustedURL(for: url) { result in
             let adjustedUrl: URL
             switch result {
@@ -116,7 +124,7 @@ public final class DefaultVideoPreviewLoader: VideoPreviewLoader {
             let frameTime = CMTime(seconds: 0.1, preferredTimescale: 600)
 
             imageGenerator.appliesPreferredTrackTransform = true
-            imageGenerator.generateCGImagesAsynchronously(forTimes: [.init(time: frameTime)]) { [cache] _, image, _, _, error in
+            imageGenerator.generateCGImagesAsynchronously(forTimes: [.init(time: frameTime)]) { [cache = self.cache] _, image, _, _, error in
                 let result: Result<UIImage, Error>
                 if let thumbnail = image {
                     result = .success(.init(cgImage: thumbnail))

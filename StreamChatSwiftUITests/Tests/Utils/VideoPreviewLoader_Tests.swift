@@ -275,7 +275,10 @@ private class URLOnlyVideoPreviewLoader: VideoPreviewLoader {
     var loadPreviewAtURLCalled = false
     var receivedURL: URL?
 
-    func loadPreviewForVideo(at url: URL, completion: @escaping (Result<UIImage, Error>) -> Void) {
+    func loadPreviewForVideo(
+        at url: URL,
+        completion: @escaping @MainActor (Result<UIImage, Error>) -> Void
+    ) {
         loadPreviewAtURLCalled = true
         receivedURL = url
         completion(.success(UIImage()))
@@ -289,7 +292,7 @@ private class FullVideoPreviewLoader: VideoPreviewLoader {
     var receivedURL: URL?
     var receivedAttachment: ChatMessageVideoAttachment?
 
-    func loadPreviewForVideo(at url: URL, completion: @escaping (Result<UIImage, Error>) -> Void) {
+    func loadPreviewForVideo(at url: URL, completion: @escaping @MainActor (Result<UIImage, Error>) -> Void) {
         loadPreviewAtURLCalled = true
         receivedURL = url
         completion(.success(UIImage()))
@@ -297,7 +300,7 @@ private class FullVideoPreviewLoader: VideoPreviewLoader {
 
     func loadPreviewForVideo(
         with attachment: ChatMessageVideoAttachment,
-        completion: @escaping (Result<UIImage, Error>) -> Void
+        completion: @Sendable @escaping @MainActor (Result<UIImage, Error>) -> Void
     ) {
         loadPreviewWithAttachmentCalled = true
         receivedAttachment = attachment
@@ -322,11 +325,13 @@ private class ConfigurableImageLoader: ImageLoading {
         imageCDN: ImageCDN,
         resize: Bool,
         preferredSize: CGSize?,
-        completion: @escaping ((Result<UIImage, Error>) -> Void)
+        completion: @escaping @MainActor (Result<UIImage, Error>) -> Void
     ) {
         loadImageCalled = true
         receivedURL = url
-        completion(result)
+        Task { @MainActor in
+            completion(result)
+        }
     }
 
     func loadImages(
@@ -335,8 +340,10 @@ private class ConfigurableImageLoader: ImageLoading {
         loadThumbnails: Bool,
         thumbnailSize: CGSize,
         imageCDN: ImageCDN,
-        completion: @escaping (([UIImage]) -> Void)
+        completion: @escaping @MainActor ([UIImage]) -> Void
     ) {
-        completion([])
+        Task { @MainActor in
+            completion([])
+        }
     }
 }
