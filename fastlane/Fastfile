@@ -18,6 +18,7 @@ is_localhost = !is_ci
 project_package_resolved = "#{xcode_project}/project.xcworkspace/xcshareddata/swiftpm/Package.resolved"
 mock_server_driver_port = 4568
 swift_environment_path = File.absolute_path('../Sources/StreamChatSwiftUI/Generated/SystemEnvironment+Version.swift')
+size_analysis_base_branch = 'v4'
 @force_check = false
 
 before_all do |lane|
@@ -607,7 +608,7 @@ lane :show_frameworks_sizes do |options|
   next unless is_check_required(sources: sources_matrix[:size], force_check: @force_check)
 
   sizes = options[:sizes] || frameworks_sizes
-  show_sdk_size(branch_sizes: sizes, github_repo: github_repo)
+  show_sdk_size(branch_sizes: sizes, github_repo: github_repo, base_branch: size_analysis_base_branch)
   update_img_shields_sdk_sizes(sizes: sizes, open_pr: options[:open_pr]) if options[:update_readme]
 end
 
@@ -664,5 +665,5 @@ lane :size_analyze do
     cloned_source_packages_path: source_packages_path
   )
 
-  show_detailed_sdk_size(sdk_names: sdk_names, threshold: 42)
+  show_detailed_sdk_size(sdk_names: sdk_names, threshold: 42, base_branch: size_analysis_base_branch)
 end
