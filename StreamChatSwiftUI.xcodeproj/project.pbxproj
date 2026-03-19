@@ -547,7 +547,6 @@
 			);
 			dependencies = (
 				ADCE871E2F0C295200F6A7C3 /* PBXTargetDependency */,
-				8465FCE42746954F00AF091E /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
 				82EFEF212F2BAAF000B41819 /* Sources */,
@@ -790,10 +789,6 @@
 			isa = PBXTargetDependency;
 			target = 8465FBB42746873A00AF091E /* StreamChatSwiftUI */;
 			targetProxy = 8465FBBF2746873A00AF091E /* PBXContainerItemProxy */;
-		};
-		8465FCE42746954F00AF091E /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			productRef = 8465FCE32746954F00AF091E /* StreamChat */;
 		};
 		8465FCE9274695B400AF091E /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -1537,14 +1532,6 @@
 				minimumVersion = 9.0.0;
 			};
 		};
-		8465FCB227468A8D00AF091E /* XCRemoteSwiftPackageReference "stream-chat-swift" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/GetStream/stream-chat-swift.git";
-			requirement = {
-				kind = exactVersion;
-				version = 4.10.1;
-			};
-		};
 		84E7F9E02EFAF9BF00BA56A3 /* XCRemoteSwiftPackageReference "stream-chat-swift" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/GetStream/stream-chat-swift.git";
@@ -1603,11 +1590,6 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 8400A346282C06F90067D3A0 /* XCRemoteSwiftPackageReference "OHHTTPStubs" */;
 			productName = OHHTTPStubs;
-		};
-		8465FCE32746954F00AF091E /* StreamChat */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 8465FCB227468A8D00AF091E /* XCRemoteSwiftPackageReference "stream-chat-swift" */;
-			productName = StreamChat;
 		};
 		84E7F9E12EFAF9BF00BA56A3 /* StreamChat */ = {
 			isa = XCSwiftPackageProductDependency;
