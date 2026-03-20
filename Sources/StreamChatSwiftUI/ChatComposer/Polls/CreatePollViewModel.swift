@@ -199,7 +199,7 @@ import SwiftUI
     private let maxVotesRange = 2...10
 }
 
-struct PollOptionEntry: Identifiable, Equatable {
+struct PollOptionEntry: Identifiable, Equatable, Sendable {
     let id: UUID
     var text: String
 
