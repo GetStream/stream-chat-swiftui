@@ -79,8 +79,14 @@ extension MediaAttachment {
     }
 
     convenience init(from attachment: ChatMessageVideoAttachment) {
+        let url: URL
+        if let state = attachment.uploadingState {
+            url = state.localFileURL
+        } else {
+            url = attachment.videoURL
+        }
         self.init(
-            url: attachment.videoURL,
+            url: url,
             type: .video,
             uploadingState: attachment.uploadingState,
             originalWidth: attachment.originalWidth,
