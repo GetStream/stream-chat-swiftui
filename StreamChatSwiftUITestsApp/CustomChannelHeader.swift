@@ -31,7 +31,7 @@ public struct CustomChannelHeader: ToolbarContent {
                 } else {
                     Circle()
                         .fill(Color.gray)
-                        .frame(width: 36)
+                        .frame(width: 36, height: 36)
                 }
             }
             .accessibilityAddTraits(.isButton)
