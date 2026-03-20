@@ -9,6 +9,27 @@ import SwiftUI
 import XCTest
 
 @MainActor final class PollAttachmentView_Tests: StreamChatTestCase {
+    func test_pollAttachmentView_snapshotSixOptionsShowsFiveVisibleAndSeeMore() {
+        let poll = Poll.mock(optionCount: 6, voteCountForOption: { _ in 0 })
+        let message = ChatMessage.mock(
+            id: .unique,
+            cid: .unique,
+            text: "",
+            author: .mock(id: .unique),
+            poll: poll
+        )
+
+        let view = PollAttachmentView(
+            factory: DefaultViewFactory.shared,
+            message: message,
+            poll: poll,
+            isFirst: true
+        )
+        .frame(width: defaultScreenSize.width, height: 420)
+
+        AssertSnapshot(view, variants: .onlyUserInterfaceStyles)
+    }
+
     func test_pollAttachmentView_snapshotCommentsAndSuggestions() {
         // Given
         let poll = Poll.mock()

@@ -8,7 +8,7 @@ import SwiftUI
 
 /// View model for the `PollAttachmentView`.
 @MainActor public class PollAttachmentViewModel: ObservableObject, PollControllerDelegate {
-    static let numberOfVisibleOptionsShown = 10
+    static let numberOfVisibleOptionsShown = 5
     private var isCastingVote = false
     @Published private var isClosingPoll = false
     
@@ -48,7 +48,7 @@ import SwiftUI
     
     /// If true, a sheet is shown with all the poll options.
     ///
-    /// Used for polls with more than 10 options.
+    /// Used for polls with more visible options than fit in the message bubble.
     @Published public var allOptionsShown = false {
         didSet {
             notifySheetPresentation(shown: allOptionsShown)

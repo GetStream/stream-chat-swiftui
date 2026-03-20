@@ -8,6 +8,10 @@
 import XCTest
 
 @MainActor final class PollAttachmentViewModel_Tests: StreamChatTestCase {
+    func test_pollAttachmentViewModel_numberOfVisibleOptionsShown_matchesDesign() {
+        XCTAssertEqual(PollAttachmentViewModel.numberOfVisibleOptionsShown, 5)
+    }
+
     func test_pollAttachmentViewModel_synchronizeCalled() {
         // Given
         let pollController = makePollController()
