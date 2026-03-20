@@ -67,7 +67,7 @@ struct DemoAppChatChannelListItem: View {
         }
         .foregroundColor(.black)
         .disabled(disabled)
-        .background(channel.isPinned ? Color(colors.pinnedMessageBackground) : .clear)
+        .background(channel.isPinned ? Color(colors.backgroundCoreHighlight) : .clear)
     }
 
     private var subtitleView: some View {
