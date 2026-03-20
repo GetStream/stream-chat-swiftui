@@ -207,6 +207,33 @@ import XCTest
         AssertSnapshot(view, size: size)
     }
 
+    func test_messageComposerView_recordingWhileQuoting() {
+        let size = CGSize(width: composerWidth, height: 250)
+        let factory = DefaultViewFactory.shared
+        let channelController = ChatChannelTestHelpers.makeChannelController(chatClient: chatClient)
+        let quoted = ChatMessage.mock(
+            id: .unique,
+            cid: .unique,
+            text: "Original message being replied to",
+            author: .mock(id: .unique, name: "John Smart")
+        )
+        let viewModel = MessageComposerViewModel(channelController: channelController, messageController: nil)
+        viewModel.recordingState = .recording
+
+        let view = MessageComposerView(
+            viewFactory: factory,
+            viewModel: viewModel,
+            channelController: channelController,
+            messageController: nil,
+            quotedMessage: .constant(quoted),
+            editedMessage: .constant(nil),
+            onMessageSent: {}
+        )
+        .frame(width: size.width, height: size.height)
+
+        AssertSnapshot(view, variants: [.defaultLight], size: size)
+    }
+
     func test_messageComposerView_recordingTipSnackbar() {
         // Given
         let size = CGSize(width: composerWidth, height: 200)
