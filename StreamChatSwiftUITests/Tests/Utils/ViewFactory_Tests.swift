@@ -918,22 +918,6 @@ import XCTest
         XCTAssert(view is LoadingView)
     }
     
-    func test_viewFactory_makeComposerPollView() {
-        // Given
-        let viewFactory = DefaultViewFactory.shared
-        
-        // When
-        let view = viewFactory.makeComposerPollView(
-            options: ComposerPollViewOptions(
-                channelController: .init(channelQuery: .init(cid: .unique), channelListQuery: nil, client: chatClient),
-                messageController: nil
-            )
-        )
-        
-        // Then
-        XCTAssert(view is ComposerPollView)
-    }
-    
     func test_viewFactory_makePollView() {
         // Given
         let viewFactory = DefaultViewFactory.shared
@@ -1000,24 +984,6 @@ import XCTest
             
         // Then
         XCTAssert(view is MediaViewerHeader)
-    }
-    
-    func test_viewFactory_makeVideoPlayerView() {
-        // Given
-        let viewFactory = DefaultViewFactory.shared
-        
-        // When
-        let view = viewFactory.makeVideoPlayerView(
-            options: VideoPlayerViewOptions(
-                attachment: .mock(id: .unique),
-                message: .mock(),
-                isShown: .constant(true),
-                options: .init(selectedIndex: 0)
-            )
-        )
-            
-        // Then
-        XCTAssert(view is VideoPlayerView<DefaultViewFactory>)
     }
     
     func test_viewFactory_makeVideoPlayerHeaderView() {

@@ -245,3 +245,13 @@ struct StreamVideoPlayer: View {
         }
     }
 }
+
+extension ChatUser {
+    var onlineText: String {
+        if isOnline {
+            L10n.Message.Title.online
+        } else {
+            L10n.Message.Title.offline
+        }
+    }
+}
