@@ -8,7 +8,6 @@
 import XCTest
 
 final class MediaAttachmentGalleryOrdering_Tests: XCTestCase {
-
     // MARK: - Video uploading state URL selection
 
     func test_mediaAttachment_videoWithUploadingState_usesLocalFileURL() {

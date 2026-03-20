@@ -82,6 +82,35 @@ import XCTest
         AssertSnapshot(view, variants: .onlyUserInterfaceStyles)
     }
 
+    func test_pollAttachmentView_snapshotCreatedByCurrentUser() {
+        // Given
+        let currentUser = ChatUser.mock(id: StreamChatTestCase.currentUserId, name: "Me")
+        let poll = Poll.mock(
+            allowAnswers: false,
+            allowUserSuggestedOptions: false,
+            createdBy: currentUser
+        )
+        let message = ChatMessage.mock(
+            id: .unique,
+            cid: .unique,
+            text: "",
+            author: .mock(id: .unique),
+            poll: poll
+        )
+
+        // When
+        let view = PollAttachmentView(
+            factory: DefaultViewFactory.shared,
+            message: message,
+            poll: poll,
+            isFirst: true
+        )
+        .frame(width: defaultScreenSize.width, height: 220)
+
+        // Then
+        AssertSnapshot(view, variants: .onlyUserInterfaceStyles)
+    }
+
     func test_pollAttachmentView_closedPoll() {
         // Given
         let poll = Poll.mock(
