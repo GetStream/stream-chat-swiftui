@@ -34,6 +34,23 @@ import XCTest
         }
     }
     
+    func test_messageComposerVM_recordingGestureOverlay_shownWhenQuotedOnlyAndEmpty() {
+        let quoted = ChatMessage.mock(id: .unique, cid: .unique, text: "Quoted", author: .mock(id: .unique))
+        var quotedRef: ChatMessage? = quoted
+        let binding = Binding<ChatMessage?>(
+            get: { quotedRef },
+            set: { quotedRef = $0 }
+        )
+        let viewModel = MessageComposerViewModel(
+            channelController: makeChannelController(),
+            messageController: nil,
+            quotedMessage: binding
+        )
+
+        XCTAssertFalse(viewModel.hasContent)
+        XCTAssertTrue(viewModel.shouldShowRecordingGestureOverlay)
+    }
+
     func test_messageComposerVM_sendButtonDisabled() {
         // Given
         let viewModel = makeComposerViewModel()
