@@ -304,30 +304,6 @@ public final class MediaViewerHeaderOptions: Sendable {
 
 // MARK: - Video Player Options
 
-/// Options for creating the video player view.
-public final class VideoPlayerViewOptions: Sendable {
-    /// The video attachment to play.
-    public let attachment: ChatMessageVideoAttachment
-    /// The message containing the video.
-    public let message: ChatMessage
-    /// Binding to whether the player is shown.
-    public let isShown: Binding<Bool>
-    /// Additional options for the media views.
-    public let options: MediaViewsOptions
-    
-    public init(
-        attachment: ChatMessageVideoAttachment,
-        message: ChatMessage,
-        isShown: Binding<Bool>,
-        options: MediaViewsOptions
-    ) {
-        self.attachment = attachment
-        self.message = message
-        self.isShown = isShown
-        self.options = options
-    }
-}
-
 /// Options for creating the video player header view.
 public final class VideoPlayerHeaderViewOptions: Sendable {
     /// The title to display in the header.

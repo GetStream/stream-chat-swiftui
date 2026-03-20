@@ -199,12 +199,16 @@ import SwiftUI
     private let maxVotesRange = 2...10
 }
 
-struct PollOptionEntry: Identifiable, Equatable {
+final class PollOptionEntry: Identifiable, Equatable {
     let id: UUID
     var text: String
 
     init(text: String = "") {
         self.id = UUID()
         self.text = text
+    }
+    
+    static func == (lhs: PollOptionEntry, rhs: PollOptionEntry) -> Bool {
+        lhs.id == rhs.id
     }
 }

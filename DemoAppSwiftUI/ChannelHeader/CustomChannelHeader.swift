@@ -42,12 +42,17 @@ public struct CustomChannelHeader: ToolbarContent {
             Button {
                 actionsPopupShown = true
             } label: {
-                StreamLazyImage(
-                    url: currentUserController.currentUser?.imageURL,
-                    size: CGSize(width: 36, height: 36)
-                )
-                .accessibilityLabel("Account Actions")
-                .accessibilityAddTraits(.isButton)
+                if let user = currentUserController.currentUser {
+                    UserAvatar(user: user, size: 36)
+                        .accessibilityLabel("Account Actions")
+                        .accessibilityAddTraits(.isButton)
+                } else {
+                    Circle()
+                        .fill(Color.gray)
+                        .frame(width: 36)
+                        .accessibilityLabel("Account Actions")
+                        .accessibilityAddTraits(.isButton)
+                }
             }
         }
     }

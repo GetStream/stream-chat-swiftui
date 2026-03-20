@@ -70,9 +70,11 @@ struct DemoUserView: View {
                     .background(Color(colors.background6))
                     .clipShape(Circle())
             } else {
-                StreamLazyImage(
+                UserAvatar(
                     url: user.avatarURL,
-                    size: CGSize(width: imageSize, height: imageSize)
+                    initials: "",
+                    size: imageSize,
+                    indicator: .none
                 )
             }
 

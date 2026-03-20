@@ -74,12 +74,12 @@ public struct ChatChannelNavigatableListItem<Factory: ViewFactory, ChannelDestin
 
 /// Used for representing selection of an item in the channel list.
 /// The optional message is used in case we need to scroll to a particular one in the message list.
-public struct ChannelSelectionInfo: Identifiable, Sendable {
+public final class ChannelSelectionInfo: Identifiable, @unchecked Sendable {
     public let id: String
     public let channel: ChatChannel
     public let message: ChatMessage?
     public var injectedChannelInfo: InjectedChannelInfo?
-    public var searchType: ChannelListSearchType
+    public let searchType: ChannelListSearchType
 
     public init(
         channel: ChatChannel,

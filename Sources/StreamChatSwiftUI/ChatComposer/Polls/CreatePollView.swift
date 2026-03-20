@@ -480,31 +480,3 @@ private struct CreatePollRowModifier: ViewModifier {
         }
     }
 }
-
-struct ComposerPollView: View {
-    @State private var showsOnAppear = true
-    @State private var showsCreatePoll = false
-
-    let channelController: ChatChannelController
-    let messageController: ChatMessageController?
-
-    var body: some View {
-        VStack {
-            Spacer()
-            Button {
-                showsCreatePoll = true
-            } label: {
-                Text(L10n.Composer.Polls.createPoll)
-            }
-            Spacer()
-        }
-        .sheet(isPresented: $showsCreatePoll) {
-            CreatePollView(chatController: channelController, messageController: messageController)
-        }
-        .onAppear {
-            guard showsOnAppear else { return }
-            showsOnAppear = false
-            showsCreatePoll = true
-        }
-    }
-}
