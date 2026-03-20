@@ -130,9 +130,9 @@ public struct MessageItemView<Factory: ViewFactory>: View {
         .background(
             Group {
                 if messageViewModel.isHighlighted(messageId: highlightedMessageId) {
-                    Color(colors.messageCellHighlightBackground)
+                    Color(colors.backgroundCoreHighlight)
                 } else if messageViewModel.isPinned && !shownAsPreview {
-                    Color(colors.pinnedMessageBackground)
+                    Color(colors.backgroundCoreHighlight)
                 }
             }
         )

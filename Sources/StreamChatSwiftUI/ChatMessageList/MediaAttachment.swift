@@ -77,6 +77,35 @@ extension MediaAttachment {
             originalHeight: attachment.originalHeight
         )
     }
+
+    convenience init(from attachment: ChatMessageVideoAttachment) {
+        let url: URL
+        if let state = attachment.uploadingState {
+            url = state.localFileURL
+        } else {
+            url = attachment.videoURL
+        }
+        self.init(
+            url: url,
+            type: .video,
+            uploadingState: attachment.uploadingState,
+            originalWidth: attachment.originalWidth,
+            originalHeight: attachment.originalHeight
+        )
+    }
+
+    /// Image and video attachments in the same order as ``ChatMessage/allAttachments``.
+    static func galleryOrdered(from message: ChatMessage) -> [MediaAttachment] {
+        message.allAttachments.compactMap { attachment -> MediaAttachment? in
+            if let image = attachment.attachment(payloadType: ImageAttachmentPayload.self) {
+                return MediaAttachment(from: image)
+            }
+            if let video = attachment.attachment(payloadType: VideoAttachmentPayload.self) {
+                return MediaAttachment(from: video)
+            }
+            return nil
+        }
+    }
 }
 
 public final class MediaAttachmentType: RawRepresentable, Sendable {

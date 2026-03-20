@@ -8,6 +8,10 @@
 import XCTest
 
 @MainActor final class PollAttachmentViewModel_Tests: StreamChatTestCase {
+    func test_pollAttachmentViewModel_numberOfVisibleOptionsShown_matchesDesign() {
+        XCTAssertEqual(PollAttachmentViewModel.numberOfVisibleOptionsShown, 5)
+    }
+
     func test_pollAttachmentViewModel_synchronizeCalled() {
         // Given
         let pollController = makePollController()
@@ -230,6 +234,71 @@ import XCTest
         
         // Then
         XCTAssertEqual(3, viewModel.poll.options.count)
+    }
+
+    func test_pollAttachmentViewModel_showEndVoteButton_trueWhenCreatedByCurrentUser() {
+        // Given
+        let currentUser = ChatUser.mock(id: StreamChatTestCase.currentUserId)
+        let poll = Poll.mock(createdBy: currentUser)
+
+        // When
+        let viewModel = PollAttachmentViewModel(
+            message: .mock(),
+            poll: poll,
+            pollController: makePollController()
+        )
+
+        // Then
+        XCTAssertTrue(viewModel.showEndVoteButton)
+    }
+
+    func test_pollAttachmentViewModel_showEndVoteButton_falseWhenNotCreatedByCurrentUser() {
+        // Given
+        let otherUser = ChatUser.mock(id: "other-user")
+        let poll = Poll.mock(createdBy: otherUser)
+
+        // When
+        let viewModel = PollAttachmentViewModel(
+            message: .mock(),
+            poll: poll,
+            pollController: makePollController()
+        )
+
+        // Then
+        XCTAssertFalse(viewModel.showEndVoteButton)
+    }
+
+    func test_pollAttachmentViewModel_showEndVoteButton_falseWhenPollIsClosed() {
+        // Given
+        let currentUser = ChatUser.mock(id: StreamChatTestCase.currentUserId)
+        let poll = Poll.mock(isClosed: true, createdBy: currentUser)
+
+        // When
+        let viewModel = PollAttachmentViewModel(
+            message: .mock(),
+            poll: poll,
+            pollController: makePollController()
+        )
+
+        // Then
+        XCTAssertFalse(viewModel.showEndVoteButton)
+    }
+
+    func test_pollAttachmentViewModel_canInteract_falseWhenEndVoteConfirmationShown() {
+        // Given
+        let currentUser = ChatUser.mock(id: StreamChatTestCase.currentUserId)
+        let poll = Poll.mock(createdBy: currentUser)
+        let viewModel = PollAttachmentViewModel(
+            message: .mock(),
+            poll: poll,
+            pollController: makePollController()
+        )
+
+        // When
+        viewModel.endVoteConfirmationShown = true
+
+        // Then
+        XCTAssertFalse(viewModel.canInteract)
     }
 
     // MARK: - private

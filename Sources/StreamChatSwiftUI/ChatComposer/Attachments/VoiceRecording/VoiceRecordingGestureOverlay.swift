@@ -24,7 +24,7 @@ struct VoiceRecordingGestureOverlay: View {
                 width: recordingState.isRecording ? nil : 48,
                 height: 48
             )
-            .frame(maxWidth: .infinity, alignment: .trailing)
+            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottomTrailing)
             .gesture(
                 DragGesture(minimumDistance: 0)
                     .onChanged { value in

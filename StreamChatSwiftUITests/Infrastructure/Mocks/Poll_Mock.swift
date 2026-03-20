@@ -11,7 +11,8 @@ extension Poll {
         allowUserSuggestedOptions: Bool = true,
         enforceUniqueVote: Bool = false,
         isClosed: Bool = false,
-        name: String = "Test poll"
+        name: String = "Test poll",
+        createdBy: ChatUser = .mock(id: "test", name: "test")
     ) -> Poll {
         let pollId = "123"
         let voteId = "456"
@@ -48,7 +49,7 @@ extension Poll {
             isClosed: isClosed,
             maxVotesAllowed: nil,
             votingVisibility: .public,
-            createdBy: .mock(id: "test", name: "test"),
+            createdBy: createdBy,
             latestAnswers: [],
             options: [option],
             latestVotesByOption: [option],
@@ -64,7 +65,8 @@ extension Poll {
         allowUserSuggestedOptions: Bool = true,
         enforceUniqueVote: Bool = false,
         isClosed: Bool = false,
-        options: [PollOption] = []
+        options: [PollOption] = [],
+        createdBy: ChatUser = .mock(id: "test", name: "test")
     ) -> Poll {
         let voteCountsByOption = Dictionary(grouping: options, by: { $0.id })
             .mapValues { options in
@@ -88,7 +90,7 @@ extension Poll {
             isClosed: isClosed,
             maxVotesAllowed: nil,
             votingVisibility: .public,
-            createdBy: .mock(id: "test", name: "test"),
+            createdBy: createdBy,
             latestAnswers: [],
             options: options,
             latestVotesByOption: options,

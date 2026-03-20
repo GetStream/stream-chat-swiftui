@@ -135,7 +135,8 @@
 "alert.actions.block-user" = "Block User";
 "alert.actions.unblock-user" = "Unblock User";
 "alert.text-field.polls-new-option" = "Enter a new option";
-"alert.title.add-comment" = "Add a comment";
+"alert.text-field.poll-add-comment" = "Your comment";
+"alert.title.add-comment" = "Add a Comment";
 "alert.title.end-poll" = "End this poll?";
 "alert.message.end-poll" = "Do you want to end this poll now? Nobody will be able to vote in this poll anymore.";
 "alert.title.suggest-an-option" = "Suggest an option";

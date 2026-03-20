@@ -79,11 +79,13 @@ internal enum L10n {
       internal static var endPoll: String { L10n.tr("Localizable", "alert.message.end-poll") }
     }
     internal enum TextField {
+      /// Your comment
+      internal static var pollAddComment: String { L10n.tr("Localizable", "alert.text-field.poll-add-comment") }
       /// Enter a new option
       internal static var pollsNewOption: String { L10n.tr("Localizable", "alert.text-field.polls-new-option") }
     }
     internal enum Title {
-      /// Add a comment
+      /// Add a Comment
       internal static var addComment: String { L10n.tr("Localizable", "alert.title.add-comment") }
       /// End this poll?
       internal static var endPoll: String { L10n.tr("Localizable", "alert.title.end-poll") }

@@ -530,12 +530,12 @@ public struct ComposerInputView<Factory: ViewFactory>: View, KeyboardReadable {
 
     public var body: some View {
         ZStack(alignment: .bottomLeading) {
-            regularInputContent
-                .opacity(recordingState.showsComposer ? 1 : 0)
-                .allowsHitTesting(recordingState.showsComposer)
-
-            if !recordingState.showsComposer {
+            if recordingState.showsComposer {
+                regularInputContent
+                    .transition(.opacity)
+            } else {
                 voiceRecordingContent
+                    .transition(.opacity)
             }
         }
         .animation(.composerVoiceRecordingSpring, value: recordingState.showsComposer)
