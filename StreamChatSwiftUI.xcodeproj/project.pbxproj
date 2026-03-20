@@ -187,6 +187,7 @@
 				Tests/ChatChannel/ChatMessageIDs_Tests.swift,
 				Tests/ChatChannel/ChatQuotedMessageView_Tests.swift,
 				Tests/ChatChannel/ComposerQuotedMessageView_Tests.swift,
+				Tests/ChatChannel/ComposerVideoAttachmentView_Tests.swift,
 				Tests/ChatChannel/CreatePollView_Tests.swift,
 				Tests/ChatChannel/CreatePollViewModel_Tests.swift,
 				Tests/ChatChannel/EditedMessageView_Tests.swift,
