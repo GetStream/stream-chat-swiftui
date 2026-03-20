@@ -372,17 +372,6 @@ extension ViewFactory {
         MediaViewerHeader(title: options.title, subtitle: options.subtitle, isShown: options.shown)
     }
     
-    public func makeVideoPlayerView(
-        options: VideoPlayerViewOptions
-    ) -> some View {
-        VideoPlayerView(
-            viewFactory: self,
-            attachment: options.attachment,
-            author: options.message.author,
-            isShown: options.isShown
-        )
-    }
-    
     public func makeVideoPlayerHeaderView(
         options: VideoPlayerHeaderViewOptions
     ) -> some View {
@@ -790,14 +779,6 @@ extension ViewFactory {
         )
     }
     
-    public func makeReactionsBackgroundView(
-        options: ReactionsBackgroundOptions
-    ) -> some View {
-        Image(uiImage: options.currentSnapshot)
-            .overlay(Color.black.opacity(options.popInAnimationInProgress ? 0 : 0.1))
-            .blur(radius: options.popInAnimationInProgress ? 0 : 4)
-    }
-    
     public func makeMoreReactionsView(options: MoreReactionsViewOptions) -> some View {
         MoreReactionsView(onEmojiTap: options.onEmojiTap)
     }
@@ -914,12 +895,6 @@ extension ViewFactory {
 
             Spacer()
         }
-    }
-    
-    public func makeComposerPollView(
-        options: ComposerPollViewOptions
-    ) -> some View {
-        ComposerPollView(channelController: options.channelController, messageController: options.messageController)
     }
     
     public func makePollView(options: PollViewOptions) -> some View {

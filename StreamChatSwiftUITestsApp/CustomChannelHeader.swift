@@ -26,7 +26,13 @@ public struct CustomChannelHeader: ToolbarContent {
             Button {
                 logoutAlertShown = true
             } label: {
-                StreamLazyImage(url: currentUserController.currentUser?.imageURL)
+                if let user = currentUserController.currentUser {
+                    UserAvatar(user: user, size: 36)
+                } else {
+                    Circle()
+                        .fill(Color.gray)
+                        .frame(width: 36, height: 36)
+                }
             }
             .accessibilityAddTraits(.isButton)
             .accessibilityIdentifier("LogoutButton")

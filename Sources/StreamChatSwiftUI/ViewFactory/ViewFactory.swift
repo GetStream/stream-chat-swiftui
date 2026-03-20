@@ -233,12 +233,6 @@ import SwiftUI
     /// - Returns: View displayed in the gallery header slot.
     func makeMediaViewerHeader(options: MediaViewerHeaderOptions) -> MediaViewerHeaderType
     
-    associatedtype VideoPlayerViewType: View
-    /// Creates the video player view.
-    /// - Parameter options: the options for creating the video player view.
-    ///  - Returns: view displayed in the video player slot.
-    func makeVideoPlayerView(options: VideoPlayerViewOptions) -> VideoPlayerViewType
-    
     associatedtype VideoPlayerHeaderViewType: View
     /// Creates the video player header view presented with a sheet.
     /// - Parameter options: the options for creating the video player header view.
@@ -463,11 +457,6 @@ import SwiftUI
     /// - Returns: view displayed in the reactions overlay slot.
     func makeReactionsOverlayView(options: ReactionsOverlayViewOptions) -> ReactionsOverlayViewType
 
-    associatedtype ReactionsBackground: View
-    /// Creates the reactions background view.
-    /// - Parameter options: the options for creating the reactions background view.
-    func makeReactionsBackgroundView(options: ReactionsBackgroundOptions) -> ReactionsBackground
-
     associatedtype ReactionsContentView: View
     func makeReactionsContentView(options: ReactionsContentViewOptions) -> ReactionsContentView
     
@@ -541,12 +530,6 @@ import SwiftUI
     /// - Parameter options: the options for creating the jump to unread button.
     /// - Returns: view shown in the jump to unread slot.
     func makeJumpToUnreadButton(options: JumpToUnreadButtonOptions) -> JumpToUnreadButtonType
-
-    associatedtype ComposerPollViewType: View
-    /// Creates a composer poll view.
-    /// - Parameter options: the options for creating the composer poll view.
-    /// - Returns: view shown in the composer poll slot.
-    func makeComposerPollView(options: ComposerPollViewOptions) -> ComposerPollViewType
 
     associatedtype PollViewType: View
     /// Creates a poll view.

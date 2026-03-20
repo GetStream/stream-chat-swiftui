@@ -248,12 +248,12 @@ public struct ChatChannelListItem<Factory: ViewFactory>: View {
     }
 }
 
-public struct InjectedChannelInfo: Sendable {
-    public var subtitle: String?
-    public var unreadCount: Int
-    public var timestamp: String?
-    public var lastMessageAt: Date?
-    public var latestMessages: [ChatMessage]?
+public final class InjectedChannelInfo: Sendable {
+    public let subtitle: String?
+    public let unreadCount: Int
+    public let timestamp: String?
+    public let lastMessageAt: Date?
+    public let latestMessages: [ChatMessage]?
     
     public init(
         subtitle: String? = nil,
