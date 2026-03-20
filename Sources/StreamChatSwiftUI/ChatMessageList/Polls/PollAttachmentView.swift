@@ -83,54 +83,6 @@ public struct PollAttachmentView<Factory: ViewFactory>: View {
                     }
                 }
 
-                if viewModel.showSuggestOptionButton {
-                    StreamTextButton(role: .secondary, style: .ghost, size: .small) {
-                        viewModel.suggestOptionShown = true
-                    } text: {
-                        Text(L10n.Message.Polls.Button.suggestAnOption)
-                            .frame(maxWidth: .infinity)
-                    }
-                    .frame(maxWidth: .infinity)
-                    .uiAlert(
-                        title: L10n.Alert.Title.suggestAnOption,
-                        isPresented: $viewModel.suggestOptionShown,
-                        text: $viewModel.suggestOptionText,
-                        placeholder: L10n.Alert.TextField.pollsNewOption,
-                        accept: L10n.Alert.Actions.send,
-                        action: { viewModel.suggest(option: viewModel.suggestOptionText) }
-                    )
-                }
-
-                if viewModel.showAddCommentButton {
-                    StreamTextButton(role: .secondary, style: .ghost, size: .small) {
-                        viewModel.addCommentShown = true
-                    } text: {
-                        Text(L10n.Message.Polls.Button.addComment)
-                            .frame(maxWidth: .infinity)
-                    }
-                    .frame(maxWidth: .infinity)
-                    .uiAlert(
-                        title: L10n.Alert.Title.addComment,
-                        isPresented: $viewModel.addCommentShown,
-                        text: $viewModel.commentText,
-                        accept: L10n.Alert.Actions.send,
-                        action: { viewModel.add(comment: viewModel.commentText) }
-                    )
-                }
-
-                if viewModel.poll.answersCount > 0 {
-                    StreamTextButton(role: .secondary, style: .ghost, size: .small) {
-                        viewModel.allCommentsShown = true
-                    } text: {
-                        Text(L10n.Message.Polls.Button.viewNumberOfComments(viewModel.poll.answersCount))
-                            .frame(maxWidth: .infinity)
-                    }
-                    .frame(maxWidth: .infinity)
-                    .fullScreenCover(isPresented: $viewModel.allCommentsShown) {
-                        PollCommentsView(factory: factory, poll: viewModel.poll, pollController: viewModel.pollController)
-                    }
-                }
-
                 StreamTextButton(role: outlineButtonRole, style: .outline, size: .small) {
                     viewModel.pollResultsShown = true
                 } text: {
@@ -161,6 +113,55 @@ public struct PollAttachmentView<Factory: ViewFactory>: View {
                             },
                             secondaryButton: .cancel(Text(L10n.Alert.Actions.cancel))
                         )
+                    }
+                }
+
+                if viewModel.showSuggestOptionButton {
+                    StreamTextButton(role: .secondary, style: .ghost, size: .small) {
+                        viewModel.suggestOptionShown = true
+                    } text: {
+                        Text(L10n.Message.Polls.Button.suggestAnOption)
+                            .frame(maxWidth: .infinity)
+                    }
+                    .frame(maxWidth: .infinity)
+                    .uiAlert(
+                        title: L10n.Alert.Title.suggestAnOption,
+                        isPresented: $viewModel.suggestOptionShown,
+                        text: $viewModel.suggestOptionText,
+                        placeholder: L10n.Alert.TextField.pollsNewOption,
+                        accept: L10n.Alert.Actions.send,
+                        action: { viewModel.suggest(option: viewModel.suggestOptionText) }
+                    )
+                }
+
+                if viewModel.showAddCommentButton {
+                    StreamTextButton(role: .secondary, style: .ghost, size: .small) {
+                        viewModel.addCommentShown = true
+                    } text: {
+                        Text(L10n.Message.Polls.Button.addComment)
+                            .frame(maxWidth: .infinity)
+                    }
+                    .frame(maxWidth: .infinity)
+                    .uiAlert(
+                        title: L10n.Alert.Title.addComment,
+                        isPresented: $viewModel.addCommentShown,
+                        text: $viewModel.commentText,
+                        placeholder: L10n.Alert.TextField.pollAddComment,
+                        accept: L10n.Alert.Actions.send,
+                        action: { viewModel.add(comment: viewModel.commentText) }
+                    )
+                }
+
+                if viewModel.poll.answersCount > 0 {
+                    StreamTextButton(role: .secondary, style: .ghost, size: .small) {
+                        viewModel.allCommentsShown = true
+                    } text: {
+                        Text(L10n.Message.Polls.Button.viewNumberOfComments(viewModel.poll.answersCount))
+                            .frame(maxWidth: .infinity)
+                    }
+                    .frame(maxWidth: .infinity)
+                    .fullScreenCover(isPresented: $viewModel.allCommentsShown) {
+                        PollCommentsView(factory: factory, poll: viewModel.poll, pollController: viewModel.pollController)
                     }
                 }
             }
