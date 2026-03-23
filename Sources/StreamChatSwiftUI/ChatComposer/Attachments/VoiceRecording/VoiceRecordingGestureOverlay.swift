@@ -11,6 +11,8 @@ struct VoiceRecordingGestureOverlay: View {
     @Binding var gestureLocation: CGPoint
     var startRecording: () -> Void
     var stopRecording: () -> Void
+    /// Stops an in-progress hold-to-record when the finger lifts without locking (send flow).
+    var releaseRecording: () -> Void
     var discardRecording: () -> Void
     var showRecordingTip: () -> Void
 
@@ -55,9 +57,7 @@ struct VoiceRecordingGestureOverlay: View {
                             if gestureLocation.x < VoiceRecordingConstants.cancelMinDistance {
                                 discardRecording()
                             } else {
-                                withAnimation(.composerVoiceRecordingSpring) {
-                                    recordingState = .locked
-                                }
+                                releaseRecording()
                             }
                             gestureLocation = .zero
                         } else if recordingState != .locked {

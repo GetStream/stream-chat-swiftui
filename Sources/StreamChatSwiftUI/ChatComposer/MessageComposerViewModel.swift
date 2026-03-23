@@ -165,6 +165,11 @@ import SwiftUI
     public let eventsController: EventsController
     public var quotedMessage: Binding<ChatMessage?>?
 
+    /// Invoked after a hold-to-record gesture ends (finger up, not locked) once the recording is processed.
+    /// The composer view wires this to send the message (including `onMessageSent`).
+    public var onVoiceRecordingGestureReleaseSend: (@MainActor () -> Void)?
+
+    var shouldAutoSendVoiceWhenRecordingFinishes = false
     public var waveformTargetSamples: Int = 100
     public internal(set) var pendingAudioRecording: AddedVoiceRecording?
 

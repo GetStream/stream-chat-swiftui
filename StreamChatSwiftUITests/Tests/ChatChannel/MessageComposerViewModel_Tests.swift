@@ -1665,6 +1665,25 @@ import XCTest
         XCTAssertEqual(channelController.deleteDraftMessage_callCount, 0)
     }
 
+    func test_releaseRecording_whenRecording_setsAutoSendFlag() {
+        let viewModel = makeComposerViewModel()
+        viewModel.recordingState = .recording
+        viewModel.shouldAutoSendVoiceWhenRecordingFinishes = false
+
+        viewModel.releaseRecording()
+
+        XCTAssertTrue(viewModel.shouldAutoSendVoiceWhenRecordingFinishes)
+    }
+
+    func test_releaseRecording_whenNotRecording_doesNotSetAutoSendFlag() {
+        let viewModel = makeComposerViewModel()
+        viewModel.recordingState = .initial
+
+        viewModel.releaseRecording()
+
+        XCTAssertFalse(viewModel.shouldAutoSendVoiceWhenRecordingFinishes)
+    }
+
     // MARK: - private
 
     private func makeComposerDraftsViewModel(

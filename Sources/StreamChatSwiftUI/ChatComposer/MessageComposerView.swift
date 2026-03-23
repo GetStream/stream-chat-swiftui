@@ -170,6 +170,7 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
                             gestureLocation: $viewModel.recordingGestureLocation,
                             startRecording: viewModel.startRecording,
                             stopRecording: viewModel.stopRecording,
+                            releaseRecording: viewModel.releaseRecording,
                             discardRecording: viewModel.discardRecording,
                             showRecordingTip: viewModel.showRecordingTip
                         )
@@ -307,8 +308,19 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
         }
         .onAppear(perform: {
             viewModel.fillDraftMessage()
+            viewModel.onVoiceRecordingGestureReleaseSend = {
+                onMessageSent()
+                viewModel.sendMessage(
+                    quotedMessage: quotedMessage,
+                    editedMessage: editedMessage
+                ) {
+                    quotedMessage = nil
+                    editedMessage = nil
+                }
+            }
         })
         .onDisappear(perform: {
+            viewModel.onVoiceRecordingGestureReleaseSend = nil
             if editedMessage == nil {
                 viewModel.updateDraftMessage(quotedMessage: quotedMessage)
             }

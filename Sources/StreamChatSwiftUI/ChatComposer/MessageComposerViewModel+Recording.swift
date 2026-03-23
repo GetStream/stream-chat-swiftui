@@ -36,7 +36,10 @@ extension MessageComposerViewModel: AudioRecordingDelegate {
         _ audioRecorder: AudioRecording,
         didFinishRecordingAtURL location: URL
     ) {
-        if audioRecordingInfo == .initial { return }
+        if audioRecordingInfo == .initial {
+            shouldAutoSendVoiceWhenRecordingFinishes = false
+            return
+        }
         audioAnalysisFactory?.waveformVisualisation(
             fromAudioURL: location,
             for: waveformTargetSamples,
@@ -58,9 +61,14 @@ extension MessageComposerViewModel: AudioRecordingDelegate {
                             self.addedVoiceRecordings.append(recording)
                             self.recordingState = .initial
                             self.audioRecordingInfo = .initial
+                            if self.shouldAutoSendVoiceWhenRecordingFinishes {
+                                self.shouldAutoSendVoiceWhenRecordingFinishes = false
+                                self.onVoiceRecordingGestureReleaseSend?()
+                            }
                         }
                     case let .failure(error):
                         log.error(error)
+                        self.shouldAutoSendVoiceWhenRecordingFinishes = false
                         self.recordingState = .initial
                     }
                 }
@@ -98,6 +106,13 @@ extension MessageComposerViewModel {
         utils.audioSessionFeedbackGenerator.feedbackForStopRecording()
         audioRecorder.stopRecording()
     }
+
+    /// Ends recording after the user lifts their finger without sliding up to lock (send immediately).
+    public func releaseRecording() {
+        guard recordingState == .recording else { return }
+        shouldAutoSendVoiceWhenRecordingFinishes = true
+        stopRecording()
+    }
     
     public func resumeRecording() {
         utils.audioSessionFeedbackGenerator.feedbackForBeginRecording()
@@ -112,6 +127,7 @@ extension MessageComposerViewModel {
 
 extension MessageComposerViewModel {
     public func discardRecording() {
+        shouldAutoSendVoiceWhenRecordingFinishes = false
         stopRecording()
         recordingState = .initial
         audioRecordingInfo = .initial
