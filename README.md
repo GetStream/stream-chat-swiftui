@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="ReadmeAssets/iOS_Chat_Messaging.png"/>
+  <img src="ReadmeAssets/iOS_Chat_Cover.png"/>
 </p>
 
 <p align="center">
