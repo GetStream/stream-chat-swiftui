@@ -280,11 +280,13 @@ struct WaveformViewSwiftUI: UIViewRepresentable {
     
     private func updateContent(for view: WaveformView) {
         if let audioContext, addedVoiceRecording.url == audioContext.assetLocation {
+            let duration = max(audioContext.duration, addedVoiceRecording.duration, 0.001)
+            let currentTime = min(max(audioContext.currentTime, 0), duration)
             view.content = .init(
                 isRecording: false,
                 isPlaying: isPlaying,
-                duration: audioContext.duration,
-                currentTime: audioContext.currentTime,
+                duration: duration,
+                currentTime: currentTime,
                 waveform: addedVoiceRecording.waveform
             )
         } else {

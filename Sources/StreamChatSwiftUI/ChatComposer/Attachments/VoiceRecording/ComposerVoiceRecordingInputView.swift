@@ -149,10 +149,8 @@ struct ComposerVoiceRecordingInputView<Factory: ViewFactory>: View {
         RecordingWaveform(
             isRecording: !isStopped,
             isPlaying: handler.isPlaying,
-            duration: audioRecordingInfo.duration,
-            currentTime: isStopped
-                ? handler.context.currentTime
-                : audioRecordingInfo.duration,
+            duration: lockedPreviewWaveformDuration,
+            currentTime: lockedPreviewWaveformCurrentTime,
             waveform: audioRecordingInfo.waveform,
             onSliderChanged: { timeInterval in
                 guard let url = pendingAudioRecordingURL else { return }
@@ -161,6 +159,26 @@ struct ComposerVoiceRecordingInputView<Factory: ViewFactory>: View {
         )
         .frame(height: 20)
         .padding(.horizontal, tokens.spacingMd)
+    }
+
+    /// Keeps slider thumb and waveform fill aligned when preview duration from the player differs slightly from metering.
+    private var lockedPreviewWaveformDuration: TimeInterval {
+        let fromMetering = max(audioRecordingInfo.duration, 0.001)
+        guard isStopped, let url = pendingAudioRecordingURL, handler.isActive(for: url) else {
+            return fromMetering
+        }
+        let fromPlayer = handler.context.duration
+        return max(fromMetering, fromPlayer, 0.001)
+    }
+
+    private var lockedPreviewWaveformCurrentTime: TimeInterval {
+        if !isStopped {
+            return audioRecordingInfo.duration
+        }
+        guard let url = pendingAudioRecordingURL, handler.isActive(for: url) else {
+            return 0
+        }
+        return min(max(handler.context.currentTime, 0), lockedPreviewWaveformDuration)
     }
 
     // MARK: - Recording Controls
