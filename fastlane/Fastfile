@@ -126,8 +126,10 @@ lane :update_stream_chat do |options|
 
   Dir.chdir('..') do
     file = 'Package.swift'
-    current_stream_chat_version = File.read(file)[/stream-chat-swift\.git", from: "([\d.]+)"\)/, 1]
-    File.write(file, File.read(file).gsub(/(stream-chat-swift\.git", from: ")[\d.]+"/, "\\1#{options[:version]}\""))
+    current_stream_chat_version = File.read(file)[/stream-chat-swift\.git", from: "([^"]+)"\)/, 1]
+    UI.user_error!("Could not find current StreamChat version in #{file}") unless current_stream_chat_version
+
+    File.write(file, File.read(file).gsub(/(stream-chat-swift\.git", from: ")[^"]+"/, "\\1#{options[:version]}\""))
 
     file = 'StreamChatSwiftUI.xcodeproj/project.pbxproj'
     content = File.read(file)
