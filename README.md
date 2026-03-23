@@ -10,6 +10,10 @@
 
 ## SwiftUI StreamChat SDK
 
+We have redesigned the SwiftUI SDK with a new modern look, a unified design system, cleaner API and many other improvements. The new major v5 version will be in beta until beginning of April, 2026. To learn more, check our [v5 docs](https://getstream.io/chat/docs/sdk/ios/v5/).
+
+If you want to use a stable version, please check our [v4 releases](https://github.com/GetStream/stream-chat-swiftui/releases).
+
 The SwiftUI SDK is built on top of the [StreamChat](https://getstream.io/chat/docs/ios-swift/?language=swift) framework and it's a SwiftUI alternative to the [StreamChatUI](https://getstream.io/chat/docs/sdk/ios/) SDK. It's built completely in SwiftUI, using declarative patterns, that will be familiar to developers working with SwiftUI. The SDK includes an extensive set of performant and customizable UI components which allow you to get started quickly with little to no plumbing required.
 
 The complete documentation and capabilities of the SwiftUI SDK can be found [here](https://getstream.io/chat/docs/sdk/ios/swiftui/) and you may find our [SwiftUI Chat App tutorial](https://getstream.io/tutorials/swiftui-chat/) helpful as well.
@@ -71,7 +75,7 @@ Check out our current openings and apply via [Stream's website](https://getstrea
   </tr>
   <tr>
     <td> A list of channels matching provided query </td>
-    <th rowspan="9"><img src="ReadmeAssets/ChannelListPreview.gif?raw=true" width="80%" /></th>
+    <th rowspan="9"><img src="ReadmeAssets/Channel_List_Bezel.png" width="80%" /></th>
   </tr>
    <tr> <td> Channel name and image based on the channel members or custom data</td> </tr>
   <tr> <td> Unread messages indicator </td> </tr>
@@ -93,7 +97,7 @@ Check out our current openings and apply via [Stream's website](https://getstrea
   </tr>
   <tr>
     <td> A list of messages in a channel </td>
-    <th rowspan="14"><img src="ReadmeAssets/MessageListPreview.gif?raw=true" width="80%" /></th>
+    <th rowspan="14"><img src="ReadmeAssets/Message_List_Bezel.png" width="80%" /></th>
   </tr>
   <tr> <td> Photo attachments </td> </tr>
   <tr> <td> Giphy attachments </td> </tr>
@@ -122,7 +126,7 @@ Check out our current openings and apply via [Stream's website](https://getstrea
   </tr>
   <tr>
     <td> Support for multiline text, expands and shrinks as needed </td>
-    <th rowspan="10"><img src="ReadmeAssets/Message_Composer_Bezels.png?raw=true" width="80%" /></th>
+    <th rowspan="10"><img src="ReadmeAssets/Message_Composer_Bezel.png" width="80%" /></th>
   </tr>
   <tr> <td> Image, video and file attachments </td> </tr>
   <tr> <td> Camera integration </td> </tr>
