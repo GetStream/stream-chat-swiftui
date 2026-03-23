@@ -3,7 +3,28 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 # Upcoming
 
+This is our first beta V5 release. For more detailed overview of the changes, please check our [migration guide](https://getstream.io/chat/docs/sdk/ios/v5/guides/migrating-from-4-to-5/).
+
+### ✅ Added
+- Added a new v5 design system with tokens, colors, fonts and images exposed through `InjectedValues` and `Appearance`.
+- Added a redesigned `ChatComposer` experience with a new layout and 2 different modes (docked and floating).
+- Added a redesigned reactions experience with refreshed overlays, more reactions UI and a new reactions detail view.
+- Added a new avatar system with `ChannelAvatar`, `UserAvatar`, `AvatarStack`, avatar badges and stacked placeholders.
+- Added a dedicated voice recording composer flow with lock/gesture handling and redesigned voice recording attachments.
+- Introduced a `Styles` protocol for easier customization of the UI components.
+- Redesigned all the UI components with the new design system.
+
 ### 🔄 Changed
+- All the `ViewFactory` methods now take a single options object instead of many individual parameters
+- Changed the package to Swift 6 / `swift-tools-version: 6.0` and enabled the v5 codebase to work with complete concurrency checking.
+- Changed the package dependencies to pull in `StreamChatCommonUI`, which now backs shared appearance and UI infrastructure between our SwiftUI and UIKit SDKs.
+- `supportedMoreChannelActions`, `supportedMessageActions`, and `navigationBarDisplayMode` moved to config objects
+
+### ❌ Removed
+- Removed legacy screen wrappers such as `ChatChannelScreen` and `ChatChannelListScreen` as part of the v5 API cleanup.
+- Removed older composer, message list, reactions and poll view implementations that were replaced by the new v5 component structure.
+- Removed duplicated SwiftUI assets and old avatar/image merger utilities that are no longer needed in the redesigned SDK.
+- Removed CocoaPods support in favor of the current Swift Package Manager based distribution.
 
 # [4.99.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/4.99.0)
 _March 16, 2026_
