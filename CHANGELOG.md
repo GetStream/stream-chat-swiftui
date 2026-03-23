@@ -3,6 +3,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 # Upcoming
 
+### 🔄 Changed
+
+# [5.0.0-beta](https://github.com/GetStream/stream-chat-swiftui/releases/tag/5.0.0-beta)
+_March 23, 2026_
+
 This is our first beta V5 release. For more detailed overview of the changes, please check our [migration guide](https://getstream.io/chat/docs/sdk/ios/v5/guides/migrating-from-4-to-5/).
 
 ### ✅ Added
