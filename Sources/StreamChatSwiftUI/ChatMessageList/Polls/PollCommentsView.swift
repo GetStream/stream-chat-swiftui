@@ -55,6 +55,7 @@ struct PollCommentsView<Factory: ViewFactory>: View {
             title: commentAlertTitle,
             isPresented: $viewModel.addCommentShown,
             text: $viewModel.newCommentText,
+            placeholder: L10n.Alert.TextField.pollAddComment,
             accept: commentAlertAcceptAction,
             action: { viewModel.add(comment: viewModel.newCommentText) }
         )

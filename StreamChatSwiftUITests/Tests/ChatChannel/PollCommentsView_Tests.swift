@@ -10,6 +10,11 @@ import SwiftUI
 import XCTest
 
 @MainActor final class PollCommentsView_Tests: StreamChatTestCase {
+    func test_pollAddCommentAlertLocalization() {
+        XCTAssertEqual(L10n.Alert.TextField.pollAddComment, "Your comment")
+        XCTAssertEqual(L10n.Alert.Title.addComment, "Add a Comment")
+    }
+
     // MARK: - PollCommentsView
 
     func test_pollCommentsView_multipleComments() {

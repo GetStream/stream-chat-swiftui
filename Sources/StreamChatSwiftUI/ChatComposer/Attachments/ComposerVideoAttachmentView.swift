@@ -24,9 +24,8 @@ struct ComposerVideoAttachmentView: View {
     }
 
     private var videoDurationText: String {
-        guard let duration = attachment.extraData["duration"]?.numberValue else {
-            return "0s"
-        }
+        let duration = attachment.duration ?? attachment.extraData["duration"]?.numberValue
+        guard let duration else { return "0s" }
         return utils.mediaBadgeDurationFormatter.shortFormat(duration)
     }
 }

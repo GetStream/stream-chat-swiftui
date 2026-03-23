@@ -270,29 +270,7 @@ public struct MessageMediaAttachmentsContainerView<Factory: ViewFactory>: View {
     }
 
     private var sources: [MediaAttachment] {
-        let videoSources = message.videoAttachments.map { attachment in
-            MediaAttachment(
-                url: attachment.videoURL,
-                type: .video,
-                uploadingState: attachment.uploadingState
-            )
-        }
-        let imageSources = message.imageAttachments.map { attachment in
-            let url: URL
-            if let state = attachment.uploadingState {
-                url = state.localFileURL
-            } else {
-                url = attachment.imageURL
-            }
-            return MediaAttachment(
-                url: url,
-                type: .image,
-                uploadingState: attachment.uploadingState,
-                originalWidth: attachment.originalWidth,
-                originalHeight: attachment.originalHeight
-            )
-        }
-        return videoSources + imageSources
+        MediaAttachment.galleryOrdered(from: message)
     }
 
     private func containerSize(for itemCount: Int) -> CGSize {
