@@ -164,6 +164,7 @@ import SwiftUI
     public var messageController: ChatMessageController?
     public let eventsController: EventsController
     public var quotedMessage: Binding<ChatMessage?>?
+
     public var waveformTargetSamples: Int = 100
     public internal(set) var pendingAudioRecording: AddedVoiceRecording?
 
@@ -1065,8 +1066,9 @@ final class FileAddedAsset {
                 addedAssets.fileAssets.append(fileAsset)
                 group?.leave()
             case .voiceRecording:
-                guard let addedVoiceRecording = attachment.toAddedVoiceRecording() else { break }
-                addedAssets.voiceAssets.append(addedVoiceRecording)
+                if let addedVoiceRecording = attachment.toAddedVoiceRecording() {
+                    addedAssets.voiceAssets.append(addedVoiceRecording)
+                }
                 group?.leave()
             case .linkPreview, .audio, .giphy, .unknown:
                 break
