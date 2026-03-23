@@ -131,6 +131,7 @@ public struct ChatChannelListView<Factory: ViewFactory>: View {
                 ChatChannelListContentView(
                     viewFactory: viewFactory,
                     viewModel: viewModel,
+                    channelDestination: usesIPadSplitView ? nil : channelDestination,
                     onItemTap: onItemTap
                 )
             }
@@ -227,6 +228,7 @@ public struct ChatChannelListView<Factory: ViewFactory>: View {
                 .accessibilityIdentifier("ChatChannelListSplitDetailPlaceholder")
             }
         }
+        .id(viewModel.selectedChannel?.id)
     }
 }
 
@@ -243,15 +245,18 @@ public struct ChatChannelListContentView<Factory: ViewFactory>: View {
 
     private var viewFactory: Factory
     @ObservedObject private var viewModel: ChatChannelListViewModel
+    private var channelDestination: (@MainActor (ChannelSelectionInfo) -> Factory.ChannelDestination)?
     private var onItemTap: @MainActor (ChatChannel) -> Void
 
     public init(
         viewFactory: Factory,
         viewModel: ChatChannelListViewModel,
+        channelDestination: (@MainActor (ChannelSelectionInfo) -> Factory.ChannelDestination)? = nil,
         onItemTap: (@MainActor (ChatChannel) -> Void)? = nil
     ) {
         self.viewFactory = viewFactory
         self.viewModel = viewModel
+        self.channelDestination = channelDestination
         if let onItemTap {
             self.onItemTap = onItemTap
         } else {
@@ -293,7 +298,7 @@ public struct ChatChannelListContentView<Factory: ViewFactory>: View {
                         viewModel.checkTabBarAppearance()
                         viewModel.checkForChannels(index: index)
                     },
-                    channelDestination: viewFactory.makeChannelDestination(options: ChannelDestinationOptions()),
+                    channelDestination: channelDestination,
                     trailingSwipeRightButtonTapped: viewModel.onDeleteTapped(channel:),
                     trailingSwipeLeftButtonTapped: viewModel.onMoreTapped(channel:),
                     leadingSwipeButtonTapped: { _ in }

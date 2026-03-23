@@ -30,8 +30,8 @@ public final class ChannelListItemOptions<ChannelDestination: View> {
     public let selectedChannel: Binding<ChannelSelectionInfo?>
     /// Binding to the currently swiped channel ID.
     public let swipedChannelId: Binding<String?>
-    /// The destination view for channel navigation.
-    public let channelDestination: @MainActor (ChannelSelectionInfo) -> ChannelDestination
+    /// The destination view for channel navigation. If nil, channel navigation is disabled.
+    public let channelDestination: (@MainActor (ChannelSelectionInfo) -> ChannelDestination)?
     /// Callback when the item is tapped.
     public let onItemTap: @MainActor (ChatChannel) -> Void
     /// Callback when the trailing right swipe button is tapped.
@@ -47,7 +47,7 @@ public final class ChannelListItemOptions<ChannelDestination: View> {
         disabled: Bool,
         selectedChannel: Binding<ChannelSelectionInfo?>,
         swipedChannelId: Binding<String?>,
-        channelDestination: @escaping @MainActor (ChannelSelectionInfo) -> ChannelDestination,
+        channelDestination: (@MainActor (ChannelSelectionInfo) -> ChannelDestination)? = nil,
         onItemTap: @escaping @MainActor (ChatChannel) -> Void,
         trailingSwipeRightButtonTapped: @escaping @MainActor (ChatChannel) -> Void,
         trailingSwipeLeftButtonTapped: @escaping @MainActor (ChatChannel) -> Void,
