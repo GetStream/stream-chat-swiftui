@@ -1531,7 +1531,7 @@
 			repositoryURL = "https://github.com/AliSoftware/OHHTTPStubs.git";
 			requirement = {
 				kind = upToNextMajorVersion;
-				minimumVersion = 9.0.0;
+				minimumVersion = 5.0.0-beta9.0.0;
 			};
 		};
 		84E7F9E02EFAF9BF00BA56A3 /* XCRemoteSwiftPackageReference "stream-chat-swift" */ = {
@@ -1547,7 +1547,7 @@
 			repositoryURL = "https://github.com/getsentry/sentry-cocoa.git";
 			requirement = {
 				kind = upToNextMajorVersion;
-				minimumVersion = 8.30.0;
+				minimumVersion = 5.0.0-beta8.30.0;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
