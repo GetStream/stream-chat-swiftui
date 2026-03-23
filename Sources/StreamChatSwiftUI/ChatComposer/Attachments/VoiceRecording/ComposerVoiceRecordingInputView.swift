@@ -106,9 +106,7 @@ struct ComposerVoiceRecordingInputView<Factory: ViewFactory>: View {
                         : L10n.Composer.AudioRecording.start))
 
                 VoiceRecordingDurationView(
-                    duration: handler.context.currentTime > 0
-                        ? handler.context.currentTime
-                        : audioRecordingInfo.duration,
+                    duration: previewRecordingDurationLabel,
                     usesAccentColor: handler.isPlaying
                 )
             }
@@ -246,6 +244,15 @@ struct ComposerVoiceRecordingInputView<Factory: ViewFactory>: View {
     private var opacityForSlideToCancel: CGFloat {
         guard gestureLocation.x < VoiceRecordingConstants.cancelMinDistance else { return 1 }
         return 1 - gestureLocation.x / VoiceRecordingConstants.cancelMaxDistance
+    }
+
+    /// Matches message-list behaviour: after playback ends the player reports `currentTime` 0; show total length again.
+    private var previewRecordingDurationLabel: TimeInterval {
+        guard isStopped else { return audioRecordingInfo.duration }
+        if handler.isPlaying || handler.context.state == .paused {
+            return handler.context.currentTime
+        }
+        return audioRecordingInfo.duration
     }
 }
 

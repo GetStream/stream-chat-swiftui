@@ -97,7 +97,17 @@ struct VoiceRecordingView: View {
     var isSentByCurrentUser: Bool = false
 
     private var isActive: Bool { handler.isActive(for: addedVoiceRecording.url) }
-    private var showContextDuration: Bool { isActive && handler.context.currentTime > 0 }
+
+    /// After playback finishes the player resets `currentTime` to 0 while staying on the same asset; show total length again.
+    private var displayedPlaybackTime: TimeInterval {
+        guard isActive else { return addedVoiceRecording.duration }
+        switch handler.context.state {
+        case .playing, .paused:
+            return handler.context.currentTime
+        default:
+            return addedVoiceRecording.duration
+        }
+    }
 
     private var controlBorderColor: Color? {
         isSentByCurrentUser ? Color(colors.chatBorderOnChatOutgoing) : Color(colors.chatBorderOnChatIncoming)
@@ -138,7 +148,7 @@ struct VoiceRecordingView: View {
 
     private var durationAndWaveform: some View {
         HStack(spacing: tokens.spacingXs) {
-            Text(utils.videoDurationFormatter.format(showContextDuration ? handler.context.currentTime : addedVoiceRecording.duration) ?? "")
+            Text(utils.videoDurationFormatter.format(displayedPlaybackTime) ?? "")
                 .font(fonts.footnote.monospacedDigit())
                 .foregroundColor(Color(handler.isPlaying && isActive ? colors.accentPrimary : colors.textPrimary))
 
