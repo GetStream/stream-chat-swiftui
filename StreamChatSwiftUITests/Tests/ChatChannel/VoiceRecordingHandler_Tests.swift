@@ -9,7 +9,6 @@ import XCTest
 
 @MainActor
 final class VoiceRecordingHandler_Tests: StreamChatTestCase {
-
     private lazy var mockPlayer: MockAudioPlayer! = .init()
     private lazy var handler: VoiceRecordingHandler! = .init()
     private let url = URL(fileURLWithPath: "/tmp/voice.aac")
