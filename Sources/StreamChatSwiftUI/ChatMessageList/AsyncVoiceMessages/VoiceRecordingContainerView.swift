@@ -241,6 +241,7 @@ class VoiceRecordingHandler: ObservableObject, AudioPlayingDelegate {
             player.pause()
         } else {
             player.loadAsset(from: url)
+            player.updateRate(rate)
         }
     }
 
