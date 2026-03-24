@@ -12,6 +12,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Fix voice message waveform progress bar being misaligned on stop recording and start listening [#1327](https://github.com/GetStream/stream-chat-swiftui/pull/1327)
 - Fix voice message time label not resetting when playback finishes [#1327](https://github.com/GetStream/stream-chat-swiftui/pull/1327)
 - Fix voice message time label showing elapsed time instead of remaining time during playback [#1327](https://github.com/GetStream/stream-chat-swiftui/pull/1327)
+- Fix voice message waveform slider thumb not starting at the beginning [#1327](https://github.com/GetStream/stream-chat-swiftui/pull/1327)
+- Fix voice message playback rate not being preserved when restarting playback [#1327](https://github.com/GetStream/stream-chat-swiftui/pull/1327)
+- Fix changing playback rate on one voice message affecting other voice messages [#1327](https://github.com/GetStream/stream-chat-swiftui/pull/1327)
 
 # [5.0.0-beta](https://github.com/GetStream/stream-chat-swiftui/releases/tag/5.0.0-beta)
 _March 23, 2026_
