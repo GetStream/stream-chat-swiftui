@@ -5,7 +5,7 @@
 import UIKit
 
 /// ImageLoading is providing set of functions for downloading of images from URLs.
-public protocol ImageLoading: AnyObject {
+public protocol ImageLoading: AnyObject, Sendable {
     /// Load images from a given URLs
     /// - Parameters:
     ///   - urls: The URLs to load the images from
