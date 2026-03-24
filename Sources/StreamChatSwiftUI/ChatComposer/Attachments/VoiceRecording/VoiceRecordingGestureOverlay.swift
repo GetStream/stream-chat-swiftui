@@ -54,9 +54,13 @@ struct VoiceRecordingGestureOverlay: View {
                         }
                         if recordingState.isRecording {
                             if gestureLocation.x < VoiceRecordingConstants.cancelMinDistance {
-                                discardRecording()
+                                withAnimation(.composerVoiceRecordingSpring) {
+                                    discardRecording()
+                                }
                             } else {
-                                releaseRecording()
+                                withAnimation(.composerVoiceRecordingSpring) {
+                                    releaseRecording()
+                                }
                             }
                             gestureLocation = .zero
                         } else if recordingState != .locked {
