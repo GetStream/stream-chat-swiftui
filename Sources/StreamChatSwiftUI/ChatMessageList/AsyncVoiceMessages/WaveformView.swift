@@ -77,7 +77,7 @@ open class WaveformView: UIView {
     open lazy var audioVisualizationView: AudioVisualizationView = .init()
         .withoutAutoresizingMaskConstraints
 
-    open lazy var slider: UISlider = .init()
+    open lazy var slider: UISlider = WaveformSlider()
         .withoutAutoresizingMaskConstraints
 
     // MARK: - UI Lifecycle
@@ -215,6 +215,15 @@ open class WaveformView: UIView {
         }
         slider.setThumbImage(thumb, for: .normal)
         slider.setThumbImage(thumb, for: .highlighted)
+    }
+}
+
+/// Extends the track rect so the visible thumb circle aligns with the waveform edges
+/// rather than being inset by half the thumb image width (which includes the shadow).
+private class WaveformSlider: UISlider {
+    override func trackRect(forBounds bounds: CGRect) -> CGRect {
+        let thumbShadow: CGFloat = 6
+        return bounds.insetBy(dx: -thumbShadow, dy: 0)
     }
 }
 
