@@ -228,7 +228,10 @@ class VoiceRecordingHandler: ObservableObject, AudioPlayingDelegate {
         guard context.assetLocation == url else { return }
         switch context.state {
         case .playing:
-            isPlaying = true
+            if !isPlaying {
+                isPlaying = true
+                player.updateRate(rate)
+            }
         case .stopped, .paused:
             isPlaying = false
         default:
@@ -241,7 +244,6 @@ class VoiceRecordingHandler: ObservableObject, AudioPlayingDelegate {
             player.pause()
         } else {
             player.loadAsset(from: url)
-            player.updateRate(rate)
         }
     }
 
@@ -251,7 +253,9 @@ class VoiceRecordingHandler: ObservableObject, AudioPlayingDelegate {
         case .double: rate = .half
         default: rate = .normal
         }
-        player.updateRate(rate)
+        if isPlaying {
+            player.updateRate(rate)
+        }
     }
 
     func isActive(for url: URL) -> Bool {

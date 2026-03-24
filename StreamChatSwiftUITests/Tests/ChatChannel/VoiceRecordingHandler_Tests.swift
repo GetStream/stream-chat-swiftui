@@ -111,6 +111,34 @@ final class VoiceRecordingHandler_Tests: StreamChatTestCase {
         XCTAssertTrue(handler.isPlaying)
     }
 
+    func test_updatePlaybackState_whenPlaying_appliesHandlerRate() {
+        handler.rate = .double
+        handler.context = makeContext(state: .playing)
+
+        handler.updatePlaybackState(for: url)
+
+        XCTAssertEqual(mockPlayer.updateRateWasCalledWithRate, .double)
+    }
+
+    func test_updatePlaybackState_whenPlaying_appliesDefaultRate() {
+        handler.rate = .normal
+        handler.context = makeContext(state: .playing)
+
+        handler.updatePlaybackState(for: url)
+
+        XCTAssertEqual(mockPlayer.updateRateWasCalledWithRate, .normal)
+    }
+
+    func test_updatePlaybackState_whenAlreadyPlaying_doesNotReapplyRate() {
+        handler.isPlaying = true
+        handler.rate = .double
+        handler.context = makeContext(state: .playing)
+
+        handler.updatePlaybackState(for: url)
+
+        XCTAssertNil(mockPlayer.updateRateWasCalledWithRate)
+    }
+
     func test_updatePlaybackState_whenPaused_setsIsPlayingFalse() {
         handler.isPlaying = true
         handler.context = makeContext(state: .paused)
@@ -156,29 +184,21 @@ final class VoiceRecordingHandler_Tests: StreamChatTestCase {
         XCTAssertNil(mockPlayer.loadAssetWasCalledWithURL)
     }
 
-    func test_togglePlayback_whenNotPlaying_loadsAssetAndAppliesRate() {
+    func test_togglePlayback_whenNotPlaying_loadsAssetWithoutApplyingRate() {
         handler.isPlaying = false
         handler.rate = .double
 
         handler.togglePlayback(for: url)
 
         XCTAssertEqual(mockPlayer.loadAssetWasCalledWithURL, url)
-        XCTAssertEqual(mockPlayer.updateRateWasCalledWithRate, .double)
-    }
-
-    func test_togglePlayback_whenNotPlaying_appliesDefaultRate() {
-        handler.isPlaying = false
-
-        handler.togglePlayback(for: url)
-
-        XCTAssertEqual(mockPlayer.loadAssetWasCalledWithURL, url)
-        XCTAssertEqual(mockPlayer.updateRateWasCalledWithRate, .normal)
+        XCTAssertNil(mockPlayer.updateRateWasCalledWithRate)
     }
 
     // MARK: - cycleRate()
 
     func test_cycleRate_fromNormal_setsDouble() {
         handler.rate = .normal
+        handler.isPlaying = true
 
         handler.cycleRate()
 
@@ -188,6 +208,7 @@ final class VoiceRecordingHandler_Tests: StreamChatTestCase {
 
     func test_cycleRate_fromDouble_setsHalf() {
         handler.rate = .double
+        handler.isPlaying = true
 
         handler.cycleRate()
 
@@ -197,11 +218,38 @@ final class VoiceRecordingHandler_Tests: StreamChatTestCase {
 
     func test_cycleRate_fromHalf_setsNormal() {
         handler.rate = .half
+        handler.isPlaying = true
 
         handler.cycleRate()
 
         XCTAssertEqual(handler.rate, .normal)
         XCTAssertEqual(mockPlayer.updateRateWasCalledWithRate, .normal)
+    }
+
+    func test_cycleRate_whenNotPlaying_updatesRateWithoutCallingPlayer() {
+        handler.rate = .normal
+        handler.isPlaying = false
+
+        handler.cycleRate()
+
+        XCTAssertEqual(handler.rate, .double)
+        XCTAssertNil(mockPlayer.updateRateWasCalledWithRate)
+    }
+
+    func test_cycleRate_whenNotPlaying_fullCycleDoesNotCallPlayer() {
+        handler.isPlaying = false
+        handler.rate = .normal
+
+        handler.cycleRate()
+        XCTAssertEqual(handler.rate, .double)
+
+        handler.cycleRate()
+        XCTAssertEqual(handler.rate, .half)
+
+        handler.cycleRate()
+        XCTAssertEqual(handler.rate, .normal)
+
+        XCTAssertNil(mockPlayer.updateRateWasCalledWithRate)
     }
 
     // MARK: - rateTitle
