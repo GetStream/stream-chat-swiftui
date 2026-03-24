@@ -3,6 +3,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 # Upcoming
 
+### 🐞 Fixed
+- Single image/video attachments without a caption now render a sharp tail corner to match the Figma design [IOS-1518]
+
 ### 🔄 Changed
 
 # [5.0.0-beta](https://github.com/GetStream/stream-chat-swiftui/releases/tag/5.0.0-beta)
