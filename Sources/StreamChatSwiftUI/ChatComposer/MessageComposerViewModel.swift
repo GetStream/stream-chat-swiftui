@@ -168,7 +168,7 @@ import SwiftUI
     public var willSendMessage: (() -> Void)?
 
     /// When `true`, the next completed recording is automatically sent via `sendMessage()`.
-    /// Set by `releaseRecording()` and cleared once the send fires or an error occurs.
+    /// Set by `sendRecording()` and cleared once the send fires or an error occurs.
     var shouldSendOnRecordingFinish = false
 
     public var waveformTargetSamples: Int = 100

@@ -167,11 +167,11 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
                         VoiceRecordingGestureOverlay(
                             recordingState: $viewModel.recordingState,
                             gestureLocation: $viewModel.recordingGestureLocation,
-                            startRecording: viewModel.startRecording,
-                            stopRecording: viewModel.stopRecording,
-                            releaseRecording: viewModel.releaseRecording,
-                            discardRecording: viewModel.discardRecording,
-                            showRecordingTip: viewModel.showRecordingTip
+                            onRecordingStarted: viewModel.startRecording,
+                            onGestureCompleted: viewModel.stopRecording,
+                            onRecordingReleased: viewModel.sendRecording,
+                            onRecordingCancelled: viewModel.discardRecording,
+                            onShortTapDetected: viewModel.showRecordingTip
                         )
                     }
                 }

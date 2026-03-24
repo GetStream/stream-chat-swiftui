@@ -1662,22 +1662,22 @@ import XCTest
         XCTAssertEqual(channelController.deleteDraftMessage_callCount, 0)
     }
 
-    // MARK: - releaseRecording
+    // MARK: - sendRecording
 
-    func test_releaseRecording_whenRecording_setsShouldSendOnRecordingFinish() {
+    func test_sendRecording_whenRecording_setsShouldSendOnRecordingFinish() {
         let viewModel = makeComposerViewModel()
         viewModel.recordingState = .recording
 
-        viewModel.releaseRecording()
+        viewModel.sendRecording()
 
         XCTAssertTrue(viewModel.shouldSendOnRecordingFinish)
     }
 
-    func test_releaseRecording_whenNotRecording_doesNotSetShouldSendOnRecordingFinish() {
+    func test_sendRecording_whenNotRecording_doesNotSetShouldSendOnRecordingFinish() {
         let viewModel = makeComposerViewModel()
         viewModel.recordingState = .initial
 
-        viewModel.releaseRecording()
+        viewModel.sendRecording()
 
         XCTAssertFalse(viewModel.shouldSendOnRecordingFinish)
     }
