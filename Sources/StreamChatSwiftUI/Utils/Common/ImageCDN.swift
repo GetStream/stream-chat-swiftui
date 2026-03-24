@@ -5,7 +5,7 @@
 import UIKit
 
 /// ImageCDN is providing set of functions to improve handling of images from CDN.
-public protocol ImageCDN {
+public protocol ImageCDN: Sendable {
     /// Customised (filtered) key for image cache.
     /// - Parameter imageURL: URL of the image that should be customised (filtered).
     /// - Returns: String to be used as an image cache key.
@@ -30,7 +30,7 @@ extension ImageCDN {
     }
 }
 
-open class StreamImageCDN: ImageCDN {
+open class StreamImageCDN: ImageCDN, @unchecked Sendable {
     public static let streamCDNURL = "stream-io-cdn.com"
 
     // Initializer required for subclasses
