@@ -98,15 +98,8 @@ struct VoiceRecordingView: View {
 
     private var isActive: Bool { handler.isActive(for: addedVoiceRecording.url) }
 
-    /// After playback finishes the player resets `currentTime` to 0 while staying on the same asset; show total length again.
     private var displayedPlaybackTime: TimeInterval {
-        guard isActive else { return addedVoiceRecording.duration }
-        switch handler.context.state {
-        case .playing, .paused:
-            return handler.context.currentTime
-        default:
-            return addedVoiceRecording.duration
-        }
+        handler.displayedTime(for: addedVoiceRecording.url, duration: addedVoiceRecording.duration)
     }
 
     private var controlBorderColor: Color? {
@@ -262,6 +255,18 @@ class VoiceRecordingHandler: ObservableObject, AudioPlayingDelegate {
 
     func isActive(for url: URL) -> Bool {
         context.assetLocation == url
+    }
+
+    /// Returns remaining playback time when playing/paused, or the total duration otherwise.
+    func displayedTime(for url: URL, duration: TimeInterval) -> TimeInterval {
+        guard isActive(for: url) else { return duration }
+        switch context.state {
+        case .playing, .paused:
+            let resolvedDuration = max(duration, context.duration)
+            return max(resolvedDuration - context.currentTime, 0)
+        default:
+            return duration
+        }
     }
 
     func seek(to time: TimeInterval, loadingFrom url: URL? = nil) {

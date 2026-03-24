@@ -246,13 +246,11 @@ struct ComposerVoiceRecordingInputView<Factory: ViewFactory>: View {
         return 1 - gestureLocation.x / VoiceRecordingConstants.cancelMaxDistance
     }
 
-    /// Matches message-list behaviour: after playback ends the player reports `currentTime` 0; show total length again.
     private var previewRecordingDurationLabel: TimeInterval {
-        guard isStopped else { return audioRecordingInfo.duration }
-        if handler.isPlaying || handler.context.state == .paused {
-            return handler.context.currentTime
+        guard isStopped, let url = pendingAudioRecordingURL else {
+            return audioRecordingInfo.duration
         }
-        return audioRecordingInfo.duration
+        return handler.displayedTime(for: url, duration: audioRecordingInfo.duration)
     }
 }
 
