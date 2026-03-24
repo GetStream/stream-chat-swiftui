@@ -4,6 +4,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 # Upcoming
 
 ### 🔄 Changed
+- Renamed the `onMessageSent` callback to `willSendMessage` in `MessageComposerViewModel`, `ViewModelsFactory`, and `ComposerViewFactoryOptions` [#1327](https://github.com/GetStream/stream-chat-swiftui/pull/1327)
+
+### 🐞 Fixed
+- Fix editing a voice message removing the voice recording attachment [#1327](https://github.com/GetStream/stream-chat-swiftui/pull/1327)
+- Fix hold-and-release mic gesture not sending the voice message immediately [#1327](https://github.com/GetStream/stream-chat-swiftui/pull/1327)
+- Fix voice message waveform progress bar being misaligned on stop recording and start listening [#1327](https://github.com/GetStream/stream-chat-swiftui/pull/1327)
+- Fix voice message time label not resetting when playback finishes [#1327](https://github.com/GetStream/stream-chat-swiftui/pull/1327)
+- Fix voice message time label showing elapsed time instead of remaining time during playback [#1327](https://github.com/GetStream/stream-chat-swiftui/pull/1327)
 
 # [5.0.0-beta](https://github.com/GetStream/stream-chat-swiftui/releases/tag/5.0.0-beta)
 _March 23, 2026_
