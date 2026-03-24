@@ -52,10 +52,13 @@ public struct MessageMediaAttachmentsContainerView<Factory: ViewFactory>: View {
     @Injected(\.colors) private var colors
     @Injected(\.fonts) private var fonts
     @Injected(\.tokens) private var tokens
+    @Injected(\.utils) private var utils
+    @Environment(\.layoutDirection) private var layoutDirection
 
     let factory: Factory
     let message: ChatMessage
     let width: CGFloat
+    let isFirst: Bool
 
     @State private var galleryShown = false
     @State private var selectedIndex = 0
@@ -66,11 +69,13 @@ public struct MessageMediaAttachmentsContainerView<Factory: ViewFactory>: View {
     public init(
         factory: Factory,
         message: ChatMessage,
-        width: CGFloat
+        width: CGFloat,
+        isFirst: Bool = true
     ) {
         self.factory = factory
         self.message = message
         self.width = width
+        self.isFirst = isFirst
     }
 
     public var body: some View {
@@ -114,12 +119,54 @@ public struct MessageMediaAttachmentsContainerView<Factory: ViewFactory>: View {
         .frame(width: size.width, height: size.height)
     }
 
+    @ViewBuilder
     private func singleItemLayout(
         _ item: MediaAttachment,
         width: CGFloat,
         height: CGFloat
     ) -> some View {
-        mediaCell(item, width: width, height: height, index: 0)
+        if isSingleMediaWithoutCaption {
+            singleMediaCellWithoutCaption(item, width: width, height: height)
+        } else {
+            mediaCell(item, width: width, height: height, index: 0)
+        }
+    }
+
+    private func singleMediaCellWithoutCaption(
+        _ item: MediaAttachment,
+        width: CGFloat,
+        height: CGFloat
+    ) -> some View {
+        let bubbleRadius = tokens.messageBubbleRadiusGroupBottom
+        let forceLeftToRight = utils.messageListConfig.messageListAlignment == .leftAligned
+        let corners = message.bubbleCorners(
+            isFirst: isFirst,
+            forceLeftToRight: forceLeftToRight,
+            layoutDirection: layoutDirection
+        )
+        return MessageMediaAttachmentContentView(
+            factory: factory,
+            source: item,
+            width: width,
+            height: height,
+            cornerRadius: bubbleRadius,
+            corners: corners,
+            isOutgoing: message.isSentByCurrentUser
+        )
+        .withUploadingStateIndicator(for: item.uploadingState, url: item.url)
+        .overlay(
+            BubbleBackgroundShape(cornerRadius: bubbleRadius, corners: corners)
+                .stroke(message.bubbleBorder(colors: colors), lineWidth: 1)
+        )
+        .contentShape(Rectangle())
+        .onTapGesture {
+            if message.localState == nil {
+                selectedIndex = 0
+                galleryShown = true
+            }
+        }
+        .accessibilityLabel(L10n.Message.Attachment.accessibilityLabel(1))
+        .accessibilityAddTraits(item.type == .video ? .startsMediaSession : .isImage)
     }
 
     @ViewBuilder
@@ -258,6 +305,10 @@ public struct MessageMediaAttachmentsContainerView<Factory: ViewFactory>: View {
     }
 
     // MARK: - Data
+
+    private var isSingleMediaWithoutCaption: Bool {
+        message.text.isEmpty && sources.count == 1
+    }
 
     private var orientation: MediaGalleryOrientation {
         if let first = sources.first {

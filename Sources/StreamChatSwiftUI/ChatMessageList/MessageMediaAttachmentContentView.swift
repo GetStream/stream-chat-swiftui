@@ -24,6 +24,9 @@ public struct MessageMediaAttachmentContentView<Factory: ViewFactory>: View {
     let height: CGFloat
     /// The corner radius applied to the view.
     let cornerRadius: CGFloat
+    /// Which corners should be rounded. When `nil`, all corners are rounded
+    /// using a continuous `RoundedRectangle`.
+    let corners: UIRectCorner?
     /// Whether the message is sent by the current user (outgoing).
     let isOutgoing: Bool
 
@@ -36,6 +39,7 @@ public struct MessageMediaAttachmentContentView<Factory: ViewFactory>: View {
         width: CGFloat,
         height: CGFloat,
         cornerRadius: CGFloat? = nil,
+        corners: UIRectCorner? = nil,
         isOutgoing: Bool = false
     ) {
         @Injected(\.tokens) var tokens
@@ -44,6 +48,7 @@ public struct MessageMediaAttachmentContentView<Factory: ViewFactory>: View {
         self.width = width
         self.height = height
         self.cornerRadius = cornerRadius ?? tokens.messageBubbleRadiusAttachment
+        self.corners = corners
         self.isOutgoing = isOutgoing
     }
 
@@ -72,7 +77,12 @@ public struct MessageMediaAttachmentContentView<Factory: ViewFactory>: View {
             }
         }
         .frame(width: width, height: height)
-        .clipShape(RoundedRectangle(cornerRadius: cornerRadius, style: .continuous))
+        .clipShape(
+            BubbleBackgroundShape(
+                cornerRadius: cornerRadius,
+                corners: corners ?? [.topLeft, .topRight, .bottomLeft, .bottomRight]
+            )
+        )
         .onAppear {
             guard image == nil else { return }
             source.generateThumbnail(resize: true, preferredSize: CGSize(width: width, height: height)) { result in
