@@ -70,6 +70,7 @@
 
 "message.gallery.photos" = "Photos";
 "message.cell.pinnedBy" = "Pinned by";
+"message.cell.pinnedByYou" = "Pinned by you";
 "message.cell.unknownPin" = "unknown";
 "message.cell.edited" = "Edited";
 "message.cell.sent-at" = "Sent at %@";

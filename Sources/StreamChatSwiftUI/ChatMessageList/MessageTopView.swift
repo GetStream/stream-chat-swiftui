@@ -22,7 +22,7 @@ struct MessageTopView: View {
             if messageViewModel.isPinned {
                 MessageAnnotationView(
                     icon: images.pin,
-                    title: "\(L10n.Message.Cell.pinnedBy) \(message.pinDetails?.pinnedBy.name ?? L10n.Message.Cell.unknownPin)",
+                    title: messageViewModel.pinnedByText,
                     usesInvertedStyle: usesInvertedStyle
                 )
                 .accessibilityIdentifier("MessagePinDetailsView")
