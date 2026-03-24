@@ -9,7 +9,7 @@ import UIKit
 import XCTest
 
 /// Mock implementation of `ImageLoading`.
-class ImageLoader_Mock: ImageLoading {
+class ImageLoader_Mock: ImageLoading, @unchecked Sendable {
     static let defaultLoadedImage = XCTestCase.TestImages.yoda.image
     var loadImageCalled = false
 
@@ -43,7 +43,7 @@ class ImageLoader_Mock: ImageLoading {
 }
 
 /// Mock implementation of `ImageLoading` that returns different TestImages based on URL.
-class TestImagesLoader_Mock: ImageLoading {
+class TestImagesLoader_Mock: ImageLoading, @unchecked Sendable {
     var loadImageCalled = false
     var loadImagesCalled = false
 

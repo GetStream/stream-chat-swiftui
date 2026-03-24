@@ -7,7 +7,7 @@ import UIKit
 
 /// The class which is resposible for loading images from URLs.
 /// Internally uses `Nuke`'s shared object of `ImagePipeline` to load the image.
-open class NukeImageLoader: ImageLoading {
+open class NukeImageLoader: ImageLoading, @unchecked Sendable {
     public init() {
         // Public init.
     }
