@@ -7,7 +7,6 @@
 import XCTest
 
 final class VoiceRecordingHandler_Tests: XCTestCase {
-
     private lazy var handler: VoiceRecordingHandler! = .init()
     private let url = URL(fileURLWithPath: "/tmp/voice.aac")
     private let duration: TimeInterval = 30
