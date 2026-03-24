@@ -27,7 +27,7 @@ final class UserSuggestionsView_Tests: StreamChatTestCase {
             messageController: nil,
             quotedMessage: .constant(nil),
             editedMessage: .constant(nil),
-            onMessageSent: {}
+            willSendMessage: {}
         )
         .frame(width: defaultScreenSize.width, height: 200)
 

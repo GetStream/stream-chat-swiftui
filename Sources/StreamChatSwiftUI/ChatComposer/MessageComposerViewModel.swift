@@ -164,12 +164,13 @@ import SwiftUI
     public var messageController: ChatMessageController?
     public let eventsController: EventsController
     public var quotedMessage: Binding<ChatMessage?>?
+    public var editedMessage: Binding<ChatMessage?>?
+    public var willSendMessage: (() -> Void)?
 
-    /// Invoked after a hold-to-record gesture ends (finger up, not locked) once the recording is processed.
-    /// The composer view wires this to send the message (including `onMessageSent`).
-    public var onVoiceRecordingGestureReleaseSend: (@MainActor () -> Void)?
+    /// When `true`, the next completed recording is automatically sent via `sendMessage()`.
+    /// Set by `releaseRecording()` and cleared once the send fires or an error occurs.
+    var shouldSendOnRecordingFinish = false
 
-    var shouldAutoSendVoiceWhenRecordingFinishes = false
     public var waveformTargetSamples: Int = 100
     public internal(set) var pendingAudioRecording: AddedVoiceRecording?
 
@@ -236,12 +237,16 @@ import SwiftUI
         channelController: ChatChannelController,
         messageController: ChatMessageController?,
         eventsController: EventsController? = nil,
-        quotedMessage: Binding<ChatMessage?>? = nil
+        quotedMessage: Binding<ChatMessage?>? = nil,
+        editedMessage: Binding<ChatMessage?>? = nil,
+        willSendMessage: (() -> Void)? = nil
     ) {
         self.channelController = channelController
         self.messageController = messageController
         self.eventsController = eventsController ?? channelController.client.eventsController()
         self.quotedMessage = quotedMessage
+        self.editedMessage = editedMessage
+        self.willSendMessage = willSendMessage
 
         self.eventsController.delegate = self
 
@@ -356,16 +361,23 @@ import SwiftUI
     }
 
     open func sendMessage(
-        quotedMessage: ChatMessage?,
-        editedMessage: ChatMessage?,
         isSilent: Bool = false,
         skipPush: Bool = false,
         skipEnrichUrl: Bool = false,
         extraData: [String: RawJSON] = [:],
-        completion: @escaping @MainActor () -> Void
+        completion: (@MainActor () -> Void)? = nil
     ) {
         defer {
             checkChannelCooldown()
+        }
+
+        willSendMessage?()
+
+        // Reset edited and quoted message on message finish send
+        let completion: @MainActor () -> Void = { [weak self] in
+            self?.editedMessage?.wrappedValue = nil
+            self?.quotedMessage?.wrappedValue = nil
+            completion?()
         }
 
         if let composerCommand, composerCommand.id != "instantCommands" {
@@ -389,7 +401,7 @@ import SwiftUI
         clearRemovedMentions()
         let mentionedUserIds = mentionedUsers.map(\.id)
         
-        if let editedMessage {
+        if let editedMessage = self.editedMessage?.wrappedValue {
             edit(
                 message: editedMessage,
                 attachments: try? convertAddedAssetsToPayloads(),
@@ -407,7 +419,7 @@ import SwiftUI
                     mentionedUserIds: mentionedUserIds,
                     showReplyInChannel: showReplyInChannel,
                     isSilent: isSilent,
-                    quotedMessageId: quotedMessage?.id,
+                    quotedMessageId: quotedMessage?.wrappedValue?.id,
                     skipPush: skipPush,
                     skipEnrichUrl: skipEnrichUrl,
                     extraData: extraData
@@ -425,7 +437,7 @@ import SwiftUI
                     isSilent: isSilent,
                     attachments: attachments,
                     mentionedUserIds: mentionedUserIds,
-                    quotedMessageId: quotedMessage?.id,
+                    quotedMessageId: quotedMessage?.wrappedValue?.id,
                     skipPush: skipPush,
                     skipEnrichUrl: skipEnrichUrl,
                     extraData: extraData

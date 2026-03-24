@@ -33,7 +33,7 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
         messageController: ChatMessageController? = nil,
         quotedMessage: Binding<ChatMessage?>,
         editedMessage: Binding<ChatMessage?>,
-        onMessageSent: @escaping () -> Void
+        willSendMessage: @escaping () -> Void
     ) {
         factory = viewFactory
         channelConfig = channelController.channel?.config
@@ -41,17 +41,16 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
             wrappedValue: viewModel ?? ViewModelsFactory.makeMessageComposerViewModel(
                 with: channelController,
                 messageController: messageController,
-                quotedMessage: quotedMessage
+                quotedMessage: quotedMessage,
+                editedMessage: editedMessage,
+                willSendMessage: willSendMessage
             )
         )
         _quotedMessage = quotedMessage
         _editedMessage = editedMessage
-        self.onMessageSent = onMessageSent
     }
 
     @StateObject var viewModel: MessageComposerViewModel
-
-    var onMessageSent: () -> Void
 
     private var showsLeadingComposer: Bool {
         viewModel.recordingState.showsComposer
@@ -102,7 +101,7 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
                         pendingAudioRecordingURL: viewModel.pendingAudioRecording?.url,
                         onCustomAttachmentTap: viewModel.customAttachmentTapped(_:),
                         removeAttachmentWithId: viewModel.removeAttachment(with:),
-                        sendMessage: sendMessage,
+                        sendMessage: { viewModel.sendMessage() },
                         onImagePasted: viewModel.imagePasted,
                         startRecording: viewModel.startRecording,
                         stopRecording: viewModel.stopRecording,
@@ -126,7 +125,7 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
                     options: TrailingComposerViewOptions(
                         enabled: viewModel.hasContent,
                         cooldownDuration: viewModel.cooldownDuration,
-                        onTap: sendMessage
+                        onTap: { viewModel.sendMessage() }
                     )
                 )
                 .alert(isPresented: $viewModel.errorShown) {
@@ -308,19 +307,8 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
         }
         .onAppear(perform: {
             viewModel.fillDraftMessage()
-            viewModel.onVoiceRecordingGestureReleaseSend = {
-                onMessageSent()
-                viewModel.sendMessage(
-                    quotedMessage: quotedMessage,
-                    editedMessage: editedMessage
-                ) {
-                    quotedMessage = nil
-                    editedMessage = nil
-                }
-            }
         })
         .onDisappear(perform: {
-            viewModel.onVoiceRecordingGestureReleaseSend = nil
             if editedMessage == nil {
                 viewModel.updateDraftMessage(quotedMessage: quotedMessage)
             }
@@ -339,19 +327,6 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
         }
         .preference(key: FloatingComposerHeightPreferenceKey.self, value: composerHeight)
         .accessibilityElement(children: .contain)
-    }
-
-    public func sendMessage() {
-        // Calling onMessageSent() before erasing the edited and quoted message
-        // so that onMessageSent can use them for state handling.
-        onMessageSent()
-        viewModel.sendMessage(
-            quotedMessage: quotedMessage,
-            editedMessage: editedMessage
-        ) {
-            quotedMessage = nil
-            editedMessage = nil
-        }
     }
 
     private static var initialLockOffset: CGFloat { -70 }

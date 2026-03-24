@@ -37,7 +37,7 @@ extension MessageComposerViewModel: AudioRecordingDelegate {
         didFinishRecordingAtURL location: URL
     ) {
         if audioRecordingInfo == .initial {
-            shouldAutoSendVoiceWhenRecordingFinishes = false
+            shouldSendOnRecordingFinish = false
             return
         }
         audioAnalysisFactory?.waveformVisualisation(
@@ -61,14 +61,14 @@ extension MessageComposerViewModel: AudioRecordingDelegate {
                             self.addedVoiceRecordings.append(recording)
                             self.recordingState = .initial
                             self.audioRecordingInfo = .initial
-                            if self.shouldAutoSendVoiceWhenRecordingFinishes {
-                                self.shouldAutoSendVoiceWhenRecordingFinishes = false
-                                self.onVoiceRecordingGestureReleaseSend?()
+                            if self.shouldSendOnRecordingFinish {
+                                self.shouldSendOnRecordingFinish = false
+                                self.sendMessage()
                             }
                         }
                     case let .failure(error):
                         log.error(error)
-                        self.shouldAutoSendVoiceWhenRecordingFinishes = false
+                        self.shouldSendOnRecordingFinish = false
                         self.recordingState = .initial
                     }
                 }
@@ -81,6 +81,7 @@ extension MessageComposerViewModel: AudioRecordingDelegate {
         didFailWithError error: Error
     ) {
         log.error(error)
+        shouldSendOnRecordingFinish = false
         let wasRecording = recordingState != .initial
         recordingState = .initial
         audioRecordingInfo = .initial
@@ -106,13 +107,6 @@ extension MessageComposerViewModel {
         utils.audioSessionFeedbackGenerator.feedbackForStopRecording()
         audioRecorder.stopRecording()
     }
-
-    /// Ends recording after the user lifts their finger without sliding up to lock (send immediately).
-    public func releaseRecording() {
-        guard recordingState == .recording else { return }
-        shouldAutoSendVoiceWhenRecordingFinishes = true
-        stopRecording()
-    }
     
     public func resumeRecording() {
         utils.audioSessionFeedbackGenerator.feedbackForBeginRecording()
@@ -126,8 +120,16 @@ extension MessageComposerViewModel {
 }
 
 extension MessageComposerViewModel {
+    /// Ends recording after the user lifts their finger without locking.
+    /// The voice message is sent automatically once the file is ready.
+    public func releaseRecording() {
+        guard recordingState == .recording else { return }
+        shouldSendOnRecordingFinish = true
+        stopRecording()
+    }
+
     public func discardRecording() {
-        shouldAutoSendVoiceWhenRecordingFinishes = false
+        shouldSendOnRecordingFinish = false
         stopRecording()
         recordingState = .initial
         audioRecordingInfo = .initial

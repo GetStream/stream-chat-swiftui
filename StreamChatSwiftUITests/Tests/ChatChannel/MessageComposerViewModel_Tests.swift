@@ -304,10 +304,7 @@ import XCTest
         viewModel.text = "test"
         viewModel.imageTapped(defaultAsset)
         viewModel.composerAssets.append(.addedFile(mockURL))
-        viewModel.sendMessage(
-            quotedMessage: nil,
-            editedMessage: nil
-        ) {
+        viewModel.sendMessage {
             // Then
             XCTAssert(viewModel.errorShown == false)
             XCTAssert(viewModel.text == "")
@@ -1454,7 +1451,7 @@ import XCTest
         viewModel.text = "text"
 
         // When
-        viewModel.sendMessage(quotedMessage: nil, editedMessage: nil) {}
+        viewModel.sendMessage()
         
         // Then
         let expectation = XCTestExpectation(description: "Text cleared")
@@ -1482,7 +1479,7 @@ import XCTest
         viewModel.text = "reply"
 
         // When
-        viewModel.sendMessage(quotedMessage: nil, editedMessage: nil) {}
+        viewModel.sendMessage()
         
         // Then
         let expectation = XCTestExpectation(description: "Text cleared")
@@ -1665,23 +1662,33 @@ import XCTest
         XCTAssertEqual(channelController.deleteDraftMessage_callCount, 0)
     }
 
-    func test_releaseRecording_whenRecording_setsAutoSendFlag() {
+    // MARK: - releaseRecording
+
+    func test_releaseRecording_whenRecording_setsShouldSendOnRecordingFinish() {
         let viewModel = makeComposerViewModel()
         viewModel.recordingState = .recording
-        viewModel.shouldAutoSendVoiceWhenRecordingFinishes = false
 
         viewModel.releaseRecording()
 
-        XCTAssertTrue(viewModel.shouldAutoSendVoiceWhenRecordingFinishes)
+        XCTAssertTrue(viewModel.shouldSendOnRecordingFinish)
     }
 
-    func test_releaseRecording_whenNotRecording_doesNotSetAutoSendFlag() {
+    func test_releaseRecording_whenNotRecording_doesNotSetShouldSendOnRecordingFinish() {
         let viewModel = makeComposerViewModel()
         viewModel.recordingState = .initial
 
         viewModel.releaseRecording()
 
-        XCTAssertFalse(viewModel.shouldAutoSendVoiceWhenRecordingFinishes)
+        XCTAssertFalse(viewModel.shouldSendOnRecordingFinish)
+    }
+
+    func test_discardRecording_resetsShouldSendOnRecordingFinish() {
+        let viewModel = makeComposerViewModel()
+        viewModel.shouldSendOnRecordingFinish = true
+
+        viewModel.discardRecording()
+
+        XCTAssertFalse(viewModel.shouldSendOnRecordingFinish)
     }
 
     // MARK: - private
