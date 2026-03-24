@@ -261,7 +261,7 @@ public struct ChatChannelListContentView<Factory: ViewFactory>: View {
         .modifier(viewFactory.styles.makeSearchableModifier(
             options: SearchableModifierOptions(searchText: $viewModel.searchText)
         ))
-        .background(Color(colors.backgroundElevationElevation0))
+        .background(Color(colors.backgroundCoreElevation0))
         .modifier(viewFactory.styles.makeChannelListContentModifier(options: ChannelListContentModifierOptions()))
     }
 }

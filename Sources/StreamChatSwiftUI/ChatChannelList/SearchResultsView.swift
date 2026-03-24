@@ -69,7 +69,7 @@ public struct SearchResultsView<Factory: ViewFactory>: View {
         .overlay(
             loadingSearchResults ? ProgressView() : nil
         )
-        .background(Color(colors.backgroundElevationElevation0))
+        .background(Color(colors.backgroundCoreElevation0))
     }
 }
 

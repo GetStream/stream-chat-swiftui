@@ -177,7 +177,7 @@ public struct ReactionAnimatableView: View {
     }
 
     private func reactionSelectedBackgroundColor(for reaction: MessageReactionType) -> Color? {
-        userReactionIDs.contains(reaction) ? Color(colors.backgroundCoreSelected) : nil
+        userReactionIDs.contains(reaction) ? Color(colors.backgroundUtilitySelected) : nil
     }
 
     private func index(for reaction: MessageReactionType) -> Int? {

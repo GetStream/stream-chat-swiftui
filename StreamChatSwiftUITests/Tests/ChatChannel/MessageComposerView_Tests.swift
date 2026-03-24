@@ -844,7 +844,7 @@ import XCTest
 
         // Themed
         streamChat?.appearance.colorPalette.backgroundCoreInverse = UIColor(Color.indigo)
-        streamChat?.appearance.colorPalette.textOnDark = .yellow
+        streamChat?.appearance.colorPalette.textOnAccent = .yellow
 
         AssertSnapshot(view, variants: .onlyUserInterfaceStyles, size: size, suffix: "themed")
     }

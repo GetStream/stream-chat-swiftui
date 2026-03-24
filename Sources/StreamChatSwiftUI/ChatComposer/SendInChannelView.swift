@@ -38,14 +38,14 @@ struct SendInChannelView: View {
         ZStack {
             if sendInChannel {
                 RoundedRectangle(cornerRadius: tokens.radiusSm)
-                    .fill(Color(colors.controlRadiocheckBackgroundSelected))
+                    .fill(Color(colors.controlRadioCheckBackgroundSelected))
                     .frame(width: checkboxSize, height: checkboxSize)
                 Image(systemName: "checkmark")
                     .font(.system(size: 11, weight: .bold))
-                    .foregroundColor(Color(colors.controlRadiocheckIconSelected))
+                    .foregroundColor(Color(colors.controlRadioCheckIcon))
             } else {
                 RoundedRectangle(cornerRadius: tokens.radiusSm)
-                    .stroke(Color(colors.controlRadiocheckBorder), lineWidth: 1)
+                    .stroke(Color(colors.controlRadioCheckBorder), lineWidth: 1)
                     .frame(width: checkboxSize, height: checkboxSize)
             }
         }

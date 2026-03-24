@@ -43,7 +43,7 @@ public struct MessageImagePreviewView: View {
     
     private var placeholder: some View {
         RoundedRectangle(cornerRadius: tokens.radiusMd, style: .continuous)
-            .fill(Color(colors.borderCoreOpacity10))
+            .fill(Color(colors.borderCoreOpacitySubtle))
             .frame(width: size, height: size)
     }
 }

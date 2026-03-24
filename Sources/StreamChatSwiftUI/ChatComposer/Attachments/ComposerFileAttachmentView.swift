@@ -34,11 +34,11 @@ struct ComposerFileAttachmentView: View {
         .padding(.leading, tokens.spacingMd)
         .padding(.bottom, tokens.spacingMd)
         .padding(.trailing, tokens.spacingSm)
-        .background(Color(colors.backgroundElevationElevation1))
+        .background(Color(colors.backgroundCoreElevation1))
         .cornerRadius(tokens.radiusLg)
         .overlay(
             RoundedRectangle(cornerRadius: tokens.radiusLg)
-                .strokeBorder(Color(colors.borderCoreOpacity10), lineWidth: 1)
+                .strokeBorder(Color(colors.borderCoreOpacitySubtle), lineWidth: 1)
         )
         .id(url)
         .dismissButtonOverlayModifier {
