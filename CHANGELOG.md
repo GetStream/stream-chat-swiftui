@@ -3,6 +3,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 # Upcoming
 
+### 🐞 Fixed
+- Pinned message label now shows "Pinned by you" when the current user pinned the message [#1329](https://github.com/GetStream/stream-chat-swiftui/pull/1329)
+
 ### 🔄 Changed
 - Renamed the `onMessageSent` callback to `willSendMessage` in `MessageComposerViewModel`, `ViewModelsFactory`, and `ComposerViewFactoryOptions` [#1327](https://github.com/GetStream/stream-chat-swiftui/pull/1327)
 

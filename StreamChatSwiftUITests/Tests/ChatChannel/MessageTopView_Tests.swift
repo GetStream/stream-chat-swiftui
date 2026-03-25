@@ -31,6 +31,25 @@ import XCTest
         AssertSnapshot(view, size: CGSize(width: 375, height: 40))
     }
 
+    func test_pinnedByYouAnnotation_snapshot() {
+        let currentUserId = StreamChatTestCase.currentUserId
+        let message = ChatMessage.mock(
+            id: .unique,
+            cid: .unique,
+            text: "Pinned by me",
+            author: .mock(id: .unique, name: "Martin"),
+            pinDetails: MessagePinDetails(
+                pinnedAt: Date(),
+                pinnedBy: .mock(id: currentUserId, name: "Martin"),
+                expiresAt: nil
+            )
+        )
+
+        let view = makeAnnotationsView(message: message)
+
+        AssertSnapshot(view, size: CGSize(width: 375, height: 40))
+    }
+
     // MARK: - Sent in channel
 
     func test_sentInChannelAnnotation_snapshot() {

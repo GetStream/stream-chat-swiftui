@@ -609,6 +609,8 @@ internal enum L10n {
       internal static var edited: String { L10n.tr("Localizable", "message.cell.edited") }
       /// Pinned by
       internal static var pinnedBy: String { L10n.tr("Localizable", "message.cell.pinnedBy") }
+      /// Pinned by you
+      internal static var pinnedByYou: String { L10n.tr("Localizable", "message.cell.pinnedByYou") }
       /// Sent at %@
       internal static func sentAt(_ p1: Any) -> String {
         return L10n.tr("Localizable", "message.cell.sent-at", String(describing: p1))
