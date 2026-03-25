@@ -28,7 +28,6 @@ public struct MessageImagePreviewView: View {
             resize: true,
             showVideoIcon: false
         )
-        .id(url)
         .clipShape(RoundedRectangle(cornerRadius: tokens.radiusMd, style: .continuous))
     }
 }
