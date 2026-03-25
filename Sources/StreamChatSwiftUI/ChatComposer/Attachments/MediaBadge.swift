@@ -66,7 +66,7 @@ public struct MediaBadge: View {
             Text(durationText)
                 .font(.system(size: 12, weight: .bold))
         }
-        .foregroundColor(Color(colors.badgeTextInverse))
+        .foregroundColor(Color(colors.badgeTextOnInverse))
         .padding(.horizontal, tokens.spacingXs)
         .padding(.vertical, tokens.spacingXxs)
         .frame(minWidth: 45, minHeight: 20)

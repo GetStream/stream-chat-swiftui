@@ -34,7 +34,7 @@ public struct SnackBarView: View {
         }
         .padding(.horizontal, tokens.spacingMd)
         .padding(.vertical, tokens.spacingSm)
-        .foregroundColor(Color(colors.textInverse))
+        .foregroundColor(Color(colors.textOnInverse))
         .background(Color(colors.backgroundCoreInverse))
         .clipShape(Capsule())
         .shadow(

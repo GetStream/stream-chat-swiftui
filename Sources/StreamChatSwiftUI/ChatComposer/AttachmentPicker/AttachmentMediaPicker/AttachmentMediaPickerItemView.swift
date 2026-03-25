@@ -96,7 +96,7 @@ public struct AttachmentMediaPickerItemView: View {
                     )
                 }
             } else {
-                Color(colors.backgroundCoreSurface)
+                Color(colors.backgroundCoreSurfaceDefault)
                     .aspectRatio(1, contentMode: .fill)
                 
                 Image(uiImage: images.imagePlaceholder)
