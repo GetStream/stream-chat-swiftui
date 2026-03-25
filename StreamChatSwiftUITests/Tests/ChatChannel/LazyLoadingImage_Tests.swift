@@ -10,7 +10,6 @@ import SwiftUI
 import XCTest
 
 @MainActor class LazyLoadingImage_Tests: StreamChatTestCase {
-
     // MARK: - Snapshot
 
     func test_lazyLoadingImage_snapshot() {
@@ -159,7 +158,6 @@ import XCTest
         // Then
         XCTAssertNotEqual(imageAttachment, videoAttachment)
     }
-
 }
 
 // MARK: - Test Helpers
