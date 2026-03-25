@@ -119,54 +119,12 @@ public struct MessageMediaAttachmentsContainerView<Factory: ViewFactory>: View {
         .frame(width: size.width, height: size.height)
     }
 
-    @ViewBuilder
     private func singleItemLayout(
         _ item: MediaAttachment,
         width: CGFloat,
         height: CGFloat
     ) -> some View {
-        if isSingleMediaWithoutCaption {
-            singleMediaCellWithoutCaption(item, width: width, height: height)
-        } else {
-            mediaCell(item, width: width, height: height, index: 0)
-        }
-    }
-
-    private func singleMediaCellWithoutCaption(
-        _ item: MediaAttachment,
-        width: CGFloat,
-        height: CGFloat
-    ) -> some View {
-        let bubbleRadius = tokens.messageBubbleRadiusGroupBottom
-        let forceLeftToRight = utils.messageListConfig.messageListAlignment == .leftAligned
-        let corners = message.bubbleCorners(
-            isFirst: isFirst,
-            forceLeftToRight: forceLeftToRight,
-            layoutDirection: layoutDirection
-        )
-        return MessageMediaAttachmentContentView(
-            factory: factory,
-            source: item,
-            width: width,
-            height: height,
-            cornerRadius: bubbleRadius,
-            corners: corners,
-            isOutgoing: message.isSentByCurrentUser
-        )
-        .withUploadingStateIndicator(for: item.uploadingState, url: item.url)
-        .overlay(
-            BubbleBackgroundShape(cornerRadius: bubbleRadius, corners: corners)
-                .stroke(message.bubbleBorder(colors: colors), lineWidth: 1)
-        )
-        .contentShape(Rectangle())
-        .onTapGesture {
-            if message.localState == nil {
-                selectedIndex = 0
-                galleryShown = true
-            }
-        }
-        .accessibilityLabel(L10n.Message.Attachment.accessibilityLabel(1))
-        .accessibilityAddTraits(item.type == .video ? .startsMediaSession : .isImage)
+        mediaCell(item, width: width, height: height, index: 0)
     }
 
     @ViewBuilder
@@ -284,15 +242,27 @@ public struct MessageMediaAttachmentsContainerView<Factory: ViewFactory>: View {
         height: CGFloat,
         index: Int
     ) -> some View {
-        MessageMediaAttachmentContentView(
+        let noCaptionSingle = isSingleMediaWithoutCaption
+        let effectiveRadius = noCaptionSingle ? tokens.messageBubbleRadiusGroupBottom : cornerRadius
+        let effectiveCorners: UIRectCorner? = noCaptionSingle ? noCaptionBubbleCorners : nil
+
+        return MessageMediaAttachmentContentView(
             factory: factory,
             source: item,
             width: width,
             height: height,
-            cornerRadius: cornerRadius,
+            cornerRadius: effectiveRadius,
+            corners: effectiveCorners,
             isOutgoing: message.isSentByCurrentUser
         )
         .withUploadingStateIndicator(for: item.uploadingState, url: item.url)
+        .modifier(
+            MediaBorderOverlayModifier(
+                cornerRadius: effectiveRadius,
+                corners: effectiveCorners,
+                borderColor: message.bubbleBorder(colors: colors)
+            )
+        )
         .contentShape(Rectangle())
         .onTapGesture {
             if message.localState == nil {
@@ -308,6 +278,15 @@ public struct MessageMediaAttachmentsContainerView<Factory: ViewFactory>: View {
 
     private var isSingleMediaWithoutCaption: Bool {
         message.text.isEmpty && sources.count == 1
+    }
+
+    private var noCaptionBubbleCorners: UIRectCorner {
+        let forceLeftToRight = utils.messageListConfig.messageListAlignment == .leftAligned
+        return message.bubbleCorners(
+            isFirst: isFirst,
+            forceLeftToRight: forceLeftToRight,
+            layoutDirection: layoutDirection
+        )
     }
 
     private var orientation: MediaGalleryOrientation {
@@ -346,5 +325,25 @@ public struct MessageMediaAttachmentsContainerView<Factory: ViewFactory>: View {
 
     private var remainingCount: Int {
         max(sources.count - maxDisplayedItems, 0)
+    }
+}
+
+/// Conditionally draws a bubble-shaped border stroke around the content.
+/// When `corners` is `nil` (multi-item gallery cells), no overlay is drawn.
+private struct MediaBorderOverlayModifier: ViewModifier {
+    let cornerRadius: CGFloat
+    let corners: UIRectCorner?
+    let borderColor: Color
+
+    func body(content: Content) -> some View {
+        content.overlay(borderOverlay)
+    }
+
+    @ViewBuilder
+    private var borderOverlay: some View {
+        if let corners {
+            BubbleBackgroundShape(cornerRadius: cornerRadius, corners: corners)
+                .stroke(borderColor, lineWidth: 1)
+        }
     }
 }
