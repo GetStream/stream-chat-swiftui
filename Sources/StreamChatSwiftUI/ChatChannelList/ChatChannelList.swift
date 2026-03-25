@@ -18,7 +18,7 @@ public struct ChannelList<Factory: ViewFactory>: View {
     private var scrollable: Bool
     private var onItemTap: @MainActor (ChatChannel) -> Void
     private var onItemAppear: @MainActor (Int) -> Void
-    private var channelDestination: @MainActor (ChannelSelectionInfo) -> Factory.ChannelDestination
+    private var channelDestination: (@MainActor (ChannelSelectionInfo) -> Factory.ChannelDestination)?
     private var trailingSwipeRightButtonTapped: @MainActor (ChatChannel) -> Void
     private var trailingSwipeLeftButtonTapped: @MainActor (ChatChannel) -> Void
     private var leadingSwipeButtonTapped: @MainActor (ChatChannel) -> Void
@@ -32,7 +32,7 @@ public struct ChannelList<Factory: ViewFactory>: View {
         scrollable: Bool = true,
         onItemTap: @escaping @MainActor (ChatChannel) -> Void,
         onItemAppear: @escaping @MainActor (Int) -> Void,
-        channelDestination: @escaping @MainActor (ChannelSelectionInfo) -> Factory.ChannelDestination,
+        channelDestination: (@MainActor (ChannelSelectionInfo) -> Factory.ChannelDestination)? = nil,
         trailingSwipeRightButtonTapped: @escaping @MainActor (ChatChannel) -> Void = { _ in },
         trailingSwipeLeftButtonTapped: @escaping @MainActor (ChatChannel) -> Void = { _ in },
         leadingSwipeButtonTapped: @escaping @MainActor (ChatChannel) -> Void = { _ in }
@@ -100,7 +100,7 @@ public struct ChannelsLazyVStack<Factory: ViewFactory>: View {
     @Binding var swipedChannelId: String?
     private var onItemTap: @MainActor (ChatChannel) -> Void
     private var onItemAppear: @MainActor (Int) -> Void
-    private var channelDestination: @MainActor (ChannelSelectionInfo) -> Factory.ChannelDestination
+    private var channelDestination: (@MainActor (ChannelSelectionInfo) -> Factory.ChannelDestination)?
     private var trailingSwipeRightButtonTapped: @MainActor (ChatChannel) -> Void
     private var trailingSwipeLeftButtonTapped: @MainActor (ChatChannel) -> Void
     private var leadingSwipeButtonTapped: @MainActor (ChatChannel) -> Void
@@ -112,7 +112,7 @@ public struct ChannelsLazyVStack<Factory: ViewFactory>: View {
         swipedChannelId: Binding<String?>,
         onItemTap: @escaping @MainActor (ChatChannel) -> Void,
         onItemAppear: @escaping @MainActor (Int) -> Void,
-        channelDestination: @escaping @MainActor (ChannelSelectionInfo) -> Factory.ChannelDestination,
+        channelDestination: (@MainActor (ChannelSelectionInfo) -> Factory.ChannelDestination)? = nil,
         trailingSwipeRightButtonTapped: @escaping @MainActor (ChatChannel) -> Void,
         trailingSwipeLeftButtonTapped: @escaping @MainActor (ChatChannel) -> Void,
         leadingSwipeButtonTapped: @escaping @MainActor (ChatChannel) -> Void

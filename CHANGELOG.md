@@ -8,6 +8,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Fix editing a voice message removing the voice recording attachment [#1327](https://github.com/GetStream/stream-chat-swiftui/pull/1327)
 - Fix hold-and-release mic gesture not sending the voice message immediately [#1327](https://github.com/GetStream/stream-chat-swiftui/pull/1327)
 - Fix voice message playback state and waveform slider updates [#1327](https://github.com/GetStream/stream-chat-swiftui/pull/1327)
+- Fix split view navigation on iPad [#1320](https://github.com/GetStream/stream-chat-swiftui/pull/1320)
 
 ### 🔄 Changed
 - Renamed the `onMessageSent` callback to `willSendMessage` in `MessageComposerViewModel`, `ViewModelsFactory`, and `ComposerViewFactoryOptions` [#1327](https://github.com/GetStream/stream-chat-swiftui/pull/1327)
