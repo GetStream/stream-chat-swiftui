@@ -13,7 +13,6 @@ public struct StreamAsyncImage<ImageContent: View>: View {
     
     let thumbnailSize: CGSize
     let url: URL?
-    let resize: Bool
     @ViewBuilder let content: (StreamAsyncImagePhase) -> ImageContent
     @State private var phase = StreamAsyncImagePhase.loading
     
@@ -26,49 +25,36 @@ public struct StreamAsyncImage<ImageContent: View>: View {
     /// - Parameters:
     ///   - url: The URL of the image to load, or `nil` if no image is available.
     ///   - thumbnailSize: The requested thumbnail dimensions used by the image CDN.
-    ///   - resize: Whether to use CDN thumbnail resizing. When `false`, the original
-    ///     image is loaded without CDN resize parameters, avoiding black borders on
-    ///     non-square images. Defaults to `true`.
     ///   - content: A closure that takes the current loading phase and returns
     ///     the view to display.
     public init(
         url: URL?,
         thumbnailSize: CGSize,
-        resize: Bool = true,
         content: @escaping (StreamAsyncImagePhase) -> ImageContent
     ) {
         self.url = url
         self.thumbnailSize = thumbnailSize
-        self.resize = resize
         self.content = content
     }
     
     public var body: some View {
         content(phase)
-            .compatibility.task(id: url?.absoluteString ?? "") { @MainActor [imageCDN, imageLoader, url, resize] in
+            .compatibility.task(id: url?.absoluteString ?? "") { @MainActor [imageCDN, imageLoader, url] in
                 guard let url else {
                     phase = .empty
                     return
                 }
-                if resize {
-                    let images = await imageLoader.loadImages(
-                        from: [url],
-                        placeholders: [],
-                        loadThumbnails: true,
-                        thumbnailSize: thumbnailSize,
-                        imageCDN: imageCDN
-                    )
-                    if let image = images.first {
-                        phase = .success(Image(uiImage: image))
-                    } else {
-                        phase = .empty
-                    }
+                let images = await imageLoader.loadImages(
+                    from: [url].compactMap { $0 },
+                    placeholders: [],
+                    loadThumbnails: true,
+                    thumbnailSize: thumbnailSize,
+                    imageCDN: imageCDN
+                )
+                if let image = images.first {
+                    phase = .success(Image(uiImage: image))
                 } else {
-                    if let image = await imageLoader.loadImage(url: url, imageCDN: imageCDN, resize: false) {
-                        phase = .success(Image(uiImage: image))
-                    } else {
-                        phase = .empty
-                    }
+                    phase = .empty
                 }
             }
     }
