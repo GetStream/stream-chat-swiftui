@@ -160,27 +160,6 @@ import XCTest
         XCTAssertNotEqual(imageAttachment, videoAttachment)
     }
 
-    // MARK: - Helpers
-
-    private var testWindow: UIWindow?
-
-    /// Presents the view in a window so SwiftUI lifecycle modifiers fire.
-    @discardableResult
-    private func showView<V: View>(_ view: V) -> UIHostingController<V> {
-        let hostingController = UIHostingController(rootView: view)
-        let window = UIWindow(frame: CGRect(origin: .zero, size: CGSize(width: 200, height: 200)))
-        window.rootViewController = hostingController
-        window.makeKeyAndVisible()
-        testWindow = window
-        hostingController.view.layoutIfNeeded()
-        return hostingController
-    }
-
-    override func tearDown() {
-        testWindow?.isHidden = true
-        testWindow = nil
-        super.tearDown()
-    }
 }
 
 // MARK: - Test Helpers

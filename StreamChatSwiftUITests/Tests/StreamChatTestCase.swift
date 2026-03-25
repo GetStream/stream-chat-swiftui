@@ -55,6 +55,28 @@ import XCTest
             appearance.colorPalette.navigationBarGlyph = .green
         }
     }
+
+    // MARK: - View Hosting
+
+    private var testWindow: UIWindow?
+
+    /// Presents a SwiftUI view in a window so lifecycle modifiers (`.onAppear`, `.onChange`) fire.
+    @discardableResult
+    func showView<V: View>(_ view: V) -> UIHostingController<V> {
+        let hostingController = UIHostingController(rootView: view)
+        let window = UIWindow(frame: CGRect(origin: .zero, size: CGSize(width: 200, height: 200)))
+        window.rootViewController = hostingController
+        window.makeKeyAndVisible()
+        testWindow = window
+        hostingController.view.layoutIfNeeded()
+        return hostingController
+    }
+
+    override open func tearDown() {
+        testWindow?.isHidden = true
+        testWindow = nil
+        super.tearDown()
+    }
 }
 
 // Forces the solid primary button style regardless of platform,
