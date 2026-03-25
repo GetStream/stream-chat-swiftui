@@ -44,7 +44,7 @@ struct VoiceRecordingLockView: View {
         .foregroundColor(Color(colors.textSecondary))
         .padding(10)
         .frame(width: 40)
-        .background(Color(colors.backgroundCoreElevation1))
+        .background(Color(colors.backgroundElevation1))
         .clipShape(Capsule())
         .overlay(
             Capsule()

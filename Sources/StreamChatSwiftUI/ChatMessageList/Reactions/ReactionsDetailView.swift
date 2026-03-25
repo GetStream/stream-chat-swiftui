@@ -54,7 +54,7 @@ struct ReactionsDetailView: View {
                 }
             }
         }
-        .background(Color(colors.backgroundCoreElevation1).edgesIgnoringSafeArea(.bottom))
+        .background(Color(colors.backgroundElevation1).edgesIgnoringSafeArea(.bottom))
         .sheet(isPresented: $viewModel.moreReactionsPickerShown) {
             MoreReactionsView { emoji in
                 let reaction = MessageReactionType(rawValue: emoji)
@@ -83,7 +83,7 @@ struct ReactionsDetailView: View {
                 .padding(.vertical, tokens.spacingXs)
                 .background(
                     Capsule()
-                        .fill(Color(colors.backgroundCoreElevation1))
+                        .fill(Color(colors.backgroundElevation1))
                 )
                 .overlay(
                     Capsule()
@@ -115,7 +115,7 @@ struct ReactionsDetailView: View {
             .padding(.vertical, tokens.spacingXs)
             .background(
                 Capsule()
-                    .fill(viewModel.selectedReactionType == type ? Color(colors.backgroundUtilitySelected) : Color(colors.backgroundCoreElevation1))
+                    .fill(viewModel.selectedReactionType == type ? Color(colors.backgroundUtilitySelected) : Color(colors.backgroundElevation1))
             )
             .overlay(
                 Capsule()

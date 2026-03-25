@@ -66,7 +66,7 @@ struct ComposerVoiceRecordingAttachmentView: View {
         .padding(.bottom, tokens.spacingMd)
         .padding(.trailing, tokens.spacingSm)
         .frame(height: 72)
-        .background(Color(colors.backgroundCoreElevation1))
+        .background(Color(colors.backgroundElevation1))
         .cornerRadius(tokens.radiusLg)
         .overlay(
             RoundedRectangle(cornerRadius: tokens.radiusLg)

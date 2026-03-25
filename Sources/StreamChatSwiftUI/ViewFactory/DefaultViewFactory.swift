@@ -90,7 +90,7 @@ extension ViewFactory {
         options: ChannelListItemBackgroundOptions
     ) -> some View {
         let colors = InjectedValues[\.colors]
-        return Color(colors.backgroundCoreElevation0)
+        return Color(colors.backgroundElevation0)
     }
 
     public func makeChannelListDividerItem(options: ChannelListDividerItemOptions) -> some View {
@@ -949,7 +949,7 @@ extension ViewFactory {
     }
 
     public func makeThreadListBackground(options: ThreadListBackgroundOptions) -> some View {
-        Color(options.colors.backgroundCoreElevation1)
+        Color(options.colors.backgroundElevation1)
             .edgesIgnoringSafeArea(.bottom)
     }
 
@@ -957,7 +957,7 @@ extension ViewFactory {
         options: ThreadListItemBackgroundOptions
     ) -> some View {
         let colors = InjectedValues[\.colors]
-        return Color(colors.backgroundCoreElevation1)
+        return Color(colors.backgroundElevation1)
     }
 
     public func makeThreadListDividerItem(options: ThreadListDividerItemOptions) -> some View {

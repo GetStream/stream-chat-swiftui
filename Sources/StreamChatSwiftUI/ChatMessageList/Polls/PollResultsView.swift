@@ -36,7 +36,7 @@ struct PollResultsView<Factory: ViewFactory>: View {
             .padding(.top, tokens.spacingMd)
             .padding(.bottom, tokens.spacing3xl)
         }
-        .background(Color(colors.backgroundCoreElevation1).ignoresSafeArea())
+        .background(Color(colors.backgroundElevation1).ignoresSafeArea())
         .toolbarThemed {
             ToolbarItem(placement: .principal) {
                 Text(L10n.Message.Polls.Toolbar.resultsTitle)

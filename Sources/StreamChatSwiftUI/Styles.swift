@@ -242,7 +242,7 @@ public struct SuggestionsRegularContainerModifier: ViewModifier {
             Divider()
             content
         }
-        .background(Color(colors.backgroundCoreElevation1))
+        .background(Color(colors.backgroundElevation1))
     }
 }
 
@@ -271,7 +271,7 @@ public struct RegularScrollToBottomButtonModifier: ViewModifier {
         content
             .background(
                 Circle()
-                    .fill(Color(colors.backgroundCoreElevation1))
+                    .fill(Color(colors.backgroundElevation1))
                     .shadow(
                         color: Color(tokens.lightElevation3.color),
                         radius: tokens.lightElevation3.blur / 2,

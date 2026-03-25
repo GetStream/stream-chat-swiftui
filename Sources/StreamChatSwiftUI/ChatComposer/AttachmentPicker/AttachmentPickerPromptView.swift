@@ -59,7 +59,7 @@ public struct AttachmentPickerPromptView: View {
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .padding(.horizontal, tokens.spacing2xl)
         .padding(.bottom, tokens.spacing3xl)
-        .background(Color(colors.backgroundCoreElevation1))
+        .background(Color(colors.backgroundElevation1))
         .accessibilityElement(children: .contain)
         .accessibilityIdentifier("AttachmentPickerPromptView")
     }
