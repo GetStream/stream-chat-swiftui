@@ -154,6 +154,44 @@ import XCTest
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
 
+    func test_channelListItem_giphyMessage() throws {
+        // Given
+        let message = try mockGiphyMessage(text: "", isSentByCurrentUser: true)
+        let channel = ChatChannel.mock(cid: .unique, latestMessages: [message], previewMessage: message)
+        
+        // When
+        let view = ChatChannelListItem(
+            channel: channel,
+            channelName: "Test",
+            onItemTap: { _ in }
+        )
+        .frame(width: defaultScreenSize.width)
+        
+        // Then
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
+    }
+    
+    func test_channelListItem_giphyMessage_groupChannel() throws {
+        // Given
+        let message = try mockGiphyMessage(text: "", isSentByCurrentUser: false)
+        let channel = ChatChannel.mockNonDMChannel(
+            name: "Group Chat",
+            latestMessages: [message],
+            previewMessage: message
+        )
+        
+        // When
+        let view = ChatChannelListItem(
+            channel: channel,
+            channelName: "Group Chat",
+            onItemTap: { _ in }
+        )
+        .frame(width: defaultScreenSize.width)
+        
+        // Then
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
+    }
+    
     func test_channelListItem_giphyMessageLatestButPreviewIsAnotherMessage() throws {
         // Given
         let previewMessage = try mockImageMessage(text: "Hi!", isSentByCurrentUser: true)
