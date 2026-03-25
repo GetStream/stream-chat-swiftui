@@ -309,11 +309,13 @@ struct ChatThreadListItemContentView<Factory: ViewFactory>: View {
 
         return HStack(spacing: -(overlap + borderWidth * 2)) {
             ForEach(Array(participantUsers.prefix(3).enumerated()), id: \.offset) { index, user in
-                UserAvatar(
-                    user: user,
-                    size: avatarSize,
-                    showsIndicator: false,
-                    showsBorder: false
+                factory.makeUserAvatarView(
+                    options: UserAvatarViewOptions(
+                        user: user,
+                        size: avatarSize,
+                        showsIndicator: false,
+                        showsBorder: false
+                    )
                 )
                 .padding(borderWidth)
                 .background(Circle().fill(colors.borderCoreOnDark.toColor))

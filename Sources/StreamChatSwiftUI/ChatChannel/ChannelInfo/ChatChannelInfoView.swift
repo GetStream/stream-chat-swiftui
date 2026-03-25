@@ -153,7 +153,7 @@ public struct ChatChannelInfoView<Factory: ViewFactory>: View, KeyboardReadable 
                 participant: participant
             )
         } else {
-            ChatInfoGroupHeaderView(viewModel: viewModel)
+            ChatInfoGroupHeaderView(factory: factory, viewModel: viewModel)
         }
     }
 

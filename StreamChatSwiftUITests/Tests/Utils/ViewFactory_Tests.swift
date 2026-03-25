@@ -1051,7 +1051,7 @@ import XCTest
         )
 
         // Then
-        XCTAssert(view is ReactionsDetailView)
+        XCTAssert(view is ReactionsDetailView<DefaultViewFactory>)
     }
 
     func test_viewFactory_makeMessageTopView() {
