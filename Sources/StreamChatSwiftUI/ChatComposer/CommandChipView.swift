@@ -42,7 +42,7 @@ public struct CommandChipView: View {
         .padding(.horizontal, tokens.spacingXs)
         .padding(.vertical, tokens.spacingXxxs)
         .frame(height: 24)
-        .foregroundColor(Color(colors.textOnAccent))
+        .foregroundColor(Color(colors.textOnInverse))
         .background(Color(colors.backgroundCoreInverse))
         .clipShape(Capsule())
         .accessibilityElement(children: .combine)
