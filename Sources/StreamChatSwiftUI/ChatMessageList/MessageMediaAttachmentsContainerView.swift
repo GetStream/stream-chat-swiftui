@@ -242,10 +242,8 @@ public struct MessageMediaAttachmentsContainerView<Factory: ViewFactory>: View {
         height: CGFloat,
         index: Int
     ) -> some View {
-        let noCaptionSingle = isSingleMediaWithoutCaption
-        let effectiveRadius = noCaptionSingle ? tokens.messageBubbleRadiusGroupBottom : cornerRadius
-        let effectiveCorners: UIRectCorner? = noCaptionSingle ? noCaptionBubbleCorners : nil
-
+        let effectiveRadius = isSingleMediaWithoutCaption ? tokens.messageBubbleRadiusGroupBottom : cornerRadius
+        let effectiveCorners: UIRectCorner? = isSingleMediaWithoutCaption ? noCaptionBubbleCorners : nil
         return MessageMediaAttachmentContentView(
             factory: factory,
             source: item,
