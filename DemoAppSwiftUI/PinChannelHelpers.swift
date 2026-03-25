@@ -120,7 +120,7 @@ struct DemoAppChatChannelNavigatableListItem<ChannelDestination: View>: View {
     private var channelName: String
     private var disabled: Bool
     @Binding private var selectedChannel: ChannelSelectionInfo?
-    private var channelDestination: (ChannelSelectionInfo) -> ChannelDestination
+    private var channelDestination: ((ChannelSelectionInfo) -> ChannelDestination)?
     private var onItemTap: (ChatChannel) -> Void
 
     init(
@@ -128,7 +128,7 @@ struct DemoAppChatChannelNavigatableListItem<ChannelDestination: View>: View {
         channelName: String,
         disabled: Bool = false,
         selectedChannel: Binding<ChannelSelectionInfo?>,
-        channelDestination: @escaping (ChannelSelectionInfo) -> ChannelDestination,
+        channelDestination: ((ChannelSelectionInfo) -> ChannelDestination)? = nil,
         onItemTap: @escaping (ChatChannel) -> Void
     ) {
         self.channel = channel
@@ -159,18 +159,20 @@ struct DemoAppChatChannelNavigatableListItem<ChannelDestination: View>: View {
                 )
             }
 
-            NavigationLink(
-                tag: channel.channelSelectionInfo,
-                selection: $selectedChannel
-            ) {
-                LazyView(
-                    channelDestination(channel.channelSelectionInfo)
-                        .modifier(TabBarVisibilityModifier())
-                )
-            } label: {
-                EmptyView()
+            if let channelDestination {
+                NavigationLink(
+                    tag: channel.channelSelectionInfo,
+                    selection: $selectedChannel
+                ) {
+                    LazyView(
+                        channelDestination(channel.channelSelectionInfo)
+                            .modifier(TabBarVisibilityModifier())
+                    )
+                } label: {
+                    EmptyView()
+                }
+                .opacity(0) // Fixes showing accessibility button shape
             }
-            .opacity(0) // Fixes showing accessibility button shape
         }
     }
 

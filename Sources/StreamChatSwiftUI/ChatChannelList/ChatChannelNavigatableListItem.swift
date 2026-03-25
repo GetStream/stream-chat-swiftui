@@ -14,7 +14,7 @@ public struct ChatChannelNavigatableListItem<Factory: ViewFactory, ChannelDestin
     private var disabled: Bool
     private var handleTabBarVisibility: Bool
     @Binding private var selectedChannel: ChannelSelectionInfo?
-    private var channelDestination: (ChannelSelectionInfo) -> ChannelDestination
+    private var channelDestination: ((ChannelSelectionInfo) -> ChannelDestination)?
     private var onItemTap: (ChatChannel) -> Void
 
     public init(
@@ -24,7 +24,7 @@ public struct ChatChannelNavigatableListItem<Factory: ViewFactory, ChannelDestin
         disabled: Bool = false,
         handleTabBarVisibility: Bool = true,
         selectedChannel: Binding<ChannelSelectionInfo?>,
-        channelDestination: @escaping (ChannelSelectionInfo) -> ChannelDestination,
+        channelDestination: ((ChannelSelectionInfo) -> ChannelDestination)? = nil,
         onItemTap: @escaping (ChatChannel) -> Void
     ) {
         self.factory = factory
@@ -47,23 +47,25 @@ public struct ChatChannelNavigatableListItem<Factory: ViewFactory, ChannelDestin
                 disabled: disabled,
                 onItemTap: onItemTap
             )
-
-            NavigationLink(
-                tag: channel.channelSelectionInfo,
-                selection: $selectedChannel
-            ) {
-                LazyView(
-                    channelDestination(channel.channelSelectionInfo)
-                        .modifier(
-                            HideTabBarModifierForiOS16(
-                                handleTabBarVisibility: handleTabBarVisibility
+            
+            if let channelDestination {
+                NavigationLink(
+                    tag: channel.channelSelectionInfo,
+                    selection: $selectedChannel
+                ) {
+                    LazyView(
+                        channelDestination(channel.channelSelectionInfo)
+                            .modifier(
+                                HideTabBarModifierForiOS16(
+                                    handleTabBarVisibility: handleTabBarVisibility
+                                )
                             )
-                        )
-                )
-            } label: {
-                EmptyView()
+                    )
+                } label: {
+                    EmptyView()
+                }
+                .opacity(0) // Fixes showing accessibility button shape
             }
-            .opacity(0) // Fixes showing accessibility button shape
         }
     }
 

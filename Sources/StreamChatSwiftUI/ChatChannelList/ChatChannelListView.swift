@@ -4,6 +4,7 @@
 
 import StreamChat
 import SwiftUI
+import UIKit
 
 /// View for the chat channel list.
 public struct ChatChannelListView<Factory: ViewFactory>: View {
@@ -75,37 +76,52 @@ public struct ChatChannelListView<Factory: ViewFactory>: View {
     }
 
     public var body: some View {
-        NavigationContainerView(embedInNavigationView: embedInNavigationView) {
-            content()
-        }
-        .sheet(isPresented: $viewModel.channelPopupShown, content: {
-            channelPopup()
-                .modifier(PresentationDetentsModifier(sheetSizes: [.custom(280), .medium]))
-        })
-        .if(isIphone || !utils.messageListConfig.iPadSplitViewEnabled, transform: { view in
-            view.navigationViewStyle(.stack)
-        })
-        .background(
-            isIphone && handleTabBarVisibility ?
-                Color.clear.background(
-                    TabBarAccessor { tabBar in
-                        self.tabBar = tabBar
-                    }
-                )
-                .allowsHitTesting(false)
-                : nil
-        )
-        .onReceive(viewModel.$hideTabBar) { newValue in
-            if isIphone && handleTabBarVisibility {
-                setupTabBarAppeareance()
-                tabBar?.isHidden = newValue
+        containerView
+            .sheet(isPresented: $viewModel.channelPopupShown, content: {
+                channelPopup()
+                    .modifier(PresentationDetentsModifier(sheetSizes: [.custom(280), .medium]))
+            })
+            .if(isIphone || !utils.messageListConfig.iPadSplitViewEnabled, transform: { view in
+                view.navigationViewStyle(.stack)
+            })
+            .background(
+                isIphone && handleTabBarVisibility ?
+                    Color.clear.background(
+                        TabBarAccessor { tabBar in
+                            self.tabBar = tabBar
+                        }
+                    )
+                    .allowsHitTesting(false)
+                    : nil
+            )
+            .onReceive(viewModel.$hideTabBar) { newValue in
+                if isIphone && handleTabBarVisibility {
+                    setupTabBarAppeareance()
+                    tabBar?.isHidden = newValue
+                }
             }
-        }
-        .accessibilityIdentifier("ChatChannelListView")
+            .accessibilityIdentifier("ChatChannelListView")
     }
 
     @ViewBuilder
-    private func content() -> some View {
+    private var containerView: some View {
+        if usesIPadSplitView {
+            if #available(iOS 16, *) {
+                NavigationSplitView {
+                    content
+                } detail: {
+                    splitViewDetail()
+                }
+                .accentColor(Color(colors.navigationBarTintColor))
+            }
+        } else {
+            NavigationContainerView(embedInNavigationView: embedInNavigationView) {
+                content
+            }
+        }
+    }
+
+    private var content: some View {
         Group {
             if viewModel.loading {
                 viewFactory.makeLoadingView(options: LoadingViewOptions())
@@ -115,6 +131,7 @@ public struct ChatChannelListView<Factory: ViewFactory>: View {
                 ChatChannelListContentView(
                     viewFactory: viewFactory,
                     viewModel: viewModel,
+                    channelDestination: usesIPadSplitView ? nil : channelDestination,
                     onItemTap: onItemTap
                 )
             }
@@ -149,6 +166,22 @@ public struct ChatChannelListView<Factory: ViewFactory>: View {
         .navigationBarTitleDisplayMode(utils.channelListConfig.navigationBarDisplayMode)
     }
 
+    private var usesIPadSplitView: Bool {
+        guard embedInNavigationView, isIPad, utils.messageListConfig.iPadSplitViewEnabled else {
+            return false
+        }
+
+        if #available(iOS 16, *) {
+            return true
+        } else {
+            return false
+        }
+    }
+
+    private var channelDestination: @MainActor (ChannelSelectionInfo) -> Factory.ChannelDestination {
+        viewFactory.makeChannelDestination(options: ChannelDestinationOptions())
+    }
+
     private func setupTabBarAppeareance() {
         if #available(iOS 15.0, *) {
             let tabBarAppearance: UITabBarAppearance = UITabBarAppearance()
@@ -181,6 +214,22 @@ public struct ChatChannelListView<Factory: ViewFactory>: View {
             EmptyView()
         }
     }
+
+    @available(iOS 16.0, *)
+    @ViewBuilder
+    private func splitViewDetail() -> some View {
+        NavigationStack {
+            if let selectedChannel = viewModel.selectedChannel {
+                channelDestination(selectedChannel)
+            } else {
+                viewFactory.makeMessageListBackground(
+                    options: MessageListBackgroundOptions(isInThread: false)
+                )
+                .accessibilityIdentifier("ChatChannelListSplitDetailPlaceholder")
+            }
+        }
+        .id(viewModel.selectedChannel?.id)
+    }
 }
 
 extension ChatChannelListView where Factory == DefaultViewFactory {
@@ -196,15 +245,18 @@ public struct ChatChannelListContentView<Factory: ViewFactory>: View {
 
     private var viewFactory: Factory
     @ObservedObject private var viewModel: ChatChannelListViewModel
+    private var channelDestination: (@MainActor (ChannelSelectionInfo) -> Factory.ChannelDestination)?
     private var onItemTap: @MainActor (ChatChannel) -> Void
 
     public init(
         viewFactory: Factory,
         viewModel: ChatChannelListViewModel,
+        channelDestination: (@MainActor (ChannelSelectionInfo) -> Factory.ChannelDestination)? = nil,
         onItemTap: (@MainActor (ChatChannel) -> Void)? = nil
     ) {
         self.viewFactory = viewFactory
         self.viewModel = viewModel
+        self.channelDestination = channelDestination
         if let onItemTap {
             self.onItemTap = onItemTap
         } else {
@@ -246,7 +298,7 @@ public struct ChatChannelListContentView<Factory: ViewFactory>: View {
                         viewModel.checkTabBarAppearance()
                         viewModel.checkForChannels(index: index)
                     },
-                    channelDestination: viewFactory.makeChannelDestination(options: ChannelDestinationOptions()),
+                    channelDestination: channelDestination,
                     trailingSwipeRightButtonTapped: viewModel.onDeleteTapped(channel:),
                     trailingSwipeLeftButtonTapped: viewModel.onMoreTapped(channel:),
                     leadingSwipeButtonTapped: { _ in }
