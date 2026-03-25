@@ -572,8 +572,8 @@ import XCTest
         let resolver = MessageAttachmentPreviewResolver(message: message)
         
         // Then
-        XCTAssertEqual(resolver.previewDescription, "Photo")
-        XCTAssertEqual(resolver.previewIcon, .photo)
+        XCTAssertEqual(resolver.previewDescription, "Giphy")
+        XCTAssertEqual(resolver.previewIcon, .document)
         XCTAssertNotNil(resolver.previewThumbnail)
         XCTAssertEqual(resolver.previewThumbnail?.url, giphyURL)
         XCTAssertTrue(resolver.previewThumbnail?.isImage == true)

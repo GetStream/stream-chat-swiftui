@@ -363,6 +363,39 @@ import XCTest
         AssertSnapshot(view, size: containerSize)
     }
     
+    // MARK: - Reply - Giphy
+    
+    func test_quotedMessageView_giphy() {
+        // Given
+        let giphyAttachment = ChatMessageGiphyAttachment(
+            id: .unique,
+            type: .giphy,
+            payload: GiphyAttachmentPayload(
+                title: "Funny GIF",
+                previewURL: .localYodaImage,
+                actions: []
+            ),
+            downloadingState: nil,
+            uploadingState: nil
+        )
+        
+        let message = ChatMessage.mock(
+            id: .unique,
+            cid: .unique,
+            text: "",
+            author: author,
+            attachments: [giphyAttachment.asAnyAttachment]
+        )
+        
+        // When
+        let view = containerView {
+            QuotedMessageView(message: message)
+        }
+        
+        // Then
+        AssertSnapshot(view, size: containerSize)
+    }
+    
     // MARK: - Reply - Mixed Content (Caption)
     
     func test_quotedMessageView_mixedContentWithCaption() {

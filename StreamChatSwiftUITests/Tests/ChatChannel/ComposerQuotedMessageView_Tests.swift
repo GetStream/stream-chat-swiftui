@@ -111,6 +111,42 @@ import XCTest
         AssertSnapshot(view, size: containerSize)
     }
     
+    func test_composerQuotedMessageView_withGiphyAttachment() {
+        // Given
+        let giphyAttachment = ChatMessageGiphyAttachment(
+            id: .unique,
+            type: .giphy,
+            payload: GiphyAttachmentPayload(
+                title: "Funny GIF",
+                previewURL: .localYodaImage,
+                actions: []
+            ),
+            downloadingState: nil,
+            uploadingState: nil
+        )
+        
+        let message = ChatMessage.mock(
+            id: .unique,
+            cid: .unique,
+            text: "",
+            author: author,
+            attachments: [giphyAttachment.asAnyAttachment],
+            isSentByCurrentUser: false
+        )
+        
+        // When
+        let view = containerView {
+            ComposerQuotedMessageView(
+                factory: DefaultViewFactory.shared,
+                quotedMessage: message,
+                onDismiss: {}
+            )
+        }
+        
+        // Then
+        AssertSnapshot(view, size: containerSize)
+    }
+    
     func test_composerQuotedMessageView_withFileAttachment() {
         // Given
         let fileAttachment = ChatMessageFileAttachment(
