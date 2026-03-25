@@ -53,4 +53,22 @@ public extension ImageLoading {
             }
         }
     }
+
+    func loadImage(
+        url: URL?,
+        imageCDN: ImageCDN,
+        resize: Bool = true,
+        preferredSize: CGSize? = nil
+    ) async -> UIImage? {
+        await withCheckedContinuation { continuation in
+            loadImage(url: url, imageCDN: imageCDN, resize: resize, preferredSize: preferredSize) { result in
+                switch result {
+                case .success(let image):
+                    continuation.resume(returning: image)
+                case .failure:
+                    continuation.resume(returning: nil)
+                }
+            }
+        }
+    }
 }
