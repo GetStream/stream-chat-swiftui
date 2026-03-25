@@ -31,12 +31,12 @@ final class ChannelAvatar_Tests: StreamChatTestCase {
             }
             VStack(spacing: 2) {
                 ForEach(AvatarSize.standardSizes, id: \.self) { size in
-                    ChannelAvatar(channel: channel, size: size)
+                    ChannelAvatar(channel: channel, size: size, indicator: .online)
                 }
             }
             VStack(spacing: 2) {
                 ForEach(AvatarSize.standardSizes, id: \.self) { size in
-                    ChannelAvatar(channel: channel, size: size)
+                    ChannelAvatar(channel: channel, size: size, indicator: .online)
                         .redacted(reason: .placeholder)
                 }
             }
@@ -119,7 +119,7 @@ final class ChannelAvatar_Tests: StreamChatTestCase {
         // Given — DM channel with online member shows indicator
         let channel = mockGroupChannel(memberCount: 2, activeMembers: 2)
         let size = CGSize(width: 240, height: 100)
-        let view = avatarRow(channel: channel)
+        let view = avatarRow(channel: channel, indicator: .online)
             .frame(width: size.width, height: size.height)
 
         // Then
