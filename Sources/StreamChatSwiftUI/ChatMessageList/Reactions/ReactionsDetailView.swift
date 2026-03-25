@@ -5,21 +5,24 @@
 import StreamChat
 import SwiftUI
 
-struct ReactionsDetailView: View {
+struct ReactionsDetailView<Factory: ViewFactory>: View {
     @Injected(\.colors) private var colors
     @Injected(\.fonts) private var fonts
     @Injected(\.tokens) private var tokens
     @Injected(\.images) private var images
 
+    let factory: Factory
     @StateObject var viewModel: ReactionsDetailViewModel
 
     @Environment(\.presentationMode) var presentationMode
 
-    init(message: ChatMessage) {
+    init(factory: Factory = DefaultViewFactory.shared, message: ChatMessage) {
+        self.factory = factory
         _viewModel = StateObject(wrappedValue: .init(message: message))
     }
 
-    init(viewModel: ReactionsDetailViewModel) {
+    init(factory: Factory = DefaultViewFactory.shared, viewModel: ReactionsDetailViewModel) {
+        self.factory = factory
         _viewModel = StateObject(wrappedValue: viewModel)
     }
 
@@ -129,11 +132,13 @@ struct ReactionsDetailView: View {
     private func reactionRow(reaction: ChatMessageReaction) -> some View {
         let isCurrentUser = viewModel.isCurrentUser(reaction)
         return HStack(spacing: tokens.spacingSm) {
-            UserAvatar(
-                user: reaction.author,
-                size: AvatarSize.large,
-                showsIndicator: false,
-                showsBorder: false
+            factory.makeUserAvatarView(
+                options: UserAvatarViewOptions(
+                    user: reaction.author,
+                    size: AvatarSize.large,
+                    showsIndicator: false,
+                    showsBorder: false
+                )
             )
 
             Button {

@@ -88,11 +88,13 @@ public struct EditGroupView<Factory: ViewFactory>: View {
                         .frame(width: AvatarSize.extraExtraLarge, height: AvatarSize.extraExtraLarge)
                         .clipShape(Circle())
                 } else {
-                    ChannelAvatar(
-                        channel: viewModel.channel,
-                        size: AvatarSize.extraExtraLarge,
-                        showsIndicator: false,
-                        showsBorder: false
+                    factory.makeChannelAvatarView(
+                        options: ChannelAvatarViewOptions(
+                            channel: viewModel.channel,
+                            size: AvatarSize.extraExtraLarge,
+                            showsIndicator: false,
+                            showsBorder: false
+                        )
                     )
                 }
             }

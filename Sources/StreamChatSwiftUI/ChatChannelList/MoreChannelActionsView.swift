@@ -116,11 +116,13 @@ public struct MoreChannelActionsView<Factory: ViewFactory>: View {
                 )
             )
         } else {
-            ChannelAvatar(
-                channel: channel,
-                size: AvatarSize.large,
-                showsIndicator: false,
-                showsBorder: false
+            factory.makeChannelAvatarView(
+                options: ChannelAvatarViewOptions(
+                    channel: channel,
+                    size: AvatarSize.large,
+                    showsIndicator: false,
+                    showsBorder: false
+                )
             )
         }
     }

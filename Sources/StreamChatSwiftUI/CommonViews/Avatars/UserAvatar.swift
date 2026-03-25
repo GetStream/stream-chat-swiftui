@@ -21,21 +21,20 @@ public struct UserAvatar: View {
     /// - Parameters:
     ///   - user: The user whose avatar to display.
     ///   - size: The width and height of the avatar.
-    ///   - showsIndicator: A Boolean value that indicates whether to show the
-    ///     user's online status. Defaults to `false`.
+    ///   - indicator: The presence indicator to display (e.g. `.online`, `.offline`, `.none`).
     ///   - showsBorder: A Boolean value that indicates whether to show a circular
     ///     border around the avatar. Defaults to `true`.
     public init(
         user: ChatUser,
         size: CGFloat,
-        showsIndicator: Bool = false,
+        indicator: AvatarIndicator = .none,
         showsBorder: Bool = true
     ) {
         self.init(
             url: user.imageURL,
             initials: Self.initials(from: user.name ?? ""),
             size: size,
-            indicator: showsIndicator ? (user.isOnline ? .online : .offline) : .none,
+            indicator: indicator,
             showsBorder: showsBorder
         )
     }

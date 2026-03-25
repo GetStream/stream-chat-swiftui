@@ -36,15 +36,19 @@ public final class UserAvatarViewOptions: Sendable {
     public let user: ChatUser
     /// The size of the avatar.
     public let size: CGFloat
-    /// True, if the presence indicator should be shown with online and offline states.
+    /// Whether to show the online presence indicator.
     public let showsIndicator: Bool
-    
+    /// Whether to show a circular border around the avatar.
+    public let showsBorder: Bool
+
     public init(
         user: ChatUser,
         size: CGFloat,
-        showsIndicator: Bool
+        showsIndicator: Bool,
+        showsBorder: Bool = true
     ) {
         self.size = size
+        self.showsBorder = showsBorder
         self.showsIndicator = showsIndicator
         self.user = user
     }

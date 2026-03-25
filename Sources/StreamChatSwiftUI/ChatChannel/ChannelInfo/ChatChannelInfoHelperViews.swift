@@ -30,26 +30,29 @@ public struct InfoSectionCard<Content: View>: View {
 
 /// Header view shown at the top of the group info screen.
 /// Displays the channel avatar stack, channel name, and member count.
-public struct ChatInfoGroupHeaderView: View {
+public struct ChatInfoGroupHeaderView<Factory: ViewFactory>: View {
     @Injected(\.fonts) private var fonts
     @Injected(\.colors) private var colors
     @Injected(\.tokens) private var tokens
 
+    let factory: Factory
     @ObservedObject var viewModel: ChatChannelInfoViewModel
 
-    public init(viewModel: ChatChannelInfoViewModel) {
+    public init(factory: Factory = DefaultViewFactory.shared, viewModel: ChatChannelInfoViewModel) {
+        self.factory = factory
         self.viewModel = viewModel
     }
 
     public var body: some View {
         VStack(spacing: tokens.spacingXs) {
-            ChannelAvatar(
-                channel: viewModel.channel,
-                size: AvatarSize.extraExtraLarge,
-                showsIndicator: false,
-                showsBorder: true
+            factory.makeChannelAvatarView(
+                options: ChannelAvatarViewOptions(
+                    channel: viewModel.channel,
+                    size: AvatarSize.extraExtraLarge,
+                    showsIndicator: false,
+                    showsBorder: true
+                )
             )
-
             Text(viewModel.channelName)
                 .font(fonts.title3.weight(.semibold))
                 .foregroundColor(Color(colors.textPrimary))

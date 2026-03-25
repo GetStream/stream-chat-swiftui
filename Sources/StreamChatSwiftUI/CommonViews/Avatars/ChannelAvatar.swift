@@ -11,6 +11,7 @@ public struct ChannelAvatar: View {
     @Injected(\.colors) var colors
     @Injected(\.utils) var utils
     
+    let directMessageChannel: Bool
     let indicator: AvatarIndicator
     let memberCount: Int
     let size: CGFloat
@@ -26,14 +27,13 @@ public struct ChannelAvatar: View {
     /// - Parameters:
     ///   - channel: The channel whose avatar to display.
     ///   - size: The width and height of the avatar.
-    ///   - showsIndicator: A Boolean value that indicates whether to show the
-    ///     online status for direct message channels. Defaults to `false`.
+    ///   - indicator: The presence indicator to display (e.g. `.online`, `.none`).
     ///   - showsBorder: A Boolean value that indicates whether to show a circular
     ///     border around the avatar. Defaults to `true`.
     public init(
         channel: ChatChannel,
         size: CGFloat,
-        showsIndicator: Bool = false,
+        indicator: AvatarIndicator = .none,
         showsBorder: Bool = true
     ) {
         self.init(
@@ -41,7 +41,8 @@ public struct ChannelAvatar: View {
             size: size,
             stackedPlaceholders: channel.avatarUsers.map { ($0.imageURL, UserAvatar.initials(from: $0.name ?? "")) },
             memberCount: channel.memberCount,
-            indicator: showsIndicator ? channel.avatarIndicator : .none,
+            directMessageChannel: channel.isDirectMessageChannel,
+            indicator: indicator,
             showsBorder: showsBorder
         )
     }
@@ -60,6 +61,8 @@ public struct ChannelAvatar: View {
     ///     used for the stacked layout when `url` is `nil`.
     ///   - memberCount: The total number of members in the channel, used to
     ///     compute the overflow badge count.
+    ///   - directMessageChannel: A Boolean value that indicates whether the
+    ///     channel is a direct message channel.
     ///   - indicator: The presence indicator to display. Defaults to no indicator.
     ///   - showsBorder: A Boolean value that indicates whether to show a circular
     ///     border around the avatar. Defaults to `true`.
@@ -68,10 +71,12 @@ public struct ChannelAvatar: View {
         size: CGFloat,
         stackedPlaceholders: [(url: URL?, initials: String)],
         memberCount: Int,
+        directMessageChannel: Bool,
         indicator: AvatarIndicator = .none,
         showsBorder: Bool = true
     ) {
         self.indicator = indicator
+        self.directMessageChannel = directMessageChannel
         self.memberCount = memberCount
         self.showsBorder = showsBorder
         self.size = size
@@ -97,7 +102,15 @@ public struct ChannelAvatar: View {
                             )
                             .clipShape(Circle())
                     case .empty, .loading:
-                        if size >= AvatarSize.large, !stackedPlaceholders.isEmpty {
+                        if directMessageChannel, memberCount == 2, let avatar = stackedPlaceholders.first {
+                            UserAvatar(
+                                url: avatar.url,
+                                initials: avatar.initials,
+                                size: size,
+                                indicator: indicator,
+                                showsBorder: showsBorder
+                            )
+                        } else if size >= AvatarSize.large, !stackedPlaceholders.isEmpty {
                             StackedPlaceholderView(
                                 users: stackedPlaceholders,
                                 size: size,
@@ -112,7 +125,6 @@ public struct ChannelAvatar: View {
             }
         )
         .frame(width: size, height: size)
-        
         .avatarIndicator(indicator, size: size)
         .accessibilityIdentifier("ChannelAvatar")
     }
@@ -299,8 +311,8 @@ private extension ChannelAvatar {
     }
 }
 
-private extension ChatChannel {
-    @MainActor var avatarUsers: [ChatUser] {
+extension ChatChannel {
+    @MainActor fileprivate var avatarUsers: [ChatUser] {
         let currentUserId = InjectedValues[\.chatClient].currentUserId
         return Array(
             lastActiveMembers
@@ -314,10 +326,11 @@ private extension ChatChannel {
         )
     }
     
-    @MainActor var avatarIndicator: AvatarIndicator {
+    /// By default online indicator is only shown for 1:1 direct message channels.
+    @MainActor var defaultAvatarIndicator: AvatarIndicator {
         guard isDirectMessageChannel, memberCount == 2 else { return .none }
         let currentUserId = InjectedValues[\.chatClient].currentUserId
         guard let otherMember = lastActiveMembers.first(where: { $0.id != currentUserId }) else { return .none }
-        return otherMember.isOnline ? .online : .offline
+        return otherMember.isOnline ? .online : .none
     }
 }
