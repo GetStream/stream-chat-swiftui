@@ -897,6 +897,141 @@ import XCTest
         AssertSnapshot(view, size: CGSize(width: 375, height: 200))
     }
 
+    // MARK: - Single media without caption (sharp tail corner)
+
+    func test_singleImageNoCaption_outgoing_firstInGroup_snapshot() {
+        // Given
+        let attachments = ChatChannelTestHelpers.imageAttachments(
+            count: 1,
+            originalWidth: 1600,
+            originalHeight: 1200
+        )
+        let message = ChatMessage.mock(
+            id: .unique,
+            cid: .unique,
+            text: "",
+            author: .mock(id: Self.currentUserId, name: "Martin"),
+            attachments: attachments,
+            isSentByCurrentUser: true
+        )
+
+        // When
+        let view = testMessageViewContainer(message: message, height: 300)
+
+        // Then
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
+    }
+
+    func test_singleImageNoCaption_incoming_firstInGroup_snapshot() {
+        // Given
+        let attachments = ChatChannelTestHelpers.imageAttachments(
+            count: 1,
+            originalWidth: 1600,
+            originalHeight: 1200
+        )
+        let message = ChatMessage.mock(
+            id: .unique,
+            cid: .unique,
+            text: "",
+            author: .mock(id: .unique, name: "Alice"),
+            attachments: attachments,
+            isSentByCurrentUser: false
+        )
+
+        // When
+        let view = testMessageViewContainer(message: message, channel: .mockNonDMChannel(), height: 300)
+
+        // Then
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
+    }
+
+    func test_singleImageNoCaption_notFirstInGroup_snapshot() {
+        // Given
+        let attachments = ChatChannelTestHelpers.imageAttachments(
+            count: 1,
+            originalWidth: 1600,
+            originalHeight: 1200
+        )
+        let message = ChatMessage.mock(
+            id: .unique,
+            cid: .unique,
+            text: "",
+            author: .mock(id: Self.currentUserId, name: "Martin"),
+            attachments: attachments,
+            isSentByCurrentUser: true
+        )
+
+        // When
+        let view = testMessageViewContainer(message: message, height: 300, showsAllInfo: false)
+
+        // Then
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
+    }
+
+    func test_singleImageWithCaption_outgoing_snapshot() {
+        // Given
+        let attachments = ChatChannelTestHelpers.imageAttachments(
+            count: 1,
+            originalWidth: 1600,
+            originalHeight: 1200
+        )
+        let message = ChatMessage.mock(
+            id: .unique,
+            cid: .unique,
+            text: "Photo caption",
+            author: .mock(id: Self.currentUserId, name: "Martin"),
+            attachments: attachments,
+            isSentByCurrentUser: true
+        )
+
+        // When
+        let view = testMessageViewContainer(message: message, height: 300)
+
+        // Then
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
+    }
+
+    func test_singleVideoNoCaption_outgoing_firstInGroup_snapshot() {
+        // Given
+        let message = ChatMessage.mock(
+            id: .unique,
+            cid: .unique,
+            text: "",
+            author: .mock(id: Self.currentUserId, name: "Martin"),
+            attachments: ChatChannelTestHelpers.videoAttachments,
+            isSentByCurrentUser: true
+        )
+
+        // When
+        let view = testMessageViewContainer(message: message, height: 300)
+
+        // Then
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
+    }
+
+    func test_singleImageNoCaption_portrait_outgoing_snapshot() {
+        // Given
+        let attachments = ChatChannelTestHelpers.imageAttachments(
+            count: 1,
+            originalWidth: 1200,
+            originalHeight: 1600
+        )
+        let message = ChatMessage.mock(
+            id: .unique,
+            cid: .unique,
+            text: "",
+            author: .mock(id: Self.currentUserId, name: "Martin"),
+            attachments: attachments,
+            isSentByCurrentUser: true
+        )
+
+        // When
+        let view = testMessageViewContainer(message: message, height: 300)
+
+        // Then
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
+    }
+
     // MARK: - private
 
     func testMessageViewContainer(
@@ -914,7 +1049,7 @@ import XCTest
             channel: channelOrMock,
             message: message,
             width: defaultScreenSize.width,
-            showsAllInfo: true,
+            showsAllInfo: showsAllInfo,
             shownAsPreview: shownAsPreview,
             isInThread: false,
             isLast: false,

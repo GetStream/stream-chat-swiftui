@@ -305,7 +305,8 @@ extension ViewFactory {
         MessageMediaAttachmentsContainerView(
             factory: self,
             message: options.message,
-            width: options.availableWidth
+            width: options.availableWidth,
+            isFirst: options.isFirst
         )
     }
 
@@ -351,7 +352,8 @@ extension ViewFactory {
         MessageMediaAttachmentsContainerView(
             factory: self,
             message: options.message,
-            width: options.availableWidth
+            width: options.availableWidth,
+            isFirst: options.isFirst
         )
     }
     
