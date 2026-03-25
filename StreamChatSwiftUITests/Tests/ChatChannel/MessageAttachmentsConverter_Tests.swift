@@ -49,6 +49,39 @@ class MessageAttachmentsConverter_Tests: StreamChatTestCase {
     
     // MARK: - Public Interface Tests
     
+    func test_attachmentsToAssets_voiceRecordingWithoutWaveformOrDuration() throws {
+        let attachmentFile = AttachmentFile(type: .aac, size: 120, mimeType: "audio/aac")
+        let attachment = ChatMessageVoiceRecordingAttachment(
+            id: .unique,
+            type: .voiceRecording,
+            payload: VoiceRecordingAttachmentPayload(
+                title: "Voice",
+                voiceRecordingRemoteURL: mockFileURL,
+                file: attachmentFile,
+                duration: nil,
+                waveformData: nil,
+                extraData: nil
+            ),
+            downloadingState: nil,
+            uploadingState: nil
+        ).asAnyAttachment
+
+        let expectation = XCTestExpectation(description: "Voice without optional metadata converts to asset")
+        nonisolated(unsafe) var result: TotalAddedAssets?
+
+        converter.attachmentsToAssets([attachment]) { totalAddedAssets in
+            result = totalAddedAssets
+            expectation.fulfill()
+        }
+
+        wait(for: [expectation], timeout: 1.0)
+        XCTAssertEqual(result?.voiceAssets.count, 1)
+        let voice = try XCTUnwrap(result?.voiceAssets.first)
+        XCTAssertEqual(voice.url, mockFileURL)
+        XCTAssertEqual(voice.duration, 0, accuracy: 0.001)
+        XCTAssertTrue(voice.waveform.isEmpty)
+    }
+
     func test_attachmentsToAssets_emptyAttachments() {
         // Given
         let attachments: [AnyChatMessageAttachment] = []

@@ -235,6 +235,7 @@
 				Tests/ChatChannel/Suggestions/UserSuggestionsView_Tests.swift,
 				Tests/ChatChannel/SystemMessageView_Tests.swift,
 				Tests/ChatChannel/TypingIndicatorView_Tests.swift,
+				Tests/ChatChannel/VoiceRecordingHandler_Tests.swift,
 				Tests/ChatChannel/WebView_Tests.swift,
 				Tests/ChatChannelList/ChatChannelListItemView_Tests.swift,
 				Tests/ChatChannelList/ChatChannelListTestHelpers.swift,

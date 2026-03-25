@@ -77,7 +77,7 @@ open class WaveformView: UIView {
     open lazy var audioVisualizationView: AudioVisualizationView = .init()
         .withoutAutoresizingMaskConstraints
 
-    open lazy var slider: UISlider = .init()
+    open lazy var slider: UISlider = WaveformSlider()
         .withoutAutoresizingMaskConstraints
 
     // MARK: - UI Lifecycle
@@ -218,6 +218,15 @@ open class WaveformView: UIView {
     }
 }
 
+/// Extends the track rect so the visible thumb circle aligns with the waveform edges
+/// rather than being inset by half the thumb image width (which includes the shadow).
+private class WaveformSlider: UISlider {
+    override func trackRect(forBounds bounds: CGRect) -> CGRect {
+        let thumbShadow: CGFloat = 6
+        return bounds.insetBy(dx: -thumbShadow, dy: 0)
+    }
+}
+
 /// SwiftUI wrapper used during active recording (locked/stopped states in the composer).
 /// Passes raw waveform data directly rather than an `AddedVoiceRecording`.
 struct RecordingWaveform: UIViewRepresentable {
@@ -280,11 +289,13 @@ struct WaveformViewSwiftUI: UIViewRepresentable {
     
     private func updateContent(for view: WaveformView) {
         if let audioContext, addedVoiceRecording.url == audioContext.assetLocation {
+            let duration = max(audioContext.duration, addedVoiceRecording.duration, 0.001)
+            let currentTime = min(max(audioContext.currentTime, 0), duration)
             view.content = .init(
                 isRecording: false,
                 isPlaying: isPlaying,
-                duration: audioContext.duration,
-                currentTime: audioContext.currentTime,
+                duration: duration,
+                currentTime: currentTime,
                 waveform: addedVoiceRecording.waveform
             )
         } else {
