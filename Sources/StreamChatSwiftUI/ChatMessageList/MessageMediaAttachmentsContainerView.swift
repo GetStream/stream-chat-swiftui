@@ -52,10 +52,13 @@ public struct MessageMediaAttachmentsContainerView<Factory: ViewFactory>: View {
     @Injected(\.colors) private var colors
     @Injected(\.fonts) private var fonts
     @Injected(\.tokens) private var tokens
+    @Injected(\.utils) private var utils
+    @Environment(\.layoutDirection) private var layoutDirection
 
     let factory: Factory
     let message: ChatMessage
     let width: CGFloat
+    let isFirst: Bool
 
     @State private var galleryShown = false
     @State private var selectedIndex = 0
@@ -66,11 +69,13 @@ public struct MessageMediaAttachmentsContainerView<Factory: ViewFactory>: View {
     public init(
         factory: Factory,
         message: ChatMessage,
-        width: CGFloat
+        width: CGFloat,
+        isFirst: Bool = true
     ) {
         self.factory = factory
         self.message = message
         self.width = width
+        self.isFirst = isFirst
     }
 
     public var body: some View {
@@ -237,15 +242,25 @@ public struct MessageMediaAttachmentsContainerView<Factory: ViewFactory>: View {
         height: CGFloat,
         index: Int
     ) -> some View {
-        MessageMediaAttachmentContentView(
+        let effectiveRadius = isSingleMediaWithoutCaption ? tokens.messageBubbleRadiusGroupBottom : cornerRadius
+        let effectiveCorners: UIRectCorner? = isSingleMediaWithoutCaption ? noCaptionBubbleCorners : nil
+        return MessageMediaAttachmentContentView(
             factory: factory,
             source: item,
             width: width,
             height: height,
-            cornerRadius: cornerRadius,
+            cornerRadius: effectiveRadius,
+            corners: effectiveCorners,
             isOutgoing: message.isSentByCurrentUser
         )
         .withUploadingStateIndicator(for: item.uploadingState, url: item.url)
+        .modifier(
+            MediaBorderOverlayModifier(
+                cornerRadius: effectiveRadius,
+                corners: effectiveCorners,
+                borderColor: message.bubbleBorder(colors: colors)
+            )
+        )
         .contentShape(Rectangle())
         .onTapGesture {
             if message.localState == nil {
@@ -258,6 +273,19 @@ public struct MessageMediaAttachmentsContainerView<Factory: ViewFactory>: View {
     }
 
     // MARK: - Data
+
+    private var isSingleMediaWithoutCaption: Bool {
+        message.text.isEmpty && sources.count == 1
+    }
+
+    private var noCaptionBubbleCorners: UIRectCorner {
+        let forceLeftToRight = utils.messageListConfig.messageListAlignment == .leftAligned
+        return message.bubbleCorners(
+            isFirst: isFirst,
+            forceLeftToRight: forceLeftToRight,
+            layoutDirection: layoutDirection
+        )
+    }
 
     private var orientation: MediaGalleryOrientation {
         if let first = sources.first {
@@ -295,5 +323,25 @@ public struct MessageMediaAttachmentsContainerView<Factory: ViewFactory>: View {
 
     private var remainingCount: Int {
         max(sources.count - maxDisplayedItems, 0)
+    }
+}
+
+/// Conditionally draws a bubble-shaped border stroke around the content.
+/// When `corners` is `nil` (multi-item gallery cells), no overlay is drawn.
+private struct MediaBorderOverlayModifier: ViewModifier {
+    let cornerRadius: CGFloat
+    let corners: UIRectCorner?
+    let borderColor: Color
+
+    func body(content: Content) -> some View {
+        content.overlay(borderOverlay)
+    }
+
+    @ViewBuilder
+    private var borderOverlay: some View {
+        if let corners {
+            BubbleBackgroundShape(cornerRadius: cornerRadius, corners: corners)
+                .stroke(borderColor, lineWidth: 1)
+        }
     }
 }
