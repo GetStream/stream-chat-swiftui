@@ -42,7 +42,7 @@ import XCTest
             messageController: nil,
             quotedMessage: .constant(nil),
             editedMessage: .constant(nil),
-            onMessageSent: {}
+            willSendMessage: {}
         )
         .frame(width: composerWidth, height: 200)
 
@@ -62,7 +62,7 @@ import XCTest
             messageController: nil,
             quotedMessage: .constant(nil),
             editedMessage: .constant(nil),
-            onMessageSent: {}
+            willSendMessage: {}
         )
         .environment(\.layoutDirection, .rightToLeft)
         .frame(width: defaultScreenSize.width, height: 100)
@@ -86,7 +86,7 @@ import XCTest
             messageController: nil,
             quotedMessage: .constant(nil),
             editedMessage: .constant(nil),
-            onMessageSent: {}
+            willSendMessage: {}
         )
         .environment(\.layoutDirection, .rightToLeft)
         .frame(width: defaultScreenSize.width, height: 100)
@@ -113,7 +113,7 @@ import XCTest
             messageController: nil,
             quotedMessage: .constant(nil),
             editedMessage: .constant(nil),
-            onMessageSent: {}
+            willSendMessage: {}
         )
         .frame(width: size.width, height: size.height)
 
@@ -138,7 +138,7 @@ import XCTest
             messageController: nil,
             quotedMessage: .constant(nil),
             editedMessage: .constant(nil),
-            onMessageSent: {}
+            willSendMessage: {}
         )
         .frame(width: size.width, height: size.height)
 
@@ -166,7 +166,7 @@ import XCTest
             messageController: nil,
             quotedMessage: .constant(nil),
             editedMessage: .constant(nil),
-            onMessageSent: {}
+            willSendMessage: {}
         )
         .frame(width: size.width, height: size.height)
 
@@ -199,7 +199,7 @@ import XCTest
             messageController: nil,
             quotedMessage: .constant(nil),
             editedMessage: .constant(nil),
-            onMessageSent: {}
+            willSendMessage: {}
         )
         .frame(width: size.width, height: size.height)
 
@@ -227,7 +227,7 @@ import XCTest
             messageController: nil,
             quotedMessage: .constant(quoted),
             editedMessage: .constant(nil),
-            onMessageSent: {}
+            willSendMessage: {}
         )
         .frame(width: size.width, height: size.height)
 
@@ -250,7 +250,7 @@ import XCTest
             messageController: nil,
             quotedMessage: .constant(nil),
             editedMessage: .constant(nil),
-            onMessageSent: {}
+            willSendMessage: {}
         )
         .frame(width: size.width, height: size.height)
 
@@ -276,7 +276,7 @@ import XCTest
             messageController: nil,
             quotedMessage: .constant(nil),
             editedMessage: .constant(nil),
-            onMessageSent: {}
+            willSendMessage: {}
         )
         .frame(width: size.width, height: size.height)
 
@@ -449,7 +449,7 @@ import XCTest
             messageController: nil,
             quotedMessage: .constant(nil),
             editedMessage: .constant(nil),
-            onMessageSent: {}
+            willSendMessage: {}
         )
         .frame(width: composerWidth, height: 200)
 
@@ -483,7 +483,7 @@ import XCTest
             messageController: messageController,
             quotedMessage: .constant(nil),
             editedMessage: .constant(nil),
-            onMessageSent: {}
+            willSendMessage: {}
         )
         .frame(width: size.width, height: size.height)
 
@@ -515,7 +515,7 @@ import XCTest
             messageController: messageController,
             quotedMessage: .constant(nil),
             editedMessage: .constant(nil),
-            onMessageSent: {}
+            willSendMessage: {}
         )
         .frame(width: size.width, height: size.height)
 
@@ -578,7 +578,7 @@ import XCTest
             messageController: nil,
             quotedMessage: .constant(nil),
             editedMessage: .constant(nil),
-            onMessageSent: {}
+            willSendMessage: {}
         )
         .frame(width: composerWidth, height: 200)
 
@@ -794,7 +794,7 @@ import XCTest
             messageController: nil,
             quotedMessage: .constant(nil),
             editedMessage: .constant(nil),
-            onMessageSent: {}
+            willSendMessage: {}
         )
         .frame(width: composerWidth)
 
@@ -1079,7 +1079,7 @@ import XCTest
             channelController: channelController,
             quotedMessage: .constant(nil),
             editedMessage: .constant(nil),
-            onMessageSent: {}
+            willSendMessage: {}
         )
     }
     
@@ -1249,7 +1249,7 @@ import XCTest
             channelController: channelController,
             quotedMessage: .constant(nil),
             editedMessage: .constant(editedMessage),
-            onMessageSent: {}
+            willSendMessage: {}
         )
     }
 
@@ -1282,7 +1282,7 @@ import XCTest
             channelController: channelController,
             quotedMessage: .constant(mockQuotedMessage),
             editedMessage: .constant(nil),
-            onMessageSent: {}
+            willSendMessage: {}
         )
         .frame(width: size.width, height: size.height)
 
@@ -1318,7 +1318,7 @@ import XCTest
             messageController: nil,
             quotedMessage: .constant(nil),
             editedMessage: .constant(nil),
-            onMessageSent: {}
+            willSendMessage: {}
         )
         view.addToViewHierarchy()
 
@@ -1360,7 +1360,7 @@ import XCTest
             messageController: nil,
             quotedMessage: .constant(nil),
             editedMessage: .constant(nil),
-            onMessageSent: {}
+            willSendMessage: {}
         )
         view.addToViewHierarchy()
 
@@ -1398,7 +1398,7 @@ import XCTest
             messageController: nil,
             quotedMessage: .constant(nil),
             editedMessage: .constant(nil),
-            onMessageSent: {}
+            willSendMessage: {}
         )
         view.addToViewHierarchy()
 
@@ -1435,7 +1435,7 @@ import XCTest
             messageController: nil,
             quotedMessage: .constant(nil),
             editedMessage: .constant(nil),
-            onMessageSent: {}
+            willSendMessage: {}
         )
         view.addToViewHierarchy()
 
@@ -1464,7 +1464,7 @@ import XCTest
             messageController: nil,
             quotedMessage: .constant(nil),
             editedMessage: .constant(nil),
-            onMessageSent: {}
+            willSendMessage: {}
         )
         .frame(width: size.width, height: size.height)
 
@@ -1493,7 +1493,7 @@ import XCTest
             channelController: channelController,
             quotedMessage: .constant(nil),
             editedMessage: .constant(nil),
-            onMessageSent: {}
+            willSendMessage: {}
         )
         .frame(width: size.width, height: size.height)
 
@@ -1518,7 +1518,7 @@ import XCTest
             messageController: nil,
             quotedMessage: .constant(nil),
             editedMessage: .constant(nil),
-            onMessageSent: {}
+            willSendMessage: {}
         )
         .frame(width: composerWidth)
 

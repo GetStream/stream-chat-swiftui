@@ -18,21 +18,21 @@ public final class MessageComposerViewTypeOptions: Sendable {
     public let quotedMessage: Binding<ChatMessage?>
     /// Binding to the edited message.
     public let editedMessage: Binding<ChatMessage?>
-    /// Callback when a message is sent.
-    public let onMessageSent: @MainActor () -> Void
+    /// Callback invoked before a message is sent.
+    public let willSendMessage: @MainActor () -> Void
     
     public init(
         channelController: ChatChannelController,
         messageController: ChatMessageController?,
         quotedMessage: Binding<ChatMessage?>,
         editedMessage: Binding<ChatMessage?>,
-        onMessageSent: @escaping @MainActor () -> Void
+        willSendMessage: @escaping @MainActor () -> Void
     ) {
         self.channelController = channelController
         self.messageController = messageController
         self.quotedMessage = quotedMessage
         self.editedMessage = editedMessage
-        self.onMessageSent = onMessageSent
+        self.willSendMessage = willSendMessage
     }
 }
 

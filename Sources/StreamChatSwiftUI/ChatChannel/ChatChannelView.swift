@@ -241,7 +241,7 @@ public struct ChatChannelView<Factory: ViewFactory>: View, KeyboardReadable {
                 messageController: viewModel.messageController,
                 quotedMessage: $viewModel.quotedMessage,
                 editedMessage: $viewModel.editedMessage,
-                onMessageSent: {
+                willSendMessage: {
                     viewModel.messageSentTapped()
                 }
             )

@@ -106,9 +106,7 @@ struct ComposerVoiceRecordingInputView<Factory: ViewFactory>: View {
                         : L10n.Composer.AudioRecording.start))
 
                 VoiceRecordingDurationView(
-                    duration: handler.context.currentTime > 0
-                        ? handler.context.currentTime
-                        : audioRecordingInfo.duration,
+                    duration: previewRecordingDurationLabel,
                     usesAccentColor: handler.isPlaying
                 )
             }
@@ -149,10 +147,8 @@ struct ComposerVoiceRecordingInputView<Factory: ViewFactory>: View {
         RecordingWaveform(
             isRecording: !isStopped,
             isPlaying: handler.isPlaying,
-            duration: audioRecordingInfo.duration,
-            currentTime: isStopped
-                ? handler.context.currentTime
-                : audioRecordingInfo.duration,
+            duration: lockedPreviewWaveformDuration,
+            currentTime: lockedPreviewWaveformCurrentTime,
             waveform: audioRecordingInfo.waveform,
             onSliderChanged: { timeInterval in
                 guard let url = pendingAudioRecordingURL else { return }
@@ -161,6 +157,25 @@ struct ComposerVoiceRecordingInputView<Factory: ViewFactory>: View {
         )
         .frame(height: 20)
         .padding(.horizontal, tokens.spacingMd)
+    }
+
+    private var lockedPreviewWaveformCurrentTime: TimeInterval {
+        if !isStopped {
+            return audioRecordingInfo.duration
+        }
+        guard let url = pendingAudioRecordingURL, handler.isActive(for: url) else {
+            return 0
+        }
+        return min(max(handler.context.currentTime, 0), lockedPreviewWaveformDuration)
+    }
+
+    private var lockedPreviewWaveformDuration: TimeInterval {
+        let fromMetering = max(audioRecordingInfo.duration, 0.001)
+        guard isStopped, let url = pendingAudioRecordingURL, handler.isActive(for: url) else {
+            return fromMetering
+        }
+        let fromPlayer = handler.context.duration
+        return max(fromMetering, fromPlayer, 0.001)
     }
 
     // MARK: - Recording Controls
@@ -228,6 +243,13 @@ struct ComposerVoiceRecordingInputView<Factory: ViewFactory>: View {
     private var opacityForSlideToCancel: CGFloat {
         guard gestureLocation.x < VoiceRecordingConstants.cancelMinDistance else { return 1 }
         return 1 - gestureLocation.x / VoiceRecordingConstants.cancelMaxDistance
+    }
+
+    private var previewRecordingDurationLabel: TimeInterval {
+        guard isStopped, let url = pendingAudioRecordingURL else {
+            return audioRecordingInfo.duration
+        }
+        return handler.displayedTime(for: url, duration: audioRecordingInfo.duration)
     }
 }
 

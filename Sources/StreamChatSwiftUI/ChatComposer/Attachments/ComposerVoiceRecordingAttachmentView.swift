@@ -53,7 +53,10 @@ struct ComposerVoiceRecordingAttachmentView: View {
     var onDiscardAttachment: (String) -> Void
 
     private var isActive: Bool { handler.isActive(for: recording.url) }
-    private var showContextDuration: Bool { isActive && handler.context.currentTime > 0 }
+
+    private var displayedPlaybackTime: TimeInterval {
+        handler.displayedTime(for: recording.url, duration: recording.duration)
+    }
 
     var body: some View {
         HStack(spacing: tokens.spacingXs) {
@@ -92,7 +95,7 @@ struct ComposerVoiceRecordingAttachmentView: View {
 
     private var contentArea: some View {
         HStack(spacing: tokens.spacingXs) {
-            Text(utils.videoDurationFormatter.format(showContextDuration ? handler.context.currentTime : recording.duration) ?? "")
+            Text(utils.videoDurationFormatter.format(displayedPlaybackTime) ?? "")
                 .font(fonts.footnote.monospacedDigit())
                 .foregroundColor(Color(colors.textSecondary))
 

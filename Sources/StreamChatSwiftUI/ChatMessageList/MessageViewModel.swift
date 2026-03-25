@@ -86,6 +86,14 @@ import StreamChat
         message.isPinned
     }
 
+    public var pinnedByText: String {
+        if message.pinDetails?.pinnedBy.id == chatClient.currentUserId {
+            return L10n.Message.Cell.pinnedByYou
+        }
+        let name = message.pinDetails?.pinnedBy.name ?? L10n.Message.Cell.unknownPin
+        return "\(L10n.Message.Cell.pinnedBy) \(name)"
+    }
+
     public var isRightAligned: Bool {
         message.isRightAligned
     }

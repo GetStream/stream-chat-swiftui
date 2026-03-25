@@ -304,10 +304,7 @@ import XCTest
         viewModel.text = "test"
         viewModel.imageTapped(defaultAsset)
         viewModel.composerAssets.append(.addedFile(mockURL))
-        viewModel.sendMessage(
-            quotedMessage: nil,
-            editedMessage: nil
-        ) {
+        viewModel.sendMessage {
             // Then
             XCTAssert(viewModel.errorShown == false)
             XCTAssert(viewModel.text == "")
@@ -1454,7 +1451,7 @@ import XCTest
         viewModel.text = "text"
 
         // When
-        viewModel.sendMessage(quotedMessage: nil, editedMessage: nil) {}
+        viewModel.sendMessage()
         
         // Then
         let expectation = XCTestExpectation(description: "Text cleared")
@@ -1482,7 +1479,7 @@ import XCTest
         viewModel.text = "reply"
 
         // When
-        viewModel.sendMessage(quotedMessage: nil, editedMessage: nil) {}
+        viewModel.sendMessage()
         
         // Then
         let expectation = XCTestExpectation(description: "Text cleared")
@@ -1663,6 +1660,35 @@ import XCTest
 
         // Then
         XCTAssertEqual(channelController.deleteDraftMessage_callCount, 0)
+    }
+
+    // MARK: - sendRecording
+
+    func test_sendRecording_whenRecording_setsShouldSendOnRecordingFinish() {
+        let viewModel = makeComposerViewModel()
+        viewModel.recordingState = .recording
+
+        viewModel.sendRecording()
+
+        XCTAssertTrue(viewModel.shouldSendOnRecordingFinish)
+    }
+
+    func test_sendRecording_whenNotRecording_doesNotSetShouldSendOnRecordingFinish() {
+        let viewModel = makeComposerViewModel()
+        viewModel.recordingState = .initial
+
+        viewModel.sendRecording()
+
+        XCTAssertFalse(viewModel.shouldSendOnRecordingFinish)
+    }
+
+    func test_discardRecording_resetsShouldSendOnRecordingFinish() {
+        let viewModel = makeComposerViewModel()
+        viewModel.shouldSendOnRecordingFinish = true
+
+        viewModel.discardRecording()
+
+        XCTAssertFalse(viewModel.shouldSendOnRecordingFinish)
     }
 
     // MARK: - private
