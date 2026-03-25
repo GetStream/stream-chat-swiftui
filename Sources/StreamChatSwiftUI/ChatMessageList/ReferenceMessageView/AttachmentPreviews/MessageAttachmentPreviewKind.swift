@@ -12,6 +12,8 @@ enum MessageAttachmentPreviewKind: Equatable {
     case poll(name: String)
     /// A voice recording attachment.
     case voiceRecording(duration: TimeInterval?)
+    /// A giphy attachment.
+    case giphy
     /// One or more photo attachments.
     case photo(count: Int)
     /// One or more video attachments.

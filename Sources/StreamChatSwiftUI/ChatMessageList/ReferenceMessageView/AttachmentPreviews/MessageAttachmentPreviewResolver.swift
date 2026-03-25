@@ -43,6 +43,9 @@ public struct MessageAttachmentPreviewResolver {
             }
             return L10n.Composer.Quoted.voiceMessage
                 
+        case .giphy:
+            return L10n.Composer.Quoted.giphy
+                
         case .photo(let count):
             return count == 1 ? L10n.Composer.Quoted.photo : L10n.Composer.Quoted.photos(count)
                 
@@ -75,6 +78,8 @@ public struct MessageAttachmentPreviewResolver {
             return .poll
         case .voiceRecording:
             return .voiceRecording
+        case .giphy:
+            return .document
         case .photo:
             return .photo
         case .video:
@@ -146,8 +151,13 @@ public struct MessageAttachmentPreviewResolver {
             return .voiceRecording(duration: duration)
         }
         
-        // Images (including giphys)
-        let imageCount = message.imageAttachments.count + message.giphyAttachments.count
+        // Giphy
+        if !message.giphyAttachments.isEmpty {
+            return .giphy
+        }
+        
+        // Images
+        let imageCount = message.imageAttachments.count
         if imageCount > 0 {
             return .photo(count: imageCount)
         }
