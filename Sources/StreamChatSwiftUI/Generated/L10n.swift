@@ -117,6 +117,8 @@ internal enum L10n {
       internal static var audio: String { L10n.tr("Localizable", "channel.item.audio") }
       /// No messages
       internal static var emptyMessages: String { L10n.tr("Localizable", "channel.item.empty-messages") }
+      /// Giphy
+      internal static var giphy: String { L10n.tr("Localizable", "channel.item.giphy") }
       /// Message failed to send
       internal static var messageFailedToSend: String { L10n.tr("Localizable", "channel.item.message-failed-to-send") }
       /// Mute

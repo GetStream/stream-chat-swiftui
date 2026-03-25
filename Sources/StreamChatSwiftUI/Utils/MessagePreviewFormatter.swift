@@ -67,7 +67,7 @@ import SwiftUI
             let defaultVideoText = L10n.Channel.Item.video
             return text.isEmpty ? defaultVideoText : text
         case .giphy:
-            return "/giphy"
+            return L10n.Channel.Item.giphy
         case .voiceRecording:
             let defaultVoiceMessageText = L10n.Channel.Item.voiceMessage
             return text.isEmpty ? defaultVoiceMessageText : text
