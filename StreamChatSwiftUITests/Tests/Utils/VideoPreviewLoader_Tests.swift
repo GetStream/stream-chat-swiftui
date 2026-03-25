@@ -309,7 +309,7 @@ private class FullVideoPreviewLoader: VideoPreviewLoader {
 }
 
 /// Configurable image loader that can be set to succeed or fail.
-private class ConfigurableImageLoader: ImageLoading {
+private class ConfigurableImageLoader: ImageLoading, @unchecked Sendable {
     static let thumbnailImage = UIImage(systemName: "star.fill")!
 
     var loadImageCalled = false

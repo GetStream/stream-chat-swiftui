@@ -97,7 +97,10 @@ struct VoiceRecordingView: View {
     var isSentByCurrentUser: Bool = false
 
     private var isActive: Bool { handler.isActive(for: addedVoiceRecording.url) }
-    private var showContextDuration: Bool { isActive && handler.context.currentTime > 0 }
+
+    private var displayedPlaybackTime: TimeInterval {
+        handler.displayedTime(for: addedVoiceRecording.url, duration: addedVoiceRecording.duration)
+    }
 
     private var controlBorderColor: Color? {
         isSentByCurrentUser ? Color(colors.chatBorderOnChatOutgoing) : Color(colors.chatBorderOnChatIncoming)
@@ -138,7 +141,7 @@ struct VoiceRecordingView: View {
 
     private var durationAndWaveform: some View {
         HStack(spacing: tokens.spacingXs) {
-            Text(utils.videoDurationFormatter.format(showContextDuration ? handler.context.currentTime : addedVoiceRecording.duration) ?? "")
+            Text(utils.videoDurationFormatter.format(displayedPlaybackTime) ?? "")
                 .font(fonts.footnote.monospacedDigit())
                 .foregroundColor(Color(handler.isPlaying && isActive ? colors.accentPrimary : colors.textPrimary))
 
@@ -225,7 +228,10 @@ class VoiceRecordingHandler: ObservableObject, AudioPlayingDelegate {
         guard context.assetLocation == url else { return }
         switch context.state {
         case .playing:
-            isPlaying = true
+            if !isPlaying {
+                isPlaying = true
+                player.updateRate(rate)
+            }
         case .stopped, .paused:
             isPlaying = false
         default:
@@ -247,11 +253,25 @@ class VoiceRecordingHandler: ObservableObject, AudioPlayingDelegate {
         case .double: rate = .half
         default: rate = .normal
         }
-        player.updateRate(rate)
+        if isPlaying {
+            player.updateRate(rate)
+        }
     }
 
     func isActive(for url: URL) -> Bool {
         context.assetLocation == url
+    }
+
+    /// Returns remaining playback time when playing/paused, or the total duration otherwise.
+    func displayedTime(for url: URL, duration: TimeInterval) -> TimeInterval {
+        guard isActive(for: url) else { return duration }
+        switch context.state {
+        case .playing, .paused:
+            let resolvedDuration = max(duration, context.duration)
+            return max(resolvedDuration - context.currentTime, 0)
+        default:
+            return duration
+        }
     }
 
     func seek(to time: TimeInterval, loadingFrom url: URL? = nil) {

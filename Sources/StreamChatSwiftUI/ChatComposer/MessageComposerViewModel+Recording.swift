@@ -36,7 +36,10 @@ extension MessageComposerViewModel: AudioRecordingDelegate {
         _ audioRecorder: AudioRecording,
         didFinishRecordingAtURL location: URL
     ) {
-        if audioRecordingInfo == .initial { return }
+        if audioRecordingInfo == .initial {
+            shouldSendOnRecordingFinish = false
+            return
+        }
         audioAnalysisFactory?.waveformVisualisation(
             fromAudioURL: location,
             for: waveformTargetSamples,
@@ -58,9 +61,14 @@ extension MessageComposerViewModel: AudioRecordingDelegate {
                             self.addedVoiceRecordings.append(recording)
                             self.recordingState = .initial
                             self.audioRecordingInfo = .initial
+                            if self.shouldSendOnRecordingFinish {
+                                self.shouldSendOnRecordingFinish = false
+                                self.sendMessage()
+                            }
                         }
                     case let .failure(error):
                         log.error(error)
+                        self.shouldSendOnRecordingFinish = false
                         self.recordingState = .initial
                     }
                 }
@@ -73,6 +81,7 @@ extension MessageComposerViewModel: AudioRecordingDelegate {
         didFailWithError error: Error
     ) {
         log.error(error)
+        shouldSendOnRecordingFinish = false
         let wasRecording = recordingState != .initial
         recordingState = .initial
         audioRecordingInfo = .initial
@@ -83,27 +92,33 @@ extension MessageComposerViewModel: AudioRecordingDelegate {
 }
 
 extension MessageComposerViewModel {
+    /// Displays a tip snackbar explaining how to use voice recording.
     public func showRecordingTip() {
         snackBarText = L10n.Composer.Recording.tip
     }
 
+    /// Begins capturing audio from the microphone.
     public func startRecording() {
         utils.audioSessionFeedbackGenerator.feedbackForBeginRecording()
         audioRecorder.beginRecording {
             log.debug("started recording")
         }
     }
-    
+
+    /// Stops the audio recorder. The recording enters the locked or stopped
+    /// state depending on the current gesture flow.
     public func stopRecording() {
         utils.audioSessionFeedbackGenerator.feedbackForStopRecording()
         audioRecorder.stopRecording()
     }
-    
+
+    /// Resumes a previously paused recording session.
     public func resumeRecording() {
         utils.audioSessionFeedbackGenerator.feedbackForBeginRecording()
         audioRecorder.resumeRecording()
     }
-    
+
+    /// Pauses the current recording without discarding it.
     public func pauseRecording() {
         utils.audioSessionFeedbackGenerator.feedbackForPause()
         audioRecorder.pauseRecording()
@@ -111,14 +126,31 @@ extension MessageComposerViewModel {
 }
 
 extension MessageComposerViewModel {
+    /// Stops recording and sends the voice message as soon as the file is ready.
+    ///
+    /// Called when the user lifts their finger during a hold-to-record gesture
+    /// (as opposed to locking). Sets `shouldSendOnRecordingFinish` so that the
+    /// `audioRecorder(_:didFinishRecordingAtURL:)` callback triggers `sendMessage()`
+    /// automatically once the audio file has been processed.
+    public func sendRecording() {
+        guard recordingState == .recording else { return }
+        shouldSendOnRecordingFinish = true
+        stopRecording()
+    }
+
+    /// Cancels the current recording and resets all recording state.
+    /// Shows a snackbar confirming the voice message was deleted.
     public func discardRecording() {
+        shouldSendOnRecordingFinish = false
         stopRecording()
         recordingState = .initial
         audioRecordingInfo = .initial
         recordingGestureLocation = .zero
         snackBarText = L10n.Composer.Recording.voiceMessageDeleted
     }
-    
+
+    /// Confirms a stopped recording and adds it to the composer's voice attachments.
+    /// If the recording is still in progress (locked state), stops it first.
     public func confirmRecording() {
         if recordingState == .stopped {
             if let pending = pendingAudioRecording {
@@ -131,7 +163,9 @@ extension MessageComposerViewModel {
             stopRecording()
         }
     }
-    
+
+    /// Transitions to the stopped/preview state so the user can listen
+    /// to the recording before confirming or discarding it.
     public func previewRecording() {
         recordingState = .stopped
         stopRecording()

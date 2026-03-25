@@ -152,8 +152,8 @@ public final class AddedVoiceRecording: Identifiable, Equatable, Sendable {
 extension AnyChatMessageAttachment {
     func toAddedVoiceRecording() -> AddedVoiceRecording? {
         guard let voiceAttachment = attachment(payloadType: VoiceRecordingAttachmentPayload.self) else { return nil }
-        guard let duration = voiceAttachment.duration else { return nil }
-        guard let waveform = voiceAttachment.waveformData else { return nil }
+        let duration = voiceAttachment.duration ?? 0
+        let waveform = voiceAttachment.waveformData ?? []
         return AddedVoiceRecording(
             url: voiceAttachment.voiceRecordingURL,
             duration: duration,
