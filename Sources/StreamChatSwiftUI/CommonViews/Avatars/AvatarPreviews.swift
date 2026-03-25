@@ -108,6 +108,7 @@ import SwiftUI
                             size: group.size,
                             stackedPlaceholders: [],
                             memberCount: 0,
+                            directMessageChannel: false,
                             indicator: .online
                         )
                         .frame(width: AvatarPreviewConstants.columnWidth, height: AvatarPreviewConstants.rowHeight)
@@ -122,6 +123,7 @@ import SwiftUI
                             size: group.size,
                             stackedPlaceholders: placeholders,
                             memberCount: index < 4 ? index + 1 : 7,
+                            directMessageChannel: false,
                             indicator: .online
                         )
                         .frame(width: AvatarPreviewConstants.columnWidth, height: AvatarPreviewConstants.rowHeight)

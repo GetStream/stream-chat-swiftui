@@ -73,9 +73,16 @@ public final class ChannelAvatarViewOptions: Sendable {
     /// The size of the avatar.
     public let size: CGFloat
     
-    public init(channel: ChatChannel, size: CGFloat) {
+    /// Whether to show the online presence indicator.
+    public let showsIndicator: Bool
+    /// Whether to show a circular border around the avatar.
+    public let showsBorder: Bool
+    
+    public init(channel: ChatChannel, size: CGFloat, showsIndicator: Bool = true, showsBorder: Bool = true) {
         self.channel = channel
         self.size = size
+        self.showsIndicator = showsIndicator
+        self.showsBorder = showsBorder
     }
 }
 

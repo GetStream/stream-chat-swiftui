@@ -77,7 +77,9 @@ extension ViewFactory {
     ) -> some View {
         ChannelAvatar(
             channel: options.channel,
-            size: options.size
+            size: options.size,
+            indicator: options.showsIndicator ? options.channel.defaultAvatarIndicator : .none,
+            showsBorder: options.showsBorder
         )
     }
     
@@ -200,7 +202,7 @@ extension ViewFactory {
         UserAvatar(
             user: options.user,
             size: options.size,
-            showsIndicator: options.showsIndicator
+            indicator: options.showsIndicator ? (options.user.isOnline ? .online : .offline) : .none
         )
     }
         
@@ -784,7 +786,7 @@ extension ViewFactory {
     }
 
     public func makeReactionsDetailView(options: ReactionsDetailViewOptions) -> some View {
-        ReactionsDetailView(message: options.message)
+        ReactionsDetailView(factory: self, message: options.message)
     }
 
     public func makeComposerQuotedMessageView(
