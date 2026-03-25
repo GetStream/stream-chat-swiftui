@@ -4,7 +4,7 @@ Guidance for AI coding agents (Copilot, Cursor, Aider, Claude, etc.) working in 
 
 This repo hosts Stream’s SwiftUI Chat SDK for iOS. It builds on the core client and provides SwiftUI-first chat components (views, view models, modifiers) for messaging apps.
 
-Agents should optimize for clean code, follow Apple's SwiftUI guidelines and Swift best practices, accessibility, and high test coverage when changing code. At the moment, we are building a new major version of the SDK, so we can make source-breaking changes without adding deprecations.
+Agents should optimize for clean code, follow Apple's SwiftUI guidelines and Swift best practices, accessibility, and high test coverage when changing code. Avoid doing any source-breaking changes without adding deprecations.
 
 ### Tech & toolchain
 
@@ -103,6 +103,7 @@ Testing policy
 Pull Requests:
 
 - Use the Github CLI to create a PR and use the Linear MCP to link the relevant issue assigned to me.
-- When creating a PR, the base branch should be the v5 branch.
+- When creating a PR, the base branch should be the develop branch.
 - Make sure that the PR respects the PR template in .github/PULL_REQUEST_TEMPLATE.md.
 - Make sure to fill the template with atomic information, do not mention things that were done and then reverted in this same PR.
+- Do not write "Made with Cursor" in the PR description.

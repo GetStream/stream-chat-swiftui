@@ -9,10 +9,17 @@ import SwiftUI
 struct VoiceRecordingGestureOverlay: View {
     @Binding var recordingState: VoiceRecordingState
     @Binding var gestureLocation: CGPoint
-    var startRecording: () -> Void
-    var stopRecording: () -> Void
-    var discardRecording: () -> Void
-    var showRecordingTip: () -> Void
+
+    /// The long press was held long enough to begin recording.
+    var onRecordingStarted: () -> Void
+    /// The gesture ended outside the active recording flow.
+    var onGestureCompleted: () -> Void
+    /// The finger was lifted during an active recording (hold-and-release).
+    var onRecordingReleased: () -> Void
+    /// The drag exceeded the cancel threshold while recording.
+    var onRecordingCancelled: () -> Void
+    /// The tap was too brief to trigger recording.
+    var onShortTapDetected: () -> Void
 
     @State private var longPressed = false
     @State private var longPressStarted: Date?
@@ -37,7 +44,7 @@ struct VoiceRecordingGestureOverlay: View {
                                 if longPressed {
                                     recordingState = .recording
                                     gestureLocation = translation
-                                    startRecording()
+                                    onRecordingStarted()
                                 }
                             }
                         } else if recordingState.isRecording {
@@ -47,21 +54,23 @@ struct VoiceRecordingGestureOverlay: View {
                     .onEnded { _ in
                         longPressed = false
                         if let longPressStarted, Date().timeIntervalSince(longPressStarted) <= 1 {
-                            showRecordingTip()
+                            onShortTapDetected()
                             self.longPressStarted = nil
                             return
                         }
                         if recordingState.isRecording {
                             if gestureLocation.x < VoiceRecordingConstants.cancelMinDistance {
-                                discardRecording()
+                                withAnimation(.composerVoiceRecordingSpring) {
+                                    onRecordingCancelled()
+                                }
                             } else {
                                 withAnimation(.composerVoiceRecordingSpring) {
-                                    recordingState = .locked
+                                    onRecordingReleased()
                                 }
                             }
                             gestureLocation = .zero
                         } else if recordingState != .locked {
-                            stopRecording()
+                            onGestureCompleted()
                         }
                     }
             )

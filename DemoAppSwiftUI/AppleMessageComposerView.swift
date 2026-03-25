@@ -24,6 +24,8 @@ struct AppleMessageComposerView<Factory: ViewFactory>: View, KeyboardReadable {
     @State private var state: AnimationState = .initial
     @State private var listScale: CGFloat = 0
 
+    @StateObject var viewModel: MessageComposerViewModel
+
     public init(
         viewFactory: Factory,
         viewModel: MessageComposerViewModel? = nil,
@@ -31,24 +33,21 @@ struct AppleMessageComposerView<Factory: ViewFactory>: View, KeyboardReadable {
         messageController: ChatMessageController? = nil,
         quotedMessage: Binding<ChatMessage?>,
         editedMessage: Binding<ChatMessage?>,
-        onMessageSent: @escaping () -> Void
+        willSendMessage: @escaping () -> Void
     ) {
         factory = viewFactory
         channelConfig = channelController.channel?.config
         let vm = viewModel ?? ViewModelsFactory.makeMessageComposerViewModel(
             with: channelController,
             messageController: messageController,
-            quotedMessage: quotedMessage
+            quotedMessage: quotedMessage,
+            editedMessage: editedMessage,
+            willSendMessage: willSendMessage
         )
         _viewModel = StateObject(wrappedValue: vm)
         _quotedMessage = quotedMessage
         _editedMessage = editedMessage
-        self.onMessageSent = onMessageSent
     }
-
-    @StateObject var viewModel: MessageComposerViewModel
-
-    var onMessageSent: () -> Void
 
     var body: some View {
         VStack(spacing: 0) {
@@ -218,11 +217,7 @@ struct AppleMessageComposerView<Factory: ViewFactory>: View, KeyboardReadable {
     }
 
     private func sendMessage() {
-        onMessageSent()
-        viewModel.sendMessage(quotedMessage: quotedMessage, editedMessage: editedMessage) {
-            quotedMessage = nil
-            editedMessage = nil
-        }
+        viewModel.sendMessage()
     }
 }
 
