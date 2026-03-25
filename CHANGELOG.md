@@ -3,7 +3,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 # Upcoming
 
-### 🔄 Changed
+### 🐞 Fixed
+- Fix split view navigation on iPad [#1320](https://github.com/GetStream/stream-chat-swiftui/pull/1320)
 
 # [5.0.0-beta](https://github.com/GetStream/stream-chat-swiftui/releases/tag/5.0.0-beta)
 _March 23, 2026_
