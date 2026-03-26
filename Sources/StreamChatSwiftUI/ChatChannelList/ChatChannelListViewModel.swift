@@ -503,7 +503,7 @@ import UIKit
             .compactMap { channel in
                 ChannelSelectionInfo(
                     channel: channel,
-                    message: channel.previewMessage,
+                    message: channel.latestMessages.first,
                     searchType: .channels
                 )
             }

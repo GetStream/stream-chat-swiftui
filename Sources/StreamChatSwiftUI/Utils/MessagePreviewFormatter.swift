@@ -14,6 +14,9 @@ import SwiftUI
 
     /// Formats the message including the author's name.
     open func format(_ previewMessage: ChatMessage, in channel: ChatChannel) -> String {
+        if previewMessage.isDeleted {
+            return L10n.Message.deletedMessagePlaceholder
+        }
         if let poll = previewMessage.poll {
             return formatPoll(poll)
         }
@@ -32,6 +35,9 @@ import SwiftUI
     
     /// Formats only the content of the message without the author's name.
     open func formatContent(for previewMessage: ChatMessage, in channel: ChatChannel) -> String {
+        if previewMessage.isDeleted {
+            return L10n.Message.deletedMessagePlaceholder
+        }
         if let attachmentPreviewText = formatAttachmentContent(for: previewMessage, in: channel) {
             return attachmentPreviewText
         }

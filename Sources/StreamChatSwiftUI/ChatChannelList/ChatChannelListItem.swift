@@ -91,9 +91,9 @@ public struct ChatChannelListItem<Factory: ViewFactory>: View {
                             MessageReadIndicatorView(
                                 readUsers: channel.readUsers(
                                     currentUserId: chatClient.currentUserId,
-                                    message: channel.previewMessage
+                                    message: channel.latestMessages.first
                                 ),
-                                showDelivered: channel.previewMessage?.deliveryStatus(for: channel) == .delivered
+                                showDelivered: channel.latestMessages.first?.deliveryStatus(for: channel) == .delivered
                             )
                         }
                         
@@ -136,8 +136,20 @@ public struct ChatChannelListItem<Factory: ViewFactory>: View {
                         .foregroundColor(Color(colors.accentPrimary))
                     SubtitleText(text: draftText)
                 }
+            } else if channel.latestMessages.first?.isDeleted == true {
+                HStack(spacing: tokens.spacingXxs) {
+                    Image(systemName: "nosign")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 16, height: 16)
+                        .accessibilityHidden(true)
+                    Text(L10n.Message.deletedMessagePlaceholder)
+                }
+                .lineLimit(1)
+                .font(fonts.subheadline)
+                .foregroundColor(Color(colors.textTertiary))
             } else if let authorName = subtitleAuthorName {
-                let contentString = channel.previewMessage.map {
+                let contentString = channel.latestMessages.first.map {
                     utils.messagePreviewFormatter.formatContent(for: $0, in: channel)
                 } ?? subtitleText
                 HStack(spacing: tokens.spacingXxs) {
@@ -168,7 +180,7 @@ public struct ChatChannelListItem<Factory: ViewFactory>: View {
     }
 
     private var previewAttachmentIconImage: UIImage? {
-        guard let previewMessage = channel.previewMessage else { return nil }
+        guard let previewMessage = channel.latestMessages.first else { return nil }
         let resolver = MessageAttachmentPreviewResolver(message: previewMessage)
         guard let previewIcon = resolver.previewIcon else { return nil }
         return utils.messageAttachmentPreviewIconProvider.image(for: previewIcon)
@@ -185,7 +197,7 @@ public struct ChatChannelListItem<Factory: ViewFactory>: View {
     }
 
     private var subtitleAuthorName: String? {
-        guard let previewMessage = channel.previewMessage,
+        guard let previewMessage = channel.latestMessages.first,
               previewMessage.poll == nil,
               injectedChannelInfo?.subtitle == nil,
               !(channel.isDirectMessageChannel && channel.memberCount == 2) else {
@@ -222,7 +234,7 @@ public struct ChatChannelListItem<Factory: ViewFactory>: View {
     }
 
     private var lastMessageFailedToSend: Bool {
-        channel.previewMessage?.localState == .sendingFailed
+        channel.latestMessages.first?.localState == .sendingFailed
     }
 
     private var shouldShowReadEvents: Bool {
@@ -232,8 +244,9 @@ public struct ChatChannelListItem<Factory: ViewFactory>: View {
         if utils.messageListConfig.draftMessagesEnabled && channel.draftMessageText != nil {
             return false
         }
-        if let message = channel.previewMessage,
-           message.isSentByCurrentUser {
+        if let message = channel.latestMessages.first,
+           message.isSentByCurrentUser,
+           !message.isDeleted {
             return channel.config.readEventsEnabled
         }
 
@@ -272,7 +285,7 @@ public final class InjectedChannelInfo: Sendable {
 
 extension ChatChannel {
     @MainActor public var previewMessageText: String? {
-        guard let previewMessage else { return nil }
+        guard let previewMessage = latestMessages.first else { return nil }
         let messageFormatter = InjectedValues[\.utils].messagePreviewFormatter
         return messageFormatter.format(previewMessage, in: self)
     }
