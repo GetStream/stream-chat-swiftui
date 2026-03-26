@@ -64,18 +64,27 @@ struct LazyLoadingImage: View {
             if image != nil {
                 return
             }
+            loadThumbnail()
+        }
+        .onChange(of: source) { newSource in
+            image = nil
+            error = nil
+            loadThumbnail(from: newSource)
+        }
+    }
 
-            source.generateThumbnail(
-                resize: resize,
-                preferredSize: CGSize(width: width, height: height)
-            ) { result in
-                switch result {
-                case let .success(image):
-                    self.image = image
-                    onImageLoaded(image)
-                case let .failure(error):
-                    self.error = error
-                }
+    private func loadThumbnail(from attachment: MediaAttachment? = nil) {
+        let attachment = attachment ?? source
+        attachment.generateThumbnail(
+            resize: resize,
+            preferredSize: CGSize(width: width, height: height)
+        ) { result in
+            switch result {
+            case let .success(image):
+                self.image = image
+                onImageLoaded(image)
+            case let .failure(error):
+                self.error = error
             }
         }
     }

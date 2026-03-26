@@ -21,14 +21,14 @@ public struct SelectionBadgeView: View {
         ZStack {
             if isSelected {
                 Circle()
-                    .fill(Color(colors.controlRadiocheckBackgroundSelected))
+                    .fill(Color(colors.controlRadioCheckBackgroundSelected))
                     .overlay(
                         borderView
                     )
                 Image(uiImage: images.selectionBadgeIcon)
                     .customizable()
                     .frame(width: tokens.iconSizeXs, height: tokens.iconSizeXs)
-                    .foregroundColor(Color(colors.controlRadiocheckIconSelected))
+                    .foregroundColor(Color(colors.controlRadioCheckIcon))
             } else {
                 borderView
             }

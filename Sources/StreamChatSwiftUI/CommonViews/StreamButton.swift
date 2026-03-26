@@ -222,7 +222,7 @@ struct StreamButtonStyle: ButtonStyle {
 
     private var backgroundColor: UIColor {
         if !isEnabled {
-            return style == .solid || style == .liquidGlass ? colors.backgroundCoreDisabled : .clear
+            return style == .solid || style == .liquidGlass ? colors.backgroundUtilityDisabled : .clear
         }
 
         switch style {
@@ -254,8 +254,8 @@ struct StreamButtonStyle: ButtonStyle {
 
     private func interactionOverlayColor(isPressed: Bool) -> UIColor? {
         guard isEnabled else { return nil }
-        if isPressed { return colors.backgroundCorePressed }
-        if isSelected { return colors.backgroundCoreSelected }
+        if isPressed { return colors.backgroundUtilityPressed }
+        if isSelected { return colors.backgroundUtilitySelected }
         return nil
     }
 

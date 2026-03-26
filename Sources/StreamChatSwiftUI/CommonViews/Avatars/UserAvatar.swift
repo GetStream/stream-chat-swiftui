@@ -73,10 +73,10 @@ public struct UserAvatar: View {
                         image
                             .resizable()
                             .aspectRatio(contentMode: .fill)
-                            .background(colors.backgroundCoreApp.toColor)
+                            .background(colors.borderCoreInverse.toColor)
                             .compositingGroup()
                             .overlay(
-                                showsBorder ? Circle().strokeBorder(colors.borderCoreOpacity10.toColor, lineWidth: 1) : nil
+                                showsBorder ? Circle().strokeBorder(colors.borderCoreOpacitySubtle.toColor, lineWidth: 1) : nil
                             )
                     case .loading, .empty:
                         PlaceholderView(initials: initials, size: size)

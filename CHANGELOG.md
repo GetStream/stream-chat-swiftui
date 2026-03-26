@@ -12,6 +12,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Fix split view navigation on iPad [#1320](https://github.com/GetStream/stream-chat-swiftui/pull/1320)
 - Fix rendering 1:1 direct message avatars and presence indicators [#1332](https://github.com/GetStream/stream-chat-swiftui/pull/1332)
 - Fix giphy previews in the channel list and quote replies [#1333](https://github.com/GetStream/stream-chat-swiftui/pull/1333)
+- Fix black borders on image preview in composer when editing or quoting a message [#1334](https://github.com/GetStream/stream-chat-swiftui/pull/1334)
+- Fix quoted image preview not updating when switching to a different quoted message [#1334](https://github.com/GetStream/stream-chat-swiftui/pull/1334)
 
 ### 🔄 Changed
 - Renamed the `onMessageSent` callback to `willSendMessage` in `MessageComposerViewModel`, `ViewModelsFactory`, and `ComposerViewFactoryOptions` [#1327](https://github.com/GetStream/stream-chat-swiftui/pull/1327)

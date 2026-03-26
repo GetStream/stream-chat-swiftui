@@ -159,7 +159,7 @@ public struct AttachmentPickerView<Factory: ViewFactory>: View {
         }
         .edgesIgnoringSafeArea(.bottom)
         .frame(height: height)
-        .background(Color(colors.backgroundElevationElevation1))
+        .background(Color(colors.backgroundElevation1))
         .onChange(of: isDisplayed) { newValue in
             if newValue {
                 askForAssetsAccessPermissions()

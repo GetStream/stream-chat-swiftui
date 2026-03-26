@@ -140,7 +140,7 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
             messageViewModel.usesScrollView = usesScrollView
         }
         .edgesIgnoringSafeArea(.all)
-        .background(orientationChanged ? nil : Color(colors.backgroundElevationElevation1))
+        .background(orientationChanged ? nil : Color(colors.backgroundElevation1))
         .onAppear {
             popIn = true
         }

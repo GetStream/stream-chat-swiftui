@@ -50,21 +50,21 @@ struct RadioCheckView: View {
         if isDisabled {
             return colors.borderUtilityDisabled
         }
-        return borderColorOverride ?? colors.controlRadiocheckBorder
+        return borderColorOverride ?? colors.controlRadioCheckBorder
     }
 
     private var selectedBackgroundColor: UIColor {
         if isDisabled {
-            return colors.backgroundCoreDisabled
+            return colors.backgroundUtilityDisabled
         }
-        return colors.controlRadiocheckBackgroundSelected
+        return colors.controlRadioCheckBackgroundSelected
     }
 
     private var selectedIconColor: UIColor {
         if isDisabled {
             return colors.textDisabled
         }
-        return colors.controlRadiocheckIconSelected
+        return colors.controlRadioCheckIcon
     }
 }
 

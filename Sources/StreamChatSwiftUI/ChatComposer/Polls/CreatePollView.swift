@@ -49,7 +49,7 @@ public struct CreatePollView<Factory: ViewFactory>: View {
                 .environment(\.defaultMinListRowHeight, 1)
                 .listStyle(.plain)
             }
-            .background(Color(colors.backgroundElevationElevation1).ignoresSafeArea())
+            .background(Color(colors.backgroundElevation1).ignoresSafeArea())
             .modifier(
                 CreatePollToolbarModifier(
                     factory: factory,
@@ -465,7 +465,7 @@ private struct CreatePollRowModifier: ViewModifier {
         if #available(iOS 15.0, *) {
             content
                 .listRowSeparator(.hidden)
-                .listRowBackground(Color(colors.backgroundElevationElevation1))
+                .listRowBackground(Color(colors.backgroundElevation1))
                 .listRowInsets(EdgeInsets(
                     top: topSpacing,
                     leading: tokens.spacingMd,

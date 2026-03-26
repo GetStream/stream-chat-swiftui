@@ -546,7 +546,7 @@ import XCTest
             appearance.colorPalette.messageCurrentUserTextColor = .blue
             appearance.colorPalette.textLowEmphasis = .red
             appearance.images.playFill = UIImage(systemName: "star")!
-            appearance.images.fileAac = UIImage(systemName: "scribble")!
+            appearance.images.fileIcons[.aac] = UIImage(systemName: "scribble")!
         }
         let view = MessageView(
             factory: DefaultViewFactory.shared,
