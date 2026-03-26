@@ -464,6 +464,35 @@ import XCTest
         AssertSnapshot(view)
     }
 
+    func test_channelListItem_messagePending() throws {
+        // Given
+        let message = ChatMessage.mock(
+            id: .unique,
+            cid: .unique,
+            text: "Hey, how are you?",
+            author: .mock(id: Self.currentUserId, name: "You"),
+            createdAt: Date(timeIntervalSince1970: 100),
+            localState: .pendingSend,
+            isSentByCurrentUser: true
+        )
+        let channel = ChatChannel.mock(
+            cid: .unique,
+            config: .mock(readEventsEnabled: true),
+            latestMessages: [message]
+        )
+
+        // When
+        let view = ChatChannelListItem(
+            channel: channel,
+            channelName: "Test",
+            onItemTap: { _ in }
+        )
+        .frame(width: defaultScreenSize.width)
+
+        // Then
+        AssertSnapshot(view)
+    }
+
     func test_channelListItem_voiceRecordingMessage() throws {
         // Given
         let message = try mockVoiceRecordingMessage(text: "", isSentByCurrentUser: true)
