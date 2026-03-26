@@ -673,7 +673,7 @@ import XCTest
         AssertSnapshot(view)
     }
 
-    func test_channelListItem_deletedMessage_noReadIndicators() throws {
+    func test_channelListItem_deletedMessage_sentByCurrentUser() throws {
         // Given
         let date = Date(timeIntervalSince1970: 100)
         let message = ChatMessage.mock(

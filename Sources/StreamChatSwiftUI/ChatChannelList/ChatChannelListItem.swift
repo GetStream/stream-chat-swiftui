@@ -136,6 +136,11 @@ public struct ChatChannelListItem<Factory: ViewFactory>: View {
                 }
             } else if channel.latestMessages.first?.isDeleted == true {
                 HStack(spacing: tokens.spacingXxs) {
+                    if channel.latestMessages.first?.isSentByCurrentUser == true {
+                        Text("\(L10n.Channel.Item.you):")
+                            .font(fonts.subheadline)
+                            .fontWeight(.semibold)
+                    }
                     Image(systemName: "nosign")
                         .resizable()
                         .scaledToFit()
