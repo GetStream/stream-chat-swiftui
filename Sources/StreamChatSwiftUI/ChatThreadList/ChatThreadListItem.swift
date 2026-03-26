@@ -318,7 +318,7 @@ struct ChatThreadListItemContentView<Factory: ViewFactory>: View {
                     )
                 )
                 .padding(borderWidth)
-                .background(Circle().fill(colors.borderCoreOnDark.toColor))
+                .background(Circle().fill(colors.borderCoreOnAccent.toColor))
                 .zIndex(Double(index))
             }
         }

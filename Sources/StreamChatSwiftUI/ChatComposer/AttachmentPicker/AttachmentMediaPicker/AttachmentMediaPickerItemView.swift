@@ -96,7 +96,7 @@ public struct AttachmentMediaPickerItemView: View {
                     )
                 }
             } else {
-                Color(colors.backgroundCoreSurface)
+                Color(colors.backgroundCoreSurfaceDefault)
                     .aspectRatio(1, contentMode: .fill)
                 
                 Image(uiImage: images.imagePlaceholder)
@@ -112,7 +112,7 @@ public struct AttachmentMediaPickerItemView: View {
                 // Selected dimming overlay
                 if selected {
                     RoundedRectangle(cornerRadius: tokens.radiusXxs)
-                        .fill(Color(colors.backgroundCoreSelected))
+                        .fill(Color(colors.backgroundUtilitySelected))
                 }
 
                 // Selection indicator (top-right)

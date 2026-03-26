@@ -183,7 +183,7 @@ struct GridMediaView<Factory: ViewFactory>: View {
         }
         .padding(.horizontal, tokens.spacingSm)
         .padding(.vertical, tokens.spacing2xl)
-        .background(colors.backgroundElevationElevation1.toColor.edgesIgnoringSafeArea(.all))
+        .background(colors.backgroundElevation1.toColor.edgesIgnoringSafeArea(.all))
     }
 }
 

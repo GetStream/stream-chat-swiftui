@@ -25,7 +25,8 @@ struct AttachmentDownloadingStateView: View {
             case .downloadingFailed:
                 BottomRightView {
                     Image(uiImage: images.messageListErrorIndicator)
-                        .foregroundColor(Color(colors.alert))
+                        .renderingMode(.template)
+                        .foregroundColor(Color(colors.badgeBackgroundError))
                         .background(Color.white)
                         .clipShape(Circle())
                         .offset(x: -4, y: -4)

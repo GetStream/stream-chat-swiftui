@@ -356,7 +356,7 @@ struct SendFailureIndicator: View {
             Image(uiImage: images.messageListErrorIndicator)
                 .customizable()
                 .frame(width: 16, height: 16)
-                .foregroundColor(Color(colors.alert))
+                .foregroundColor(Color(colors.badgeBackgroundError))
                 .offset(y: 4)
         }
         .accessibilityElement(children: .contain)

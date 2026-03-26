@@ -197,8 +197,8 @@ open class WaveformView: UIView {
                 thumb = cached
             } else {
                 thumb = Self.makeSliderThumbImage(
-                    fillColor: colors.accentPrimary,
-                    borderColor: colors.backgroundCoreApp
+                    fillColor: colors.controlPlaybackThumbBackgroundActive,
+                    borderColor: colors.controlPlaybackThumbBorderActive
                 )
                 Self.cachedActiveThumb = thumb
             }
@@ -207,8 +207,8 @@ open class WaveformView: UIView {
                 thumb = cached
             } else {
                 thumb = Self.makeSliderThumbImage(
-                    fillColor: colors.backgroundCoreApp,
-                    borderColor: colors.borderCoreOpacity25
+                    fillColor: colors.controlPlaybackThumbBackgroundDefault,
+                    borderColor: colors.controlPlaybackThumbBorderDefault
                 )
                 Self.cachedInactiveThumb = thumb
             }

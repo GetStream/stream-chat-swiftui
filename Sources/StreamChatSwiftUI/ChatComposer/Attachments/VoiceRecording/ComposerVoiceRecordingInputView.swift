@@ -135,7 +135,7 @@ struct ComposerVoiceRecordingInputView<Factory: ViewFactory>: View {
                     .font(.system(size: 20))
                     .foregroundColor(Color(colors.textPrimary))
                     .frame(width: 32, height: 32)
-                    .background(Color(colors.backgroundCorePressed))
+                    .background(Color(colors.backgroundUtilityPressed))
                     .clipShape(Circle())
             }
             .frame(width: 48, height: 48)

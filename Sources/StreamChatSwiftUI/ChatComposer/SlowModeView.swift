@@ -22,7 +22,7 @@ public struct SlowModeView: View {
         Text("\(cooldownDuration)")
             .font(fonts.bodyBold)
             .frame(width: size, height: size)
-            .background(Color(colors.backgroundCoreDisabled))
+            .background(Color(colors.backgroundUtilityDisabled))
             .foregroundColor(Color(colors.textDisabled))
             .clipShape(Capsule())
             .accessibilityIdentifier("SlowModeView")

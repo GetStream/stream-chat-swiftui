@@ -21,7 +21,7 @@ struct ComposerImageAttachmentView: View {
             .cornerRadius(tokens.messageBubbleRadiusAttachment)
             .overlay(
                 RoundedRectangle(cornerRadius: tokens.messageBubbleRadiusAttachment)
-                    .strokeBorder(Color(colors.borderCoreOpacity10), lineWidth: 1)
+                    .strokeBorder(Color(colors.borderCoreOpacitySubtle), lineWidth: 1)
             )
             .id(attachment.id)
             .dismissButtonOverlayModifier {

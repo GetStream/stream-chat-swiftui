@@ -56,7 +56,7 @@ public struct AttachmentMediaPickerView: View {
                 LoadingView()
             }
         }
-        .background(Color(colors.backgroundElevationElevation1))
+        .background(Color(colors.backgroundElevation1))
     }
 
     // MARK: - Private

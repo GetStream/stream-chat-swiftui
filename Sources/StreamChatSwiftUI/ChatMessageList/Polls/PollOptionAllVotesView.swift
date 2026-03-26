@@ -43,7 +43,7 @@ struct PollOptionAllVotesView<Factory: ViewFactory>: View {
             .padding(.top, tokens.spacingMd)
             .padding(.bottom, tokens.spacing3xl)
         }
-        .background(Color(colors.backgroundElevationElevation1).ignoresSafeArea())
+        .background(Color(colors.backgroundElevation1).ignoresSafeArea())
         .alertBanner(
             isPresented: $viewModel.errorShown,
             action: viewModel.refresh

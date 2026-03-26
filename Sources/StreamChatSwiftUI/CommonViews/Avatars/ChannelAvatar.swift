@@ -95,10 +95,10 @@ public struct ChannelAvatar: View {
                         image
                             .resizable()
                             .aspectRatio(contentMode: .fill)
-                            .background(colors.backgroundCoreApp.toColor)
+                            .background(colors.borderCoreInverse.toColor)
                             .compositingGroup()
                             .overlay(
-                                showsBorder ? Circle().strokeBorder(colors.borderCoreOpacity10.toColor, lineWidth: 1) : nil
+                                showsBorder ? Circle().strokeBorder(colors.borderCoreOpacitySubtle.toColor, lineWidth: 1) : nil
                             )
                             .clipShape(Circle())
                     case .empty, .loading:
@@ -306,7 +306,7 @@ private extension ChannelAvatar {
                 showsBorder: false
             )
             .padding(outerBorderWidth)
-            .background(Circle().fill(colors.borderCoreOnDark.toColor))
+            .background(Circle().fill(colors.borderCoreInverse.toColor))
         }
     }
 }

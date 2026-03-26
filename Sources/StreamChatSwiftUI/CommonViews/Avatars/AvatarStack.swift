@@ -65,6 +65,6 @@ public struct AvatarStack: View {
     
     private func avatarView(url: URL?, initials: String, outerBorder: Bool) -> some View {
         UserAvatar(url: url, initials: initials, size: size, indicator: .none, showsBorder: false)
-            .overlay(outerBorder ? Circle().inset(by: -1).stroke(colors.borderCoreOnDark.toColor, lineWidth: 2) : nil)
+            .overlay(outerBorder ? Circle().inset(by: -1).stroke(colors.borderCoreInverse.toColor, lineWidth: 2) : nil)
     }
 }

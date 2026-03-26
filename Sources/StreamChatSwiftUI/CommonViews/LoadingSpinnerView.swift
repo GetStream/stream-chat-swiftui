@@ -32,11 +32,11 @@ public struct LoadingSpinnerView: View {
     public var body: some View {
         ZStack {
             Circle()
-                .fill(Color(colors.backgroundElevationElevation0))
+                .fill(Color(colors.backgroundElevation0))
                 .overlay(
                     Circle()
                         .inset(by: -1)
-                        .stroke(colors.backgroundElevationElevation0.toColor, lineWidth: bordered ? 2 : 0)
+                        .stroke(colors.backgroundElevation0.toColor, lineWidth: bordered ? 2 : 0)
                 )
             Circle()
                 .stroke(Color(colors.borderCoreDefault), lineWidth: strokeWidth)

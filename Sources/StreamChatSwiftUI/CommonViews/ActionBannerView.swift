@@ -30,7 +30,7 @@ struct ActionBannerView: View {
                 Spacer()
             }
             .padding(.all, 16)
-            .background(Color(colors.backgroundCoreSurface))
+            .background(Color(colors.backgroundCoreSurfaceDefault))
         }
     }
 }

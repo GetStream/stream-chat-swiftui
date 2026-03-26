@@ -44,7 +44,7 @@ struct MoreReactionsView: View {
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding()
         .accessibilityIdentifier("MoreReactionsView")
-        .background(Color(colors.backgroundElevationElevation1).edgesIgnoringSafeArea(.bottom))
+        .background(Color(colors.backgroundElevation1).edgesIgnoringSafeArea(.bottom))
         .edgesIgnoringSafeArea(.bottom)
     }
 }

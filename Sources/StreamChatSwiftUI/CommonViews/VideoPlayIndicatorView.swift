@@ -31,7 +31,7 @@ public struct VideoPlayIndicatorView: View {
 
     public var body: some View {
         Circle()
-            .fill(Color(colors.controlPlayControlBackground))
+            .fill(Color(colors.controlPlayButtonBackground))
             .frame(width: size, height: size)
             .overlay(
                 Image(uiImage: playing ? images.pauseFill : images.playFill)
@@ -39,7 +39,7 @@ public struct VideoPlayIndicatorView: View {
                     .resizable()
                     .scaledToFit()
                     .frame(width: iconSize, height: iconSize)
-                    .foregroundColor(Color(colors.controlPlayControlIcon))
+                    .foregroundColor(Color(colors.controlPlayButtonIcon))
                     .offset(x: offsetX)
             )
             .accessibilityIdentifier("VideoPlayIndicatorView")
