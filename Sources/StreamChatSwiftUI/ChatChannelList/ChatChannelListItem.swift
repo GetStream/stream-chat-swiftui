@@ -63,21 +63,11 @@ public struct ChatChannelListItem<Factory: ViewFactory>: View {
 
                         Spacer()
                         
-                        HStack(spacing: tokens.spacingXs) {
-                            SubtitleText(
-                                text: injectedChannelInfo?.timestamp ?? channel.timestampText,
-                                color: Color(colors.textTertiary)
-                            )
-                            .accessibilityIdentifier("timestampView")
-
-                            if lastMessageFailedToSend {
-                                Image(uiImage: images.messageListErrorIndicator)
-                                    .customizable()
-                                    .frame(width: 16, height: 16)
-                                    .foregroundColor(Color(colors.badgeBackgroundError))
-                                    .accessibilityHidden(true)
-                            }
-                        }
+                        SubtitleText(
+                            text: injectedChannelInfo?.timestamp ?? channel.timestampText,
+                            color: Color(colors.textTertiary)
+                        )
+                        .accessibilityIdentifier("timestampView")
                         
                         if injectedChannelInfo == nil && channel.unreadCount != .noUnread {
                             BadgeNotificationView(
@@ -93,7 +83,8 @@ public struct ChatChannelListItem<Factory: ViewFactory>: View {
                                     currentUserId: chatClient.currentUserId,
                                     message: channel.latestMessages.first
                                 ),
-                                showDelivered: channel.latestMessages.first?.deliveryStatus(for: channel) == .delivered
+                                showDelivered: channel.latestMessages.first?.deliveryStatus(for: channel) == .delivered,
+                                localState: channel.latestMessages.first?.localState
                             )
                         }
                         
@@ -121,10 +112,17 @@ public struct ChatChannelListItem<Factory: ViewFactory>: View {
     private var subtitleView: some View {
         HStack(spacing: 4) {
             if lastMessageFailedToSend {
-                Text(L10n.Channel.Item.messageFailedToSend)
-                    .font(fonts.subheadline)
-                    .foregroundColor(Color(colors.accentError))
-                    .lineLimit(1)
+                HStack(spacing: tokens.spacingXxs) {
+                    Image(uiImage: images.messageListErrorIndicator)
+                        .customizable()
+                        .frame(width: 16, height: 16)
+                        .foregroundColor(Color(colors.badgeBackgroundError))
+                        .accessibilityHidden(true)
+                    Text(L10n.Channel.Item.messageFailedToSend)
+                }
+                .font(fonts.subheadline)
+                .foregroundColor(Color(colors.accentError))
+                .lineLimit(1)
             } else if channel.shouldShowTypingIndicator {
                 factory.makeSubtitleTypingIndicatorView(
                     options: SubtitleTypingIndicatorViewOptions(channel: channel)
