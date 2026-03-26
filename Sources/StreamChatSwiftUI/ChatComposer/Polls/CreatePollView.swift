@@ -441,7 +441,7 @@ private struct CreatePollMaxVotesStepper: View {
                 .background(
                     Circle()
                         .strokeBorder(
-                            Color(enabled ? colors.buttonSecondaryBorder : colors.borderUtilityDisabled),
+                            Color(enabled ? colors.buttonSecondaryBorder : colors.borderUtilityDisabledOnSurface),
                             lineWidth: 1
                         )
                 )
