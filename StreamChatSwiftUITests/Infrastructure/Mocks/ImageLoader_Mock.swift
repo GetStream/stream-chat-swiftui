@@ -12,6 +12,8 @@ import XCTest
 class ImageLoader_Mock: ImageLoading, @unchecked Sendable {
     static let defaultLoadedImage = XCTestCase.TestImages.yoda.image
     var loadImageCalled = false
+    var loadImageCallCount = 0
+    var loadedURLs: [URL?] = []
 
     func loadImage(
         url: URL?,
@@ -21,6 +23,8 @@ class ImageLoader_Mock: ImageLoading, @unchecked Sendable {
         completion: @escaping @MainActor (Result<UIImage, Error>) -> Void
     ) {
         loadImageCalled = true
+        loadImageCallCount += 1
+        loadedURLs.append(url)
         StreamConcurrency.onMain {
             completion(.success(Self.defaultLoadedImage))
         }
@@ -35,6 +39,8 @@ class ImageLoader_Mock: ImageLoading, @unchecked Sendable {
         completion: @escaping @MainActor ([UIImage]) -> Void
     ) {
         loadImageCalled = true
+        loadImageCallCount += 1
+        loadedURLs.append(contentsOf: urls)
 
         StreamConcurrency.onMain {
             completion([Self.defaultLoadedImage])
