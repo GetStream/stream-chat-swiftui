@@ -927,7 +927,8 @@ import XCTest
             options: PollViewOptions(
                 message: .mock(),
                 poll: Poll.mock(),
-                isFirst: true
+                isFirst: true,
+                availableWidth: 256
             )
         )
         

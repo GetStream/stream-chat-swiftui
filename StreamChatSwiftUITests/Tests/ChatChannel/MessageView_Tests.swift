@@ -304,7 +304,7 @@ import XCTest
         // Then
         AssertSnapshot(view)
     }
-    
+
     func test_messageViewVideo_snapshot() {
         // Given
         let videoMessage = ChatMessage.mock(

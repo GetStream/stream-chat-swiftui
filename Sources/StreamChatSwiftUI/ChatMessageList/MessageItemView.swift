@@ -157,9 +157,11 @@ public struct MessageItemView<Factory: ViewFactory>: View {
             return fixedContentWidth
         }
         let minimumWidth: CGFloat = 240
-        let padding = messageListConfig.messagePaddings.horizontal
-        let avatarWithSpacing = AvatarSize.medium + tokens.spacingXs
-        let available = (width ?? 0) - spacerWidth - padding - avatarWithSpacing
+        var padding = messageListConfig.messagePaddings.horizontal
+        if utils.messageListConfig.messageDisplayOptions.showAvatars(for: channel, incoming: !messageViewModel.isRightAligned) {
+            padding += AvatarSize.medium + tokens.spacingXs
+        }
+        let available = (width ?? 0) - spacerWidth - padding
         return max(minimumWidth, available)
     }
 

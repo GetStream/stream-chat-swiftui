@@ -10,10 +10,12 @@ public struct PollAttachmentView<Factory: ViewFactory>: View {
     @Injected(\.fonts) var fonts
     @Injected(\.colors) var colors
     @Injected(\.tokens) var tokens
+    @Injected(\.utils) var utils
 
     private let factory: Factory
     private let message: ChatMessage
     private let isFirst: Bool
+    private let width: CGFloat
 
     @StateObject var viewModel: PollAttachmentViewModel
 
@@ -21,11 +23,13 @@ public struct PollAttachmentView<Factory: ViewFactory>: View {
         factory: Factory,
         message: ChatMessage,
         poll: Poll,
-        isFirst: Bool
+        isFirst: Bool,
+        width: CGFloat
     ) {
         self.factory = factory
         self.message = message
         self.isFirst = isFirst
+        self.width = width
         _viewModel = StateObject(
             wrappedValue: PollAttachmentViewModel(
                 message: message,
@@ -178,6 +182,7 @@ public struct PollAttachmentView<Factory: ViewFactory>: View {
                 )
             )
         )
+        .frame(width: width)
     }
 
     private var outlineButtonRole: StreamButtonRole {

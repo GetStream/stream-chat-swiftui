@@ -12,6 +12,7 @@ public struct GiphyAttachmentView<Factory: ViewFactory>: View {
     @Injected(\.fonts) private var fonts
     @Injected(\.images) private var images
     @Injected(\.tokens) private var tokens
+    @Injected(\.utils) private var utils
 
     let factory: Factory
     let message: ChatMessage
@@ -47,7 +48,6 @@ public struct GiphyAttachmentView<Factory: ViewFactory>: View {
                 .foregroundColor(colors.chatTextOutgoing.toColor)
                 .padding(.all, tokens.spacingSm)
             }
-
             LazyGiphyView(
                 source: message.giphyAttachments[0].previewURL,
                 width: width
@@ -69,6 +69,8 @@ public struct GiphyAttachmentView<Factory: ViewFactory>: View {
                             execute(action: action)
                         } label: {
                             Text(action.value.firstUppercased)
+                                .lineLimit(1)
+                                .minimumScaleFactor(0.5)
                                 .padding(.horizontal, 4)
                                 .padding(.vertical)
                         }
@@ -83,6 +85,7 @@ public struct GiphyAttachmentView<Factory: ViewFactory>: View {
                 }
             }
         }
+        .frame(maxWidth: width)
         .modifier(
             factory.styles.makeMessageViewModifier(
                 for: MessageModifierInfo(
@@ -92,7 +95,6 @@ public struct GiphyAttachmentView<Factory: ViewFactory>: View {
                 )
             )
         )
-        .frame(maxWidth: width)
         .accessibilityIdentifier("GiphyAttachmentView")
     }
     

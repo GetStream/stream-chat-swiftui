@@ -116,6 +116,7 @@ public struct MessageAttachmentsView<Factory: ViewFactory>: View {
                 )
             }
         }
+        .frame(width: width, alignment: message.isRightAligned ? .trailing : .leading)
         .if(MessageAttachmentsBubbleConfiguration.isBubbleShown(for: message)) { view in
             view
                 .padding(MessageAttachmentsBubbleConfiguration.bubbleContentPadding(for: message))
