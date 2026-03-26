@@ -220,6 +220,68 @@ import XCTest
         // Then
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
+
+    func test_messageViewQuoted_singleImageAttachment_snapshot() {
+        // Given
+        let quoted = ChatMessage.mock(
+            id: .unique,
+            cid: .unique,
+            text: "This is a quoted message",
+            author: .mock(id: .unique, name: "John Wick")
+        )
+        let message = ChatMessage.mock(
+            id: .unique,
+            cid: .unique,
+            text: "test message",
+            author: .mock(id: .unique),
+            quotedMessage: quoted,
+            attachments: [ChatChannelTestHelpers.imageAttachments[0]]
+        )
+
+        // When
+        let view = MessageView(
+            factory: DefaultViewFactory.shared,
+            message: message,
+            contentWidth: defaultScreenSize.width,
+            isFirst: true,
+            scrolledId: .constant(nil)
+        )
+        .applyDefaultSize()
+
+        // Then
+        AssertSnapshot(view)
+    }
+
+    func test_messageViewQuoted_singleFileAttachment_snapshot() {
+        // Given
+        let quoted = ChatMessage.mock(
+            id: .unique,
+            cid: .unique,
+            text: "This is a quoted message",
+            author: .mock(id: .unique, name: "John Wick")
+        )
+        let message = ChatMessage.mock(
+            id: .unique,
+            cid: .unique,
+            text: "test message",
+            author: .mock(id: .unique),
+            quotedMessage: quoted,
+            attachments: [ChatChannelTestHelpers.fileAttachments[0]]
+        )
+
+        // When
+        let view = MessageView(
+            factory: DefaultViewFactory.shared,
+            message: message,
+            contentWidth: defaultScreenSize.width,
+            isFirst: true,
+            scrolledId: .constant(nil)
+        )
+        .applyDefaultSize()
+
+        // Then
+        AssertSnapshot(view)
+    }
     
     func test_messageViewGiphy_snapshot() {
         // Given
