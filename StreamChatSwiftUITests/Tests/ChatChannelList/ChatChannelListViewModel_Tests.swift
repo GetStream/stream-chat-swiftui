@@ -203,10 +203,8 @@ import XCTest
         let injectedChannelInfo = viewModel.selectedChannel?.injectedChannelInfo!
         let presentedSubtitle = injectedChannelInfo!.subtitle!
         let unreadCount = injectedChannelInfo!.unreadCount
-        XCTAssert(presentedSubtitle == channel.subtitleText)
-        XCTAssert(viewModel.channels[0].subtitleText == "No messages")
+        XCTAssert(presentedSubtitle == "No messages")
         XCTAssert(unreadCount == 0)
-        XCTAssert(channel.shouldShowTypingIndicator == false)
     }
 
     func test_channelListVM_badgeCountUpdate() {

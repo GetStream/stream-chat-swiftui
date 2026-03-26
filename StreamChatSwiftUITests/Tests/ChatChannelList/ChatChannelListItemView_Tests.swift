@@ -188,6 +188,43 @@ import XCTest
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
     
+    func test_channelListItem_ephemeralMessageSkipped_showsPreviousMessage() throws {
+        // Given
+        let regularMessage = ChatMessage.mock(
+            id: .unique,
+            cid: .unique,
+            text: "Hello there",
+            type: .regular,
+            author: .mock(id: "user", name: "User"),
+            createdAt: Date(timeIntervalSince1970: 100),
+            isSentByCurrentUser: false
+        )
+        let ephemeralMessage = ChatMessage.mock(
+            id: .unique,
+            cid: .unique,
+            text: "/giphy cats",
+            type: .ephemeral,
+            author: .mock(id: Self.currentUserId, name: "Me"),
+            createdAt: Date(timeIntervalSince1970: 200),
+            isSentByCurrentUser: true
+        )
+        let channel = ChatChannel.mockDMChannel(
+            memberCount: 2,
+            latestMessages: [ephemeralMessage, regularMessage]
+        )
+
+        // When
+        let view = ChatChannelListItem(
+            channel: channel,
+            channelName: "User",
+            onItemTap: { _ in }
+        )
+        .frame(width: defaultScreenSize.width)
+
+        // Then
+        AssertSnapshot(view)
+    }
+
     func test_channelListItem_pollMessage_youCreated() throws {
         // Given
         let message = try mockPollMessage(isSentByCurrentUser: true)

@@ -64,7 +64,7 @@ public struct ChatChannelListItem<Factory: ViewFactory>: View {
                         Spacer()
                         
                         SubtitleText(
-                            text: injectedChannelInfo?.timestamp ?? channel.timestampText,
+                            text: injectedChannelInfo?.timestamp ?? timestampText,
                             color: Color(colors.textTertiary)
                         )
                         .accessibilityIdentifier("timestampView")
@@ -81,10 +81,10 @@ public struct ChatChannelListItem<Factory: ViewFactory>: View {
                             MessageReadIndicatorView(
                                 readUsers: channel.readUsers(
                                     currentUserId: chatClient.currentUserId,
-                                    message: channel.latestMessages.first
+                                    message: previewMessage
                                 ),
-                                showDelivered: channel.latestMessages.first?.deliveryStatus(for: channel) == .delivered,
-                                localState: channel.latestMessages.first?.localState
+                                showDelivered: previewMessage?.deliveryStatus(for: channel) == .delivered,
+                                localState: previewMessage?.localState
                             )
                         }
                         
@@ -109,6 +109,28 @@ public struct ChatChannelListItem<Factory: ViewFactory>: View {
         utils.channelListConfig.channelItemMutedStyle
     }
 
+    private var previewMessage: ChatMessage? {
+        channel.latestMessages.first(where: { $0.type != .ephemeral })
+    }
+
+    private var shouldShowTypingIndicator: Bool {
+        !channel.currentlyTypingUsersFiltered(
+            currentUserId: chatClient.currentUserId
+        ).isEmpty && channel.config.typingEventsEnabled
+    }
+
+    private var draftMessageText: String? {
+        guard let draftMessage = channel.draftMessage else { return nil }
+        return utils.messagePreviewFormatter.formatContent(for: ChatMessage(draftMessage), in: channel)
+    }
+
+    private var timestampText: String {
+        if let lastMessageAt = channel.lastMessageAt {
+            return utils.messageTimestampFormatter.format(lastMessageAt)
+        }
+        return ""
+    }
+
     private var subtitleView: some View {
         HStack(spacing: 4) {
             if lastMessageFailedToSend {
@@ -123,20 +145,20 @@ public struct ChatChannelListItem<Factory: ViewFactory>: View {
                 .font(fonts.subheadline)
                 .foregroundColor(Color(colors.accentError))
                 .lineLimit(1)
-            } else if channel.shouldShowTypingIndicator {
+            } else if shouldShowTypingIndicator {
                 factory.makeSubtitleTypingIndicatorView(
                     options: SubtitleTypingIndicatorViewOptions(channel: channel)
                 )
-            } else if utils.messageListConfig.draftMessagesEnabled, let draftText = channel.draftMessageText {
+            } else if utils.messageListConfig.draftMessagesEnabled, let draftText = draftMessageText {
                 HStack(spacing: 2) {
                     Text("\(L10n.Message.Preview.draft): ")
                         .font(fonts.subheadline).fontWeight(.semibold)
                         .foregroundColor(Color(colors.accentPrimary))
                     SubtitleText(text: draftText)
                 }
-            } else if channel.latestMessages.first?.isDeleted == true {
+            } else if previewMessage?.isDeleted == true {
                 HStack(spacing: tokens.spacingXxs) {
-                    if channel.latestMessages.first?.isSentByCurrentUser == true {
+                    if previewMessage?.isSentByCurrentUser == true {
                         Text("\(L10n.Channel.Item.you):")
                             .font(fonts.subheadline)
                             .fontWeight(.semibold)
@@ -152,7 +174,7 @@ public struct ChatChannelListItem<Factory: ViewFactory>: View {
                 .font(fonts.subheadline)
                 .foregroundColor(Color(colors.textTertiary))
             } else if let authorName = subtitleAuthorName {
-                let contentString = channel.latestMessages.first.map {
+                let contentString = previewMessage.map {
                     utils.messagePreviewFormatter.formatContent(for: $0, in: channel)
                 } ?? subtitleText
                 HStack(spacing: tokens.spacingXxs) {
@@ -183,8 +205,8 @@ public struct ChatChannelListItem<Factory: ViewFactory>: View {
     }
 
     private var previewAttachmentIconImage: UIImage? {
-        guard let previewMessage = channel.latestMessages.first else { return nil }
-        let resolver = MessageAttachmentPreviewResolver(message: previewMessage)
+        guard let message = previewMessage else { return nil }
+        let resolver = MessageAttachmentPreviewResolver(message: message)
         guard let previewIcon = resolver.previewIcon else { return nil }
         return utils.messageAttachmentPreviewIconProvider.image(for: previewIcon)
     }
@@ -200,7 +222,7 @@ public struct ChatChannelListItem<Factory: ViewFactory>: View {
     }
 
     private var subtitleAuthorName: String? {
-        guard let previewMessage = channel.latestMessages.first,
+        guard let previewMessage,
               previewMessage.poll == nil,
               injectedChannelInfo?.subtitle == nil,
               !(channel.isDirectMessageChannel && channel.memberCount == 2) else {
@@ -216,17 +238,13 @@ public struct ChatChannelListItem<Factory: ViewFactory>: View {
         if let injectedSubtitle = injectedChannelInfo?.subtitle {
             return injectedSubtitle
         }
-        return channel.subtitleText
-    }
-
-    private var channelSubtitleText: String {
-        if channel.shouldShowTypingIndicator {
-            channel.typingIndicatorString(currentUserId: chatClient.currentUserId)
-        } else if let previewMessageText = channel.previewMessageText {
-            previewMessageText
-        } else {
-            L10n.Channel.Item.emptyMessages
+        if shouldShowTypingIndicator {
+            return channel.typingIndicatorString(currentUserId: chatClient.currentUserId)
         }
+        if let previewMessage {
+            return utils.messagePreviewFormatter.format(previewMessage, in: channel)
+        }
+        return L10n.Channel.Item.emptyMessages
     }
 
     private var mutedIcon: some View {
@@ -237,17 +255,17 @@ public struct ChatChannelListItem<Factory: ViewFactory>: View {
     }
 
     private var lastMessageFailedToSend: Bool {
-        channel.latestMessages.first?.localState == .sendingFailed
+        previewMessage?.localState == .sendingFailed
     }
 
     private var shouldShowReadEvents: Bool {
-        if channel.shouldShowTypingIndicator || lastMessageFailedToSend {
+        if shouldShowTypingIndicator || lastMessageFailedToSend {
             return false
         }
-        if utils.messageListConfig.draftMessagesEnabled && channel.draftMessageText != nil {
+        if utils.messageListConfig.draftMessagesEnabled && draftMessageText != nil {
             return false
         }
-        if let message = channel.latestMessages.first,
+        if let message = previewMessage,
            message.isSentByCurrentUser,
            !message.isDeleted {
             return channel.config.readEventsEnabled
@@ -283,52 +301,6 @@ public final class InjectedChannelInfo: Sendable {
         self.timestamp = timestamp
         self.lastMessageAt = lastMessageAt
         self.latestMessages = latestMessages
-    }
-}
-
-extension ChatChannel {
-    @MainActor public var previewMessageText: String? {
-        guard let previewMessage = latestMessages.first else { return nil }
-        let messageFormatter = InjectedValues[\.utils].messagePreviewFormatter
-        return messageFormatter.format(previewMessage, in: self)
-    }
-
-    @MainActor public var draftMessageText: String? {
-        guard let draftMessage else { return nil }
-        let messageFormatter = InjectedValues[\.utils].messagePreviewFormatter
-        return messageFormatter.formatContent(for: ChatMessage(draftMessage), in: self)
-    }
-
-    @MainActor public var lastMessageText: String? {
-        guard let latestMessage = latestMessages.first else { return nil }
-        let messageFormatter = InjectedValues[\.utils].messagePreviewFormatter
-        return messageFormatter.format(latestMessage, in: self)
-    }
-
-    @MainActor public var shouldShowTypingIndicator: Bool {
-        !currentlyTypingUsersFiltered(
-            currentUserId: InjectedValues[\.chatClient].currentUserId
-        ).isEmpty && config.typingEventsEnabled
-    }
-
-    @MainActor public var subtitleText: String {
-        if shouldShowTypingIndicator {
-            typingIndicatorString(currentUserId: InjectedValues[\.chatClient].currentUserId)
-        } else if let previewMessageText {
-            previewMessageText
-        } else {
-            L10n.Channel.Item.emptyMessages
-        }
-    }
-
-    @MainActor public var timestampText: String {
-        if let lastMessageAt {
-            let utils = InjectedValues[\.utils]
-            let formatter = utils.messageTimestampFormatter
-            return formatter.format(lastMessageAt)
-        } else {
-            return ""
-        }
     }
 }
 
