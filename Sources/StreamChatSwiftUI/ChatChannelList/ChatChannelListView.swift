@@ -299,7 +299,7 @@ public struct ChatChannelListContentView<Factory: ViewFactory>: View {
                         viewModel.checkForChannels(index: index)
                     },
                     channelDestination: channelDestination,
-                    trailingSwipeRightButtonTapped: viewModel.onDeleteTapped(channel:),
+                    trailingSwipeRightButtonTapped: viewModel.onArchiveTapped(channel:),
                     trailingSwipeLeftButtonTapped: viewModel.onMoreTapped(channel:),
                     leadingSwipeButtonTapped: { _ in }
                 )
