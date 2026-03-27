@@ -18,7 +18,7 @@ public struct ChatChannelListItem<Factory: ViewFactory>: View {
     var factory: Factory
     var channel: ChatChannel
     var channelName: String
-    var injectedChannelInfo: InjectedChannelInfo?
+    var isSelected: Bool
     var disabled = false
     var onItemTap: (ChatChannel) -> Void
 
@@ -26,14 +26,14 @@ public struct ChatChannelListItem<Factory: ViewFactory>: View {
         factory: Factory = DefaultViewFactory.shared,
         channel: ChatChannel,
         channelName: String,
-        injectedChannelInfo: InjectedChannelInfo? = nil,
+        isSelected: Bool = false,
         disabled: Bool = false,
         onItemTap: @escaping (ChatChannel) -> Void
     ) {
         self.factory = factory
         self.channel = channel
         self.channelName = channelName
-        self.injectedChannelInfo = injectedChannelInfo
+        self.isSelected = isSelected
         self.disabled = disabled
         self.onItemTap = onItemTap
     }
@@ -64,12 +64,12 @@ public struct ChatChannelListItem<Factory: ViewFactory>: View {
                         Spacer()
                         
                         SubtitleText(
-                            text: injectedChannelInfo?.timestamp ?? timestampText,
+                            text: timestampText,
                             color: Color(colors.textTertiary)
                         )
                         .accessibilityIdentifier("timestampView")
                         
-                        if injectedChannelInfo == nil && channel.unreadCount != .noUnread {
+                        if !isSelected && channel.unreadCount != .noUnread {
                             BadgeNotificationView(
                                 count: channel.unreadCount.messages
                             )
@@ -224,7 +224,6 @@ public struct ChatChannelListItem<Factory: ViewFactory>: View {
     private var subtitleAuthorName: String? {
         guard let previewMessage,
               previewMessage.poll == nil,
-              injectedChannelInfo?.subtitle == nil,
               !(channel.isDirectMessageChannel && channel.memberCount == 2) else {
             return nil
         }
@@ -235,9 +234,6 @@ public struct ChatChannelListItem<Factory: ViewFactory>: View {
     }
 
     private var subtitleText: String {
-        if let injectedSubtitle = injectedChannelInfo?.subtitle {
-            return injectedSubtitle
-        }
         if shouldShowTypingIndicator {
             return channel.typingIndicatorString(currentUserId: chatClient.currentUserId)
         }
@@ -279,28 +275,6 @@ public struct ChatChannelListItem<Factory: ViewFactory>: View {
             return images.muted
         }
         return nil
-    }
-}
-
-public final class InjectedChannelInfo: Sendable {
-    public let subtitle: String?
-    public let unreadCount: Int
-    public let timestamp: String?
-    public let lastMessageAt: Date?
-    public let latestMessages: [ChatMessage]?
-    
-    public init(
-        subtitle: String? = nil,
-        unreadCount: Int,
-        timestamp: String? = nil,
-        lastMessageAt: Date? = nil,
-        latestMessages: [ChatMessage]? = nil
-    ) {
-        self.subtitle = subtitle
-        self.unreadCount = unreadCount
-        self.timestamp = timestamp
-        self.lastMessageAt = lastMessageAt
-        self.latestMessages = latestMessages
     }
 }
 

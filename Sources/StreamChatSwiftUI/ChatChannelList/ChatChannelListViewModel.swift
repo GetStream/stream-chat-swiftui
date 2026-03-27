@@ -545,11 +545,7 @@ import UIKit
         if skippedChannelUpdates && selectedChannel == nil {
             updateChannels()
         } else if skippedChannelUpdates {
-            updateSelectedChannelData()
-        } else if !skippedChannelUpdates && selectedChannel != nil {
-            if selectedChannel?.injectedChannelInfo == nil {
-                selectedChannel?.injectedChannelInfo = InjectedChannelInfo(unreadCount: 0)
-            }
+            updateChannels()
         }
     }
 
@@ -561,30 +557,6 @@ import UIKit
                 self?.handleChannelAppearance()
             }
         }
-    }
-
-    private func updateSelectedChannelData() {
-        let selected = selectedChannel?.channel
-        var index: Int?
-        var temp = Array(controller?.channels ?? [])
-        for i in 0..<temp.count {
-            let current = temp[i]
-            if current.cid == selected?.cid {
-                index = i
-                selectedChannel?.injectedChannelInfo = InjectedChannelInfo(
-                    subtitle: current.subtitleText,
-                    unreadCount: 0,
-                    timestamp: current.timestampText,
-                    lastMessageAt: current.lastMessageAt,
-                    latestMessages: current.latestMessages
-                )
-                break
-            }
-        }
-        if let index, let selected {
-            temp[index] = selected
-        }
-        channels = temp
     }
     
     private func scrollToAndOpen(channel: ChatChannel) {
