@@ -246,20 +246,6 @@ import UIKit
         setChannelAlertType(.deleteChannel(channel))
     }
 
-    public func onArchiveTapped(channel: ChatChannel) {
-        let controller = chatClient.channelController(
-            for: .init(type: channel.type, id: channel.cid.id)
-        )
-
-        if channel.isArchived {
-            controller.unarchive()
-        } else {
-            controller.archive()
-        }
-
-        swipedChannelId = nil
-    }
-
     public func onMoreTapped(channel: ChatChannel) {
         channelPopupType = .moreActions(channel)
     }

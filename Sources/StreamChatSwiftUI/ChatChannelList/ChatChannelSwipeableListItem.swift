@@ -53,7 +53,7 @@ public struct ChatChannelSwipeableListItem<Factory: ViewFactory, ChannelListItem
         swipedChannelId: Binding<String?>,
         channel: ChatChannel,
         numberOfTrailingItems: Int = 2,
-        widthOfTrailingItem: CGFloat = 80,
+        widthOfTrailingItem: CGFloat = 60,
         trailingRightButtonTapped: @escaping @MainActor (ChatChannel) -> Void,
         trailingLeftButtonTapped: @escaping @MainActor (ChatChannel) -> Void,
         leadingSwipeButtonTapped: @escaping @MainActor (ChatChannel) -> Void
@@ -78,7 +78,6 @@ public struct ChatChannelSwipeableListItem<Factory: ViewFactory, ChannelListItem
             }
 
             channelListItem
-                .background(Color(colors.backgroundCoreApp))
                 .offset(x: offsetX)
                 .simultaneousGesture(
                     DragGesture(
@@ -299,23 +298,17 @@ public struct TrailingSwipeActionsView: View {
                     .frame(width: buttonWidth)
                     .foregroundColor(Color(colors.textPrimary))
                     .background(Color(colors.backgroundCoreSurfaceSubtle))
-                    .overlay(
-                        HStack {
-                            Spacer()
-                            Rectangle()
-                                .fill(Color(colors.borderCoreSubtle))
-                                .frame(width: 1)
-                        }
-                    )
 
-                    ActionItemButton(imageName: "archivebox", action: {
-                        withAnimation {
-                            rightButtonTapped(channel)
-                        }
-                    })
-                    .frame(width: buttonWidth)
-                    .foregroundColor(Color(colors.textOnAccent))
-                    .background(Color(colors.accentPrimary))
+                    if channel.ownCapabilities.contains(.deleteChannel) {
+                        ActionItemButton(imageName: "trash", action: {
+                            withAnimation {
+                                rightButtonTapped(channel)
+                            }
+                        })
+                        .frame(width: buttonWidth)
+                        .foregroundColor(Color(colors.textOnAccent))
+                        .background(Color(colors.accentError))
+                    }
                 }
             }
             .opacity(offsetX < -5 ? 1 : 0)
