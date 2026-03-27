@@ -542,9 +542,7 @@ import UIKit
     }
 
     private func handleChannelAppearance() {
-        if skippedChannelUpdates && selectedChannel == nil {
-            updateChannels()
-        } else if skippedChannelUpdates {
+        if skippedChannelUpdates {
             updateChannels()
         }
     }
