@@ -327,10 +327,11 @@ extension ViewFactory {
     public func makeLinkAttachmentView(
         options: LinkAttachmentViewOptions
     ) -> some View {
-        LinkAttachmentContainer(
+        @Injected(\.utils) var utils
+        return LinkAttachmentContainer(
             factory: self,
             message: options.message,
-            width: options.availableWidth,
+            width: min(options.availableWidth, utils.messageListConfig.attachmentPreviewWidth),
             isFirst: options.isFirst,
             scrolledId: options.scrolledId
         )
@@ -649,10 +650,11 @@ extension ViewFactory {
     public func makeVoiceRecordingView(
         options: VoiceRecordingViewOptions
     ) -> some View {
-        VoiceRecordingContainerView(
+        @Injected(\.utils) var utils
+        return VoiceRecordingContainerView(
             factory: self,
             message: options.message,
-            width: options.availableWidth,
+            width: min(options.availableWidth, utils.messageListConfig.attachmentPreviewWidth),
             isFirst: options.isFirst,
             scrolledId: options.scrolledId
         )

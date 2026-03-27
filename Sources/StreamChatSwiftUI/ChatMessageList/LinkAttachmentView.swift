@@ -43,6 +43,7 @@ public struct LinkAttachmentContainer<Factory: ViewFactory>: View {
                 isFirst: isFirst,
                 onImageTap: onImageTap
             )
+            .frame(width: width, alignment: message.isRightAligned ? .trailing : .leading)
             .background(MessageAttachmentsBubbleConfiguration.attachmentBackgroundColor(for: message))
             .roundWithBorder()
             .accessibilityIdentifier("LinkAttachmentContainer")
