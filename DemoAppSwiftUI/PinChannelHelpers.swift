@@ -15,7 +15,7 @@ struct DemoAppChatChannelListItem: View {
 
     var channel: ChatChannel
     var channelName: String
-    var injectedChannelInfo: InjectedChannelInfo?
+    var isSelected: Bool = false
     var disabled = false
     var onItemTap: (ChatChannel) -> Void
 
@@ -35,7 +35,7 @@ struct DemoAppChatChannelListItem: View {
 
                         Spacer()
 
-                        if injectedChannelInfo == nil && channel.unreadCount != .noUnread {
+                        if !isSelected && channel.unreadCount != .noUnread {
                             BadgeNotificationView(
                                 count: channel.unreadCount.messages
                             )
@@ -52,12 +52,12 @@ struct DemoAppChatChannelListItem: View {
                                 MessageReadIndicatorView(
                                     readUsers: channel.readUsers(
                                         currentUserId: chatClient.currentUserId,
-                                        message: channel.latestMessages.first
+                                        message: previewMessage
                                     ),
-                                    localState: channel.latestMessages.first?.localState
+                                    localState: previewMessage?.localState
                                 )
                             }
-                            SubtitleText(text: injectedChannelInfo?.timestamp ?? channel.timestampText)
+                            SubtitleText(text: timestampText)
                                 .accessibilityIdentifier("timestampView")
                         }
                     }
@@ -70,6 +70,38 @@ struct DemoAppChatChannelListItem: View {
         .background(channel.isPinned ? Color(colors.backgroundCoreHighlight) : .clear)
     }
 
+    private var previewMessage: ChatMessage? {
+        channel.latestMessages.first(where: { $0.type != .ephemeral })
+    }
+
+    private var shouldShowTypingIndicator: Bool {
+        !channel.currentlyTypingUsersFiltered(
+            currentUserId: chatClient.currentUserId
+        ).isEmpty && channel.config.typingEventsEnabled
+    }
+
+    private var draftMessageText: String? {
+        guard let draftMessage = channel.draftMessage else { return nil }
+        return utils.messagePreviewFormatter.formatContent(for: ChatMessage(draftMessage), in: channel)
+    }
+
+    private var timestampText: String {
+        if let lastMessageAt = channel.lastMessageAt {
+            return utils.messageTimestampFormatter.format(lastMessageAt)
+        }
+        return ""
+    }
+
+    private var subtitleText: String {
+        if shouldShowTypingIndicator {
+            return channel.typingIndicatorString(currentUserId: chatClient.currentUserId)
+        }
+        if let previewMessage {
+            return utils.messagePreviewFormatter.format(previewMessage, in: channel)
+        }
+        return "No messages yet"
+    }
+
     private var subtitleView: some View {
         HStack(spacing: 4) {
             if let image {
@@ -78,11 +110,11 @@ struct DemoAppChatChannelListItem: View {
                     .frame(maxHeight: 12)
                     .foregroundColor(Color(colors.subtitleText))
             } else {
-                if channel.shouldShowTypingIndicator {
+                if shouldShowTypingIndicator {
                     TypingIndicatorDotsView()
                 }
             }
-            if let draftText = channel.draftMessageText {
+            if let draftText = draftMessageText {
                 HStack(spacing: 2) {
                     Text("Draft:")
                         .font(fonts.caption1).bold()
@@ -90,7 +122,7 @@ struct DemoAppChatChannelListItem: View {
                     SubtitleText(text: draftText)
                 }
             } else {
-                SubtitleText(text: injectedChannelInfo?.subtitle ?? channel.subtitleText)
+                SubtitleText(text: subtitleText)
             }
             Spacer()
         }
@@ -98,7 +130,7 @@ struct DemoAppChatChannelListItem: View {
     }
 
     private var shouldShowReadEvents: Bool {
-        if let message = channel.latestMessages.first,
+        if let message = previewMessage,
            message.isSentByCurrentUser,
            !message.isDeleted {
             return channel.config.readEventsEnabled
@@ -145,7 +177,7 @@ struct DemoAppChatChannelNavigatableListItem<ChannelDestination: View>: View {
                 DemoAppChatChannelListItem(
                     channel: channel,
                     channelName: channelName,
-                    injectedChannelInfo: injectedChannelInfo,
+                    isSelected: isSelected,
                     disabled: disabled,
                     onItemTap: onItemTap
                 )
@@ -153,7 +185,7 @@ struct DemoAppChatChannelNavigatableListItem<ChannelDestination: View>: View {
                 ChatChannelListItem(
                     channel: channel,
                     channelName: channelName,
-                    injectedChannelInfo: injectedChannelInfo,
+                    isSelected: isSelected,
                     disabled: disabled,
                     onItemTap: onItemTap
                 )
@@ -176,7 +208,7 @@ struct DemoAppChatChannelNavigatableListItem<ChannelDestination: View>: View {
         }
     }
 
-    private var injectedChannelInfo: InjectedChannelInfo? {
-        selectedChannel?.channel.cid.rawValue == channel.cid.rawValue ? selectedChannel?.injectedChannelInfo : nil
+    private var isSelected: Bool {
+        selectedChannel?.channel.cid == channel.cid
     }
 }
