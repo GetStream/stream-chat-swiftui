@@ -115,7 +115,7 @@ internal enum L10n {
     internal enum Item {
       /// Audio
       internal static var audio: String { L10n.tr("Localizable", "channel.item.audio") }
-      /// No messages
+      /// No messages yet
       internal static var emptyMessages: String { L10n.tr("Localizable", "channel.item.empty-messages") }
       /// Giphy
       internal static var giphy: String { L10n.tr("Localizable", "channel.item.giphy") }

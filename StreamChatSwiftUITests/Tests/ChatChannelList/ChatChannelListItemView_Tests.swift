@@ -530,6 +530,22 @@ import XCTest
         AssertSnapshot(view)
     }
 
+    func test_channelListItem_emptyMessages() throws {
+        // Given
+        let channel = ChatChannel.mock(cid: .unique)
+
+        // When
+        let view = ChatChannelListItem(
+            channel: channel,
+            channelName: "Test",
+            onItemTap: { _ in }
+        )
+        .frame(width: defaultScreenSize.width)
+
+        // Then
+        AssertSnapshot(view)
+    }
+
     func test_channelListItem_voiceRecordingMessage() throws {
         // Given
         let message = try mockVoiceRecordingMessage(text: "", isSentByCurrentUser: true)
