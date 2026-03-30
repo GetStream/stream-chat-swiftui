@@ -70,11 +70,7 @@ class AppDelegate: NSObject, UIApplicationDelegate {
         }
         
         let utils = Utils(
-            channelListConfig: ChannelListConfig(
-                channelItemMutedStyle: .bottomRightCorner
-            ),
-            messageListConfig: AppConfiguration.makeMessageListConfig(),
-            composerConfig: ComposerConfig(isVoiceRecordingEnabled: true)
+            messageListConfig: AppConfiguration.makeMessageListConfig()
         )
         streamChat = StreamChat(chatClient: chatClient, utils: utils)
         
