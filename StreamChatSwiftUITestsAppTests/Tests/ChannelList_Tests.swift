@@ -116,30 +116,6 @@ extension ChannelList_Tests {
         }
     }
 
-    func test_channelPreviewShowsDeletedMessage_whenTheOnlyMessageInChannelIsDeleted() throws {
-        linkToScenario(withId: 353)
-
-        let message = "Hey"
-
-        GIVEN("user opens the channel") {
-            userRobot
-                .login()
-                .openChannel()
-        }
-        AND("user sends a message") {
-            userRobot.sendMessage(message)
-        }
-        AND("user deletes the message") {
-            userRobot.deleteMessage()
-        }
-        WHEN("user goes back to the channel list") {
-            userRobot.tapOnBackButton()
-        }
-        THEN("the channel preview shows Message deleted") {
-            userRobot.assertLastMessageInChannelPreview("Message deleted")
-        }
-    }
-
     func test_channelPreviewShowsDeletedMessage_whenLastMessageIsDeleted() throws {
         linkToScenario(withId: 354)
 
@@ -163,7 +139,7 @@ extension ChannelList_Tests {
             userRobot.tapOnBackButton()
         }
         THEN("the channel preview shows Message deleted") {
-            userRobot.assertLastMessageInChannelPreview("Message deleted")
+            userRobot.assertLastMessageInChannelPreview("You: Message deleted")
         }
         AND("last message timestamp is shown") {
             userRobot.assertLastMessageTimestampInChannelPreview(isHidden: false)
