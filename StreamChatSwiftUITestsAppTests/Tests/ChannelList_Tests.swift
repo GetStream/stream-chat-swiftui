@@ -139,7 +139,7 @@ extension ChannelList_Tests {
             userRobot.tapOnBackButton()
         }
         THEN("the channel preview shows Message deleted") {
-            userRobot.assertLastMessageInChannelPreview("You: Message deleted")
+            userRobot.assertLastMessageInChannelPreview("Message deleted")
         }
         AND("last message timestamp is shown") {
             userRobot.assertLastMessageTimestampInChannelPreview(isHidden: false)
