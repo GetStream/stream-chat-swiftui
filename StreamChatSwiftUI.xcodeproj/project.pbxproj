@@ -1541,7 +1541,7 @@
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/GetStream/stream-chat-swift.git";
 			requirement = {
-				branch = develop;
+				branch = "v5-message-actions-icons";
 				kind = branch;
 			};
 		};

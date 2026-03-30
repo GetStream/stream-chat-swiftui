@@ -177,7 +177,7 @@ extension ChannelAction {
     ) -> ChannelAction {
         ChannelAction(
             title: L10n.Alert.Actions.blockUser,
-            iconName: "icn_block_user",
+            iconName: "nosign",
             action: {
                 chatClient.userController(userId: user.id).block { error in
                     if let error { onError(error) } else { onDismiss() }
@@ -200,7 +200,7 @@ extension ChannelAction {
     ) -> ChannelAction {
         ChannelAction(
             title: L10n.Alert.Actions.unblockUser,
-            iconName: "icn_block_user",
+            iconName: "nosign",
             action: {
                 chatClient.userController(userId: user.id).unblock { error in
                     if let error { onError(error) } else { onDismiss() }
