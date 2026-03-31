@@ -1541,7 +1541,7 @@
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/GetStream/stream-chat-swift.git";
 			requirement = {
-				branch = "add/channel-preview-for-deleted-messages";
+				branch = develop;
 				kind = branch;
 			};
 		};
