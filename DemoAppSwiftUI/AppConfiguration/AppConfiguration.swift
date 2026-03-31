@@ -34,7 +34,6 @@ final class AppConfiguration {
                 reactionsPlacement: AppConfiguration.default.reactionsPlacement,
                 reactionsStyle: AppConfiguration.default.reactionsStyle
             ),
-            markdownSupportEnabled: true,
             skipEditedMessageLabel: { message in
                 message.extraData["ai_generated"]?.boolValue == true
             }
