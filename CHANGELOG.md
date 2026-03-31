@@ -21,6 +21,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ### 🔄 Changed
 - Renamed the `onMessageSent` callback to `willSendMessage` in `MessageComposerViewModel`, `ViewModelsFactory`, and `ComposerViewFactoryOptions` [#1327](https://github.com/GetStream/stream-chat-swiftui/pull/1327)
 - Remove `InjectedChannelInfo` from `ChatChannelListItemView` [#1338](https://github.com/GetStream/stream-chat-swiftui/pull/1338)
+- Rename empty state views from `No` prefix to `Empty` prefix (`NoChannelsView` → `EmptyChannelsView`, `NoThreadsView` → `EmptyThreadsView`, `NoContentView` → `EmptyContentView`) including `ViewFactory` methods and options [#1345](https://github.com/GetStream/stream-chat-swiftui/pull/1345)
 
 # [5.0.0-beta](https://github.com/GetStream/stream-chat-swiftui/releases/tag/5.0.0-beta)
 _March 23, 2026_
