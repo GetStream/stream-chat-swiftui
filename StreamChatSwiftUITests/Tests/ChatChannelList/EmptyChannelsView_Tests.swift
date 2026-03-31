@@ -7,10 +7,10 @@ import SnapshotTesting
 @testable import StreamChatSwiftUI
 import XCTest
 
-class NoChannelsView_Tests: StreamChatTestCase {
-    func test_noChannelsView_snapshot() {
+class EmptyChannelsView_Tests: StreamChatTestCase {
+    func test_emptyChannelsView_snapshot() {
         // Given
-        let view = NoChannelsView()
+        let view = EmptyChannelsView()
             .frame(width: 375, height: 600)
 
         // Then

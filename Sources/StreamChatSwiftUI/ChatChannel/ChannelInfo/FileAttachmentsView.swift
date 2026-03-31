@@ -30,7 +30,7 @@ public struct FileAttachmentsView: View {
             if viewModel.loading {
                 LoadingView()
             } else if viewModel.attachmentsDataSource.isEmpty {
-                NoContentView(
+                EmptyContentView(
                     image: images.noMedia,
                     title: L10n.ChatInfo.Files.emptyTitle,
                     description: L10n.ChatInfo.Files.emptyDesc
