@@ -1128,7 +1128,10 @@ import XCTest
                 NSAttributedString.Key.foregroundColor: UIColor.red
             ]
         }
-        let config = MessageListConfig(messageDisplayOptions: displayOptions)
+        let config = MessageListConfig(
+            messageDisplayOptions: displayOptions,
+            markdownSupportEnabled: true
+        )
         let size = messageViewSize()
         let view = messageView(
             size: size,
