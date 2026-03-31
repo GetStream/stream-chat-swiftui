@@ -7,6 +7,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Show deleted messages in channel list preview [#1338](https://github.com/GetStream/stream-chat-swiftui/pull/1338)
 
 ### 🐞 Fixed
+- Fix deleted message design not matching the Figma spec [#1349](https://github.com/GetStream/stream-chat-swiftui/pull/1349)
 - Pinned message label now shows "Pinned by you" when the current user pinned the message [#1329](https://github.com/GetStream/stream-chat-swiftui/pull/1329)
 - Fix single media attachment without sharp tail corner when no caption [#1330](https://github.com/GetStream/stream-chat-swiftui/pull/1330)
 - Fix editing a voice message removing the voice recording attachment [#1327](https://github.com/GetStream/stream-chat-swiftui/pull/1327)
