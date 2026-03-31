@@ -32,7 +32,7 @@ import SwiftUI
         uniqueReactionsEnabled: Bool = false,
         localLinkDetectionEnabled: Bool = true,
         isMessageEditedLabelEnabled: Bool = true,
-        markdownSupportEnabled: Bool = true,
+        markdownSupportEnabled: Bool = false,
         userBlockingEnabled: Bool = true,
         bouncedMessagesAlertActionsEnabled: Bool = true,
         skipEditedMessageLabel: @escaping (ChatMessage) -> Bool = { _ in false },

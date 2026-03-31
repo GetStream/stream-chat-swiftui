@@ -368,7 +368,7 @@ public extension MessageAction {
         let replyAction = MessageAction(
             id: MessageActionId.reply,
             title: L10n.Message.Actions.inlineReply,
-            iconName: "icn_inline_reply",
+            iconName: "arrowshape.turn.up.left",
             action: {
                 onFinish(
                     MessageActionInfo(
@@ -392,7 +392,7 @@ public extension MessageAction {
         let replyThread = MessageAction(
             id: MessageActionId.threadReply,
             title: L10n.Message.Actions.threadReply,
-            iconName: "icn_thread_reply",
+            iconName: "text.bubble",
             action: {
                 NotificationCenter.default.post(
                     name: MessageRepliesConstants.threadMessageNavigationNotification,
@@ -527,7 +527,7 @@ public extension MessageAction {
         let unreadAction = MessageAction(
             id: MessageActionId.markUnread,
             title: L10n.Message.Actions.markUnread,
-            iconName: "message.badge",
+            iconName: "app.badge",
             action: action,
             confirmationPopup: nil,
             isDestructive: false
@@ -634,7 +634,7 @@ public extension MessageAction {
         let blockUser = MessageAction(
             id: MessageActionId.block,
             title: L10n.Message.Actions.userBlock,
-            iconName: "icn_block_user",
+            iconName: "nosign",
             action: blockAction,
             confirmationPopup: ConfirmationPopup(
                 title: L10n.Message.Actions.userBlock,
@@ -712,7 +712,7 @@ public extension MessageAction {
         let unblockUser = MessageAction(
             id: MessageActionId.unblock,
             title: L10n.Message.Actions.userUnblock,
-            iconName: "icn_block_user",
+            iconName: "nosign",
             action: unblockAction,
             confirmationPopup: ConfirmationPopup(
                 title: L10n.Message.Actions.userUnblock,

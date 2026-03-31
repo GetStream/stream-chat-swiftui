@@ -891,7 +891,7 @@ import XCTest
 
         // Then
         XCTAssertEqual(blockAction.title, L10n.Alert.Actions.blockUser)
-        XCTAssertEqual(blockAction.iconName, "icn_block_user")
+        XCTAssertEqual(blockAction.iconName, "nosign")
         XCTAssertFalse(blockAction.isDestructive)
         XCTAssertNotNil(blockAction.confirmationPopup)
         XCTAssertEqual(blockAction.confirmationPopup?.title, L10n.Alert.Actions.blockUser)

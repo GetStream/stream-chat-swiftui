@@ -29,7 +29,7 @@ import XCTest
             ),
             ParticipantAction(
                 title: L10n.Alert.Actions.blockUser,
-                iconName: "icn_block_user",
+                iconName: "nosign",
                 action: {},
                 confirmationPopup: nil,
                 isDestructive: false
@@ -58,7 +58,7 @@ import XCTest
         let actions: [ParticipantAction] = [
             ParticipantAction(
                 title: L10n.Alert.Actions.blockUser,
-                iconName: "icn_block_user",
+                iconName: "nosign",
                 action: {},
                 confirmationPopup: nil,
                 isDestructive: false
