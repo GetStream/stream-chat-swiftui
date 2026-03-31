@@ -43,7 +43,7 @@ public struct ChatChannelNavigatableListItem<Factory: ViewFactory, ChannelDestin
                 factory: factory,
                 channel: channel,
                 channelName: channelName,
-                injectedChannelInfo: injectedChannelInfo,
+                isSelected: isSelected,
                 disabled: disabled,
                 onItemTap: onItemTap
             )
@@ -69,8 +69,8 @@ public struct ChatChannelNavigatableListItem<Factory: ViewFactory, ChannelDestin
         }
     }
 
-    private var injectedChannelInfo: InjectedChannelInfo? {
-        selectedChannel?.channel.cid.rawValue == channel.cid.rawValue ? selectedChannel?.injectedChannelInfo : nil
+    private var isSelected: Bool {
+        selectedChannel?.channel.cid == channel.cid
     }
 }
 
@@ -80,7 +80,6 @@ public final class ChannelSelectionInfo: Identifiable, @unchecked Sendable {
     public let id: String
     public let channel: ChatChannel
     public let message: ChatMessage?
-    public var injectedChannelInfo: InjectedChannelInfo?
     public let searchType: ChannelListSearchType
 
     public init(
