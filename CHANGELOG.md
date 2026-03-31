@@ -5,6 +5,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### 🔄 Changed
 
+### 🐞 Fixed
+- Fix pause button size in voice recording view []()
+
 # [4.99.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/4.99.0)
 _March 16, 2026_
 
