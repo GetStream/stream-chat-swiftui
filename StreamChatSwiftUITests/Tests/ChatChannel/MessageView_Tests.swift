@@ -505,6 +505,40 @@ class MessageView_Tests: StreamChatTestCase {
         )
     }
 
+    func test_voiceRecordingViewPauseState_snapshot() {
+        // Given
+        let url = ChatChannelTestHelpers.testURL
+        let recording = AddedVoiceRecording(
+            url: url,
+            duration: 5.0,
+            waveform: [0, 0.1, 0.5, 1]
+        )
+        let handler = VoiceRecordingHandler()
+        handler.context = AudioPlaybackContext(
+            assetLocation: url,
+            duration: 5.0,
+            currentTime: 2.0,
+            state: .playing,
+            rate: .normal,
+            isSeeking: false
+        )
+        // When
+        let view = VoiceRecordingView(
+            handler: handler,
+            textColor: .primary,
+            addedVoiceRecording: recording,
+            index: 0
+        )
+        .frame(width: defaultScreenSize.width, height: 80)
+        .padding()
+
+        // Then
+        AssertSnapshot(
+            view,
+            size: CGSize(width: defaultScreenSize.width, height: 250)
+        )
+    }
+
     func test_messageViewFileText_snapshot() {
         // Given
         let fileMessage = ChatMessage.mock(
