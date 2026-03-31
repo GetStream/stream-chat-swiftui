@@ -7,8 +7,8 @@ import SwiftUI
 
 // MARK: - Empty Options
 
-/// Options for creating the no channels view.
-public final class NoChannelsViewOptions: Sendable {
+/// Options for creating the empty channels view.
+public final class EmptyChannelsViewOptions: Sendable {
     public init() {}
 }
 
@@ -77,8 +77,8 @@ public final class ThreadDestinationOptions: Sendable {
     public init() {}
 }
 
-/// Options for creating the no threads view.
-public final class NoThreadsViewOptions: Sendable {
+/// Options for creating the empty threads view.
+public final class EmptyThreadsViewOptions: Sendable {
     public init() {}
 }
 

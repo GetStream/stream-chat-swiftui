@@ -126,7 +126,7 @@ public struct ChatChannelListView<Factory: ViewFactory>: View {
             if viewModel.loading {
                 viewFactory.makeLoadingView(options: LoadingViewOptions())
             } else if viewModel.channels.isEmpty {
-                viewFactory.makeNoChannelsView(options: NoChannelsViewOptions())
+                viewFactory.makeEmptyChannelsView(options: EmptyChannelsViewOptions())
             } else {
                 ChatChannelListContentView(
                     viewFactory: viewFactory,

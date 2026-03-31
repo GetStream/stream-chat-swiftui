@@ -67,7 +67,7 @@ public struct PinnedMessagesView<Factory: ViewFactory>: View {
                     }
                 }
             } else {
-                NoContentView(
+                EmptyContentView(
                     image: images.pin,
                     title: L10n.ChatInfo.PinnedMessages.emptyTitle,
                     description: L10n.ChatInfo.PinnedMessages.emptyDesc

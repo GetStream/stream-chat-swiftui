@@ -5,18 +5,18 @@
 import SwiftUI
 
 /// Default SDK implementation for the view displayed when there are no threads available.
-public struct NoThreadsView: View {
+public struct EmptyThreadsView: View {
     @Injected(\.images) private var images
 
     public init() {}
 
     public var body: some View {
-        NoContentView(
+        EmptyContentView(
             image: images.noThreads,
             title: nil,
             description: L10n.Thread.NoContent.message,
             shouldRotateImage: false
         )
-        .accessibilityIdentifier("NoThreadsView")
+        .accessibilityIdentifier("EmptyThreadsView")
     }
 }
