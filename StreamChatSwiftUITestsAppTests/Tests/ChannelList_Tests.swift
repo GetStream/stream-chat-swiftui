@@ -116,36 +116,7 @@ extension ChannelList_Tests {
         }
     }
 
-    func test_channelPreviewShowsNoMessages_whenTheOnlyMessageInChannelIsDeleted() throws {
-        linkToScenario(withId: 353)
-        
-        throw XCTSkip("https://linear.app/stream/issue/IOS-1317")
-
-        let message = "Hey"
-
-        GIVEN("user opens the channel") {
-            userRobot
-                .login()
-                .openChannel()
-        }
-        AND("user sends a message") {
-            userRobot.sendMessage(message)
-        }
-        AND("user deletes the message") {
-            userRobot.deleteMessage()
-        }
-        WHEN("user goes back to the channel list") {
-            userRobot.tapOnBackButton()
-        }
-        THEN("the channel preview shows No messages") {
-            userRobot.assertLastMessageInChannelPreview("No messages")
-        }
-        AND("last message timestamp is hidden") {
-            userRobot.assertLastMessageTimestampInChannelPreview(isHidden: true)
-        }
-    }
-
-    func test_channelPreviewShowsPreviousMessage_whenLastMessageIsDeleted() throws {
+    func test_channelPreviewShowsDeletedMessage_whenLastMessageIsDeleted() throws {
         linkToScenario(withId: 354)
 
         let message1 = "Previous message"
@@ -167,8 +138,8 @@ extension ChannelList_Tests {
         WHEN("user goes back to the channel list") {
             userRobot.tapOnBackButton()
         }
-        THEN("the channel preview shows previous message") {
-            userRobot.assertLastMessageInChannelPreview(message1)
+        THEN("the channel preview shows Message deleted") {
+            userRobot.assertLastMessageInChannelPreview("Message deleted")
         }
         AND("last message timestamp is shown") {
             userRobot.assertLastMessageTimestampInChannelPreview(isHidden: false)

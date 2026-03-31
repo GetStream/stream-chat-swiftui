@@ -19,7 +19,7 @@ import XCTest
     func test_channelListItem_audioMessage() throws {
         // Given
         let message = try mockAudioMessage(text: "Audio", isSentByCurrentUser: true)
-        let channel = ChatChannel.mock(cid: .unique, latestMessages: [message], previewMessage: message)
+        let channel = ChatChannel.mock(cid: .unique, latestMessages: [message])
         
         // When
         let view = ChatChannelListItem(
@@ -36,7 +36,7 @@ import XCTest
     func test_channelListItem_imageMessage() throws {
         // Given
         let message = try mockImageMessage(text: "Image", isSentByCurrentUser: true)
-        let channel = ChatChannel.mock(cid: .unique, latestMessages: [message], previewMessage: message)
+        let channel = ChatChannel.mock(cid: .unique, latestMessages: [message])
         
         // When
         let view = ChatChannelListItem(
@@ -53,7 +53,7 @@ import XCTest
     func test_channelListItem_videoMessage() throws {
         // Given
         let message = try mockVideoMessage(text: "Video", isSentByCurrentUser: true)
-        let channel = ChatChannel.mock(cid: .unique, latestMessages: [message], previewMessage: message)
+        let channel = ChatChannel.mock(cid: .unique, latestMessages: [message])
         
         // When
         let view = ChatChannelListItem(
@@ -70,7 +70,7 @@ import XCTest
     func test_channelListItem_fileMessage() throws {
         // Given
         let message = try mockFileMessage(title: "Filename", text: "File", isSentByCurrentUser: true)
-        let channel = ChatChannel.mock(cid: .unique, latestMessages: [message], previewMessage: message)
+        let channel = ChatChannel.mock(cid: .unique, latestMessages: [message])
         
         // When
         let view = ChatChannelListItem(
@@ -90,8 +90,7 @@ import XCTest
         let channel = ChatChannel.mock(
             cid: .unique,
             latestMessages: [message],
-            muteDetails: .init(createdAt: .unique, updatedAt: .unique, expiresAt: nil),
-            previewMessage: message
+            muteDetails: .init(createdAt: .unique, updatedAt: .unique, expiresAt: nil)
         )
 
         // When
@@ -114,8 +113,7 @@ import XCTest
             cid: .unique,
             unreadCount: .mock(messages: 4),
             latestMessages: [message],
-            muteDetails: .init(createdAt: .unique, updatedAt: .unique, expiresAt: nil),
-            previewMessage: message
+            muteDetails: .init(createdAt: .unique, updatedAt: .unique, expiresAt: nil)
         )
 
         // When
@@ -138,8 +136,7 @@ import XCTest
             cid: .unique,
             unreadCount: .mock(messages: 4),
             latestMessages: [message],
-            muteDetails: .init(createdAt: .unique, updatedAt: .unique, expiresAt: nil),
-            previewMessage: message
+            muteDetails: .init(createdAt: .unique, updatedAt: .unique, expiresAt: nil)
         )
 
         // When
@@ -157,7 +154,7 @@ import XCTest
     func test_channelListItem_giphyMessage() throws {
         // Given
         let message = try mockGiphyMessage(text: "", isSentByCurrentUser: true)
-        let channel = ChatChannel.mock(cid: .unique, latestMessages: [message], previewMessage: message)
+        let channel = ChatChannel.mock(cid: .unique, latestMessages: [message])
         
         // When
         let view = ChatChannelListItem(
@@ -176,8 +173,7 @@ import XCTest
         let message = try mockGiphyMessage(text: "", isSentByCurrentUser: false)
         let channel = ChatChannel.mockNonDMChannel(
             name: "Group Chat",
-            latestMessages: [message],
-            previewMessage: message
+            latestMessages: [message]
         )
         
         // When
@@ -192,28 +188,47 @@ import XCTest
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
     
-    func test_channelListItem_giphyMessageLatestButPreviewIsAnotherMessage() throws {
+    func test_channelListItem_ephemeralMessageSkipped_showsPreviousMessage() throws {
         // Given
-        let previewMessage = try mockImageMessage(text: "Hi!", isSentByCurrentUser: true)
-        let latestMessage = try mockGiphyMessage(text: "Giphy", isSentByCurrentUser: true)
-        let channel = ChatChannel.mock(cid: .unique, latestMessages: [latestMessage], previewMessage: previewMessage)
-        
+        let regularMessage = ChatMessage.mock(
+            id: .unique,
+            cid: .unique,
+            text: "Hello there",
+            type: .regular,
+            author: .mock(id: "user", name: "User"),
+            createdAt: Date(timeIntervalSince1970: 100),
+            isSentByCurrentUser: false
+        )
+        let ephemeralMessage = ChatMessage.mock(
+            id: .unique,
+            cid: .unique,
+            text: "/giphy cats",
+            type: .ephemeral,
+            author: .mock(id: Self.currentUserId, name: "Me"),
+            createdAt: Date(timeIntervalSince1970: 200),
+            isSentByCurrentUser: true
+        )
+        let channel = ChatChannel.mockDMChannel(
+            memberCount: 2,
+            latestMessages: [ephemeralMessage, regularMessage]
+        )
+
         // When
         let view = ChatChannelListItem(
             channel: channel,
-            channelName: "Test",
+            channelName: "User",
             onItemTap: { _ in }
         )
         .frame(width: defaultScreenSize.width)
-        
+
         // Then
-        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
+        AssertSnapshot(view)
     }
-    
+
     func test_channelListItem_pollMessage_youCreated() throws {
         // Given
         let message = try mockPollMessage(isSentByCurrentUser: true)
-        let channel = ChatChannel.mock(cid: .unique, latestMessages: [message], previewMessage: message)
+        let channel = ChatChannel.mock(cid: .unique, latestMessages: [message])
         
         // When
         let view = ChatChannelListItem(
@@ -230,7 +245,7 @@ import XCTest
     func test_channelListItem_pollMessage_someoneCreated() throws {
         // Given
         let message = try mockPollMessage(isSentByCurrentUser: false)
-        let channel = ChatChannel.mock(cid: .unique, latestMessages: [message], previewMessage: message)
+        let channel = ChatChannel.mock(cid: .unique, latestMessages: [message])
         
         // When
         let view = ChatChannelListItem(
@@ -252,7 +267,7 @@ import XCTest
             .unique,
             .unique
         ])
-        let channel = ChatChannel.mock(cid: .unique, membership: .mock(id: currentUserId), previewMessage: message)
+        let channel = ChatChannel.mock(cid: .unique, membership: .mock(id: currentUserId), latestMessages: [message])
 
         // When
         let view = ChatChannelListItem(
@@ -274,7 +289,7 @@ import XCTest
             .unique,
             .mock(pollId: .unique, optionId: .unique, user: .mock(id: currentUserId))
         ])
-        let channel = ChatChannel.mock(cid: .unique, membership: .mock(id: currentUserId), previewMessage: message)
+        let channel = ChatChannel.mock(cid: .unique, membership: .mock(id: currentUserId), latestMessages: [message])
 
         // When
         let view = ChatChannelListItem(
@@ -298,8 +313,7 @@ import XCTest
         let channel = ChatChannel.mock(
             cid: .unique,
             membership: .mock(id: .unique, language: .spanish),
-            latestMessages: [message],
-            previewMessage: message
+            latestMessages: [message]
         )
         
         // When
@@ -324,8 +338,7 @@ import XCTest
         let channel = ChatChannel.mock(
             cid: .unique,
             membership: .mock(id: .unique, language: .spanish),
-            latestMessages: [message],
-            previewMessage: message
+            latestMessages: [message]
         )
         
         // When
@@ -343,7 +356,7 @@ import XCTest
     func test_channelListItem_draftMessage() throws {
         // Given
         let message = DraftMessage.mock(text: "Draft message")
-        let channel = ChatChannel.mock(cid: .unique, previewMessage: .mock(), draftMessage: message)
+        let channel = ChatChannel.mock(cid: .unique, latestMessages: [.mock()], draftMessage: message)
 
         // When
         let view = ChatChannelListItem(
@@ -366,7 +379,7 @@ import XCTest
                 file: .init(url: .localYodaQuote)
             )
         ))])
-        let channel = ChatChannel.mock(cid: .unique, previewMessage: .mock(), draftMessage: message)
+        let channel = ChatChannel.mock(cid: .unique, latestMessages: [.mock()], draftMessage: message)
 
         // When
         let view = ChatChannelListItem(
@@ -405,8 +418,7 @@ import XCTest
                     lastDeliveredMessageId: message.id
                 )
             ],
-            latestMessages: [message],
-            previewMessage: message
+            latestMessages: [message]
         )
         
         // When
@@ -446,8 +458,7 @@ import XCTest
                     lastDeliveredMessageId: message.id
                 )
             ],
-            latestMessages: [message],
-            previewMessage: message
+            latestMessages: [message]
         )
 
         // When
@@ -475,9 +486,53 @@ import XCTest
         )
         let channel = ChatChannel.mock(
             cid: .unique,
-            latestMessages: [message],
-            previewMessage: message
+            latestMessages: [message]
         )
+
+        // When
+        let view = ChatChannelListItem(
+            channel: channel,
+            channelName: "Test",
+            onItemTap: { _ in }
+        )
+        .frame(width: defaultScreenSize.width)
+
+        // Then
+        AssertSnapshot(view)
+    }
+
+    func test_channelListItem_messagePending() throws {
+        // Given
+        let message = ChatMessage.mock(
+            id: .unique,
+            cid: .unique,
+            text: "Hey, how are you?",
+            author: .mock(id: Self.currentUserId, name: "You"),
+            createdAt: Date(timeIntervalSince1970: 100),
+            localState: .pendingSend,
+            isSentByCurrentUser: true
+        )
+        let channel = ChatChannel.mock(
+            cid: .unique,
+            config: .mock(readEventsEnabled: true),
+            latestMessages: [message]
+        )
+
+        // When
+        let view = ChatChannelListItem(
+            channel: channel,
+            channelName: "Test",
+            onItemTap: { _ in }
+        )
+        .frame(width: defaultScreenSize.width)
+
+        // Then
+        AssertSnapshot(view)
+    }
+
+    func test_channelListItem_emptyMessages() throws {
+        // Given
+        let channel = ChatChannel.mock(cid: .unique)
 
         // When
         let view = ChatChannelListItem(
@@ -494,7 +549,7 @@ import XCTest
     func test_channelListItem_voiceRecordingMessage() throws {
         // Given
         let message = try mockVoiceRecordingMessage(text: "", isSentByCurrentUser: true)
-        let channel = ChatChannel.mock(cid: .unique, latestMessages: [message], previewMessage: message)
+        let channel = ChatChannel.mock(cid: .unique, latestMessages: [message])
 
         // When
         let view = ChatChannelListItem(
@@ -522,8 +577,7 @@ import XCTest
         )
         let channel = ChatChannel.mockNonDMChannel(
             name: "Group Chat",
-            latestMessages: [message],
-            previewMessage: message
+            latestMessages: [message]
         )
 
         // When
@@ -552,8 +606,7 @@ import XCTest
         )
         let channel = ChatChannel.mockNonDMChannel(
             name: "Group Chat",
-            latestMessages: [message],
-            previewMessage: message
+            latestMessages: [message]
         )
 
         // When
@@ -582,8 +635,7 @@ import XCTest
         )
         let channel = ChatChannel.mockDMChannel(
             memberCount: 2,
-            latestMessages: [message],
-            previewMessage: message
+            latestMessages: [message]
         )
 
         // When
@@ -603,14 +655,109 @@ import XCTest
         let message = try mockImageMessage(text: "Check this out", isSentByCurrentUser: false)
         let channel = ChatChannel.mockNonDMChannel(
             name: "Group Chat",
-            latestMessages: [message],
-            previewMessage: message
+            latestMessages: [message]
         )
 
         // When
         let view = ChatChannelListItem(
             channel: channel,
             channelName: "Group Chat",
+            onItemTap: { _ in }
+        )
+        .frame(width: defaultScreenSize.width)
+
+        // Then
+        AssertSnapshot(view)
+    }
+
+    func test_channelListItem_deletedMessage_dmChannel() throws {
+        // Given
+        let message = ChatMessage.mock(
+            id: .unique,
+            cid: .unique,
+            text: "This was the original message",
+            author: .mock(id: "other-user", name: "John"),
+            createdAt: Date(timeIntervalSince1970: 100),
+            deletedAt: Date(timeIntervalSince1970: 200),
+            isSentByCurrentUser: false
+        )
+        let channel = ChatChannel.mockDMChannel(
+            memberCount: 2,
+            latestMessages: [message]
+        )
+
+        // When
+        let view = ChatChannelListItem(
+            channel: channel,
+            channelName: "John",
+            onItemTap: { _ in }
+        )
+        .frame(width: defaultScreenSize.width)
+
+        // Then
+        AssertSnapshot(view)
+    }
+
+    func test_channelListItem_deletedMessage_groupChannel() throws {
+        // Given
+        let message = ChatMessage.mock(
+            id: .unique,
+            cid: .unique,
+            text: "This was the original message",
+            author: .mock(id: "other-user", name: "John"),
+            createdAt: Date(timeIntervalSince1970: 100),
+            deletedAt: Date(timeIntervalSince1970: 200),
+            isSentByCurrentUser: false
+        )
+        let channel = ChatChannel.mockNonDMChannel(
+            name: "Group Chat",
+            latestMessages: [message]
+        )
+
+        // When
+        let view = ChatChannelListItem(
+            channel: channel,
+            channelName: "Group Chat",
+            onItemTap: { _ in }
+        )
+        .frame(width: defaultScreenSize.width)
+
+        // Then
+        AssertSnapshot(view)
+    }
+
+    func test_channelListItem_deletedMessage_sentByCurrentUser() throws {
+        // Given
+        let date = Date(timeIntervalSince1970: 100)
+        let message = ChatMessage.mock(
+            id: .unique,
+            cid: .unique,
+            text: "Deleted message",
+            author: .mock(id: Self.currentUserId, name: "Me"),
+            createdAt: date.addingTimeInterval(-100),
+            deletedAt: date,
+            isSentByCurrentUser: true
+        )
+        let channel = ChatChannel.mock(
+            cid: .unique,
+            config: .mock(readEventsEnabled: true),
+            reads: [
+                .init(
+                    lastReadAt: date.addingTimeInterval(10),
+                    lastReadMessageId: message.id,
+                    unreadMessagesCount: 0,
+                    user: .unique,
+                    lastDeliveredAt: date,
+                    lastDeliveredMessageId: message.id
+                )
+            ],
+            latestMessages: [message]
+        )
+
+        // When
+        let view = ChatChannelListItem(
+            channel: channel,
+            channelName: "Test",
             onItemTap: { _ in }
         )
         .frame(width: defaultScreenSize.width)
