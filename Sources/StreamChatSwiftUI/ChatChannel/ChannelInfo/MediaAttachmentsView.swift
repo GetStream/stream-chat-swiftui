@@ -37,7 +37,7 @@ public struct MediaAttachmentsView<Factory: ViewFactory>: View {
             if viewModel.loading {
                 LoadingView()
             } else if viewModel.mediaItems.isEmpty {
-                NoContentView(
+                EmptyContentView(
                     image: images.noMedia,
                     title: L10n.ChatInfo.Media.emptyTitle,
                     description: L10n.ChatInfo.Media.emptyDesc

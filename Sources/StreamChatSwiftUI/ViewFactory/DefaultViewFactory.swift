@@ -10,8 +10,8 @@ import SwiftUI
 extension ViewFactory {
     // MARK: channels
     
-    public func makeNoChannelsView(options: NoChannelsViewOptions) -> some View {
-        NoChannelsView()
+    public func makeEmptyChannelsView(options: EmptyChannelsViewOptions) -> some View {
+        EmptyChannelsView()
     }
     
     public func makeLoadingView(options: LoadingViewOptions) -> some View {
@@ -928,8 +928,8 @@ extension ViewFactory {
         )
     }
 
-    public func makeNoThreadsView(options: NoThreadsViewOptions) -> some View {
-        NoThreadsView()
+    public func makeEmptyThreadsView(options: EmptyThreadsViewOptions) -> some View {
+        EmptyThreadsView()
     }
 
     public func makeThreadListLoadingView(options: ThreadListLoadingViewOptions) -> some View {

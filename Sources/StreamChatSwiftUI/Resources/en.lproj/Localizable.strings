@@ -5,7 +5,7 @@
 "channel.name.and" = "and";
 "channel.name.andXMore" = "and %@ more";
 "channel.name.missing" = "NoChannel";
-"channel.item.empty-messages" = "No messages";
+"channel.item.empty-messages" = "No messages yet";
 "channel.item.message-failed-to-send" = "Message failed to send";
 "channel.item.poll-someone-voted" = "%@ voted:";
 "channel.item.poll-you-voted" = "You voted:";

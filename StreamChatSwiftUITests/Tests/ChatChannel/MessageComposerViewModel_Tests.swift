@@ -1741,7 +1741,6 @@ import XCTest
             pinnedMessages: [],
             pendingMessages: [],
             muteDetails: nil,
-            previewMessage: nil,
             draftMessage: nil,
             activeLiveLocations: [],
             pushPreference: nil

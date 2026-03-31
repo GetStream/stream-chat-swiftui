@@ -5,7 +5,7 @@
 import SwiftUI
 
 /// Default view displayed when there's no content for different types of data (channels, messages, media).
-struct NoContentView: View {
+struct EmptyContentView: View {
     @Injected(\.fonts) private var fonts
     @Injected(\.colors) private var colors
 
