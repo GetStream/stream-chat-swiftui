@@ -56,7 +56,7 @@ public struct ChatThreadListView<Factory: ViewFactory>: View {
                 if viewModel.isLoading {
                     viewFactory.makeThreadListLoadingView(options: ThreadListLoadingViewOptions())
                 } else if viewModel.isEmpty {
-                    viewFactory.makeNoThreadsView(options: NoThreadsViewOptions())
+                    viewFactory.makeEmptyThreadsView(options: EmptyThreadsViewOptions())
                 } else {
                     ChatThreadListContentView(
                         viewFactory: viewFactory,

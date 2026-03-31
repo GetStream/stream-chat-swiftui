@@ -21,9 +21,9 @@ import SwiftUI
     ///  - Parameter options: the options for creating the header view modifier.
     func makeChannelListHeaderViewModifier(options: ChannelListHeaderViewModifierOptions) -> HeaderViewModifier
 
-    associatedtype NoChannels: View
+    associatedtype EmptyChannels: View
     /// Creates the view that is displayed when there are no channels available.
-    func makeNoChannelsView(options: NoChannelsViewOptions) -> NoChannels
+    func makeEmptyChannelsView(options: EmptyChannelsViewOptions) -> EmptyChannels
 
     associatedtype LoadingContent: View
     /// Creates the loading view.
@@ -548,9 +548,9 @@ import SwiftUI
     /// - Parameter options: the options for creating the thread list item.
     func makeThreadListItem(options: ThreadListItemOptions<ThreadDestination>) -> ThreadListItemType
 
-    associatedtype NoThreads: View
+    associatedtype EmptyThreads: View
     /// Creates the view that is displayed when there are no threads available.
-    func makeNoThreadsView(options: NoThreadsViewOptions) -> NoThreads
+    func makeEmptyThreadsView(options: EmptyThreadsViewOptions) -> EmptyThreads
     
     associatedtype ThreadListLoadingView: View
     /// Creates a loading view for the thread list.
