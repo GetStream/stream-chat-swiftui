@@ -595,8 +595,6 @@ public struct NewMessagesDivider: View {
     }
 }
 
-@available(*, deprecated, renamed: "NewMessagesDivider")
-public typealias NewMessagesIndicator = NewMessagesDivider
 
 /// Divider shown between the parent message and replies in a thread.
 public struct ThreadRepliesDivider: View {

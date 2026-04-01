@@ -424,8 +424,6 @@ public final class NewMessagesDividerViewOptions: Sendable {
     }
 }
 
-@available(*, deprecated, renamed: "NewMessagesDividerViewOptions")
-public typealias NewMessagesIndicatorViewOptions = NewMessagesDividerViewOptions
 
 /// Options for creating the thread replies divider view.
 public final class ThreadRepliesDividerViewOptions: Sendable {
