@@ -116,6 +116,12 @@ import XCTest
 
     func test_chatChannelVM_currentDateString() {
         // Given
+        streamChat = StreamChat(
+            chatClient: chatClient,
+            utils: Utils(
+                messageListConfig: .init(dateIndicatorPlacement: .overlay)
+            )
+        )
         let expectedDate = "Jan 01"
         let channelController = makeChannelController()
         let viewModel = ChatChannelViewModel(channelController: channelController)
