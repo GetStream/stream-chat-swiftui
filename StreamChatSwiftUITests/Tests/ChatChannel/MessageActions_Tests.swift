@@ -61,13 +61,14 @@ import XCTest
         )
 
         // Then
-        XCTAssert(messageActions.count == 6)
+        XCTAssert(messageActions.count == 7)
         XCTAssert(messageActions[0].title == "Reply")
         XCTAssert(messageActions[1].title == "Thread Reply")
         XCTAssert(messageActions[2].title == "Pin to conversation")
         XCTAssert(messageActions[3].title == "Copy Message")
         XCTAssert(messageActions[4].title == "Mark Unread")
         XCTAssert(messageActions[5].title == "Mute User")
+        XCTAssert(messageActions[6].title == "Block User")
     }
 
     func test_messageActions_partOfThread() {
@@ -94,11 +95,12 @@ import XCTest
         )
 
         // Then
-        XCTAssertEqual(messageActions.count, 4)
+        XCTAssertEqual(messageActions.count, 5)
         XCTAssertEqual(messageActions[0].title, "Reply")
         XCTAssertEqual(messageActions[1].title, "Pin to conversation")
         XCTAssertEqual(messageActions[2].title, "Copy Message")
         XCTAssertEqual(messageActions[3].title, "Mute User")
+        XCTAssertEqual(messageActions[4].title, "Block User")
     }
 
     func test_messageActions_partOfThreadButAlsoInChannel() {
@@ -125,12 +127,13 @@ import XCTest
         )
 
         // Then
-        XCTAssertEqual(messageActions.count, 5)
+        XCTAssertEqual(messageActions.count, 6)
         XCTAssertEqual(messageActions[0].title, "Reply")
         XCTAssertEqual(messageActions[1].title, "Pin to conversation")
         XCTAssertEqual(messageActions[2].title, "Copy Message")
         XCTAssertEqual(messageActions[3].title, "Mark Unread")
         XCTAssertEqual(messageActions[4].title, "Mute User")
+        XCTAssertEqual(messageActions[5].title, "Block User")
     }
 
     func test_messageActions_rootOfThreadButAlsoInChannel() {
@@ -158,12 +161,13 @@ import XCTest
         )
 
         // Then
-        XCTAssertEqual(messageActions.count, 5)
+        XCTAssertEqual(messageActions.count, 6)
         XCTAssertEqual(messageActions[0].title, "Reply")
         XCTAssertEqual(messageActions[1].title, "Pin to conversation")
         XCTAssertEqual(messageActions[2].title, "Copy Message")
         XCTAssertEqual(messageActions[3].title, "Mark Unread")
         XCTAssertEqual(messageActions[4].title, "Mute User")
+        XCTAssertEqual(messageActions[5].title, "Block User")
     }
 
     func test_messageActions_otherUserDefaultReadEventsDisabled() {
@@ -188,12 +192,13 @@ import XCTest
         )
 
         // Then
-        XCTAssert(messageActions.count == 5)
+        XCTAssert(messageActions.count == 6)
         XCTAssert(messageActions[0].title == "Reply")
         XCTAssert(messageActions[1].title == "Thread Reply")
         XCTAssert(messageActions[2].title == "Pin to conversation")
         XCTAssert(messageActions[3].title == "Copy Message")
         XCTAssert(messageActions[4].title == "Mute User")
+        XCTAssertEqual(messageActions[5].title, "Block User")
     }
 
     func test_messageActions_otherUserDefaultBlockingEnabled() {
