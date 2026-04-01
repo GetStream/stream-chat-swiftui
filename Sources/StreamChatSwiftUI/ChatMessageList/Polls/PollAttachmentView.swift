@@ -255,6 +255,7 @@ struct PollOptionView<Factory: ViewFactory>: View {
                                 )
                             }
                         }
+                        .frame(height: AvatarSize.extraSmall)
                     }
                     Text("\(viewModel.poll.voteCountsByOption?[option.id] ?? 0)")
                         .font(fonts.footnote)
