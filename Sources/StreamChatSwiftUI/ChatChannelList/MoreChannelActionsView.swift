@@ -55,7 +55,7 @@ public struct MoreChannelActionsView<Factory: ViewFactory>: View {
             actionsListView
             Spacer()
         }
-        .background(colors.background.toColor.edgesIgnoringSafeArea(.all))
+        .background(colors.backgroundCoreApp.toColor.edgesIgnoringSafeArea(.all))
         .alert(isPresented: $viewModel.alertShown) {
             let title = viewModel.alertAction?.confirmationPopup?.title ?? ""
             let message = viewModel.alertAction?.confirmationPopup?.message ?? ""
@@ -163,6 +163,6 @@ public struct MoreChannelActionsView<Factory: ViewFactory>: View {
                 }
             }
         }
-        .foregroundColor(Color(colors.text))
+        .foregroundColor(Color(colors.textPrimary))
     }
 }

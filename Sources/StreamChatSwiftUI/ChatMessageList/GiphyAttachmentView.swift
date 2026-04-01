@@ -87,8 +87,7 @@ public struct GiphyAttachmentView<Factory: ViewFactory>: View {
             factory.styles.makeMessageViewModifier(
                 for: MessageModifierInfo(
                     message: message,
-                    isFirst: isFirst,
-                    injectedBackgroundColor: colors.highlightedAccentBackground1
+                    isFirst: isFirst
                 )
             )
         )

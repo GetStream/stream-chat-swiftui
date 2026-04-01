@@ -525,12 +525,12 @@ public struct NewMessagesIndicator: View {
     public var body: some View {
         HStack {
             Text("\(L10n.MessageList.newMessages(count))")
-                .foregroundColor(Color(colors.textLowEmphasis))
+                .foregroundColor(Color(colors.textTertiary))
                 .font(.headline)
                 .padding(.all, 8)
         }
         .frame(maxWidth: .infinity)
-        .background(Color(colors.background8))
+        .background(Color(colors.backgroundCoreSurfaceStrong))
         .padding(.top, 4)
     }
 }

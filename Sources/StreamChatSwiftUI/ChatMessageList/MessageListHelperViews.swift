@@ -181,7 +181,7 @@ extension View {
         @Injected(\.colors) var colors
         
         if message.isDeleted {
-            return Color(colors.textLowEmphasis)
+            return Color(colors.textTertiary)
         }
         if message.isSentByCurrentUser {
             return Color(colors.chatTextOutgoing)

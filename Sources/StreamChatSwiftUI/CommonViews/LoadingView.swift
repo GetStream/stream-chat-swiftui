@@ -44,7 +44,7 @@ struct RedactedChannelCell: View {
     private let circleSize: CGFloat = 48
 
     private var redactedColor: Color {
-        Color(colors.disabledColorForColor(colors.text))
+        Color(colors.backgroundCoreSurfaceDefault)
     }
 
     public var body: some View {

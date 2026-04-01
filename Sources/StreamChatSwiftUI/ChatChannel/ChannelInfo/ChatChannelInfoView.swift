@@ -324,7 +324,7 @@ public struct ChatChannelInfoView<Factory: ViewFactory>: View, KeyboardReadable 
             .padding(.horizontal, tokens.spacingMd)
             .padding(.vertical, tokens.spacingMd)
             .font(fonts.body)
-            .foregroundColor(Color(colors.alert))
+            .foregroundColor(Color(colors.accentError))
             .background(Color(colors.backgroundCoreSurfaceSubtle))
         }
     }

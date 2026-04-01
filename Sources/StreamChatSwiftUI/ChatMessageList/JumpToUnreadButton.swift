@@ -29,7 +29,7 @@ struct JumpToUnreadButton: View {
         }
         .padding(.all, 10)
         .foregroundColor(.white)
-        .background(Color(colors.textLowEmphasis))
+        .background(Color(colors.textTertiary))
         .cornerRadius(16)
     }
 }

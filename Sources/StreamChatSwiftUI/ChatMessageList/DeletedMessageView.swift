@@ -32,7 +32,7 @@ public struct DeletedMessageView: View {
             Text(L10n.Message.deletedMessagePlaceholder)
                 .font(fonts.body)
                 .standardPadding()
-                .foregroundColor(Color(colors.textLowEmphasis))
+                .foregroundColor(Color(colors.textTertiary))
                 .messageBubble(for: message, isFirst: isFirst)
                 .accessibilityIdentifier("deletedMessageText")
 
@@ -56,7 +56,7 @@ public struct DeletedMessageView: View {
                     Text(dateFormatter.string(from: message.createdAt))
                         .font(fonts.footnote)
                 }
-                .foregroundColor(Color(colors.textLowEmphasis))
+                .foregroundColor(Color(colors.textTertiary))
             }
         }
         .accessibilityElement(children: .contain)
