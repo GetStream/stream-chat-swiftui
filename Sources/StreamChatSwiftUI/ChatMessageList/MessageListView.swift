@@ -192,6 +192,7 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
                                 messageIsFirstUnread &&
                                 !isMessageThread
                             let showsLastInGroupInfo = showsLastInGroupInfo(for: message, channel: channel)
+                            let showThreadRepliesSeparator = isThreadRepliesSeparatorShown(for: message)
                             factory.makeMessageItemView(
                                 options: MessageItemViewOptions(
                                     channel: channel,
@@ -220,15 +221,17 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
                                 messageDate != nil ?
                                     offsetForDateIndicator(
                                         showsLastInGroupInfo: showsLastInGroupInfo,
-                                        showUnreadSeparator: showUnreadSeparator
+                                        showUnreadSeparator: showUnreadSeparator,
+                                        showThreadRepliesSeparator: showThreadRepliesSeparator
                                     ) :
                                     additionalTopPadding(
                                         showsLastInGroupInfo: showsLastInGroupInfo,
-                                        showUnreadSeparator: showUnreadSeparator
+                                        showUnreadSeparator: showUnreadSeparator,
+                                        showThreadRepliesSeparator: showThreadRepliesSeparator
                                     )
                             )
                             .overlay(
-                                (messageDate != nil || showsLastInGroupInfo || showUnreadSeparator) ?
+                                (messageDate != nil || showsLastInGroupInfo || showUnreadSeparator || showThreadRepliesSeparator) ?
                                     VStack(spacing: 0) {
                                         messageDate != nil ?
                                             factory.makeMessageListDateIndicator(options: MessageListDateIndicatorViewOptions(date: messageDate!))
@@ -248,6 +251,15 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
                                             .onDisappear {
                                                 unreadMessagesBannerShown = false
                                             }
+                                            : nil
+
+                                        showThreadRepliesSeparator ?
+                                            MessageListDivider(
+                                                title: L10n.Message.Threads.count(
+                                                    messages.last?.replyCount ?? (messages.count - 1)
+                                                )
+                                            )
+                                            .frame(maxHeight: newMessagesSeparatorSize)
                                             : nil
 
                                         showsLastInGroupInfo ?
@@ -403,18 +415,38 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
         .accessibilityIdentifier("MessageListView")
     }
 
-    private func additionalTopPadding(showsLastInGroupInfo: Bool, showUnreadSeparator: Bool) -> CGFloat {
+    private func additionalTopPadding(
+        showsLastInGroupInfo: Bool,
+        showUnreadSeparator: Bool,
+        showThreadRepliesSeparator: Bool = false
+    ) -> CGFloat {
         var padding = showsLastInGroupInfo ? lastInGroupHeaderSize : 0
         if showUnreadSeparator {
+            padding += newMessagesSeparatorSize
+        }
+        if showThreadRepliesSeparator {
             padding += newMessagesSeparatorSize
         }
         return padding
     }
 
-    private func offsetForDateIndicator(showsLastInGroupInfo: Bool, showUnreadSeparator: Bool) -> CGFloat {
+    private func offsetForDateIndicator(
+        showsLastInGroupInfo: Bool,
+        showUnreadSeparator: Bool,
+        showThreadRepliesSeparator: Bool = false
+    ) -> CGFloat {
         var offset = messageListConfig.messageDisplayOptions.dateLabelSize
-        offset += additionalTopPadding(showsLastInGroupInfo: showsLastInGroupInfo, showUnreadSeparator: showUnreadSeparator)
+        offset += additionalTopPadding(
+            showsLastInGroupInfo: showsLastInGroupInfo,
+            showUnreadSeparator: showUnreadSeparator,
+            showThreadRepliesSeparator: showThreadRepliesSeparator
+        )
         return offset
+    }
+
+    private func isThreadRepliesSeparatorShown(for message: ChatMessage) -> Bool {
+        guard isMessageThread, messages.count > 1 else { return false }
+        return message.id == messages[messages.count - 2].id
     }
 
     private func newMessagesCount(for index: Int?, message: ChatMessage) -> Int {
@@ -511,21 +543,22 @@ public enum ScrollDirection {
     case down
 }
 
-public struct NewMessagesIndicator: View {
+/// A full-width divider with centered text, a subtle background, and
+/// hairline top/bottom borders. Used by ``NewMessagesIndicator`` and
+/// the thread-replies separator.
+public struct MessageListDivider: View {
     @Injected(\.colors) var colors
     @Injected(\.tokens) var tokens
     @Injected(\.fonts) var fonts
 
-    @Binding var newMessagesStartId: String?
-    var count: Int
+    var title: String
 
-    public init(newMessagesStartId: Binding<String?>, count: Int) {
-        _newMessagesStartId = newMessagesStartId
-        self.count = count
+    public init(title: String) {
+        self.title = title
     }
 
     public var body: some View {
-        Text(L10n.MessageList.newMessages(count))
+        Text(title)
             .font(fonts.footnote.weight(.semibold))
             .foregroundColor(Color(colors.chatTextSystem))
             .frame(maxWidth: .infinity)
@@ -539,6 +572,22 @@ public struct NewMessagesIndicator: View {
                     Color(colors.borderCoreSubtle).frame(height: 1)
                 }
             )
+    }
+}
+
+public struct NewMessagesIndicator: View {
+    @Injected(\.tokens) var tokens
+
+    @Binding var newMessagesStartId: String?
+    var count: Int
+
+    public init(newMessagesStartId: Binding<String?>, count: Int) {
+        _newMessagesStartId = newMessagesStartId
+        self.count = count
+    }
+
+    public var body: some View {
+        MessageListDivider(title: L10n.MessageList.newMessages(count))
             .padding(.vertical, tokens.spacingXs)
     }
 }
