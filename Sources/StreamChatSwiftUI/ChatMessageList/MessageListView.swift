@@ -446,6 +446,8 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
 
     private func isThreadRepliesSeparatorShown(for message: ChatMessage) -> Bool {
         guard isMessageThread, messages.count > 1 else { return false }
+        let allRepliesLoaded = messages.count - 1 >= (messages.last?.replyCount ?? 0)
+        guard allRepliesLoaded else { return false }
         return message.id == messages[messages.count - 2].id
     }
 
