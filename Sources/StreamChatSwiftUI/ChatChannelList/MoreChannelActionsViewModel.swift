@@ -19,7 +19,6 @@ import UIKit
     private lazy var channelNameFormatter = utils.channelNameFormatter
     private lazy var imageLoader = utils.imageLoader
     private lazy var imageCDN = utils.imageCDN
-    private lazy var placeholder2 = images.userAvatarPlaceholder2
 
     /// Published vars.
     @Published var channelActions: [ChannelAction]
