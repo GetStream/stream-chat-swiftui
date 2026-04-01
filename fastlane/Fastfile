@@ -179,7 +179,7 @@ lane :update_stream_chat do |options|
 
   pr_create(
     title: "Update StreamChat dependency to #{options[:version]}",
-    base_branch: 'develop',
+    base_branch: 'v4',
     head_branch: "ci/update-stream-chat-dependency-#{Time.now.to_i}",
     github_repo: github_repo
   )
