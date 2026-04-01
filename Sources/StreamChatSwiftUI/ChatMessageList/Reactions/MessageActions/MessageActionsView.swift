@@ -63,7 +63,7 @@ public struct MessageActionsView: View {
                 .accessibilityIdentifier("messageAction-\(action.id)")
             }
         }
-        .background(Color(colors.backgroundCoreSurfaceStrong))
+        .background(Color(colors.backgroundCoreElevation2))
         .roundWithBorder(cornerRadius: 12)
         .alert(isPresented: $viewModel.alertShown) {
             let title = viewModel.alertAction?.confirmationPopup?.title ?? ""

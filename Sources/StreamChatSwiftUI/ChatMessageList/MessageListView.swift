@@ -530,7 +530,7 @@ public struct NewMessagesIndicator: View {
                 .padding(.all, 8)
         }
         .frame(maxWidth: .infinity)
-        .background(Color(colors.backgroundCoreSurfaceStrong))
+        .background(Color(colors.backgroundCoreSurfaceSubtle))
         .padding(.top, 4)
     }
 }
