@@ -36,6 +36,7 @@ struct JumpToUnreadButton: View {
                     .frame(width: tokens.iconSizeMd, height: tokens.iconSizeMd)
             }
             .frame(width: tokens.buttonVisualHeightMd, height: tokens.buttonVisualHeightMd)
+            .accessibilityLabel(Text("Dismiss"))
         }
         .fixedSize()
         .foregroundColor(Color(colors.buttonSecondaryText))
