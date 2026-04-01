@@ -81,7 +81,7 @@ struct MessageContainerView<Factory: ViewFactory>: View {
                     )
                 }
 
-                if showsAllInfo && !message.isDeleted {
+                if showsAllInfo {
                     deliveryStatusView
                 }
             }

@@ -18,7 +18,7 @@ public final class ComposerConfig {
     public var adjustMessageOnRead: (String) -> (String)
 
     public init(
-        isVoiceRecordingEnabled: Bool = false,
+        isVoiceRecordingEnabled: Bool = true,
         inputViewMinHeight: CGFloat = 40,
         inputViewMaxHeight: CGFloat = 120,
         inputViewCornerRadius: CGFloat = 20,
