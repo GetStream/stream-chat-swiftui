@@ -19,6 +19,7 @@ struct JumpToUnreadButton: View {
             Button(action: onTap) {
                 HStack(spacing: tokens.spacingXs) {
                     Image(systemName: "arrow.up")
+                        .font(fonts.body.weight(.regular))
                         .frame(width: tokens.iconSizeMd, height: tokens.iconSizeMd)
                     Text(L10n.Message.Unread.count(unreadCount))
                 }
