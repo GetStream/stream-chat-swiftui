@@ -358,8 +358,8 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
                 )
                 .transition(
                     .modifier(
-                        active: ScrollButtonTransitionModifier(opacity: 0, offset: 10),
-                        identity: ScrollButtonTransitionModifier(opacity: 1, offset: 0)
+                        active: ButtonOverlayTransitionModifier(opacity: 0, offset: 10),
+                        identity: ButtonOverlayTransitionModifier(opacity: 1, offset: 0)
                     )
                 )
                 .offset(y: -bottomInset)
@@ -381,8 +381,8 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
             }
         })
         .overlay(
-            (channel.unreadCount.messages > 0 && !unreadMessagesBannerShown && !isMessageThread && !unreadButtonDismissed) ?
-                VStack {
+            VStack {
+                if channel.unreadCount.messages > 0 && !unreadMessagesBannerShown && !isMessageThread && !unreadButtonDismissed {
                     factory.makeJumpToUnreadButton(
                         options: JumpToUnreadButtonOptions(
                             channel: channel,
@@ -390,15 +390,25 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
                                 _ = onJumpToMessage?(firstUnreadMessageId ?? .unknownMessageId)
                             },
                             onClose: {
-                                chatClient.channelController(for: channel.cid).markRead()
-                                unreadButtonDismissed = true
+                                withAnimation {
+                                    chatClient.channelController(for: channel.cid).markRead()
+                                    unreadButtonDismissed = true
+                                }
                             }
                         )
                     )
                     .padding(.top, tokens.spacingXs)
+                    .transition(
+                        .modifier(
+                            active: ButtonOverlayTransitionModifier(opacity: 0, offset: -10),
+                            identity: ButtonOverlayTransitionModifier(opacity: 1, offset: 0)
+                        )
+                    )
+                }
 
-                    Spacer()
-                } : nil
+                Spacer()
+            }
+            .animation(.easeInOut(duration: 0.2), value: channel.unreadCount.messages > 0 && !unreadMessagesBannerShown && !unreadButtonDismissed)
         )
         .modifier(factory.styles.makeMessageListContainerModifier(options: MessageListContainerModifierOptions()))
         .onDisappear {
@@ -569,7 +579,7 @@ public struct ScrollToBottomButton<Factory: ViewFactory>: View {
     }
 }
 
-struct ScrollButtonTransitionModifier: ViewModifier {
+struct ButtonOverlayTransitionModifier: ViewModifier {
     let opacity: Double
     let offset: CGFloat
 
