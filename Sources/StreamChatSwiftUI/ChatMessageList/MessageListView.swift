@@ -239,8 +239,8 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
                                             : nil
 
                                         showUnreadSeparator ?
-                                            factory.makeNewMessagesIndicatorView(
-                                                options: NewMessagesIndicatorViewOptions(
+                                            factory.makeNewMessagesDividerView(
+                                                options: NewMessagesDividerViewOptions(
                                                     newMessagesStartId: $firstUnreadMessageId,
                                                     count: newMessagesCount(for: index, message: message)
                                                 )
@@ -254,8 +254,10 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
                                             : nil
 
                                         showThreadRepliesSeparator ?
-                                            ThreadRepliesDivider(
-                                                replyCount: messages.last?.replyCount ?? (messages.count - 1)
+                                            factory.makeThreadRepliesDividerView(
+                                                options: ThreadRepliesDividerViewOptions(
+                                                    replyCount: messages.last?.replyCount ?? (messages.count - 1)
+                                                )
                                             )
                                             .frame(maxHeight: newMessagesSeparatorSize)
                                             : nil
