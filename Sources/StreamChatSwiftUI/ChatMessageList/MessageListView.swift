@@ -574,6 +574,7 @@ public struct MessageListDivider: View {
                     Color(colors.borderCoreSubtle).frame(height: 1)
                 }
             )
+            .accessibilityAddTraits(.isHeader)
     }
 }
 
@@ -594,7 +595,6 @@ public struct NewMessagesDivider: View {
             .padding(.vertical, tokens.spacingXs)
     }
 }
-
 
 /// Divider shown between the parent message and replies in a thread.
 public struct ThreadRepliesDivider: View {
