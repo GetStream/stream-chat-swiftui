@@ -200,33 +200,8 @@ import XCTest
         viewModel.checkForChannels(index: 0)
 
         // Then
-        let injectedChannelInfo = viewModel.selectedChannel?.injectedChannelInfo!
-        let presentedSubtitle = injectedChannelInfo!.subtitle!
-        let unreadCount = injectedChannelInfo!.unreadCount
-        XCTAssert(presentedSubtitle == channel.subtitleText)
-        XCTAssert(viewModel.channels[0].subtitleText == "No messages")
-        XCTAssert(unreadCount == 0)
-        XCTAssert(channel.shouldShowTypingIndicator == false)
-    }
-
-    func test_channelListVM_badgeCountUpdate() {
-        // Given
-        let channelId = ChannelId.unique
-        let channel = ChatChannel.mock(cid: channelId, unreadCount: .mock(messages: 1))
-        let channelListController = makeChannelListController(channels: [channel])
-        let viewModel = ChatChannelListViewModel(
-            channelListController: channelListController,
-            selectedChannelId: nil
-        )
-        viewModel.selectedChannel = ChannelSelectionInfo(channel: channel, message: nil)
-
-        // When
-        viewModel.checkForChannels(index: 0)
-
-        // Then
-        let injectedChannelInfo = viewModel.selectedChannel?.injectedChannelInfo!
-        let unreadCount = injectedChannelInfo!.unreadCount
-        XCTAssert(unreadCount == 0)
+        XCTAssertEqual(viewModel.channels.count, 1)
+        XCTAssertEqual(viewModel.channels.first?.latestMessages.first?.text, "Test message")
     }
 
     func test_channelListVM_channelDismiss() {

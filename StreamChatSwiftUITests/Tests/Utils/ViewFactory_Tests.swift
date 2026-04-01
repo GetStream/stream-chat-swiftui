@@ -16,15 +16,15 @@ import XCTest
         author: .mock(id: .unique)
     )
 
-    func test_viewFactory_makeNoChannelsView() {
+    func test_viewFactory_makeEmptyChannelsView() {
         // Given
         let viewFactory = DefaultViewFactory.shared
 
         // When
-        let view = viewFactory.makeNoChannelsView(options: NoChannelsViewOptions())
+        let view = viewFactory.makeEmptyChannelsView(options: EmptyChannelsViewOptions())
 
         // Then
-        XCTAssert(view is NoChannelsView)
+        XCTAssert(view is EmptyChannelsView)
     }
 
     func test_viewFactory_makeLoadingView() {

@@ -316,7 +316,7 @@ class CustomFactory: ViewFactory {
         }
     }
 
-    func makeNoChannelsView(options: NoChannelsViewOptions) -> some View {
+    func makeEmptyChannelsView(options: EmptyChannelsViewOptions) -> some View {
         VStack {
             Spacer()
             Text("This is our own custom no channels view.")

@@ -563,7 +563,7 @@ import SwiftUI
         )
         return ParticipantAction(
             title: title,
-            iconName: "icn_block_user",
+            iconName: "nosign",
             action: action,
             confirmationPopup: confirmationPopup,
             isDestructive: false

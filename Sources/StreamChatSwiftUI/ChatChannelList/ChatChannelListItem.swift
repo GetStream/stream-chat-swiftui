@@ -18,7 +18,7 @@ public struct ChatChannelListItem<Factory: ViewFactory>: View {
     var factory: Factory
     var channel: ChatChannel
     var channelName: String
-    var injectedChannelInfo: InjectedChannelInfo?
+    var isSelected: Bool
     var disabled = false
     var onItemTap: (ChatChannel) -> Void
 
@@ -26,14 +26,14 @@ public struct ChatChannelListItem<Factory: ViewFactory>: View {
         factory: Factory = DefaultViewFactory.shared,
         channel: ChatChannel,
         channelName: String,
-        injectedChannelInfo: InjectedChannelInfo? = nil,
+        isSelected: Bool = false,
         disabled: Bool = false,
         onItemTap: @escaping (ChatChannel) -> Void
     ) {
         self.factory = factory
         self.channel = channel
         self.channelName = channelName
-        self.injectedChannelInfo = injectedChannelInfo
+        self.isSelected = isSelected
         self.disabled = disabled
         self.onItemTap = onItemTap
     }
@@ -63,23 +63,13 @@ public struct ChatChannelListItem<Factory: ViewFactory>: View {
 
                         Spacer()
                         
-                        HStack(spacing: tokens.spacingXs) {
-                            SubtitleText(
-                                text: injectedChannelInfo?.timestamp ?? channel.timestampText,
-                                color: Color(colors.textTertiary)
-                            )
-                            .accessibilityIdentifier("timestampView")
-
-                            if lastMessageFailedToSend {
-                                Image(uiImage: images.messageListErrorIndicator)
-                                    .customizable()
-                                    .frame(width: 16, height: 16)
-                                    .foregroundColor(Color(colors.badgeBackgroundError))
-                                    .accessibilityHidden(true)
-                            }
-                        }
+                        SubtitleText(
+                            text: timestampText,
+                            color: Color(colors.textTertiary)
+                        )
+                        .accessibilityIdentifier("timestampView")
                         
-                        if injectedChannelInfo == nil && channel.unreadCount != .noUnread {
+                        if !isSelected && channel.unreadCount != .noUnread {
                             BadgeNotificationView(
                                 count: channel.unreadCount.messages
                             )
@@ -91,9 +81,10 @@ public struct ChatChannelListItem<Factory: ViewFactory>: View {
                             MessageReadIndicatorView(
                                 readUsers: channel.readUsers(
                                     currentUserId: chatClient.currentUserId,
-                                    message: channel.previewMessage
+                                    message: previewMessage
                                 ),
-                                showDelivered: channel.previewMessage?.deliveryStatus(for: channel) == .delivered
+                                showDelivered: previewMessage?.deliveryStatus(for: channel) == .delivered,
+                                localState: previewMessage?.localState
                             )
                         }
                         
@@ -118,26 +109,72 @@ public struct ChatChannelListItem<Factory: ViewFactory>: View {
         utils.channelListConfig.channelItemMutedStyle
     }
 
+    private var previewMessage: ChatMessage? {
+        channel.latestMessages.first(where: { $0.type != .ephemeral })
+    }
+
+    private var shouldShowTypingIndicator: Bool {
+        !channel.currentlyTypingUsersFiltered(
+            currentUserId: chatClient.currentUserId
+        ).isEmpty && channel.config.typingEventsEnabled
+    }
+
+    private var draftMessageText: String? {
+        guard let draftMessage = channel.draftMessage else { return nil }
+        return utils.messagePreviewFormatter.formatContent(for: ChatMessage(draftMessage), in: channel)
+    }
+
+    private var timestampText: String {
+        if let lastMessageAt = channel.lastMessageAt {
+            return utils.messageTimestampFormatter.format(lastMessageAt)
+        }
+        return ""
+    }
+
     private var subtitleView: some View {
         HStack(spacing: 4) {
             if lastMessageFailedToSend {
-                Text(L10n.Channel.Item.messageFailedToSend)
-                    .font(fonts.subheadline)
-                    .foregroundColor(Color(colors.accentError))
-                    .lineLimit(1)
-            } else if channel.shouldShowTypingIndicator {
+                HStack(spacing: tokens.spacingXxs) {
+                    Image(uiImage: images.messageListErrorIndicator)
+                        .customizable()
+                        .frame(width: 16, height: 16)
+                        .foregroundColor(Color(colors.badgeBackgroundError))
+                        .accessibilityHidden(true)
+                    Text(L10n.Channel.Item.messageFailedToSend)
+                }
+                .font(fonts.subheadline)
+                .foregroundColor(Color(colors.accentError))
+                .lineLimit(1)
+            } else if shouldShowTypingIndicator {
                 factory.makeSubtitleTypingIndicatorView(
                     options: SubtitleTypingIndicatorViewOptions(channel: channel)
                 )
-            } else if utils.messageListConfig.draftMessagesEnabled, let draftText = channel.draftMessageText {
+            } else if utils.messageListConfig.draftMessagesEnabled, let draftText = draftMessageText {
                 HStack(spacing: 2) {
                     Text("\(L10n.Message.Preview.draft): ")
                         .font(fonts.subheadline).fontWeight(.semibold)
                         .foregroundColor(Color(colors.accentPrimary))
                     SubtitleText(text: draftText)
                 }
+            } else if previewMessage?.isDeleted == true {
+                HStack(spacing: tokens.spacingXxs) {
+                    if previewMessage?.isSentByCurrentUser == true {
+                        Text("\(L10n.Channel.Item.you):")
+                            .font(fonts.subheadline)
+                            .fontWeight(.semibold)
+                    }
+                    Image(systemName: "nosign")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 16, height: 16)
+                        .accessibilityHidden(true)
+                    Text(L10n.Message.deletedMessagePlaceholder)
+                }
+                .lineLimit(1)
+                .font(fonts.subheadline)
+                .foregroundColor(Color(colors.textTertiary))
             } else if let authorName = subtitleAuthorName {
-                let contentString = channel.previewMessage.map {
+                let contentString = previewMessage.map {
                     utils.messagePreviewFormatter.formatContent(for: $0, in: channel)
                 } ?? subtitleText
                 HStack(spacing: tokens.spacingXxs) {
@@ -168,8 +205,8 @@ public struct ChatChannelListItem<Factory: ViewFactory>: View {
     }
 
     private var previewAttachmentIconImage: UIImage? {
-        guard let previewMessage = channel.previewMessage else { return nil }
-        let resolver = MessageAttachmentPreviewResolver(message: previewMessage)
+        guard let message = previewMessage else { return nil }
+        let resolver = MessageAttachmentPreviewResolver(message: message)
         guard let previewIcon = resolver.previewIcon else { return nil }
         return utils.messageAttachmentPreviewIconProvider.image(for: previewIcon)
     }
@@ -185,9 +222,8 @@ public struct ChatChannelListItem<Factory: ViewFactory>: View {
     }
 
     private var subtitleAuthorName: String? {
-        guard let previewMessage = channel.previewMessage,
+        guard let previewMessage,
               previewMessage.poll == nil,
-              injectedChannelInfo?.subtitle == nil,
               !(channel.isDirectMessageChannel && channel.memberCount == 2) else {
             return nil
         }
@@ -198,20 +234,13 @@ public struct ChatChannelListItem<Factory: ViewFactory>: View {
     }
 
     private var subtitleText: String {
-        if let injectedSubtitle = injectedChannelInfo?.subtitle {
-            return injectedSubtitle
+        if shouldShowTypingIndicator {
+            return channel.typingIndicatorString(currentUserId: chatClient.currentUserId)
         }
-        return channel.subtitleText
-    }
-
-    private var channelSubtitleText: String {
-        if channel.shouldShowTypingIndicator {
-            channel.typingIndicatorString(currentUserId: chatClient.currentUserId)
-        } else if let previewMessageText = channel.previewMessageText {
-            previewMessageText
-        } else {
-            L10n.Channel.Item.emptyMessages
+        if let previewMessage {
+            return utils.messagePreviewFormatter.format(previewMessage, in: channel)
         }
+        return L10n.Channel.Item.emptyMessages
     }
 
     private var mutedIcon: some View {
@@ -222,18 +251,19 @@ public struct ChatChannelListItem<Factory: ViewFactory>: View {
     }
 
     private var lastMessageFailedToSend: Bool {
-        channel.previewMessage?.localState == .sendingFailed
+        previewMessage?.localState == .sendingFailed
     }
 
     private var shouldShowReadEvents: Bool {
-        if channel.shouldShowTypingIndicator || lastMessageFailedToSend {
+        if shouldShowTypingIndicator || lastMessageFailedToSend {
             return false
         }
-        if utils.messageListConfig.draftMessagesEnabled && channel.draftMessageText != nil {
+        if utils.messageListConfig.draftMessagesEnabled && draftMessageText != nil {
             return false
         }
-        if let message = channel.previewMessage,
-           message.isSentByCurrentUser {
+        if let message = previewMessage,
+           message.isSentByCurrentUser,
+           !message.isDeleted {
             return channel.config.readEventsEnabled
         }
 
@@ -245,74 +275,6 @@ public struct ChatChannelListItem<Factory: ViewFactory>: View {
             return images.muted
         }
         return nil
-    }
-}
-
-public final class InjectedChannelInfo: Sendable {
-    public let subtitle: String?
-    public let unreadCount: Int
-    public let timestamp: String?
-    public let lastMessageAt: Date?
-    public let latestMessages: [ChatMessage]?
-    
-    public init(
-        subtitle: String? = nil,
-        unreadCount: Int,
-        timestamp: String? = nil,
-        lastMessageAt: Date? = nil,
-        latestMessages: [ChatMessage]? = nil
-    ) {
-        self.subtitle = subtitle
-        self.unreadCount = unreadCount
-        self.timestamp = timestamp
-        self.lastMessageAt = lastMessageAt
-        self.latestMessages = latestMessages
-    }
-}
-
-extension ChatChannel {
-    @MainActor public var previewMessageText: String? {
-        guard let previewMessage else { return nil }
-        let messageFormatter = InjectedValues[\.utils].messagePreviewFormatter
-        return messageFormatter.format(previewMessage, in: self)
-    }
-
-    @MainActor public var draftMessageText: String? {
-        guard let draftMessage else { return nil }
-        let messageFormatter = InjectedValues[\.utils].messagePreviewFormatter
-        return messageFormatter.formatContent(for: ChatMessage(draftMessage), in: self)
-    }
-
-    @MainActor public var lastMessageText: String? {
-        guard let latestMessage = latestMessages.first else { return nil }
-        let messageFormatter = InjectedValues[\.utils].messagePreviewFormatter
-        return messageFormatter.format(latestMessage, in: self)
-    }
-
-    @MainActor public var shouldShowTypingIndicator: Bool {
-        !currentlyTypingUsersFiltered(
-            currentUserId: InjectedValues[\.chatClient].currentUserId
-        ).isEmpty && config.typingEventsEnabled
-    }
-
-    @MainActor public var subtitleText: String {
-        if shouldShowTypingIndicator {
-            typingIndicatorString(currentUserId: InjectedValues[\.chatClient].currentUserId)
-        } else if let previewMessageText {
-            previewMessageText
-        } else {
-            L10n.Channel.Item.emptyMessages
-        }
-    }
-
-    @MainActor public var timestampText: String {
-        if let lastMessageAt {
-            let utils = InjectedValues[\.utils]
-            let formatter = utils.messageTimestampFormatter
-            return formatter.format(lastMessageAt)
-        } else {
-            return ""
-        }
     }
 }
 

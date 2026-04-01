@@ -23,7 +23,7 @@ import XCTest
         )
         let channel = ChatChannel.mockDMChannel(
             memberCount: 2,
-            previewMessage: message
+            latestMessages: [message]
         )
 
         // When
@@ -43,7 +43,7 @@ import XCTest
             isSentByCurrentUser: true
         )
         let channel = ChatChannel.mockNonDMChannel(
-            previewMessage: message
+            latestMessages: [message]
         )
 
         // When
@@ -63,7 +63,7 @@ import XCTest
             isSentByCurrentUser: false
         )
         let channel = ChatChannel.mockNonDMChannel(
-            previewMessage: message
+            latestMessages: [message]
         )
 
         // When
@@ -84,7 +84,7 @@ import XCTest
             isSentByCurrentUser: false
         )
         let channel = ChatChannel.mockNonDMChannel(
-            previewMessage: message
+            latestMessages: [message]
         )
 
         // When
@@ -92,6 +92,99 @@ import XCTest
 
         // Then
         XCTAssertEqual(result, "\(userId): Hello")
+    }
+
+    // MARK: - Deleted Messages
+
+    func test_format_deletedMessage_noAuthorPrefix() {
+        // Given
+        let message = ChatMessage.mock(
+            id: .unique,
+            cid: .unique,
+            text: "This was the original message",
+            author: .mock(id: "other-user", name: "John"),
+            deletedAt: Date(),
+            isSentByCurrentUser: false
+        )
+        let channel = ChatChannel.mockNonDMChannel(
+            latestMessages: [message]
+        )
+
+        // When
+        let result = formatter.format(message, in: channel)
+
+        // Then
+        XCTAssertEqual(result, L10n.Message.deletedMessagePlaceholder)
+    }
+
+    func test_format_deletedMessage_dmChannel() {
+        // Given
+        let message = ChatMessage.mock(
+            id: .unique,
+            cid: .unique,
+            text: "This was the original message",
+            author: .mock(id: "other-user", name: "John"),
+            deletedAt: Date(),
+            isSentByCurrentUser: false
+        )
+        let channel = ChatChannel.mockDMChannel(
+            memberCount: 2,
+            latestMessages: [message]
+        )
+
+        // When
+        let result = formatter.format(message, in: channel)
+
+        // Then
+        XCTAssertEqual(result, L10n.Message.deletedMessagePlaceholder)
+    }
+
+    func test_formatContent_deletedMessage_returnsPlaceholder() {
+        // Given
+        let message = ChatMessage.mock(
+            id: .unique,
+            cid: .unique,
+            text: "Original text",
+            author: .mock(id: "other-user", name: "John"),
+            deletedAt: Date(),
+            isSentByCurrentUser: false
+        )
+        let channel = ChatChannel.mock(cid: .unique)
+
+        // When
+        let result = formatter.formatContent(for: message, in: channel)
+
+        // Then
+        XCTAssertEqual(result, L10n.Message.deletedMessagePlaceholder)
+    }
+
+    func test_formatAttachmentContent_deletedMessage_returnsNil() throws {
+        // Given
+        let message = try ChatMessage.mock(
+            id: .unique,
+            cid: .unique,
+            text: "",
+            author: .mock(id: "other-user"),
+            deletedAt: Date(),
+            attachments: [
+                .dummy(
+                    type: .image,
+                    payload: JSONEncoder().encode(ImageAttachmentPayload(
+                        title: "Test",
+                        imageRemoteURL: URL(string: "https://example.com/image.png")!,
+                        file: .init(type: .png, size: 123, mimeType: nil)
+                    ))
+                )
+            ],
+            isSentByCurrentUser: false
+        )
+        let channel = ChatChannel.mock(cid: .unique)
+
+        // When
+        let result = formatter.formatAttachmentContent(for: message, in: channel)
+
+        // Then
+        XCTAssertNil(result)
     }
 
     // MARK: - formatAttachmentContent(for:in:)
