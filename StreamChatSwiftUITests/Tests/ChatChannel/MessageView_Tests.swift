@@ -688,8 +688,9 @@ import XCTest
     func test_linkAttachmentView_customColors_snapshot() {
         // Given
         let colorPalette = Appearance.ColorPalette()
-        colorPalette.accentPrimary = .orange
         colorPalette.textPrimary = .blue
+        colorPalette.chatTextIncoming = .orange
+        colorPalette.backgroundCoreElevation1 = .cyan
         var appearance = Appearance()
         appearance.colorPalette = colorPalette
         streamChat = StreamChat(
