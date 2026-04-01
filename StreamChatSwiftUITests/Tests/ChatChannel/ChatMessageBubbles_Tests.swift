@@ -123,7 +123,7 @@ final class ChatMessageBubbles_Tests: StreamChatTestCase {
     func test_bubbleBackgrounds_currentUserEphemeral() {
         // Given
         let message = ChatMessage.mock(type: MessageType.ephemeral, isSentByCurrentUser: true)
-        let expected = [Color(colors.backgroundCoreSurfaceStrong)]
+        let expected = [colors.chatBackgroundOutgoing.toColor]
 
         // When
         let background = message.bubbleBackground(colors: colors)
