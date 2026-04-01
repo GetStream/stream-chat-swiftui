@@ -7,29 +7,48 @@ import SwiftUI
 
 struct JumpToUnreadButton: View {
     @Injected(\.colors) var colors
-    
+    @Injected(\.tokens) var tokens
+    @Injected(\.fonts) var fonts
+
     var unreadCount: Int
     var onTap: () -> Void
     var onClose: () -> Void
-    
+
     var body: some View {
-        HStack {
-            Button {
-                onTap()
-            } label: {
-                Text(L10n.Message.Unread.count(unreadCount))
-                    .font(.caption)
+        HStack(spacing: tokens.spacingNone) {
+            Button(action: onTap) {
+                HStack(spacing: tokens.spacingXs) {
+                    Image(systemName: "arrow.up")
+                        .frame(width: tokens.iconSizeMd, height: tokens.iconSizeMd)
+                    Text(L10n.Message.Unread.count(unreadCount))
+                }
+                .font(fonts.body.weight(.semibold))
+                .padding(.horizontal, tokens.buttonPaddingXWithLabelMd)
+                .padding(.vertical, tokens.buttonPaddingYMd)
             }
-            Button {
-                onClose()
-            } label: {
+
+            Divider()
+
+            Button(action: onClose) {
                 Image(systemName: "xmark")
-                    .font(.caption.weight(.bold))
+                    .font(fonts.body.weight(.semibold))
+                    .frame(width: tokens.iconSizeMd, height: tokens.iconSizeMd)
             }
+            .frame(width: tokens.buttonVisualHeightMd, height: tokens.buttonVisualHeightMd)
         }
-        .padding(.all, 10)
-        .foregroundColor(.white)
-        .background(Color(colors.textLowEmphasis))
-        .cornerRadius(16)
+        .fixedSize()
+        .foregroundColor(Color(colors.buttonSecondaryText))
+        .background(Color(colors.backgroundElevation1))
+        .clipShape(Capsule())
+        .overlay(
+            Capsule()
+                .stroke(Color(colors.borderCoreDefault), lineWidth: 1)
+        )
+        .shadow(
+            color: Color(tokens.lightElevation3.color),
+            radius: tokens.lightElevation3.blur / 2,
+            x: tokens.lightElevation3.x,
+            y: tokens.lightElevation3.y
+        )
     }
 }

@@ -895,7 +895,7 @@ extension ViewFactory {
                 onTap: options.onJumpToMessage,
                 onClose: options.onClose
             )
-            .padding(.all, 8)
+            .padding(.top, InjectedValues[\.tokens].spacingXs)
 
             Spacer()
         }
