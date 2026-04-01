@@ -886,12 +886,13 @@ extension ViewFactory {
         )
     }
     
-    public func makeJumpToUnreadButton(
+    public func makeJumpToUnreadButtonOverlay(
         options: JumpToUnreadButtonOptions
-    ) -> some View {
-        JumpToUnreadButton(
+    ) -> some ViewModifier {
+        JumpToUnreadButtonOverlayModifier(
+            isShown: options.isShown,
             unreadCount: options.channel.unreadCount.messages,
-            onTap: options.onJumpToMessage,
+            onJumpToMessage: options.onJumpToMessage,
             onClose: options.onClose
         )
     }

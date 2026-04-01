@@ -5,6 +5,40 @@
 import StreamChat
 import SwiftUI
 
+/// A view modifier that overlays the jump-to-unread button on top of the message list.
+public struct JumpToUnreadButtonOverlayModifier: ViewModifier {
+    @Injected(\.tokens) var tokens
+
+    var isShown: Bool
+    var unreadCount: Int
+    var onJumpToMessage: () -> Void
+    var onClose: () -> Void
+
+    public func body(content: Content) -> some View {
+        content.overlay(
+            VStack {
+                if isShown {
+                    JumpToUnreadButton(
+                        unreadCount: unreadCount,
+                        onTap: onJumpToMessage,
+                        onClose: onClose
+                    )
+                    .padding(.top, tokens.spacingXs)
+                    .transition(
+                        .modifier(
+                            active: ButtonOverlayTransitionModifier(opacity: 0, offset: -10),
+                            identity: ButtonOverlayTransitionModifier(opacity: 1, offset: 0)
+                        )
+                    )
+                }
+
+                Spacer()
+            }
+            .animation(.easeInOut(duration: 0.2), value: isShown)
+        )
+    }
+}
+
 struct JumpToUnreadButton: View {
     @Injected(\.colors) var colors
     @Injected(\.tokens) var tokens
