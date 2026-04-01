@@ -32,17 +32,11 @@ final class AppConfiguration {
         MessageListConfig(
             messageDisplayOptions: MessageDisplayOptions(
                 reactionsPlacement: AppConfiguration.default.reactionsPlacement,
-                reactionsStyle: AppConfiguration.default.reactionsStyle,
-                showOriginalTranslatedButton: true
+                reactionsStyle: AppConfiguration.default.reactionsStyle
             ),
-            dateIndicatorPlacement: .messageList,
-            userBlockingEnabled: true,
-            bouncedMessagesAlertActionsEnabled: true,
             skipEditedMessageLabel: { message in
                 message.extraData["ai_generated"]?.boolValue == true
-            },
-            draftMessagesEnabled: true,
-            downloadFileAttachmentsEnabled: true
+            }
         )
     }
 }
