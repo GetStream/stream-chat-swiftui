@@ -513,6 +513,8 @@ public enum ScrollDirection {
 
 public struct NewMessagesIndicator: View {
     @Injected(\.colors) var colors
+    @Injected(\.tokens) var tokens
+    @Injected(\.fonts) var fonts
 
     @Binding var newMessagesStartId: String?
     var count: Int
@@ -523,15 +525,21 @@ public struct NewMessagesIndicator: View {
     }
 
     public var body: some View {
-        HStack {
-            Text("\(L10n.MessageList.newMessages(count))")
-                .foregroundColor(Color(colors.textLowEmphasis))
-                .font(.headline)
-                .padding(.all, 8)
-        }
-        .frame(maxWidth: .infinity)
-        .background(Color(colors.background8))
-        .padding(.top, 4)
+        Text(L10n.MessageList.newMessages(count))
+            .font(fonts.footnote.weight(.semibold))
+            .foregroundColor(Color(colors.chatTextSystem))
+            .frame(maxWidth: .infinity)
+            .padding(.horizontal, tokens.spacingMd)
+            .padding(.vertical, tokens.spacingXs)
+            .background(Color(colors.backgroundCoreSurfaceSubtle))
+            .overlay(
+                VStack(spacing: 0) {
+                    Color(colors.borderCoreSubtle).frame(height: 1)
+                    Spacer()
+                    Color(colors.borderCoreSubtle).frame(height: 1)
+                }
+            )
+            .padding(.vertical, tokens.spacingXs)
     }
 }
 
