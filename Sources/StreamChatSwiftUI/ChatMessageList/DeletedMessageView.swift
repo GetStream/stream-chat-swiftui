@@ -7,59 +7,33 @@ import SwiftUI
 
 /// View displayed when a message is deleted.
 public struct DeletedMessageView: View {
-    @Injected(\.chatClient) private var chatClient
-    @Injected(\.images) private var images
     @Injected(\.fonts) private var fonts
     @Injected(\.colors) private var colors
-    @Injected(\.utils) private var utils
-
-    private var dateFormatter: DateFormatter {
-        utils.dateFormatter
-    }
-    
-    private var deletedMessageVisibility: ChatClientConfig.DeletedMessageVisibility {
-        chatClient.config.deletedMessagesVisibility
-    }
+    @Injected(\.tokens) private var tokens
 
     var message: ChatMessage
     var isFirst: Bool
 
     public var body: some View {
-        VStack(
-            alignment: message.isRightAligned ? .trailing : .leading,
-            spacing: 4
-        ) {
+        HStack(spacing: tokens.spacingXxs) {
+            Image(systemName: "nosign")
+                .resizable()
+                .scaledToFit()
+                .frame(width: tokens.iconSizeSm, height: tokens.iconSizeSm)
             Text(L10n.Message.deletedMessagePlaceholder)
                 .font(fonts.body)
-                .standardPadding()
-                .foregroundColor(Color(colors.textLowEmphasis))
-                .messageBubble(for: message, isFirst: isFirst)
-                .accessibilityIdentifier("deletedMessageText")
-
-            if message.isSentByCurrentUser {
-                HStack {
-                    if message.isRightAligned {
-                        Spacer()
-                    }
-
-                    if deletedMessageVisibility == .visibleForCurrentUser {
-                        Image(uiImage: images.onlyVisibleToCurrentUser)
-                            .customizable()
-                            .frame(maxWidth: 12)
-                            .accessibilityIdentifier("onlyVisibleToYouImageView")
-
-                        Text(L10n.Message.onlyVisibleToYou)
-                            .font(fonts.footnote)
-                            .accessibilityIdentifier("onlyVisibleToYouLabel")
-                    }
-
-                    Text(dateFormatter.string(from: message.createdAt))
-                        .font(fonts.footnote)
-                }
-                .foregroundColor(Color(colors.textLowEmphasis))
-            }
         }
+        .foregroundColor(messageTextColor)
+        .standardPadding()
+        .messageBubble(for: message, isFirst: isFirst)
+        .accessibilityIdentifier("deletedMessageText")
         .accessibilityElement(children: .contain)
         .accessibilityIdentifier("DeletedMessageView")
+    }
+
+    private var messageTextColor: Color {
+        message.isSentByCurrentUser
+            ? Color(colors.chatTextOutgoing)
+            : Color(colors.chatTextIncoming)
     }
 }
