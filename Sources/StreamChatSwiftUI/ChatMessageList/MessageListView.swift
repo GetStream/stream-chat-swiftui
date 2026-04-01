@@ -382,18 +382,23 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
         })
         .overlay(
             (channel.unreadCount.messages > 0 && !unreadMessagesBannerShown && !isMessageThread && !unreadButtonDismissed) ?
-                factory.makeJumpToUnreadButton(
-                    options: JumpToUnreadButtonOptions(
-                        channel: channel,
-                        onJumpToMessage: {
-                            _ = onJumpToMessage?(firstUnreadMessageId ?? .unknownMessageId)
-                        },
-                        onClose: {
-                            chatClient.channelController(for: channel.cid).markRead()
-                            unreadButtonDismissed = true
-                        }
+                VStack {
+                    factory.makeJumpToUnreadButton(
+                        options: JumpToUnreadButtonOptions(
+                            channel: channel,
+                            onJumpToMessage: {
+                                _ = onJumpToMessage?(firstUnreadMessageId ?? .unknownMessageId)
+                            },
+                            onClose: {
+                                chatClient.channelController(for: channel.cid).markRead()
+                                unreadButtonDismissed = true
+                            }
+                        )
                     )
-                ) : nil
+                    .padding(.top, tokens.spacingXs)
+
+                    Spacer()
+                } : nil
         )
         .modifier(factory.styles.makeMessageListContainerModifier(options: MessageListContainerModifierOptions()))
         .onDisappear {
