@@ -19,6 +19,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Fix quoted image preview not updating when switching to a different quoted message [#1334](https://github.com/GetStream/stream-chat-swiftui/pull/1334)
 - Use fixed width for attachment previews [#1335](https://github.com/GetStream/stream-chat-swiftui/pull/1335)
 - Fix showing bubble for quoted message and file or image attachment [#1335](https://github.com/GetStream/stream-chat-swiftui/pull/1335)
+- Fix scaling of giphy attachments [#1335](https://github.com/GetStream/stream-chat-swiftui/pull/1335)
 
 ### 🔄 Changed
 - Renamed the `onMessageSent` callback to `willSendMessage` in `MessageComposerViewModel`, `ViewModelsFactory`, and `ComposerViewFactoryOptions` [#1327](https://github.com/GetStream/stream-chat-swiftui/pull/1327)
