@@ -880,7 +880,7 @@ extension ViewFactory {
     public func makeNewMessagesIndicatorView(
         options: NewMessagesIndicatorViewOptions
     ) -> some View {
-        NewMessagesIndicator(
+        NewMessagesDivider(
             newMessagesStartId: options.newMessagesStartId,
             count: options.count
         )

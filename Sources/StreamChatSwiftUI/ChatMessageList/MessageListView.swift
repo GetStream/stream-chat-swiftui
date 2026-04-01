@@ -254,10 +254,8 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
                                             : nil
 
                                         showThreadRepliesSeparator ?
-                                            MessageListDivider(
-                                                title: L10n.Message.Threads.count(
-                                                    messages.last?.replyCount ?? (messages.count - 1)
-                                                )
+                                            ThreadRepliesDivider(
+                                                replyCount: messages.last?.replyCount ?? (messages.count - 1)
                                             )
                                             .frame(maxHeight: newMessagesSeparatorSize)
                                             : nil
@@ -546,8 +544,8 @@ public enum ScrollDirection {
 }
 
 /// A full-width divider with centered text, a subtle background, and
-/// hairline top/bottom borders. Used by ``NewMessagesIndicator`` and
-/// the thread-replies separator.
+/// hairline top/bottom borders. Used by ``NewMessagesDivider`` and
+/// ``ThreadRepliesDivider``.
 public struct MessageListDivider: View {
     @Injected(\.colors) var colors
     @Injected(\.tokens) var tokens
@@ -577,7 +575,8 @@ public struct MessageListDivider: View {
     }
 }
 
-public struct NewMessagesIndicator: View {
+/// Divider shown between read and unread messages in the message list.
+public struct NewMessagesDivider: View {
     @Injected(\.tokens) var tokens
 
     @Binding var newMessagesStartId: String?
@@ -591,6 +590,22 @@ public struct NewMessagesIndicator: View {
     public var body: some View {
         MessageListDivider(title: L10n.MessageList.newMessages(count))
             .padding(.vertical, tokens.spacingXs)
+    }
+}
+
+@available(*, deprecated, renamed: "NewMessagesDivider")
+public typealias NewMessagesIndicator = NewMessagesDivider
+
+/// Divider shown between the parent message and replies in a thread.
+public struct ThreadRepliesDivider: View {
+    var replyCount: Int
+
+    public init(replyCount: Int) {
+        self.replyCount = replyCount
+    }
+
+    public var body: some View {
+        MessageListDivider(title: L10n.Message.Threads.count(replyCount))
     }
 }
 

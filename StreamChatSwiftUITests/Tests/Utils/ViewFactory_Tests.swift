@@ -784,7 +784,7 @@ import XCTest
         )
         
         // Then
-        XCTAssert(view is NewMessagesIndicator)
+        XCTAssert(view is NewMessagesDivider)
     }
     
     func test_viewFactory_makeComposerTextInputView() {

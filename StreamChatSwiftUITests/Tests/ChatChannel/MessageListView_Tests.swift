@@ -264,7 +264,7 @@ import XCTest
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
 
-    // MARK: - MessageListDivider
+    // MARK: - Dividers
 
     func test_messageListView_threadRepliesSeparator() {
         // Given
