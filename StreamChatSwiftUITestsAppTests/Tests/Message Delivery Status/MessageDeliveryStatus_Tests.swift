@@ -167,7 +167,7 @@ final class MessageDeliveryStatus_Tests: StreamTestCase {
         }
     }
 
-    func test_deliveryStatusHidden_whenMessageIsDeleted() throws {
+    func test_deliveryStatusShown_whenMessageIsDeleted() throws {
         linkToScenario(withId: 404)
 
         GIVEN("user opens the channel") {
@@ -184,8 +184,8 @@ final class MessageDeliveryStatus_Tests: StreamTestCase {
         WHEN("user removes the message") {
             userRobot.deleteMessage()
         }
-        THEN("delivery status is hidden") {
-            userRobot.assertMessageDeliveryStatus(nil)
+        THEN("delivery status is still shown") {
+            userRobot.assertMessageDeliveryStatus(.sent)
         }
     }
 }
@@ -415,7 +415,7 @@ extension MessageDeliveryStatus_Tests {
         }
     }
 
-    func test_deliveryStatusHidden_whenThreadReplyIsDeleted() throws {
+    func test_deliveryStatusShown_whenThreadReplyIsDeleted() throws {
         linkToScenario(withId: 414)
 
         GIVEN("user opens the channel") {
@@ -435,8 +435,8 @@ extension MessageDeliveryStatus_Tests {
         WHEN("user removes the message") {
             userRobot.deleteMessage()
         }
-        THEN("delivery status is hidden") {
-            userRobot.assertMessageDeliveryStatus(nil)
+        THEN("delivery status is still shown") {
+            userRobot.assertMessageDeliveryStatus(.sent)
         }
     }
 

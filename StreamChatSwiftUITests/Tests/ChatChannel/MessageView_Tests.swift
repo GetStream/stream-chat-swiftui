@@ -11,6 +11,19 @@ import SwiftUI
 import XCTest
 
 @MainActor class MessageView_Tests: StreamChatTestCase {
+    override func setUp() {
+        super.setUp()
+        streamChat = StreamChat(
+            chatClient: chatClient,
+            utils: Utils(
+                videoPreviewLoader: VideoPreviewLoader_Mock(),
+                imageLoader: ImageLoader_Mock(),
+                messageListConfig: .init(markdownSupportEnabled: true),
+                composerConfig: .init(isVoiceRecordingEnabled: true)
+            )
+        )
+    }
+    
     func test_messageViewText_snapshot() {
         // Given
         let textMessage = ChatMessage.mock(
@@ -1177,7 +1190,10 @@ import XCTest
                 NSAttributedString.Key.foregroundColor: UIColor.red
             ]
         }
-        let config = MessageListConfig(messageDisplayOptions: displayOptions)
+        let config = MessageListConfig(
+            messageDisplayOptions: displayOptions,
+            markdownSupportEnabled: true
+        )
         let size = messageViewSize()
         let view = messageView(
             size: size,

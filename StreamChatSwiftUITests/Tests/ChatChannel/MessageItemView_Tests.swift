@@ -154,6 +154,24 @@ import XCTest
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
 
+    func test_messageContainerViewDeleted_snapshot() {
+        // Given
+        let message = ChatMessage.mock(
+            id: .unique,
+            cid: .unique,
+            text: "This was the original message",
+            author: .mock(id: Self.currentUserId, name: "Martin"),
+            deletedAt: Date(),
+            isSentByCurrentUser: true
+        )
+
+        // When
+        let view = testMessageViewContainer(message: message)
+
+        // Then
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
+    }
+
     func test_messageContainerViewPinned_snapshot() {
         // Given
         let message = ChatMessage.mock(
