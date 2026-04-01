@@ -6,7 +6,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ### ✅ Added
 - Show deleted messages in channel list preview [#1338](https://github.com/GetStream/stream-chat-swiftui/pull/1338)
 - Update deleted message design in the message list [#1349](https://github.com/GetStream/stream-chat-swiftui/pull/1349)
-- Redesign `NewMessagesIndicator` to match Figma spec [#1354](https://github.com/GetStream/stream-chat-swiftui/pull/1354)
+- Redesign new messages divider in the message list [#1354](https://github.com/GetStream/stream-chat-swiftui/pull/1354)
 - Add thread replies separator and extract `MessageListDivider` [#1354](https://github.com/GetStream/stream-chat-swiftui/pull/1354)
 
 ### 🐞 Fixed
