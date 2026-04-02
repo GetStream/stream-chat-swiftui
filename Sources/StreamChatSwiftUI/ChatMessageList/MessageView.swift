@@ -52,7 +52,14 @@ public struct MessageView<Factory: ViewFactory>: View {
                     )
                 )
             } else if let poll = message.poll {
-                factory.makePollView(options: PollViewOptions(message: message, poll: poll, isFirst: isFirst))
+                factory.makePollView(
+                    options: PollViewOptions(
+                        message: message,
+                        poll: poll,
+                        isFirst: isFirst,
+                        availableWidth: contentWidth
+                    )
+                )
             } else if messageTypeResolver.hasGiphyAttachment(message: message) {
                 factory.makeGiphyAttachmentView(
                     options: GiphyAttachmentViewOptions(

@@ -40,6 +40,7 @@ import SwiftUI
         downloadFileAttachmentsEnabled: Bool = true,
         hidesCommandsOverlayOnMessageListTap: Bool = true,
         hidesAttachmentsPickersOnMessageListTap: Bool = true,
+        attachmentPreviewWidth: CGFloat = 256,
         navigationBarDisplayMode: NavigationBarItem.TitleDisplayMode = .inline,
         supportedMessageActions: @escaping @MainActor (SupportedMessageActionsOptions) -> [MessageAction] = MessageAction.defaultActions(for:)
     ) {
@@ -74,6 +75,7 @@ import SwiftUI
         self.downloadFileAttachmentsEnabled = downloadFileAttachmentsEnabled
         self.hidesCommandsOverlayOnMessageListTap = hidesCommandsOverlayOnMessageListTap
         self.hidesAttachmentsPickersOnMessageListTap = hidesAttachmentsPickersOnMessageListTap
+        self.attachmentPreviewWidth = attachmentPreviewWidth
         self.navigationBarDisplayMode = navigationBarDisplayMode
         self.supportedMessageActions = supportedMessageActions
     }
@@ -112,6 +114,9 @@ import SwiftUI
     ///
     /// It is enabled by default.
     public let hidesAttachmentsPickersOnMessageListTap: Bool
+
+    /// The width used for attachment previews in the message list.
+    public let attachmentPreviewWidth: CGFloat
 
     /// A boolean to enable the alert actions for bounced messages.
     ///
@@ -280,7 +285,7 @@ public final class MessageDisplayOptions {
     public static var defaultSpacerWidth: @MainActor (CGFloat) -> (CGFloat) {
         { availableWidth in
             if isIPad && availableWidth > 500 {
-                return 2 * availableWidth / 3
+                return (availableWidth * 0.4).rounded()
             } else {
                 @Injected(\.utils) var utils
                 @Injected(\.tokens) var tokens

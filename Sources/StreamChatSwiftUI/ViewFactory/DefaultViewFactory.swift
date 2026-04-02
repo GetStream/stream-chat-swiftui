@@ -290,10 +290,11 @@ extension ViewFactory {
     public func makeMessageAttachmentsView(
         options: MessageAttachmentsViewOptions
     ) -> some View {
-        MessageAttachmentsView(
+        @Injected(\.utils) var utils
+        return MessageAttachmentsView(
             factory: self,
             message: options.message,
-            width: options.availableWidth,
+            width: min(options.availableWidth, utils.messageListConfig.attachmentPreviewWidth),
             isFirst: options.isFirst,
             scrolledId: options.scrolledId
         )
@@ -313,10 +314,11 @@ extension ViewFactory {
     public func makeGiphyAttachmentView(
         options: GiphyAttachmentViewOptions
     ) -> some View {
-        GiphyAttachmentView(
+        @Injected(\.utils) var utils
+        return GiphyAttachmentView(
             factory: self,
             message: options.message,
-            width: options.availableWidth,
+            width: min(options.availableWidth, utils.messageListConfig.attachmentPreviewWidth),
             isFirst: options.isFirst,
             scrolledId: options.scrolledId
         )
@@ -325,10 +327,11 @@ extension ViewFactory {
     public func makeLinkAttachmentView(
         options: LinkAttachmentViewOptions
     ) -> some View {
-        LinkAttachmentContainer(
+        @Injected(\.utils) var utils
+        return LinkAttachmentContainer(
             factory: self,
             message: options.message,
-            width: options.availableWidth,
+            width: min(options.availableWidth, utils.messageListConfig.attachmentPreviewWidth),
             isFirst: options.isFirst,
             scrolledId: options.scrolledId
         )
@@ -647,10 +650,11 @@ extension ViewFactory {
     public func makeVoiceRecordingView(
         options: VoiceRecordingViewOptions
     ) -> some View {
-        VoiceRecordingContainerView(
+        @Injected(\.utils) var utils
+        return VoiceRecordingContainerView(
             factory: self,
             message: options.message,
-            width: options.availableWidth,
+            width: min(options.availableWidth, utils.messageListConfig.attachmentPreviewWidth),
             isFirst: options.isFirst,
             scrolledId: options.scrolledId
         )
@@ -906,7 +910,14 @@ extension ViewFactory {
     }
     
     public func makePollView(options: PollViewOptions) -> some View {
-        PollAttachmentView(factory: self, message: options.message, poll: options.poll, isFirst: options.isFirst)
+        @Injected(\.utils) var utils
+        return PollAttachmentView(
+            factory: self,
+            message: options.message,
+            poll: options.poll,
+            isFirst: options.isFirst,
+            width: min(options.availableWidth, utils.messageListConfig.attachmentPreviewWidth)
+        )
     }
 
     // MARK: Threads
@@ -981,7 +992,11 @@ extension ViewFactory {
     public func makeAttachmentTextView(
         options: AttachmentTextViewOptions
     ) -> some View {
-        AttachmentTextView(factory: self, message: options.message)
+        AttachmentTextView(
+            factory: self,
+            message: options.message,
+            availableWidth: options.availableWidth
+        )
     }
 
     public func makeStreamTextView(

@@ -940,7 +940,8 @@ import XCTest
             options: PollViewOptions(
                 message: .mock(),
                 poll: Poll.mock(),
-                isFirst: true
+                isFirst: true,
+                availableWidth: 256
             )
         )
         
@@ -1048,7 +1049,7 @@ import XCTest
         let viewFactory = DefaultViewFactory.shared
 
         // When
-        let view = viewFactory.makeAttachmentTextView(options: .init(message: message))
+        let view = viewFactory.makeAttachmentTextView(options: .init(message: message, availableWidth: 300))
 
         // Then
         XCTAssert(view is AttachmentTextView<DefaultViewFactory>)

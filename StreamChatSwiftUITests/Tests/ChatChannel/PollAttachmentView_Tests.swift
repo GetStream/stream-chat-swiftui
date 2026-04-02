@@ -23,7 +23,8 @@ import XCTest
             factory: DefaultViewFactory.shared,
             message: message,
             poll: poll,
-            isFirst: true
+            isFirst: true,
+            width: defaultScreenSize.width
         )
         .frame(width: defaultScreenSize.width, height: 420)
 
@@ -46,7 +47,8 @@ import XCTest
             factory: DefaultViewFactory.shared,
             message: message,
             poll: poll,
-            isFirst: true
+            isFirst: true,
+            width: defaultScreenSize.width
         )
         .frame(width: defaultScreenSize.width, height: 240)
 
@@ -74,7 +76,8 @@ import XCTest
             factory: DefaultViewFactory.shared,
             message: message,
             poll: poll,
-            isFirst: true
+            isFirst: true,
+            width: defaultScreenSize.width
         )
         .frame(width: defaultScreenSize.width, height: 180)
 
@@ -103,7 +106,8 @@ import XCTest
             factory: DefaultViewFactory.shared,
             message: message,
             poll: poll,
-            isFirst: true
+            isFirst: true,
+            width: defaultScreenSize.width
         )
         .frame(width: defaultScreenSize.width, height: 220)
 
@@ -132,7 +136,8 @@ import XCTest
             factory: DefaultViewFactory.shared,
             message: message,
             poll: poll,
-            isFirst: true
+            isFirst: true,
+            width: defaultScreenSize.width
         )
         .frame(width: defaultScreenSize.width, height: 170)
 
