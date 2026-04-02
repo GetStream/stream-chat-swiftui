@@ -434,8 +434,10 @@ public final class ThreadRepliesDividerViewOptions: Sendable {
     }
 }
 
-/// Options for creating the jump to unread button.
+/// Options for creating the jump to unread button overlay.
 public final class JumpToUnreadButtonOptions: Sendable {
+    /// Whether the button should be shown.
+    public let isShown: Bool
     /// The channel to jump to unread messages in.
     public let channel: ChatChannel
     /// Callback when the jump to message button is tapped.
@@ -444,10 +446,12 @@ public final class JumpToUnreadButtonOptions: Sendable {
     public let onClose: @MainActor () -> Void
     
     public init(
+        isShown: Bool = true,
         channel: ChatChannel,
         onJumpToMessage: @escaping @MainActor () -> Void,
         onClose: @escaping @MainActor () -> Void
     ) {
+        self.isShown = isShown
         self.channel = channel
         self.onJumpToMessage = onJumpToMessage
         self.onClose = onClose

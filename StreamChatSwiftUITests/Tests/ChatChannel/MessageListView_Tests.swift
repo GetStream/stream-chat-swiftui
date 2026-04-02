@@ -147,6 +147,33 @@ import XCTest
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
 
+    func test_jumpToUnreadButton_snapshotSingleUnread() {
+        // Given
+        let button = JumpToUnreadButton(unreadCount: 1, onTap: {}, onClose: {})
+            .padding()
+
+        // Then
+        AssertSnapshot(button, size: CGSize(width: 250, height: 60))
+    }
+
+    func test_jumpToUnreadButton_snapshotMultipleUnread() {
+        // Given
+        let button = JumpToUnreadButton(unreadCount: 17, onTap: {}, onClose: {})
+            .padding()
+
+        // Then
+        AssertSnapshot(button, size: CGSize(width: 250, height: 60))
+    }
+
+    func test_jumpToUnreadButton_snapshotHighUnreadCount() {
+        // Given
+        let button = JumpToUnreadButton(unreadCount: 99, onTap: {}, onClose: {})
+            .padding()
+
+        // Then
+        AssertSnapshot(button, size: CGSize(width: 250, height: 60))
+    }
+
     // MARK: - Init with ChatChannelViewModel snapshot tests
 
     func test_messageListView_viewModelInit_withReactions() {

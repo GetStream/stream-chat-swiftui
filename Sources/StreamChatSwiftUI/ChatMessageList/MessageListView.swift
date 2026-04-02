@@ -370,8 +370,8 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
                 )
                 .transition(
                     .modifier(
-                        active: ScrollButtonTransitionModifier(opacity: 0, offset: 10),
-                        identity: ScrollButtonTransitionModifier(opacity: 1, offset: 0)
+                        active: ButtonOverlayTransitionModifier(opacity: 0, offset: 10),
+                        identity: ButtonOverlayTransitionModifier(opacity: 1, offset: 0)
                     )
                 )
                 .offset(y: -bottomInset)
@@ -392,20 +392,22 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
                 pendingKeyboardUpdate = nil
             }
         })
-        .overlay(
-            (channel.unreadCount.messages > 0 && !unreadMessagesBannerShown && !isMessageThread && !unreadButtonDismissed) ?
-                factory.makeJumpToUnreadButton(
-                    options: JumpToUnreadButtonOptions(
-                        channel: channel,
-                        onJumpToMessage: {
-                            _ = onJumpToMessage?(firstUnreadMessageId ?? .unknownMessageId)
-                        },
-                        onClose: {
+        .modifier(
+            factory.makeJumpToUnreadButtonOverlay(
+                options: JumpToUnreadButtonOptions(
+                    isShown: shouldShowJumpToUnreadButton,
+                    channel: channel,
+                    onJumpToMessage: {
+                        _ = onJumpToMessage?(firstUnreadMessageId ?? .unknownMessageId)
+                    },
+                    onClose: {
+                        withAnimation {
                             chatClient.channelController(for: channel.cid).markRead()
                             unreadButtonDismissed = true
                         }
-                    )
-                ) : nil
+                    }
+                )
+            )
         )
         .modifier(factory.styles.makeMessageListContainerModifier(options: MessageListContainerModifierOptions()))
         .onDisappear {
@@ -413,6 +415,13 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
         }
         .accessibilityElement(children: .contain)
         .accessibilityIdentifier("MessageListView")
+    }
+
+    private var shouldShowJumpToUnreadButton: Bool {
+        channel.unreadCount.messages > 0
+            && !unreadMessagesBannerShown
+            && !isMessageThread
+            && !unreadButtonDismissed
     }
 
     private func additionalTopPadding(
@@ -638,7 +647,7 @@ public struct ScrollToBottomButton<Factory: ViewFactory>: View {
     }
 }
 
-struct ScrollButtonTransitionModifier: ViewModifier {
+struct ButtonOverlayTransitionModifier: ViewModifier {
     let opacity: Double
     let offset: CGFloat
 

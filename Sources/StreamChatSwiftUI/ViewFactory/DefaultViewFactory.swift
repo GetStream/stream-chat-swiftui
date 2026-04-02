@@ -893,20 +893,16 @@ extension ViewFactory {
             replyCount: options.replyCount
         )
     }
-
-    public func makeJumpToUnreadButton(
+    
+    public func makeJumpToUnreadButtonOverlay(
         options: JumpToUnreadButtonOptions
-    ) -> some View {
-        VStack {
-            JumpToUnreadButton(
-                unreadCount: options.channel.unreadCount.messages,
-                onTap: options.onJumpToMessage,
-                onClose: options.onClose
-            )
-            .padding(.all, 8)
-
-            Spacer()
-        }
+    ) -> some ViewModifier {
+        JumpToUnreadButtonOverlayModifier(
+            isShown: options.isShown,
+            unreadCount: options.channel.unreadCount.messages,
+            onJumpToMessage: options.onJumpToMessage,
+            onClose: options.onClose
+        )
     }
     
     public func makePollView(options: PollViewOptions) -> some View {
