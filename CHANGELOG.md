@@ -11,6 +11,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Redesign the thread replies divider in the message replies list [#1354](https://github.com/GetStream/stream-chat-swiftui/pull/1354)
 
 ### 🐞 Fixed
+- Fix tapping a non-first media attachment always opening the first item on initial tap [#1359](https://github.com/GetStream/stream-chat-swiftui/pull/1359)
 - Pinned message label now shows "Pinned by you" when the current user pinned the message [#1329](https://github.com/GetStream/stream-chat-swiftui/pull/1329)
 - Fix single media attachment without sharp tail corner when no caption [#1330](https://github.com/GetStream/stream-chat-swiftui/pull/1330)
 - Fix editing a voice message removing the voice recording attachment [#1327](https://github.com/GetStream/stream-chat-swiftui/pull/1327)
