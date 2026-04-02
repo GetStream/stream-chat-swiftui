@@ -84,7 +84,7 @@ import XCTest
 
         // When
         adjustAppearance { appearance in
-            appearance.colorPalette.text = .red
+            appearance.colorPalette.textPrimary = .red
             appearance.colorPalette.textSecondary = .blue
         }
         let size = CGSize(width: 300, height: 100)

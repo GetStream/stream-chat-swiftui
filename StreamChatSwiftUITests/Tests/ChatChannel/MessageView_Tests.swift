@@ -553,11 +553,10 @@ import XCTest
         
         // When
         adjustAppearance { appearance in
-            appearance.colorPalette.messageCurrentUserBackground = [.orange]
-            appearance.colorPalette.background8 = .yellow
-            appearance.colorPalette.voiceMessageControlBackground = .cyan
-            appearance.colorPalette.messageCurrentUserTextColor = .blue
-            appearance.colorPalette.textLowEmphasis = .red
+            appearance.colorPalette.chatBackgroundOutgoing = .orange
+            appearance.colorPalette.backgroundCoreSurfaceStrong = .yellow
+            appearance.colorPalette.chatTextOutgoing = .blue
+            appearance.colorPalette.textTertiary = .red
             appearance.images.playFill = UIImage(systemName: "star")!
             appearance.images.fileIcons[.aac] = UIImage(systemName: "scribble")!
         }
@@ -689,9 +688,9 @@ import XCTest
     func test_linkAttachmentView_customColors_snapshot() {
         // Given
         let colorPalette = Appearance.ColorPalette()
-        colorPalette.messageLinkAttachmentAuthorColor = .orange
-        colorPalette.messageLinkAttachmentTitleColor = .blue
-        colorPalette.messageLinkAttachmentTextColor = .red
+        colorPalette.textPrimary = .blue
+        colorPalette.chatTextIncoming = .orange
+        colorPalette.backgroundCoreElevation1 = .cyan
         var appearance = Appearance()
         appearance.colorPalette = colorPalette
         streamChat = StreamChat(
@@ -712,7 +711,8 @@ import XCTest
                 previewURL: .localYodaImage
             ),
             width: 200,
-            isFirst: true
+            isFirst: true,
+            isRightAligned: false
         )
         .frame(width: 200, height: 140)
         

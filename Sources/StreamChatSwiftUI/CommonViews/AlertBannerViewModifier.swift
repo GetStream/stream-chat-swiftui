@@ -43,10 +43,10 @@ private struct AlertBannerViewModifier: ViewModifier {
                 if isPresented {
                     Text(title)
                         .font(.body)
-                        .foregroundColor(Color(colors.staticColorText))
+                        .foregroundColor(Color(colors.backgroundCoreElevation0))
                         .padding(.init(top: 4, leading: 16, bottom: 4, trailing: 16))
                         .frame(maxWidth: .infinity)
-                        .background(Color(colors.textLowEmphasis))
+                        .background(Color(colors.textTertiary))
                         .transition(.move(edge: .top))
                 }
             }

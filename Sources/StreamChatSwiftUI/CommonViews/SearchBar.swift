@@ -54,7 +54,7 @@ struct SearchBar: View, KeyboardReadable {
             .clipShape(RoundedRectangle(cornerRadius: tokens.radiusMax, style: .continuous))
             .overlay(
                 RoundedRectangle(cornerRadius: tokens.radiusMax, style: .continuous)
-                    .stroke(Color(colors.composerInputHighlightedBorder), lineWidth: 1)
+                    .stroke(Color(colors.borderCoreDefault), lineWidth: 1)
             )
             .transition(.identity)
             .animation(.easeInOut, value: isEditing)
@@ -77,7 +77,7 @@ struct SearchBar: View, KeyboardReadable {
         .padding(.top, tokens.spacingMd)
         .padding(.bottom, tokens.spacingXs)
         .padding(.horizontal, tokens.spacingMd)
-        .background(Color(colors.backgroundElevation0))
+        .background(Color(colors.backgroundCoreElevation0))
         .onReceive(keyboardWillChangePublisher) { shown in
             if shown {
                 isEditing = true

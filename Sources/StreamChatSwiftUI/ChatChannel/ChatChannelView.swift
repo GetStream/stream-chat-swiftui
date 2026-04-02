@@ -210,7 +210,7 @@ public struct ChatChannelView<Factory: ViewFactory>: View, KeyboardReadable {
             messageDisplayInfo = nil
         }
         .background(
-            Color(factory.styles.composerPlacement == .docked ? colors.composerInputBackground : .clear)
+            Color(factory.styles.composerPlacement == .docked ? colors.backgroundCoreElevation1 : .clear)
                 .background(
                     TabBarAccessor { _ in
                         tabBarAvailable = utils.messageListConfig.handleTabBarVisibility

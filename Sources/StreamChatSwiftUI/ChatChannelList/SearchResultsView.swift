@@ -39,7 +39,7 @@ public struct SearchResultsView<Factory: ViewFactory>: View {
         VStack(spacing: 0) {
             HStack {
                 Text(L10n.Message.Search.numberOfResults(searchResults.count))
-                    .foregroundColor(Color(colors.textLowEmphasis))
+                    .foregroundColor(Color(colors.textTertiary))
                     .standardPadding()
                 Spacer()
             }

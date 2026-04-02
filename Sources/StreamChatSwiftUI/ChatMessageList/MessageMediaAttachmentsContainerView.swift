@@ -227,7 +227,7 @@ public struct MessageMediaAttachmentsContainerView<Factory: ViewFactory>: View {
                     .clipShape(RoundedRectangle(cornerRadius: cornerRadius, style: .continuous))
                     .allowsHitTesting(false)
                 Text("+\(remainingCount)")
-                    .foregroundColor(Color(colors.staticColorText))
+                    .foregroundColor(Color(colors.backgroundCoreElevation0))
                     .font(fonts.title)
                     .allowsHitTesting(false)
             }

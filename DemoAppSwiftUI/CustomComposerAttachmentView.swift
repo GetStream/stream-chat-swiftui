@@ -157,7 +157,7 @@ struct CustomAttachmentTypePickerView: View {
         }
         .padding(.horizontal, 16)
         .frame(height: 56)
-        .background(Color(colors.background1))
+        .background(Color(colors.backgroundCoreSurfaceSubtle))
     }
 }
 
@@ -272,15 +272,15 @@ struct CustomContactAttachmentPreview: View {
             HStack {
                 Image(systemName: "person.crop.circle")
                     .renderingMode(.template)
-                    .foregroundColor(Color(colors.textLowEmphasis))
+                    .foregroundColor(Color(colors.textTertiary))
 
                 VStack(alignment: .leading) {
                     Text(payload.name)
                         .font(fonts.bodyBold)
-                        .foregroundColor(Color(colors.text))
+                        .foregroundColor(Color(colors.textPrimary))
                     Text(payload.phoneNumber)
                         .font(fonts.footnote)
-                        .foregroundColor(Color(colors.textLowEmphasis))
+                        .foregroundColor(Color(colors.textTertiary))
                 }
 
                 if hasSpacing {
@@ -290,7 +290,7 @@ struct CustomContactAttachmentPreview: View {
                 if isAttachmentSelected {
                     Image(systemName: "checkmark")
                         .renderingMode(.template)
-                        .foregroundColor(Color(colors.textLowEmphasis))
+                        .foregroundColor(Color(colors.textTertiary))
                 }
             }
         }

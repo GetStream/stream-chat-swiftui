@@ -51,7 +51,7 @@ public struct AttachmentCommandsPickerView: View {
             }
             .padding(.vertical, tokens.spacingXs)
         }
-        .background(Color(colors.backgroundElevation1))
+        .background(Color(colors.backgroundCoreElevation1))
         .accessibilityElement(children: .contain)
         .accessibilityIdentifier("AttachmentCommandsPickerView")
     }
@@ -59,7 +59,7 @@ public struct AttachmentCommandsPickerView: View {
     private var headerView: some View {
         Text(L10n.Composer.Suggestions.Commands.header)
             .font(fonts.bodyBold)
-            .foregroundColor(Color(colors.text))
+            .foregroundColor(Color(colors.textPrimary))
             .padding(.horizontal, tokens.spacingSm)
             .accessibilityIdentifier("AttachmentCommandsHeader")
     }
@@ -78,17 +78,17 @@ private struct AttachmentCommandRow: View {
                 .resizable()
                 .scaledToFit()
                 .frame(width: tokens.iconSizeMd, height: tokens.iconSizeMd)
-                .foregroundColor(Color(colors.textLowEmphasis))
+                .foregroundColor(Color(colors.textTertiary))
 
             Text(displayInfo.displayName)
                 .font(fonts.bodyBold)
-                .foregroundColor(Color(colors.text))
+                .foregroundColor(Color(colors.textPrimary))
                 .frame(width: 80, alignment: .leading)
                 .lineLimit(1)
 
             Text(displayInfo.format)
                 .font(fonts.body)
-                .foregroundColor(Color(colors.textLowEmphasis))
+                .foregroundColor(Color(colors.textTertiary))
                 .lineLimit(1)
 
             Spacer()

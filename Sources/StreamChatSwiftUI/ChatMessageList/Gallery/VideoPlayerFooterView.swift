@@ -19,6 +19,6 @@ struct VideoPlayerFooterView: View {
 
             Spacer()
         }
-        .foregroundColor(Color(colors.text))
+        .foregroundColor(Color(colors.textPrimary))
     }
 }

@@ -162,7 +162,7 @@ struct GroupAvatarPickerSheetView: View {
                 )
                 Spacer()
             }
-            .background(Color(colors.backgroundElevation1).edgesIgnoringSafeArea(.all))
+            .background(Color(colors.backgroundCoreElevation1).edgesIgnoringSafeArea(.all))
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .principal) {
@@ -192,10 +192,10 @@ struct GroupAvatarPickerSheetView: View {
             HStack(spacing: tokens.spacingMd) {
                 Image(systemName: iconName)
                     .frame(width: tokens.spacingLg)
-                    .foregroundColor(isDestructive ? Color(colors.alert) : Color(colors.textPrimary))
+                    .foregroundColor(isDestructive ? Color(colors.accentError) : Color(colors.textPrimary))
                 Text(title)
                     .font(fonts.body)
-                    .foregroundColor(isDestructive ? Color(colors.alert) : Color(colors.textPrimary))
+                    .foregroundColor(isDestructive ? Color(colors.accentError) : Color(colors.textPrimary))
                 Spacer()
             }
             .padding(.horizontal, tokens.spacingMd)

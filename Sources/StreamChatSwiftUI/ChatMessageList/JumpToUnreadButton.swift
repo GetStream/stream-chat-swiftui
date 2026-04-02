@@ -74,7 +74,7 @@ struct JumpToUnreadButton: View {
         }
         .fixedSize()
         .foregroundColor(Color(colors.buttonSecondaryText))
-        .background(Color(colors.backgroundElevation1))
+        .background(Color(colors.backgroundCoreElevation1))
         .clipShape(Capsule())
         .overlay(
             Capsule()
