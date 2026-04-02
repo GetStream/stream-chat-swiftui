@@ -118,7 +118,63 @@ import XCTest
         // Then
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
-    
+
+    func test_messageViewPortraitImage_snapshot() {
+        // Given
+        let imageMessage = ChatMessage.mock(
+            id: .unique,
+            cid: .unique,
+            text: "test message",
+            author: .mock(id: .unique),
+            attachments: ChatChannelTestHelpers.imageAttachments(
+                count: 1,
+                originalWidth: 1200,
+                originalHeight: 1600
+            )
+        )
+
+        // When
+        let view = MessageView(
+            factory: DefaultViewFactory.shared,
+            message: imageMessage,
+            contentWidth: defaultScreenSize.width,
+            isFirst: true,
+            scrolledId: .constant(nil)
+        )
+        .applyDefaultSize()
+
+        // Then
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
+    }
+
+    func test_messageViewPortraitImageLongText_snapshot() {
+        // Given
+        let imageMessage = ChatMessage.mock(
+            id: .unique,
+            cid: .unique,
+            text: "This is a much longer message that should span multiple lines when displayed below the portrait image attachment in the message bubble",
+            author: .mock(id: .unique),
+            attachments: ChatChannelTestHelpers.imageAttachments(
+                count: 1,
+                originalWidth: 1200,
+                originalHeight: 1600
+            )
+        )
+
+        // When
+        let view = MessageView(
+            factory: DefaultViewFactory.shared,
+            message: imageMessage,
+            contentWidth: defaultScreenSize.width,
+            isFirst: true,
+            scrolledId: .constant(nil)
+        )
+        .applyDefaultSize()
+
+        // Then
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
+    }
+
     func test_messageViewImage_snapshot2Images() {
         // Given
         let imageMessage = ChatMessage.mock(
@@ -233,6 +289,68 @@ import XCTest
         // Then
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
+
+    func test_messageViewQuoted_singleImageAttachment_snapshot() {
+        // Given
+        let quoted = ChatMessage.mock(
+            id: .unique,
+            cid: .unique,
+            text: "This is a quoted message",
+            author: .mock(id: .unique, name: "John Wick")
+        )
+        let message = ChatMessage.mock(
+            id: .unique,
+            cid: .unique,
+            text: "test message",
+            author: .mock(id: .unique),
+            quotedMessage: quoted,
+            attachments: [ChatChannelTestHelpers.imageAttachments[0]]
+        )
+
+        // When
+        let view = MessageView(
+            factory: DefaultViewFactory.shared,
+            message: message,
+            contentWidth: defaultScreenSize.width,
+            isFirst: true,
+            scrolledId: .constant(nil)
+        )
+        .applyDefaultSize()
+
+        // Then
+        AssertSnapshot(view)
+    }
+
+    func test_messageViewQuoted_singleFileAttachment_snapshot() {
+        // Given
+        let quoted = ChatMessage.mock(
+            id: .unique,
+            cid: .unique,
+            text: "This is a quoted message",
+            author: .mock(id: .unique, name: "John Wick")
+        )
+        let message = ChatMessage.mock(
+            id: .unique,
+            cid: .unique,
+            text: "test message",
+            author: .mock(id: .unique),
+            quotedMessage: quoted,
+            attachments: [ChatChannelTestHelpers.fileAttachments[0]]
+        )
+
+        // When
+        let view = MessageView(
+            factory: DefaultViewFactory.shared,
+            message: message,
+            contentWidth: defaultScreenSize.width,
+            isFirst: true,
+            scrolledId: .constant(nil)
+        )
+        .applyDefaultSize()
+
+        // Then
+        AssertSnapshot(view)
+    }
     
     func test_messageViewGiphy_snapshot() {
         // Given
@@ -317,7 +435,7 @@ import XCTest
         // Then
         AssertSnapshot(view)
     }
-    
+
     func test_messageViewVideo_snapshot() {
         // Given
         let videoMessage = ChatMessage.mock(

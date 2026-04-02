@@ -112,7 +112,10 @@ public struct MessageAttachmentsView<Factory: ViewFactory>: View {
             // Text caption
             if !message.text.isEmpty {
                 factory.makeAttachmentTextView(
-                    options: AttachmentTextViewOptions(message: message)
+                    options: AttachmentTextViewOptions(
+                        message: message,
+                        availableWidth: width
+                    )
                 )
             }
         }
@@ -162,14 +165,19 @@ enum MessageAttachmentsBubbleConfiguration {
     }
 }
 
-private extension ChatMessage {
+extension ChatMessage {
     var hasSingleFileOrVoiceAttachmentWithoutCaption: Bool {
-        guard text.isEmpty else { return false }
+        guard text.isEmpty, quotedMessage == nil else { return false }
         return attachmentCounts.count == 1 && (attachmentCounts[.file] == 1 || attachmentCounts[.voiceRecording] == 1)
     }
     
     var hasSingleMediaAttachmentWithoutCaption: Bool {
-        guard text.isEmpty else { return false }
+        guard text.isEmpty, quotedMessage == nil else { return false }
+        return attachmentCounts.count == 1 && (attachmentCounts[.image] == 1 || attachmentCounts[.video] == 1)
+    }
+    
+    var hasSingleMediaAttachmentWithCaption: Bool {
+        guard !text.isEmpty, quotedMessage == nil else { return false }
         return attachmentCounts.count == 1 && (attachmentCounts[.image] == 1 || attachmentCounts[.video] == 1)
     }
 }

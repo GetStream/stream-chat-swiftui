@@ -31,6 +31,17 @@ public enum MediaGalleryOrientation: Sendable {
             self = .square
         }
     }
+    
+    init(mediaAttachments: [MediaAttachment]) {
+        if let first = mediaAttachments.first {
+            self = MediaGalleryOrientation(
+                width: first.originalWidth,
+                height: first.originalHeight
+            )
+        } else {
+            self = .landscape
+        }
+    }
 }
 
 /// A container view that displays media (image and video) attachments in a
@@ -65,6 +76,8 @@ public struct MessageMediaAttachmentsContainerView<Factory: ViewFactory>: View {
     private var spacing: CGFloat { tokens.spacingXxxs }
     private var cornerRadius: CGFloat { tokens.messageBubbleRadiusAttachment }
     private let maxDisplayedItems = 4
+    private let orientation: MediaGalleryOrientation
+    private let sources: [MediaAttachment]
 
     public init(
         factory: Factory,
@@ -76,6 +89,8 @@ public struct MessageMediaAttachmentsContainerView<Factory: ViewFactory>: View {
         self.message = message
         self.width = width
         self.isFirst = isFirst
+        self.sources = MediaAttachment.galleryOrdered(from: message)
+        self.orientation = MediaGalleryOrientation(mediaAttachments: sources)
     }
 
     public var body: some View {
@@ -291,36 +306,26 @@ public struct MessageMediaAttachmentsContainerView<Factory: ViewFactory>: View {
         )
     }
 
-    private var orientation: MediaGalleryOrientation {
-        if let first = sources.first {
-            return MediaGalleryOrientation(
-                width: first.originalWidth,
-                height: first.originalHeight
-            )
-        }
-        return .landscape
-    }
-
-    private var sources: [MediaAttachment] {
-        MediaAttachment.galleryOrdered(from: message)
-    }
-
     private func containerSize(for itemCount: Int) -> CGSize {
+        Self.containerSize(for: itemCount, orientation: orientation, maxItemWidth: width)
+    }
+    
+    static func containerSize(
+        for itemCount: Int,
+        orientation: MediaGalleryOrientation,
+        maxItemWidth: CGFloat
+    ) -> CGSize {
         guard itemCount > 0 else { return .zero }
-        let maxItemWidth = width
         if itemCount == 1 {
             switch orientation {
             case .landscape:
-                // Width-constrained: 256×192 at max width
                 return CGSize(width: maxItemWidth, height: maxItemWidth * 3.0 / 4.0)
             case .portrait:
-                // Height-constrained: 192×256 at max width
                 return CGSize(width: maxItemWidth * 3.0 / 4.0, height: maxItemWidth)
             case .square:
                 return CGSize(width: maxItemWidth, height: maxItemWidth)
             }
         } else {
-            // Multi-item always uses landscape ratio
             return CGSize(width: maxItemWidth, height: maxItemWidth * 3.0 / 4.0)
         }
     }

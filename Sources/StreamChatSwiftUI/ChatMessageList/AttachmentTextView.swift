@@ -6,35 +6,40 @@ import StreamChat
 import SwiftUI
 
 public struct AttachmentTextView<Factory: ViewFactory>: View {
-    @Injected(\.colors) private var colors
-    @Injected(\.fonts) private var fonts
     @Injected(\.tokens) private var tokens
 
     var factory: Factory
     var message: ChatMessage
-    let injectedBackgroundColor: UIColor?
+    var availableWidth: CGFloat
 
-    public init(factory: Factory = DefaultViewFactory.shared, message: ChatMessage, injectedBackgroundColor: UIColor? = nil) {
+    public init(
+        factory: Factory = DefaultViewFactory.shared,
+        message: ChatMessage,
+        availableWidth: CGFloat
+    ) {
         self.factory = factory
         self.message = message
-        self.injectedBackgroundColor = injectedBackgroundColor
+        self.availableWidth = availableWidth
     }
 
     public var body: some View {
-        HStack {
-            factory.makeStreamTextView(options: .init(message: message))
-                .padding(.horizontal, tokens.spacingXxs)
-                .fixedSize(horizontal: false, vertical: true)
-            Spacer()
-        }
-        .background(Color(backgroundColor))
-        .accessibilityIdentifier("MessageTextView")
+        factory.makeStreamTextView(options: .init(message: message))
+            .padding(.horizontal, tokens.spacingXxs)
+            .fixedSize(horizontal: false, vertical: true)
+            .frame(maxWidth: maxTextWidth, alignment: .leading)
+            .accessibilityIdentifier("MessageTextView")
     }
 
-    private var backgroundColor: UIColor {
-        if let injectedBackgroundColor {
-            return injectedBackgroundColor
-        }
-        return message.isSentByCurrentUser ? colors.chatBackgroundOutgoing : colors.chatBackgroundIncoming
+    /// Limit text width for messages with portrait image attachment.
+    private var maxTextWidth: CGFloat {
+        guard message.hasSingleMediaAttachmentWithCaption else { return availableWidth }
+        let mediaAttachments = MediaAttachment.galleryOrdered(from: message)
+        let orientation = MediaGalleryOrientation(mediaAttachments: mediaAttachments)
+        let size = MessageMediaAttachmentsContainerView<Factory>.containerSize(
+            for: mediaAttachments.count,
+            orientation: orientation,
+            maxItemWidth: availableWidth
+        )
+        return size.width
     }
 }

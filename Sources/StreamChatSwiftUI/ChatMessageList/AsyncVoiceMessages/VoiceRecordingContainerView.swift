@@ -56,6 +56,7 @@ public struct VoiceRecordingContainerView<Factory: ViewFactory>: View {
                 .roundWithBorder(cornerRadius: tokens.messageBubbleRadiusAttachment)
             }
         }
+        .frame(width: width, alignment: message.isRightAligned ? .trailing : .leading)
         .onReceive(handler.$context, perform: { value in
             guard message.voiceRecordingAttachments.count > 1 else { return }
             if value.state == .playing {
