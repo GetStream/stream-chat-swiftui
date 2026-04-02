@@ -877,12 +877,20 @@ extension ViewFactory {
         )
     }
     
-    public func makeNewMessagesIndicatorView(
-        options: NewMessagesIndicatorViewOptions
+    public func makeNewMessagesDividerView(
+        options: NewMessagesDividerViewOptions
     ) -> some View {
-        NewMessagesIndicator(
+        NewMessagesDivider(
             newMessagesStartId: options.newMessagesStartId,
             count: options.count
+        )
+    }
+
+    public func makeThreadRepliesDividerView(
+        options: ThreadRepliesDividerViewOptions
+    ) -> some View {
+        ThreadRepliesDivider(
+            replyCount: options.replyCount
         )
     }
     

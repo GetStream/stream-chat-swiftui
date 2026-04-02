@@ -205,7 +205,7 @@ import XCTest
             .applyDefaultSize()
 
         // Then
-        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
+        AssertSnapshot(view)
     }
 
     func test_messageListView_groupChannel_withReactions() {
@@ -289,6 +289,98 @@ import XCTest
 
         // Then
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
+    }
+
+    // MARK: - Dividers
+
+    func test_messageListView_threadRepliesSeparator() {
+        // Given
+        let channel = ChatChannel.mockDMChannel()
+        let parentId: MessageId = "parent-id"
+        let parentMessage = ChatMessage.mock(
+            id: parentId,
+            cid: channel.cid,
+            text: "Which item has priority?",
+            author: .mock(id: "user1", name: "Wesley"),
+            replyCount: 2
+        )
+        let reply1 = ChatMessage.mock(
+            id: "reply1",
+            cid: channel.cid,
+            text: "I think the first one is the most important.",
+            author: .mock(id: "user2", name: "Emma"),
+            parentMessageId: parentId
+        )
+        let reply2 = ChatMessage.mock(
+            id: "reply2",
+            cid: channel.cid,
+            text: "Agreed, let's prioritize that.",
+            author: .mock(id: "user1", name: "Wesley"),
+            parentMessageId: parentId,
+            isSentByCurrentUser: true
+        )
+        let messages: [ChatMessage] = [reply2, reply1, parentMessage]
+        let view = MessageListView(
+            factory: DefaultViewFactory.shared,
+            channel: channel,
+            messages: messages,
+            messagesGroupingInfo: [:],
+            scrolledId: .constant(nil),
+            showScrollToLatestButton: .constant(false),
+            quotedMessage: .constant(nil),
+            currentDateString: nil,
+            listId: "listId",
+            isMessageThread: true,
+            shouldShowTypingIndicator: false,
+            onMessageAppear: { _, _ in },
+            onScrollToBottom: {},
+            onLongPress: { _ in }
+        )
+        .applyDefaultSize()
+
+        // Then
+        AssertSnapshot(view)
+    }
+
+    func test_messageListView_threadRepliesSeparator_hiddenWhenNotAllLoaded() {
+        // Given
+        let channel = ChatChannel.mockDMChannel()
+        let parentId: MessageId = "parent-id"
+        let parentMessage = ChatMessage.mock(
+            id: parentId,
+            cid: channel.cid,
+            text: "Which item has priority?",
+            author: .mock(id: "user1", name: "Wesley"),
+            replyCount: 5
+        )
+        let reply1 = ChatMessage.mock(
+            id: "reply1",
+            cid: channel.cid,
+            text: "I think the first one is the most important.",
+            author: .mock(id: "user2", name: "Emma"),
+            parentMessageId: parentId
+        )
+        let messages: [ChatMessage] = [reply1, parentMessage]
+        let view = MessageListView(
+            factory: DefaultViewFactory.shared,
+            channel: channel,
+            messages: messages,
+            messagesGroupingInfo: [:],
+            scrolledId: .constant(nil),
+            showScrollToLatestButton: .constant(false),
+            quotedMessage: .constant(nil),
+            currentDateString: nil,
+            listId: "listId",
+            isMessageThread: true,
+            shouldShowTypingIndicator: false,
+            onMessageAppear: { _, _ in },
+            onScrollToBottom: {},
+            onLongPress: { _ in }
+        )
+        .applyDefaultSize()
+
+        // Then
+        AssertSnapshot(view)
     }
 
     // MARK: - private

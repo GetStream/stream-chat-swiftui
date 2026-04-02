@@ -411,8 +411,8 @@ public final class MessageReadIndicatorViewOptions: Sendable {
     }
 }
 
-/// Options for creating the new messages indicator view.
-public final class NewMessagesIndicatorViewOptions: Sendable {
+/// Options for creating the new messages divider view.
+public final class NewMessagesDividerViewOptions: Sendable {
     /// Binding to the new messages start ID.
     public let newMessagesStartId: Binding<String?>
     /// The number of new messages.
@@ -421,6 +421,16 @@ public final class NewMessagesIndicatorViewOptions: Sendable {
     public init(newMessagesStartId: Binding<String?>, count: Int) {
         self.newMessagesStartId = newMessagesStartId
         self.count = count
+    }
+}
+
+/// Options for creating the thread replies divider view.
+public final class ThreadRepliesDividerViewOptions: Sendable {
+    /// The number of replies in the thread.
+    public let replyCount: Int
+
+    public init(replyCount: Int) {
+        self.replyCount = replyCount
     }
 }
 

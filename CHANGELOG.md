@@ -7,6 +7,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Redesign `JumpToUnreadButton` [#1351](https://github.com/GetStream/stream-chat-swiftui/pull/1351)
 - Show deleted messages in channel list preview [#1338](https://github.com/GetStream/stream-chat-swiftui/pull/1338)
 - Update deleted message design in the message list [#1349](https://github.com/GetStream/stream-chat-swiftui/pull/1349)
+- Redesign new messages divider in the message list [#1354](https://github.com/GetStream/stream-chat-swiftui/pull/1354)
+- Redesign the thread replies divider in the message replies list [#1354](https://github.com/GetStream/stream-chat-swiftui/pull/1354)
 
 ### 🐞 Fixed
 - Pinned message label now shows "Pinned by you" when the current user pinned the message [#1329](https://github.com/GetStream/stream-chat-swiftui/pull/1329)
