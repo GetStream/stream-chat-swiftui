@@ -4,7 +4,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 # Upcoming
 
 ### ✅ Added
-- Add `ComposerConfig.isVoiceRecordingAutoSendEnabled` to control whether releasing a recording sends it immediately or adds it to the composer preview [#1362](https://github.com/GetStream/stream-chat-swiftui/pull/1362)
+- Add `ComposerConfig.isVoiceRecordingAutoSendEnabled` to support sending a recording instantly on release [#1362](https://github.com/GetStream/stream-chat-swiftui/pull/1362)
 - Redesign `JumpToUnreadButton` [#1351](https://github.com/GetStream/stream-chat-swiftui/pull/1351)
 - Show deleted messages in channel list preview [#1338](https://github.com/GetStream/stream-chat-swiftui/pull/1338)
 - Update deleted message design in the message list [#1349](https://github.com/GetStream/stream-chat-swiftui/pull/1349)
