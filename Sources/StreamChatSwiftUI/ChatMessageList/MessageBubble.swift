@@ -112,7 +112,7 @@ public struct BubbleModifier: ViewModifier {
                     cornerRadius: cornerRadius, corners: corners
                 )
                 .stroke(
-                    borderColor ?? Color(colors.innerBorder),
+                    borderColor ?? Color(colors.borderCoreDefault),
                     lineWidth: 1.0
                 )
             )
@@ -288,14 +288,6 @@ extension ChatMessage {
         if let injectedBackgroundColor {
             return [Color(injectedBackgroundColor)]
         }
-        if isSentByCurrentUser {
-            if type == .ephemeral {
-                return colors.messageCurrentUserEmphemeralBackground.map { Color($0) }
-            } else {
-                return [colors.chatBackgroundOutgoing.toColor]
-            }
-        } else {
-            return [colors.chatBackgroundIncoming.toColor]
-        }
+        return [Color(isSentByCurrentUser ? colors.chatBackgroundOutgoing : colors.chatBackgroundIncoming)]
     }
 }

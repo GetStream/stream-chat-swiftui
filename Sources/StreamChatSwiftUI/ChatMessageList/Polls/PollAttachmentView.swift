@@ -323,7 +323,7 @@ struct PollVotesIndicatorView: View {
 
     private var fillColor: UIColor {
         if alternativeStyle {
-            return colors.alternativeActiveTint
+            return colors.accentSuccess
         }
         return isOutgoing ? colors.chatPollProgressFillOutgoing : colors.chatPollProgressFillIncoming
     }

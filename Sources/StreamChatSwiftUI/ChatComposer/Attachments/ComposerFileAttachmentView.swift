@@ -22,11 +22,11 @@ struct ComposerFileAttachmentView: View {
                 Text(url.lastPathComponent)
                     .font(fonts.footnoteBold)
                     .lineLimit(1)
-                    .foregroundColor(Color(colors.text))
+                    .foregroundColor(Color(colors.textPrimary))
                 Text(url.sizeString)
                     .font(fonts.caption1)
                     .lineLimit(1)
-                    .foregroundColor(Color(colors.textLowEmphasis))
+                    .foregroundColor(Color(colors.textTertiary))
             }
             Spacer()
         }
@@ -34,7 +34,7 @@ struct ComposerFileAttachmentView: View {
         .padding(.leading, tokens.spacingMd)
         .padding(.bottom, tokens.spacingMd)
         .padding(.trailing, tokens.spacingSm)
-        .background(Color(colors.backgroundElevation1))
+        .background(Color(colors.backgroundCoreElevation1))
         .cornerRadius(tokens.radiusLg)
         .overlay(
             RoundedRectangle(cornerRadius: tokens.radiusLg)

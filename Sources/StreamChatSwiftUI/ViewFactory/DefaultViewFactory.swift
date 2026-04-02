@@ -84,7 +84,7 @@ extension ViewFactory {
     }
     
     public func makeChannelListBackground(options: ChannelListBackgroundOptions) -> some View {
-        Color(InjectedValues[\.colors].background)
+        Color(InjectedValues[\.colors].backgroundCoreApp)
             .edgesIgnoringSafeArea(.bottom)
     }
 
@@ -92,7 +92,7 @@ extension ViewFactory {
         options: ChannelListItemBackgroundOptions
     ) -> some View {
         let colors = InjectedValues[\.colors]
-        return Color(colors.backgroundElevation0)
+        return Color(colors.backgroundCoreElevation0)
     }
 
     public func makeChannelListDividerItem(options: ChannelListDividerItemOptions) -> some View {
@@ -193,7 +193,7 @@ extension ViewFactory {
     public func makeEmptyMessagesView(
         options: EmptyMessagesViewOptions
     ) -> some View {
-        Color(InjectedValues[\.colors].background)
+        Color(InjectedValues[\.colors].backgroundCoreApp)
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .accessibilityIdentifier("EmptyMessagesView")
     }
@@ -968,7 +968,7 @@ extension ViewFactory {
     }
 
     public func makeThreadListBackground(options: ThreadListBackgroundOptions) -> some View {
-        Color(options.colors.backgroundElevation1)
+        Color(options.colors.backgroundCoreElevation1)
             .edgesIgnoringSafeArea(.bottom)
     }
 
@@ -976,7 +976,7 @@ extension ViewFactory {
         options: ThreadListItemBackgroundOptions
     ) -> some View {
         let colors = InjectedValues[\.colors]
-        return Color(colors.backgroundElevation1)
+        return Color(colors.backgroundCoreElevation1)
     }
 
     public func makeThreadListDividerItem(options: ThreadListDividerItemOptions) -> some View {

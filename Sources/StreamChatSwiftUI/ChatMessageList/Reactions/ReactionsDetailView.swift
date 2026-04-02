@@ -30,7 +30,7 @@ struct ReactionsDetailView<Factory: ViewFactory>: View {
         VStack(spacing: 0) {
             Text(L10n.Reaction.Authors.numberOfReactions(viewModel.totalReactionsCount))
                 .font(fonts.bodyBold)
-                .foregroundColor(Color(colors.text))
+                .foregroundColor(Color(colors.textPrimary))
                 .padding(.vertical, tokens.spacingXl)
 
             ScrollView(.horizontal, showsIndicators: false) {
@@ -57,7 +57,7 @@ struct ReactionsDetailView<Factory: ViewFactory>: View {
                 }
             }
         }
-        .background(Color(colors.backgroundElevation1).edgesIgnoringSafeArea(.bottom))
+        .background(Color(colors.backgroundCoreElevation1).edgesIgnoringSafeArea(.bottom))
         .sheet(isPresented: $viewModel.moreReactionsPickerShown) {
             MoreReactionsView { emoji in
                 let reaction = MessageReactionType(rawValue: emoji)
@@ -86,7 +86,7 @@ struct ReactionsDetailView<Factory: ViewFactory>: View {
                 .padding(.vertical, tokens.spacingXs)
                 .background(
                     Capsule()
-                        .fill(Color(colors.backgroundElevation1))
+                        .fill(Color(colors.backgroundCoreElevation1))
                 )
                 .overlay(
                     Capsule()
@@ -118,7 +118,7 @@ struct ReactionsDetailView<Factory: ViewFactory>: View {
             .padding(.vertical, tokens.spacingXs)
             .background(
                 Capsule()
-                    .fill(viewModel.selectedReactionType == type ? Color(colors.backgroundUtilitySelected) : Color(colors.backgroundElevation1))
+                    .fill(viewModel.selectedReactionType == type ? Color(colors.backgroundUtilitySelected) : Color(colors.backgroundCoreElevation1))
             )
             .overlay(
                 Capsule()
