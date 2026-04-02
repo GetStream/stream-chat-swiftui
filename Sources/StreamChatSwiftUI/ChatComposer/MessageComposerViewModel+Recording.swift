@@ -138,6 +138,19 @@ extension MessageComposerViewModel {
         stopRecording()
     }
 
+    /// Stops recording and adds the voice message to the composer's attachment
+    /// preview without sending it.
+    ///
+    /// Called when the user lifts their finger during a hold-to-record gesture
+    /// and `isVoiceRecordingAutoSendEnabled` is `false`. The recording is
+    /// appended to `addedVoiceRecordings` so the user can review or discard
+    /// it before explicitly sending.
+    public func saveRecording() {
+        guard recordingState == .recording else { return }
+        shouldSendOnRecordingFinish = false
+        stopRecording()
+    }
+
     /// Cancels the current recording and resets all recording state.
     /// Shows a snackbar confirming the voice message was deleted.
     public func discardRecording() {
