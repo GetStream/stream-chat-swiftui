@@ -519,17 +519,23 @@ import SwiftUI
     /// - Returns: view shown in the message read indicator slot.
     func makeMessageReadIndicatorView(options: MessageReadIndicatorViewOptions) -> MessageReadIndicatorViewType
     
-    associatedtype NewMessagesIndicatorViewType: View
-    /// Creates a separator view showing the number of new messages in the message list.
-    /// - Parameter options: the options for creating the new messages indicator view.
-    /// - Returns: view shown in the new messages indicator slot.
-    func makeNewMessagesIndicatorView(options: NewMessagesIndicatorViewOptions) -> NewMessagesIndicatorViewType
+    associatedtype NewMessagesDividerType: View
+    /// Creates the divider shown between read and unread messages.
+    /// - Parameter options: the options for creating the new messages divider.
+    /// - Returns: view shown in the new messages divider slot.
+    func makeNewMessagesDividerView(options: NewMessagesDividerViewOptions) -> NewMessagesDividerType
+
+    associatedtype ThreadRepliesDividerType: View
+    /// Creates the divider shown between the parent message and replies in a thread.
+    /// - Parameter options: the options for creating the thread replies divider.
+    /// - Returns: view shown in the thread replies divider slot.
+    func makeThreadRepliesDividerView(options: ThreadRepliesDividerViewOptions) -> ThreadRepliesDividerType
     
-    associatedtype JumpToUnreadButtonType: View
-    /// Creates a jump to unread button.
-    /// - Parameter options: the options for creating the jump to unread button.
-    /// - Returns: view shown in the jump to unread slot.
-    func makeJumpToUnreadButton(options: JumpToUnreadButtonOptions) -> JumpToUnreadButtonType
+    associatedtype JumpToUnreadButtonOverlayType: ViewModifier
+    /// Creates the jump to unread button overlay modifier.
+    /// - Parameter options: the options for creating the jump to unread button overlay.
+    /// - Returns: a view modifier that overlays the jump to unread button on the message list.
+    func makeJumpToUnreadButtonOverlay(options: JumpToUnreadButtonOptions) -> JumpToUnreadButtonOverlayType
 
     associatedtype PollViewType: View
     /// Creates a poll view.
