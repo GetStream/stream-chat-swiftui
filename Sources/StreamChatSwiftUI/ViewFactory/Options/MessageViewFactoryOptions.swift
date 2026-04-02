@@ -424,7 +424,6 @@ public final class NewMessagesDividerViewOptions: Sendable {
     }
 }
 
-
 /// Options for creating the thread replies divider view.
 public final class ThreadRepliesDividerViewOptions: Sendable {
     /// The number of replies in the thread.
