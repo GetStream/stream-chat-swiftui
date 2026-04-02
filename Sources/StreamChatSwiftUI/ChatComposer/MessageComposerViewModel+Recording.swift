@@ -93,8 +93,11 @@ extension MessageComposerViewModel: AudioRecordingDelegate {
 
 extension MessageComposerViewModel {
     /// Displays a tip snackbar explaining how to use voice recording.
+    /// The text adapts based on `isVoiceRecordingAutoSendEnabled`.
     public func showRecordingTip() {
-        snackBarText = L10n.Composer.Recording.tip
+        snackBarText = utils.composerConfig.isVoiceRecordingAutoSendEnabled
+            ? L10n.Composer.Recording.tip
+            : L10n.Composer.Recording.tipSave
     }
 
     /// Begins capturing audio from the microphone.
