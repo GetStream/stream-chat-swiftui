@@ -108,7 +108,7 @@ struct DemoAppChatChannelListItem: View {
                 Image(uiImage: image)
                     .customizable()
                     .frame(maxHeight: 12)
-                    .foregroundColor(Color(colors.subtitleText))
+                    .foregroundColor(Color(colors.textSecondary))
             } else {
                 if shouldShowTypingIndicator {
                     TypingIndicatorDotsView()
@@ -118,7 +118,7 @@ struct DemoAppChatChannelListItem: View {
                 HStack(spacing: 2) {
                     Text("Draft:")
                         .font(fonts.caption1).bold()
-                        .foregroundColor(Color(colors.highlightedAccentBackground))
+                        .foregroundColor(Color(colors.accentPrimary))
                     SubtitleText(text: draftText)
                 }
             } else {

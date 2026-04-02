@@ -130,7 +130,7 @@ struct PinnedMessageView<Factory: ViewFactory>: View {
             VStack(alignment: .leading, spacing: tokens.spacingXxs) {
                 Text(message.author.name ?? message.author.id)
                     .font(fonts.bodyBold)
-                    .foregroundColor(Color(colors.text))
+                    .foregroundColor(Color(colors.textPrimary))
 
                 HStack {
                     HStack(spacing: tokens.spacingXxs) {
@@ -139,7 +139,7 @@ struct PinnedMessageView<Factory: ViewFactory>: View {
                     }
                     .lineLimit(1)
                     .font(fonts.footnote)
-                    .foregroundColor(Color(colors.textLowEmphasis))
+                    .foregroundColor(Color(colors.textTertiary))
 
                     Spacer()
 

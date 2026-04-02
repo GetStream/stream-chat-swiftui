@@ -176,7 +176,7 @@ public struct RegularInputViewModifier: ViewModifier {
 
     public func body(content: Content) -> some View {
         content
-            .background(Color(colors.composerInputBackground))
+            .background(Color(colors.backgroundCoreElevation1))
             .modifier(BorderModifier(shape: .roundedRect(cornerRadius)))
     }
 
@@ -192,7 +192,7 @@ public struct RegularButtonViewModifier: ViewModifier {
     
     public func body(content: Content) -> some View {
         content
-            .background(Color(colors.composerInputBackground))
+            .background(Color(colors.backgroundCoreElevation1))
             .modifier(BorderModifier(shape: .circle))
     }
 }
@@ -224,7 +224,7 @@ public struct ComposerBackgroundRegularViewModifier: ViewModifier {
 
     public func body(content: Content) -> some View {
         content
-            .background(Color(colors.composerInputBackground))
+            .background(Color(colors.backgroundCoreElevation1))
     }
 }
 
@@ -242,7 +242,7 @@ public struct SuggestionsRegularContainerModifier: ViewModifier {
             Divider()
             content
         }
-        .background(Color(colors.backgroundElevation1))
+        .background(Color(colors.backgroundCoreElevation1))
     }
 }
 
@@ -271,7 +271,7 @@ public struct RegularScrollToBottomButtonModifier: ViewModifier {
         content
             .background(
                 Circle()
-                    .fill(Color(colors.backgroundElevation1))
+                    .fill(Color(colors.backgroundCoreElevation1))
                     .shadow(
                         color: Color(tokens.lightElevation3.color),
                         radius: tokens.lightElevation3.blur / 2,

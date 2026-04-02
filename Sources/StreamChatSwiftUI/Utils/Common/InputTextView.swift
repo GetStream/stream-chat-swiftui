@@ -91,10 +91,10 @@ class InputTextView: UITextView, AccessibilityView {
         backgroundColor = .clear
         textContainer.lineFragmentPadding = 8
         font = InjectedValues[\.utils].composerConfig.inputFont
-        textColor = InjectedValues[\.colors].text
+        textColor = InjectedValues[\.colors].textPrimary
 
         placeholderLabel.font = font
-        placeholderLabel.textColor = InjectedValues[\.colors].composerPlaceholderColor
+        placeholderLabel.textColor = InjectedValues[\.colors].inputTextPlaceholder
         applyTextAlignmentForCurrentDirection()
     }
 

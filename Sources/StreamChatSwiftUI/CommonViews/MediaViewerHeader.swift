@@ -46,7 +46,7 @@ struct MediaViewerHeader: View {
     
     private var closeImageColor: Color {
         // Note that default design uses `text` color
-        guard colors.navigationBarTintColor != colors.accentPrimary else { return Color(colors.text) }
+        guard colors.navigationBarTintColor != colors.accentPrimary else { return Color(colors.textPrimary) }
         return Color(colors.navigationBarTintColor)
     }
 }

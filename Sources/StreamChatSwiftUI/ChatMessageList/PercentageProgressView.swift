@@ -22,7 +22,7 @@ struct PercentageProgressView: View {
 
             Text(progressDisplay(for: progress))
                 .font(fonts.footnote)
-                .foregroundColor(Color(colors.staticColorText))
+                .foregroundColor(Color(colors.backgroundCoreElevation0))
         }
         .padding(.all, 4)
         .background(Color.black.opacity(0.7))

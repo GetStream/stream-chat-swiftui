@@ -40,7 +40,7 @@ struct RoundedBorderModifier: ViewModifier {
     func body(content: Content) -> some View {
         content.overlay(
             RoundedRectangle(cornerRadius: cornerRadius)
-                .stroke(Color(colors.innerBorder), lineWidth: 1)
+                .stroke(Color(colors.borderCoreDefault), lineWidth: 1)
         )
         .clipShape(RoundedRectangle(cornerRadius: cornerRadius))
     }
@@ -51,7 +51,7 @@ struct IconOverImageModifier: ViewModifier {
 
     func body(content: Content) -> some View {
         content
-            .foregroundColor(Color(colors.staticColorText))
+            .foregroundColor(Color(colors.backgroundCoreElevation0))
             .padding(.all, 4)
     }
 }

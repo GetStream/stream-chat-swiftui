@@ -67,7 +67,7 @@ struct DemoUserView: View {
                     .foregroundColor(Color(colors.accentPrimary))
                     .frame(width: imageSize, height: imageSize)
                     .aspectRatio(contentMode: .fit)
-                    .background(Color(colors.background6))
+                    .background(Color(colors.backgroundCoreSurfaceDefault))
                     .clipShape(Circle())
             } else {
                 UserAvatar(
@@ -83,7 +83,7 @@ struct DemoUserView: View {
                     .font(fonts.bodyBold)
                 Text(user.isGuest ? "Login as Guest" : "Stream test account")
                     .font(fonts.footnote)
-                    .foregroundColor(Color(colors.textLowEmphasis))
+                    .foregroundColor(Color(colors.textTertiary))
             }
 
             Spacer()

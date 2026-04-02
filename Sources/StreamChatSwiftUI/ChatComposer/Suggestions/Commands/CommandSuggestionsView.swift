@@ -68,7 +68,7 @@ struct CommandSuggestionsHeader: View {
         HStack {
             Text(L10n.Composer.Suggestions.Commands.header)
                 .font(fonts.subheadline)
-                .foregroundColor(Color(colors.textLowEmphasis))
+                .foregroundColor(Color(colors.textTertiary))
                 .accessibilityIdentifier("CommandSuggestionsHeader")
             Spacer()
         }
@@ -92,25 +92,25 @@ struct CommandSuggestionView: View {
                 .resizable()
                 .scaledToFit()
                 .frame(width: tokens.iconSizeMd, height: tokens.iconSizeMd)
-                .foregroundColor(Color(colors.textLowEmphasis))
+                .foregroundColor(Color(colors.textTertiary))
                 .accessibilityIdentifier("image\(displayInfo.displayName)")
 
             VStack(alignment: .leading, spacing: 0) {
                 HStack(spacing: tokens.spacingXxs) {
                     Text(displayInfo.displayName)
                         .font(fonts.body)
-                        .foregroundColor(Color(colors.text))
+                        .foregroundColor(Color(colors.textPrimary))
                         .lineLimit(1)
                     Text(displayInfo.format)
                         .font(fonts.body)
-                        .foregroundColor(Color(colors.textLowEmphasis))
+                        .foregroundColor(Color(colors.textTertiary))
                         .lineLimit(1)
                 }
 
                 if let description = displayInfo.description {
                     Text(description)
                         .font(fonts.caption1)
-                        .foregroundColor(Color(colors.textLowEmphasis))
+                        .foregroundColor(Color(colors.textTertiary))
                 }
             }
 

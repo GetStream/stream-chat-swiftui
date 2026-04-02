@@ -44,7 +44,7 @@ public struct ReactionsBubbleModifier: ViewModifier {
             return injectedBackground
         }
 
-        return colors.reactionBackground
+        return colors.backgroundCoreElevation3
     }
 }
 

@@ -247,7 +247,7 @@ public struct ChatChannelListItem<Factory: ViewFactory>: View {
         Image(uiImage: images.muted)
             .customizable()
             .frame(maxHeight: 12)
-            .foregroundColor(Color(colors.subtitleText))
+            .foregroundColor(Color(colors.textSecondary))
     }
 
     private var lastMessageFailedToSend: Bool {

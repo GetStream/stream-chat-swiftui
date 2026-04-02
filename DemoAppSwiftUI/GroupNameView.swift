@@ -20,7 +20,7 @@ struct GroupNameView: View, KeyboardReadable {
             HStack {
                 Text("NAME")
                     .font(fonts.footnote)
-                    .foregroundColor(Color(colors.textLowEmphasis))
+                    .foregroundColor(Color(colors.textTertiary))
 
                 TextField(
                     "Choose a group chat name",
@@ -53,7 +53,7 @@ struct GroupNameView: View, KeyboardReadable {
                     } label: {
                         Image(systemName: "xmark")
                             .renderingMode(.template)
-                            .foregroundColor(Color(colors.text))
+                            .foregroundColor(Color(colors.textPrimary))
                     }
                     .buttonStyle(PlainButtonStyle())
                 }
@@ -85,7 +85,7 @@ struct GroupControlsView: View {
                 Image(systemName: "checkmark")
                     .renderingMode(.template)
                     .foregroundColor(
-                        viewModel.canCreateGroup ? Color(colors.accentPrimary) : Color(colors.textLowEmphasis)
+                        viewModel.canCreateGroup ? Color(colors.accentPrimary) : Color(colors.textTertiary)
                     )
             }
             .disabled(!viewModel.canCreateGroup)
@@ -95,7 +95,7 @@ struct GroupControlsView: View {
             } label: {
                 Image(systemName: "xmark.circle")
                     .renderingMode(.template)
-                    .foregroundColor(Color(colors.textLowEmphasis))
+                    .foregroundColor(Color(colors.textTertiary))
             }
 
             NavigationLink(

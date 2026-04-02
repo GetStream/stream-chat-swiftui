@@ -23,7 +23,7 @@ struct NewChatView: View, KeyboardReadable {
             HStack {
                 Text("TO:")
                     .font(fonts.footnote)
-                    .foregroundColor(Color(colors.textLowEmphasis))
+                    .foregroundColor(Color(colors.textTertiary))
 
                 VStack {
                     if !viewModel.selectedUsers.isEmpty {
@@ -77,13 +77,13 @@ struct NewChatView: View, KeyboardReadable {
                 VerticallyCenteredView {
                     Text("No user matches these keywords")
                         .font(.title2)
-                        .foregroundColor(Color(colors.textLowEmphasis))
+                        .foregroundColor(Color(colors.textTertiary))
                 }
             } else if viewModel.state == .error {
                 VerticallyCenteredView {
                     Text("Error loading the users")
                         .font(.title2)
-                        .foregroundColor(Color(colors.textLowEmphasis))
+                        .foregroundColor(Color(colors.textTertiary))
                 }
             } else if viewModel.state == .channel, let controller = viewModel.channelController {
                 Divider()
@@ -137,7 +137,7 @@ struct SelectedUserView: View {
                 .padding(.vertical, 2)
                 .padding(.trailing)
         }
-        .background(Color(colors.background1))
+        .background(Color(colors.backgroundCoreSurfaceSubtle))
         .cornerRadius(16)
     }
 }
@@ -190,7 +190,7 @@ struct CreateGroupButton: View {
 
                 Text("Create a group")
                     .font(fonts.bodyBold)
-                    .foregroundColor(Color(colors.text))
+                    .foregroundColor(Color(colors.textPrimary))
 
                 Spacer()
             }
@@ -220,7 +220,7 @@ struct ChatUserView: View {
                     .font(fonts.bodyBold)
                 Text(onlineText)
                     .font(fonts.footnote)
-                    .foregroundColor(Color(colors.textLowEmphasis))
+                    .foregroundColor(Color(colors.textTertiary))
             }
             Spacer()
 
@@ -245,10 +245,10 @@ struct UsersHeaderView: View {
                 .padding(.horizontal)
                 .padding(.vertical, 2)
                 .font(fonts.body)
-                .foregroundColor(Color(colors.textLowEmphasis))
+                .foregroundColor(Color(colors.textTertiary))
 
             Spacer()
         }
-        .background(Color(colors.background1))
+        .background(Color(colors.backgroundCoreSurfaceSubtle))
     }
 }
