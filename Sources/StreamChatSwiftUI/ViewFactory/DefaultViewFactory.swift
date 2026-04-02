@@ -881,28 +881,32 @@ extension ViewFactory {
         )
     }
     
-    public func makeNewMessagesIndicatorView(
-        options: NewMessagesIndicatorViewOptions
+    public func makeNewMessagesDividerView(
+        options: NewMessagesDividerViewOptions
     ) -> some View {
-        NewMessagesIndicator(
+        NewMessagesDivider(
             newMessagesStartId: options.newMessagesStartId,
             count: options.count
         )
     }
-    
-    public func makeJumpToUnreadButton(
-        options: JumpToUnreadButtonOptions
-    ) -> some View {
-        VStack {
-            JumpToUnreadButton(
-                unreadCount: options.channel.unreadCount.messages,
-                onTap: options.onJumpToMessage,
-                onClose: options.onClose
-            )
-            .padding(.all, 8)
 
-            Spacer()
-        }
+    public func makeThreadRepliesDividerView(
+        options: ThreadRepliesDividerViewOptions
+    ) -> some View {
+        ThreadRepliesDivider(
+            replyCount: options.replyCount
+        )
+    }
+    
+    public func makeJumpToUnreadButtonOverlay(
+        options: JumpToUnreadButtonOptions
+    ) -> some ViewModifier {
+        JumpToUnreadButtonOverlayModifier(
+            isShown: options.isShown,
+            unreadCount: options.channel.unreadCount.messages,
+            onJumpToMessage: options.onJumpToMessage,
+            onClose: options.onClose
+        )
     }
     
     public func makePollView(options: PollViewOptions) -> some View {

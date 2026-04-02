@@ -771,20 +771,33 @@ import XCTest
         XCTAssert(view is ReactionsOverlayContainer)
     }
     
-    func test_viewFactory_makeNewMessagesIndicatorView() {
+    func test_viewFactory_makeNewMessagesDividerView() {
         // Given
         let viewFactory = DefaultViewFactory.shared
         
         // When
-        let view = viewFactory.makeNewMessagesIndicatorView(
-            options: NewMessagesIndicatorViewOptions(
+        let view = viewFactory.makeNewMessagesDividerView(
+            options: NewMessagesDividerViewOptions(
                 newMessagesStartId: .constant(nil),
                 count: 2
             )
         )
         
         // Then
-        XCTAssert(view is NewMessagesIndicator)
+        XCTAssert(view is NewMessagesDivider)
+    }
+
+    func test_viewFactory_makeThreadRepliesDividerView() {
+        // Given
+        let viewFactory = DefaultViewFactory.shared
+        
+        // When
+        let view = viewFactory.makeThreadRepliesDividerView(
+            options: ThreadRepliesDividerViewOptions(replyCount: 5)
+        )
+        
+        // Then
+        XCTAssert(view is ThreadRepliesDivider)
     }
     
     func test_viewFactory_makeComposerTextInputView() {
