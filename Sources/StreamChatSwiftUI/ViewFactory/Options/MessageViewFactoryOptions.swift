@@ -411,8 +411,8 @@ public final class MessageReadIndicatorViewOptions: Sendable {
     }
 }
 
-/// Options for creating the new messages indicator view.
-public final class NewMessagesIndicatorViewOptions: Sendable {
+/// Options for creating the new messages divider view.
+public final class NewMessagesDividerViewOptions: Sendable {
     /// Binding to the new messages start ID.
     public let newMessagesStartId: Binding<String?>
     /// The number of new messages.
@@ -424,8 +424,20 @@ public final class NewMessagesIndicatorViewOptions: Sendable {
     }
 }
 
-/// Options for creating the jump to unread button.
+/// Options for creating the thread replies divider view.
+public final class ThreadRepliesDividerViewOptions: Sendable {
+    /// The number of replies in the thread.
+    public let replyCount: Int
+
+    public init(replyCount: Int) {
+        self.replyCount = replyCount
+    }
+}
+
+/// Options for creating the jump to unread button overlay.
 public final class JumpToUnreadButtonOptions: Sendable {
+    /// Whether the button should be shown.
+    public let isShown: Bool
     /// The channel to jump to unread messages in.
     public let channel: ChatChannel
     /// Callback when the jump to message button is tapped.
@@ -434,10 +446,12 @@ public final class JumpToUnreadButtonOptions: Sendable {
     public let onClose: @MainActor () -> Void
     
     public init(
+        isShown: Bool = true,
         channel: ChatChannel,
         onJumpToMessage: @escaping @MainActor () -> Void,
         onClose: @escaping @MainActor () -> Void
     ) {
+        self.isShown = isShown
         self.channel = channel
         self.onJumpToMessage = onJumpToMessage
         self.onClose = onClose
