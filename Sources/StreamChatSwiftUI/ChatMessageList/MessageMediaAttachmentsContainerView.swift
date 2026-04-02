@@ -95,9 +95,10 @@ public struct MessageMediaAttachmentsContainerView<Factory: ViewFactory>: View {
 
     public var body: some View {
         galleryGrid
-            .fullScreenCover(isPresented: $galleryShown, onDismiss: {
-                selectedIndex = 0
-            }) {
+            .onChange(of: selectedIndex) { _ in
+                galleryShown = true
+            }
+            .fullScreenCover(isPresented: $galleryShown) {
                 factory.makeMediaViewer(
                     options: MediaViewerOptions(
                         mediaAttachments: sources,
@@ -279,8 +280,11 @@ public struct MessageMediaAttachmentsContainerView<Factory: ViewFactory>: View {
         .contentShape(Rectangle())
         .onTapGesture {
             if message.localState == nil {
-                selectedIndex = index
-                galleryShown = true
+                if selectedIndex == index {
+                    galleryShown = true
+                } else {
+                    selectedIndex = index
+                }
             }
         }
         .accessibilityLabel(L10n.Message.Attachment.accessibilityLabel(index + 1))

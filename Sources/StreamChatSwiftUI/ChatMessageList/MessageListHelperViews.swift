@@ -95,7 +95,7 @@ struct MessageDateView: View {
         Text(text)
             .font(fonts.footnote)
             .foregroundColor(usesInvertedStyle ? colors.textOnAccent.toColor : colors.chatTextTimestamp.toColor)
-            .animation(nil)
+            .animation(nil, value: text)
             .accessibilityLabel(Text(accessibilityLabel))
             .accessibilityIdentifier("MessageDateView")
     }
