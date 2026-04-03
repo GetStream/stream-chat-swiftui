@@ -79,10 +79,6 @@ public struct FileAttachmentView: View {
             }
 
             Spacer()
-
-            if utils.messageListConfig.downloadFileAttachmentsEnabled {
-                DownloadShareAttachmentView(attachment: attachment)
-            }
         }
         .padding(.all, tokens.spacingSm)
         .frame(width: width)
