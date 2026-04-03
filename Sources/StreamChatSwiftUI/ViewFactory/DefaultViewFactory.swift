@@ -65,7 +65,7 @@ extension ViewFactory {
             channelListItem: listItem,
             swipedChannelId: options.swipedChannelId,
             channel: options.channel,
-            numberOfTrailingItems: options.channel.ownCapabilities.contains(.deleteChannel) ? 2 : 1,
+            numberOfTrailingItems: 2,
             trailingRightButtonTapped: options.trailingSwipeRightButtonTapped,
             trailingLeftButtonTapped: options.trailingSwipeLeftButtonTapped,
             leadingSwipeButtonTapped: options.leadingSwipeButtonTapped

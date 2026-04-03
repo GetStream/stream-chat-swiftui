@@ -3,7 +3,6 @@
 //
 
 @testable import StreamChat
-@testable import StreamChatCommonUI
 @testable import StreamChatSwiftUI
 @testable import StreamChatTestTools
 import XCTest
@@ -134,6 +133,57 @@ import XCTest
 
         // Then
         XCTAssert(name == expectedName)
+    }
+
+    func test_channelListVM_onMuteTapped() {
+        // Given
+        let viewModel = makeDefaultChannelListVM()
+        let channel = ChatChannel.mockDMChannel()
+
+        // When
+        viewModel.onMuteTapped(channel: channel)
+
+        // Then
+        XCTAssert(viewModel.channelAlertType == .muteChannel(channel))
+        XCTAssert(viewModel.alertShown == true)
+    }
+
+    func test_channelListVM_mute_resetsSwipedChannelId() {
+        // Given
+        let channel = ChatChannel.mockDMChannel()
+        let channelListController = makeChannelListController(channels: [channel])
+        let viewModel = ChatChannelListViewModel(
+            channelListController: channelListController,
+            selectedChannelId: nil
+        )
+        viewModel.swipedChannelId = channel.id
+
+        // When
+        viewModel.mute(channel: channel)
+
+        // Then
+        XCTAssertNil(viewModel.swipedChannelId)
+    }
+
+    func test_channelListVM_muteChannel_onError_showsErrorAlert() {
+        // Given
+        let channel = ChatChannel.mockDMChannel()
+        let channelListController = makeChannelListController(channels: [channel])
+        let viewModel = ChatChannelListViewModel(
+            channelListController: channelListController,
+            selectedChannelId: nil
+        )
+        let error = NSError(domain: "test", code: 1, userInfo: nil)
+
+        // When
+        viewModel.mute(channel: channel)
+        chatClient.mockAPIClient.test_simulateResponse(
+            Result<MutedChannelPayloadResponse, Error>.failure(error)
+        )
+
+        // Then
+        XCTAssert(viewModel.channelAlertType == .error)
+        XCTAssert(viewModel.alertShown == true)
     }
 
     func test_channelListVM_onMoreTapped() {
