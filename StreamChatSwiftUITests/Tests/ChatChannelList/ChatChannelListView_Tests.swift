@@ -94,6 +94,46 @@ import XCTest
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
 
+    func test_trailingSwipeActionsView_unmuted_snapshot() {
+        // Given - channel is not muted, swipe action shows mute (speaker.slash) icon
+        let channel = ChatChannel.mockDMChannel()
+        let view = TrailingSwipeActionsView(
+            channel: channel,
+            offsetX: -160,
+            buttonWidth: 80,
+            leftButtonTapped: { _ in },
+            rightButtonTapped: { _ in }
+        )
+        .frame(
+            width: defaultScreenSize.width,
+            height: 64
+        )
+
+        // Then
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
+    }
+
+    func test_trailingSwipeActionsView_muted_snapshot() {
+        // Given - channel is muted, swipe action shows unmute (speaker.wave.2) icon
+        let channel = ChatChannel.mockDMChannel(
+            muteDetails: .init(createdAt: .unique, updatedAt: .unique, expiresAt: nil)
+        )
+        let view = TrailingSwipeActionsView(
+            channel: channel,
+            offsetX: -160,
+            buttonWidth: 80,
+            leftButtonTapped: { _ in },
+            rightButtonTapped: { _ in }
+        )
+        .frame(
+            width: defaultScreenSize.width,
+            height: 64
+        )
+
+        // Then
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
+    }
+
     func test_channelListView_channelAvatarUpdated() {
         // Given
         let controller = makeChannelListController()
