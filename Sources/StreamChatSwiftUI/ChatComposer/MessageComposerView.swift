@@ -169,7 +169,9 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
                             gestureLocation: $viewModel.recordingGestureLocation,
                             onRecordingStarted: viewModel.startRecording,
                             onGestureCompleted: viewModel.stopRecording,
-                            onRecordingReleased: viewModel.sendRecording,
+                            onRecordingReleased: utils.composerConfig.isVoiceRecordingAutoSendEnabled
+                                ? viewModel.sendRecording
+                                : viewModel.saveRecording,
                             onRecordingCancelled: viewModel.discardRecording,
                             onShortTapDetected: viewModel.showRecordingTip
                         )

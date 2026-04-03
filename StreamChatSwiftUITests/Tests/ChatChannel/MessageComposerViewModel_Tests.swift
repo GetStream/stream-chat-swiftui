@@ -1292,6 +1292,20 @@ import XCTest
         viewModel.showRecordingTip()
         
         // Then
+        XCTAssertEqual(viewModel.snackBarText, L10n.Composer.Recording.tipSave)
+    }
+
+    func test_messageComposer_showRecordingTip_whenAutoSendEnabled_showsSendTip() {
+        // Given
+        let utils = Utils(composerConfig: ComposerConfig(isVoiceRecordingAutoSendEnabled: true))
+        streamChat = StreamChat(chatClient: chatClient, utils: utils)
+        let viewModel = makeComposerViewModel()
+        XCTAssertNil(viewModel.snackBarText)
+
+        // When
+        viewModel.showRecordingTip()
+
+        // Then
         XCTAssertEqual(viewModel.snackBarText, L10n.Composer.Recording.tip)
     }
     
@@ -1689,6 +1703,34 @@ import XCTest
         viewModel.discardRecording()
 
         XCTAssertFalse(viewModel.shouldSendOnRecordingFinish)
+    }
+
+    // MARK: - saveRecording
+
+    func test_saveRecording_whenRecording_setsShouldSendOnRecordingFinishToFalse() {
+        // Given
+        let viewModel = makeComposerViewModel()
+        viewModel.recordingState = .recording
+        viewModel.shouldSendOnRecordingFinish = true
+
+        // When
+        viewModel.saveRecording()
+
+        // Then
+        XCTAssertFalse(viewModel.shouldSendOnRecordingFinish)
+    }
+
+    func test_saveRecording_whenNotRecording_doesNothing() {
+        // Given
+        let viewModel = makeComposerViewModel()
+        viewModel.recordingState = .initial
+        viewModel.shouldSendOnRecordingFinish = true
+
+        // When
+        viewModel.saveRecording()
+
+        // Then
+        XCTAssertTrue(viewModel.shouldSendOnRecordingFinish)
     }
 
     // MARK: - private

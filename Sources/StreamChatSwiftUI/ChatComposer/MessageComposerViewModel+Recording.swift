@@ -93,8 +93,11 @@ extension MessageComposerViewModel: AudioRecordingDelegate {
 
 extension MessageComposerViewModel {
     /// Displays a tip snackbar explaining how to use voice recording.
+    /// The text adapts based on `isVoiceRecordingAutoSendEnabled`.
     public func showRecordingTip() {
-        snackBarText = L10n.Composer.Recording.tip
+        snackBarText = utils.composerConfig.isVoiceRecordingAutoSendEnabled
+            ? L10n.Composer.Recording.tip
+            : L10n.Composer.Recording.tipSave
     }
 
     /// Begins capturing audio from the microphone.
@@ -135,6 +138,19 @@ extension MessageComposerViewModel {
     public func sendRecording() {
         guard recordingState == .recording else { return }
         shouldSendOnRecordingFinish = true
+        stopRecording()
+    }
+
+    /// Stops recording and adds the voice message to the composer's attachment
+    /// preview without sending it.
+    ///
+    /// Called when the user lifts their finger during a hold-to-record gesture
+    /// and `isVoiceRecordingAutoSendEnabled` is `false`. The recording is
+    /// appended to `addedVoiceRecordings` so the user can review or discard
+    /// it before explicitly sending.
+    public func saveRecording() {
+        guard recordingState == .recording else { return }
+        shouldSendOnRecordingFinish = false
         stopRecording()
     }
 

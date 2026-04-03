@@ -21,10 +21,19 @@ final class AppConfiguration {
     var reactionsPlacement: ReactionsPlacement = .top
     /// The visual style used across the app (regular or liquid glass).
     var appStyle: AppStyle = .regular
+    /// When enabled, releasing a hold-to-record gesture sends the voice message instantly.
+    var isVoiceRecordingAutoSendEnabled = false
 
     enum AppStyle: String, CaseIterable {
         case regular
         case liquidGlass
+    }
+
+    /// Builds the demo app's `ComposerConfig` using current app configuration.
+    @MainActor static func makeComposerConfig() -> ComposerConfig {
+        ComposerConfig(
+            isVoiceRecordingAutoSendEnabled: AppConfiguration.default.isVoiceRecordingAutoSendEnabled
+        )
     }
 
     /// Builds the demo app's `MessageListConfig` using current app configuration.
