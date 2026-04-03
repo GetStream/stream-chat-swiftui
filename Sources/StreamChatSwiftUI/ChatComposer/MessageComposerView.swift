@@ -671,14 +671,14 @@ public struct ComposerInputView<Factory: ViewFactory>: View, KeyboardReadable {
         }
 
         if command?.displayInfo?.isInstant == true {
-            return .creating(hasContent: hasContent)
+            return .creating(hasContent: hasContent, hasCommand: true)
         }
 
         if utils.composerConfig.isVoiceRecordingEnabled && !hasContent {
             return .allowAudioRecording
         }
 
-        return .creating(hasContent: hasContent)
+        return .creating(hasContent: hasContent, hasCommand: false)
     }
 
     private var isInCooldown: Bool {

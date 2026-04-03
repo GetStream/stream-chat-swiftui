@@ -18,14 +18,22 @@ struct TrailingInputComposerView<Factory: ViewFactory>: View {
 
     var body: some View {
         switch composerInputState {
-        case .creating(let hasContent):
-            factory.makeSendMessageButton(
-                options: SendMessageButtonOptions(
-                    enabled: hasContent,
-                    commandSelected: composerCommand != nil,
-                    onTap: sendMessage
+        case .creating(let hasContent, let hasCommand):
+            if hasCommand {
+                factory.makeConfirmEditButton(
+                    options: ConfirmEditButtonOptions(
+                        enabled: hasContent,
+                        onTap: sendMessage
+                    )
                 )
-            )
+            } else {
+                factory.makeSendMessageButton(
+                    options: SendMessageButtonOptions(
+                        enabled: hasContent,
+                        onTap: sendMessage
+                    )
+                )
+            }
         case .editing(let hasContent):
             factory.makeConfirmEditButton(
                 options: ConfirmEditButtonOptions(

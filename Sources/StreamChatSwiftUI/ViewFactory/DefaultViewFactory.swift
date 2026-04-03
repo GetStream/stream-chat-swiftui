@@ -582,7 +582,6 @@ extension ViewFactory {
     ) -> some View {
         SendMessageButton(
             enabled: options.enabled,
-            commandSelected: options.commandSelected,
             onTap: options.onTap
         )
     }

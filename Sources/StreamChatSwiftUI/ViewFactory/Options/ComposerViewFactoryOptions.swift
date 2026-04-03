@@ -281,18 +281,14 @@ public final class TrailingComposerViewOptions: Sendable {
 public final class SendMessageButtonOptions: Sendable {
     /// Whether the send message button is enabled.
     public let enabled: Bool
-    /// Whether the composer input has a command selected.
-    public let commandSelected: Bool
     /// Callback when the button is tapped.
     public let onTap: @MainActor @Sendable () -> Void
 
     public init(
         enabled: Bool,
-        commandSelected: Bool,
         onTap: @escaping @MainActor @Sendable () -> Void
     ) {
         self.enabled = enabled
-        self.commandSelected = commandSelected
         self.onTap = onTap
     }
 }
