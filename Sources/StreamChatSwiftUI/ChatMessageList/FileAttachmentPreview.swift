@@ -90,9 +90,7 @@ public struct FileAttachmentPreview: View {
                 }
                 
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    if utils.messageListConfig.downloadFileAttachmentsEnabled {
-                        DownloadShareAttachmentView(attachment: attachment)
-                    }
+                    DownloadShareAttachmentView(attachment: attachment)
                 }
             }
         }

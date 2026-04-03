@@ -37,7 +37,6 @@ import SwiftUI
         bouncedMessagesAlertActionsEnabled: Bool = true,
         skipEditedMessageLabel: @escaping (ChatMessage) -> Bool = { _ in false },
         draftMessagesEnabled: Bool = true,
-        downloadFileAttachmentsEnabled: Bool = true,
         hidesCommandsOverlayOnMessageListTap: Bool = true,
         hidesAttachmentsPickersOnMessageListTap: Bool = true,
         attachmentPreviewWidth: CGFloat = 256,
@@ -72,7 +71,6 @@ import SwiftUI
         self.bouncedMessagesAlertActionsEnabled = bouncedMessagesAlertActionsEnabled
         self.skipEditedMessageLabel = skipEditedMessageLabel
         self.draftMessagesEnabled = draftMessagesEnabled
-        self.downloadFileAttachmentsEnabled = downloadFileAttachmentsEnabled
         self.hidesCommandsOverlayOnMessageListTap = hidesCommandsOverlayOnMessageListTap
         self.hidesAttachmentsPickersOnMessageListTap = hidesAttachmentsPickersOnMessageListTap
         self.attachmentPreviewWidth = attachmentPreviewWidth
@@ -129,9 +127,6 @@ import SwiftUI
     ///
     /// If enabled, the SDK will save the message content as a draft when the user navigates away from the composer.
     public let draftMessagesEnabled: Bool
-
-    /// A boolean value that determines if download action is shown for file attachments.
-    public let downloadFileAttachmentsEnabled: Bool
 
     /// Highlights the message background when jumping to a message.
     ///
