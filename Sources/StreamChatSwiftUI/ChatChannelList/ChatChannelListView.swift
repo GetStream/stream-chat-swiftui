@@ -158,6 +158,14 @@ public struct ChatChannelListView<Factory: ViewFactory>: View {
                     },
                     secondaryButton: .cancel()
                 )
+            case let .muteChannel(channel):
+                Alert(
+                    title: Text(channel.isMuted ? L10n.Alert.Actions.unmuteChannel : L10n.Alert.Actions.muteChannel),
+                    primaryButton: .default(Text(channel.isMuted ? L10n.Channel.Item.unmute : L10n.Channel.Item.mute)) {
+                        viewModel.mute(channel: channel)
+                    },
+                    secondaryButton: .cancel()
+                )
             default:
                 Alert.defaultErrorAlert
             }
@@ -299,7 +307,7 @@ public struct ChatChannelListContentView<Factory: ViewFactory>: View {
                         viewModel.checkForChannels(index: index)
                     },
                     channelDestination: channelDestination,
-                    trailingSwipeRightButtonTapped: viewModel.onDeleteTapped(channel:),
+                    trailingSwipeRightButtonTapped: viewModel.onMuteTapped(channel:),
                     trailingSwipeLeftButtonTapped: viewModel.onMoreTapped(channel:),
                     leadingSwipeButtonTapped: { _ in }
                 )
