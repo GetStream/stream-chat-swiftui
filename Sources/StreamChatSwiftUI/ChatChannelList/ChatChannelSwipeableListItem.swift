@@ -299,7 +299,7 @@ public struct TrailingSwipeActionsView: View {
                     .foregroundColor(Color(colors.textPrimary))
                     .background(Color(colors.backgroundCoreSurfaceSubtle))
 
-                    ActionItemButton(imageName: "speaker.slash", action: {
+                    ActionItemButton(imageName: channel.isMuted ? "speaker.wave.2" : "speaker.slash", action: {
                         withAnimation {
                             rightButtonTapped(channel)
                         }
