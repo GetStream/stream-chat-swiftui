@@ -830,6 +830,7 @@ import XCTest
         let view = viewFactory.makeSendMessageButton(
             options: SendMessageButtonOptions(
                 enabled: true,
+                commandSelected: false,
                 onTap: {}
             )
         )

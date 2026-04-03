@@ -10,10 +10,12 @@ public struct SendMessageButton: View {
     @Injected(\.tokens) private var tokens
 
     var enabled: Bool
+    var commandSelected: Bool
     var onTap: () -> Void
 
-    public init(enabled: Bool, onTap: @escaping () -> Void) {
+    public init(enabled: Bool, commandSelected: Bool = false, onTap: @escaping () -> Void) {
         self.enabled = enabled
+        self.commandSelected = commandSelected
         self.onTap = onTap
     }
 
@@ -24,7 +26,7 @@ public struct SendMessageButton: View {
             size: .small,
             action: onTap
         ) {
-            Image(uiImage: images.composerSend)
+            Image(uiImage: commandSelected ? images.selectionBadgeIcon : images.composerSend)
                 .renderingMode(.template)
                 .frame(width: tokens.iconSizeMd, height: tokens.iconSizeMd)
         }

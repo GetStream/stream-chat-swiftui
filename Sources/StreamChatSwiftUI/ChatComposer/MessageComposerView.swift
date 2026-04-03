@@ -588,6 +588,7 @@ public struct ComposerInputView<Factory: ViewFactory>: View, KeyboardReadable {
                 options: .init(
                     text: $text,
                     recordingState: $recordingState,
+                    composerCommand: $command,
                     composerInputState: composerInputState,
                     startRecording: startRecording,
                     stopRecording: stopRecording,
