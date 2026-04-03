@@ -67,7 +67,7 @@ struct AppleMessageComposerView<Factory: ViewFactory>: View, KeyboardReadable {
                     Image(systemName: "plus")
                         .padding(.all, 12)
                         .foregroundColor(Color.gray)
-                        .background(Color(colors.background1))
+                        .background(Color(colors.backgroundCoreSurfaceSubtle))
                         .clipShape(Circle())
                 }
                 .padding(.bottom, 4)

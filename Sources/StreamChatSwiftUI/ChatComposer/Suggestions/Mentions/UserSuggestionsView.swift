@@ -88,7 +88,7 @@ public struct UserSuggestionView<Factory: ViewFactory>: View {
                 Text(user.name ?? user.id)
                     .lineLimit(1)
                     .font(fonts.body)
-                    .foregroundColor(Color(colors.text))
+                    .foregroundColor(Color(colors.textPrimary))
 
                 Spacer()
             }

@@ -12,6 +12,7 @@ public struct GiphyAttachmentView<Factory: ViewFactory>: View {
     @Injected(\.fonts) private var fonts
     @Injected(\.images) private var images
     @Injected(\.tokens) private var tokens
+    @Injected(\.utils) private var utils
 
     let factory: Factory
     let message: ChatMessage
@@ -47,7 +48,6 @@ public struct GiphyAttachmentView<Factory: ViewFactory>: View {
                 .foregroundColor(colors.chatTextOutgoing.toColor)
                 .padding(.all, tokens.spacingSm)
             }
-
             LazyGiphyView(
                 source: message.giphyAttachments[0].previewURL,
                 width: width
@@ -69,6 +69,8 @@ public struct GiphyAttachmentView<Factory: ViewFactory>: View {
                             execute(action: action)
                         } label: {
                             Text(action.value.firstUppercased)
+                                .lineLimit(1)
+                                .minimumScaleFactor(0.5)
                                 .padding(.horizontal, 4)
                                 .padding(.vertical)
                         }
@@ -83,16 +85,15 @@ public struct GiphyAttachmentView<Factory: ViewFactory>: View {
                 }
             }
         }
+        .frame(maxWidth: width)
         .modifier(
             factory.styles.makeMessageViewModifier(
                 for: MessageModifierInfo(
                     message: message,
-                    isFirst: isFirst,
-                    injectedBackgroundColor: colors.highlightedAccentBackground1
+                    isFirst: isFirst
                 )
             )
         )
-        .frame(maxWidth: width)
         .accessibilityIdentifier("GiphyAttachmentView")
     }
     
@@ -128,8 +129,10 @@ struct LazyGiphyView: View {
             if let imageContainer = state.imageContainer {
                 if imageContainer.type == .gif {
                     AnimatedGifView(imageContainer: imageContainer)
-                } else {
-                    state.image
+                } else if let image = state.image {
+                    image
+                        .resizable()
+                        .scaledToFill()
                 }
             } else if state.error != nil {
                 Color(.secondarySystemBackground)
@@ -143,26 +146,42 @@ struct LazyGiphyView: View {
         .onDisappear(.cancel)
         .processors([ImageProcessors.Resize(width: width)])
         .priority(.high)
-        .aspectRatio(contentMode: .fit)
-        .frame(width: width)
-        .frame(maxHeight: 250)
+        .frame(width: width, height: width)
         .clipped()
     }
 }
 
 /// Recommended implementation by SwiftyGif for rendering gifs in SwiftUI
 /// Nuke dropped gif support and therefore it needs to be implemented separately.
+/// The UIImageView is wrapped in a container with auto-layout constraints
+/// to ensure contentMode scaling works correctly with SwiftyGif's
+/// CADisplayLink-driven frame updates.
 private struct AnimatedGifView: UIViewRepresentable {
     let imageContainer: ImageContainer
 
-    func makeUIView(context: Context) -> UIImageView {
+    func makeUIView(context: Context) -> UIView {
+        let container = UIView()
+        container.clipsToBounds = true
+
         let imageView = UIImageView()
-        imageView.contentMode = .scaleAspectFit
+        imageView.contentMode = .scaleAspectFill
+        imageView.clipsToBounds = true
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        container.addSubview(imageView)
+
+        NSLayoutConstraint.activate([
+            imageView.leadingAnchor.constraint(equalTo: container.leadingAnchor),
+            imageView.trailingAnchor.constraint(equalTo: container.trailingAnchor),
+            imageView.topAnchor.constraint(equalTo: container.topAnchor),
+            imageView.bottomAnchor.constraint(equalTo: container.bottomAnchor)
+        ])
+
         if let gifData = imageContainer.data, let image = try? UIImage(gifData: gifData) {
             imageView.setGifImage(image)
         }
-        return imageView
+
+        return container
     }
 
-    func updateUIView(_ uiView: UIImageView, context: Context) {}
+    func updateUIView(_ uiView: UIView, context: Context) {}
 }

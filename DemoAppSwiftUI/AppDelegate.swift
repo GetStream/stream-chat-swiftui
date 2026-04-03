@@ -70,7 +70,8 @@ class AppDelegate: NSObject, UIApplicationDelegate {
         }
         
         let utils = Utils(
-            messageListConfig: AppConfiguration.makeMessageListConfig()
+            messageListConfig: AppConfiguration.makeMessageListConfig(),
+            composerConfig: AppConfiguration.makeComposerConfig()
         )
         streamChat = StreamChat(chatClient: chatClient, utils: utils)
         

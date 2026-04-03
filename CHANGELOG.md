@@ -4,6 +4,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 # Upcoming
 
 ### ✅ Added
+- Add `ComposerConfig.isVoiceRecordingAutoSendEnabled` to support sending a recording instantly on release [#1362](https://github.com/GetStream/stream-chat-swiftui/pull/1362)
 - Redesign `JumpToUnreadButton` [#1351](https://github.com/GetStream/stream-chat-swiftui/pull/1351)
 - Show deleted messages in channel list preview [#1338](https://github.com/GetStream/stream-chat-swiftui/pull/1338)
 - Update deleted message design in the message list [#1349](https://github.com/GetStream/stream-chat-swiftui/pull/1349)
@@ -11,6 +12,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Redesign the thread replies divider in the message replies list [#1354](https://github.com/GetStream/stream-chat-swiftui/pull/1354)
 
 ### 🐞 Fixed
+- Fix timestamp snapping back faster than delivery indicator on swipe-to-reply [#1360](https://github.com/GetStream/stream-chat-swiftui/pull/1360)
+- Fix tapping a non-first media attachment always opening the first item on initial tap [#1359](https://github.com/GetStream/stream-chat-swiftui/pull/1359)
 - Pinned message label now shows "Pinned by you" when the current user pinned the message [#1329](https://github.com/GetStream/stream-chat-swiftui/pull/1329)
 - Fix single media attachment without sharp tail corner when no caption [#1330](https://github.com/GetStream/stream-chat-swiftui/pull/1330)
 - Fix editing a voice message removing the voice recording attachment [#1327](https://github.com/GetStream/stream-chat-swiftui/pull/1327)
@@ -21,11 +24,15 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Fix giphy previews in the channel list and quote replies [#1333](https://github.com/GetStream/stream-chat-swiftui/pull/1333)
 - Fix black borders on image preview in composer when editing or quoting a message [#1334](https://github.com/GetStream/stream-chat-swiftui/pull/1334)
 - Fix quoted image preview not updating when switching to a different quoted message [#1334](https://github.com/GetStream/stream-chat-swiftui/pull/1334)
+- Use fixed width for attachment previews [#1335](https://github.com/GetStream/stream-chat-swiftui/pull/1335)
+- Fix showing bubble for quoted message and file or image attachment [#1335](https://github.com/GetStream/stream-chat-swiftui/pull/1335)
+- Fix scaling of giphy attachments [#1335](https://github.com/GetStream/stream-chat-swiftui/pull/1335)
 
 ### 🔄 Changed
 - Renamed the `onMessageSent` callback to `willSendMessage` in `MessageComposerViewModel`, `ViewModelsFactory`, and `ComposerViewFactoryOptions` [#1327](https://github.com/GetStream/stream-chat-swiftui/pull/1327)
 - Remove `InjectedChannelInfo` from `ChatChannelListItemView` [#1338](https://github.com/GetStream/stream-chat-swiftui/pull/1338)
 - Rename empty state views from `No` prefix to `Empty` prefix [#1345](https://github.com/GetStream/stream-chat-swiftui/pull/1345)
+- Migrate all the old color tokens to new color tokens [#1350](https://github.com/GetStream/stream-chat-swiftui/pull/1350)
 
 # [4.99.1](https://github.com/GetStream/stream-chat-swiftui/releases/tag/4.99.1)
 _April 01, 2026_

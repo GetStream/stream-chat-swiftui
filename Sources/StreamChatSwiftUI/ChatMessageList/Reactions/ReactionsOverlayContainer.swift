@@ -111,7 +111,7 @@ public struct ReactionsAnimatableView: View {
             .padding(tokens.spacingXs)
         }
         .padding(.leading, tokens.spacingXxs)
-        .reactionsBubble(for: message, background: colors.background8)
+        .reactionsBubble(for: message, background: colors.backgroundCoreElevation2)
     }
 }
 

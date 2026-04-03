@@ -22,13 +22,13 @@ public struct ActionItemView: View {
                 .customizable()
                 .frame(width: 20, height: 18)
                 .foregroundColor(
-                    isDestructive ? Color(colors.alert) : Color(colors.textLowEmphasis)
+                    isDestructive ? Color(colors.accentError) : Color(colors.textTertiary)
                 )
 
             Text(title)
                 .font(boldTitle ? fonts.bodyBold : fonts.body)
                 .foregroundColor(
-                    isDestructive ? Color(colors.alert) : Color(colors.text)
+                    isDestructive ? Color(colors.accentError) : Color(colors.textPrimary)
                 )
 
             Spacer()

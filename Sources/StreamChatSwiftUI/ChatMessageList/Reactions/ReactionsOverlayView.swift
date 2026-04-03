@@ -140,7 +140,7 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
             messageViewModel.usesScrollView = usesScrollView
         }
         .edgesIgnoringSafeArea(.all)
-        .background(orientationChanged ? nil : Color(colors.backgroundElevation1))
+        .background(orientationChanged ? nil : Color(colors.backgroundCoreElevation1))
         .onAppear {
             popIn = true
         }
@@ -246,7 +246,8 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
                         }
                     )
                 )
-                .frame(width: messageActionsWidth)
+                .frame(minWidth: 250, alignment: isRightAligned ? .trailing : .leading)
+                .fixedSize(horizontal: true, vertical: false)
                 .opacity(willPopOut ? 0 : 1)
                 .scaleEffect(popIn ? 1 : (willPopOut ? 0.4 : 0))
                 .animation(willPopOut ? .easeInOut : popInAnimation, value: popIn)
@@ -291,14 +292,6 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
             return messageHorizontalPadding + AvatarSize.medium + tokens.spacingXs
         }
         return messageHorizontalPadding
-    }
-
-    private var messageActionsWidth: CGFloat {
-        var width = messageDisplayInfo.contentWidth + 2 * messageHorizontalPadding
-        if isRightAligned {
-            width -= 2 * messageHorizontalPadding
-        }
-        return width
     }
 
     private var overlayContentWidth: CGFloat {

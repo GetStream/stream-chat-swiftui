@@ -47,22 +47,22 @@ import XCTest
     func test_reactionsIconProvider_currentUserColor() {
         // Given
         let reaction = MessageReactionType(rawValue: "like")
-        
+
         // When
         let color = ReactionsIconProvider.color(for: reaction, userReactionIDs: [reaction])
-        
+
         // Then
-        XCTAssert(color == Color(colors.reactionCurrentUserColor))
+        XCTAssert(color == Color(colors.backgroundUtilitySelected))
     }
-    
+
     func test_reactionsIconProvider_otherUserColor() {
         // Given
         let reaction = MessageReactionType(rawValue: "like")
-        
+
         // When
         let color = ReactionsIconProvider.color(for: reaction, userReactionIDs: [])
-        
+
         // Then
-        XCTAssert(color == Color(colors.reactionOtherUserColor))
+        XCTAssert(color == Color(colors.backgroundUtilitySelected))
     }
 }

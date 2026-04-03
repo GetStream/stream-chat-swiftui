@@ -227,7 +227,7 @@ struct CustomMessageReactionView: View {
 
     private func color(for reaction: MessageReactionType) -> Color? {
         let containsUserReaction = userReactionIDs.contains(reaction)
-        let color = containsUserReaction ? colors.reactionCurrentUserColor : colors.reactionOtherUserColor
+        let color = containsUserReaction ? colors.accentPrimary : colors.textTertiary
         return Color(color)
     }
 

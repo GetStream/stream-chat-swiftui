@@ -41,8 +41,10 @@ public struct LinkAttachmentContainer<Factory: ViewFactory>: View {
                 linkAttachment: message.linkAttachments[0],
                 width: width,
                 isFirst: isFirst,
+                isRightAligned: message.isRightAligned,
                 onImageTap: onImageTap
             )
+            .frame(width: width, alignment: message.isRightAligned ? .trailing : .leading)
             .background(MessageAttachmentsBubbleConfiguration.attachmentBackgroundColor(for: message))
             .roundWithBorder()
             .accessibilityIdentifier("LinkAttachmentContainer")
@@ -59,17 +61,20 @@ public struct LinkAttachmentView: View {
     var linkAttachment: ChatMessageLinkAttachment
     var width: CGFloat
     var isFirst: Bool
+    let isRightAligned: Bool
     var onImageTap: ((ChatMessageLinkAttachment) -> Void)?
 
     public init(
         linkAttachment: ChatMessageLinkAttachment,
         width: CGFloat,
         isFirst: Bool,
+        isRightAligned: Bool,
         onImageTap: ((ChatMessageLinkAttachment) -> Void)? = nil
     ) {
         self.linkAttachment = linkAttachment
         self.width = width
         self.isFirst = isFirst
+        self.isRightAligned = isRightAligned
         self.onImageTap = onImageTap
     }
 
@@ -93,11 +98,11 @@ public struct LinkAttachmentView: View {
                     if !authorHidden {
                         BottomLeftView {
                             Text(linkAttachment.author ?? "")
-                                .foregroundColor(colors.messageLinkAttachmentAuthorColor)
+                                .foregroundColor(Color(colors.textPrimary))
                                 .font(fonts.bodyBold)
                                 .standardPadding()
                                 .bubble(
-                                    with: Color(colors.highlightedAccentBackground1),
+                                    with: Color(colors.backgroundCoreElevation1),
                                     corners: [.topRight],
                                     borderColor: .clear
                                 )
@@ -110,14 +115,14 @@ public struct LinkAttachmentView: View {
                 if let title = linkAttachment.title {
                     Text(title)
                         .font(fonts.footnoteBold)
-                        .foregroundColor(colors.messageLinkAttachmentTitleColor)
+                        .foregroundColor(Color(isRightAligned ? colors.chatTextOutgoing : colors.chatTextIncoming))
                         .lineLimit(1)
                 }
 
                 if let description = linkAttachment.text {
                     Text(description)
                         .font(fonts.footnote)
-                        .foregroundColor(colors.messageLinkAttachmentTextColor)
+                        .foregroundColor(Color(isRightAligned ? colors.chatTextOutgoing : colors.chatTextIncoming))
                         .lineLimit(3)
                 }
             }

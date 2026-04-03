@@ -69,7 +69,7 @@ open class DefaultMarkdownFormatter: MarkdownFormatter {
         switch presentationKind {
         case .blockQuote:
             return AttributeContainer()
-                .foregroundColor(Color(colors.subtitleText))
+                .foregroundColor(Color(colors.textSecondary))
         case .codeBlock:
             return AttributeContainer()
                 .font(fonts.body.monospaced())
@@ -88,7 +88,7 @@ open class DefaultMarkdownFormatter: MarkdownFormatter {
             default:
                 fonts.footnote
             }
-            let foregroundColor: Color? = level >= 6 ? Color(colors.subtitleText) : nil
+            let foregroundColor: Color? = level >= 6 ? Color(colors.textSecondary) : nil
             if let foregroundColor {
                 return AttributeContainer()
                     .font(font)

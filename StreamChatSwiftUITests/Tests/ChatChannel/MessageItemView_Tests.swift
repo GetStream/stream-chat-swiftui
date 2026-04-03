@@ -1050,6 +1050,35 @@ import XCTest
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
 
+    func test_portraitImageWithOneReaction_snapshot() {
+        // Given
+        let reactions: [MessageReactionType: Int] = [
+            MessageReactionType(rawValue: "like"): 1
+        ]
+        let channel = ChatChannel.mockNonDMChannel()
+        let attachments = ChatChannelTestHelpers.imageAttachments(
+            count: 1,
+            originalWidth: 1200,
+            originalHeight: 1600
+        )
+        let message = ChatMessage.mock(
+            id: .unique,
+            cid: channel.cid,
+            text: "",
+            author: .mock(id: .unique, name: "Alice"),
+            reactionScores: reactions,
+            reactionCounts: reactions,
+            attachments: attachments,
+            isSentByCurrentUser: false
+        )
+
+        // When
+        let view = testMessageViewContainer(message: message, channel: channel, height: 340)
+
+        // Then
+        AssertSnapshot(view)
+    }
+
     // MARK: - private
 
     func testMessageViewContainer(

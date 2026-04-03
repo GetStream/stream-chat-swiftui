@@ -8,6 +8,12 @@ import SwiftUI
 /// Config for customizing the composer.
 public final class ComposerConfig {
     public var isVoiceRecordingEnabled: Bool
+
+    /// When enabled, releasing a hold-to-record gesture sends the voice message
+    /// immediately. When disabled (default), the recording is added to the
+    /// composer's attachment preview so the user can review before sending.
+    public var isVoiceRecordingAutoSendEnabled: Bool
+
     public var inputViewMinHeight: CGFloat
     public var inputViewMaxHeight: CGFloat
     public var inputViewCornerRadius: CGFloat
@@ -19,6 +25,7 @@ public final class ComposerConfig {
 
     public init(
         isVoiceRecordingEnabled: Bool = true,
+        isVoiceRecordingAutoSendEnabled: Bool = false,
         inputViewMinHeight: CGFloat = 40,
         inputViewMaxHeight: CGFloat = 120,
         inputViewCornerRadius: CGFloat = 20,
@@ -37,6 +44,7 @@ public final class ComposerConfig {
         self.gallerySupportedTypes = gallerySupportedTypes
         self.maxGalleryAssetsCount = maxGalleryAssetsCount
         self.isVoiceRecordingEnabled = isVoiceRecordingEnabled
+        self.isVoiceRecordingAutoSendEnabled = isVoiceRecordingAutoSendEnabled
     }
 }
 

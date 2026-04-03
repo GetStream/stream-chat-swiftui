@@ -488,10 +488,13 @@ public final class PollViewOptions: Sendable {
     public let poll: Poll
     /// Whether this is the first message in a group.
     public let isFirst: Bool
-    
-    public init(message: ChatMessage, poll: Poll, isFirst: Bool) {
+    /// The available width for the poll view.
+    public let availableWidth: CGFloat
+
+    public init(message: ChatMessage, poll: Poll, isFirst: Bool, availableWidth: CGFloat) {
         self.message = message
         self.poll = poll
         self.isFirst = isFirst
+        self.availableWidth = availableWidth
     }
 }

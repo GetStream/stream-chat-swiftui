@@ -12,6 +12,7 @@ struct AppConfigurationView: View {
     @State private var reactionsPlacement = AppConfiguration.default.reactionsPlacement
     @State private var appStyle = AppConfiguration.default.appStyle
     @State private var forceRTL = AppConfiguration.default.forceRTL
+    @State private var voiceRecordingAutoSend = AppConfiguration.default.isVoiceRecordingAutoSendEnabled
 
     var body: some View {
         NavigationView {
@@ -38,6 +39,9 @@ struct AppConfigurationView: View {
                         Text("Liquid Glass").tag(AppConfiguration.AppStyle.liquidGlass)
                     }
                 }
+                Section("Voice Recording") {
+                    Toggle("Auto-send on release", isOn: $voiceRecordingAutoSend)
+                }
                 Section("Layout") {
                     Toggle("Force RTL (preview)", isOn: $forceRTL)
                 }
@@ -57,6 +61,10 @@ struct AppConfigurationView: View {
         }
         .onChange(of: appStyle) { newStyle in
             AppConfiguration.default.appStyle = newStyle
+        }
+        .onChange(of: voiceRecordingAutoSend) { newValue in
+            AppConfiguration.default.isVoiceRecordingAutoSendEnabled = newValue
+            InjectedValues[\.utils].composerConfig = AppConfiguration.makeComposerConfig()
         }
     }
 }

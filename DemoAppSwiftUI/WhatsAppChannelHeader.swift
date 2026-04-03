@@ -48,7 +48,7 @@ struct WhatsAppChannelHeader: ToolbarContent {
                         .font(fonts.bodyBold)
                     Text(channelSubtitle)
                         .font(fonts.caption1)
-                        .foregroundColor(Color(colors.textLowEmphasis))
+                        .foregroundColor(Color(colors.textTertiary))
                 }
             }
         }

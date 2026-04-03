@@ -162,9 +162,12 @@ public class StreamTextViewOptions {
 public class AttachmentTextViewOptions {
     /// The message whose text caption should be displayed.
     public let message: ChatMessage
+    /// The maximum width available for the text caption.
+    public let availableWidth: CGFloat
 
-    public init(message: ChatMessage) {
+    public init(message: ChatMessage, availableWidth: CGFloat) {
         self.message = message
+        self.availableWidth = availableWidth
     }
 }
 

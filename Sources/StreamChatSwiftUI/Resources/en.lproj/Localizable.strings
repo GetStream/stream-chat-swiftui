@@ -214,7 +214,8 @@
 "composer.suggestions.commands.header" = "Instant Commands";
 "message.sending.attachment-uploading-failed" = "UPLOADING FAILED";
 
-"composer.recording.tip" = "Hold to record. Release to send";
+"composer.recording.tip" = "Hold to record. Release to send.";
+"composer.recording.tipSave" = "Hold to record. Release to save.";
 "composer.recording.slide-to-cancel" = "Slide to cancel";
 "composer.recording.recordingStopped" = "Recording stopped";
 "composer.recording.voiceMessageDeleted" = "Voice message deleted";

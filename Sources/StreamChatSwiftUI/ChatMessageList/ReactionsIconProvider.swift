@@ -38,9 +38,7 @@ class ReactionsIconProvider {
     }
 
     @MainActor static func color(for reaction: MessageReactionType, userReactionIDs: Set<MessageReactionType>) -> Color? {
-        let containsUserReaction = userReactionIDs.contains(reaction)
-        let color = containsUserReaction ? colors.reactionCurrentUserColor : colors.reactionOtherUserColor
-        return Color(color)
+        return Color(colors.backgroundUtilitySelected)
     }
 }
 
