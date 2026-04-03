@@ -245,6 +245,10 @@ import UIKit
     public func onDeleteTapped(channel: ChatChannel) {
         setChannelAlertType(.deleteChannel(channel))
     }
+    
+    public func onMuteTapped(channel: ChatChannel) {
+        setChannelAlertType(.muteChannel(channel))
+    }
 
     public func onMoreTapped(channel: ChatChannel) {
         channelPopupType = .moreActions(channel)
@@ -261,6 +265,27 @@ import UIKit
                 self?.setChannelAlertType(.error)
             }
         }
+    }
+
+    public func mute(channel: ChatChannel) {
+        let controller = chatClient.channelController(
+            for: .init(type: channel.type, id: channel.cid.id)
+        )
+
+        if channel.isMuted {
+            controller.unmuteChannel { [weak self] error in
+                if error != nil {
+                    self?.setChannelAlertType(.error)
+                }
+            }
+        } else {
+            controller.muteChannel { [weak self] error in
+                if error != nil {
+                    self?.setChannelAlertType(.error)
+                }
+            }
+        }
+        swipedChannelId = nil
     }
 
     open func showErrorPopup(_ error: Error?) {
@@ -606,6 +631,7 @@ public func notifyHideTabBar() {
 
 /// Enum for the type of alert presented in the channel list view.
 public enum ChannelAlertType: Equatable {
+    case muteChannel(ChatChannel)
     case deleteChannel(ChatChannel)
     case error
 }

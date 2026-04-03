@@ -53,7 +53,7 @@ public struct ChatChannelSwipeableListItem<Factory: ViewFactory, ChannelListItem
         swipedChannelId: Binding<String?>,
         channel: ChatChannel,
         numberOfTrailingItems: Int = 2,
-        widthOfTrailingItem: CGFloat = 60,
+        widthOfTrailingItem: CGFloat = 80,
         trailingRightButtonTapped: @escaping @MainActor (ChatChannel) -> Void,
         trailingLeftButtonTapped: @escaping @MainActor (ChatChannel) -> Void,
         leadingSwipeButtonTapped: @escaping @MainActor (ChatChannel) -> Void
@@ -299,16 +299,14 @@ public struct TrailingSwipeActionsView: View {
                     .foregroundColor(Color(colors.textPrimary))
                     .background(Color(colors.backgroundCoreSurfaceSubtle))
 
-                    if channel.ownCapabilities.contains(.deleteChannel) {
-                        ActionItemButton(imageName: "trash", action: {
-                            withAnimation {
-                                rightButtonTapped(channel)
-                            }
-                        })
-                        .frame(width: buttonWidth)
-                        .foregroundColor(Color(colors.textOnAccent))
-                        .background(Color(colors.accentError))
-                    }
+                    ActionItemButton(imageName: "speaker.slash", action: {
+                        withAnimation {
+                            rightButtonTapped(channel)
+                        }
+                    })
+                    .frame(width: buttonWidth)
+                    .foregroundColor(Color(colors.textOnAccent))
+                    .background(Color(colors.accentPrimary))
                 }
             }
             .opacity(offsetX < -5 ? 1 : 0)
