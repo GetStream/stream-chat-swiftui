@@ -245,7 +245,7 @@ struct SwipeToReplyModifier: ViewModifier {
         content
             .coordinateSpace(name: "swipeToReply")
             .offset(x: min(offsetX, maximumHorizontalSwipeDisplacement))
-            .simultaneousGesture(
+            .gesture(
                 DragGesture(
                     minimumDistance: minimumSwipeDistance,
                     coordinateSpace: .named("swipeToReply")
