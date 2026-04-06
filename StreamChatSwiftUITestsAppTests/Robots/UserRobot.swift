@@ -273,7 +273,7 @@ extension UserRobot {
 
     @discardableResult
     func tapOnScrollToBottomButton() -> Self {
-        MessageListPage.scrollToBottomButton.safeTap()
+        MessageListPage.scrollToBottomButton.wait().safeTap()
         return self
     }
 
