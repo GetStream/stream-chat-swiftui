@@ -228,6 +228,8 @@ public final class ComposerInputTrailingViewOptions: @unchecked Sendable {
     @Binding public var text: String
     /// Binding to the recording state.
     @Binding public var recordingState: VoiceRecordingState
+    /// Binding for the composer command.
+    @Binding public var composerCommand: ComposerCommand?
     /// The current composer's input view state.
     public let composerInputState: MessageComposerInputState
     /// The closure for starting a recording.
@@ -242,6 +244,7 @@ public final class ComposerInputTrailingViewOptions: @unchecked Sendable {
     public init(
         text: Binding<String>,
         recordingState: Binding<VoiceRecordingState>,
+        composerCommand: Binding<ComposerCommand?>,
         composerInputState: MessageComposerInputState,
         startRecording: @escaping @MainActor () -> Void,
         stopRecording: @escaping @MainActor () -> Void,
@@ -250,6 +253,7 @@ public final class ComposerInputTrailingViewOptions: @unchecked Sendable {
     ) {
         _text = text
         _recordingState = recordingState
+        _composerCommand = composerCommand
         self.composerInputState = composerInputState
         self.startRecording = startRecording
         self.stopRecording = stopRecording
