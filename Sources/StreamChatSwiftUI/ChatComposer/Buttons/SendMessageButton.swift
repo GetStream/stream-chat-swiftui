@@ -12,6 +12,8 @@ public struct SendMessageButton: View {
     var enabled: Bool
     var onTap: () -> Void
 
+    @State private var isSending = false
+
     public init(enabled: Bool, onTap: @escaping () -> Void) {
         self.enabled = enabled
         self.onTap = onTap
@@ -22,13 +24,22 @@ public struct SendMessageButton: View {
             role: .primary,
             style: .solid,
             size: .small,
-            action: onTap
+            action: {
+                guard !isSending else { return }
+                isSending = true
+                onTap()
+            }
         ) {
             Image(uiImage: images.composerSend)
                 .renderingMode(.template)
                 .frame(width: tokens.iconSizeMd, height: tokens.iconSizeMd)
         }
-        .disabled(!enabled)
+        .disabled(!enabled || isSending)
+        .onChange(of: enabled) { newValue in
+            if !newValue {
+                isSending = false
+            }
+        }
         .accessibilityLabel(Text(L10n.Composer.Placeholder.message))
         .accessibilityIdentifier("SendMessageButton")
     }
