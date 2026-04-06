@@ -457,6 +457,78 @@ import XCTest
         AssertSnapshot(view, variants: [.defaultLight, .defaultDark])
     }
 
+    // MARK: - Send Button Icon
+
+    func test_messageComposerView_sendButton_noCommandSelected() {
+        // Given — text entered, no command: send button shows the standard composerSend icon
+        let factory = DefaultViewFactory.shared
+        let channelController = ChatChannelTestHelpers.makeChannelController(chatClient: chatClient)
+        let viewModel = MessageComposerViewModel(channelController: channelController, messageController: nil)
+        viewModel.text = "Hello"
+
+        // When
+        let view = MessageComposerView(
+            viewFactory: factory,
+            viewModel: viewModel,
+            channelController: channelController,
+            messageController: nil,
+            quotedMessage: .constant(nil),
+            editedMessage: .constant(nil),
+            willSendMessage: {}
+        )
+        .frame(width: composerWidth, height: 56)
+
+        // Then
+        AssertSnapshot(view, variants: [.defaultLight, .defaultDark])
+    }
+
+    func test_messageComposerView_sendButton_commandSelected_noText() {
+        // Given — instant command active, no text: send button shows selectionBadgeIcon (disabled)
+        let factory = DefaultViewFactory.shared
+        let channelController = ChatChannelTestHelpers.makeChannelController(chatClient: chatClient)
+        let viewModel = MessageComposerViewModel(channelController: channelController, messageController: nil)
+        viewModel.composerCommand = ComposerCommandFactory.shared.giphy()
+
+        // When
+        let view = MessageComposerView(
+            viewFactory: factory,
+            viewModel: viewModel,
+            channelController: channelController,
+            messageController: nil,
+            quotedMessage: .constant(nil),
+            editedMessage: .constant(nil),
+            willSendMessage: {}
+        )
+        .frame(width: composerWidth, height: 56)
+
+        // Then
+        AssertSnapshot(view, variants: [.defaultLight, .defaultDark])
+    }
+
+    func test_messageComposerView_sendButton_commandSelected_withText() {
+        // Given — instant command active with text: send button shows selectionBadgeIcon (enabled)
+        let factory = DefaultViewFactory.shared
+        let channelController = ChatChannelTestHelpers.makeChannelController(chatClient: chatClient)
+        let viewModel = MessageComposerViewModel(channelController: channelController, messageController: nil)
+        viewModel.composerCommand = ComposerCommandFactory.shared.giphy()
+        viewModel.text = "funny cat"
+
+        // When
+        let view = MessageComposerView(
+            viewFactory: factory,
+            viewModel: viewModel,
+            channelController: channelController,
+            messageController: nil,
+            quotedMessage: .constant(nil),
+            editedMessage: .constant(nil),
+            willSendMessage: {}
+        )
+        .frame(width: composerWidth, height: 56)
+
+        // Then
+        AssertSnapshot(view, variants: [.defaultLight, .defaultDark])
+    }
+
     // MARK: - Send In Channel
 
     func test_messageComposerView_sendInChannel_selected() {

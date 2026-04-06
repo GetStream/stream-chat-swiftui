@@ -9,6 +9,7 @@ struct TrailingInputComposerView<Factory: ViewFactory>: View {
     
     @Binding var text: String
     @Binding var recordingState: VoiceRecordingState
+    @Binding var composerCommand: ComposerCommand?
     var composerInputState: MessageComposerInputState
     var startRecording: @MainActor () -> Void
     var stopRecording: @MainActor () -> Void
@@ -17,13 +18,22 @@ struct TrailingInputComposerView<Factory: ViewFactory>: View {
 
     var body: some View {
         switch composerInputState {
-        case .creating(let hasContent):
-            factory.makeSendMessageButton(
-                options: SendMessageButtonOptions(
-                    enabled: hasContent,
-                    onTap: sendMessage
+        case .creating(let hasContent, let hasCommand):
+            if hasCommand {
+                factory.makeConfirmEditButton(
+                    options: ConfirmEditButtonOptions(
+                        enabled: hasContent,
+                        onTap: sendMessage
+                    )
                 )
-            )
+            } else {
+                factory.makeSendMessageButton(
+                    options: SendMessageButtonOptions(
+                        enabled: hasContent,
+                        onTap: sendMessage
+                    )
+                )
+            }
         case .editing(let hasContent):
             factory.makeConfirmEditButton(
                 options: ConfirmEditButtonOptions(

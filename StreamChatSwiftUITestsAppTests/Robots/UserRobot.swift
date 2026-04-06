@@ -376,7 +376,8 @@ extension UserRobot {
             sendMessage("\(text)", waitForAppearance: false)
         } else {
             typeText("/giphy")
-            sendMessage(text, waitForAppearance: false)
+            typeText(text)
+            composer.confirmButton.safeTap()
         }
         MessageListPage.Attributes.actionButtons().firstMatch.wait()
         if send { tapOnSendGiphyButton() }
