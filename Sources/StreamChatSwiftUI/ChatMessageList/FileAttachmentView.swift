@@ -55,6 +55,12 @@ public struct FileAttachmentsContainer<Factory: ViewFactory>: View {
                     )
                     .stroke(Color(colors.borderCoreDefault), lineWidth: 1)
                 )
+                .clipShape(
+                    BubbleBackgroundShape(
+                        cornerRadius: tokens.messageBubbleRadiusAttachment,
+                        corners: corners
+                    )
+                )
             }
         }
         .accessibilityIdentifier("FileAttachmentsContainer")
