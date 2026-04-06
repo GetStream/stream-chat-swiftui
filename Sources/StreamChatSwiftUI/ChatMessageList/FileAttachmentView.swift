@@ -33,9 +33,9 @@ public struct FileAttachmentsContainer<Factory: ViewFactory>: View {
     public var body: some View {
         let attachments = message.fileAttachments
         VStack(spacing: tokens.spacingXxs) {
-            ForEach(Array(attachments.enumerated()), id: \.element.id) { index, attachment in
-                let isLast = index == attachments.count - 1
-                let corners: UIRectCorner = isLast
+            ForEach(attachments) { attachment in
+                let isSingleMediaWithoutCaption = message.text.isEmpty && attachments.count == 1
+                let corners: UIRectCorner = isFirst && isSingleMediaWithoutCaption
                     ? message.bubbleCorners(
                         isFirst: isFirst,
                         forceLeftToRight: utils.messageListConfig.messageListAlignment == .leftAligned,
