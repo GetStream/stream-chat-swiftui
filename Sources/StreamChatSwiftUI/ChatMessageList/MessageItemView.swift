@@ -107,7 +107,7 @@ public struct MessageItemView<Factory: ViewFactory>: View {
                     }
                 )
                 .contentShape(Rectangle())
-                .allowsHitTesting(!shownAsPreview)
+                .allowsHitTesting(!shownAsPreview || (messageViewModel.usesScrollView))
                 .onTapGesture(count: 2) {
                     if messageViewModel.isDoubleTapOverlayEnabled {
                         handleGestureForMessage(showsMessageActions: true)
