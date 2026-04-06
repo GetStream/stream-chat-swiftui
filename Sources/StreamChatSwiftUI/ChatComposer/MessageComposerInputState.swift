@@ -7,7 +7,7 @@ import Foundation
 /// The current composer's input view state.
 public enum MessageComposerInputState {
     case slowMode(cooldownDuration: Int)
-    case creating(hasContent: Bool)
+    case creating(hasContent: Bool, hasCommand: Bool)
     case editing(hasContent: Bool)
     case allowAudioRecording
 }
