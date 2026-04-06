@@ -560,6 +560,7 @@ extension ViewFactory {
             factory: self,
             text: options.$text,
             recordingState: options.$recordingState,
+            composerCommand: options.$composerCommand,
             composerInputState: options.composerInputState,
             startRecording: options.startRecording,
             stopRecording: options.stopRecording,

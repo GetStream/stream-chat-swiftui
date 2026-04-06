@@ -588,6 +588,7 @@ public struct ComposerInputView<Factory: ViewFactory>: View, KeyboardReadable {
                 options: .init(
                     text: $text,
                     recordingState: $recordingState,
+                    composerCommand: $command,
                     composerInputState: composerInputState,
                     startRecording: startRecording,
                     stopRecording: stopRecording,
@@ -670,14 +671,14 @@ public struct ComposerInputView<Factory: ViewFactory>: View, KeyboardReadable {
         }
 
         if command?.displayInfo?.isInstant == true {
-            return .creating(hasContent: hasContent)
+            return .creating(hasContent: hasContent, hasCommand: true)
         }
 
         if utils.composerConfig.isVoiceRecordingEnabled && !hasContent {
             return .allowAudioRecording
         }
 
-        return .creating(hasContent: hasContent)
+        return .creating(hasContent: hasContent, hasCommand: false)
     }
 
     private var isInCooldown: Bool {
