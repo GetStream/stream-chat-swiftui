@@ -410,7 +410,7 @@ extension MessageList_Tests {
             userRobot.login().openChannel()
         }
         AND("user scrolls up") {
-            userRobot.scrollMessageListUpSlow()
+            userRobot.scrollMessageListUp()
         }
         AND("participant sends some messages") {
             participantRobot
