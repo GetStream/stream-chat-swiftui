@@ -265,8 +265,15 @@ import SwiftUI
     private func selectedMessageInChannel(notification: Notification) {
         resignFirstResponder()
         guard let messageId = notification.userInfo?[MessageRepliesConstants.channelMessageMessageId] as? String else { return }
+        let wasInThread = threadMessageShown
         threadMessageShown = false
-        _ = jumpToMessage(messageId: messageId)
+        if wasInThread {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { [weak self] in
+                _ = self?.jumpToMessage(messageId: messageId)
+            }
+        } else {
+            _ = jumpToMessage(messageId: messageId)
+        }
     }
     
     @objc
