@@ -47,6 +47,56 @@ import XCTest
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
     
+    func test_messageViewText_sendingFailed_singleLine_snapshot() {
+        // Given
+        let textMessage = ChatMessage.mock(
+            id: .unique,
+            cid: .unique,
+            text: "test message",
+            author: .mock(id: .unique),
+            localState: .sendingFailed
+        )
+        
+        // When
+        let view = MessageView(
+            factory: DefaultViewFactory.shared,
+            message: textMessage,
+            contentWidth: defaultScreenSize.width,
+            isFirst: true,
+            scrolledId: .constant(nil)
+        )
+        .overlay(SendFailureIndicator())
+        .frame(width: defaultScreenSize.width, height: 100)
+        
+        // Then
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
+    }
+    
+    func test_messageViewText_sendingFailed_multiLine_snapshot() {
+        // Given
+        let textMessage = ChatMessage.mock(
+            id: .unique,
+            cid: .unique,
+            text: "Hey, did you get a chance to look at the venue options for Saturday?",
+            author: .mock(id: .unique),
+            localState: .sendingFailed
+        )
+        
+        // When
+        let view = MessageView(
+            factory: DefaultViewFactory.shared,
+            message: textMessage,
+            contentWidth: defaultScreenSize.width,
+            isFirst: true,
+            scrolledId: .constant(nil)
+        )
+        .overlay(SendFailureIndicator())
+        .frame(width: defaultScreenSize.width, height: 150)
+        
+        // Then
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
+    }
+    
     func test_messageViewTextMention_snapshot() {
         // Given
         let textMessage = ChatMessage.mock(
