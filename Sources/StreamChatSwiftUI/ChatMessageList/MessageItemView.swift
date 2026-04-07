@@ -354,12 +354,15 @@ struct SendFailureIndicator: View {
     @Injected(\.images) private var images
 
     var body: some View {
-        BottomRightView {
+        TopRightView {
             Image(uiImage: images.messageListErrorIndicator)
                 .customizable()
-                .frame(width: 16, height: 16)
+                .frame(width: 20, height: 20)
                 .foregroundColor(Color(colors.badgeBackgroundError))
-                .offset(y: 4)
+                .padding(2)
+                .background(Color(colors.badgeBorder))
+                .clipShape(Circle())
+                .offset(x: 14, y: 6)
         }
         .accessibilityElement(children: .contain)
         .accessibilityIdentifier("SendFailureIndicator")
