@@ -228,6 +228,71 @@ import XCTest
         // Then
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
+
+    func test_reactionsOverlayView_allAnnotations() {
+        // Given
+        let currentUserId = StreamChatTestCase.currentUserId
+        streamChat = StreamChat(chatClient: chatClient, utils: Utils(
+            messageListConfig: .init(messageDisplayOptions: MessageDisplayOptions(showOriginalTranslatedButton: true))
+        ))
+
+        let config = ChannelConfig(
+            reactionsEnabled: true,
+            readEventsEnabled: true,
+            messageRemindersEnabled: true
+        )
+        let channel = ChatChannel.mock(
+            cid: .unique,
+            config: config,
+            ownCapabilities: [.sendMessage, .uploadFile, .readEvents],
+            membership: .mock(id: "test", language: .portuguese)
+        )
+
+        let readUser = ChatUser.mock(id: .unique, name: "reader")
+        let testMessage = ChatMessage.mock(
+            id: "test",
+            cid: channel.cid,
+            text: "Hey, did you get a chance to look at the venue options?",
+            author: .mock(id: currentUserId, name: "martin"),
+            parentMessageId: .unique,
+            showReplyInChannel: true,
+            replyCount: 3,
+            translations: [.portuguese: "Olá, conseguiu ver as opções de local?"],
+            threadParticipants: [.mock(id: .unique, name: "alice")],
+            isSentByCurrentUser: true,
+            pinDetails: MessagePinDetails(
+                pinnedAt: Date(),
+                pinnedBy: .mock(id: currentUserId, name: "martin"),
+                expiresAt: nil
+            ),
+            readBy: [readUser],
+            reminder: MessageReminderInfo(
+                remindAt: Date().addingTimeInterval(3600),
+                createdAt: Date(),
+                updatedAt: Date()
+            )
+        )
+        let messageDisplayInfo = MessageDisplayInfo(
+            message: testMessage,
+            frame: CGRect(x: 0, y: 650, width: defaultScreenSize.width, height: 200),
+            contentWidth: 240,
+            isFirst: true
+        )
+
+        let view = OverlayHostView {
+            ReactionsOverlayView(
+                factory: DefaultViewFactory.shared,
+                channel: channel,
+                currentSnapshot: self.overlayImage,
+                messageDisplayInfo: messageDisplayInfo,
+                onBackgroundTap: {},
+                onActionExecuted: { _ in }
+            )
+        }
+
+        // Then
+        AssertSnapshot(view, variants: .onlyUserInterfaceStyles, size: defaultScreenSize)
+    }
 }
 
 private struct OverlayHostView<Content: View>: View {
