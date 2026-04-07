@@ -166,19 +166,45 @@ enum MessageAttachmentsBubbleConfiguration {
 
     /// Applies the voice recording attachment container styling (padding,
     /// background, and rounded border). When the voice recording is a
-    /// quoted reply without a text caption, the container is omitted so the
-    /// player renders flat inside the message bubble.
+    /// quoted reply without a text caption, the background and border are
+    /// omitted so the player renders flat inside the message bubble.
     struct VoiceRecordingContainerModifier: ViewModifier {
+        @Injected(\.colors) private var colors
         @Injected(\.tokens) private var tokens
+        @Injected(\.utils) private var utils
+        @Environment(\.layoutDirection) private var layoutDirection
+
         let message: ChatMessage
+        let isFirst: Bool
 
         @ViewBuilder
         func body(content: Content) -> some View {
             if isContainerShown {
+                let isSingleWithoutCaption = message.text.isEmpty
+                    && message.voiceRecordingAttachments.count == 1
+                let corners: UIRectCorner = isFirst && isSingleWithoutCaption
+                    ? message.bubbleCorners(
+                        isFirst: isFirst,
+                        forceLeftToRight: utils.messageListConfig.messageListAlignment == .leftAligned,
+                        layoutDirection: layoutDirection
+                    )
+                    : .allCorners
                 content
                     .padding(.all, tokens.spacingXs)
                     .background(MessageAttachmentsBubbleConfiguration.attachmentBackgroundColor(for: message))
-                    .roundWithBorder(cornerRadius: tokens.messageBubbleRadiusAttachment)
+                    .overlay(
+                        BubbleBackgroundShape(
+                            cornerRadius: tokens.messageBubbleRadiusAttachment,
+                            corners: corners
+                        )
+                        .stroke(Color(colors.borderCoreDefault), lineWidth: 1)
+                    )
+                    .clipShape(
+                        BubbleBackgroundShape(
+                            cornerRadius: tokens.messageBubbleRadiusAttachment,
+                            corners: corners
+                        )
+                    )
             } else {
                 content
             }

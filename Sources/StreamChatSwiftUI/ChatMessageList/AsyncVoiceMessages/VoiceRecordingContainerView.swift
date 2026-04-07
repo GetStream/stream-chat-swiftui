@@ -51,7 +51,7 @@ public struct VoiceRecordingContainerView<Factory: ViewFactory>: View {
                     ),
                     isSentByCurrentUser: message.isSentByCurrentUser
                 )
-                .modifier(MessageAttachmentsBubbleConfiguration.VoiceRecordingContainerModifier(message: message))
+                .modifier(MessageAttachmentsBubbleConfiguration.VoiceRecordingContainerModifier(message: message, isFirst: isFirst))
             }
         }
         .frame(width: width, alignment: message.isRightAligned ? .trailing : .leading)
