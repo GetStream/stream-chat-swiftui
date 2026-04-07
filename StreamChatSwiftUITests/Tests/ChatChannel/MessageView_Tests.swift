@@ -746,6 +746,150 @@ import XCTest
         )
     }
 
+    func test_messageViewVoiceRecordingQuotedFromParticipant_snapshot() {
+        // Given
+        let quoted = ChatMessage.mock(
+            id: .unique,
+            cid: .unique,
+            text: "This is a quoted message",
+            author: .mock(id: .unique, name: "John Wick")
+        )
+        let voiceMessage = ChatMessage.mock(
+            id: .unique,
+            cid: .unique,
+            text: "",
+            author: .mock(id: .unique),
+            quotedMessage: quoted,
+            attachments: ChatChannelTestHelpers.voiceRecordingAttachments,
+            isSentByCurrentUser: false
+        )
+
+        // When
+        let view = MessageView(
+            factory: DefaultViewFactory.shared,
+            message: voiceMessage,
+            contentWidth: defaultScreenSize.width,
+            isFirst: true,
+            scrolledId: .constant(nil)
+        )
+        .frame(width: defaultScreenSize.width, height: 200)
+        .padding()
+
+        // Then
+        AssertSnapshot(
+            view,
+            size: CGSize(width: defaultScreenSize.width, height: 200)
+        )
+    }
+
+    func test_messageViewVoiceRecordingQuotedFromMe_snapshot() {
+        // Given
+        let quoted = ChatMessage.mock(
+            id: .unique,
+            cid: .unique,
+            text: "This is a quoted message",
+            author: .mock(id: .unique, name: "John Wick")
+        )
+        let voiceMessage = ChatMessage.mock(
+            id: .unique,
+            cid: .unique,
+            text: "",
+            author: .mock(id: .unique),
+            quotedMessage: quoted,
+            attachments: ChatChannelTestHelpers.voiceRecordingAttachments,
+            isSentByCurrentUser: true
+        )
+
+        // When
+        let view = MessageView(
+            factory: DefaultViewFactory.shared,
+            message: voiceMessage,
+            contentWidth: defaultScreenSize.width,
+            isFirst: true,
+            scrolledId: .constant(nil)
+        )
+        .frame(width: defaultScreenSize.width, height: 200)
+        .padding()
+
+        // Then
+        AssertSnapshot(
+            view,
+            size: CGSize(width: defaultScreenSize.width, height: 200)
+        )
+    }
+
+    func test_messageViewVoiceRecordingQuotedWithTextFromParticipant_snapshot() {
+        // Given
+        let quoted = ChatMessage.mock(
+            id: .unique,
+            cid: .unique,
+            text: "This is a quoted message",
+            author: .mock(id: .unique, name: "John Wick")
+        )
+        let voiceMessage = ChatMessage.mock(
+            id: .unique,
+            cid: .unique,
+            text: "Check this voice note",
+            author: .mock(id: .unique),
+            quotedMessage: quoted,
+            attachments: ChatChannelTestHelpers.voiceRecordingAttachments,
+            isSentByCurrentUser: false
+        )
+
+        // When
+        let view = MessageView(
+            factory: DefaultViewFactory.shared,
+            message: voiceMessage,
+            contentWidth: defaultScreenSize.width,
+            isFirst: true,
+            scrolledId: .constant(nil)
+        )
+        .frame(width: defaultScreenSize.width, height: 220)
+        .padding()
+
+        // Then
+        AssertSnapshot(
+            view,
+            size: CGSize(width: defaultScreenSize.width, height: 220)
+        )
+    }
+
+    func test_messageViewVoiceRecordingQuotedWithTextFromMe_snapshot() {
+        // Given
+        let quoted = ChatMessage.mock(
+            id: .unique,
+            cid: .unique,
+            text: "This is a quoted message",
+            author: .mock(id: .unique, name: "John Wick")
+        )
+        let voiceMessage = ChatMessage.mock(
+            id: .unique,
+            cid: .unique,
+            text: "Check this voice note",
+            author: .mock(id: .unique),
+            quotedMessage: quoted,
+            attachments: ChatChannelTestHelpers.voiceRecordingAttachments,
+            isSentByCurrentUser: true
+        )
+
+        // When
+        let view = MessageView(
+            factory: DefaultViewFactory.shared,
+            message: voiceMessage,
+            contentWidth: defaultScreenSize.width,
+            isFirst: true,
+            scrolledId: .constant(nil)
+        )
+        .frame(width: defaultScreenSize.width, height: 220)
+        .padding()
+
+        // Then
+        AssertSnapshot(
+            view,
+            size: CGSize(width: defaultScreenSize.width, height: 220)
+        )
+    }
+
     func test_voiceRecordingViewPlaying_snapshot() {
         // Given
         let url = URL(string: "https://example.com/recording.m4a")!
