@@ -291,7 +291,7 @@ import XCTest
         }
 
         // Then
-        AssertSnapshot(view, variants: .onlyUserInterfaceStyles, size: defaultScreenSize, record: true)
+        AssertSnapshot(view, variants: .onlyUserInterfaceStyles, size: defaultScreenSize)
     }
 }
 
