@@ -246,8 +246,8 @@ public struct ChatChannelListItem<Factory: ViewFactory>: View {
     private var mutedIcon: some View {
         Image(uiImage: images.muted)
             .customizable()
-            .frame(maxHeight: 12)
-            .foregroundColor(Color(colors.textSecondary))
+            .frame(height: tokens.iconSizeMd)
+            .foregroundColor(Color(colors.textTertiary))
     }
 
     private var lastMessageFailedToSend: Bool {
