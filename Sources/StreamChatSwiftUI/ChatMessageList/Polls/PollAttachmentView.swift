@@ -223,8 +223,9 @@ struct PollOptionView<Factory: ViewFactory>: View {
     var optionVotes: Int?
     var maxVotes: Int?
     var message: ChatMessage
-    /// If true, only option name and vote count is shown, otherwise votes indicator and avatars appear as well.
-    var alternativeStyle: Bool = false
+    /// If true, forces incoming color style for the radio button border and progress track,
+    /// regardless of whether the message was sent by the current user.
+    var forceIncomingStyle: Bool = false
 
     var body: some View {
         HStack(alignment: .top, spacing: tokens.spacingSm) {
@@ -234,46 +235,48 @@ struct PollOptionView<Factory: ViewFactory>: View {
                 } label: {
                     RadioCheckView(
                         isSelected: viewModel.optionVotedByCurrentUser(option),
-                        borderColorOverride: message.isSentByCurrentUser
+                        borderColorOverride: (!forceIncomingStyle && message.isSentByCurrentUser)
                             ? colors.chatBorderOnChatOutgoing
                             : colors.chatBorderOnChatIncoming
                     )
                 }
+                .padding(.top, tokens.spacingXxs)
             }
             VStack(spacing: tokens.spacingXxs) {
-                HStack(spacing: tokens.spacingXs) {
+                HStack(alignment: .top, spacing: tokens.spacingXs) {
                     Text(option.text)
                         .font(optionFont)
                         .foregroundColor(textColor(for: message))
+                        .padding(.top, tokens.spacingXxxs)
                     Spacer()
-                    if !alternativeStyle, viewModel.showVoterAvatars {
-                        HStack(spacing: -4) {
-                            ForEach(
-                                option.latestVotes.compactMap(\.user).prefix(2)
-                            ) { user in
-                                factory.makeUserAvatarView(
-                                    options: UserAvatarViewOptions(
-                                        user: user,
-                                        size: AvatarSize.extraSmall,
-                                        showsIndicator: false
+                    HStack(spacing: tokens.spacingXs) {
+                        if viewModel.showVoterAvatars {
+                            HStack(spacing: -4) {
+                                ForEach(
+                                    option.latestVotes.compactMap(\.user).prefix(2)
+                                ) { user in
+                                    factory.makeUserAvatarView(
+                                        options: UserAvatarViewOptions(
+                                            user: user,
+                                            size: AvatarSize.extraSmall,
+                                            showsIndicator: false
+                                        )
                                     )
-                                )
+                                }
                             }
+                            .frame(height: AvatarSize.extraSmall)
                         }
-                        .frame(height: AvatarSize.extraSmall)
+                        Text("\(viewModel.poll.voteCountsByOption?[option.id] ?? 0)")
+                            .font(fonts.footnote)
+                            .foregroundColor(textColor(for: message))
                     }
-                    Text("\(viewModel.poll.voteCountsByOption?[option.id] ?? 0)")
-                        .font(fonts.footnote)
-                        .foregroundColor(textColor(for: message))
                 }
-                if !alternativeStyle {
-                    PollVotesIndicatorView(
-                        alternativeStyle: viewModel.poll.isClosed && viewModel.hasMostVotes(for: option),
-                        optionVotes: optionVotes ?? 0,
-                        maxVotes: maxVotes ?? 0,
-                        isOutgoing: message.isSentByCurrentUser
-                    )
-                }
+                
+                PollVotesIndicatorView(
+                    optionVotes: optionVotes ?? 0,
+                    maxVotes: maxVotes ?? 0,
+                    isOutgoing: forceIncomingStyle ? false : message.isSentByCurrentUser
+                )
             }
         }
         .contentShape(Rectangle())
@@ -295,7 +298,6 @@ struct PollVotesIndicatorView: View {
     @Injected(\.colors) var colors
     @Injected(\.tokens) var tokens
 
-    let alternativeStyle: Bool
     let optionVotes: Int
     let maxVotes: Int
     var isOutgoing: Bool = false
@@ -322,10 +324,7 @@ struct PollVotesIndicatorView: View {
     }
 
     private var fillColor: UIColor {
-        if alternativeStyle {
-            return colors.accentSuccess
-        }
-        return isOutgoing ? colors.chatPollProgressFillOutgoing : colors.chatPollProgressFillIncoming
+        isOutgoing ? colors.chatPollProgressFillOutgoing : colors.chatPollProgressFillIncoming
     }
 
     var ratio: CGFloat {

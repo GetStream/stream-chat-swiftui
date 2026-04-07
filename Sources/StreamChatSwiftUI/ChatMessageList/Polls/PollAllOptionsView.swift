@@ -76,7 +76,8 @@ struct PollAllOptionsView<Factory: ViewFactory>: View {
                     option: option,
                     optionVotes: viewModel.poll.voteCount(for: option),
                     maxVotes: viewModel.poll.currentMaximumVoteCount,
-                    message: viewModel.message
+                    message: viewModel.message,
+                    forceIncomingStyle: true
                 )
             }
         }
