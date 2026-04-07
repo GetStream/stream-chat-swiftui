@@ -107,7 +107,7 @@ public struct MessageItemView<Factory: ViewFactory>: View {
                     }
                 )
                 .contentShape(Rectangle())
-                .allowsHitTesting(!shownAsPreview)
+                .allowsHitTesting(!shownAsPreview || (messageViewModel.usesScrollView))
                 .onTapGesture(count: 2) {
                     if messageViewModel.isDoubleTapOverlayEnabled {
                         handleGestureForMessage(showsMessageActions: true)
@@ -245,7 +245,7 @@ struct SwipeToReplyModifier: ViewModifier {
         content
             .coordinateSpace(name: "swipeToReply")
             .offset(x: min(offsetX, maximumHorizontalSwipeDisplacement))
-            .simultaneousGesture(
+            .gesture(
                 DragGesture(
                     minimumDistance: minimumSwipeDistance,
                     coordinateSpace: .named("swipeToReply")
