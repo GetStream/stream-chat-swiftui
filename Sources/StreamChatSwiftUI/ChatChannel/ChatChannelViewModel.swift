@@ -265,15 +265,8 @@ import SwiftUI
     private func selectedMessageInChannel(notification: Notification) {
         resignFirstResponder()
         guard let messageId = notification.userInfo?[MessageRepliesConstants.channelMessageMessageId] as? String else { return }
-        let wasInThread = threadMessageShown
         threadMessageShown = false
-        if wasInThread {
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { [weak self] in
-                _ = self?.jumpToMessage(messageId: messageId)
-            }
-        } else {
-            _ = jumpToMessage(messageId: messageId)
-        }
+        _ = jumpToMessage(messageId: messageId, skipThreadNavigation: true)
     }
     
     @objc
@@ -317,6 +310,10 @@ import SwiftUI
     }
 
     public func jumpToMessage(messageId: String) -> Bool {
+        jumpToMessage(messageId: messageId, skipThreadNavigation: false)
+    }
+
+    private func jumpToMessage(messageId: String, skipThreadNavigation: Bool) -> Bool {
         if messageId == .unknownMessageId {
             if firstUnreadMessageId == nil, let lastReadMessageId {
                 scrollsToUnreadAfterJumpToMessage = true
@@ -346,7 +343,7 @@ import SwiftUI
                 return true
             } else {
                 let message = channelController.dataStore.message(id: baseId)
-                if let parentMessageId = message?.parentMessageId, !isMessageThread {
+                if let parentMessageId = message?.parentMessageId, !isMessageThread, !skipThreadNavigation {
                     let parentMessage = channelController.dataStore.message(id: parentMessageId)
                     threadMessage = parentMessage
                     threadMessageShown = true
