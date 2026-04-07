@@ -68,7 +68,7 @@ public struct MessageAnnotationView: View {
                 Button(action: buttonAction) {
                     Text(buttonTitle)
                         .font(fonts.footnote)
-                        .foregroundColor(Color(colors.accentPrimary))
+                        .foregroundColor(usesInvertedStyle ? resolvedTextColor : Color(colors.accentPrimary))
                 }
             }
         }
