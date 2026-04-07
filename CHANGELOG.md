@@ -12,6 +12,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Redesign the thread replies divider in the message replies list [#1354](https://github.com/GetStream/stream-chat-swiftui/pull/1354)
 
 ### 🐞 Fixed
+- Fix scroll to bottom button not working when the message list is actively scrolling [#1380](https://github.com/GetStream/stream-chat-swiftui/pull/1380)
 - Fix timestamp snapping back faster than delivery indicator on swipe-to-reply [#1360](https://github.com/GetStream/stream-chat-swiftui/pull/1360)
 - Fix tapping a non-first media attachment always opening the first item on initial tap [#1359](https://github.com/GetStream/stream-chat-swiftui/pull/1359)
 - Pinned message label now shows "Pinned by you" when the current user pinned the message [#1329](https://github.com/GetStream/stream-chat-swiftui/pull/1329)

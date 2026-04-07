@@ -159,6 +159,7 @@ import SwiftUI
     
     @Published public var audioRecordingInfo = AudioRecordingInfo.initial
     @Published public var snackBarText: String?
+    @Published public private(set) var isSendingMessage = false
 
     public let channelController: ChatChannelController
     public var messageController: ChatMessageController?
@@ -367,6 +368,9 @@ import SwiftUI
         extraData: [String: RawJSON] = [:],
         completion: (@MainActor () -> Void)? = nil
     ) {
+        guard !isSendingMessage else { return }
+        isSendingMessage = true
+
         defer {
             checkChannelCooldown()
         }
@@ -428,6 +432,7 @@ import SwiftUI
                     case .success:
                         completion()
                     case .failure:
+                        self?.isSendingMessage = false
                         self?.errorShown = true
                     }
                 }
@@ -446,6 +451,7 @@ import SwiftUI
                     case .success:
                         completion()
                     case .failure:
+                        self?.isSendingMessage = false
                         self?.errorShown = true
                     }
                 }
@@ -453,6 +459,7 @@ import SwiftUI
 
             clearInputData()
         } catch {
+            isSendingMessage = false
             errorShown = true
         }
     }
@@ -761,12 +768,13 @@ import SwiftUI
             attachments: attachments ?? []
         ) { [weak self] error in
             if error != nil {
+                self?.isSendingMessage = false
                 self?.errorShown = true
             } else {
                 completion()
             }
         }
-        
+
         clearInputData()
     }
     
@@ -879,8 +887,11 @@ import SwiftUI
         // This is needed because of autocompleting text from the keyboard.
         // The update of the text is done in the next cycle, so it overrides
         // the setting of this value to empty string.
+        // isSendingMessage is also reset here so the guard in sendMessage() stays
+        // active for the full delay, preventing double-sends.
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) { [weak self] in
             self?.text = ""
+            self?.isSendingMessage = false
         }
     }
 

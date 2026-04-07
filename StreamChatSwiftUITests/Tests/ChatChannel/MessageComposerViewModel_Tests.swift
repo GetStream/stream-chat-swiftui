@@ -312,6 +312,84 @@ import XCTest
         }
     }
     
+    // MARK: - isSendingMessage guard (PR #1373)
+
+    func test_messageComposerVM_isSendingMessage_initiallyFalse() {
+        // Given / When
+        let viewModel = makeComposerViewModel()
+
+        // Then
+        XCTAssertFalse(viewModel.isSendingMessage)
+    }
+
+    func test_messageComposerVM_isSendingMessage_trueWhileSending() {
+        // Given
+        let viewModel = makeComposerViewModel()
+        viewModel.text = "test"
+
+        // When
+        viewModel.sendMessage()
+
+        // Then – flag is set synchronously before clearInputData()'s delayed reset fires
+        XCTAssertTrue(viewModel.isSendingMessage)
+    }
+
+    func test_messageComposerVM_isSendingMessage_preventsDoubleSend() {
+        // Given
+        let channelController = makeChannelController()
+        let viewModel = MessageComposerViewModel(
+            channelController: channelController,
+            messageController: nil
+        )
+        viewModel.text = "test"
+
+        // When – call sendMessage twice in rapid succession
+        viewModel.sendMessage()
+        viewModel.sendMessage()
+
+        // Then – createNewMessage must only have been called once
+        XCTAssertEqual(channelController.createNewMessageCallCount, 1)
+    }
+
+    func test_messageComposerVM_isSendingMessage_resetAfterClearInputDataDelay() {
+        // Given
+        let viewModel = makeComposerViewModel()
+        viewModel.text = "test"
+        let expectation = expectation(description: "isSendingMessage reset after 0.1 s delay")
+
+        // When
+        viewModel.sendMessage()
+        XCTAssertTrue(viewModel.isSendingMessage)
+
+        // Then – clearInputData() schedules the reset 0.1 s later; wait for it
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+            XCTAssertFalse(viewModel.isSendingMessage)
+            expectation.fulfill()
+        }
+
+        waitForExpectations(timeout: 1)
+    }
+
+    func test_messageComposerVM_isSendingMessage_secondCallIgnoredWhenAlreadySending() {
+        // Given
+        let channelController = makeChannelController()
+        let viewModel = MessageComposerViewModel(
+            channelController: channelController,
+            messageController: nil
+        )
+        viewModel.text = "first message"
+
+        // When – first send sets the guard; immediate second send must be a no-op
+        viewModel.sendMessage()
+        viewModel.text = "second message"
+        viewModel.sendMessage()
+
+        // Then – still only one network call
+        XCTAssertEqual(channelController.createNewMessageCallCount, 1)
+        // Flag still true (clearInputData delay hasn't fired)
+        XCTAssertTrue(viewModel.isSendingMessage)
+    }
+
     func test_messageComposerVM_notInThread() {
         // Given
         let viewModel = makeComposerViewModel()
