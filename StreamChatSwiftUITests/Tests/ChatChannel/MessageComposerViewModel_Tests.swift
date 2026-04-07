@@ -143,7 +143,60 @@ import XCTest
         // Then
         XCTAssertEqual(viewModel.composerCommand?.id, "/giphy")
     }
-    
+
+    func test_messageComposerVM_instantCommand_clearsMediaAttachments() {
+        // Given
+        let viewModel = makeComposerViewModel()
+        viewModel.imageTapped(defaultAsset)
+        XCTAssertEqual(viewModel.composerAssets.count, 1)
+
+        // When
+        viewModel.composerCommand = makeGiphyCommand()
+
+        // Then
+        XCTAssertTrue(viewModel.composerAssets.isEmpty)
+    }
+
+    func test_messageComposerVM_instantCommand_clearsFileAttachments() {
+        // Given
+        let viewModel = makeComposerViewModel()
+        viewModel.addFileURLs([mockURL])
+        XCTAssertEqual(viewModel.composerAssets.count, 1)
+
+        // When
+        viewModel.composerCommand = makeGiphyCommand()
+
+        // Then
+        XCTAssertTrue(viewModel.composerAssets.isEmpty)
+    }
+
+    func test_messageComposerVM_instantCommand_clearsCustomAttachments() {
+        // Given
+        let viewModel = makeComposerViewModel()
+        let attachment = CustomAttachment(id: .unique, content: .mockFile)
+        viewModel.customAttachmentTapped(attachment)
+        XCTAssertEqual(viewModel.addedCustomAttachments.count, 1)
+
+        // When
+        viewModel.composerCommand = makeGiphyCommand()
+
+        // Then
+        XCTAssertTrue(viewModel.addedCustomAttachments.isEmpty)
+    }
+
+    func test_messageComposerVM_instantCommand_clearsVoiceRecordings() {
+        // Given
+        let viewModel = makeComposerViewModel()
+        let recording = AddedVoiceRecording(url: mockURL, duration: 1.0, waveform: [])
+        viewModel.addedVoiceRecordings = [recording]
+
+        // When
+        viewModel.composerCommand = makeGiphyCommand()
+
+        // Then
+        XCTAssertTrue(viewModel.addedVoiceRecordings.isEmpty)
+    }
+
     func test_messageComposerVM_sendButtonEnabled_addedCustomAttachment() {
         // Given
         let viewModel = makeComposerViewModel()
@@ -1827,6 +1880,20 @@ import XCTest
 
     private func makeComposerViewModel() -> MessageComposerViewModel {
         MessageComposerTestUtils.makeComposerViewModel(chatClient: chatClient)
+    }
+
+    private func makeGiphyCommand() -> ComposerCommand {
+        let displayInfo = CommandDisplayInfo(
+            displayName: "Giphy",
+            icon: UIImage(systemName: "photo") ?? UIImage(),
+            format: "/giphy [text]",
+            isInstant: true
+        )
+        return ComposerCommand(
+            id: "/giphy",
+            typingSuggestion: TypingSuggestion.empty,
+            displayInfo: displayInfo
+        )
     }
     
     private func makeChannelController(
