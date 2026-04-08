@@ -53,7 +53,7 @@ public struct AttachmentTypePickerView: View {
 
             if canSendPoll {
                 AttachmentTypePickerButton(
-                    icon: images.attachmentPickerPolls,
+                    icon: images.attachmentPollIcon,
                     pickerType: .polls,
                     isSelected: selected == .polls,
                     onTap: onTap
