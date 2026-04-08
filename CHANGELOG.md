@@ -12,6 +12,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Redesign the thread replies divider in the message replies list [#1354](https://github.com/GetStream/stream-chat-swiftui/pull/1354)
 
 ### 🐞 Fixed
+- Fix send button icon not mirroring in RTL layouts [#1397](https://github.com/GetStream/stream-chat-swiftui/pull/1397)
+- Fix composer attachment picker prompt views layout to center all content vertically [#1397](https://github.com/GetStream/stream-chat-swiftui/pull/1397)
+- Fix poll icon inconsistency in the attachment type picker and attachment previews [#1397](https://github.com/GetStream/stream-chat-swiftui/pull/1397)
 - Fix voice recording attachment container rendering when quoting a message [#1388](https://github.com/GetStream/stream-chat-swiftui/pull/1388)
 - Fix annotation button colors in the reactions overlay [#1386](https://github.com/GetStream/stream-chat-swiftui/pull/1386)
 - Fix error indicator position and styling to match v5 design [#1383](https://github.com/GetStream/stream-chat-swiftui/pull/1383)
