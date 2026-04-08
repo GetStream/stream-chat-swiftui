@@ -50,7 +50,7 @@ public struct DefaultMessageAttachmentPreviewIconProvider: MessageAttachmentPrev
     public func image(for icon: MessageAttachmentPreviewIcon) -> UIImage {
         switch icon {
         case .poll:
-            return images.attachmentPickerPolls
+            return images.attachmentPollIcon
         case .voiceRecording:
             return images.attachmentVoiceIcon
         case .photo:
