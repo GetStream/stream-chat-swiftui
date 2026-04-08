@@ -202,7 +202,8 @@ extension ViewFactory {
         UserAvatar(
             user: options.user,
             size: options.size,
-            indicator: options.showsIndicator ? (options.user.isOnline ? .online : .offline) : .none
+            indicator: options.showsIndicator ? (options.user.isOnline ? .online : .offline) : .none,
+            showsBorder: options.showsBorder
         )
     }
         
