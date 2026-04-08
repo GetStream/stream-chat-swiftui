@@ -216,7 +216,7 @@ public struct ChatChannelListItem<Factory: ViewFactory>: View {
         if let iconImage = previewAttachmentIconImage {
             Image(uiImage: iconImage)
                 .customizable()
-                .frame(maxHeight: 14)
+                .frame(height: 14)
                 .accessibilityHidden(true)
         }
     }
@@ -246,8 +246,8 @@ public struct ChatChannelListItem<Factory: ViewFactory>: View {
     private var mutedIcon: some View {
         Image(uiImage: images.muted)
             .customizable()
-            .frame(maxHeight: 12)
-            .foregroundColor(Color(colors.textSecondary))
+            .frame(height: tokens.iconSizeMd)
+            .foregroundColor(Color(colors.textTertiary))
     }
 
     private var lastMessageFailedToSend: Bool {

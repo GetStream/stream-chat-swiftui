@@ -34,8 +34,6 @@ extension ChannelAction {
             actions.append(muteAction(for: channel, chatClient: chatClient, onDismiss: onDismiss, onError: onError))
         }
 
-        actions.append(archiveAction(for: channel, chatClient: chatClient, onDismiss: onDismiss, onError: onError))
-
         if let otherMember = channel.lastActiveMembers.first(where: { $0.id != chatClient.currentUserId }) {
             let blockedIds = chatClient.currentUserController().dataStore.currentUser()?.blockedUserIds ?? []
             actions.append(
@@ -68,8 +66,6 @@ extension ChannelAction {
         if channel.config.mutesEnabled {
             actions.append(muteAction(for: channel, chatClient: chatClient, onDismiss: onDismiss, onError: onError))
         }
-
-        actions.append(archiveAction(for: channel, chatClient: chatClient, onDismiss: onDismiss, onError: onError))
 
         if channel.ownCapabilities.contains(.deleteChannel) {
             actions.append(deleteAction(for: channel, chatClient: chatClient, onDismiss: onDismiss, onError: onError))

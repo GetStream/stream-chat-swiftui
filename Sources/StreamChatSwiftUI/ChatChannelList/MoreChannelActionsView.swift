@@ -50,12 +50,14 @@ public struct MoreChannelActionsView<Factory: ViewFactory>: View {
     }
 
     public var body: some View {
-        VStack(alignment: .leading, spacing: 0) {
-            channelHeader
-            actionsListView
-            Spacer()
+        ScrollView {
+            VStack(alignment: .leading, spacing: 0) {
+                channelHeader
+                actionsListView
+                Spacer()
+            }
         }
-        .background(colors.backgroundCoreApp.toColor.edgesIgnoringSafeArea(.all))
+        .background(colors.backgroundCoreElevation1.toColor.edgesIgnoringSafeArea(.all))
         .alert(isPresented: $viewModel.alertShown) {
             let title = viewModel.alertAction?.confirmationPopup?.title ?? ""
             let message = viewModel.alertAction?.confirmationPopup?.message ?? ""
