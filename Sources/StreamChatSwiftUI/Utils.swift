@@ -83,7 +83,7 @@ import StreamChatCommonUI
         galleryHeaderViewDateFormatter: GalleryHeaderViewDateFormatter = DefaultGalleryHeaderViewDateFormatter(),
         messageDateSeparatorFormatter: MessageDateSeparatorFormatter = DefaultMessageDateSeparatorFormatter(),
         videoLoader: VideoLoader? = nil,
-        imageLoader: ImageLoader = StreamImageLoader(),
+        imageLoader: ImageLoader = StreamImageLoader(downloader: NukeImageDownloader()),
         imageProcessor: ImageProcessor = NukeImageProcessor(),
         avPlayerProvider: AVPlayerProvider = DefaultAVPlayerProvider(),
         messageTypeResolver: MessageTypeResolving = MessageTypeResolver(),
