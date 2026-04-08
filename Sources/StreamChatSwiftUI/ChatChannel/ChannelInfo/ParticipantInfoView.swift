@@ -130,6 +130,7 @@ struct ParticipantInfoView<Factory: ViewFactory>: View {
                 .frame(width: tokens.spacingLg)
                 .foregroundColor(action.isDestructive ? Color(colors.accentError) : Color(colors.textSecondary))
             Text(action.title)
+                .lineLimit(1)
                 .font(fonts.body)
                 .foregroundColor(action.isDestructive ? Color(colors.accentError) : Color(colors.textPrimary))
             Spacer()
