@@ -31,18 +31,22 @@ extension ViewFactory {
     public func makeMoreChannelActionsView(
         options: MoreChannelActionsViewOptions
     ) -> some View {
-        MoreChannelActionsView(
+        let actions = InjectedValues[\.utils].channelListConfig.supportedMoreChannelActions(
+            SupportedMoreChannelActionsOptions(
+                channel: options.channel,
+                onDismiss: options.onDismiss,
+                onError: options.onError
+            )
+        )
+        return MoreChannelActionsView(
             factory: self,
             channel: options.channel,
-            channelActions: InjectedValues[\.utils].channelListConfig.supportedMoreChannelActions(
-                SupportedMoreChannelActionsOptions(
-                    channel: options.channel,
-                    onDismiss: options.onDismiss,
-                    onError: options.onError
-                )
-            ),
+            channelActions: actions,
             swipedChannelId: options.swipedChannelId,
             onDismiss: options.onDismiss
+        )
+        .modifier(PresentationDetentsModifier(
+            sheetSizes: [.custom(actions.count > 3 ? 250 : 200), .medium])
         )
     }
     
