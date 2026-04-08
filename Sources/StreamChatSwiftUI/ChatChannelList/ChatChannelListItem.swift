@@ -216,7 +216,7 @@ public struct ChatChannelListItem<Factory: ViewFactory>: View {
         if let iconImage = previewAttachmentIconImage {
             Image(uiImage: iconImage)
                 .customizable()
-                .frame(maxHeight: 14)
+                .frame(height: 14)
                 .accessibilityHidden(true)
         }
     }
