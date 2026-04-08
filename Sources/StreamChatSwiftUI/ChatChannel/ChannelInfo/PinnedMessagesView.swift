@@ -163,7 +163,7 @@ struct PinnedMessageView<Factory: ViewFactory>: View {
         if let iconImage = previewAttachmentIconImage {
             Image(uiImage: iconImage)
                 .customizable()
-                .frame(maxHeight: 12)
+                .frame(width: tokens.iconSizeSm, height: tokens.iconSizeSm)
                 .accessibilityHidden(true)
         }
     }
