@@ -3,7 +3,6 @@
 //
 
 import StreamChat
-import StreamChatCommonUI
 import SwiftUI
 
 /// A view that loads an image asynchronously and renders content based

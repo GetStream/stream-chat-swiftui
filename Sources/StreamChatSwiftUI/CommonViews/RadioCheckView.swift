@@ -2,7 +2,6 @@
 // Copyright © 2026 Stream.io Inc. All rights reserved.
 //
 
-import StreamChatCommonUI
 import SwiftUI
 
 /// A circular radio/checkbox component with selected and unselected states.

@@ -4,7 +4,6 @@
 
 import AVFoundation
 import StreamChat
-import StreamChatCommonUI
 import SwiftUI
 
 /// View displaying media attachments.
