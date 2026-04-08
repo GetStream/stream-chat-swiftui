@@ -65,7 +65,7 @@ import XCTest
         )
 
         // Then
-        XCTAssert(view is MoreChannelActionsView<DefaultViewFactory>)
+        XCTAssert(view is ModifiedContent<MoreChannelActionsView<DefaultViewFactory>, PresentationDetentsModifier>)
     }
     
     func test_viewFactory_makeSearchResultsView() {

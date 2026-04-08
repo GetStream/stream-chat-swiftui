@@ -2,7 +2,6 @@
 // Copyright © 2026 Stream.io Inc. All rights reserved.
 //
 
-import StreamChatCommonUI
 import SwiftUI
 
 /// Chip view displayed in the composer when a slash command is active.
