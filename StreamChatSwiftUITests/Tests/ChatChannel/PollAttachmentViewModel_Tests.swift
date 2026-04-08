@@ -284,7 +284,7 @@ import XCTest
         XCTAssertFalse(viewModel.showEndVoteButton)
     }
 
-    func test_pollAttachmentViewModel_canInteract_falseWhenEndVoteConfirmationShown() {
+    func test_pollAttachmentViewModel_canInteract_trueWhenEndVoteConfirmationShown() {
         // Given
         let currentUser = ChatUser.mock(id: StreamChatTestCase.currentUserId)
         let poll = Poll.mock(createdBy: currentUser)
@@ -298,7 +298,7 @@ import XCTest
         viewModel.endVoteConfirmationShown = true
 
         // Then
-        XCTAssertFalse(viewModel.canInteract)
+        XCTAssertTrue(viewModel.canInteract)
     }
 
     // MARK: - private

@@ -69,7 +69,6 @@ import SwiftUI
     /// If true, poll controls are in enabled state, otherwise disabled.
     public var canInteract: Bool {
         guard !isClosingPoll else { return false }
-        guard !endVoteConfirmationShown else { return false }
         return true
     }
     
