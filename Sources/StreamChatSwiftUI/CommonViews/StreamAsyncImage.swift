@@ -3,6 +3,7 @@
 //
 
 import StreamChat
+import StreamChatCommonUI
 import SwiftUI
 
 /// A view that loads an image asynchronously and renders content based
@@ -38,7 +39,7 @@ public struct StreamAsyncImage<ImageContent: View>: View {
     
     public var body: some View {
         content(phase)
-            .compatibility.task(id: url?.absoluteString ?? "") { @MainActor [imageCDN, imageLoader, url] in
+            .compatibility.task(id: url?.absoluteString ?? "") { @MainActor [imageLoader, url] in
                 guard let url else {
                     phase = .empty
                     return
@@ -47,8 +48,7 @@ public struct StreamAsyncImage<ImageContent: View>: View {
                     from: [url].compactMap { $0 },
                     placeholders: [],
                     loadThumbnails: true,
-                    thumbnailSize: thumbnailSize,
-                    imageCDN: imageCDN
+                    thumbnailSize: thumbnailSize
                 )
                 if let image = images.first {
                     phase = .success(Image(uiImage: image))
@@ -58,8 +58,7 @@ public struct StreamAsyncImage<ImageContent: View>: View {
             }
     }
     
-    var imageLoader: ImageLoading { utils.imageLoader }
-    var imageCDN: ImageCDN { utils.imageCDN }
+    var imageLoader: ImageLoader { utils.imageLoader }
 }
 
 /// The current loading state for ``StreamAsyncImage``.

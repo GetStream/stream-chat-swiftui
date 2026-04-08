@@ -5,6 +5,7 @@
 import AVKit
 import Foundation
 import StreamChat
+import StreamChatCommonUI
 
 /// Class providing implementations of several utilities used in the SDK.
 /// The default implementations can be replaced in the init method, or directly via the variables.
@@ -17,11 +18,9 @@ import StreamChat
     public var messageTimestampFormatter: MessageTimestampFormatter
     public var galleryHeaderViewDateFormatter: GalleryHeaderViewDateFormatter
     public var messageDateSeparatorFormatter: MessageDateSeparatorFormatter
-    public var videoPreviewLoader: VideoPreviewLoader
-    public var imageLoader: ImageLoading
-    public var imageCDN: ImageCDN
+    public var videoLoader: VideoLoader
+    public var imageLoader: ImageLoader
     public var imageProcessor: ImageProcessor
-    public var fileCDN: FileCDN
     public var channelNameFormatter: ChannelNameFormatter
     public var avPlayerProvider: AVPlayerProvider
     public var chatUserNamer: ChatUserNamer
@@ -83,11 +82,9 @@ import StreamChat
         messageTimestampFormatter: MessageTimestampFormatter = ChannelListMessageTimestampFormatter(),
         galleryHeaderViewDateFormatter: GalleryHeaderViewDateFormatter = DefaultGalleryHeaderViewDateFormatter(),
         messageDateSeparatorFormatter: MessageDateSeparatorFormatter = DefaultMessageDateSeparatorFormatter(),
-        videoPreviewLoader: VideoPreviewLoader = DefaultVideoPreviewLoader(),
-        imageLoader: ImageLoading = NukeImageLoader(),
-        imageCDN: ImageCDN = StreamImageCDN(),
+        videoLoader: VideoLoader? = nil,
+        imageLoader: ImageLoader = StreamImageLoader(),
         imageProcessor: ImageProcessor = NukeImageProcessor(),
-        fileCDN: FileCDN = DefaultFileCDN(),
         avPlayerProvider: AVPlayerProvider = DefaultAVPlayerProvider(),
         messageTypeResolver: MessageTypeResolving = MessageTypeResolver(),
         messageActionResolver: MessageActionsResolving = MessageActionsResolver(),
@@ -114,11 +111,9 @@ import StreamChat
         self.messageTimestampFormatter = messageTimestampFormatter
         self.galleryHeaderViewDateFormatter = galleryHeaderViewDateFormatter
         self.messageDateSeparatorFormatter = messageDateSeparatorFormatter
-        self.videoPreviewLoader = videoPreviewLoader
         self.imageLoader = imageLoader
-        self.imageCDN = imageCDN
+        self.videoLoader = videoLoader ?? StreamVideoLoader(imageLoader: imageLoader)
         self.imageProcessor = imageProcessor
-        self.fileCDN = fileCDN
         self.channelNameFormatter = channelNameFormatter
         self.avPlayerProvider = avPlayerProvider
         self.chatUserNamer = chatUserNamer
@@ -153,11 +148,11 @@ import StreamChat
 /// such as injecting authentication headers via a custom `AVURLAsset`.
 ///
 /// The URL passed to ``player(for:completion:)`` has already been resolved
-/// through ``FileCDN/adjustedURL(for:completion:)``.
+/// through the `CDN` protocol's `fileRequest(for:completion:)`.
 public protocol AVPlayerProvider {
     /// Creates and returns an `AVPlayer` for the given video URL.
     /// - Parameters:
-    ///   - url: A video URL already resolved through `FileCDN`.
+    ///   - url: A video URL already resolved through the `CDN`.
     ///   - completion: A completion that is called when the player is ready or an error occurred.
     func player(
         for url: URL,
