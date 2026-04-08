@@ -4,7 +4,6 @@
 
 import Photos
 import StreamChat
-import StreamChatCommonUI
 import SwiftUI
 
 /// View for the media attachment picker.

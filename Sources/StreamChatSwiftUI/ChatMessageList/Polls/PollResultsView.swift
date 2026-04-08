@@ -3,7 +3,6 @@
 //
 
 import StreamChat
-import StreamChatCommonUI
 import SwiftUI
 
 struct PollResultsView<Factory: ViewFactory>: View {

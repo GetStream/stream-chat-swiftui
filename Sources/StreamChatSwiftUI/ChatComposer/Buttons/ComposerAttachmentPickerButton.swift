@@ -2,7 +2,6 @@
 // Copyright © 2026 Stream.io Inc. All rights reserved.
 //
 
-import StreamChatCommonUI
 import SwiftUI
 
 /// The button for opening and closing the attachment picker in the message composer.
