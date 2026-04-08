@@ -3,7 +3,6 @@
 //
 
 import StreamChat
-import StreamChatCommonUI
 import SwiftUI
 
 /// Contains info needed for a modifier to be applied to the message view.

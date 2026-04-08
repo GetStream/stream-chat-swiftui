@@ -5,7 +5,6 @@
 import AVKit
 import Foundation
 import StreamChat
-import StreamChatCommonUI
 
 /// Class providing implementations of several utilities used in the SDK.
 /// The default implementations can be replaced in the init method, or directly via the variables.
