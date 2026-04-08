@@ -2,7 +2,6 @@
 // Copyright © 2026 Stream.io Inc. All rights reserved.
 //
 
-import StreamChatCommonUI
 import SwiftUI
 
 /// View for picking the type of attachment (photo, files, camera, polls, commands).

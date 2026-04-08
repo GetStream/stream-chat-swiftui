@@ -3,7 +3,6 @@
 //
 
 import StreamChat
-import StreamChatCommonUI
 import SwiftUI
 
 /// View for the channel list item.

@@ -2,7 +2,6 @@
 // Copyright © 2026 Stream.io Inc. All rights reserved.
 //
 
-import StreamChatCommonUI
 import SwiftUI
 
 /// A reusable view to prompt the user of any action in the attachment picker.
