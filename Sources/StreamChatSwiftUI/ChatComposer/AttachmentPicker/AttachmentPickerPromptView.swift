@@ -28,8 +28,8 @@ public struct AttachmentPickerPromptView: View {
     }
 
     public var body: some View {
-        VStack(spacing: tokens.spacingXs) {
-            VStack(spacing: tokens.spacingXs) {
+        VStack(spacing: tokens.spacingMd) {
+            VStack(spacing: tokens.spacingSm) {
                 image
                     .customizable()
                     .frame(width: 32, height: 32)
@@ -41,24 +41,20 @@ public struct AttachmentPickerPromptView: View {
                     .foregroundColor(Color(colors.textTertiary))
                     .frame(width: 200)
             }
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
 
             StreamTextButton(
                 role: .secondary,
                 style: .outline,
-                size: .large,
+                size: .medium,
                 action: onTap
             ) {
                 Text(buttonText)
                     .font(fonts.bodyBold)
-                    .frame(maxWidth: .infinity)
             }
-            .frame(maxWidth: .infinity, minHeight: 48, maxHeight: 48, alignment: .center)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .padding(.horizontal, tokens.spacing2xl)
-        .padding(.bottom, tokens.spacing3xl)
-        .background(Color(colors.backgroundCoreElevation1))
+        .padding(.bottom, 60)
         .accessibilityElement(children: .contain)
         .accessibilityIdentifier("AttachmentPickerPromptView")
     }
