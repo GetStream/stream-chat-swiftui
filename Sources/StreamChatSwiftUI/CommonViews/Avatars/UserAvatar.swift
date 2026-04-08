@@ -3,7 +3,6 @@
 //
 
 import StreamChat
-import StreamChatCommonUI
 import SwiftUI
 
 /// A view that renders a user avatar with optional presence indicator.

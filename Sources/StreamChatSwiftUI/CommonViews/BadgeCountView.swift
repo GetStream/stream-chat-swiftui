@@ -3,7 +3,6 @@
 //
 
 import StreamChat
-import StreamChatCommonUI
 import SwiftUI
 
 /// A pill-shaped badge that shows the number of additional avatars not displayed.

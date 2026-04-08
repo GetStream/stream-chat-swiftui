@@ -4,7 +4,6 @@
 
 import Photos
 import StreamChat
-import StreamChatCommonUI
 import SwiftUI
 
 /// Enum for the picker type state.

@@ -3,7 +3,6 @@
 //
 
 import StreamChat
-import StreamChatCommonUI
 import SwiftUI
 
 /// Contains info needed for a modifier to be applied to the message view.
@@ -275,7 +274,7 @@ extension ChatMessage {
         }
     }
     
-    func bubbleBorder(colors: Appearance.ColorPalette) -> Color {
+    @MainActor func bubbleBorder(colors: Appearance.ColorPalette) -> Color {
         isSentByCurrentUser ? colors.chatBorderOutgoing.toColor : colors.chatBorderIncoming.toColor
     }
 

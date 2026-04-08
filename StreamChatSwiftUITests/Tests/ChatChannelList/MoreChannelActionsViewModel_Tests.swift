@@ -50,11 +50,10 @@ import XCTest
         // When
         let actions = makeActions(for: channel)
 
-        // Then - viewInfo, muteUser (mutesEnabled=true by default), archiveConversation
-        XCTAssertEqual(actions.count, 3)
+        // Then - viewInfo, muteUser (mutesEnabled=true by default)
+        XCTAssertEqual(actions.count, 2)
         XCTAssertEqual(actions[0].title, L10n.Alert.Actions.viewInfoTitle)
         XCTAssertEqual(actions[1].title, L10n.Alert.Actions.muteUser)
-        XCTAssertEqual(actions[2].title, L10n.Alert.Actions.archiveConversation)
     }
 
     func test_defaultActions_dmChannel_withDeleteCapability_hasDeleteAction() {
@@ -108,8 +107,8 @@ import XCTest
         // When
         let actions = makeActions(for: channel)
 
-        // Then
-        XCTAssertTrue(actions.contains(where: { $0.title == L10n.Alert.Actions.unarchiveConversation }))
+        // Then - archive action removed; neither archive nor unarchive should appear
+        XCTAssertFalse(actions.contains(where: { $0.title == L10n.Alert.Actions.unarchiveConversation }))
         XCTAssertFalse(actions.contains(where: { $0.title == L10n.Alert.Actions.archiveConversation }))
     }
 
@@ -122,11 +121,10 @@ import XCTest
         // When
         let actions = makeActions(for: channel)
 
-        // Then - viewInfo, muteChannel (mutesEnabled=true by default), archiveChannel
-        XCTAssertEqual(actions.count, 3)
+        // Then - viewInfo, muteChannel (mutesEnabled=true by default)
+        XCTAssertEqual(actions.count, 2)
         XCTAssertEqual(actions[0].title, L10n.Alert.Actions.viewInfoTitle)
         XCTAssertEqual(actions[1].title, L10n.Alert.Actions.muteChannel)
-        XCTAssertEqual(actions[2].title, L10n.Alert.Actions.archiveChannel)
     }
 
     func test_defaultActions_groupChannel_withDeleteCapability_hasDeleteAction() {

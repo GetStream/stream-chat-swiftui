@@ -141,6 +141,7 @@ public struct MediaViewer<Factory: ViewFactory>: View {
                     }
                 }
                 .padding(.all, tokens.spacingXl)
+                .frame(height: 72)
             }
             .sheet(isPresented: $gridShown) {
                 GridMediaView(

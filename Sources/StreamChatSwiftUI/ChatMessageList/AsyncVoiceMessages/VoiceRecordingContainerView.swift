@@ -51,9 +51,7 @@ public struct VoiceRecordingContainerView<Factory: ViewFactory>: View {
                     ),
                     isSentByCurrentUser: message.isSentByCurrentUser
                 )
-                .padding(.all, tokens.spacingXs)
-                .background(MessageAttachmentsBubbleConfiguration.attachmentBackgroundColor(for: message))
-                .roundWithBorder(cornerRadius: tokens.messageBubbleRadiusAttachment)
+                .modifier(MessageAttachmentsBubbleConfiguration.VoiceRecordingContainerModifier(message: message, isFirst: isFirst))
             }
         }
         .frame(width: width, alignment: message.isRightAligned ? .trailing : .leading)

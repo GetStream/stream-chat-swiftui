@@ -31,18 +31,22 @@ extension ViewFactory {
     public func makeMoreChannelActionsView(
         options: MoreChannelActionsViewOptions
     ) -> some View {
-        MoreChannelActionsView(
+        let actions = InjectedValues[\.utils].channelListConfig.supportedMoreChannelActions(
+            SupportedMoreChannelActionsOptions(
+                channel: options.channel,
+                onDismiss: options.onDismiss,
+                onError: options.onError
+            )
+        )
+        return MoreChannelActionsView(
             factory: self,
             channel: options.channel,
-            channelActions: InjectedValues[\.utils].channelListConfig.supportedMoreChannelActions(
-                SupportedMoreChannelActionsOptions(
-                    channel: options.channel,
-                    onDismiss: options.onDismiss,
-                    onError: options.onError
-                )
-            ),
+            channelActions: actions,
             swipedChannelId: options.swipedChannelId,
             onDismiss: options.onDismiss
+        )
+        .modifier(PresentationDetentsModifier(
+            sheetSizes: [.custom(actions.count > 3 ? 250 : 200), .medium])
         )
     }
     
@@ -202,7 +206,8 @@ extension ViewFactory {
         UserAvatar(
             user: options.user,
             size: options.size,
-            indicator: options.showsIndicator ? (options.user.isOnline ? .online : .offline) : .none
+            indicator: options.showsIndicator ? (options.user.isOnline ? .online : .offline) : .none,
+            showsBorder: options.showsBorder
         )
     }
         

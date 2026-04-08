@@ -163,6 +163,79 @@ enum MessageAttachmentsBubbleConfiguration {
         @Injected(\.colors) var colors
         return Color(message.isSentByCurrentUser ? colors.chatBackgroundAttachmentOutgoing : colors.chatBackgroundAttachmentIncoming)
     }
+
+    /// Applies the attachment container styling: background color, border
+    /// stroke, and clip shape with corners that respect the message bubble
+    /// shape when the attachment is the only content.
+    ///
+    /// The caller provides `isSingleWithoutCaption` because "single"
+    /// differs per attachment type (file count vs. voice recording count).
+    struct AttachmentContainerModifier: ViewModifier {
+        @Injected(\.colors) private var colors
+        @Injected(\.tokens) private var tokens
+        @Injected(\.utils) private var utils
+        @Environment(\.layoutDirection) private var layoutDirection
+
+        let message: ChatMessage
+        let isFirst: Bool
+        let isSingleWithoutCaption: Bool
+
+        func body(content: Content) -> some View {
+            let corners: UIRectCorner = isFirst && isSingleWithoutCaption
+                ? message.bubbleCorners(
+                    isFirst: isFirst,
+                    forceLeftToRight: utils.messageListConfig.messageListAlignment == .leftAligned,
+                    layoutDirection: layoutDirection
+                )
+                : .allCorners
+            content
+                .background(MessageAttachmentsBubbleConfiguration.attachmentBackgroundColor(for: message))
+                .overlay(
+                    BubbleBackgroundShape(
+                        cornerRadius: tokens.messageBubbleRadiusAttachment,
+                        corners: corners
+                    )
+                    .stroke(Color(colors.borderCoreDefault), lineWidth: 1)
+                )
+                .clipShape(
+                    BubbleBackgroundShape(
+                        cornerRadius: tokens.messageBubbleRadiusAttachment,
+                        corners: corners
+                    )
+                )
+        }
+    }
+
+    /// Applies the voice recording attachment container styling (padding,
+    /// background, and rounded border). When the voice recording is a
+    /// quoted reply without a text caption, the background and border are
+    /// omitted so the player renders flat inside the message bubble.
+    struct VoiceRecordingContainerModifier: ViewModifier {
+        @Injected(\.tokens) private var tokens
+
+        let message: ChatMessage
+        let isFirst: Bool
+
+        @ViewBuilder
+        func body(content: Content) -> some View {
+            if isContainerShown {
+                content
+                    .padding(.all, tokens.spacingXs)
+                    .modifier(AttachmentContainerModifier(
+                        message: message,
+                        isFirst: isFirst,
+                        isSingleWithoutCaption: message.text.isEmpty
+                            && message.voiceRecordingAttachments.count == 1
+                    ))
+            } else {
+                content
+            }
+        }
+
+        private var isContainerShown: Bool {
+            !(message.quotedMessage != nil && message.text.isEmpty)
+        }
+    }
 }
 
 extension ChatMessage {

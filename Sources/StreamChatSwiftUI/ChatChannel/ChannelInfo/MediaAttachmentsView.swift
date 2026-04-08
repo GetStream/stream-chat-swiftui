@@ -4,7 +4,6 @@
 
 import AVFoundation
 import StreamChat
-import StreamChatCommonUI
 import SwiftUI
 
 /// View displaying media attachments.
@@ -66,6 +65,7 @@ public struct MediaAttachmentsView<Factory: ViewFactory>: View {
 /// View displaying a grid of media attachments using an adaptive column layout.
 struct MediaAttachmentsGridView<Factory: ViewFactory>: View {
     @Injected(\.tokens) private var tokens
+    @Injected(\.colors) private var colors
 
     let factory: Factory
     let attachments: [MediaAttachment]
@@ -149,7 +149,7 @@ struct MediaAttachmentsGridView<Factory: ViewFactory>: View {
                             )
                             .overlay(
                                 Circle()
-                                    .stroke(Color.white, lineWidth: 1)
+                                    .stroke(colors.borderCoreInverse.toColor, lineWidth: 2)
                             )
                             .padding(.all, 8)
                         }
