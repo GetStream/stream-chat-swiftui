@@ -191,9 +191,7 @@ struct GridMediaView<Factory: ViewFactory>: View {
 struct StreamVideoPlayer: View {
     @Injected(\.utils) private var utils
 
-    private var fileCDN: FileCDN {
-        utils.fileCDN
-    }
+    private var cdn: CDN { StreamCDN() }
 
     private var avPlayerProvider: AVPlayerProvider {
         utils.avPlayerProvider
@@ -220,13 +218,13 @@ struct StreamVideoPlayer: View {
                 avPlayer?.play()
                 return
             }
-            fileCDN.adjustedURL(for: url) { result in
+            cdn.fileRequest(for: url) { result in
                 switch result {
-                case let .success(url):
-                    avPlayer = AVPlayer(url: url)
+                case let .success(cdnRequest):
+                    avPlayer = AVPlayer(url: cdnRequest.url)
                     try? AVAudioSession.sharedInstance().setCategory(.playback, options: [])
                     avPlayer?.play()
-                    self.avPlayerProvider.player(for: url) { result in
+                    self.avPlayerProvider.player(for: cdnRequest.url) { result in
                         switch result {
                         case let .success(player):
                             self.avPlayer = player

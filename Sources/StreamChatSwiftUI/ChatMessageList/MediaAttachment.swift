@@ -37,15 +37,14 @@ public final class MediaAttachment: Identifiable, Equatable, Sendable {
     ) {
         let utils = InjectedValues[\.utils]
         if type == .image {
+            let imageResize: ImageResize? = resize ? ImageResize(preferredSize) : nil
             utils.imageLoader.loadImage(
                 url: url,
-                imageCDN: utils.imageCDN,
-                resize: resize,
-                preferredSize: preferredSize,
+                resize: imageResize,
                 completion: completion
             )
         } else if type == .video {
-            utils.videoPreviewLoader.loadPreviewForVideo(
+            utils.videoLoader.loadPreview(
                 at: url,
                 completion: completion
             )
