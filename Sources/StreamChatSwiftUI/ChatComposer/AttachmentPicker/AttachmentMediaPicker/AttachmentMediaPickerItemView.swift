@@ -3,7 +3,6 @@
 //
 
 import Photos
-import StreamChatCommonUI
 import SwiftUI
 
 /// Media item displayed in the attachment picker view.

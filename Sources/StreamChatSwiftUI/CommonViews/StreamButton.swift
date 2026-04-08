@@ -2,7 +2,6 @@
 // Copyright © 2026 Stream.io Inc. All rights reserved.
 //
 
-import StreamChatCommonUI
 import SwiftUI
 
 struct StreamButton<Icon: View, TextContent: View>: View {
@@ -270,7 +269,7 @@ struct StreamButtonStyle: ButtonStyle {
         }
     }
 
-    private struct SizeMetrics {
+    @MainActor private struct SizeMetrics {
         let horizontalPaddingWithLabel: CGFloat
         let horizontalPaddingIconOnly: CGFloat
         let verticalPadding: CGFloat
@@ -301,7 +300,7 @@ struct StreamButtonStyle: ButtonStyle {
     }
 }
 
-private extension StreamButtonRole {
+@MainActor private extension StreamButtonRole {
     func backgroundColor(colors: Appearance.ColorPalette) -> UIColor {
         switch self {
         case .primary:

@@ -4,7 +4,6 @@
 
 import Foundation
 import StreamChat
-import StreamChatCommonUI
 import SwiftUI
 
 // MARK: - Thread List Options
