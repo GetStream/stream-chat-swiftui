@@ -125,12 +125,15 @@ struct LazyGiphyView: View {
     let width: CGFloat
 
     var body: some View {
-        LazyImage(imageURL: source) { state in
+        StreamLazyContentImage(
+            url: source,
+            processors: [ImageProcessors.Resize(width: width)]
+        ) { state in
             if let imageContainer = state.imageContainer {
                 if imageContainer.type == .gif {
                     AnimatedGifView(imageContainer: imageContainer)
-                } else if let image = state.image {
-                    image
+                } else {
+                    Image(uiImage: imageContainer.image)
                         .resizable()
                         .scaledToFill()
                 }
@@ -143,9 +146,6 @@ struct LazyGiphyView: View {
                 }
             }
         }
-        .onDisappear(.cancel)
-        .processors([ImageProcessors.Resize(width: width)])
-        .priority(.high)
         .frame(width: width, height: width)
         .clipped()
     }

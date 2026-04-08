@@ -6,66 +6,101 @@ import StreamChat
 import StreamChatCommonUI
 import SwiftUI
 
-enum LazyImageContentState {
-    case loaded(UIImage)
-    case placeholder
-    case loading
-    case error(Error)
+/// A wrapper around Nuke's `LazyImage` that applies CDN transformations
+/// (headers, signing, caching key) before loading.
+///
+/// Uses `@Injected` to obtain the CDN from the image loader, and resolves
+/// the CDN request asynchronously so it works with both synchronous and
+/// async CDN implementations (e.g. pre-signed URLs).
+struct StreamLazyImage: View {
+    @Injected(\.utils) private var utils
+
+    private let url: URL?
+    @State private var imageRequest: ImageRequest?
+
+    init(url: URL?) {
+        self.url = url
+    }
+
+    var body: some View {
+        LazyImage(request: imageRequest)
+            .onDisappear(.cancel)
+            .priority(.high)
+            .compatibility.task(id: url?.absoluteString ?? "") { @MainActor in
+                await resolveRequest()
+            }
+    }
+
+    @MainActor
+    private func resolveRequest() async {
+        guard let url else { return }
+        let cdn = (utils.imageLoader as? StreamImageLoader)?.cdn ?? StreamCDN()
+        do {
+            let cdnRequest = try await cdn.imageRequest(for: url)
+            imageRequest = makeImageRequest(from: cdnRequest, fallbackURL: url)
+        } catch {
+            imageRequest = ImageRequest(url: url)
+        }
+    }
 }
 
-extension LazyImage {
+/// A wrapper around Nuke's `LazyImage` with custom content that applies
+/// CDN transformations before loading.
+struct StreamLazyContentImage<Content: View>: View {
+    @Injected(\.utils) private var utils
+
+    private let url: URL?
+    private let processors: [ImageProcessing]
+    private let priority: ImageRequest.Priority
+    private let content: (LazyImageState) -> Content
+    @State private var imageRequest: ImageRequest?
+
     init(
-        imageURL: URL?,
-        @ViewBuilder content: @escaping (LazyImageContentState) -> Content
+        url: URL?,
+        processors: [ImageProcessing] = [],
+        priority: ImageRequest.Priority = .high,
+        @ViewBuilder content: @escaping (LazyImageState) -> Content
     ) {
-        let placeholderContent: (LazyImageState) -> Content = { state in
-            if let image = state.imageContainer?.image {
-                content(.loaded(image))
-            } else if let error = state.error {
-                content(.error(error))
-            } else {
-                content(.loading)
+        self.url = url
+        self.processors = processors
+        self.priority = priority
+        self.content = content
+    }
+
+    var body: some View {
+        LazyImage(request: imageRequest, content: content)
+            .onDisappear(.cancel)
+            .processors(processors)
+            .priority(priority)
+            .compatibility.task(id: url?.absoluteString ?? "") { @MainActor in
+                await resolveRequest()
             }
-        }
-        self.init(imageURL: imageURL, content: placeholderContent)
     }
 
-    /// Loads an image, applying CDN transformations (headers, signing, caching key).
-    ///
-    /// The CDN completion is captured synchronously. For CDNs like ``StreamCDN``
-    /// that complete inline, the full request (URL, headers, caching key) is used.
-    /// For async CDNs (e.g. pre-signed URL fetch), the image falls back to the
-    /// raw URL since the completion has not fired yet at init time.
-    init(imageURL: URL?, cdn: CDN, @ViewBuilder content: @escaping (LazyImageState) -> Content) {
-        guard let imageURL else {
-            self.init(url: nil, content: content)
-            return
+    @MainActor
+    private func resolveRequest() async {
+        guard let url else { return }
+        let cdn = (utils.imageLoader as? StreamImageLoader)?.cdn ?? StreamCDN()
+        do {
+            let cdnRequest = try await cdn.imageRequest(for: url)
+            imageRequest = makeImageRequest(from: cdnRequest, fallbackURL: url)
+        } catch {
+            imageRequest = ImageRequest(url: url)
         }
+    }
+}
 
-        var resolvedRequest: ImageRequest?
-        cdn.imageRequest(for: imageURL, resize: nil) { result in
-            guard let cdnRequest = try? result.get() else { return }
-            var urlRequest = URLRequest(url: cdnRequest.url)
-            if let headers = cdnRequest.headers {
-                for (key, value) in headers {
-                    urlRequest.setValue(value, forHTTPHeaderField: key)
-                }
-            }
-            resolvedRequest = ImageRequest(
-                urlRequest: urlRequest,
-                userInfo: cdnRequest.cachingKey.map { [.imageIdKey: $0] }
-            )
+// MARK: - Shared Helper
+
+private func makeImageRequest(from cdnRequest: CDNRequest, fallbackURL: URL) -> ImageRequest {
+    var urlRequest = URLRequest(url: cdnRequest.url)
+    if let headers = cdnRequest.headers {
+        for (key, value) in headers {
+            urlRequest.setValue(value, forHTTPHeaderField: key)
         }
-
-        self.init(
-            request: resolvedRequest ?? ImageRequest(url: imageURL),
-            transaction: Transaction(animation: nil),
-            content: content
-        )
     }
-
-    init(imageURL: URL?, @ViewBuilder content: @escaping (LazyImageState) -> Content) {
-        let cdn = (InjectedValues[\.utils].imageLoader as? StreamImageLoader)?.cdn ?? StreamCDN()
-        self.init(imageURL: imageURL, cdn: cdn, content: content)
-    }
+    return ImageRequest(
+        urlRequest: urlRequest,
+        userInfo: cdnRequest.cachingKey.map { [.imageIdKey: $0] }
+    )
 }
