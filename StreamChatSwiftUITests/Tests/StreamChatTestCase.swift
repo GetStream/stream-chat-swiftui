@@ -32,7 +32,7 @@ import XCTest
         streamChat = StreamChat(
             chatClient: chatClient,
             utils: Utils(
-                videoPreviewLoader: VideoPreviewLoader_Mock(),
+                videoLoader: VideoLoader_Mock(),
                 imageLoader: ImageLoader_Mock(),
                 composerConfig: .init(isVoiceRecordingEnabled: true)
             )

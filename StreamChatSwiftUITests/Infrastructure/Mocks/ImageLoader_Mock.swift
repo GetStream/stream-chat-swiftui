@@ -4,12 +4,13 @@
 
 import Foundation
 @testable import StreamChat
+import StreamChatCommonUI
 import StreamChatSwiftUI
 import UIKit
 import XCTest
 
-/// Mock implementation of `ImageLoading`.
-class ImageLoader_Mock: ImageLoading, @unchecked Sendable {
+/// Mock implementation of `ImageLoader`.
+class ImageLoader_Mock: ImageLoader, @unchecked Sendable {
     static let defaultLoadedImage = XCTestCase.TestImages.yoda.image
     var loadImageCalled = false
     var loadImageCallCount = 0
@@ -17,9 +18,7 @@ class ImageLoader_Mock: ImageLoading, @unchecked Sendable {
 
     func loadImage(
         url: URL?,
-        imageCDN: ImageCDN,
-        resize: Bool,
-        preferredSize: CGSize?,
+        resize: ImageResize?,
         completion: @escaping @MainActor (Result<UIImage, Error>) -> Void
     ) {
         loadImageCalled = true
@@ -35,7 +34,6 @@ class ImageLoader_Mock: ImageLoading, @unchecked Sendable {
         placeholders: [UIImage],
         loadThumbnails: Bool,
         thumbnailSize: CGSize,
-        imageCDN: ImageCDN,
         completion: @escaping @MainActor ([UIImage]) -> Void
     ) {
         loadImageCalled = true
@@ -48,16 +46,14 @@ class ImageLoader_Mock: ImageLoading, @unchecked Sendable {
     }
 }
 
-/// Mock implementation of `ImageLoading` that returns different TestImages based on URL.
-class TestImagesLoader_Mock: ImageLoading, @unchecked Sendable {
+/// Mock implementation of `ImageLoader` that returns different TestImages based on URL.
+class TestImagesLoader_Mock: ImageLoader, @unchecked Sendable {
     var loadImageCalled = false
     var loadImagesCalled = false
 
     func loadImage(
         url: URL?,
-        imageCDN: ImageCDN,
-        resize: Bool,
-        preferredSize: CGSize?,
+        resize: ImageResize?,
         completion: @escaping @MainActor (Result<UIImage, Error>) -> Void
     ) {
         loadImageCalled = true
@@ -73,7 +69,6 @@ class TestImagesLoader_Mock: ImageLoading, @unchecked Sendable {
         placeholders: [UIImage],
         loadThumbnails: Bool,
         thumbnailSize: CGSize,
-        imageCDN: ImageCDN,
         completion: @escaping @MainActor ([UIImage]) -> Void
     ) {
         loadImagesCalled = true
@@ -91,7 +86,6 @@ class TestImagesLoader_Mock: ImageLoading, @unchecked Sendable {
 
         let urlString = url.absoluteString
 
-        // Return different TestImages based on URL content
         if urlString.contains("yoda") {
             return XCTestCase.TestImages.yoda.image
         } else if urlString.contains("chewbacca") {
@@ -101,7 +95,6 @@ class TestImagesLoader_Mock: ImageLoading, @unchecked Sendable {
         } else if urlString.contains("vader") {
             return XCTestCase.TestImages.vader.image
         } else {
-            // Default fallback
             return XCTestCase.TestImages.yoda.image
         }
     }

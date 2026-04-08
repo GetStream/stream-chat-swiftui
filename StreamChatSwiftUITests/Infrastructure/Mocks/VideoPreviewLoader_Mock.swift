@@ -3,28 +3,29 @@
 //
 
 @testable import StreamChat
+import StreamChatCommonUI
 @testable import StreamChatSwiftUI
 import UIKit
 import XCTest
 
-/// Mock implementation of `VideoPreviewLoader`.
-class VideoPreviewLoader_Mock: VideoPreviewLoader {
-    var loadPreviewVideoCalled = false
-    var loadPreviewVideoWithAttachmentCalled = false
+/// Mock implementation of `VideoLoader`.
+class VideoLoader_Mock: VideoLoader, @unchecked Sendable {
+    var loadPreviewCalled = false
+    var loadPreviewWithAttachmentCalled = false
 
-    func loadPreviewForVideo(at url: URL, completion: @escaping @MainActor (Result<UIImage, Error>) -> Void) {
-        loadPreviewVideoCalled = true
+    func loadPreview(at url: URL, completion: @escaping @MainActor (Result<UIImage, Error>) -> Void) {
+        loadPreviewCalled = true
 
         StreamConcurrency.onMain {
             completion(.success(ImageLoader_Mock.defaultLoadedImage))
         }
     }
 
-    func loadPreviewForVideo(
+    func loadPreview(
         with attachment: ChatMessageVideoAttachment,
         completion: @escaping @MainActor (Result<UIImage, Error>) -> Void
     ) {
-        loadPreviewVideoWithAttachmentCalled = true
+        loadPreviewWithAttachmentCalled = true
 
         completion(.success(ImageLoader_Mock.defaultLoadedImage))
     }

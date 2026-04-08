@@ -19,7 +19,7 @@ import XCTest
 
         let imageLoader = TestImagesLoader_Mock()
         let utils = Utils(
-            videoPreviewLoader: VideoPreviewLoader_Mock(),
+            videoLoader: VideoLoader_Mock(),
             imageLoader: imageLoader,
             composerConfig: ComposerConfig(isVoiceRecordingEnabled: true)
         )
