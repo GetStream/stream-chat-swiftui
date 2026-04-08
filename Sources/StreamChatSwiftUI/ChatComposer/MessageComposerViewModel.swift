@@ -110,6 +110,9 @@ import SwiftUI
             if oldValue?.id != composerCommand?.id &&
                 composerCommand?.displayInfo?.isInstant == true {
                 clearCommandText()
+                composerAssets = []
+                addedVoiceRecordings = []
+                addedCustomAttachments = []
             }
             if oldValue != nil && composerCommand == nil {
                 pickerTypeState = .expanded(.none)
