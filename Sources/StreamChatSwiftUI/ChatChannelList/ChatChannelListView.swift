@@ -79,7 +79,6 @@ public struct ChatChannelListView<Factory: ViewFactory>: View {
         containerView
             .sheet(isPresented: $viewModel.channelPopupShown, content: {
                 channelPopup()
-                    .modifier(PresentationDetentsModifier(sheetSizes: [.custom(200), .medium]))
             })
             .if(isIphone || !utils.messageListConfig.iPadSplitViewEnabled, transform: { view in
                 view.navigationViewStyle(.stack)
