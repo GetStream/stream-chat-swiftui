@@ -232,7 +232,13 @@ import SwiftUI
     /// - Parameter options: the options for creating the media viewer toolbar.
     /// - Returns: ViewModifier applied to the media viewer's navigation content.
     func makeMediaViewerToolbarModifier(options: MediaViewerToolbarModifierOptions) -> MediaViewerToolbarModifierType
-    
+
+    associatedtype MediaViewerFooterViewType: View
+    /// Creates the footer view for the media viewer (share, page counter, grid button).
+    /// - Parameter options: the options for creating the media viewer footer.
+    /// - Returns: View displayed in the media viewer footer slot.
+    func makeMediaViewerFooterView(options: MediaViewerFooterViewOptions) -> MediaViewerFooterViewType
+
     associatedtype VideoPlayerHeaderViewType: View
     /// Creates the video player header view presented with a sheet.
     /// - Parameter options: the options for creating the video player header view.

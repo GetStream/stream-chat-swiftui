@@ -387,7 +387,18 @@ extension ViewFactory {
             isShown: options.isShown
         )
     }
-    
+
+    public func makeMediaViewerFooterView(
+        options: MediaViewerFooterViewOptions
+    ) -> some View {
+        MediaViewerFooterView(
+            shareContent: options.shareContent,
+            selected: options.selected,
+            totalCount: options.totalCount,
+            gridShown: options.gridShown
+        )
+    }
+
     public func makeVideoPlayerHeaderView(
         options: VideoPlayerHeaderViewOptions
     ) -> some View {

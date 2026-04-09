@@ -107,29 +107,14 @@ public struct MediaViewer<Factory: ViewFactory>: View {
 
                     Divider()
 
-                    HStack {
-                        ShareButtonView(content: sharingContent)
-
-                        Spacer()
-
-                        Text("\(selected + 1) of \(mediaAttachments.count)")
-                            .font(fonts.subheadlineBold)
-                            .foregroundColor(colors.textPrimary.toColor)
-
-                        Spacer()
-
-                        StreamIconButton(role: .secondary, style: .ghost, size: .medium) {
-                            gridShown = true
-                        } icon: {
-                            Image(uiImage: images.gallery)
-                                .customizable()
-                                .frame(width: 16, height: 16)
-                                .foregroundColor(Color(colors.textSecondary))
-                        }
-                    }
-                    .padding(.horizontal, tokens.spacingSm)
-                    .frame(height: 48 + tokens.spacingSm * 2)
-                    .background(Color(colors.backgroundCoreElevation1))
+                    viewFactory.makeMediaViewerFooterView(
+                        options: MediaViewerFooterViewOptions(
+                            shareContent: sharingContent,
+                            selected: selected,
+                            totalCount: mediaAttachments.count,
+                            gridShown: $gridShown
+                        )
+                    )
                 }
             }
             .background(Color(colors.backgroundCoreApp).edgesIgnoringSafeArea(.all))
@@ -193,6 +178,55 @@ struct GridMediaView<Factory: ViewFactory>: View {
         .padding(.horizontal, tokens.spacingSm)
         .padding(.vertical, tokens.spacing2xl)
         .background(colors.backgroundCoreElevation1.toColor.edgesIgnoringSafeArea(.all))
+    }
+}
+
+// MARK: - Footer
+
+/// Default footer view for the media viewer.
+/// Displays a share button, page counter, and grid toggle button.
+public struct MediaViewerFooterView: View {
+    @Injected(\.colors) private var colors
+    @Injected(\.fonts) private var fonts
+    @Injected(\.images) private var images
+    @Injected(\.tokens) private var tokens
+
+    let shareContent: [UIImage]
+    let selected: Int
+    let totalCount: Int
+    @Binding var gridShown: Bool
+
+    public init(shareContent: [UIImage], selected: Int, totalCount: Int, gridShown: Binding<Bool>) {
+        self.shareContent = shareContent
+        self.selected = selected
+        self.totalCount = totalCount
+        _gridShown = gridShown
+    }
+
+    public var body: some View {
+        HStack {
+            ShareButtonView(content: shareContent)
+
+            Spacer()
+
+            Text("\(selected + 1) of \(totalCount)")
+                .font(fonts.subheadlineBold)
+                .foregroundColor(colors.textPrimary.toColor)
+
+            Spacer()
+
+            StreamIconButton(role: .secondary, style: .ghost, size: .medium) {
+                gridShown = true
+            } icon: {
+                Image(uiImage: images.gallery)
+                    .customizable()
+                    .frame(width: 16, height: 16)
+                    .foregroundColor(Color(colors.textSecondary))
+            }
+        }
+        .padding(.horizontal, tokens.spacingSm)
+        .frame(height: 48 + tokens.spacingSm * 2)
+        .background(Color(colors.backgroundCoreElevation1))
     }
 }
 

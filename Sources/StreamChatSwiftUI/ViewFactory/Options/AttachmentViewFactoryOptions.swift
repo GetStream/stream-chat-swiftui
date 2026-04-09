@@ -302,6 +302,25 @@ public final class MediaViewerToolbarModifierOptions: Sendable {
     }
 }
 
+/// Options for creating the media viewer footer view.
+public final class MediaViewerFooterViewOptions: Sendable {
+    /// The content available for sharing (e.g. loaded images).
+    public let shareContent: [UIImage]
+    /// The currently selected media index (zero-based).
+    public let selected: Int
+    /// The total number of media attachments.
+    public let totalCount: Int
+    /// Binding that controls whether the grid sheet is shown.
+    public let gridShown: Binding<Bool>
+
+    public init(shareContent: [UIImage], selected: Int, totalCount: Int, gridShown: Binding<Bool>) {
+        self.shareContent = shareContent
+        self.selected = selected
+        self.totalCount = totalCount
+        self.gridShown = gridShown
+    }
+}
+
 // MARK: - Video Player Options
 
 /// Options for creating the video player header view.
