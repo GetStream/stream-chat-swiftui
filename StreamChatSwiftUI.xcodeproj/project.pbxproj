@@ -1542,7 +1542,7 @@
 			repositoryURL = "https://github.com/GetStream/stream-chat-swift.git";
 			requirement = {
 				kind = revision;
-				revision = 09eacf5c9ed12eace88e272243e6cf6e661b0766;
+				revision = f7295d3d6f83c2aad95b38055b27981efe3d8225;
 			};
 		};
 		E3A1C01A282BAC66002D1E26 /* XCRemoteSwiftPackageReference "sentry-cocoa" */ = {
