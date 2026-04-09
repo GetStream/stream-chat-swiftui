@@ -227,11 +227,11 @@ import SwiftUI
     ///  - Returns: view displayed in the gallery slot.
     func makeMediaViewer(options: MediaViewerOptions) -> MediaViewerType
     
-    associatedtype MediaViewerHeaderType: View
-    /// Creates the gallery header view presented with a sheet.
-    /// - Parameter options: the options for creating the gallery header view.
-    /// - Returns: View displayed in the gallery header slot.
-    func makeMediaViewerHeader(options: MediaViewerHeaderOptions) -> MediaViewerHeaderType
+    associatedtype MediaViewerToolbarModifierType: ViewModifier
+    /// Creates the toolbar modifier applied to the media viewer navigation content.
+    /// - Parameter options: the options for creating the media viewer toolbar.
+    /// - Returns: ViewModifier applied to the media viewer's navigation content.
+    func makeMediaViewerToolbarModifier(options: MediaViewerToolbarModifierOptions) -> MediaViewerToolbarModifierType
     
     associatedtype VideoPlayerHeaderViewType: View
     /// Creates the video player header view presented with a sheet.

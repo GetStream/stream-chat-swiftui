@@ -72,6 +72,7 @@ struct MediaAttachmentsGridView<Factory: ViewFactory>: View {
     let mediaItems: [MediaItem]?
     let showAvatars: Bool
     let onItemAppear: ((Int) -> Void)?
+    let onItemSelected: ((Int) -> Void)?
 
     private let targetItemWidth: CGFloat = 120
 
@@ -80,13 +81,15 @@ struct MediaAttachmentsGridView<Factory: ViewFactory>: View {
         attachments: [MediaAttachment],
         mediaItems: [MediaItem]? = nil,
         showAvatars: Bool = true,
-        onItemAppear: ((Int) -> Void)? = nil
+        onItemAppear: ((Int) -> Void)? = nil,
+        onItemSelected: ((Int) -> Void)? = nil
     ) {
         self.factory = factory
         self.attachments = attachments
         self.mediaItems = mediaItems
         self.showAvatars = showAvatars
         self.onItemAppear = onItemAppear
+        self.onItemSelected = onItemSelected
     }
 
     public var body: some View {
@@ -156,6 +159,19 @@ struct MediaAttachmentsGridView<Factory: ViewFactory>: View {
                     }
                 }
             )
+        } else if let onItemSelected {
+            Button {
+                onItemSelected(index)
+            } label: {
+                LazyLoadingImage(
+                    source: attachments[index],
+                    width: itemWidth,
+                    height: itemWidth,
+                    showVideoIcon: false
+                )
+                .frame(width: itemWidth, height: itemWidth)
+                .clipped()
+            }
         } else {
             LazyLoadingImage(
                 source: attachments[index],

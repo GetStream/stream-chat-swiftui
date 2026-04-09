@@ -378,10 +378,14 @@ extension ViewFactory {
         )
     }
     
-    public func makeMediaViewerHeader(
-        options: MediaViewerHeaderOptions
-    ) -> some View {
-        MediaViewerHeader(title: options.title, subtitle: options.subtitle, isShown: options.shown)
+    public func makeMediaViewerToolbarModifier(
+        options: MediaViewerToolbarModifierOptions
+    ) -> some ViewModifier {
+        MediaViewerToolbarModifier(
+            title: options.title,
+            subtitle: options.subtitle,
+            isShown: options.isShown
+        )
     }
     
     public func makeVideoPlayerHeaderView(

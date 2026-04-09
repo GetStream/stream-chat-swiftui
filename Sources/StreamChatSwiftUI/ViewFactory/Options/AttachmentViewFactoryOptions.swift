@@ -286,19 +286,19 @@ public final class MediaViewerOptions: Sendable {
     }
 }
 
-/// Options for creating the gallery header view.
-public final class MediaViewerHeaderOptions: Sendable {
-    /// The title to display in the header.
+/// Options for creating the media viewer toolbar modifier.
+public final class MediaViewerToolbarModifierOptions: Sendable {
+    /// The title to display in the toolbar (e.g. author name).
     public let title: String
-    /// The subtitle to display in the header.
+    /// The subtitle to display in the toolbar (e.g. date).
     public let subtitle: String
-    /// Binding to whether the header is shown.
-    public let shown: Binding<Bool>
-    
-    public init(title: String, subtitle: String, shown: Binding<Bool>) {
+    /// Binding that controls whether the media viewer is shown.
+    public let isShown: Binding<Bool>
+
+    public init(title: String, subtitle: String, isShown: Binding<Bool>) {
         self.title = title
         self.subtitle = subtitle
-        self.shown = shown
+        self.isShown = isShown
     }
 }
 
