@@ -378,7 +378,7 @@ struct ChatChannelInfoViewHeaderViewModifier: ViewModifier {
                 Text(L10n.ChatInfo.edit)
                     .font(fonts.bodyBold)
             }
-            .modifier(LiquidGlassModifier(shape: Capsule(), isInteractive: true))
+            .modifier(LiquidGlassBorderlessModifier(shape: Capsule(), isInteractive: true))
         } else {
             StreamTextButton(role: .secondary, style: .outline, size: .medium) {
                 viewModel.editGroupShown = true
