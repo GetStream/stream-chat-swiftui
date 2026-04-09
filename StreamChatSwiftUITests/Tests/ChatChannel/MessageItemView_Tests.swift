@@ -907,8 +907,7 @@ import XCTest
                 isSwipeToQuoteReplyPossible: true,
                 quotedMessage: .constant(nil),
                 initialOffsetX: offset
-            )
-            )
+            ))
             .offset(x: offset)
 
         // Then
@@ -935,8 +934,7 @@ import XCTest
                 isSwipeToQuoteReplyPossible: true,
                 quotedMessage: .constant(nil),
                 initialOffsetX: offset
-            )
-            )
+            ))
             .offset(x: offset)
 
         // Then
