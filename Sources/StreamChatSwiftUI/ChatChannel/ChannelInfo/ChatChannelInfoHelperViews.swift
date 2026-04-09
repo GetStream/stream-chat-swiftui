@@ -264,7 +264,6 @@ public struct MemberListView<Factory: ViewFactory>: View {
     @Injected(\.colors) private var colors
     @Injected(\.fonts) private var fonts
     @Injected(\.tokens) private var tokens
-    @Injected(\.images) private var images
     @Injected(\.chatClient) private var chatClient
 
     let factory: Factory
@@ -296,26 +295,32 @@ public struct MemberListView<Factory: ViewFactory>: View {
             }
             .background(Color(colors.backgroundCoreApp).edgesIgnoringSafeArea(.all))
             .toolbarThemed {
+                ToolbarItem(placement: .navigationBarLeading) {
+                    Button {
+                        viewModel.memberListSheetShown = false
+                    } label: {
+                        Image(systemName: "xmark")
+                            .renderingMode(.template)
+                            .font(.system(size: 12))
+                            .foregroundColor(Color(colors.buttonSecondaryText))
+                    }
+                }
                 ToolbarItem(placement: .principal) {
                     Text(L10n.ChatInfo.Members.count(viewModel.channel.memberCount))
                         .font(fonts.bodyBold)
                         .foregroundColor(Color(colors.navigationBarTitle))
                 }
-                ToolbarItem(placement: .navigationBarLeading) {
-                    Button {
-                        viewModel.memberListSheetShown = false
-                    } label: {
-                        Image(uiImage: images.close)
-                            .foregroundColor(Color(colors.textSecondary))
-                    }
-                }
-                ToolbarItem(placement: .navigationBarTrailing) {
+                ToolbarItem(placement: .topBarTrailing) {
                     if viewModel.shouldShowAddUserButton {
-                        StreamIconButton(role: .primary, style: .solid, size: .small) {
+                        Button {
                             addUsersShown = true
-                        } icon: {
+                        } label: {
                             Image(systemName: "person.badge.plus")
+                                .renderingMode(.template)
+                                .font(.system(size: 16))
+                                .foregroundColor(Color(colors.buttonPrimaryTextOnAccent))
                         }
+                        .modifier(factory.styles.makeToolbarConfirmActionModifier(options: .init()))
                     }
                 }
             }
