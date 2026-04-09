@@ -82,8 +82,8 @@ public struct ChatChannelInfoView<Factory: ViewFactory>: View, KeyboardReadable 
             EditGroupView(factory: factory, viewModel: viewModel)
         }
         .sheet(isPresented: $viewModel.addUsersShown) {
-            factory.makeAddUsersView(
-                options: AddUsersViewOptions(
+            factory.makeMemberAddView(
+                options: MemberAddViewOptions(
                     options: .init(loadedUserIds: viewModel.allMemberIds),
                     onConfirm: viewModel.addUsersTapped(_:)
                 )

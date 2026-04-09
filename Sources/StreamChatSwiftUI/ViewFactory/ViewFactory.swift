@@ -609,11 +609,11 @@ import SwiftUI
     /// Creates the thread list divider item.
     func makeThreadListDividerItem(options: ThreadListDividerItemOptions) -> ThreadListDividerItem
     
-    associatedtype AddUsersViewType: View
-    /// Creates a view for adding users to a chat or channel.
-    /// - Parameter options: the options for creating the add users view.
-    /// - Returns: The view shown in the add users slot.
-    func makeAddUsersView(options: AddUsersViewOptions) -> AddUsersViewType
+    associatedtype MemberAddViewType: View
+    /// Creates a view for adding members to a channel.
+    /// - Parameter options: the options for creating the member add view.
+    /// - Returns: The view shown in the member add slot.
+    func makeMemberAddView(options: MemberAddViewOptions) -> MemberAddViewType
     
     associatedtype AttachmentTextViewType: View
     /// Creates a text caption view displayed below attachments inside ``MessageAttachmentsView``.

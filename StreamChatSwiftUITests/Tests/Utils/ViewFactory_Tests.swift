@@ -1017,20 +1017,20 @@ import XCTest
         XCTAssert(view is MediaViewerHeader)
     }
     
-    func test_viewFactory_makeAddUsersView() {
+    func test_viewFactory_makeMemberAddView() {
         // Given
         let viewFactory = DefaultViewFactory.shared
         
         // When
-        let view = viewFactory.makeAddUsersView(
-            options: AddUsersViewOptions(
+        let view = viewFactory.makeMemberAddView(
+            options: MemberAddViewOptions(
                 options: .init(loadedUserIds: []),
                 onConfirm: { _ in }
             )
         )
         
         // Then
-        XCTAssert(view is AddUsersView<DefaultViewFactory>)
+        XCTAssert(view is MemberAddView<DefaultViewFactory>)
     }
 
     func test_viewFactory_makeStreamTextView() {

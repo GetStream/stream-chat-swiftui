@@ -7,13 +7,13 @@ import SwiftUI
 
 /// Full-sheet view for adding members to a channel.
 /// Supports search, pagination, and multi-select with a batch confirm action.
-public struct AddUsersView<Factory: ViewFactory>: View {
+public struct MemberAddView<Factory: ViewFactory>: View {
     @Injected(\.colors) private var colors
 
     @Environment(\.presentationMode) private var presentationMode
 
     private let factory: Factory
-    @StateObject private var viewModel: AddUsersViewModel
+    @StateObject private var viewModel: MemberAddViewModel
     var onConfirm: @MainActor ([ChatUser]) -> Void
 
     public init(
@@ -22,7 +22,7 @@ public struct AddUsersView<Factory: ViewFactory>: View {
         onConfirm: @escaping @MainActor ([ChatUser]) -> Void
     ) {
         _viewModel = StateObject(
-            wrappedValue: AddUsersViewModel(loadedUserIds: loadedUserIds)
+            wrappedValue: MemberAddViewModel(loadedUserIds: loadedUserIds)
         )
         self.onConfirm = onConfirm
         self.factory = factory
@@ -30,7 +30,7 @@ public struct AddUsersView<Factory: ViewFactory>: View {
 
     init(
         factory: Factory = DefaultViewFactory.shared,
-        viewModel: AddUsersViewModel,
+        viewModel: MemberAddViewModel,
         onConfirm: @escaping @MainActor ([ChatUser]) -> Void
     ) {
         _viewModel = StateObject(wrappedValue: viewModel)
@@ -62,7 +62,7 @@ public struct AddUsersView<Factory: ViewFactory>: View {
             ))
             .background(Color(colors.backgroundCoreApp).edgesIgnoringSafeArea(.all))
             .modifier(
-                AddMembersToolbarModifier(
+                MemberAddToolbarModifier(
                     factory: factory,
                     viewModel: viewModel,
                     onConfirm: { onConfirm(viewModel.selectedUsers) },
@@ -74,8 +74,8 @@ public struct AddUsersView<Factory: ViewFactory>: View {
     }
 }
 
-/// Options used in the add users view.
-public final class AddUsersOptions: Sendable {
+/// Options used in the member add view.
+public final class MemberAddOptions: Sendable {
     public let loadedUserIds: [String]
 
     public init(loadedUserIds: [String]) {
@@ -156,13 +156,13 @@ private struct AddMembersUserRow<Factory: ViewFactory>: View {
 
 // MARK: - Toolbar
 
-private struct AddMembersToolbarModifier<Factory: ViewFactory>: ViewModifier {
+private struct MemberAddToolbarModifier<Factory: ViewFactory>: ViewModifier {
     @Injected(\.colors) private var colors
     @Injected(\.fonts) private var fonts
     @Injected(\.tokens) private var tokens
 
     let factory: Factory
-    @ObservedObject var viewModel: AddUsersViewModel
+    @ObservedObject var viewModel: MemberAddViewModel
     let onConfirm: () -> Void
     let onDismiss: () -> Void
 

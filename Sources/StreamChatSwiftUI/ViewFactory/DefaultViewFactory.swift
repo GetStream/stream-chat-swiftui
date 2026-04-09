@@ -1004,10 +1004,10 @@ extension ViewFactory {
         Divider()
     }
     
-    public func makeAddUsersView(
-        options: AddUsersViewOptions
+    public func makeMemberAddView(
+        options: MemberAddViewOptions
     ) -> some View {
-        AddUsersView(loadedUserIds: options.options.loadedUserIds, onConfirm: options.onConfirm)
+        MemberAddView(loadedUserIds: options.options.loadedUserIds, onConfirm: options.onConfirm)
     }
     
     public func makeAttachmentTextView(
