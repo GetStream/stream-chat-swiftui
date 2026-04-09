@@ -209,7 +209,7 @@ public struct MediaViewerFooterView: View {
 
             Spacer()
 
-            Text("\(selected + 1) of \(totalCount)")
+            Text(L10n.Message.Gallery.pageCount(selected + 1, totalCount))
                 .font(fonts.subheadlineBold)
                 .foregroundColor(colors.textPrimary.toColor)
 
@@ -260,7 +260,7 @@ public struct MediaViewerToolbarModifier: ViewModifier {
             Button {
                 isShown = false
             } label: {
-                Image(systemName: "chevron.left")
+                Image(systemName: "chevron.backward")
                     .renderingMode(.template)
                     .font(.system(size: 16, weight: .medium))
                     .foregroundColor(dismissButtonColor)

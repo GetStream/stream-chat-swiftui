@@ -57,7 +57,7 @@ public struct MemberListView<Factory: ViewFactory>: View {
                         .foregroundColor(Color(colors.navigationBarTitle))
                 }
                 ToolbarItem(placement: .topBarTrailing) {
-                    if viewModel.shouldShowAddUserButton {
+                    if viewModel.shouldShowAddMemberButton {
                         Button {
                             addUsersShown = true
                         } label: {

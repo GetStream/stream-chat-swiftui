@@ -216,7 +216,7 @@ public struct ChatChannelInfoView<Factory: ViewFactory>: View, KeyboardReadable 
 
             Spacer()
 
-            if viewModel.shouldShowAddUserButton {
+            if viewModel.shouldShowAddMemberButton {
                 StreamTextButton(role: .secondary, style: .outline, size: .small) {
                     viewModel.addUsersShown = true
                 } text: {

@@ -72,7 +72,7 @@ import SwiftUI
         channel.ownCapabilities.contains(.updateChannel)
     }
 
-    open var shouldShowAddUserButton: Bool {
+    open var shouldShowAddMemberButton: Bool {
         if channel.isDirectMessageChannel {
             false
         } else {
