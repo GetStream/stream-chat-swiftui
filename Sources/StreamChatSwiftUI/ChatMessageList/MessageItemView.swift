@@ -292,7 +292,7 @@ struct SwipeToReplyModifier: ViewModifier {
                         .padding(.all, tokens.spacingXs)
                         .background(colors.buttonSecondaryBackground.toColor)
                         .clipShape(Circle())
-                        .offset(x: min(offsetX / 2, 50))
+                        .offset(x: min(offsetX / 2, 50) + (message.isRightAligned ? 30 : 0))
                     Spacer()
                 } : nil
             )
