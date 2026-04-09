@@ -16,17 +16,20 @@ public struct MessageView<Factory: ViewFactory>: View {
     public var message: ChatMessage
     public var contentWidth: CGFloat
     public var isFirst: Bool
+    public let text: String
     @Binding public var scrolledId: String?
 
     public init(
         factory: Factory,
         message: ChatMessage,
+        text: String,
         contentWidth: CGFloat,
         isFirst: Bool,
         scrolledId: Binding<String?>
     ) {
         self.factory = factory
         self.message = message
+        self.text = text
         self.contentWidth = contentWidth
         self.isFirst = isFirst
         _scrolledId = scrolledId
@@ -73,6 +76,7 @@ public struct MessageView<Factory: ViewFactory>: View {
                 factory.makeMessageAttachmentsView(
                     options: MessageAttachmentsViewOptions(
                         message: message,
+                        text: text,
                         isFirst: isFirst,
                         availableWidth: contentWidth,
                         scrolledId: $scrolledId
@@ -91,6 +95,7 @@ public struct MessageView<Factory: ViewFactory>: View {
                     factory.makeMessageTextView(
                         options: MessageTextViewOptions(
                             message: message,
+                            text: text,
                             isFirst: isFirst,
                             availableWidth: contentWidth,
                             scrolledId: $scrolledId
@@ -110,6 +115,7 @@ public struct MessageTextView<Factory: ViewFactory>: View {
     private let factory: Factory
     private let message: ChatMessage
     private let isFirst: Bool
+    private let text: String
     private let leadingPadding: CGFloat
     private let trailingPadding: CGFloat
     private let topPadding: CGFloat
@@ -119,6 +125,7 @@ public struct MessageTextView<Factory: ViewFactory>: View {
     public init(
         factory: Factory,
         message: ChatMessage,
+        text: String,
         isFirst: Bool,
         scrolledId: Binding<String?>
     ) {
@@ -126,6 +133,7 @@ public struct MessageTextView<Factory: ViewFactory>: View {
         self.init(
             factory: factory,
             message: message,
+            text: text,
             isFirst: isFirst,
             leadingPadding: tokens.spacingSm,
             trailingPadding: tokens.spacingSm,
@@ -134,10 +142,11 @@ public struct MessageTextView<Factory: ViewFactory>: View {
             scrolledId: scrolledId
         )
     }
-    
+
     public init(
         factory: Factory,
         message: ChatMessage,
+        text: String,
         isFirst: Bool,
         leadingPadding: CGFloat,
         trailingPadding: CGFloat,
@@ -148,6 +157,7 @@ public struct MessageTextView<Factory: ViewFactory>: View {
         self.factory = factory
         self.message = message
         self.isFirst = isFirst
+        self.text = text
         self.leadingPadding = leadingPadding
         self.trailingPadding = trailingPadding
         self.topPadding = topPadding
@@ -160,7 +170,7 @@ public struct MessageTextView<Factory: ViewFactory>: View {
             alignment: message.alignmentInBubble,
             spacing: 0
         ) {
-            factory.makeStreamTextView(options: .init(message: message))
+            factory.makeStreamTextView(options: .init(message: message, text: text))
                 .padding(.leading, leadingPadding)
                 .padding(.trailing, trailingPadding)
                 .padding(.top, topPadding)
@@ -221,20 +231,22 @@ public struct EmojiTextView<Factory: ViewFactory>: View {
 
 struct StreamTextView: View {
     @Injected(\.fonts) var fonts
-    
+    @Injected(\.utils) var utils
+
+    let text: String
     let message: ChatMessage
-    private let adjustedText: String
-    
-    init(message: ChatMessage) {
-        self.message = message
-        adjustedText = message.adjustedText
-    }
-    
+
     var body: some View {
         if #available(iOS 15, *) {
-            LinkDetectionTextView(message: message)
+            LinkDetectionTextView(
+                text: text,
+                textColor: textColor(for: message),
+                mentionedUsers: message.mentionedUsers,
+                messageId: message.messageId,
+                linkAttributes: utils.messageListConfig.messageDisplayOptions.messageLinkDisplayResolver(message)
+            )
         } else {
-            Text(adjustedText)
+            Text(text)
                 .foregroundColor(textColor(for: message))
                 .font(fonts.body)
         }
@@ -244,49 +256,44 @@ struct StreamTextView: View {
 @available(iOS 15, *)
 public struct LinkDetectionTextView: View {
     @Environment(\.layoutDirection) var layoutDirection
-    @Environment(\.channelTranslationLanguage) var translationLanguage
-    @Environment(\.messageViewModel) var messageViewModel
 
-    @Injected(\.colors) var colors
     @Injected(\.fonts) var fonts
     @Injected(\.utils) var utils
-    
-    var message: ChatMessage
 
-    // The translations store is used to detect changes so the textContent is re-rendered.
-    // The @Environment(\.messageViewModel) is not reactive like @EnvironmentObject.
-    // TODO: On v5 the TextView should be refactored and not depend directly on the view model.
-    @ObservedObject var originalTranslationsStore = InjectedValues[\.utils].originalTranslationsStore
+    var text: String
+    var textColor: Color
+    var mentionedUsers: Set<ChatUser>
+    var messageId: String
+    var linkAttributes: [NSAttributedString.Key: Any]
 
-    @State var text: AttributedString?
     @State var linkDetector = TextLinkDetector()
     @State var tintColor = Color(InjectedValues[\.colors].accentPrimary)
-        
-    public init(
-        message: ChatMessage
-    ) {
-        self.message = message
-    }
-    
-    public var body: some View {
-        Group {
-            Text(text ?? displayText)
-        }
-        .foregroundColor(textColor(for: message))
-        .font(fonts.body)
-        .tint(tintColor)
-        .onChange(of: message) { message in
-            messageViewModel?.message = message
-            text = displayText
-        }
-    }
-    
-    var displayText: AttributedString {
-        let text = messageViewModel?.textContent ?? message.text
 
+    public init(
+        text: String,
+        textColor: Color,
+        mentionedUsers: Set<ChatUser>,
+        messageId: String,
+        linkAttributes: [NSAttributedString.Key: Any] = [:]
+    ) {
+        self.text = text
+        self.textColor = textColor
+        self.mentionedUsers = mentionedUsers
+        self.messageId = messageId
+        self.linkAttributes = linkAttributes
+    }
+
+    public var body: some View {
+        Text(displayText)
+            .foregroundColor(textColor)
+            .font(fonts.body)
+            .tint(tintColor)
+    }
+
+    var displayText: AttributedString {
         // Markdown
         let attributes = AttributeContainer()
-            .foregroundColor(textColor(for: message))
+            .foregroundColor(textColor)
             .font(fonts.body)
         var attributedString: AttributedString
         if utils.messageListConfig.markdownSupportEnabled {
@@ -296,16 +303,16 @@ public struct LinkDetectionTextView: View {
                 layoutDirection: layoutDirection
             )
         } else {
-            attributedString = AttributedString(message.adjustedText, attributes: attributes)
+            attributedString = AttributedString(text, attributes: attributes)
         }
         // Links and mentions
         if utils.messageListConfig.localLinkDetectionEnabled {
-            for user in message.mentionedUsers {
+            for user in mentionedUsers {
                 let mention = "@\(user.name ?? user.id)"
                 let ranges = attributedString.ranges(of: mention, options: [.caseInsensitive])
                 for range in ranges {
-                    if let messageId = message.messageId.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed),
-                       let url = URL(string: "getstream://mention/\(messageId)/\(user.id)") {
+                    if let encodedId = messageId.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed),
+                       let url = URL(string: "getstream://mention/\(encodedId)/\(user.id)") {
                         attributedString[range].link = url
                     }
                 }
@@ -317,7 +324,7 @@ public struct LinkDetectionTextView: View {
             }
         }
         // Finally change attributes for links (markdown links, text links, mentions)
-        var linkAttributes = utils.messageListConfig.messageDisplayOptions.messageLinkDisplayResolver(message)
+        var linkAttributes = linkAttributes
         if !linkAttributes.isEmpty {
             var linkAttributeContainer = AttributeContainer()
             if let uiColor = linkAttributes[.foregroundColor] as? UIColor {
@@ -330,7 +337,7 @@ public struct LinkDetectionTextView: View {
                 attributedString[range].mergeAttributes(linkAttributeContainer)
             }
         }
-        
+
         return attributedString
     }
 }

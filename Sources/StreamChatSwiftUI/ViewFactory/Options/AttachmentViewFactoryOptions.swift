@@ -188,9 +188,12 @@ public final class MessageAttachmentsViewOptions: Sendable {
     public let availableWidth: CGFloat
     /// Binding to the currently scrolled message ID.
     public let scrolledId: Binding<String?>
+    /// The resolved text content to display (translated or original).
+    public let text: String
 
     public init(
         message: ChatMessage,
+        text: String? = nil,
         isFirst: Bool,
         availableWidth: CGFloat,
         scrolledId: Binding<String?>
@@ -199,6 +202,7 @@ public final class MessageAttachmentsViewOptions: Sendable {
         self.isFirst = isFirst
         self.availableWidth = availableWidth
         self.scrolledId = scrolledId
+        self.text = text ?? message.text
     }
 }
 

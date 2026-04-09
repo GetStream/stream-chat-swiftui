@@ -131,9 +131,12 @@ public final class MessageTextViewOptions: Sendable {
     public let availableWidth: CGFloat
     /// Binding to the currently scrolled message ID.
     public let scrolledId: Binding<String?>
-    
+    /// The resolved text content to display (translated or original).
+    public let text: String
+
     public init(
         message: ChatMessage,
+        text: String,
         isFirst: Bool,
         availableWidth: CGFloat,
         scrolledId: Binding<String?>
@@ -142,6 +145,7 @@ public final class MessageTextViewOptions: Sendable {
         self.isFirst = isFirst
         self.availableWidth = availableWidth
         self.scrolledId = scrolledId
+        self.text = text
     }
 }
 
@@ -152,9 +156,12 @@ public final class MessageTextViewOptions: Sendable {
 public class StreamTextViewOptions {
     /// The message whose text should be displayed.
     public let message: ChatMessage
+    /// The resolved text content to display (translated or original).
+    public let text: String
 
-    public init(message: ChatMessage) {
+    public init(message: ChatMessage, text: String? = nil) {
         self.message = message
+        self.text = text ?? message.text
     }
 }
 
@@ -164,10 +171,17 @@ public class AttachmentTextViewOptions {
     public let message: ChatMessage
     /// The maximum width available for the text caption.
     public let availableWidth: CGFloat
+    /// The resolved text content to display (translated or original).
+    public let text: String
 
-    public init(message: ChatMessage, availableWidth: CGFloat) {
+    public init(
+        message: ChatMessage,
+        text: String,
+        availableWidth: CGFloat
+    ) {
         self.message = message
         self.availableWidth = availableWidth
+        self.text = text
     }
 }
 

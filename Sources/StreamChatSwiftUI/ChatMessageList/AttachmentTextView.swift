@@ -11,19 +11,22 @@ public struct AttachmentTextView<Factory: ViewFactory>: View {
     var factory: Factory
     var message: ChatMessage
     var availableWidth: CGFloat
+    let text: String
 
     public init(
         factory: Factory = DefaultViewFactory.shared,
+        text: String,
         message: ChatMessage,
         availableWidth: CGFloat
     ) {
         self.factory = factory
         self.message = message
         self.availableWidth = availableWidth
+        self.text = text
     }
 
     public var body: some View {
-        factory.makeStreamTextView(options: .init(message: message))
+        factory.makeStreamTextView(options: .init(message: message, text: text))
             .padding(.horizontal, tokens.spacingXxs)
             .fixedSize(horizontal: false, vertical: true)
             .frame(maxWidth: maxTextWidth, alignment: .leading)

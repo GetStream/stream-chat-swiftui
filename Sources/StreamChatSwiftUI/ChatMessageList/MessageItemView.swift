@@ -144,8 +144,6 @@ public struct MessageItemView<Factory: ViewFactory>: View {
         )
         .accessibilityElement(children: .contain)
         .accessibilityIdentifier("MessageItemView")
-        // TODO: Refactor so LinkDetectionTextView does not depend directly on the view model through @Environment.
-        .environment(\.messageViewModel, messageViewModel)
         .onChange(of: message) { message in messageViewModel.message = message }
         .onChange(of: channel) { channel in messageViewModel.channel = channel }
     }

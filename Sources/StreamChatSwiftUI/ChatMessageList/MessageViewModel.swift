@@ -24,11 +24,9 @@ import StreamChat
         self.message = message
         self.channel = channel
         self.isInThread = isInThread
-        utils.originalTranslationsStore.$originalTextMessageIds.sink(
-            receiveValue: { [weak self] _ in
-                self?.objectWillChange.send()
-            }
-        )
+        utils.originalTranslationsStore.objectWillChange.sink { [weak self] in
+            self?.objectWillChange.send()
+        }
         .store(in: &cancellables)
     }
 

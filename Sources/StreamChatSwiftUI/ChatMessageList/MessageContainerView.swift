@@ -108,6 +108,7 @@ struct MessageContainerView<Factory: ViewFactory>: View {
                     MessageView(
                         factory: factory,
                         message: message,
+                        text: messageViewModel.textContent,
                         contentWidth: contentWidth,
                         isFirst: showsAllInfo,
                         scrolledId: $scrolledId
@@ -117,6 +118,7 @@ struct MessageContainerView<Factory: ViewFactory>: View {
                 MessageView(
                     factory: factory,
                     message: message,
+                    text: messageViewModel.textContent,
                     contentWidth: contentWidth,
                     isFirst: showsAllInfo,
                     scrolledId: $scrolledId
