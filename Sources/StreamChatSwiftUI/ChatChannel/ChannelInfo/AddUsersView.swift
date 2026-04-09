@@ -63,6 +63,7 @@ public struct AddUsersView<Factory: ViewFactory>: View {
             .background(Color(colors.backgroundCoreApp).edgesIgnoringSafeArea(.all))
             .modifier(
                 AddMembersToolbarModifier(
+                    factory: factory,
                     viewModel: viewModel,
                     onConfirm: { onConfirm(viewModel.selectedUsers) },
                     onDismiss: { presentationMode.wrappedValue.dismiss() }
@@ -155,54 +156,51 @@ private struct AddMembersUserRow<Factory: ViewFactory>: View {
 
 // MARK: - Toolbar
 
-private struct AddMembersToolbarModifier: ViewModifier {
+private struct AddMembersToolbarModifier<Factory: ViewFactory>: ViewModifier {
     @Injected(\.colors) private var colors
     @Injected(\.fonts) private var fonts
-    @Injected(\.images) private var images
     @Injected(\.tokens) private var tokens
 
+    let factory: Factory
     @ObservedObject var viewModel: AddUsersViewModel
     let onConfirm: () -> Void
     let onDismiss: () -> Void
 
     func body(content: Content) -> some View {
-        if #available(iOS 26.0, *) {
-            content
-                .toolbarThemed {
-                    toolbarContent()
-                    #if compiler(>=6.2)
-                        .sharedBackgroundVisibility(.hidden)
-                    #endif
-                }
-        } else {
-            content
-                .toolbarThemed {
-                    toolbarContent()
-                }
-        }
+        content
+            .toolbarThemed {
+                toolbarContent()
+            }
     }
 
     @ToolbarContentBuilder private func toolbarContent() -> some ToolbarContent {
+        ToolbarItem(placement: .navigationBarLeading) {
+            Button(action: onDismiss) {
+                Image(systemName: "xmark")
+                    .renderingMode(.template)
+                    .font(.system(size: 12))
+                    .foregroundColor(Color(colors.buttonSecondaryText))
+            }
+        }
+
         ToolbarItem(placement: .principal) {
             Text(L10n.ChatInfo.Members.addMembersTitle)
                 .font(fonts.bodyBold)
                 .foregroundColor(Color(colors.navigationBarTitle))
         }
-        ToolbarItem(placement: .navigationBarLeading) {
-            Button(action: onDismiss) {
-                Image(uiImage: images.close)
-                    .foregroundColor(Color(colors.textSecondary))
-            }
+
+        ToolbarItem(placement: .topBarTrailing) {
+            confirmButton
         }
-        ToolbarItem(placement: .navigationBarTrailing) {
-            Button(action: onConfirm) {
-                Image(uiImage: images.selectionBadgeIcon)
-                    .customizable()
-                    .frame(width: tokens.iconSizeSm)
-                    .foregroundColor(Color(colors.buttonPrimaryTextOnAccent))
-            }
-            .frame(width: tokens.buttonVisualHeightMd)
-            .background(Circle().fill(Color(colors.accentPrimary)))
+    }
+
+    private var confirmButton: some View {
+        Button(action: onConfirm) {
+            Image(systemName: "checkmark")
+                .renderingMode(.template)
+                .font(.system(size: 16))
+                .foregroundColor(Color(colors.buttonPrimaryTextOnAccent))
         }
+        .modifier(factory.styles.makeToolbarConfirmActionModifier(options: .init()))
     }
 }
