@@ -263,7 +263,7 @@ import XCTest
         let viewModel = ChatChannelInfoViewModel(channel: channel)
 
         // When
-        let leaveButton = viewModel.shouldShowAddUserButton
+        let leaveButton = viewModel.shouldShowAddMemberButton
 
         // Then
         XCTAssert(leaveButton == true)
@@ -275,7 +275,7 @@ import XCTest
         let viewModel = ChatChannelInfoViewModel(channel: channel)
 
         // When
-        let leaveButton = viewModel.shouldShowAddUserButton
+        let leaveButton = viewModel.shouldShowAddMemberButton
 
         // Then
         XCTAssert(leaveButton == false)
@@ -287,7 +287,7 @@ import XCTest
         let viewModel = ChatChannelInfoViewModel(channel: channel)
 
         // When
-        let leaveButton = viewModel.shouldShowAddUserButton
+        let leaveButton = viewModel.shouldShowAddMemberButton
 
         // Then
         XCTAssert(leaveButton == false)

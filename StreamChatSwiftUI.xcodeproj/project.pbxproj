@@ -161,8 +161,6 @@
 				Tests/ChatChannel/AttachmentCommandsPickerView_Tests.swift,
 				Tests/ChatChannel/AttachmentFilePickerView_Tests.swift,
 				Tests/ChatChannel/ChannelControllerFactory_Tests.swift,
-				Tests/ChatChannel/ChannelInfo/AddUsersView_Tests.swift,
-				Tests/ChatChannel/ChannelInfo/AddUsersViewModel_Tests.swift,
 				Tests/ChatChannel/ChannelInfo/ChannelInfoMockUtils.swift,
 				Tests/ChatChannel/ChannelInfo/ChatChannelInfoView_Tests.swift,
 				Tests/ChatChannel/ChannelInfo/ChatChannelInfoViewModel_Tests.swift,
@@ -171,6 +169,8 @@
 				Tests/ChatChannel/ChannelInfo/FileAttachmentsViewModel_Tests.swift,
 				Tests/ChatChannel/ChannelInfo/MediaAttachmentsView_Tests.swift,
 				Tests/ChatChannel/ChannelInfo/MediaAttachmentsViewModel_Tests.swift,
+				Tests/ChatChannel/ChannelInfo/MemberAddView_Tests.swift,
+				Tests/ChatChannel/ChannelInfo/MemberAddViewModel_Tests.swift,
 				Tests/ChatChannel/ChannelInfo/MemberListView_Tests.swift,
 				Tests/ChatChannel/ChannelInfo/ParticipantInfoView_Tests.swift,
 				Tests/ChatChannel/ChannelInfo/PinnedMessagesView_Tests.swift,
@@ -1541,8 +1541,8 @@
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/GetStream/stream-chat-swift.git";
 			requirement = {
-				branch = develop;
-				kind = branch;
+				kind = revision;
+				revision = f7295d3d6f83c2aad95b38055b27981efe3d8225;
 			};
 		};
 		E3A1C01A282BAC66002D1E26 /* XCRemoteSwiftPackageReference "sentry-cocoa" */ = {

@@ -7,13 +7,13 @@ import SwiftUI
 
 /// Full-sheet view for adding members to a channel.
 /// Supports search, pagination, and multi-select with a batch confirm action.
-public struct AddUsersView<Factory: ViewFactory>: View {
+public struct MemberAddView<Factory: ViewFactory>: View {
     @Injected(\.colors) private var colors
 
     @Environment(\.presentationMode) private var presentationMode
 
     private let factory: Factory
-    @StateObject private var viewModel: AddUsersViewModel
+    @StateObject private var viewModel: MemberAddViewModel
     var onConfirm: @MainActor ([ChatUser]) -> Void
 
     public init(
@@ -22,7 +22,7 @@ public struct AddUsersView<Factory: ViewFactory>: View {
         onConfirm: @escaping @MainActor ([ChatUser]) -> Void
     ) {
         _viewModel = StateObject(
-            wrappedValue: AddUsersViewModel(loadedUserIds: loadedUserIds)
+            wrappedValue: MemberAddViewModel(loadedUserIds: loadedUserIds)
         )
         self.onConfirm = onConfirm
         self.factory = factory
@@ -30,7 +30,7 @@ public struct AddUsersView<Factory: ViewFactory>: View {
 
     init(
         factory: Factory = DefaultViewFactory.shared,
-        viewModel: AddUsersViewModel,
+        viewModel: MemberAddViewModel,
         onConfirm: @escaping @MainActor ([ChatUser]) -> Void
     ) {
         _viewModel = StateObject(wrappedValue: viewModel)
@@ -62,7 +62,8 @@ public struct AddUsersView<Factory: ViewFactory>: View {
             ))
             .background(Color(colors.backgroundCoreApp).edgesIgnoringSafeArea(.all))
             .modifier(
-                AddMembersToolbarModifier(
+                MemberAddToolbarModifier(
+                    factory: factory,
                     viewModel: viewModel,
                     onConfirm: { onConfirm(viewModel.selectedUsers) },
                     onDismiss: { presentationMode.wrappedValue.dismiss() }
@@ -73,8 +74,8 @@ public struct AddUsersView<Factory: ViewFactory>: View {
     }
 }
 
-/// Options used in the add users view.
-public final class AddUsersOptions: Sendable {
+/// Options used in the member add view.
+public final class MemberAddOptions: Sendable {
     public let loadedUserIds: [String]
 
     public init(loadedUserIds: [String]) {
@@ -155,54 +156,51 @@ private struct AddMembersUserRow<Factory: ViewFactory>: View {
 
 // MARK: - Toolbar
 
-private struct AddMembersToolbarModifier: ViewModifier {
+private struct MemberAddToolbarModifier<Factory: ViewFactory>: ViewModifier {
     @Injected(\.colors) private var colors
     @Injected(\.fonts) private var fonts
-    @Injected(\.images) private var images
     @Injected(\.tokens) private var tokens
 
-    @ObservedObject var viewModel: AddUsersViewModel
+    let factory: Factory
+    @ObservedObject var viewModel: MemberAddViewModel
     let onConfirm: () -> Void
     let onDismiss: () -> Void
 
     func body(content: Content) -> some View {
-        if #available(iOS 26.0, *) {
-            content
-                .toolbarThemed {
-                    toolbarContent()
-                    #if compiler(>=6.2)
-                        .sharedBackgroundVisibility(.hidden)
-                    #endif
-                }
-        } else {
-            content
-                .toolbarThemed {
-                    toolbarContent()
-                }
-        }
+        content
+            .toolbarThemed {
+                toolbarContent()
+            }
     }
 
     @ToolbarContentBuilder private func toolbarContent() -> some ToolbarContent {
+        ToolbarItem(placement: .navigationBarLeading) {
+            Button(action: onDismiss) {
+                Image(systemName: "xmark")
+                    .renderingMode(.template)
+                    .font(.system(size: 12))
+                    .foregroundColor(Color(colors.buttonSecondaryText))
+            }
+        }
+
         ToolbarItem(placement: .principal) {
             Text(L10n.ChatInfo.Members.addMembersTitle)
                 .font(fonts.bodyBold)
                 .foregroundColor(Color(colors.navigationBarTitle))
         }
-        ToolbarItem(placement: .navigationBarLeading) {
-            Button(action: onDismiss) {
-                Image(uiImage: images.close)
-                    .foregroundColor(Color(colors.textSecondary))
-            }
+
+        ToolbarItem(placement: .topBarTrailing) {
+            confirmButton
         }
-        ToolbarItem(placement: .navigationBarTrailing) {
-            Button(action: onConfirm) {
-                Image(uiImage: images.selectionBadgeIcon)
-                    .customizable()
-                    .frame(width: tokens.iconSizeSm)
-                    .foregroundColor(Color(colors.buttonPrimaryTextOnAccent))
-            }
-            .frame(width: tokens.buttonVisualHeightMd)
-            .background(Circle().fill(Color(colors.accentPrimary)))
+    }
+
+    private var confirmButton: some View {
+        Button(action: onConfirm) {
+            Image(systemName: "checkmark")
+                .renderingMode(.template)
+                .font(.system(size: 16))
+                .foregroundColor(Color(colors.buttonPrimaryTextOnAccent))
         }
+        .modifier(factory.styles.makeToolbarConfirmActionModifier(options: .init()))
     }
 }

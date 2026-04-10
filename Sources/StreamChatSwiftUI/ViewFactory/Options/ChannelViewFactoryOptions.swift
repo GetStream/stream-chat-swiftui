@@ -292,16 +292,16 @@ public final class ChannelBarsVisibilityViewModifierOptions: Sendable {
     }
 }
 
-// MARK: - Add Users Options
+// MARK: - Member Add Options
 
-/// Options for creating the add users view.
-public final class AddUsersViewOptions: Sendable {
-    /// Additional options for the add users view.
-    public let options: AddUsersOptions
+/// Options for creating the member add view.
+public final class MemberAddViewOptions: Sendable {
+    /// Additional options for the member add view.
+    public let options: MemberAddOptions
     /// Callback invoked when the user confirms the selection of members to add.
     public let onConfirm: @MainActor ([ChatUser]) -> Void
 
-    public init(options: AddUsersOptions, onConfirm: @escaping @MainActor ([ChatUser]) -> Void) {
+    public init(options: MemberAddOptions, onConfirm: @escaping @MainActor ([ChatUser]) -> Void) {
         self.options = options
         self.onConfirm = onConfirm
     }

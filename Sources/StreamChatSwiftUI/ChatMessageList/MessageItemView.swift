@@ -212,6 +212,8 @@ struct SwipeToReplyModifier: ViewModifier {
     let isSwipeToQuoteReplyPossible: Bool
     @Binding var quotedMessage: ChatMessage?
 
+    @Environment(\.layoutDirection) private var layoutDirection
+
     @Injected(\.images) private var images
     @Injected(\.utils) private var utils
     @Injected(\.colors) private var colors
@@ -238,6 +240,10 @@ struct SwipeToReplyModifier: ViewModifier {
     }
 
     private let feedbackGenerator = UIImpactFeedbackGenerator(style: .medium)
+
+    private var isRTL: Bool {
+        layoutDirection == .rightToLeft
+    }
 
     func body(content: Content) -> some View {
         content
@@ -290,7 +296,7 @@ struct SwipeToReplyModifier: ViewModifier {
                         .padding(.all, tokens.spacingXs)
                         .background(colors.buttonSecondaryBackground.toColor)
                         .clipShape(Circle())
-                        .offset(x: min(offsetX / 2, 50))
+                        .offset(x: min(offsetX / 2, 50) + (message.isRightAligned ? 30 : 0))
                     Spacer()
                 } : nil
             )
@@ -305,7 +311,7 @@ struct SwipeToReplyModifier: ViewModifier {
     }
 
     private func dragChanged(to value: CGFloat) {
-        let horizontalTranslation = value
+        let horizontalTranslation = isRTL ? -value : value
 
         if horizontalTranslation < 0 {
             return
