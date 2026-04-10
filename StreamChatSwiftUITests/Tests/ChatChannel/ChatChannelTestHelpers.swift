@@ -125,7 +125,8 @@ class ChatChannelTestHelpers {
     static func imageAttachments(
         count: Int,
         originalWidth: Double? = nil,
-        originalHeight: Double? = nil
+        originalHeight: Double? = nil,
+        state: LocalAttachmentState = .pendingUpload
     ) -> [AnyChatMessageAttachment] {
         let urls = [
             XCTestCase.TestImages.yoda.url,
@@ -138,7 +139,8 @@ class ChatChannelTestHelpers {
             imageAttachment(
                 url: urls[index % urls.count],
                 originalWidth: originalWidth,
-                originalHeight: originalHeight
+                originalHeight: originalHeight,
+                state: state
             )
         }
     }

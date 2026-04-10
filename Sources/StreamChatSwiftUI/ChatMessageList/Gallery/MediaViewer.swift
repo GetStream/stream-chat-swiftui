@@ -136,7 +136,7 @@ public struct MediaViewer<Factory: ViewFactory>: View {
                         Image(uiImage: images.gallery)
                             .renderingMode(.template)
                             .resizable()
-                            .frame(width: 16, height: 16, alignment: .center)
+                            .frame(width: tokens.iconSizeSm, height: tokens.iconSizeSm, alignment: .center)
                             .foregroundColor(Color(colors.textSecondary))
                     }
                 }
