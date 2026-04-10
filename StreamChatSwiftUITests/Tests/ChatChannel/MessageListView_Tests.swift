@@ -383,6 +383,137 @@ import XCTest
         AssertSnapshot(view)
     }
 
+    // MARK: - Grouped Messages with Annotations
+
+    func test_messageListView_groupedMessages_withThreadReplyAnnotation() {
+        // Given
+        let channel = ChatChannel.mockNonDMChannel()
+        let author = ChatUser.mock(id: "martin", name: "Martin")
+        let baseTime = Date(timeIntervalSince1970: 1000)
+        let msg1 = ChatMessage.mock(
+            id: "msg1",
+            cid: channel.cid,
+            text: "Let me check the latest updates.",
+            author: author,
+            createdAt: baseTime.addingTimeInterval(-20)
+        )
+        let msg2 = ChatMessage.mock(
+            id: "msg2",
+            cid: channel.cid,
+            text: "I found the issue in the logs.",
+            author: author,
+            createdAt: baseTime.addingTimeInterval(-10),
+            parentMessageId: .unique,
+            showReplyInChannel: true
+        )
+        let msg3 = ChatMessage.mock(
+            id: "msg3",
+            cid: channel.cid,
+            text: "Looks like it was a timeout.",
+            author: author,
+            createdAt: baseTime
+        )
+        let messages = [msg3, msg2, msg1]
+        let messagesGroupingInfo: [String: [String]] = [
+            msg3.id: [firstMessageKey],
+            msg1.id: [lastMessageKey]
+        ]
+        let view = MessageListView(
+            factory: DefaultViewFactory.shared,
+            channel: channel,
+            messages: messages,
+            messagesGroupingInfo: messagesGroupingInfo,
+            scrolledId: .constant(nil),
+            showScrollToLatestButton: .constant(false),
+            quotedMessage: .constant(nil),
+            currentDateString: nil,
+            listId: "listId",
+            isMessageThread: false,
+            shouldShowTypingIndicator: false,
+            onMessageAppear: { _, _ in },
+            onScrollToBottom: {},
+            onLongPress: { _ in }
+        )
+        .applyDefaultSize()
+
+        // Then
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
+    }
+
+    func test_messageListView_groupedMessages_withAllAnnotations() {
+        // Given
+        streamChat = StreamChat(chatClient: chatClient, utils: Utils(
+            messageListConfig: .init(messageDisplayOptions: MessageDisplayOptions(showOriginalTranslatedButton: true))
+        ))
+
+        let channel = ChatChannel.mock(
+            cid: .unique,
+            config: .mock(messageRemindersEnabled: true),
+            membership: .mock(id: .unique, language: .spanish)
+        )
+        let author = ChatUser.mock(id: "martin", name: "Martin")
+        let baseTime = Date(timeIntervalSince1970: 1000)
+        let msg1 = ChatMessage.mock(
+            id: "msg1",
+            cid: channel.cid,
+            text: "Let me check the latest updates.",
+            author: author,
+            createdAt: baseTime.addingTimeInterval(-20)
+        )
+        let msg2 = ChatMessage.mock(
+            id: "msg2",
+            cid: channel.cid,
+            text: "I found the issue in the logs.",
+            author: author,
+            createdAt: baseTime.addingTimeInterval(-10),
+            parentMessageId: .unique,
+            showReplyInChannel: true,
+            translations: [.spanish: "Encontré el problema en los registros."],
+            pinDetails: MessagePinDetails(
+                pinnedAt: Date(),
+                pinnedBy: .mock(id: .unique, name: "Martin"),
+                expiresAt: nil
+            ),
+            reminder: MessageReminderInfo(
+                remindAt: Date().addingTimeInterval(3600),
+                createdAt: Date(),
+                updatedAt: Date()
+            )
+        )
+        let msg3 = ChatMessage.mock(
+            id: "msg3",
+            cid: channel.cid,
+            text: "Looks like it was a timeout.",
+            author: author,
+            createdAt: baseTime
+        )
+        let messages = [msg3, msg2, msg1]
+        let messagesGroupingInfo: [String: [String]] = [
+            msg3.id: [firstMessageKey],
+            msg1.id: [lastMessageKey]
+        ]
+        let view = MessageListView(
+            factory: DefaultViewFactory.shared,
+            channel: channel,
+            messages: messages,
+            messagesGroupingInfo: messagesGroupingInfo,
+            scrolledId: .constant(nil),
+            showScrollToLatestButton: .constant(false),
+            quotedMessage: .constant(nil),
+            currentDateString: nil,
+            listId: "listId",
+            isMessageThread: false,
+            shouldShowTypingIndicator: false,
+            onMessageAppear: { _, _ in },
+            onScrollToBottom: {},
+            onLongPress: { _ in }
+        )
+        .applyDefaultSize()
+
+        // Then
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
+    }
+
     // MARK: - private
 
     func makeMessageListView(

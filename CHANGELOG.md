@@ -36,6 +36,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Use fixed width for attachment previews [#1335](https://github.com/GetStream/stream-chat-swiftui/pull/1335)
 - Fix showing bubble for quoted message and file or image attachment [#1335](https://github.com/GetStream/stream-chat-swiftui/pull/1335)
 - Fix scaling of giphy attachments [#1335](https://github.com/GetStream/stream-chat-swiftui/pull/1335)
+- Fix spacings in message annotations [#1403](https://github.com/GetStream/stream-chat-swiftui/pull/1403)
 
 ### 🔄 Changed
 - Rename `AddUsersView`/`AddUsersViewModel` to `MemberAddView`/`MemberAddViewModel` [#1402](https://github.com/GetStream/stream-chat-swiftui/pull/1402)
