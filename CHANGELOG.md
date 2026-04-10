@@ -4,6 +4,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 # Upcoming
 
 ### ✅ Added
+- Redesign attachment uploading progress and error state indicators [#1408](https://github.com/GetStream/stream-chat-swiftui/pull/1408)
+- Add inline upload progress and retry UI for file attachments [#1408](https://github.com/GetStream/stream-chat-swiftui/pull/1408)
+- Add `RetryBadgeView` for failed uploads and thumbnail loads [#1408](https://github.com/GetStream/stream-chat-swiftui/pull/1408)
 - Add `ComposerConfig.isVoiceRecordingAutoSendEnabled` to support sending a recording instantly on release [#1362](https://github.com/GetStream/stream-chat-swiftui/pull/1362)
 - Redesign `JumpToUnreadButton` [#1351](https://github.com/GetStream/stream-chat-swiftui/pull/1351)
 - Show deleted messages in channel list preview [#1338](https://github.com/GetStream/stream-chat-swiftui/pull/1338)
@@ -36,6 +39,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Fix scaling of giphy attachments [#1335](https://github.com/GetStream/stream-chat-swiftui/pull/1335)
 
 ### 🔄 Changed
+- Remove `PercentageProgressView` and `AttachmentDownloadingStateView` [#1408](https://github.com/GetStream/stream-chat-swiftui/pull/1408)
+- Add `uploadingState` and `onRetry` parameters to `FileAttachmentDisplayView` [#1408](https://github.com/GetStream/stream-chat-swiftui/pull/1408)
+- Add deterministic progress support to `LoadingSpinnerView` via `progress` parameter [#1408](https://github.com/GetStream/stream-chat-swiftui/pull/1408)
+- New localization keys: `message.sending.attachment-upload-failed`, `message.sending.attachment-retry-upload` [#1408](https://github.com/GetStream/stream-chat-swiftui/pull/1408)
 - Renamed the `onMessageSent` callback to `willSendMessage` in `MessageComposerViewModel`, `ViewModelsFactory`, and `ComposerViewFactoryOptions` [#1327](https://github.com/GetStream/stream-chat-swiftui/pull/1327)
 - Remove `InjectedChannelInfo` from `ChatChannelListItemView` [#1338](https://github.com/GetStream/stream-chat-swiftui/pull/1338)
 - Rename empty state views from `No` prefix to `Empty` prefix [#1345](https://github.com/GetStream/stream-chat-swiftui/pull/1345)
