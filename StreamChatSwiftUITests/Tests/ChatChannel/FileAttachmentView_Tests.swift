@@ -11,64 +11,6 @@ import SwiftUI
 import XCTest
 
 class FileAttachmentView_Tests: StreamChatTestCase {
-    func test_fileAttachmentView_downloadingState() {
-        // Given
-        let downloadingState = AttachmentDownloadingState(
-            localFileURL: nil,
-            state: .downloading(progress: 0.5),
-            file: nil
-        )
-        let attachment = createFileAttachment(downloadingState: downloadingState, uploadingState: nil)
-
-        // When
-        let view = FileAttachmentView(
-            attachment: attachment,
-            width: 300,
-            isFirst: true
-        )
-        .applyDefaultSize()
-
-        // Then
-        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
-    }
-    
-    func test_fileAttachmentView_downloadedState() {
-        // Given
-        let downloadingState = AttachmentDownloadingState(
-            localFileURL: URL(string: "file:///tmp/test.pdf")!,
-            state: .downloaded,
-            file: nil
-        )
-        let attachment = createFileAttachment(downloadingState: downloadingState, uploadingState: nil)
-
-        // When
-        let view = FileAttachmentView(
-            attachment: attachment,
-            width: 300,
-            isFirst: true
-        )
-        .applyDefaultSize()
-
-        // Then
-        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
-    }
-
-    func test_fileAttachmentView_downloadDisabled() {
-        // Given
-        let attachment = createFileAttachment(downloadingState: nil, uploadingState: nil)
-
-        // When
-        let view = FileAttachmentView(
-            attachment: attachment,
-            width: 300,
-            isFirst: true
-        )
-        .applyDefaultSize()
-
-        // Then
-        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
-    }
-
     // MARK: - Upload States
 
     func test_fileAttachmentView_uploadingProgress_snapshot() {

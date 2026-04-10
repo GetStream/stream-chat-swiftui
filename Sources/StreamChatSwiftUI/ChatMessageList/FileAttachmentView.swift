@@ -68,28 +68,120 @@ public struct FileAttachmentView: View {
     }
 
     public var body: some View {
-        HStack {
-            FileAttachmentDisplayView(
-                url: attachment.assetURL,
-                title: attachment.title ?? "",
-                sizeString: attachment.file.sizeString
-            )
-            .onTapGesture {
-                fullScreenShown = true
+        HStack(spacing: tokens.spacingSm) {
+            fileIcon
+            VStack(alignment: .leading, spacing: tokens.spacingXxs) {
+                Text(attachment.title ?? "")
+                    .font(fonts.subheadlineBold)
+                    .lineLimit(1)
+                    .foregroundColor(Color(colors.textPrimary))
+                subtitleContent
             }
-            .accessibilityAction {
-                fullScreenShown = true
-            }
-
             Spacer()
         }
         .padding(.all, tokens.spacingSm)
         .frame(width: width)
-        .withUploadingStateIndicator(for: attachment.uploadingState, url: attachment.assetURL)
+        .onTapGesture {
+            if attachment.uploadingState?.state != .uploadingFailed {
+                fullScreenShown = true
+            }
+        }
+        .accessibilityAction {
+            if attachment.uploadingState?.state != .uploadingFailed {
+                fullScreenShown = true
+            }
+        }
         .sheet(isPresented: $fullScreenShown) {
             FileAttachmentPreview(attachment: attachment)
         }
         .accessibilityIdentifier("FileAttachmentView")
+    }
+
+    // MARK: - Private
+
+    private var fileIcon: some View {
+        let iconName = attachment.assetURL.pathExtension
+        let icon = images.fileIconPreviews[iconName] ?? images.iconOther
+        return Image(uiImage: icon)
+            .resizable()
+            .aspectRatio(contentMode: .fit)
+            .frame(width: 32, height: 40)
+            .accessibilityHidden(true)
+    }
+
+    @ViewBuilder
+    private var subtitleContent: some View {
+        if let uploadingState = attachment.uploadingState {
+            switch uploadingState.state {
+            case let .uploading(progress):
+                uploadingSubtitle(progress: progress, file: uploadingState.file)
+            case .uploadingFailed:
+                uploadFailedSubtitle
+            default:
+                fileSizeSubtitle
+            }
+        } else {
+            fileSizeSubtitle
+        }
+    }
+
+    private func uploadingSubtitle(progress: Double, file: AttachmentFile) -> some View {
+        HStack(spacing: tokens.spacingXxs) {
+            LoadingSpinnerView(
+                size: LoadingSpinnerSize.extraSmall,
+                progress: Double(progress)
+            )
+            Text(uploadProgressText(progress: progress, file: file))
+                .font(fonts.subheadline)
+                .lineLimit(1)
+                .foregroundColor(Color(colors.textSecondary))
+        }
+    }
+
+    private var uploadFailedSubtitle: some View {
+        VStack(alignment: .leading, spacing: tokens.spacingXxxs) {
+            HStack(spacing: tokens.spacingXxs) {
+                Image(systemName: "exclamationmark.triangle.fill")
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: tokens.iconSizeSm, height: tokens.iconSizeSm)
+                    .foregroundColor(Color(colors.accentError))
+                Text(L10n.Message.Sending.attachmentUploadFailed)
+                    .font(fonts.subheadline)
+                    .lineLimit(1)
+                    .foregroundColor(Color(colors.textSecondary))
+            }
+            Button {
+                retryUpload()
+            } label: {
+                Text(L10n.Message.Sending.attachmentRetryUpload)
+                    .font(fonts.subheadline)
+                    .foregroundColor(Color(colors.textLink))
+            }
+            .buttonStyle(.plain)
+        }
+    }
+
+    private var fileSizeSubtitle: some View {
+        Text(attachment.file.sizeString)
+            .font(fonts.subheadline)
+            .lineLimit(1)
+            .foregroundColor(Color(colors.textTertiary))
+    }
+
+    private func uploadProgressText(progress: Double, file: AttachmentFile) -> String {
+        let formatter = AttachmentFile.sizeFormatter
+        let uploaded = Int64(progress * Double(file.size))
+        let uploadedText = formatter.string(fromByteCount: uploaded)
+        let totalText = formatter.string(fromByteCount: file.size)
+        return "\(uploadedText) / \(totalText)"
+    }
+
+    private func retryUpload() {
+        let messageId = attachment.id.messageId
+        let cid = attachment.id.cid
+        let controller = chatClient.messageController(cid: cid, messageId: messageId)
+        controller.resendMessage()
     }
 }
 

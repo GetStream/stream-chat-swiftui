@@ -213,6 +213,8 @@
 
 "composer.suggestions.commands.header" = "Instant Commands";
 "message.sending.attachment-uploading-failed" = "UPLOADING FAILED";
+"message.sending.attachment-upload-failed" = "Upload failed";
+"message.sending.attachment-retry-upload" = "Retry upload";
 
 "composer.recording.tip" = "Hold to record. Release to send.";
 "composer.recording.tipSave" = "Hold to record. Release to save.";
