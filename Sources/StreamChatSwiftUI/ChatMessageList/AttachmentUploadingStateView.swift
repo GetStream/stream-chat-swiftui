@@ -27,8 +27,11 @@ struct AttachmentUploadingStateView: View {
                 .allowsHitTesting(false)
 
             case .uploadingFailed:
-                Color(colors.backgroundCoreOverlayLight)
-                    .allowsHitTesting(false)
+                ZStack {
+                    Color(colors.backgroundCoreOverlayLight)
+                    RetryBadgeView()
+                }
+                .allowsHitTesting(false)
 
             case .uploaded:
                 TopRightView {

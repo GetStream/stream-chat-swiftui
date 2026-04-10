@@ -68,21 +68,25 @@ public struct MessageMediaAttachmentContentView<Factory: ViewFactory>: View {
                     .frame(width: width, height: height)
                     .clipped()
             } else if error != nil {
-                Color(.secondarySystemBackground)
+                placeholderGradient
             } else {
                 placeholderGradient
             }
 
             if image == nil && error == nil && !isUploading {
-                LoadingSpinnerView(size: LoadingSpinnerSize.medium, bordered: false)
+                LoadingSpinnerView(size: LoadingSpinnerSize.medium)
                     .allowsHitTesting(false)
+            }
+
+            if error != nil && source.uploadingState == nil {
+                errorOverlay
             }
 
             if let uploadingState = source.uploadingState {
                 uploadingOverlay(for: uploadingState)
             }
 
-            if source.type == .video && width > 64 && source.uploadingState == nil && image != nil {
+            if source.type == .video && width > 64 && source.uploadingState == nil && image != nil && error == nil {
                 VideoPlayIndicatorView(size: VideoPlayIndicatorSize.medium)
                     .allowsHitTesting(false)
             }
@@ -120,11 +124,18 @@ public struct MessageMediaAttachmentContentView<Factory: ViewFactory>: View {
             )
             .allowsHitTesting(false)
         case .uploadingFailed:
-            Color(colors.backgroundCoreOverlayLight)
-                .allowsHitTesting(false)
+            errorOverlay
         default:
             EmptyView()
         }
+    }
+
+    private var errorOverlay: some View {
+        ZStack {
+            Color(colors.backgroundCoreOverlayLight)
+            RetryBadgeView()
+        }
+        .allowsHitTesting(false)
     }
 
     private var placeholderGradient: some View {
