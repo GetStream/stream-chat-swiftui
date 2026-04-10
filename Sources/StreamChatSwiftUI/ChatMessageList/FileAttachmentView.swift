@@ -86,7 +86,6 @@ public struct FileAttachmentView: View {
         .padding(.all, tokens.spacingSm)
         .frame(width: width)
         .withUploadingStateIndicator(for: attachment.uploadingState, url: attachment.assetURL)
-        .withDownloadingStateIndicator(for: attachment.downloadingState, url: attachment.assetURL)
         .sheet(isPresented: $fullScreenShown) {
             FileAttachmentPreview(attachment: attachment)
         }
