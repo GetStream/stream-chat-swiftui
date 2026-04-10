@@ -26,9 +26,10 @@ import XCTest
             )
         )
 
-        let view = makeAnnotationsView(message: message)
+        let size = CGSize(width: 375, height: 72)
+        let view = makeAnnotationsView(message: message, size: size)
 
-        AssertSnapshot(view, size: CGSize(width: 375, height: 40))
+        AssertSnapshot(view, size: size)
     }
 
     func test_pinnedByYouAnnotation_snapshot() {
@@ -45,9 +46,10 @@ import XCTest
             )
         )
 
-        let view = makeAnnotationsView(message: message)
+        let size = CGSize(width: 375, height: 72)
+        let view = makeAnnotationsView(message: message, size: size)
 
-        AssertSnapshot(view, size: CGSize(width: 375, height: 40))
+        AssertSnapshot(view, size: size)
     }
 
     // MARK: - Sent in channel
@@ -62,9 +64,10 @@ import XCTest
             showReplyInChannel: true
         )
 
-        let view = makeAnnotationsView(message: message, isInThread: true)
+        let size = CGSize(width: 375, height: 72)
+        let view = makeAnnotationsView(message: message, isInThread: true, size: size)
 
-        AssertSnapshot(view, size: CGSize(width: 375, height: 40))
+        AssertSnapshot(view, size: size)
     }
 
     // MARK: - Replied to thread
@@ -79,17 +82,19 @@ import XCTest
             showReplyInChannel: true
         )
 
-        let view = makeAnnotationsView(message: message, isInThread: false)
+        let size = CGSize(width: 375, height: 72)
+        let view = makeAnnotationsView(message: message, isInThread: false, size: size)
 
-        AssertSnapshot(view, size: CGSize(width: 375, height: 40))
+        AssertSnapshot(view, size: size)
     }
 
     // MARK: - Reminder
 
     func test_reminderAnnotation_snapshot() {
+        let channel = ChatChannel.mockDMChannel(config: .mock(messageRemindersEnabled: true))
         let message = ChatMessage.mock(
             id: .unique,
-            cid: .unique,
+            cid: channel.cid,
             text: "Message with reminder",
             author: .mock(id: .unique),
             reminder: MessageReminderInfo(
@@ -99,9 +104,10 @@ import XCTest
             )
         )
 
-        let view = makeAnnotationsView(message: message)
+        let size = CGSize(width: 375, height: 72)
+        let view = makeAnnotationsView(message: message, channel: channel, size: size)
 
-        AssertSnapshot(view, size: CGSize(width: 375, height: 40))
+        AssertSnapshot(view, size: size)
     }
 
     // MARK: - Translated
@@ -124,9 +130,10 @@ import XCTest
             translations: [.spanish: "Hola"]
         )
 
-        let view = makeAnnotationsView(message: message, channel: channel)
+        let size = CGSize(width: 375, height: 72)
+        let view = makeAnnotationsView(message: message, channel: channel, size: size)
 
-        AssertSnapshot(view, size: CGSize(width: 375, height: 40))
+        AssertSnapshot(view, size: size)
     }
 
     // MARK: - All annotations (not in thread)
@@ -138,6 +145,7 @@ import XCTest
 
         let channel = ChatChannel.mock(
             cid: .unique,
+            config: .mock(messageRemindersEnabled: true),
             membership: .mock(id: .unique, language: .spanish)
         )
 
@@ -161,9 +169,10 @@ import XCTest
             )
         )
 
-        let view = makeAnnotationsView(message: message, channel: channel, isInThread: false)
+        let size = CGSize(width: 375, height: 100)
+        let view = makeAnnotationsView(message: message, channel: channel, isInThread: false, size: size)
 
-        AssertSnapshot(view, size: CGSize(width: 375, height: 140))
+        AssertSnapshot(view, size: size)
     }
 
     // MARK: - All annotations (in thread)
@@ -175,6 +184,7 @@ import XCTest
 
         let channel = ChatChannel.mock(
             cid: .unique,
+            config: .mock(messageRemindersEnabled: true),
             membership: .mock(id: .unique, language: .spanish)
         )
 
@@ -198,9 +208,10 @@ import XCTest
             )
         )
 
-        let view = makeAnnotationsView(message: message, channel: channel, isInThread: true)
+        let size = CGSize(width: 375, height: 100)
+        let view = makeAnnotationsView(message: message, channel: channel, isInThread: true, size: size)
 
-        AssertSnapshot(view, size: CGSize(width: 375, height: 140))
+        AssertSnapshot(view, size: size)
     }
 
     // MARK: - Helpers
@@ -208,7 +219,8 @@ import XCTest
     private func makeAnnotationsView(
         message: ChatMessage,
         channel: ChatChannel? = nil,
-        isInThread: Bool = false
+        isInThread: Bool = false,
+        size: CGSize
     ) -> some View {
         let ch = channel ?? .mockDMChannel()
         let viewModel = MessageViewModel(message: message, channel: ch, isInThread: isInThread)
@@ -217,6 +229,6 @@ import XCTest
             channel: ch,
             messageViewModel: viewModel
         )
-        .frame(width: 375)
+        .applySize(size)
     }
 }
