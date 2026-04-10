@@ -72,7 +72,7 @@ public struct LoadingSpinnerView: View {
                     .rotationEffect(.degrees(isAnimating ? 360 : 0))
                     .animation(
                         .linear(duration: 1)
-                        .repeatForever(autoreverses: false),
+                            .repeatForever(autoreverses: false),
                         value: isAnimating
                     )
             }
