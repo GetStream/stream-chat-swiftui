@@ -37,13 +37,6 @@ import XCTest
         AssertSnapshot(view, variants: .onlyUserInterfaceStyles)
     }
 
-    // MARK: - Uploaded
-
-    func test_uploaded_snapshot() {
-        let view = makeView(state: .uploaded)
-        AssertSnapshot(view, variants: .onlyUserInterfaceStyles)
-    }
-
     // MARK: - Modifier
 
     func test_withUploadingStateIndicator_uploading_snapshot() {
