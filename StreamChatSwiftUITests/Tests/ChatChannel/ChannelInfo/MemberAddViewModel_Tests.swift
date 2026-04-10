@@ -8,14 +8,14 @@ import Combine
 @testable import StreamChatTestTools
 import XCTest
 
-@MainActor class AddUsersViewModel_Tests: StreamChatTestCase {
+@MainActor class MemberAddViewModel_Tests: StreamChatTestCase {
     private var cancellables = Set<AnyCancellable>()
 
-    func test_addUsersViewModel_loadedUsers() {
+    func test_memberAddViewModel_loadedUsers() {
         // Given
         let searchController = ChatUserSearchController_Mock.mock(client: chatClient)
         searchController.users_mock = ChannelInfoMockUtils.generateMockUsers(count: 10)
-        let viewModel = AddUsersViewModel(
+        let viewModel = MemberAddViewModel(
             loadedUserIds: [],
             searchController: searchController
         )
@@ -27,17 +27,16 @@ import XCTest
         XCTAssert(users.count == 10)
     }
 
-    func test_addUsersViewModel_search() {
+    func test_memberAddViewModel_search() {
         // Given
         let searchController = ChatUserSearchController_Mock.mock(client: chatClient)
         searchController.users_mock = ChannelInfoMockUtils.generateMockUsers(count: 12)
-        let viewModel = AddUsersViewModel(
+        let viewModel = MemberAddViewModel(
             loadedUserIds: [],
             searchController: searchController
         )
         let expectation = expectation(description: "search")
         
-        // Observe first, but ignore the initial value
         viewModel.$users
             .dropFirst()
             .first()
@@ -53,12 +52,12 @@ import XCTest
         waitForExpectations(timeout: defaultTimeout)
     }
 
-    func test_addUsersViewModel_onUserAppear() {
+    func test_memberAddViewModel_onUserAppear() {
         // Given
         let searchController = ChatUserSearchController_Mock.mock(client: chatClient)
         var users = ChannelInfoMockUtils.generateMockUsers(count: 20)
         searchController.users_mock = users
-        let viewModel = AddUsersViewModel(
+        let viewModel = MemberAddViewModel(
             loadedUserIds: [],
             searchController: searchController
         )
@@ -76,12 +75,12 @@ import XCTest
         XCTAssert(afterLoad.count == 40)
     }
 
-    func test_addUsersViewModel_toggleUser_selectsUser() {
+    func test_memberAddViewModel_toggleUser_selectsUser() {
         // Given
         let searchController = ChatUserSearchController_Mock.mock(client: chatClient)
         let users = ChannelInfoMockUtils.generateMockUsers(count: 5)
         searchController.users_mock = users
-        let viewModel = AddUsersViewModel(loadedUserIds: [], searchController: searchController)
+        let viewModel = MemberAddViewModel(loadedUserIds: [], searchController: searchController)
         let user = viewModel.users[0]
 
         // When
@@ -91,12 +90,12 @@ import XCTest
         XCTAssertTrue(viewModel.isSelected(user))
     }
 
-    func test_addUsersViewModel_toggleUser_deselectsUser() {
+    func test_memberAddViewModel_toggleUser_deselectsUser() {
         // Given
         let searchController = ChatUserSearchController_Mock.mock(client: chatClient)
         let users = ChannelInfoMockUtils.generateMockUsers(count: 5)
         searchController.users_mock = users
-        let viewModel = AddUsersViewModel(loadedUserIds: [], searchController: searchController)
+        let viewModel = MemberAddViewModel(loadedUserIds: [], searchController: searchController)
         let user = viewModel.users[0]
 
         // When
@@ -107,36 +106,36 @@ import XCTest
         XCTAssertFalse(viewModel.isSelected(user))
     }
 
-    func test_addUsersViewModel_isAlreadyMember_trueForLoadedUser() {
+    func test_memberAddViewModel_isAlreadyMember_trueForLoadedUser() {
         // Given
         let users = ChannelInfoMockUtils.generateMockUsers(count: 5)
         let loadedUserIds = users.map(\.id)
         let searchController = ChatUserSearchController_Mock.mock(client: chatClient)
         searchController.users_mock = users
-        let viewModel = AddUsersViewModel(loadedUserIds: loadedUserIds, searchController: searchController)
+        let viewModel = MemberAddViewModel(loadedUserIds: loadedUserIds, searchController: searchController)
 
         // Then
         XCTAssertTrue(viewModel.isAlreadyMember(users[0]))
         XCTAssertTrue(viewModel.isAlreadyMember(users[4]))
     }
 
-    func test_addUsersViewModel_isAlreadyMember_falseForNewUser() {
+    func test_memberAddViewModel_isAlreadyMember_falseForNewUser() {
         // Given
         let users = ChannelInfoMockUtils.generateMockUsers(count: 5)
         let searchController = ChatUserSearchController_Mock.mock(client: chatClient)
         searchController.users_mock = users
-        let viewModel = AddUsersViewModel(loadedUserIds: [], searchController: searchController)
+        let viewModel = MemberAddViewModel(loadedUserIds: [], searchController: searchController)
 
         // Then
         XCTAssertFalse(viewModel.isAlreadyMember(users[0]))
     }
 
-    func test_addUsersViewModel_selectedUsers_returnsSelectedSubset() {
+    func test_memberAddViewModel_selectedUsers_returnsSelectedSubset() {
         // Given
         let searchController = ChatUserSearchController_Mock.mock(client: chatClient)
         let users = ChannelInfoMockUtils.generateMockUsers(count: 5)
         searchController.users_mock = users
-        let viewModel = AddUsersViewModel(loadedUserIds: [], searchController: searchController)
+        let viewModel = MemberAddViewModel(loadedUserIds: [], searchController: searchController)
 
         // When
         viewModel.toggleUser(viewModel.users[0])

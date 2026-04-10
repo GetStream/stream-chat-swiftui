@@ -227,12 +227,18 @@ import SwiftUI
     ///  - Returns: view displayed in the gallery slot.
     func makeMediaViewer(options: MediaViewerOptions) -> MediaViewerType
     
-    associatedtype MediaViewerHeaderType: View
-    /// Creates the gallery header view presented with a sheet.
-    /// - Parameter options: the options for creating the gallery header view.
-    /// - Returns: View displayed in the gallery header slot.
-    func makeMediaViewerHeader(options: MediaViewerHeaderOptions) -> MediaViewerHeaderType
-    
+    associatedtype MediaViewerToolbarModifierType: ViewModifier
+    /// Creates the toolbar modifier applied to the media viewer navigation content.
+    /// - Parameter options: the options for creating the media viewer toolbar.
+    /// - Returns: ViewModifier applied to the media viewer's navigation content.
+    func makeMediaViewerToolbarModifier(options: MediaViewerToolbarModifierOptions) -> MediaViewerToolbarModifierType
+
+    associatedtype MediaViewerFooterViewType: View
+    /// Creates the footer view for the media viewer (share, page counter, grid button).
+    /// - Parameter options: the options for creating the media viewer footer.
+    /// - Returns: View displayed in the media viewer footer slot.
+    func makeMediaViewerFooterView(options: MediaViewerFooterViewOptions) -> MediaViewerFooterViewType
+
     associatedtype VideoPlayerHeaderViewType: View
     /// Creates the video player header view presented with a sheet.
     /// - Parameter options: the options for creating the video player header view.
@@ -603,11 +609,11 @@ import SwiftUI
     /// Creates the thread list divider item.
     func makeThreadListDividerItem(options: ThreadListDividerItemOptions) -> ThreadListDividerItem
     
-    associatedtype AddUsersViewType: View
-    /// Creates a view for adding users to a chat or channel.
-    /// - Parameter options: the options for creating the add users view.
-    /// - Returns: The view shown in the add users slot.
-    func makeAddUsersView(options: AddUsersViewOptions) -> AddUsersViewType
+    associatedtype MemberAddViewType: View
+    /// Creates a view for adding members to a channel.
+    /// - Parameter options: the options for creating the member add view.
+    /// - Returns: The view shown in the member add slot.
+    func makeMemberAddView(options: MemberAddViewOptions) -> MemberAddViewType
     
     associatedtype AttachmentTextViewType: View
     /// Creates a text caption view displayed below attachments inside ``MessageAttachmentsView``.
