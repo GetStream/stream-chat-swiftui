@@ -72,7 +72,7 @@ public struct MessageMediaAttachmentContentView<Factory: ViewFactory>: View {
                     .frame(width: width, height: height)
                     .clipped()
             } else if error != nil {
-                placeholderGradient
+                placeholderBackground
             } else {
                 placeholderGradient
             }
@@ -154,8 +154,11 @@ public struct MessageMediaAttachmentContentView<Factory: ViewFactory>: View {
         .buttonStyle(.plain)
     }
 
-    private var placeholderGradient: some View {
+    private var placeholderBackground: some View {
         Color(isOutgoing ? colors.chatBackgroundAttachmentOutgoing : colors.chatBackgroundAttachmentIncoming)
-            .shimmering()
+    }
+
+    private var placeholderGradient: some View {
+        placeholderBackground.shimmering()
     }
 }
