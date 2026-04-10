@@ -61,95 +61,86 @@ public struct MediaViewer<Factory: ViewFactory>: View {
     }
 
     public var body: some View {
-        GeometryReader { reader in
-            VStack {
-                viewFactory.makeMediaViewerHeader(
-                    options: MediaViewerHeaderOptions(
+        NavigationView {
+            GeometryReader { reader in
+                VStack(spacing: 0) {
+                    TabView(selection: $selected) {
+                        ForEach(0..<mediaAttachments.count, id: \.self) { index in
+                            ZStack {
+                                let source = mediaAttachments[index]
+                                if source.type == .image {
+                                    ZoomableScrollView {
+                                        VStack {
+                                            Spacer()
+                                            LazyLoadingImage(
+                                                source: source,
+                                                width: reader.size.width,
+                                                height: reader.size.height,
+                                                resize: true,
+                                                shouldSetFrame: false,
+                                                onImageLoaded: { image in
+                                                    loadedImages[index] = image
+                                                }
+                                            )
+                                            .aspectRatio(contentMode: .fit)
+                                            .frame(width: reader.size.width)
+                                            Spacer()
+                                        }
+                                    }
+                                    .tag(index)
+                                } else {
+                                    StreamVideoPlayer(url: source.url)
+                                        .tag(index)
+                                }
+                            }
+                        }
+                    }
+                    .tabViewStyle(.page(indexDisplayMode: .never))
+                    .background(Color(colors.backgroundCoreApp))
+                    .gesture(
+                        DragGesture().onEnded { value in
+                            if value.location.y - value.startLocation.y > 100 {
+                                presentationMode.wrappedValue.dismiss()
+                            }
+                        }
+                    )
+
+                    Divider()
+
+                    viewFactory.makeMediaViewerFooterView(
+                        options: MediaViewerFooterViewOptions(
+                            shareContent: sharingContent,
+                            selected: selected,
+                            totalCount: mediaAttachments.count,
+                            gridShown: $gridShown
+                        )
+                    )
+                }
+            }
+            .background(Color(colors.backgroundCoreApp).edgesIgnoringSafeArea(.all))
+            .modifier(
+                viewFactory.makeMediaViewerToolbarModifier(
+                    options: MediaViewerToolbarModifierOptions(
                         title: author.name ?? "",
                         subtitle: message.map {
                             utils.galleryHeaderViewDateFormatter.format($0.createdAt)
                         } ?? author.onlineText,
-                        shown: $isShown
+                        isShown: $isShown
                     )
                 )
-                
-                Divider()
-
-                TabView(selection: $selected) {
-                    ForEach(0..<mediaAttachments.count, id: \.self) { index in
-                        ZStack {
-                            let source = mediaAttachments[index]
-                            if source.type == .image {
-                                ZoomableScrollView {
-                                    VStack {
-                                        Spacer()
-                                        LazyLoadingImage(
-                                            source: source,
-                                            width: reader.size.width,
-                                            height: reader.size.height,
-                                            resize: true,
-                                            shouldSetFrame: false,
-                                            onImageLoaded: { image in
-                                                loadedImages[index] = image
-                                            }
-                                        )
-                                        .aspectRatio(contentMode: .fit)
-                                        .frame(width: reader.size.width)
-                                        Spacer()
-                                    }
-                                }
-                                .tag(index)
-                            } else {
-                                StreamVideoPlayer(url: source.url)
-                                    .tag(index)
-                            }
-                        }
-                    }
+            )
+            .navigationBarTitleDisplayMode(.inline)
+        }
+        .sheet(isPresented: $gridShown) {
+            GridMediaView(
+                factory: viewFactory,
+                attachments: mediaAttachments,
+                onItemSelected: { index in
+                    selected = index
+                    gridShown = false
                 }
-                .tabViewStyle(.page(indexDisplayMode: .never))
-                .background(Color(colors.backgroundCoreApp))
-                .gesture(
-                    DragGesture().onEnded { value in
-                        if value.location.y - value.startLocation.y > 100 {
-                            presentationMode.wrappedValue.dismiss()
-                        }
-                    }
-                )
-                
-                Divider()
-
-                HStack {
-                    ShareButtonView(content: sharingContent)
-
-                    Spacer()
-
-                    Text("\(selected + 1) of \(mediaAttachments.count)")
-                        .font(fonts.subheadline)
-                        .fontWeight(.semibold)
-                        .foregroundColor(colors.textPrimary.toColor)
-
-                    Spacer()
-
-                    StreamIconButton(role: .primary, style: .ghost, size: .small) {
-                        gridShown = true
-                    } icon: {
-                        Image(uiImage: images.gallery)
-                            .renderingMode(.template)
-                            .resizable()
-                            .frame(width: tokens.iconSizeSm, height: tokens.iconSizeSm, alignment: .center)
-                            .foregroundColor(Color(colors.textSecondary))
-                    }
-                }
-                .padding(.all, tokens.spacingXl)
-                .frame(height: 72)
-            }
-            .sheet(isPresented: $gridShown) {
-                GridMediaView(
-                    factory: viewFactory,
-                    attachments: mediaAttachments
-                )
-                .modifier(PresentationDetentsModifier(sheetSizes: [.medium, .large]))
-            }
+            )
+            .modifier(PresentationDetentsModifier(sheetSizes: [.medium, .large]))
         }
     }
 
@@ -169,6 +160,7 @@ struct GridMediaView<Factory: ViewFactory>: View {
 
     let factory: Factory
     let attachments: [MediaAttachment]
+    var onItemSelected: ((Int) -> Void)?
 
     var body: some View {
         VStack(spacing: tokens.spacingLg) {
@@ -179,12 +171,119 @@ struct GridMediaView<Factory: ViewFactory>: View {
             MediaAttachmentsGridView(
                 factory: factory,
                 attachments: attachments,
-                showAvatars: false
+                showAvatars: false,
+                onItemSelected: onItemSelected
             )
         }
         .padding(.horizontal, tokens.spacingSm)
         .padding(.vertical, tokens.spacing2xl)
         .background(colors.backgroundCoreElevation1.toColor.edgesIgnoringSafeArea(.all))
+    }
+}
+
+// MARK: - Footer
+
+/// Default footer view for the media viewer.
+/// Displays a share button, page counter, and grid toggle button.
+public struct MediaViewerFooterView: View {
+    @Injected(\.colors) private var colors
+    @Injected(\.fonts) private var fonts
+    @Injected(\.images) private var images
+    @Injected(\.tokens) private var tokens
+
+    let shareContent: [UIImage]
+    let selected: Int
+    let totalCount: Int
+    @Binding var gridShown: Bool
+
+    public init(shareContent: [UIImage], selected: Int, totalCount: Int, gridShown: Binding<Bool>) {
+        self.shareContent = shareContent
+        self.selected = selected
+        self.totalCount = totalCount
+        _gridShown = gridShown
+    }
+
+    public var body: some View {
+        HStack {
+            ShareButtonView(content: shareContent)
+
+            Spacer()
+
+            Text(L10n.Message.Gallery.pageCount(selected + 1, totalCount))
+                .font(fonts.subheadlineBold)
+                .foregroundColor(colors.textPrimary.toColor)
+
+            Spacer()
+
+            StreamIconButton(role: .secondary, style: .ghost, size: .medium) {
+                gridShown = true
+            } icon: {
+                Image(uiImage: images.gallery)
+                    .customizable()
+                    .frame(width: 16, height: 16)
+                    .foregroundColor(Color(colors.textSecondary))
+            }
+        }
+        .padding(.horizontal, tokens.spacingSm)
+        .frame(height: 48 + tokens.spacingSm * 2)
+        .background(Color(colors.backgroundCoreElevation1))
+    }
+}
+
+// MARK: - Toolbar
+
+/// Toolbar modifier for the media viewer navigation bar.
+/// Displays a back button, title/subtitle, in the navigation toolbar.
+public struct MediaViewerToolbarModifier: ViewModifier {
+    @Injected(\.colors) private var colors
+    @Injected(\.fonts) private var fonts
+
+    let title: String
+    let subtitle: String
+    @Binding var isShown: Bool
+
+    public init(title: String, subtitle: String, isShown: Binding<Bool>) {
+        self.title = title
+        self.subtitle = subtitle
+        _isShown = isShown
+    }
+
+    public func body(content: Content) -> some View {
+        content
+            .toolbarThemed {
+                toolbarContent()
+            }
+    }
+
+    @ToolbarContentBuilder private func toolbarContent() -> some ToolbarContent {
+        ToolbarItem(placement: .navigationBarLeading) {
+            Button {
+                isShown = false
+            } label: {
+                Image(systemName: "chevron.backward")
+                    .renderingMode(.template)
+                    .font(.system(size: 16, weight: .medium))
+                    .foregroundColor(dismissButtonColor)
+            }
+        }
+
+        ToolbarItem(placement: .principal) {
+            VStack(spacing: 2) {
+                Text(title)
+                    .font(fonts.headline)
+                    .foregroundColor(Color(colors.textPrimary))
+                Text(subtitle)
+                    .font(fonts.subheadline)
+                    .foregroundColor(Color(colors.textSecondary))
+            }
+        }
+    }
+
+    private var dismissButtonColor: Color {
+        guard colors.navigationBarTintColor != colors.accentPrimary else {
+            return Color(colors.textPrimary)
+        }
+        return Color(colors.navigationBarTintColor)
     }
 }
 

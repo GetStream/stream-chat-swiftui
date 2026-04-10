@@ -983,21 +983,21 @@ import XCTest
         XCTAssert(view is MediaViewer<DefaultViewFactory>)
     }
     
-    func test_viewFactory_makeMediaViewerHeader() {
+    func test_viewFactory_makeMediaViewerToolbarModifier() {
         // Given
         let viewFactory = DefaultViewFactory.shared
-        
+
         // When
-        let view = viewFactory.makeMediaViewerHeader(
-            options: MediaViewerHeaderOptions(
+        let modifier = viewFactory.makeMediaViewerToolbarModifier(
+            options: MediaViewerToolbarModifierOptions(
                 title: .unique,
                 subtitle: .unique,
-                shown: .constant(true)
+                isShown: .constant(true)
             )
         )
-            
+
         // Then
-        XCTAssert(view is MediaViewerHeader)
+        XCTAssert(modifier is MediaViewerToolbarModifier)
     }
     
     func test_viewFactory_makeVideoPlayerHeaderView() {
@@ -1017,20 +1017,20 @@ import XCTest
         XCTAssert(view is MediaViewerHeader)
     }
     
-    func test_viewFactory_makeAddUsersView() {
+    func test_viewFactory_makeMemberAddView() {
         // Given
         let viewFactory = DefaultViewFactory.shared
         
         // When
-        let view = viewFactory.makeAddUsersView(
-            options: AddUsersViewOptions(
+        let view = viewFactory.makeMemberAddView(
+            options: MemberAddViewOptions(
                 options: .init(loadedUserIds: []),
                 onConfirm: { _ in }
             )
         )
         
         // Then
-        XCTAssert(view is AddUsersView<DefaultViewFactory>)
+        XCTAssert(view is MemberAddView<DefaultViewFactory>)
     }
 
     func test_viewFactory_makeStreamTextView() {

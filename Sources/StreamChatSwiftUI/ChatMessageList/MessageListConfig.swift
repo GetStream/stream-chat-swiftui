@@ -293,7 +293,7 @@ public final class MessageDisplayOptions {
     }
     
     public static var defaultReactionsTopPadding: (ChatMessage) -> CGFloat {
-        { _ in 20 }
+        { _ in 19 }
     }
 }
 

@@ -14,13 +14,13 @@ struct ShareButtonView: View {
     @State var isSharePresented = false
 
     var body: some View {
-        StreamIconButton(role: .primary, style: .ghost, size: .small) {
+        StreamIconButton(role: .secondary, style: .ghost, size: .medium) {
             isSharePresented = true
         } icon: {
             Image(uiImage: images.share)
                 .customizable()
                 .foregroundColor(Color(colors.textSecondary))
-                .frame(width: 18, height: 22)
+                .frame(width: 20, height: 20)
         }
         .sheet(isPresented: $isSharePresented) {
             ShareActivityView(activityItems: content)

@@ -15,6 +15,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Redesign the thread replies divider in the message replies list [#1354](https://github.com/GetStream/stream-chat-swiftui/pull/1354)
 
 ### 🐞 Fixed
+- Fix swipe-to-reply icon layout for outgoing messages and RTL [#1402](https://github.com/GetStream/stream-chat-swiftui/pull/1402)
+- Fix unwanted border on the Edit button in Channel Info [#1402](https://github.com/GetStream/stream-chat-swiftui/pull/1402)
 - Fix send button icon not mirroring in RTL layouts [#1397](https://github.com/GetStream/stream-chat-swiftui/pull/1397)
 - Fix composer attachment picker prompt views layout to center all content vertically [#1397](https://github.com/GetStream/stream-chat-swiftui/pull/1397)
 - Fix poll icon inconsistency in the attachment type picker and attachment previews [#1397](https://github.com/GetStream/stream-chat-swiftui/pull/1397)
@@ -37,8 +39,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Use fixed width for attachment previews [#1335](https://github.com/GetStream/stream-chat-swiftui/pull/1335)
 - Fix showing bubble for quoted message and file or image attachment [#1335](https://github.com/GetStream/stream-chat-swiftui/pull/1335)
 - Fix scaling of giphy attachments [#1335](https://github.com/GetStream/stream-chat-swiftui/pull/1335)
+- Fix spacings in message annotations [#1403](https://github.com/GetStream/stream-chat-swiftui/pull/1403)
 
 ### 🔄 Changed
+- Rename `AddUsersView`/`AddUsersViewModel` to `MemberAddView`/`MemberAddViewModel` [#1402](https://github.com/GetStream/stream-chat-swiftui/pull/1402)
+- Unify Channel Info navigation headers styling [#1402](https://github.com/GetStream/stream-chat-swiftui/pull/1402)
 - Renamed the `onMessageSent` callback to `willSendMessage` in `MessageComposerViewModel`, `ViewModelsFactory`, and `ComposerViewFactoryOptions` [#1327](https://github.com/GetStream/stream-chat-swiftui/pull/1327)
 - Remove `InjectedChannelInfo` from `ChatChannelListItemView` [#1338](https://github.com/GetStream/stream-chat-swiftui/pull/1338)
 - Rename empty state views from `No` prefix to `Empty` prefix [#1345](https://github.com/GetStream/stream-chat-swiftui/pull/1345)

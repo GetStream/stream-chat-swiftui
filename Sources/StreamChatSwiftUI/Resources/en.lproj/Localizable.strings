@@ -69,6 +69,7 @@
 "message.threads.subtitle" = "with messages";
 
 "message.gallery.photos" = "Photos";
+"message.gallery.pageCount" = "%d of %d";
 "message.cell.pinnedBy" = "Pinned by";
 "message.cell.pinnedByYou" = "Pinned by you";
 "message.cell.unknownPin" = "unknown";

@@ -82,8 +82,8 @@ public struct ChatChannelInfoView<Factory: ViewFactory>: View, KeyboardReadable 
             EditGroupView(factory: factory, viewModel: viewModel)
         }
         .sheet(isPresented: $viewModel.addUsersShown) {
-            factory.makeAddUsersView(
-                options: AddUsersViewOptions(
+            factory.makeMemberAddView(
+                options: MemberAddViewOptions(
                     options: .init(loadedUserIds: viewModel.allMemberIds),
                     onConfirm: viewModel.addUsersTapped(_:)
                 )
@@ -216,7 +216,7 @@ public struct ChatChannelInfoView<Factory: ViewFactory>: View, KeyboardReadable 
 
             Spacer()
 
-            if viewModel.shouldShowAddUserButton {
+            if viewModel.shouldShowAddMemberButton {
                 StreamTextButton(role: .secondary, style: .outline, size: .small) {
                     viewModel.addUsersShown = true
                 } text: {
@@ -378,7 +378,7 @@ struct ChatChannelInfoViewHeaderViewModifier: ViewModifier {
                 Text(L10n.ChatInfo.edit)
                     .font(fonts.bodyBold)
             }
-            .modifier(LiquidGlassModifier(shape: Capsule(), isInteractive: true))
+            .modifier(LiquidGlassBorderlessModifier(shape: Capsule(), isInteractive: true))
         } else {
             StreamTextButton(role: .secondary, style: .outline, size: .medium) {
                 viewModel.editGroupShown = true
