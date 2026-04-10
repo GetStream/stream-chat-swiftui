@@ -45,7 +45,9 @@ public struct MessageAnnotationView: View {
         HStack(spacing: tokens.spacingXxs) {
             Image(uiImage: icon)
                 .renderingMode(.template)
+                .scaledToFit()
                 .frame(width: tokens.iconSizeSm, height: tokens.iconSizeSm)
+                .padding(.horizontal, tokens.spacingXxxs)
                 .accessibilityHidden(true)
             if let title {
                 Text(title)
