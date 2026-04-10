@@ -5,15 +5,15 @@
 import SwiftUI
 
 /// A circular badge shown when an attachment upload or download fails.
-///
-/// Renders a red circle with a white border and a retry icon centered inside.
-/// Matches the Figma "Retry Badge" spec: 32×32, 2 pt white border, 16×16 icon.
 public struct RetryBadgeView: View {
     @Injected(\.colors) private var colors
+    @Injected(\.tokens) private var tokens
 
     private let size: CGFloat = 32
-    private let iconSize: CGFloat = 16
     private let borderWidth: CGFloat = 2
+    private var iconSize: CGFloat {
+        tokens.iconSizeSm
+    }
 
     public init() {}
 
