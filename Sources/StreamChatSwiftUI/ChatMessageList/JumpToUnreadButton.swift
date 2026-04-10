@@ -49,29 +49,30 @@ struct JumpToUnreadButton: View {
     var onClose: () -> Void
 
     var body: some View {
-        HStack(spacing: tokens.spacingNone) {
+        HStack(spacing: tokens.spacingXxs) {
             Button(action: onTap) {
                 HStack(spacing: tokens.spacingXs) {
                     Image(systemName: "arrow.up")
-                        .font(fonts.body.weight(.regular))
-                        .frame(width: tokens.iconSizeMd, height: tokens.iconSizeMd)
+                        .frame(width: tokens.iconSizeSm, height: tokens.iconSizeSm)
                     Text(L10n.Message.Unread.count(unreadCount))
+                        .padding(.vertical, tokens.spacingXxxs)
                 }
-                .font(fonts.body.weight(.semibold))
-                .padding(.horizontal, tokens.buttonPaddingXWithLabelMd)
-                .padding(.vertical, tokens.buttonPaddingYMd)
+                .font(fonts.subheadline.weight(.semibold))
+                .padding(.horizontal, tokens.spacingXs)
+                .padding(.vertical, tokens.spacingXxs)
             }
 
             Divider()
 
             Button(action: onClose) {
                 Image(systemName: "xmark")
-                    .font(fonts.body.weight(.semibold))
-                    .frame(width: tokens.iconSizeMd, height: tokens.iconSizeMd)
+                    .font(fonts.subheadline.weight(.semibold))
+                    .frame(width: tokens.iconSizeSm, height: tokens.iconSizeSm)
             }
-            .frame(width: tokens.buttonVisualHeightMd, height: tokens.buttonVisualHeightMd)
+            .frame(width: tokens.buttonVisualHeightSm, height: tokens.buttonVisualHeightSm)
             .accessibilityLabel(Text("Dismiss"))
         }
+        .padding(tokens.spacingXxs)
         .fixedSize()
         .foregroundColor(Color(colors.buttonSecondaryText))
         .background(Color(colors.backgroundCoreElevation1))
