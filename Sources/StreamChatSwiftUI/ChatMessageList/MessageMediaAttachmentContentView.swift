@@ -29,6 +29,8 @@ public struct MessageMediaAttachmentContentView<Factory: ViewFactory>: View {
     let corners: UIRectCorner?
     /// Whether the message is sent by the current user (outgoing).
     let isOutgoing: Bool
+    /// Called when the user taps the retry badge on an upload-failed attachment.
+    let onUploadRetry: (() -> Void)?
 
     @State private var image: UIImage?
     @State private var error: Error?
@@ -40,7 +42,8 @@ public struct MessageMediaAttachmentContentView<Factory: ViewFactory>: View {
         height: CGFloat,
         cornerRadius: CGFloat? = nil,
         corners: UIRectCorner? = nil,
-        isOutgoing: Bool = false
+        isOutgoing: Bool = false,
+        onUploadRetry: (() -> Void)? = nil
     ) {
         @Injected(\.tokens) var tokens
         self.factory = factory
@@ -50,6 +53,7 @@ public struct MessageMediaAttachmentContentView<Factory: ViewFactory>: View {
         self.cornerRadius = cornerRadius ?? tokens.messageBubbleRadiusAttachment
         self.corners = corners
         self.isOutgoing = isOutgoing
+        self.onUploadRetry = onUploadRetry
     }
 
     private var isUploading: Bool {
@@ -79,7 +83,7 @@ public struct MessageMediaAttachmentContentView<Factory: ViewFactory>: View {
             }
 
             if error != nil && source.uploadingState == nil {
-                errorOverlay
+                retryOverlay { loadThumbnail() }
             }
 
             if let uploadingState = source.uploadingState {
@@ -100,16 +104,26 @@ public struct MessageMediaAttachmentContentView<Factory: ViewFactory>: View {
         )
         .onAppear {
             guard image == nil else { return }
-            source.generateThumbnail(resize: true, preferredSize: CGSize(width: width, height: height)) { result in
-                switch result {
-                case .success(let image):
-                    self.image = image
-                case .failure(let failure):
-                    self.error = failure
-                }
-            }
+            loadThumbnail()
         }
         .accessibilityIdentifier("MessageMediaAttachmentContentView")
+    }
+
+    // MARK: - Private
+
+    private func loadThumbnail() {
+        error = nil
+        source.generateThumbnail(
+            resize: true,
+            preferredSize: CGSize(width: width, height: height)
+        ) { result in
+            switch result {
+            case .success(let loaded):
+                self.image = loaded
+            case .failure(let failure):
+                self.error = failure
+            }
+        }
     }
 
     @ViewBuilder
@@ -124,18 +138,20 @@ public struct MessageMediaAttachmentContentView<Factory: ViewFactory>: View {
             )
             .allowsHitTesting(false)
         case .uploadingFailed:
-            errorOverlay
+            retryOverlay { onUploadRetry?() }
         default:
             EmptyView()
         }
     }
 
-    private var errorOverlay: some View {
-        ZStack {
-            Color(colors.backgroundCoreOverlayLight)
-            RetryBadgeView()
+    private func retryOverlay(action: @escaping () -> Void) -> some View {
+        Button(action: action) {
+            ZStack {
+                Color(colors.backgroundCoreOverlayLight)
+                RetryBadgeView()
+            }
         }
-        .allowsHitTesting(false)
+        .buttonStyle(.plain)
     }
 
     private var placeholderGradient: some View {

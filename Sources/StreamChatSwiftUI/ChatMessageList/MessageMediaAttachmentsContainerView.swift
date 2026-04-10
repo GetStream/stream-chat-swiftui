@@ -60,6 +60,7 @@ public enum MediaGalleryOrientation: Sendable {
 /// This view does **not** render message text or a bubble background.
 /// Tapping any cell opens the full-screen gallery.
 public struct MessageMediaAttachmentsContainerView<Factory: ViewFactory>: View {
+    @Injected(\.chatClient) private var chatClient
     @Injected(\.colors) private var colors
     @Injected(\.fonts) private var fonts
     @Injected(\.tokens) private var tokens
@@ -267,7 +268,15 @@ public struct MessageMediaAttachmentsContainerView<Factory: ViewFactory>: View {
             height: height,
             cornerRadius: effectiveRadius,
             corners: effectiveCorners,
-            isOutgoing: message.isSentByCurrentUser
+            isOutgoing: message.isSentByCurrentUser,
+            onUploadRetry: item.uploadingState?.state == .uploadingFailed ? { [message, chatClient] in
+                guard let cid = message.cid else { return }
+                let controller = chatClient.messageController(
+                    cid: cid,
+                    messageId: message.id
+                )
+                controller.resendMessage()
+            } : nil
         )
         .modifier(
             MediaBorderOverlayModifier(

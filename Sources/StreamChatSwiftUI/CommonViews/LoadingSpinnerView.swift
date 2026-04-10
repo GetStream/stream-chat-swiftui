@@ -116,7 +116,7 @@ public struct RetryBadgeView: View {
                         .inset(by: -borderWidth / 2)
                         .stroke(Color(colors.backgroundCoreElevation0), lineWidth: borderWidth)
                 )
-            Image(systemName: "arrow.counterclockwise")
+            Image(systemName: "arrow.trianglehead.clockwise.rotate.90")
                 .resizable()
                 .scaledToFit()
                 .frame(width: iconSize, height: iconSize)
