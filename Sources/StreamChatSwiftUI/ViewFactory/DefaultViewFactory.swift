@@ -378,12 +378,27 @@ extension ViewFactory {
         )
     }
     
-    public func makeMediaViewerHeader(
-        options: MediaViewerHeaderOptions
-    ) -> some View {
-        MediaViewerHeader(title: options.title, subtitle: options.subtitle, isShown: options.shown)
+    public func makeMediaViewerToolbarModifier(
+        options: MediaViewerToolbarModifierOptions
+    ) -> some ViewModifier {
+        MediaViewerToolbarModifier(
+            title: options.title,
+            subtitle: options.subtitle,
+            isShown: options.isShown
+        )
     }
-    
+
+    public func makeMediaViewerFooterView(
+        options: MediaViewerFooterViewOptions
+    ) -> some View {
+        MediaViewerFooterView(
+            shareContent: options.shareContent,
+            selected: options.selected,
+            totalCount: options.totalCount,
+            gridShown: options.gridShown
+        )
+    }
+
     public func makeVideoPlayerHeaderView(
         options: VideoPlayerHeaderViewOptions
     ) -> some View {
@@ -989,10 +1004,10 @@ extension ViewFactory {
         Divider()
     }
     
-    public func makeAddUsersView(
-        options: AddUsersViewOptions
+    public func makeMemberAddView(
+        options: MemberAddViewOptions
     ) -> some View {
-        AddUsersView(loadedUserIds: options.options.loadedUserIds, onConfirm: options.onConfirm)
+        MemberAddView(loadedUserIds: options.options.loadedUserIds, onConfirm: options.onConfirm)
     }
     
     public func makeAttachmentTextView(
