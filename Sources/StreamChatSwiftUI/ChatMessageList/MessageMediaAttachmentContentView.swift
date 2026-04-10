@@ -52,6 +52,13 @@ public struct MessageMediaAttachmentContentView<Factory: ViewFactory>: View {
         self.isOutgoing = isOutgoing
     }
 
+    private var isUploading: Bool {
+        if case .uploading = source.uploadingState?.state {
+            return true
+        }
+        return false
+    }
+
     public var body: some View {
         ZStack {
             if let image {
@@ -66,9 +73,13 @@ public struct MessageMediaAttachmentContentView<Factory: ViewFactory>: View {
                 placeholderGradient
             }
 
-            if image == nil && error == nil {
-                LoadingSpinnerView(size: LoadingSpinnerSize.large, bordered: true)
+            if image == nil && error == nil && !isUploading {
+                LoadingSpinnerView(size: LoadingSpinnerSize.medium, bordered: false)
                     .allowsHitTesting(false)
+            }
+
+            if let uploadingState = source.uploadingState {
+                uploadingOverlay(for: uploadingState)
             }
 
             if source.type == .video && width > 64 && source.uploadingState == nil {
@@ -95,6 +106,25 @@ public struct MessageMediaAttachmentContentView<Factory: ViewFactory>: View {
             }
         }
         .accessibilityIdentifier("MessageMediaAttachmentContentView")
+    }
+
+    @ViewBuilder
+    private func uploadingOverlay(for uploadingState: AttachmentUploadingState) -> some View {
+        switch uploadingState.state {
+        case let .uploading(progress):
+            Color(colors.backgroundCoreOverlayLight)
+                .allowsHitTesting(false)
+            UploadProgressSpinnerView(
+                size: LoadingSpinnerSize.medium,
+                progress: Double(progress)
+            )
+            .allowsHitTesting(false)
+        case .uploadingFailed:
+            Color(colors.backgroundCoreOverlayLight)
+                .allowsHitTesting(false)
+        default:
+            EmptyView()
+        }
     }
 
     private var placeholderGradient: some View {

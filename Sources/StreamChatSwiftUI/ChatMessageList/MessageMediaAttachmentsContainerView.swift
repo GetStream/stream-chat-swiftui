@@ -269,7 +269,6 @@ public struct MessageMediaAttachmentsContainerView<Factory: ViewFactory>: View {
             corners: effectiveCorners,
             isOutgoing: message.isSentByCurrentUser
         )
-        .withUploadingStateIndicator(for: item.uploadingState, url: item.url)
         .modifier(
             MediaBorderOverlayModifier(
                 cornerRadius: effectiveRadius,
