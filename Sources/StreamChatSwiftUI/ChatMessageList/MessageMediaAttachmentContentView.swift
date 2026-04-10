@@ -82,7 +82,7 @@ public struct MessageMediaAttachmentContentView<Factory: ViewFactory>: View {
                 uploadingOverlay(for: uploadingState)
             }
 
-            if source.type == .video && width > 64 && source.uploadingState == nil {
+            if source.type == .video && width > 64 && source.uploadingState == nil && image != nil {
                 VideoPlayIndicatorView(size: VideoPlayIndicatorSize.medium)
                     .allowsHitTesting(false)
             }
