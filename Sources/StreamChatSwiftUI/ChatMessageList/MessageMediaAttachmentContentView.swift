@@ -114,7 +114,7 @@ public struct MessageMediaAttachmentContentView<Factory: ViewFactory>: View {
         case let .uploading(progress):
             Color(colors.backgroundCoreOverlayLight)
                 .allowsHitTesting(false)
-            UploadProgressSpinnerView(
+            LoadingSpinnerView(
                 size: LoadingSpinnerSize.medium,
                 progress: Double(progress)
             )

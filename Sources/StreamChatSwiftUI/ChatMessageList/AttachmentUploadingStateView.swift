@@ -9,7 +9,6 @@ import SwiftUI
 struct AttachmentUploadingStateView: View {
     @Injected(\.images) private var images
     @Injected(\.colors) private var colors
-    @Injected(\.fonts) private var fonts
 
     var uploadState: AttachmentUploadingState
     var url: URL
@@ -18,19 +17,18 @@ struct AttachmentUploadingStateView: View {
         Group {
             switch uploadState.state {
             case let .uploading(progress: progress):
-                BottomRightView {
-                    PercentageProgressView(progress: progress)
+                ZStack {
+                    Color(colors.backgroundCoreOverlayLight)
+                    LoadingSpinnerView(
+                        size: LoadingSpinnerSize.medium,
+                        progress: Double(progress)
+                    )
                 }
+                .allowsHitTesting(false)
 
             case .uploadingFailed:
-                BottomRightView {
-                    Image(uiImage: images.messageListErrorIndicator)
-                        .renderingMode(.template)
-                        .foregroundColor(Color(colors.badgeBackgroundError))
-                        .background(Color.white)
-                        .clipShape(Circle())
-                        .offset(x: -4, y: -4)
-                }
+                Color(colors.backgroundCoreOverlayLight)
+                    .allowsHitTesting(false)
 
             case .uploaded:
                 TopRightView {
