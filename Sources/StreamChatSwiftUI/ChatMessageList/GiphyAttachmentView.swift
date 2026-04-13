@@ -125,21 +125,22 @@ struct LazyGiphyView: View {
     let width: CGFloat
 
     var body: some View {
-        StreamLazyContentImage(
+        StreamAsyncImage(
             url: source,
-            processors: [ImageProcessors.Resize(width: width)]
-        ) { state in
-            if let imageContainer = state.imageContainer {
-                if imageContainer.type == .gif {
-                    AnimatedGifView(imageContainer: imageContainer)
+            resize: ImageResize(CGSize(width: width, height: width))
+        ) { phase in
+            switch phase {
+            case .success(let result):
+                if result.isAnimated, let gifData = result.animatedImageData {
+                    AnimatedGifView(gifData: gifData)
                 } else {
-                    Image(uiImage: imageContainer.image)
+                    Image(uiImage: result.image)
                         .resizable()
                         .scaledToFill()
                 }
-            } else if state.error != nil {
+            case .error:
                 Color(.secondarySystemBackground)
-            } else {
+            case .loading, .empty:
                 ZStack {
                     Color(.secondarySystemBackground)
                     ProgressView()
@@ -157,7 +158,7 @@ struct LazyGiphyView: View {
 /// to ensure contentMode scaling works correctly with SwiftyGif's
 /// CADisplayLink-driven frame updates.
 private struct AnimatedGifView: UIViewRepresentable {
-    let imageContainer: ImageContainer
+    let gifData: Data
 
     func makeUIView(context: Context) -> UIView {
         let container = UIView()
@@ -176,7 +177,7 @@ private struct AnimatedGifView: UIViewRepresentable {
             imageView.bottomAnchor.constraint(equalTo: container.bottomAnchor)
         ])
 
-        if let gifData = imageContainer.data, let image = try? UIImage(gifData: gifData) {
+        if let image = try? UIImage(gifData: gifData) {
             imageView.setGifImage(image)
         }
 

@@ -268,7 +268,6 @@
 				Tests/Utils/ChatClientExtensions_Tests.swift,
 				Tests/Utils/ChatMessageExtensions_Tests.swift,
 				Tests/Utils/ChatUserNamer_Tests.swift,
-				Tests/Utils/ImageCDN_Tests.swift,
 				Tests/Utils/MessagePreviewFormatter_Tests.swift,
 				Tests/Utils/ReactionsIconProvider_Tests.swift,
 				Tests/Utils/SortReactions_Tests.swift,

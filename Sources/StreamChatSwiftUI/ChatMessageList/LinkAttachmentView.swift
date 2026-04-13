@@ -82,12 +82,12 @@ public struct LinkAttachmentView: View {
         VStack(alignment: .leading, spacing: 0) {
             if !imageHidden {
                 ZStack {
-                    StreamLazyContentImage(
+                    StreamAsyncImage(
                         url: linkAttachment.previewURL ?? linkAttachment.originalURL,
-                        processors: [ImageProcessors.Resize(width: width)]
-                    ) { state in
-                        if let image = state.imageContainer?.image {
-                            Image(uiImage: image)
+                        resize: ImageResize(CGSize(width: width, height: 0))
+                    ) { phase in
+                        if let image = phase.image {
+                            image
                                 .resizable()
                                 .aspectRatio(contentMode: .fill)
                         }
