@@ -86,7 +86,10 @@ public struct ChatChannelView<Factory: ViewFactory>: View, KeyboardReadable {
                         }
                         .overlay(
                             viewModel.currentDateString != nil ?
-                                factory.makeDateIndicatorView(options: DateIndicatorViewOptions(dateString: viewModel.currentDateString!))
+                                VStack {
+                                    factory.makeDateIndicatorView(options: DateIndicatorViewOptions(dateString: viewModel.currentDateString!))
+                                    Spacer()
+                                }
                                 : nil
                         )
                     } else {
