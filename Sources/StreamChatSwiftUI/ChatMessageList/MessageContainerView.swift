@@ -9,13 +9,10 @@ import SwiftUI
 struct MessageContainerView<Factory: ViewFactory>: View {
     @ObservedObject var messageViewModel: MessageViewModel
 
-    @Environment(\.layoutDirection) private var layoutDirection
     @Injected(\.utils) private var utils
     @Injected(\.tokens) private var tokens
 
     let factory: Factory
-    let channel: ChatChannel
-    let message: ChatMessage
     let contentWidth: CGFloat
     let showsAllInfo: Bool
     let shownAsPreview: Bool
@@ -26,7 +23,7 @@ struct MessageContainerView<Factory: ViewFactory>: View {
     var body: some View {
         HStack(alignment: .bottom, spacing: tokens.spacingXs) {
             if !messageViewModel.isRightAligned
-                && utils.messageListConfig.messageDisplayOptions.showAvatars(for: channel, incoming: true) {
+                && utils.messageListConfig.messageDisplayOptions.showAvatars(for: messageViewModel.channel, incoming: true) {
                 avatarView
             }
 
@@ -37,8 +34,6 @@ struct MessageContainerView<Factory: ViewFactory>: View {
                 if messageViewModel.annotationsShown {
                     factory.makeMessageTopView(
                         options: MessageTopViewOptions(
-                            message: message,
-                            channel: channel,
                             messageViewModel: messageViewModel,
                             usesInvertedStyle: shownAsPreview
                         )
@@ -49,7 +44,7 @@ struct MessageContainerView<Factory: ViewFactory>: View {
                     .padding(
                         .top,
                         messageViewModel.topReactionsShown && messageViewModel.annotationsShown ? messageListConfig.messageDisplayOptions
-                            .reactionsTopPadding(message) : 0
+                            .reactionsTopPadding(messageViewModel.message) : 0
                     )
                     .accessibilityElement(children: .contain)
                     .accessibilityIdentifier("MessageView")
@@ -57,9 +52,9 @@ struct MessageContainerView<Factory: ViewFactory>: View {
                 if messageViewModel.threadRepliesShown {
                     factory.makeMessageRepliesView(
                         options: MessageRepliesViewOptions(
-                            channel: channel,
-                            message: message,
-                            replyCount: message.replyCount,
+                            channel: messageViewModel.channel,
+                            message: messageViewModel.message,
+                            replyCount: messageViewModel.message.replyCount,
                             usesInvertedStyle: shownAsPreview
                         )
                     )
@@ -70,7 +65,7 @@ struct MessageContainerView<Factory: ViewFactory>: View {
                 if messageViewModel.bottomReactionsShown {
                     factory.makeBottomReactionsView(
                         options: ReactionsBottomViewOptions(
-                            message: message,
+                            message: messageViewModel.message,
                             showsAllInfo: showsAllInfo,
                             onTap: {
                                 onGesture(false)
@@ -88,12 +83,12 @@ struct MessageContainerView<Factory: ViewFactory>: View {
             }
 
             if messageViewModel.isRightAligned
-                && utils.messageListConfig.messageDisplayOptions.showAvatars(for: channel, incoming: false) {
+                && utils.messageListConfig.messageDisplayOptions.showAvatars(for: messageViewModel.channel, incoming: false) {
                 avatarView
             }
         }
         .frame(maxWidth: .infinity, alignment: messageViewModel.isRightAligned ? .trailing : .leading)
-        .padding(.top, messageViewModel.topReactionsShown && !messageViewModel.annotationsShown ? messageListConfig.messageDisplayOptions.reactionsTopPadding(message) : 0)
+        .padding(.top, messageViewModel.topReactionsShown && !messageViewModel.annotationsShown ? messageListConfig.messageDisplayOptions.reactionsTopPadding(messageViewModel.message) : 0)
         .padding(.horizontal, messageListConfig.messagePaddings.horizontal)
         .padding(.bottom, showsAllInfo || messageViewModel.annotationsShown ? paddingValue : groupMessageInterItemSpacing)
         .padding(.top, isLast ? paddingValue : (messageViewModel.annotationsShown ? groupMessageInterItemSpacing : 0))
@@ -103,14 +98,12 @@ struct MessageContainerView<Factory: ViewFactory>: View {
 
     @ViewBuilder
     private var messageBubbleContent: some View {
-        let formattedText = messageViewModel.messageFormattedText(layoutDirection: layoutDirection)
         Group {
             if messageViewModel.usesScrollView {
                 ScrollView {
                     MessageView(
                         factory: factory,
-                        message: message,
-                        formattedText: formattedText,
+                        messageViewModel: messageViewModel,
                         contentWidth: contentWidth,
                         isFirst: showsAllInfo,
                         scrolledId: $scrolledId
@@ -119,8 +112,7 @@ struct MessageContainerView<Factory: ViewFactory>: View {
             } else {
                 MessageView(
                     factory: factory,
-                    message: message,
-                    formattedText: formattedText,
+                    messageViewModel: messageViewModel,
                     contentWidth: contentWidth,
                     isFirst: showsAllInfo,
                     scrolledId: $scrolledId
@@ -131,7 +123,7 @@ struct MessageContainerView<Factory: ViewFactory>: View {
             messageViewModel.topReactionsShown ?
                 factory.makeMessageReactionView(
                     options: MessageReactionViewOptions(
-                        message: message,
+                        message: messageViewModel.message,
                         onTapGesture: {
                             onGesture(false)
                         },
@@ -153,7 +145,7 @@ struct MessageContainerView<Factory: ViewFactory>: View {
     private var avatarView: some View {
         factory.makeUserAvatarView(
             options: UserAvatarViewOptions(
-                user: message.author,
+                user: messageViewModel.message.author,
                 size: AvatarSize.medium,
                 showsIndicator: false
             )
@@ -163,31 +155,31 @@ struct MessageContainerView<Factory: ViewFactory>: View {
 
     @ViewBuilder
     private var deliveryStatusView: some View {
-        if message.isSentByCurrentUser && channel.config.readEventsEnabled {
+        if messageViewModel.message.isSentByCurrentUser && messageViewModel.channel.config.readEventsEnabled {
             HStack(spacing: tokens.spacingXxs) {
                 factory.makeMessageReadIndicatorView(
                     options: MessageReadIndicatorViewOptions(
-                        channel: channel,
-                        message: message,
+                        channel: messageViewModel.channel,
+                        message: messageViewModel.message,
                         usesInvertedStyle: shownAsPreview
                     )
                 )
 
                 if messageViewModel.messageDateShown {
                     factory.makeMessageDateView(
-                        options: MessageDateViewOptions(message: message, usesInvertedStyle: shownAsPreview)
+                        options: MessageDateViewOptions(message: messageViewModel.message, usesInvertedStyle: shownAsPreview)
                     )
                 }
             }
             .padding(.bottom, tokens.spacingXxs)
         } else if messageViewModel.authorAndDateShown {
             factory.makeMessageAuthorAndDateView(
-                options: MessageAuthorAndDateViewOptions(message: message, usesInvertedStyle: shownAsPreview)
+                options: MessageAuthorAndDateViewOptions(message: messageViewModel.message, usesInvertedStyle: shownAsPreview)
             )
             .padding(.bottom, tokens.spacingXxs)
         } else if messageViewModel.messageDateShown {
             factory.makeMessageDateView(
-                options: MessageDateViewOptions(message: message, usesInvertedStyle: shownAsPreview)
+                options: MessageDateViewOptions(message: messageViewModel.message, usesInvertedStyle: shownAsPreview)
             )
             .padding(.bottom, tokens.spacingXxs)
         }

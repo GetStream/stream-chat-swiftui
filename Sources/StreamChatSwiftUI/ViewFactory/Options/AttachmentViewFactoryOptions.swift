@@ -179,30 +179,26 @@ public final class VoiceRecordingViewOptions: Sendable {
 // MARK: - Message Attachments Options
 
 /// Options for creating the message attachments view.
-public final class MessageAttachmentsViewOptions: Sendable {
-    /// The message containing the attachments.
-    public let message: ChatMessage
+public final class MessageAttachmentsViewOptions {
+    /// The view model driving the message containing the attachments.
+    public let messageViewModel: MessageViewModel
     /// Whether this is the first message in a group.
     public let isFirst: Bool
     /// The available width for the attachments.
     public let availableWidth: CGFloat
     /// Binding to the currently scrolled message ID.
     public let scrolledId: Binding<String?>
-    /// The resolved text content to display (translated or original, with markdown / link attributes applied).
-    public let formattedText: MessageFormattedText
 
     public init(
-        message: ChatMessage,
-        formattedText: MessageFormattedText,
+        messageViewModel: MessageViewModel,
         isFirst: Bool,
         availableWidth: CGFloat,
         scrolledId: Binding<String?>
     ) {
-        self.message = message
+        self.messageViewModel = messageViewModel
         self.isFirst = isFirst
         self.availableWidth = availableWidth
         self.scrolledId = scrolledId
-        self.formattedText = formattedText
     }
 }
 

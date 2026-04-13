@@ -35,7 +35,6 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
     @State private var measuredTotalContentHeight: CGFloat = 0
 
     private let factory: Factory
-    private let channel: ChatChannel
     private let currentSnapshot: UIImage
     private let verticalInset: CGFloat
     private let messageDisplayInfo: MessageDisplayInfo
@@ -66,7 +65,6 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
                 channel: channel
             )
         )
-        self.channel = channel
         self.factory = factory
         self.currentSnapshot = currentSnapshot
         self.verticalInset = verticalInset
@@ -89,7 +87,7 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
                     reactionsPickerView(reader: reader)
                     factory.makeMessageItemView(
                         options: MessageItemViewOptions(
-                            channel: channel,
+                            channel: messageViewModel.channel,
                             message: messageDisplayInfo.message,
                             width: messageDisplayInfo.frame.width,
                             fixedContentWidth: messageDisplayInfo.contentWidth,
@@ -198,7 +196,7 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
 
     @ViewBuilder
     private func reactionsPickerView(reader: GeometryProxy) -> some View {
-        if channel.config.reactionsEnabled && !messageDisplayInfo.message.isBounced {
+        if messageViewModel.channel.config.reactionsEnabled && !messageDisplayInfo.message.isBounced {
             HStack(spacing: 0) {
                 if isRightAligned { Spacer() }
                 factory.makeReactionsContentView(
@@ -236,7 +234,7 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
                 factory.makeMessageActionsView(
                     options: MessageActionsViewOptions(
                         message: messageDisplayInfo.message,
-                        channel: channel,
+                        channel: messageViewModel.channel,
                         onFinish: { actionInfo in
                             onActionExecuted(actionInfo)
                         },
@@ -277,7 +275,7 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
     }
 
     private var showAvatars: Bool {
-        utils.messageListConfig.messageDisplayOptions.showAvatars(for: channel, incoming: !isRightAligned)
+        utils.messageListConfig.messageDisplayOptions.showAvatars(for: messageViewModel.channel, incoming: !isRightAligned)
     }
 
     private var messageHorizontalPadding: CGFloat {
@@ -333,7 +331,7 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
     }
 
     private var topReactionsWithPickerHeight: CGFloat {
-        guard channel.config.reactionsEnabled, !messageDisplayInfo.message.isBounced else { return 0 }
+        guard messageViewModel.channel.config.reactionsEnabled, !messageDisplayInfo.message.isBounced else { return 0 }
         return 48 + tokens.spacingXs
     }
 

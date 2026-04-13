@@ -6,35 +6,47 @@ import StreamChat
 import SwiftUI
 
 public struct AttachmentTextView<Factory: ViewFactory>: View {
+    @Environment(\.layoutDirection) private var layoutDirection
+    @Injected(\.colors) private var colors
+    @Injected(\.fonts) private var fonts
     @Injected(\.tokens) private var tokens
 
     var factory: Factory
-    var message: ChatMessage
+    @ObservedObject var messageViewModel: MessageViewModel
     var availableWidth: CGFloat
-    let formattedText: MessageFormattedText
 
     public init(
         factory: Factory = DefaultViewFactory.shared,
-        formattedText: MessageFormattedText,
-        message: ChatMessage,
+        messageViewModel: MessageViewModel,
         availableWidth: CGFloat
     ) {
         self.factory = factory
-        self.message = message
+        self.messageViewModel = messageViewModel
         self.availableWidth = availableWidth
-        self.formattedText = formattedText
     }
 
     public var body: some View {
-        factory.makeStreamTextView(options: .init(message: message, formattedText: formattedText))
+        messageText
+            .font(fonts.body)
+            .foregroundColor(textColor(for: messageViewModel.message))
+            .accentColor(Color(colors.accentPrimary))
             .padding(.horizontal, tokens.spacingXxs)
             .fixedSize(horizontal: false, vertical: true)
             .frame(maxWidth: maxTextWidth, alignment: .leading)
             .accessibilityIdentifier("MessageTextView")
     }
 
+    private var messageText: Text {
+        if #available(iOS 15.0, *) {
+            return Text(messageViewModel.attributedString(layoutDirection: layoutDirection))
+        } else {
+            return Text(messageViewModel.textContent)
+        }
+    }
+
     /// Limit text width for messages with portrait image attachment.
     private var maxTextWidth: CGFloat {
+        let message = messageViewModel.message
         guard message.hasSingleMediaAttachmentWithCaption else { return availableWidth }
         let mediaAttachments = MediaAttachment.galleryOrdered(from: message)
         let orientation = MediaGalleryOrientation(mediaAttachments: mediaAttachments)

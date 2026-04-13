@@ -28,9 +28,11 @@ import SwiftUI
         self.message = message
         self.channel = channel
         self.isInThread = isInThread
-        utils.originalTranslationsStore.objectWillChange.sink { [weak self] in
-            self?.objectWillChange.send()
-        }
+        utils.originalTranslationsStore.$originalTextMessageIds.sink(
+            receiveValue: { [weak self] _ in
+                self?.objectWillChange.send()
+            }
+        )
         .store(in: &cancellables)
     }
 
@@ -125,23 +127,38 @@ import SwiftUI
         return message.adjustedText
     }
 
-    /// The ready-to-render text content for this message.
+    /// The rendered `AttributedString` for this message on iOS 15+.
     ///
-    /// On iOS 15+ the returned value carries markdown, link, and mention
-    /// attributes resolved against the current ``Utils/messageListConfig``.
-    /// On iOS 14 only the plain-string fallback is populated.
-    /// - Parameter layoutDirection: The layout direction used when formatting
-    ///   markdown (RTL locales need this to flip emphasis markers correctly).
-    open func messageFormattedText(layoutDirection: LayoutDirection = .leftToRight) -> MessageFormattedText {
+    /// Carries the base foreground color (incoming vs. outgoing) and body font,
+    /// with markdown, detected links, mentions, and link-style overrides
+    /// applied per the current ``Utils/messageListConfig``.
+    /// - Parameter layoutDirection: Used by the markdown parser to flip
+    ///   emphasis markers for RTL locales.
+    @available(iOS 15.0, *)
+    open func attributedString(layoutDirection: LayoutDirection = .leftToRight) -> AttributedString {
         let text = textContent
-        if #available(iOS 15.0, *) {
-            return MessageFormattedText(
-                makeAttributedString(layoutDirection: layoutDirection),
-                string: text
+        let baseAttributes = AttributeContainer()
+            .foregroundColor(messageTextColor)
+            .font(fonts.body)
+
+        var attributedString: AttributedString
+        if messageListConfig.markdownSupportEnabled {
+            attributedString = utils.markdownFormatter.format(
+                text,
+                attributes: baseAttributes,
+                layoutDirection: layoutDirection
             )
         } else {
-            return MessageFormattedText(text)
+            attributedString = AttributedString(text, attributes: baseAttributes)
         }
+
+        if messageListConfig.localLinkDetectionEnabled {
+            applyMentions(to: &attributedString)
+            applyLinks(to: &attributedString)
+        }
+
+        applyLinkStyleOverrides(to: &attributedString)
+        return attributedString
     }
 
     public var translatedText: String? {
@@ -199,39 +216,12 @@ import SwiftUI
         utils.messageListConfig
     }
 
-    // MARK: - Text Content Building
+    // MARK: - AttributedString Building
 
     private var messageTextColor: Color {
         message.isSentByCurrentUser
             ? Color(colors.chatTextOutgoing)
             : Color(colors.chatTextIncoming)
-    }
-
-    @available(iOS 15.0, *)
-    private func makeAttributedString(layoutDirection: LayoutDirection) -> AttributedString {
-        let text = textContent
-        let baseAttributes = AttributeContainer()
-            .foregroundColor(messageTextColor)
-            .font(fonts.body)
-
-        var attributedString: AttributedString
-        if messageListConfig.markdownSupportEnabled {
-            attributedString = utils.markdownFormatter.format(
-                text,
-                attributes: baseAttributes,
-                layoutDirection: layoutDirection
-            )
-        } else {
-            attributedString = AttributedString(text, attributes: baseAttributes)
-        }
-
-        if messageListConfig.localLinkDetectionEnabled {
-            applyMentions(to: &attributedString)
-            applyLinks(to: &attributedString)
-        }
-
-        applyLinkStyleOverrides(to: &attributedString)
-        return attributedString
     }
 
     @available(iOS 15.0, *)

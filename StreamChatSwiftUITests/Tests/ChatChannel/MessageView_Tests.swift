@@ -36,8 +36,7 @@ import XCTest
         // When
         let view = MessageView(
             factory: DefaultViewFactory.shared,
-            message: textMessage,
-            formattedText: messageFormattedText(for: textMessage),
+            messageViewModel: MessageViewModel(message: textMessage, channel: .mockDMChannel()),
             contentWidth: defaultScreenSize.width,
             isFirst: true,
             scrolledId: .constant(nil)
@@ -61,8 +60,7 @@ import XCTest
         // When
         let view = MessageView(
             factory: DefaultViewFactory.shared,
-            message: textMessage,
-            formattedText: messageFormattedText(for: textMessage),
+            messageViewModel: MessageViewModel(message: textMessage, channel: .mockDMChannel()),
             contentWidth: defaultScreenSize.width,
             isFirst: true,
             scrolledId: .constant(nil)
@@ -87,8 +85,7 @@ import XCTest
         // When
         let view = MessageView(
             factory: DefaultViewFactory.shared,
-            message: textMessage,
-            formattedText: messageFormattedText(for: textMessage),
+            messageViewModel: MessageViewModel(message: textMessage, channel: .mockDMChannel()),
             contentWidth: defaultScreenSize.width,
             isFirst: true,
             scrolledId: .constant(nil)
@@ -113,8 +110,7 @@ import XCTest
         // When
         let view = MessageView(
             factory: DefaultViewFactory.shared,
-            message: textMessage,
-            formattedText: messageFormattedText(for: textMessage),
+            messageViewModel: MessageViewModel(message: textMessage, channel: .mockDMChannel()),
             contentWidth: defaultScreenSize.width,
             isFirst: true,
             scrolledId: .constant(nil)
@@ -138,8 +134,7 @@ import XCTest
         // When
         let view = MessageView(
             factory: DefaultViewFactory.shared,
-            message: textMessage,
-            formattedText: messageFormattedText(for: textMessage),
+            messageViewModel: MessageViewModel(message: textMessage, channel: .mockDMChannel()),
             contentWidth: defaultScreenSize.width,
             isFirst: true,
             scrolledId: .constant(nil)
@@ -163,8 +158,7 @@ import XCTest
         // When
         let view = MessageView(
             factory: DefaultViewFactory.shared,
-            message: imageMessage,
-            formattedText: messageFormattedText(for: imageMessage),
+            messageViewModel: MessageViewModel(message: imageMessage, channel: .mockDMChannel()),
             contentWidth: defaultScreenSize.width,
             isFirst: true,
             scrolledId: .constant(nil)
@@ -192,8 +186,7 @@ import XCTest
         // When
         let view = MessageView(
             factory: DefaultViewFactory.shared,
-            message: imageMessage,
-            formattedText: messageFormattedText(for: imageMessage),
+            messageViewModel: MessageViewModel(message: imageMessage, channel: .mockDMChannel()),
             contentWidth: defaultScreenSize.width,
             isFirst: true,
             scrolledId: .constant(nil)
@@ -221,8 +214,7 @@ import XCTest
         // When
         let view = MessageView(
             factory: DefaultViewFactory.shared,
-            message: imageMessage,
-            formattedText: messageFormattedText(for: imageMessage),
+            messageViewModel: MessageViewModel(message: imageMessage, channel: .mockDMChannel()),
             contentWidth: defaultScreenSize.width,
             isFirst: true,
             scrolledId: .constant(nil)
@@ -249,8 +241,7 @@ import XCTest
         // When
         let view = MessageView(
             factory: DefaultViewFactory.shared,
-            message: imageMessage,
-            formattedText: messageFormattedText(for: imageMessage),
+            messageViewModel: MessageViewModel(message: imageMessage, channel: .mockDMChannel()),
             contentWidth: defaultScreenSize.width,
             isFirst: true,
             scrolledId: .constant(nil)
@@ -278,8 +269,7 @@ import XCTest
         // When
         let view = MessageView(
             factory: DefaultViewFactory.shared,
-            message: imageMessage,
-            formattedText: messageFormattedText(for: imageMessage),
+            messageViewModel: MessageViewModel(message: imageMessage, channel: .mockDMChannel()),
             contentWidth: defaultScreenSize.width,
             isFirst: true,
             scrolledId: .constant(nil)
@@ -308,8 +298,7 @@ import XCTest
         // When
         let view = MessageView(
             factory: DefaultViewFactory.shared,
-            message: imageMessage,
-            formattedText: messageFormattedText(for: imageMessage),
+            messageViewModel: MessageViewModel(message: imageMessage, channel: .mockDMChannel()),
             contentWidth: defaultScreenSize.width,
             isFirst: true,
             scrolledId: .constant(nil)
@@ -340,8 +329,7 @@ import XCTest
         // When
         let view = MessageView(
             factory: DefaultViewFactory.shared,
-            message: imageMessage,
-            formattedText: messageFormattedText(for: imageMessage),
+            messageViewModel: MessageViewModel(message: imageMessage, channel: .mockDMChannel()),
             contentWidth: defaultScreenSize.width,
             isFirst: true,
             scrolledId: .constant(nil)
@@ -372,8 +360,7 @@ import XCTest
         // When
         let view = MessageView(
             factory: DefaultViewFactory.shared,
-            message: message,
-            formattedText: messageFormattedText(for: message),
+            messageViewModel: MessageViewModel(message: message, channel: .mockDMChannel()),
             contentWidth: defaultScreenSize.width,
             isFirst: true,
             scrolledId: .constant(nil)
@@ -404,8 +391,7 @@ import XCTest
         // When
         let view = MessageView(
             factory: DefaultViewFactory.shared,
-            message: message,
-            formattedText: messageFormattedText(for: message),
+            messageViewModel: MessageViewModel(message: message, channel: .mockDMChannel()),
             contentWidth: defaultScreenSize.width,
             isFirst: true,
             scrolledId: .constant(nil)
@@ -429,8 +415,7 @@ import XCTest
         // When
         let view = MessageView(
             factory: DefaultViewFactory.shared,
-            message: giphyMessage,
-            formattedText: messageFormattedText(for: giphyMessage),
+            messageViewModel: MessageViewModel(message: giphyMessage, channel: .mockDMChannel()),
             contentWidth: defaultScreenSize.width,
             isFirst: true,
             scrolledId: .constant(nil)
@@ -490,8 +475,7 @@ import XCTest
         // When
         let view = MessageView(
             factory: DefaultViewFactory.shared,
-            message: giphyMessage,
-            formattedText: messageFormattedText(for: giphyMessage),
+            messageViewModel: MessageViewModel(message: giphyMessage, channel: .mockDMChannel()),
             contentWidth: defaultScreenSize.width,
             isFirst: true,
             scrolledId: .constant(nil)
@@ -515,8 +499,7 @@ import XCTest
         // When
         let view = MessageView(
             factory: DefaultViewFactory.shared,
-            message: videoMessage,
-            formattedText: messageFormattedText(for: videoMessage),
+            messageViewModel: MessageViewModel(message: videoMessage, channel: .mockDMChannel()),
             contentWidth: defaultScreenSize.width,
             isFirst: true,
             scrolledId: .constant(nil)
@@ -540,8 +523,7 @@ import XCTest
         // When
         let view = MessageView(
             factory: DefaultViewFactory.shared,
-            message: fileMessage,
-            formattedText: messageFormattedText(for: fileMessage),
+            messageViewModel: MessageViewModel(message: fileMessage, channel: .mockDMChannel()),
             contentWidth: defaultScreenSize.width,
             isFirst: true,
             scrolledId: .constant(nil)
@@ -566,8 +548,7 @@ import XCTest
         // When
         let view = MessageView(
             factory: DefaultViewFactory.shared,
-            message: voiceMessage,
-            formattedText: messageFormattedText(for: voiceMessage),
+            messageViewModel: MessageViewModel(message: voiceMessage, channel: .mockDMChannel()),
             contentWidth: defaultScreenSize.width,
             isFirst: true,
             scrolledId: .constant(nil)
@@ -596,8 +577,7 @@ import XCTest
         // When
         let view = MessageView(
             factory: DefaultViewFactory.shared,
-            message: voiceMessage,
-            formattedText: messageFormattedText(for: voiceMessage),
+            messageViewModel: MessageViewModel(message: voiceMessage, channel: .mockDMChannel()),
             contentWidth: defaultScreenSize.width,
             isFirst: true,
             scrolledId: .constant(nil)
@@ -626,8 +606,7 @@ import XCTest
         // When
         let view = MessageView(
             factory: DefaultViewFactory.shared,
-            message: voiceMessage,
-            formattedText: messageFormattedText(for: voiceMessage),
+            messageViewModel: MessageViewModel(message: voiceMessage, channel: .mockDMChannel()),
             contentWidth: defaultScreenSize.width,
             isFirst: true,
             scrolledId: .constant(nil)
@@ -656,8 +635,7 @@ import XCTest
         // When
         let view = MessageView(
             factory: DefaultViewFactory.shared,
-            message: voiceMessage,
-            formattedText: messageFormattedText(for: voiceMessage),
+            messageViewModel: MessageViewModel(message: voiceMessage, channel: .mockDMChannel()),
             contentWidth: defaultScreenSize.width,
             isFirst: true,
             scrolledId: .constant(nil)
@@ -686,8 +664,7 @@ import XCTest
         // When
         let view = MessageView(
             factory: DefaultViewFactory.shared,
-            message: voiceMessage,
-            formattedText: messageFormattedText(for: voiceMessage),
+            messageViewModel: MessageViewModel(message: voiceMessage, channel: .mockDMChannel()),
             contentWidth: defaultScreenSize.width,
             isFirst: true,
             scrolledId: .constant(nil)
@@ -716,8 +693,7 @@ import XCTest
         // When
         let view = MessageView(
             factory: DefaultViewFactory.shared,
-            message: voiceMessage,
-            formattedText: messageFormattedText(for: voiceMessage),
+            messageViewModel: MessageViewModel(message: voiceMessage, channel: .mockDMChannel()),
             contentWidth: defaultScreenSize.width,
             isFirst: true,
             scrolledId: .constant(nil)
@@ -754,8 +730,7 @@ import XCTest
         }
         let view = MessageView(
             factory: DefaultViewFactory.shared,
-            message: voiceMessage,
-            formattedText: messageFormattedText(for: voiceMessage),
+            messageViewModel: MessageViewModel(message: voiceMessage, channel: .mockDMChannel()),
             contentWidth: defaultScreenSize.width,
             isFirst: true,
             scrolledId: .constant(nil)
@@ -792,8 +767,7 @@ import XCTest
         // When
         let view = MessageView(
             factory: DefaultViewFactory.shared,
-            message: voiceMessage,
-            formattedText: messageFormattedText(for: voiceMessage),
+            messageViewModel: MessageViewModel(message: voiceMessage, channel: .mockDMChannel()),
             contentWidth: defaultScreenSize.width,
             isFirst: true,
             scrolledId: .constant(nil)
@@ -829,8 +803,7 @@ import XCTest
         // When
         let view = MessageView(
             factory: DefaultViewFactory.shared,
-            message: voiceMessage,
-            formattedText: messageFormattedText(for: voiceMessage),
+            messageViewModel: MessageViewModel(message: voiceMessage, channel: .mockDMChannel()),
             contentWidth: defaultScreenSize.width,
             isFirst: true,
             scrolledId: .constant(nil)
@@ -866,8 +839,7 @@ import XCTest
         // When
         let view = MessageView(
             factory: DefaultViewFactory.shared,
-            message: voiceMessage,
-            formattedText: messageFormattedText(for: voiceMessage),
+            messageViewModel: MessageViewModel(message: voiceMessage, channel: .mockDMChannel()),
             contentWidth: defaultScreenSize.width,
             isFirst: true,
             scrolledId: .constant(nil)
@@ -903,8 +875,7 @@ import XCTest
         // When
         let view = MessageView(
             factory: DefaultViewFactory.shared,
-            message: voiceMessage,
-            formattedText: messageFormattedText(for: voiceMessage),
+            messageViewModel: MessageViewModel(message: voiceMessage, channel: .mockDMChannel()),
             contentWidth: defaultScreenSize.width,
             isFirst: true,
             scrolledId: .constant(nil)
@@ -968,8 +939,7 @@ import XCTest
         // When
         let view = MessageView(
             factory: DefaultViewFactory.shared,
-            message: fileMessage,
-            formattedText: messageFormattedText(for: fileMessage),
+            messageViewModel: MessageViewModel(message: fileMessage, channel: .mockDMChannel()),
             contentWidth: defaultScreenSize.width,
             isFirst: true,
             scrolledId: .constant(nil)
@@ -992,8 +962,7 @@ import XCTest
         // When
         let view = MessageView(
             factory: DefaultViewFactory.shared,
-            message: emojiMessage,
-            formattedText: messageFormattedText(for: emojiMessage),
+            messageViewModel: MessageViewModel(message: emojiMessage, channel: .mockDMChannel()),
             contentWidth: defaultScreenSize.width,
             isFirst: true,
             scrolledId: .constant(nil)
@@ -1017,8 +986,7 @@ import XCTest
         // When
         let view = MessageAttachmentsView(
             factory: DefaultViewFactory.shared,
-            message: message,
-            formattedText: messageFormattedText(for: message),
+            messageViewModel: MessageViewModel(message: message, channel: .mockDMChannel()),
             width: defaultScreenSize.width,
             isFirst: true,
             scrolledId: .constant(nil)
@@ -1080,8 +1048,7 @@ import XCTest
         // When
         let view = MessageView(
             factory: DefaultViewFactory.shared,
-            message: messageWithLinkAndImages,
-            formattedText: messageFormattedText(for: messageWithLinkAndImages),
+            messageViewModel: MessageViewModel(message: messageWithLinkAndImages, channel: .mockDMChannel()),
             contentWidth: defaultScreenSize.width,
             isFirst: true,
             scrolledId: .constant(nil)
@@ -1121,8 +1088,7 @@ import XCTest
         // When
         let view = MessageView(
             factory: DefaultViewFactory.shared,
-            message: message,
-            formattedText: messageFormattedText(for: message),
+            messageViewModel: MessageViewModel(message: message, channel: .mockDMChannel()),
             contentWidth: defaultScreenSize.width,
             isFirst: true,
             scrolledId: .constant(nil)
@@ -1243,8 +1209,7 @@ import XCTest
         // When
         let view = MessageView(
             factory: DefaultViewFactory.shared,
-            message: textMessage,
-            formattedText: messageFormattedText(for: textMessage),
+            messageViewModel: MessageViewModel(message: textMessage, channel: .mockDMChannel()),
             contentWidth: defaultScreenSize.width,
             isFirst: true,
             scrolledId: .constant(nil)
@@ -1277,8 +1242,7 @@ import XCTest
         // When
         let view = MessageView(
             factory: DefaultViewFactory.shared,
-            message: textMessage,
-            formattedText: messageFormattedText(for: textMessage),
+            messageViewModel: MessageViewModel(message: textMessage, channel: .mockDMChannel()),
             contentWidth: defaultScreenSize.width,
             isFirst: true,
             scrolledId: .constant(nil)
@@ -1295,8 +1259,7 @@ import XCTest
     func test_markdown_linkSupportDisabled() {
         // Given
         let config = MessageListConfig(
-            localLinkDetectionEnabled: false,
-            markdownSupportEnabled: false
+            localLinkDetectionEnabled: false
         )
         let utils = Utils(messageListConfig: config)
         streamChat = StreamChat(chatClient: chatClient, utils: utils)
@@ -1311,8 +1274,7 @@ import XCTest
         // When
         let view = MessageView(
             factory: DefaultViewFactory.shared,
-            message: textMessage,
-            formattedText: messageFormattedText(for: textMessage),
+            messageViewModel: MessageViewModel(message: textMessage, channel: .mockDMChannel()),
             contentWidth: defaultScreenSize.width,
             isFirst: true,
             scrolledId: .constant(nil)
@@ -1619,16 +1581,11 @@ import XCTest
     }
     
     // MARK: -
-
+    
     private func messageViewSize(height: CGFloat = 100.0) -> CGSize {
         CGSize(width: defaultScreenSize.width, height: height)
     }
-
-    fileprivate func messageFormattedText(for message: ChatMessage) -> MessageFormattedText {
-        MessageViewModel(message: message, channel: .mockDMChannel())
-            .messageFormattedText(layoutDirection: .leftToRight)
-    }
-
+    
     private func messageView(
         size: CGSize,
         config: MessageListConfig? = nil,
@@ -1655,8 +1612,8 @@ import XCTest
 }
 
 /// Test harness that mirrors the production `MessageContainerView` behaviour
-/// of rebuilding `MessageFormattedText` against the current environment's
-/// layout direction (required for markdown RTL snapshot variants).
+/// of building a `MessageViewModel` against the current environment's layout
+/// direction (required for markdown RTL snapshot variants).
 private struct MessageViewLayoutAwareHarness: View {
     @Environment(\.layoutDirection) private var layoutDirection
     let message: ChatMessage
@@ -1666,8 +1623,7 @@ private struct MessageViewLayoutAwareHarness: View {
         let viewModel = MessageViewModel(message: message, channel: .mockDMChannel())
         MessageView(
             factory: DefaultViewFactory.shared,
-            message: message,
-            formattedText: viewModel.messageFormattedText(layoutDirection: layoutDirection),
+            messageViewModel: viewModel,
             contentWidth: contentWidth,
             isFirst: true,
             scrolledId: .constant(nil)

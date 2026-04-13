@@ -11,8 +11,6 @@ struct MessageTopView: View {
     @Injected(\.tokens) private var tokens
     @Injected(\.utils) private var utils
 
-    let message: ChatMessage
-    let channel: ChatChannel
     @ObservedObject var messageViewModel: MessageViewModel
     /// When true, the `textOnAccent` color is used instead of the default darker text color.
     var usesInvertedStyle: Bool = false
@@ -100,18 +98,18 @@ struct MessageTopView: View {
         NotificationCenter.default.post(
             name: MessageRepliesConstants.channelMessageNavigationNotification,
             object: nil,
-            userInfo: [MessageRepliesConstants.channelMessageMessageId: message.messageId]
+            userInfo: [MessageRepliesConstants.channelMessageMessageId: messageViewModel.message.messageId]
         )
     }
 
     private func navigateToThread() {
-        guard let parentMessageId = message.parentMessageId else { return }
+        guard let parentMessageId = messageViewModel.message.parentMessageId else { return }
         NotificationCenter.default.post(
             name: MessageRepliesConstants.threadMessageNavigationNotification,
             object: nil,
             userInfo: [
                 MessageRepliesConstants.threadMessageParentId: parentMessageId,
-                MessageRepliesConstants.threadMessageReplyId: message.messageId
+                MessageRepliesConstants.threadMessageReplyId: messageViewModel.message.messageId
             ]
         )
     }

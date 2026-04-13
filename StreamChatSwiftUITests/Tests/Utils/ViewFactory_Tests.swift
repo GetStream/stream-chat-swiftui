@@ -114,12 +114,12 @@ import XCTest
     func test_viewFactory_makeMessageTextView() {
         // Given
         let viewFactory = DefaultViewFactory.shared
+        let viewModel = MessageViewModel(message: message, channel: .mockDMChannel())
 
         // When
         let view = viewFactory.makeMessageTextView(
             options: MessageTextViewOptions(
-                message: message,
-                formattedText: MessageFormattedText(message.text),
+                messageViewModel: viewModel,
                 isFirst: true,
                 availableWidth: 300,
                 scrolledId: .constant(nil)
@@ -133,12 +133,12 @@ import XCTest
     func test_viewFactory_makeMessageAttachmentsView() {
         // Given
         let viewFactory = DefaultViewFactory.shared
+        let viewModel = MessageViewModel(message: message, channel: .mockDMChannel())
 
         // When
         let view = viewFactory.makeMessageAttachmentsView(
             options: MessageAttachmentsViewOptions(
-                message: message,
-                formattedText: MessageFormattedText(message.text),
+                messageViewModel: viewModel,
                 isFirst: true,
                 availableWidth: 300,
                 scrolledId: .constant(nil)
@@ -1035,23 +1035,15 @@ import XCTest
         XCTAssert(view is MemberAddView<DefaultViewFactory>)
     }
 
-    func test_viewFactory_makeStreamTextView() {
-        // Given
-        let viewFactory = DefaultViewFactory.shared
-
-        // When
-        let view = viewFactory.makeStreamTextView(options: .init(message: message, formattedText: MessageFormattedText(message.text)))
-
-        // Then
-        XCTAssert(view is StreamTextView)
-    }
-
     func test_viewFactory_makeAttachmentTextView() {
         // Given
         let viewFactory = DefaultViewFactory.shared
+        let viewModel = MessageViewModel(message: message, channel: .mockDMChannel())
 
         // When
-        let view = viewFactory.makeAttachmentTextView(options: .init(message: message, formattedText: MessageFormattedText(message.text), availableWidth: 300))
+        let view = viewFactory.makeAttachmentTextView(
+            options: .init(messageViewModel: viewModel, availableWidth: 300)
+        )
 
         // Then
         XCTAssert(view is AttachmentTextView<DefaultViewFactory>)
@@ -1079,8 +1071,6 @@ import XCTest
         // When
         let view = viewFactory.makeMessageTopView(
             options: MessageTopViewOptions(
-                message: message,
-                channel: channel,
                 messageViewModel: viewModel
             )
         )

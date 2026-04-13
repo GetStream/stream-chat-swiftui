@@ -16,13 +16,16 @@ public struct MessageItemView<Factory: ViewFactory>: View {
     @Injected(\.tokens) private var tokens
 
     let factory: Factory
-    let channel: ChatChannel
+    /// Latest message value passed in by the parent. Used only to detect
+    /// upstream updates and push them into ``messageViewModel`` via
+    /// `.onChange(of:)` — body subviews always read the current state from
+    /// ``messageViewModel`` directly.
     let message: ChatMessage
+    let channel: ChatChannel
     let width: CGFloat?
     let fixedContentWidth: CGFloat?
     let showsAllInfo: Bool
     let shownAsPreview: Bool
-    let isInThread: Bool
     let isLast: Bool
     @Binding var scrolledId: String?
     @Binding var quotedMessage: ChatMessage?
@@ -34,12 +37,12 @@ public struct MessageItemView<Factory: ViewFactory>: View {
     /// Creates a new message item view.
     /// - Parameters:
     ///   - factory: The view factory used to create subviews.
-    ///   - channel: The channel the message belongs to.
-    ///   - message: The message to display.
+    ///   - channel: The channel the message belongs to (used only to construct the view model when `viewModel` is `nil`).
+    ///   - message: The message to display (used only to construct the view model when `viewModel` is `nil`).
     ///   - width: The available width for laying out the message content.
     ///   - showsAllInfo: Whether to show the full message info (avatar, timestamp, delivery status).
     ///   - shownAsPreview: Whether the message is rendered as a preview (e.g. on the reactions overlay).
-    ///   - isInThread: Whether the message is displayed inside a thread.
+    ///   - isInThread: Whether the message is displayed inside a thread (used only to construct the view model when `viewModel` is `nil`).
     ///   - isLast: Whether this is the last (topmost) message in the list.
     ///   - scrolledId: Binding to the currently scrolled-to message ID.
     ///   - quotedMessage: Binding to the message being quoted via swipe-to-reply.
@@ -61,13 +64,12 @@ public struct MessageItemView<Factory: ViewFactory>: View {
         viewModel: MessageViewModel? = nil
     ) {
         self.factory = factory
-        self.channel = channel
         self.message = message
+        self.channel = channel
         self.width = width
         self.fixedContentWidth = fixedContentWidth
         self.showsAllInfo = showsAllInfo
         self.shownAsPreview = shownAsPreview
-        self.isInThread = isInThread
         self.isLast = isLast
         self.onLongPress = onLongPress
         _messageViewModel = .init(
@@ -89,8 +91,6 @@ public struct MessageItemView<Factory: ViewFactory>: View {
                 MessageContainerView(
                     messageViewModel: messageViewModel,
                     factory: factory,
-                    channel: channel,
-                    message: message,
                     contentWidth: contentWidth,
                     showsAllInfo: showsAllInfo,
                     shownAsPreview: shownAsPreview,

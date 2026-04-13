@@ -13,89 +13,84 @@ public struct MessageView<Factory: ViewFactory>: View {
     }
 
     public var factory: Factory
-    public var message: ChatMessage
+    @ObservedObject public var messageViewModel: MessageViewModel
     public var contentWidth: CGFloat
     public var isFirst: Bool
-    public let formattedText: MessageFormattedText
     @Binding public var scrolledId: String?
 
     public init(
         factory: Factory,
-        message: ChatMessage,
-        formattedText: MessageFormattedText,
+        messageViewModel: MessageViewModel,
         contentWidth: CGFloat,
         isFirst: Bool,
         scrolledId: Binding<String?>
     ) {
         self.factory = factory
-        self.message = message
-        self.formattedText = formattedText
+        self.messageViewModel = messageViewModel
         self.contentWidth = contentWidth
         self.isFirst = isFirst
         _scrolledId = scrolledId
     }
 
     public var body: some View {
-        VStack(alignment: message.isRightAligned ? .trailing : .leading) {
-            if messageTypeResolver.isDeleted(message: message) {
+        VStack(alignment: messageViewModel.message.isRightAligned ? .trailing : .leading) {
+            if messageTypeResolver.isDeleted(message: messageViewModel.message) {
                 factory.makeDeletedMessageView(
                     options: DeletedMessageViewOptions(
-                        message: message,
+                        message: messageViewModel.message,
                         isFirst: isFirst,
                         availableWidth: contentWidth
                     )
                 )
-            } else if messageTypeResolver.hasCustomAttachment(message: message) {
+            } else if messageTypeResolver.hasCustomAttachment(message: messageViewModel.message) {
                 factory.makeCustomAttachmentViewType(
                     options: CustomAttachmentViewTypeOptions(
-                        message: message,
+                        message: messageViewModel.message,
                         isFirst: isFirst,
                         availableWidth: contentWidth,
                         scrolledId: $scrolledId
                     )
                 )
-            } else if let poll = message.poll {
+            } else if let poll = messageViewModel.message.poll {
                 factory.makePollView(
                     options: PollViewOptions(
-                        message: message,
+                        message: messageViewModel.message,
                         poll: poll,
                         isFirst: isFirst,
                         availableWidth: contentWidth
                     )
                 )
-            } else if messageTypeResolver.hasGiphyAttachment(message: message) {
+            } else if messageTypeResolver.hasGiphyAttachment(message: messageViewModel.message) {
                 factory.makeGiphyAttachmentView(
                     options: GiphyAttachmentViewOptions(
-                        message: message,
+                        message: messageViewModel.message,
                         isFirst: isFirst,
                         availableWidth: contentWidth,
                         scrolledId: $scrolledId
                     )
                 )
-            } else if !message.attachmentCounts.isEmpty || message.quotedMessage != nil {
+            } else if !messageViewModel.message.attachmentCounts.isEmpty || messageViewModel.message.quotedMessage != nil {
                 factory.makeMessageAttachmentsView(
                     options: MessageAttachmentsViewOptions(
-                        message: message,
-                        formattedText: formattedText,
+                        messageViewModel: messageViewModel,
                         isFirst: isFirst,
                         availableWidth: contentWidth,
                         scrolledId: $scrolledId
                     )
                 )
             } else {
-                if message.shouldRenderAsJumbomoji {
+                if messageViewModel.message.shouldRenderAsJumbomoji {
                     factory.makeEmojiTextView(
                         options: EmojiTextViewOptions(
-                            message: message,
+                            message: messageViewModel.message,
                             scrolledId: $scrolledId,
                             isFirst: isFirst
                         )
                     )
-                } else if !message.text.isEmpty {
+                } else if !messageViewModel.message.text.isEmpty {
                     factory.makeMessageTextView(
                         options: MessageTextViewOptions(
-                            message: message,
-                            formattedText: formattedText,
+                            messageViewModel: messageViewModel,
                             isFirst: isFirst,
                             availableWidth: contentWidth,
                             scrolledId: $scrolledId
@@ -108,14 +103,14 @@ public struct MessageView<Factory: ViewFactory>: View {
 }
 
 public struct MessageTextView<Factory: ViewFactory>: View {
+    @Environment(\.layoutDirection) private var layoutDirection
     @Injected(\.colors) private var colors
     @Injected(\.fonts) private var fonts
     @Injected(\.utils) private var utils
 
     private let factory: Factory
-    private let message: ChatMessage
+    @ObservedObject private var messageViewModel: MessageViewModel
     private let isFirst: Bool
-    private let formattedText: MessageFormattedText
     private let leadingPadding: CGFloat
     private let trailingPadding: CGFloat
     private let topPadding: CGFloat
@@ -124,16 +119,14 @@ public struct MessageTextView<Factory: ViewFactory>: View {
 
     public init(
         factory: Factory,
-        message: ChatMessage,
-        formattedText: MessageFormattedText,
+        messageViewModel: MessageViewModel,
         isFirst: Bool,
         scrolledId: Binding<String?>
     ) {
         @Injected(\.tokens) var tokens
         self.init(
             factory: factory,
-            message: message,
-            formattedText: formattedText,
+            messageViewModel: messageViewModel,
             isFirst: isFirst,
             leadingPadding: tokens.spacingSm,
             trailingPadding: tokens.spacingSm,
@@ -145,8 +138,7 @@ public struct MessageTextView<Factory: ViewFactory>: View {
 
     public init(
         factory: Factory,
-        message: ChatMessage,
-        formattedText: MessageFormattedText,
+        messageViewModel: MessageViewModel,
         isFirst: Bool,
         leadingPadding: CGFloat,
         trailingPadding: CGFloat,
@@ -155,9 +147,8 @@ public struct MessageTextView<Factory: ViewFactory>: View {
         scrolledId: Binding<String?>
     ) {
         self.factory = factory
-        self.message = message
+        self.messageViewModel = messageViewModel
         self.isFirst = isFirst
-        self.formattedText = formattedText
         self.leadingPadding = leadingPadding
         self.trailingPadding = trailingPadding
         self.topPadding = topPadding
@@ -167,10 +158,13 @@ public struct MessageTextView<Factory: ViewFactory>: View {
 
     public var body: some View {
         VStack(
-            alignment: message.alignmentInBubble,
+            alignment: messageViewModel.message.alignmentInBubble,
             spacing: 0
         ) {
-            factory.makeStreamTextView(options: .init(message: message, formattedText: formattedText))
+            messageText
+                .font(fonts.body)
+                .foregroundColor(textColor(for: messageViewModel.message))
+                .accentColor(Color(colors.accentPrimary))
                 .padding(.leading, leadingPadding)
                 .padding(.trailing, trailingPadding)
                 .padding(.top, topPadding)
@@ -180,12 +174,20 @@ public struct MessageTextView<Factory: ViewFactory>: View {
         .modifier(
             factory.styles.makeMessageViewModifier(
                 for: MessageModifierInfo(
-                    message: message,
+                    message: messageViewModel.message,
                     isFirst: isFirst
                 )
             )
         )
         .accessibilityIdentifier("MessageTextView")
+    }
+
+    private var messageText: Text {
+        if #available(iOS 15.0, *) {
+            return Text(messageViewModel.attributedString(layoutDirection: layoutDirection))
+        } else {
+            return Text(messageViewModel.textContent)
+        }
     }
 }
 
@@ -226,25 +228,5 @@ public struct EmojiTextView<Factory: ViewFactory>: View {
             }
         }
         .accessibilityIdentifier("MessageTextView")
-    }
-}
-
-struct StreamTextView: View {
-    @Injected(\.fonts) private var fonts
-    @Injected(\.colors) private var colors
-
-    let formattedText: MessageFormattedText
-    let message: ChatMessage
-
-    var body: some View {
-        if #available(iOS 15.0, *), let attributedString = formattedText.attributedString {
-            Text(attributedString)
-                .font(fonts.body)
-                .tint(Color(colors.accentPrimary))
-        } else {
-            Text(formattedText.string)
-                .foregroundColor(textColor(for: message))
-                .font(fonts.body)
-        }
     }
 }

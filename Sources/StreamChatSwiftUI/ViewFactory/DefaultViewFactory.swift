@@ -263,8 +263,7 @@ extension ViewFactory {
     ) -> some View {
         MessageTextView(
             factory: self,
-            message: options.message,
-            formattedText: options.formattedText,
+            messageViewModel: options.messageViewModel,
             isFirst: options.isFirst,
             scrolledId: options.scrolledId
         )
@@ -286,8 +285,6 @@ extension ViewFactory {
         options: MessageTopViewOptions
     ) -> some View {
         MessageTopView(
-            message: options.message,
-            channel: options.channel,
             messageViewModel: options.messageViewModel,
             usesInvertedStyle: options.usesInvertedStyle
         )
@@ -299,8 +296,7 @@ extension ViewFactory {
         @Injected(\.utils) var utils
         return MessageAttachmentsView(
             factory: self,
-            message: options.message,
-            formattedText: options.formattedText,
+            messageViewModel: options.messageViewModel,
             width: min(options.availableWidth, utils.messageListConfig.attachmentPreviewWidth),
             isFirst: options.isFirst,
             scrolledId: options.scrolledId
@@ -1011,22 +1007,15 @@ extension ViewFactory {
     ) -> some View {
         MemberAddView(loadedUserIds: options.options.loadedUserIds, onConfirm: options.onConfirm)
     }
-    
+
     public func makeAttachmentTextView(
         options: AttachmentTextViewOptions
     ) -> some View {
         AttachmentTextView(
             factory: self,
-            formattedText: options.formattedText,
-            message: options.message,
+            messageViewModel: options.messageViewModel,
             availableWidth: options.availableWidth
         )
-    }
-
-    public func makeStreamTextView(
-        options: StreamTextViewOptions
-    ) -> some View {
-        StreamTextView(formattedText: options.formattedText, message: options.message)
     }
 }
 

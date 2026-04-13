@@ -122,66 +122,39 @@ public final class MessageItemViewOptions: Sendable {
 // MARK: - Message Text Options
 
 /// Options for creating the message text view.
-public final class MessageTextViewOptions: Sendable {
-    /// The message to display.
-    public let message: ChatMessage
+public final class MessageTextViewOptions {
+    /// The view model driving the message to display.
+    public let messageViewModel: MessageViewModel
     /// Whether this is the first message in a group.
     public let isFirst: Bool
     /// The available width for the message.
     public let availableWidth: CGFloat
     /// Binding to the currently scrolled message ID.
     public let scrolledId: Binding<String?>
-    /// The resolved text content to display (translated or original, with markdown / link attributes applied).
-    public let formattedText: MessageFormattedText
 
     public init(
-        message: ChatMessage,
-        formattedText: MessageFormattedText,
+        messageViewModel: MessageViewModel,
         isFirst: Bool,
         availableWidth: CGFloat,
         scrolledId: Binding<String?>
     ) {
-        self.message = message
+        self.messageViewModel = messageViewModel
         self.isFirst = isFirst
         self.availableWidth = availableWidth
         self.scrolledId = scrolledId
-        self.formattedText = formattedText
-    }
-}
-
-/// Options for the reusable stream text view.
-///
-/// Used by ``ViewFactory/makeStreamTextView(options:)`` which is shared
-/// across standalone text messages and attachment text captions.
-public class StreamTextViewOptions {
-    /// The message whose text should be displayed.
-    public let message: ChatMessage
-    /// The resolved text content to display (translated or original, with markdown / link attributes applied).
-    public let formattedText: MessageFormattedText
-
-    public init(message: ChatMessage, formattedText: MessageFormattedText) {
-        self.message = message
-        self.formattedText = formattedText
     }
 }
 
 /// Options for the attachment text caption view shown inside ``MessageAttachmentsView``.
 public class AttachmentTextViewOptions {
-    /// The message whose text caption should be displayed.
-    public let message: ChatMessage
+    /// The view model driving the message whose text caption should be displayed.
+    public let messageViewModel: MessageViewModel
     /// The maximum width available for the text caption.
     public let availableWidth: CGFloat
-    /// The resolved text content to display (translated or original, with markdown / link attributes applied).
-    public let formattedText: MessageFormattedText
 
-    public init(
-        message: ChatMessage,
-        formattedText: MessageFormattedText,
-        availableWidth: CGFloat
-    ) {
-        self.message = message
+    public init(messageViewModel: MessageViewModel, availableWidth: CGFloat) {
+        self.messageViewModel = messageViewModel
         self.availableWidth = availableWidth
-        self.formattedText = formattedText
     }
 }
 
@@ -214,24 +187,16 @@ public final class MessageAuthorAndDateViewOptions: Sendable {
 }
 
 /// Options for creating the message annotations stack view.
-public final class MessageTopViewOptions: Sendable {
-    /// The message to display annotations for.
-    public let message: ChatMessage
-    /// The channel containing the message.
-    public let channel: ChatChannel
+public final class MessageTopViewOptions {
     /// The view model for the message.
     public let messageViewModel: MessageViewModel
     /// When true, the `textOnAccent` color is used instead of the default darker text color.
     public let usesInvertedStyle: Bool
-    
+
     public init(
-        message: ChatMessage,
-        channel: ChatChannel,
         messageViewModel: MessageViewModel,
         usesInvertedStyle: Bool = false
     ) {
-        self.message = message
-        self.channel = channel
         self.messageViewModel = messageViewModel
         self.usesInvertedStyle = usesInvertedStyle
     }

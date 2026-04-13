@@ -14,47 +14,44 @@ public struct MessageAttachmentsView<Factory: ViewFactory>: View {
     }
 
     let factory: Factory
-    let message: ChatMessage
+    @ObservedObject var messageViewModel: MessageViewModel
     let width: CGFloat
     let isFirst: Bool
-    let formattedText: MessageFormattedText
     @Binding var scrolledId: String?
 
     public init(
         factory: Factory,
-        message: ChatMessage,
-        formattedText: MessageFormattedText,
+        messageViewModel: MessageViewModel,
         width: CGFloat,
         isFirst: Bool,
         scrolledId: Binding<String?>
     ) {
         self.factory = factory
-        self.message = message
-        self.formattedText = formattedText
+        self.messageViewModel = messageViewModel
         self.width = width
         self.isFirst = isFirst
         self._scrolledId = scrolledId
     }
 
     public var body: some View {
-        VStack(alignment: message.alignmentInBubble, spacing: tokens.spacingXs) {
-            VStack(alignment: message.isRightAligned ? .trailing : .leading, spacing: tokens.spacingXs) {
-                if let quotedMessage = message.quotedMessage {
+        VStack(alignment: messageViewModel.message.alignmentInBubble, spacing: tokens.spacingXs) {
+            VStack(alignment: messageViewModel.message.isRightAligned ? .trailing : .leading, spacing: tokens.spacingXs) {
+                if let quotedMessage = messageViewModel.message.quotedMessage {
                     factory.makeChatQuotedMessageView(
                         options: ChatQuotedMessageViewOptions(
                             quotedMessage: quotedMessage,
-                            parentMessage: message,
+                            parentMessage: messageViewModel.message,
                             availableWidth: width,
                             scrolledId: $scrolledId
                         )
                     )
                 }
-                
+
                 // Images or images and videos
-                if messageTypeResolver.hasImageAttachment(message: message) {
+                if messageTypeResolver.hasImageAttachment(message: messageViewModel.message) {
                     factory.makeImageAttachmentView(
                         options: ImageAttachmentViewOptions(
-                            message: message,
+                            message: messageViewModel.message,
                             isFirst: isFirst,
                             availableWidth: width,
                             scrolledId: $scrolledId
@@ -63,48 +60,48 @@ public struct MessageAttachmentsView<Factory: ViewFactory>: View {
                 }
 
                 // Only videos
-                if messageTypeResolver.hasVideoAttachment(message: message)
-                    && !messageTypeResolver.hasImageAttachment(message: message) {
+                if messageTypeResolver.hasVideoAttachment(message: messageViewModel.message)
+                    && !messageTypeResolver.hasImageAttachment(message: messageViewModel.message) {
                     factory.makeVideoAttachmentView(
                         options: VideoAttachmentViewOptions(
-                            message: message,
+                            message: messageViewModel.message,
                             isFirst: isFirst,
                             availableWidth: width,
                             scrolledId: $scrolledId
                         )
                     )
                 }
-                
+
                 // Files
-                if messageTypeResolver.hasFileAttachment(message: message) {
+                if messageTypeResolver.hasFileAttachment(message: messageViewModel.message) {
                     factory.makeFileAttachmentView(
                         options: FileAttachmentViewOptions(
-                            message: message,
+                            message: messageViewModel.message,
                             isFirst: isFirst,
                             availableWidth: width,
                             scrolledId: $scrolledId
                         )
                     )
                 }
-                
+
                 // Voice recordings
-                if messageTypeResolver.hasVoiceRecording(message: message) {
+                if messageTypeResolver.hasVoiceRecording(message: messageViewModel.message) {
                     factory.makeVoiceRecordingView(
                         options: VoiceRecordingViewOptions(
-                            message: message,
+                            message: messageViewModel.message,
                             isFirst: isFirst,
                             availableWidth: width,
                             scrolledId: $scrolledId
                         )
                     )
                 }
-                
+
                 // Link previews
-                if messageTypeResolver.hasLinkAttachment(message: message)
-                    && message.attachmentCounts.keys.allSatisfy({ $0 == .linkPreview }) {
+                if messageTypeResolver.hasLinkAttachment(message: messageViewModel.message)
+                    && messageViewModel.message.attachmentCounts.keys.allSatisfy({ $0 == .linkPreview }) {
                     factory.makeLinkAttachmentView(
                         options: LinkAttachmentViewOptions(
-                            message: message,
+                            message: messageViewModel.message,
                             isFirst: isFirst,
                             availableWidth: width,
                             scrolledId: $scrolledId
@@ -113,23 +110,22 @@ public struct MessageAttachmentsView<Factory: ViewFactory>: View {
                 }
             }
             // Text caption
-            if !message.text.isEmpty {
+            if !messageViewModel.message.text.isEmpty {
                 factory.makeAttachmentTextView(
                     options: AttachmentTextViewOptions(
-                        message: message,
-                        formattedText: formattedText,
+                        messageViewModel: messageViewModel,
                         availableWidth: width
                     )
                 )
             }
         }
-        .if(MessageAttachmentsBubbleConfiguration.isBubbleShown(for: message)) { view in
+        .if(MessageAttachmentsBubbleConfiguration.isBubbleShown(for: messageViewModel.message)) { view in
             view
-                .padding(MessageAttachmentsBubbleConfiguration.bubbleContentPadding(for: message))
+                .padding(MessageAttachmentsBubbleConfiguration.bubbleContentPadding(for: messageViewModel.message))
                 .modifier(
                     factory.styles.makeMessageViewModifier(
                         for: MessageModifierInfo(
-                            message: message,
+                            message: messageViewModel.message,
                             isFirst: isFirst
                         )
                     )

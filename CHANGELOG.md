@@ -3,6 +3,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 # Upcoming
 
+### 🔄 Changed
+- Move the message-text `AttributedString` pipeline (markdown, mention/link detection, link-style overrides) onto `MessageViewModel.attributedString(layoutDirection:)` (iOS 15+). Message-rendering views (`MessageView`, `MessageTextView`, `MessageAttachmentsView`, `AttachmentTextView`, `MessageTopView`) now take `messageViewModel: MessageViewModel` instead of `message: ChatMessage`; their options classes (`MessageTextViewOptions`, `MessageAttachmentsViewOptions`, `AttachmentTextViewOptions`, `MessageTopViewOptions`) follow suit and are no longer `Sendable` [#1400](https://github.com/GetStream/stream-chat-swiftui/pull/1400)
+- `MessageItemView`, `MessageContainerView`, `MessageTopView` and `ReactionsOverlayView` no longer store redundant `channel` / `message` (and `isInThread`) fields — values are read from the view model [#1400](https://github.com/GetStream/stream-chat-swiftui/pull/1400)
+
+### ❌ Removed
+- Remove public `LinkDetectionTextView`. Customize message-text rendering via `ViewFactory.makeMessageTextView(options:)` or `ViewFactory.makeAttachmentTextView(options:)` instead [#1400](https://github.com/GetStream/stream-chat-swiftui/pull/1400)
+- Remove `ViewFactory.makeStreamTextView(options:)` and `StreamTextViewOptions`. The two wrapper views (`MessageTextView<Factory>` bubble and `AttachmentTextView<Factory>` caption) now render the message text directly from the view model [#1400](https://github.com/GetStream/stream-chat-swiftui/pull/1400)
+
 ### ✅ Added
 - Redesign attachment uploading progress and error state indicators [#1408](https://github.com/GetStream/stream-chat-swiftui/pull/1408)
 - Add inline upload progress and retry UI for file attachments [#1408](https://github.com/GetStream/stream-chat-swiftui/pull/1408)

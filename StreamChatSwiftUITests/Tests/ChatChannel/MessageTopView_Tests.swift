@@ -225,8 +225,6 @@ import XCTest
         let ch = channel ?? .mockDMChannel()
         let viewModel = MessageViewModel(message: message, channel: ch, isInThread: isInThread)
         return MessageTopView(
-            message: message,
-            channel: ch,
             messageViewModel: viewModel
         )
         .applySize(size)
