@@ -159,7 +159,7 @@ private class URLOnlyVideoLoader: VideoLoader {
     ) {
         loadPreviewAtURLCalled = true
         receivedURL = url
-        completion(.success(UIImage()))
+        Task { @MainActor in completion(.success(UIImage())) }
     }
 }
 
@@ -172,7 +172,7 @@ private class FullVideoLoaderTest: VideoLoader {
     func loadPreview(at url: URL, completion: @escaping @MainActor (Result<UIImage, Error>) -> Void) {
         loadPreviewAtURLCalled = true
         receivedURL = url
-        completion(.success(UIImage()))
+        Task { @MainActor in completion(.success(UIImage())) }
     }
 
     func loadPreview(
@@ -181,7 +181,7 @@ private class FullVideoLoaderTest: VideoLoader {
     ) {
         loadPreviewWithAttachmentCalled = true
         receivedAttachment = attachment
-        completion(.success(UIImage()))
+        Task { @MainActor in completion(.success(UIImage())) }
     }
 }
 

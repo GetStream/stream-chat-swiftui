@@ -21,7 +21,7 @@ class VideoLoader_Mock: VideoLoader, @unchecked Sendable {
         }
     }
 
-    func loadPreview(
+    @MainActor func loadPreview(
         with attachment: ChatMessageVideoAttachment,
         completion: @escaping @MainActor (Result<UIImage, Error>) -> Void
     ) {

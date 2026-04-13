@@ -13,6 +13,7 @@ import XCTest
 @MainActor class MessageView_Tests: StreamChatTestCase {
     override func setUp() {
         super.setUp()
+
         streamChat = StreamChat(
             chatClient: chatClient,
             utils: Utils(

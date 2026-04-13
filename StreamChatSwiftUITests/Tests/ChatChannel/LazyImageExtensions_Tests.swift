@@ -10,47 +10,34 @@ import SwiftUI
 import XCTest
 
 @MainActor
-final class LazyImageExtensions_Tests: StreamChatTestCase {
+final class StreamAsyncImage_Tests: StreamChatTestCase {
     func test_imageURL_empty() {
         // Given
-        let lazyImageView = LazyImage(imageURL: nil) { state in
-            if let image = state.image {
+        let view = StreamAsyncImage(url: nil) { phase in
+            if let image = phase.image {
                 image
                     .resizable()
                     .aspectRatio(contentMode: .fill)
             }
         }
         .applyDefaultSize()
-                
+
         // Then
-        assertSnapshot(matching: lazyImageView, as: .image(perceptualPrecision: precision))
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
-    
+
     func test_imageURL_nonEmpty() {
         // Given
-        let lazyImageView = LazyImage(
-            imageURL: .localYodaImage
-        ) { state in
-            if let image = state.image {
+        let view = StreamAsyncImage(url: .localYodaImage) { phase in
+            if let image = phase.image {
                 image
                     .resizable()
                     .aspectRatio(contentMode: .fill)
             }
         }
         .applyDefaultSize()
-                
+
         // Then
-        assertSnapshot(matching: lazyImageView, as: .image(perceptualPrecision: precision))
-    }
-    
-    func test_imageRequest_emptyURL() {
-        // Given
-        let lazyImageView = LazyImage(request: nil) { _ in
-            ProgressView()
-        }
-        .applyDefaultSize()
-                
-        // Then
-        assertSnapshot(matching: lazyImageView, as: .image(perceptualPrecision: precision))
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
 }

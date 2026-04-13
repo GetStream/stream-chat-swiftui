@@ -5,9 +5,9 @@
 import Foundation
 @testable import StreamChat
 
-final class CDNClient_Mock: CDNClient, @unchecked Sendable {
+final class CDNUploader_Mock: CDNUploader, @unchecked Sendable {
     lazy var deleteAttachmentMockFunc = MockFunc.mock(for: deleteAttachment)
-    func deleteAttachment(remoteUrl: URL, completion: @escaping ((any Error)?) -> Void) {
+    func deleteAttachment(remoteUrl: URL, completion: @escaping @Sendable (Error?) -> Void) {
         deleteAttachmentMockFunc.callAndReturn(
             (
                 remoteUrl,
@@ -18,24 +18,37 @@ final class CDNClient_Mock: CDNClient, @unchecked Sendable {
 
     static var maxAttachmentSize: Int64 = .max
 
-    lazy var uploadAttachmentMockFunc = MockFunc.mock(for: uploadAttachment)
+    lazy var uploadAttachmentMockFunc = MockFunc<
+        (
+            AnyChatMessageAttachment,
+            (@Sendable (Double) -> Void)?,
+            @Sendable (Result<UploadedFile, Error>) -> Void
+        ),
+        Void
+    >()
+
     func uploadAttachment(
         _ attachment: AnyChatMessageAttachment,
-        progress: ((Double) -> Void)?,
-        completion: @escaping (Result<URL, Error>) -> Void
+        progress: (@Sendable (Double) -> Void)?,
+        completion: @escaping @Sendable (Result<UploadedFile, Error>) -> Void
     ) {
-        uploadAttachmentMockFunc.callAndReturn(
-            (
-                attachment,
-                progress,
-                completion
-            )
-        )
+        uploadAttachmentMockFunc.callAndReturn((attachment, progress, completion))
     }
-    
-    func uploadStandaloneAttachment(
-        _ attachment: StreamAttachment<some Any>,
-        progress: ((Double) -> Void)?,
-        completion: @escaping (Result<StreamChat.UploadedFile, any Error>) -> Void
-    ) {}
+
+    lazy var uploadAttachmentLocalUrlMockFunc = MockFunc<
+        (
+            URL,
+            (@Sendable (Double) -> Void)?,
+            @Sendable (Result<UploadedFile, Error>) -> Void
+        ),
+        Void
+    >()
+
+    func uploadAttachment(
+        localUrl: URL,
+        progress: (@Sendable (Double) -> Void)?,
+        completion: @escaping @Sendable (Result<UploadedFile, Error>) -> Void
+    ) {
+        uploadAttachmentLocalUrlMockFunc.callAndReturn((localUrl, progress, completion))
+    }
 }
