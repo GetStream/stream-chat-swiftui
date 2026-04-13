@@ -173,7 +173,16 @@ open class ChatChannelListViewModel: ObservableObject, ChatChannelListController
     public func checkForChannels(index: Int) {
         handleChannelAppearance()
 
-        if index < (controller?.channels.count ?? 0) - 15 {
+        let channelsCount = controller?.channels.count ?? 0
+        guard channelsCount > 0 else { return }
+
+        let prefetchIndex: Int = if channelsCount > 15 {
+            channelsCount - 15
+        } else {
+            channelsCount - 1
+        }
+
+        if index < prefetchIndex {
             return
         }
 
