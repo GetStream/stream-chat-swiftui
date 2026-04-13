@@ -9,6 +9,7 @@ import SwiftUI
 struct MessageContainerView<Factory: ViewFactory>: View {
     @ObservedObject var messageViewModel: MessageViewModel
 
+    @Environment(\.layoutDirection) private var layoutDirection
     @Injected(\.utils) private var utils
     @Injected(\.tokens) private var tokens
 
@@ -102,13 +103,14 @@ struct MessageContainerView<Factory: ViewFactory>: View {
 
     @ViewBuilder
     private var messageBubbleContent: some View {
+        let formattedText = messageViewModel.messageFormattedText(layoutDirection: layoutDirection)
         Group {
             if messageViewModel.usesScrollView {
                 ScrollView {
                     MessageView(
                         factory: factory,
                         message: message,
-                        text: messageViewModel.textContent,
+                        formattedText: formattedText,
                         contentWidth: contentWidth,
                         isFirst: showsAllInfo,
                         scrolledId: $scrolledId
@@ -118,7 +120,7 @@ struct MessageContainerView<Factory: ViewFactory>: View {
                 MessageView(
                     factory: factory,
                     message: message,
-                    text: messageViewModel.textContent,
+                    formattedText: formattedText,
                     contentWidth: contentWidth,
                     isFirst: showsAllInfo,
                     scrolledId: $scrolledId

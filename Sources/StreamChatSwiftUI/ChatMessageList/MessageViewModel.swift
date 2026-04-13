@@ -4,17 +4,21 @@
 
 import Combine
 import StreamChat
+import SwiftUI
 
 /// The view model that contains the logic for displaying a message in the message list view.
 @MainActor open class MessageViewModel: ObservableObject {
     @Injected(\.utils) private var utils
     @Injected(\.chatClient) private var chatClient
+    @Injected(\.colors) private var colors
+    @Injected(\.fonts) private var fonts
 
     @Published public internal(set) var message: ChatMessage
     @Published public internal(set) var channel: ChatChannel
     @Published public var usesScrollView: Bool = false
     public let isInThread: Bool
     private var cancellables = Set<AnyCancellable>()
+    private lazy var linkDetector = TextLinkDetector()
 
     public init(
         message: ChatMessage,
@@ -121,6 +125,25 @@ import StreamChat
         return message.adjustedText
     }
 
+    /// The ready-to-render text content for this message.
+    ///
+    /// On iOS 15+ the returned value carries markdown, link, and mention
+    /// attributes resolved against the current ``Utils/messageListConfig``.
+    /// On iOS 14 only the plain-string fallback is populated.
+    /// - Parameter layoutDirection: The layout direction used when formatting
+    ///   markdown (RTL locales need this to flip emphasis markers correctly).
+    open func messageFormattedText(layoutDirection: LayoutDirection = .leftToRight) -> MessageFormattedText {
+        let text = textContent
+        if #available(iOS 15.0, *) {
+            return MessageFormattedText(
+                makeAttributedString(layoutDirection: layoutDirection),
+                string: text
+            )
+        } else {
+            return MessageFormattedText(text)
+        }
+    }
+
     public var translatedText: String? {
         if let language = channel.membership?.language,
            let translatedText = message.textContent(for: language) {
@@ -174,6 +197,82 @@ import StreamChat
 
     private var messageListConfig: MessageListConfig {
         utils.messageListConfig
+    }
+
+    // MARK: - Text Content Building
+
+    private var messageTextColor: Color {
+        message.isSentByCurrentUser
+            ? Color(colors.chatTextOutgoing)
+            : Color(colors.chatTextIncoming)
+    }
+
+    @available(iOS 15.0, *)
+    private func makeAttributedString(layoutDirection: LayoutDirection) -> AttributedString {
+        let text = textContent
+        let baseAttributes = AttributeContainer()
+            .foregroundColor(messageTextColor)
+            .font(fonts.body)
+
+        var attributedString: AttributedString
+        if messageListConfig.markdownSupportEnabled {
+            attributedString = utils.markdownFormatter.format(
+                text,
+                attributes: baseAttributes,
+                layoutDirection: layoutDirection
+            )
+        } else {
+            attributedString = AttributedString(text, attributes: baseAttributes)
+        }
+
+        if messageListConfig.localLinkDetectionEnabled {
+            applyMentions(to: &attributedString)
+            applyLinks(to: &attributedString)
+        }
+
+        applyLinkStyleOverrides(to: &attributedString)
+        return attributedString
+    }
+
+    @available(iOS 15.0, *)
+    private func applyMentions(to attributedString: inout AttributedString) {
+        let messageId = message.messageId
+        for user in message.mentionedUsers {
+            let mention = "@\(user.name ?? user.id)"
+            let ranges = attributedString.ranges(of: mention, options: [.caseInsensitive])
+            for range in ranges {
+                if let encodedId = messageId.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed),
+                   let url = URL(string: "getstream://mention/\(encodedId)/\(user.id)") {
+                    attributedString[range].link = url
+                }
+            }
+        }
+    }
+
+    @available(iOS 15.0, *)
+    private func applyLinks(to attributedString: inout AttributedString) {
+        for link in linkDetector.links(in: String(attributedString.characters)) {
+            if let attributedStringRange = Range(link.range, in: attributedString) {
+                attributedString[attributedStringRange].link = link.url
+            }
+        }
+    }
+
+    @available(iOS 15.0, *)
+    private func applyLinkStyleOverrides(to attributedString: inout AttributedString) {
+        var linkAttributes = messageListConfig.messageDisplayOptions.messageLinkDisplayResolver(message)
+        guard !linkAttributes.isEmpty else { return }
+
+        var linkAttributeContainer = AttributeContainer()
+        if let uiColor = linkAttributes[.foregroundColor] as? UIColor {
+            linkAttributeContainer = linkAttributeContainer.foregroundColor(Color(uiColor: uiColor))
+            linkAttributes.removeValue(forKey: .foregroundColor)
+        }
+        linkAttributeContainer.merge(AttributeContainer(linkAttributes))
+        for (value, range) in attributedString.runs[\.link] {
+            guard value != nil else { continue }
+            attributedString[range].mergeAttributes(linkAttributeContainer)
+        }
     }
 }
 

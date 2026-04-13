@@ -16,20 +16,20 @@ public struct MessageView<Factory: ViewFactory>: View {
     public var message: ChatMessage
     public var contentWidth: CGFloat
     public var isFirst: Bool
-    public let text: String
+    public let formattedText: MessageFormattedText
     @Binding public var scrolledId: String?
 
     public init(
         factory: Factory,
         message: ChatMessage,
-        text: String,
+        formattedText: MessageFormattedText,
         contentWidth: CGFloat,
         isFirst: Bool,
         scrolledId: Binding<String?>
     ) {
         self.factory = factory
         self.message = message
-        self.text = text
+        self.formattedText = formattedText
         self.contentWidth = contentWidth
         self.isFirst = isFirst
         _scrolledId = scrolledId
@@ -76,7 +76,7 @@ public struct MessageView<Factory: ViewFactory>: View {
                 factory.makeMessageAttachmentsView(
                     options: MessageAttachmentsViewOptions(
                         message: message,
-                        text: text,
+                        formattedText: formattedText,
                         isFirst: isFirst,
                         availableWidth: contentWidth,
                         scrolledId: $scrolledId
@@ -95,7 +95,7 @@ public struct MessageView<Factory: ViewFactory>: View {
                     factory.makeMessageTextView(
                         options: MessageTextViewOptions(
                             message: message,
-                            text: text,
+                            formattedText: formattedText,
                             isFirst: isFirst,
                             availableWidth: contentWidth,
                             scrolledId: $scrolledId
@@ -115,7 +115,7 @@ public struct MessageTextView<Factory: ViewFactory>: View {
     private let factory: Factory
     private let message: ChatMessage
     private let isFirst: Bool
-    private let text: String
+    private let formattedText: MessageFormattedText
     private let leadingPadding: CGFloat
     private let trailingPadding: CGFloat
     private let topPadding: CGFloat
@@ -125,7 +125,7 @@ public struct MessageTextView<Factory: ViewFactory>: View {
     public init(
         factory: Factory,
         message: ChatMessage,
-        text: String,
+        formattedText: MessageFormattedText,
         isFirst: Bool,
         scrolledId: Binding<String?>
     ) {
@@ -133,7 +133,7 @@ public struct MessageTextView<Factory: ViewFactory>: View {
         self.init(
             factory: factory,
             message: message,
-            text: text,
+            formattedText: formattedText,
             isFirst: isFirst,
             leadingPadding: tokens.spacingSm,
             trailingPadding: tokens.spacingSm,
@@ -146,7 +146,7 @@ public struct MessageTextView<Factory: ViewFactory>: View {
     public init(
         factory: Factory,
         message: ChatMessage,
-        text: String,
+        formattedText: MessageFormattedText,
         isFirst: Bool,
         leadingPadding: CGFloat,
         trailingPadding: CGFloat,
@@ -157,7 +157,7 @@ public struct MessageTextView<Factory: ViewFactory>: View {
         self.factory = factory
         self.message = message
         self.isFirst = isFirst
-        self.text = text
+        self.formattedText = formattedText
         self.leadingPadding = leadingPadding
         self.trailingPadding = trailingPadding
         self.topPadding = topPadding
@@ -170,7 +170,7 @@ public struct MessageTextView<Factory: ViewFactory>: View {
             alignment: message.alignmentInBubble,
             spacing: 0
         ) {
-            factory.makeStreamTextView(options: .init(message: message, text: text))
+            factory.makeStreamTextView(options: .init(message: message, formattedText: formattedText))
                 .padding(.leading, leadingPadding)
                 .padding(.trailing, trailingPadding)
                 .padding(.top, topPadding)
@@ -230,114 +230,21 @@ public struct EmojiTextView<Factory: ViewFactory>: View {
 }
 
 struct StreamTextView: View {
-    @Injected(\.fonts) var fonts
-    @Injected(\.utils) var utils
+    @Injected(\.fonts) private var fonts
+    @Injected(\.colors) private var colors
 
-    let text: String
+    let formattedText: MessageFormattedText
     let message: ChatMessage
 
     var body: some View {
-        if #available(iOS 15, *) {
-            LinkDetectionTextView(
-                text: text,
-                textColor: textColor(for: message),
-                mentionedUsers: message.mentionedUsers,
-                messageId: message.messageId,
-                linkAttributes: utils.messageListConfig.messageDisplayOptions.messageLinkDisplayResolver(message)
-            )
+        if #available(iOS 15.0, *), let attributedString = formattedText.attributedString {
+            Text(attributedString)
+                .font(fonts.body)
+                .tint(Color(colors.accentPrimary))
         } else {
-            Text(text)
+            Text(formattedText.string)
                 .foregroundColor(textColor(for: message))
                 .font(fonts.body)
         }
-    }
-}
-
-@available(iOS 15, *)
-public struct LinkDetectionTextView: View {
-    @Environment(\.layoutDirection) var layoutDirection
-
-    @Injected(\.fonts) var fonts
-    @Injected(\.utils) var utils
-
-    var text: String
-    var textColor: Color
-    var mentionedUsers: Set<ChatUser>
-    var messageId: String
-    var linkAttributes: [NSAttributedString.Key: Any]
-
-    @State var linkDetector = TextLinkDetector()
-    @State var tintColor = Color(InjectedValues[\.colors].accentPrimary)
-
-    public init(
-        text: String,
-        textColor: Color,
-        mentionedUsers: Set<ChatUser>,
-        messageId: String,
-        linkAttributes: [NSAttributedString.Key: Any] = [:]
-    ) {
-        self.text = text
-        self.textColor = textColor
-        self.mentionedUsers = mentionedUsers
-        self.messageId = messageId
-        self.linkAttributes = linkAttributes
-    }
-
-    public var body: some View {
-        Text(displayText)
-            .foregroundColor(textColor)
-            .font(fonts.body)
-            .tint(tintColor)
-    }
-
-    var displayText: AttributedString {
-        // Markdown
-        let attributes = AttributeContainer()
-            .foregroundColor(textColor)
-            .font(fonts.body)
-        var attributedString: AttributedString
-        if utils.messageListConfig.markdownSupportEnabled {
-            attributedString = utils.markdownFormatter.format(
-                text,
-                attributes: attributes,
-                layoutDirection: layoutDirection
-            )
-        } else {
-            attributedString = AttributedString(text, attributes: attributes)
-        }
-        // Links and mentions
-        if utils.messageListConfig.localLinkDetectionEnabled {
-            for user in mentionedUsers {
-                let mention = "@\(user.name ?? user.id)"
-                let ranges = attributedString.ranges(of: mention, options: [.caseInsensitive])
-                for range in ranges {
-                    if let encodedId = messageId.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed),
-                       let url = URL(string: "getstream://mention/\(encodedId)/\(user.id)") {
-                        attributedString[range].link = url
-                    }
-                }
-            }
-            for link in linkDetector.links(in: String(attributedString.characters)) {
-                if let attributedStringRange = Range(link.range, in: attributedString) {
-                    attributedString[attributedStringRange].link = link.url
-                }
-            }
-        }
-        // Finally change attributes for links (markdown links, text links, mentions)
-        var linkAttributes = linkAttributes
-        if !linkAttributes.isEmpty {
-            var linkAttributeContainer = AttributeContainer()
-            if let uiColor = linkAttributes[.foregroundColor] as? UIColor {
-                linkAttributeContainer = linkAttributeContainer.foregroundColor(Color(uiColor: uiColor))
-                linkAttributes.removeValue(forKey: .foregroundColor)
-            }
-            linkAttributeContainer.merge(AttributeContainer(linkAttributes))
-            for (value, range) in attributedString.runs[\.link] {
-                guard value != nil else { continue }
-                attributedString[range].mergeAttributes(linkAttributeContainer)
-            }
-        }
-
-        return attributedString
     }
 }

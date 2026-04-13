@@ -119,7 +119,7 @@ import XCTest
         let view = viewFactory.makeMessageTextView(
             options: MessageTextViewOptions(
                 message: message,
-                text: message.text,
+                formattedText: MessageFormattedText(message.text),
                 isFirst: true,
                 availableWidth: 300,
                 scrolledId: .constant(nil)
@@ -138,6 +138,7 @@ import XCTest
         let view = viewFactory.makeMessageAttachmentsView(
             options: MessageAttachmentsViewOptions(
                 message: message,
+                formattedText: MessageFormattedText(message.text),
                 isFirst: true,
                 availableWidth: 300,
                 scrolledId: .constant(nil)
@@ -1039,7 +1040,7 @@ import XCTest
         let viewFactory = DefaultViewFactory.shared
 
         // When
-        let view = viewFactory.makeStreamTextView(options: .init(message: message))
+        let view = viewFactory.makeStreamTextView(options: .init(message: message, formattedText: MessageFormattedText(message.text)))
 
         // Then
         XCTAssert(view is StreamTextView)
@@ -1050,7 +1051,7 @@ import XCTest
         let viewFactory = DefaultViewFactory.shared
 
         // When
-        let view = viewFactory.makeAttachmentTextView(options: .init(message: message, text: message.text, availableWidth: 300))
+        let view = viewFactory.makeAttachmentTextView(options: .init(message: message, formattedText: MessageFormattedText(message.text), availableWidth: 300))
 
         // Then
         XCTAssert(view is AttachmentTextView<DefaultViewFactory>)

@@ -131,12 +131,12 @@ public final class MessageTextViewOptions: Sendable {
     public let availableWidth: CGFloat
     /// Binding to the currently scrolled message ID.
     public let scrolledId: Binding<String?>
-    /// The resolved text content to display (translated or original).
-    public let text: String
+    /// The resolved text content to display (translated or original, with markdown / link attributes applied).
+    public let formattedText: MessageFormattedText
 
     public init(
         message: ChatMessage,
-        text: String,
+        formattedText: MessageFormattedText,
         isFirst: Bool,
         availableWidth: CGFloat,
         scrolledId: Binding<String?>
@@ -145,7 +145,7 @@ public final class MessageTextViewOptions: Sendable {
         self.isFirst = isFirst
         self.availableWidth = availableWidth
         self.scrolledId = scrolledId
-        self.text = text
+        self.formattedText = formattedText
     }
 }
 
@@ -156,12 +156,12 @@ public final class MessageTextViewOptions: Sendable {
 public class StreamTextViewOptions {
     /// The message whose text should be displayed.
     public let message: ChatMessage
-    /// The resolved text content to display (translated or original).
-    public let text: String
+    /// The resolved text content to display (translated or original, with markdown / link attributes applied).
+    public let formattedText: MessageFormattedText
 
-    public init(message: ChatMessage, text: String? = nil) {
+    public init(message: ChatMessage, formattedText: MessageFormattedText) {
         self.message = message
-        self.text = text ?? message.text
+        self.formattedText = formattedText
     }
 }
 
@@ -171,17 +171,17 @@ public class AttachmentTextViewOptions {
     public let message: ChatMessage
     /// The maximum width available for the text caption.
     public let availableWidth: CGFloat
-    /// The resolved text content to display (translated or original).
-    public let text: String
+    /// The resolved text content to display (translated or original, with markdown / link attributes applied).
+    public let formattedText: MessageFormattedText
 
     public init(
         message: ChatMessage,
-        text: String,
+        formattedText: MessageFormattedText,
         availableWidth: CGFloat
     ) {
         self.message = message
         self.availableWidth = availableWidth
-        self.text = text
+        self.formattedText = formattedText
     }
 }
 

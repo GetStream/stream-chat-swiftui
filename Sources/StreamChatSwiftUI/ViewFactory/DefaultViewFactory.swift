@@ -264,7 +264,7 @@ extension ViewFactory {
         MessageTextView(
             factory: self,
             message: options.message,
-            text: options.text,
+            formattedText: options.formattedText,
             isFirst: options.isFirst,
             scrolledId: options.scrolledId
         )
@@ -300,7 +300,7 @@ extension ViewFactory {
         return MessageAttachmentsView(
             factory: self,
             message: options.message,
-            text: options.text,
+            formattedText: options.formattedText,
             width: min(options.availableWidth, utils.messageListConfig.attachmentPreviewWidth),
             isFirst: options.isFirst,
             scrolledId: options.scrolledId
@@ -1017,7 +1017,7 @@ extension ViewFactory {
     ) -> some View {
         AttachmentTextView(
             factory: self,
-            text: options.text,
+            formattedText: options.formattedText,
             message: options.message,
             availableWidth: options.availableWidth
         )
@@ -1026,7 +1026,7 @@ extension ViewFactory {
     public func makeStreamTextView(
         options: StreamTextViewOptions
     ) -> some View {
-        StreamTextView(text: options.text, message: options.message)
+        StreamTextView(formattedText: options.formattedText, message: options.message)
     }
 }
 
