@@ -373,6 +373,94 @@ import XCTest
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
 
+    func test_imageAttachments_uploading_snapshot() {
+        // Given
+        let message = ChatMessage.mock(
+            id: .unique,
+            cid: .unique,
+            text: "Uploading...",
+            author: .mock(id: Self.currentUserId),
+            attachments: [ChatChannelTestHelpers.imageAttachment(state: .uploading(progress: 0.5))],
+            localState: .sending,
+            isSentByCurrentUser: true
+        )
+
+        // When
+        let view = testMessageViewContainer(message: message, channel: .mockNonDMChannel(), height: 300)
+
+        // Then
+        AssertSnapshot(view, variants: .onlyUserInterfaceStyles)
+    }
+
+    func test_imageAttachments_uploadingWithoutText_snapshot() {
+        // Given
+        let message = ChatMessage.mock(
+            id: .unique,
+            cid: .unique,
+            text: "",
+            author: .mock(id: Self.currentUserId),
+            attachments: [ChatChannelTestHelpers.imageAttachment(state: .uploading(progress: 0.3))],
+            localState: .sending,
+            isSentByCurrentUser: true
+        )
+
+        // When
+        let view = testMessageViewContainer(message: message, channel: .mockNonDMChannel(), height: 300)
+
+        // Then
+        AssertSnapshot(view, variants: .onlyUserInterfaceStyles)
+    }
+
+    func test_multipleImageAttachments_uploading_snapshot() {
+        // Given
+        let attachments = ChatChannelTestHelpers.imageAttachments(
+            count: 3,
+            originalWidth: 1600,
+            originalHeight: 1200,
+            state: .uploading(progress: 0.6)
+        )
+        let message = ChatMessage.mock(
+            id: .unique,
+            cid: .unique,
+            text: "",
+            author: .mock(id: Self.currentUserId),
+            attachments: attachments,
+            localState: .sending,
+            isSentByCurrentUser: true
+        )
+
+        // When
+        let view = testMessageViewContainer(message: message, channel: .mockNonDMChannel(), height: 300)
+
+        // Then
+        AssertSnapshot(view, variants: .onlyUserInterfaceStyles)
+    }
+
+    func test_multipleImageAttachments_failed_snapshot() {
+        // Given
+        let attachments = ChatChannelTestHelpers.imageAttachments(
+            count: 4,
+            originalWidth: 1600,
+            originalHeight: 1200,
+            state: .uploadingFailed
+        )
+        let message = ChatMessage.mock(
+            id: .unique,
+            cid: .unique,
+            text: "",
+            author: .mock(id: Self.currentUserId),
+            attachments: attachments,
+            localState: .sendingFailed,
+            isSentByCurrentUser: true
+        )
+
+        // When
+        let view = testMessageViewContainer(message: message, channel: .mockNonDMChannel(), height: 300)
+
+        // Then
+        AssertSnapshot(view, variants: .onlyUserInterfaceStyles)
+    }
+
     func test_translatedText_participant_snapshot() {
         // Given
         let message = ChatMessage.mock(
