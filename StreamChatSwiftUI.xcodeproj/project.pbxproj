@@ -311,21 +311,12 @@
 		82EFF0622F2BAAF000B41819 /* Exceptions for "Sources" folder in "StreamChatSwiftUI" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
-				StreamChatSwiftUI/.swiftgen.yml,
 				StreamChatSwiftUI/Info.plist,
 			);
 			publicHeaders = (
 				StreamChatSwiftUI/StreamChatSwiftUI.h,
 			);
 			target = 8465FBB42746873A00AF091E /* StreamChatSwiftUI */;
-		};
-		82EFF0632F2BAAF000B41819 /* Exceptions for "Sources" folder in "StreamChatSwiftUITests" target */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				"/Localized: StreamChatSwiftUI/Resources/Localizable.strings",
-				"/Localized: StreamChatSwiftUI/Resources/Localizable.stringsdict",
-			);
-			target = 8465FBBC2746873A00AF091E /* StreamChatSwiftUITests */;
 		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
@@ -367,7 +358,6 @@
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
 				82EFF0622F2BAAF000B41819 /* Exceptions for "Sources" folder in "StreamChatSwiftUI" target */,
-				82EFF0632F2BAAF000B41819 /* Exceptions for "Sources" folder in "StreamChatSwiftUITests" target */,
 			);
 			path = Sources;
 			sourceTree = "<group>";
@@ -543,7 +533,6 @@
 			buildConfigurationList = 8465FBC72746873A00AF091E /* Build configuration list for PBXNativeTarget "StreamChatSwiftUI" */;
 			buildPhases = (
 				8465FBB02746873A00AF091E /* Headers */,
-				8465FCCE27468DFB00AF091E /* SwiftGen */,
 				8465FBB12746873A00AF091E /* Sources */,
 				8465FBB22746873A00AF091E /* Frameworks */,
 				8465FBB32746873A00AF091E /* Resources */,
@@ -718,28 +707,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
-
-/* Begin PBXShellScriptBuildPhase section */
-		8465FCCE27468DFB00AF091E /* SwiftGen */ = {
-			isa = PBXShellScriptBuildPhase;
-			alwaysOutOfDate = 1;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-			);
-			name = SwiftGen;
-			outputFileListPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "# Adds support for Apple Silicon brew directory\nexport PATH=\"$PATH:/opt/homebrew/bin\"\n\nif which swiftgen; then\n  xcrun --sdk macosx swiftgen config run --config Sources/StreamChatSwiftUI/.swiftgen.yml\nelse\n  echo \"Warning: Bootstrap not run, please run ./Scripts/bootstrap.sh\"\nfi\n";
-		};
-/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		8400A34D282E6BE30067D3A0 /* Sources */ = {
@@ -1541,8 +1508,8 @@
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/GetStream/stream-chat-swift.git";
 			requirement = {
-				kind = revision;
-				revision = f7295d3d6f83c2aad95b38055b27981efe3d8225;
+				branch = "unify-localizations";
+				kind = branch;
 			};
 		};
 		E3A1C01A282BAC66002D1E26 /* XCRemoteSwiftPackageReference "sentry-cocoa" */ = {

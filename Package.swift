@@ -25,7 +25,7 @@ let package = Package(
                 .product(name: "StreamChat", package: "stream-chat-swift"),
                 .product(name: "StreamChatCommonUI", package: "stream-chat-swift")
             ],
-            exclude: ["README.md", "Info.plist", "Generated/L10n_template.stencil"],
+            exclude: ["README.md", "Info.plist"],
             resources: [.process("Resources")]
         )
     ]
