@@ -3,6 +3,7 @@
 //
 
 import StreamChat
+import StreamChatCommonUI
 import SwiftUI
 
 public final class MediaAttachment: Identifiable, Equatable, Sendable {
