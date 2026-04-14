@@ -3,6 +3,7 @@
 //
 
 import CoreGraphics
+import Foundation
 
 public extension CGSize {
     /// Maximum size of avatar used in the UI.
