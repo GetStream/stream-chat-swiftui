@@ -110,7 +110,8 @@ struct MessageContainerView<Factory: ViewFactory>: View {
                         message: message,
                         contentWidth: contentWidth,
                         isFirst: showsAllInfo,
-                        scrolledId: $scrolledId
+                        scrolledId: $scrolledId,
+                        translationLanguage: messageViewModel.translationLanguage
                     )
                 }
             } else {
@@ -119,7 +120,8 @@ struct MessageContainerView<Factory: ViewFactory>: View {
                     message: message,
                     contentWidth: contentWidth,
                     isFirst: showsAllInfo,
-                    scrolledId: $scrolledId
+                    scrolledId: $scrolledId,
+                    translationLanguage: messageViewModel.translationLanguage
                 )
             }
         }

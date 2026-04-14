@@ -404,8 +404,7 @@ lane :record_snapshots_locally do
     testplan: 'StreamChatSwiftUI',
     configuration: 'Debug',
     devices: ['iPhone 17 Pro (26.2)'],
-    fail_build: false,
-    suppress_xcode_output: true
+    fail_build: false
   )
 end
 

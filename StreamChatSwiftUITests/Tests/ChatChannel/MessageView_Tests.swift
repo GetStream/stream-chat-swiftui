@@ -39,7 +39,8 @@ import XCTest
             message: textMessage,
             contentWidth: defaultScreenSize.width,
             isFirst: true,
-            scrolledId: .constant(nil)
+            scrolledId: .constant(nil),
+            translationLanguage: nil
         )
         .applyDefaultSize()
         
@@ -63,7 +64,8 @@ import XCTest
             message: textMessage,
             contentWidth: defaultScreenSize.width,
             isFirst: true,
-            scrolledId: .constant(nil)
+            scrolledId: .constant(nil),
+            translationLanguage: nil
         )
         .overlay(SendFailureIndicator())
         .frame(width: defaultScreenSize.width, height: 100)
@@ -88,7 +90,8 @@ import XCTest
             message: textMessage,
             contentWidth: defaultScreenSize.width,
             isFirst: true,
-            scrolledId: .constant(nil)
+            scrolledId: .constant(nil),
+            translationLanguage: nil
         )
         .overlay(SendFailureIndicator())
         .frame(width: defaultScreenSize.width, height: 150)
@@ -113,7 +116,8 @@ import XCTest
             message: textMessage,
             contentWidth: defaultScreenSize.width,
             isFirst: true,
-            scrolledId: .constant(nil)
+            scrolledId: .constant(nil),
+            translationLanguage: nil
         )
         .frame(width: defaultScreenSize.width, height: 100)
         
@@ -137,7 +141,8 @@ import XCTest
             message: textMessage,
             contentWidth: defaultScreenSize.width,
             isFirst: true,
-            scrolledId: .constant(nil)
+            scrolledId: .constant(nil),
+            translationLanguage: nil
         )
         .frame(width: defaultScreenSize.width, height: 100)
         
@@ -161,7 +166,8 @@ import XCTest
             message: imageMessage,
             contentWidth: defaultScreenSize.width,
             isFirst: true,
-            scrolledId: .constant(nil)
+            scrolledId: .constant(nil),
+            translationLanguage: nil
         )
         .applyDefaultSize()
         
@@ -189,7 +195,8 @@ import XCTest
             message: imageMessage,
             contentWidth: defaultScreenSize.width,
             isFirst: true,
-            scrolledId: .constant(nil)
+            scrolledId: .constant(nil),
+            translationLanguage: nil
         )
         .applyDefaultSize()
 
@@ -217,7 +224,8 @@ import XCTest
             message: imageMessage,
             contentWidth: defaultScreenSize.width,
             isFirst: true,
-            scrolledId: .constant(nil)
+            scrolledId: .constant(nil),
+            translationLanguage: nil
         )
         .applyDefaultSize()
 
@@ -244,7 +252,8 @@ import XCTest
             message: imageMessage,
             contentWidth: defaultScreenSize.width,
             isFirst: true,
-            scrolledId: .constant(nil)
+            scrolledId: .constant(nil),
+            translationLanguage: nil
         )
         .applyDefaultSize()
         
@@ -272,7 +281,8 @@ import XCTest
             message: imageMessage,
             contentWidth: defaultScreenSize.width,
             isFirst: true,
-            scrolledId: .constant(nil)
+            scrolledId: .constant(nil),
+            translationLanguage: nil
         )
         .applyDefaultSize()
         
@@ -301,7 +311,8 @@ import XCTest
             message: imageMessage,
             contentWidth: defaultScreenSize.width,
             isFirst: true,
-            scrolledId: .constant(nil)
+            scrolledId: .constant(nil),
+            translationLanguage: nil
         )
         .applyDefaultSize()
         
@@ -332,7 +343,8 @@ import XCTest
             message: imageMessage,
             contentWidth: defaultScreenSize.width,
             isFirst: true,
-            scrolledId: .constant(nil)
+            scrolledId: .constant(nil),
+            translationLanguage: nil
         )
         .applyDefaultSize()
         
@@ -363,7 +375,8 @@ import XCTest
             message: message,
             contentWidth: defaultScreenSize.width,
             isFirst: true,
-            scrolledId: .constant(nil)
+            scrolledId: .constant(nil),
+            translationLanguage: nil
         )
         .applyDefaultSize()
 
@@ -394,7 +407,8 @@ import XCTest
             message: message,
             contentWidth: defaultScreenSize.width,
             isFirst: true,
-            scrolledId: .constant(nil)
+            scrolledId: .constant(nil),
+            translationLanguage: nil
         )
         .applyDefaultSize()
 
@@ -418,7 +432,8 @@ import XCTest
             message: giphyMessage,
             contentWidth: defaultScreenSize.width,
             isFirst: true,
-            scrolledId: .constant(nil)
+            scrolledId: .constant(nil),
+            translationLanguage: nil
         )
         .applyDefaultSize()
         
@@ -478,7 +493,8 @@ import XCTest
             message: giphyMessage,
             contentWidth: defaultScreenSize.width,
             isFirst: true,
-            scrolledId: .constant(nil)
+            scrolledId: .constant(nil),
+            translationLanguage: nil
         )
         .applyDefaultSize()
         
@@ -502,7 +518,8 @@ import XCTest
             message: videoMessage,
             contentWidth: defaultScreenSize.width,
             isFirst: true,
-            scrolledId: .constant(nil)
+            scrolledId: .constant(nil),
+            translationLanguage: nil
         )
         .applyDefaultSize()
         
@@ -526,7 +543,8 @@ import XCTest
             message: fileMessage,
             contentWidth: defaultScreenSize.width,
             isFirst: true,
-            scrolledId: .constant(nil)
+            scrolledId: .constant(nil),
+            translationLanguage: nil
         )
         .applyDefaultSize()
         
@@ -551,7 +569,8 @@ import XCTest
             message: voiceMessage,
             contentWidth: defaultScreenSize.width,
             isFirst: true,
-            scrolledId: .constant(nil)
+            scrolledId: .constant(nil),
+            translationLanguage: nil
         )
         .frame(width: defaultScreenSize.width, height: 130)
         .padding()
@@ -580,7 +599,8 @@ import XCTest
             message: voiceMessage,
             contentWidth: defaultScreenSize.width,
             isFirst: true,
-            scrolledId: .constant(nil)
+            scrolledId: .constant(nil),
+            translationLanguage: nil
         )
         .frame(width: defaultScreenSize.width, height: 130)
         .padding()
@@ -609,7 +629,8 @@ import XCTest
             message: voiceMessage,
             contentWidth: defaultScreenSize.width,
             isFirst: true,
-            scrolledId: .constant(nil)
+            scrolledId: .constant(nil),
+            translationLanguage: nil
         )
         .frame(width: defaultScreenSize.width, height: 130)
         .padding()
@@ -638,7 +659,8 @@ import XCTest
             message: voiceMessage,
             contentWidth: defaultScreenSize.width,
             isFirst: true,
-            scrolledId: .constant(nil)
+            scrolledId: .constant(nil),
+            translationLanguage: nil
         )
         .frame(width: defaultScreenSize.width, height: 130)
         .padding()
@@ -667,7 +689,8 @@ import XCTest
             message: voiceMessage,
             contentWidth: defaultScreenSize.width,
             isFirst: true,
-            scrolledId: .constant(nil)
+            scrolledId: .constant(nil),
+            translationLanguage: nil
         )
         .frame(width: defaultScreenSize.width, height: 250)
         .padding()
@@ -696,7 +719,8 @@ import XCTest
             message: voiceMessage,
             contentWidth: defaultScreenSize.width,
             isFirst: true,
-            scrolledId: .constant(nil)
+            scrolledId: .constant(nil),
+            translationLanguage: nil
         )
         .frame(width: defaultScreenSize.width, height: 250)
         .padding()
@@ -733,7 +757,8 @@ import XCTest
             message: voiceMessage,
             contentWidth: defaultScreenSize.width,
             isFirst: true,
-            scrolledId: .constant(nil)
+            scrolledId: .constant(nil),
+            translationLanguage: nil
         )
         .frame(width: defaultScreenSize.width, height: 250)
         .padding()
@@ -770,7 +795,8 @@ import XCTest
             message: voiceMessage,
             contentWidth: defaultScreenSize.width,
             isFirst: true,
-            scrolledId: .constant(nil)
+            scrolledId: .constant(nil),
+            translationLanguage: nil
         )
         .frame(width: defaultScreenSize.width, height: 200)
         .padding()
@@ -806,7 +832,8 @@ import XCTest
             message: voiceMessage,
             contentWidth: defaultScreenSize.width,
             isFirst: true,
-            scrolledId: .constant(nil)
+            scrolledId: .constant(nil),
+            translationLanguage: nil
         )
         .frame(width: defaultScreenSize.width, height: 200)
         .padding()
@@ -842,7 +869,8 @@ import XCTest
             message: voiceMessage,
             contentWidth: defaultScreenSize.width,
             isFirst: true,
-            scrolledId: .constant(nil)
+            scrolledId: .constant(nil),
+            translationLanguage: nil
         )
         .frame(width: defaultScreenSize.width, height: 220)
         .padding()
@@ -878,7 +906,8 @@ import XCTest
             message: voiceMessage,
             contentWidth: defaultScreenSize.width,
             isFirst: true,
-            scrolledId: .constant(nil)
+            scrolledId: .constant(nil),
+            translationLanguage: nil
         )
         .frame(width: defaultScreenSize.width, height: 220)
         .padding()
@@ -942,7 +971,8 @@ import XCTest
             message: fileMessage,
             contentWidth: defaultScreenSize.width,
             isFirst: true,
-            scrolledId: .constant(nil)
+            scrolledId: .constant(nil),
+            translationLanguage: nil
         )
         .applyDefaultSize()
         
@@ -965,7 +995,8 @@ import XCTest
             message: emojiMessage,
             contentWidth: defaultScreenSize.width,
             isFirst: true,
-            scrolledId: .constant(nil)
+            scrolledId: .constant(nil),
+            translationLanguage: nil
         )
         .applyDefaultSize()
         
@@ -989,7 +1020,8 @@ import XCTest
             message: message,
             width: defaultScreenSize.width,
             isFirst: true,
-            scrolledId: .constant(nil)
+            scrolledId: .constant(nil),
+            translationLanguage: nil
         )
         .applyDefaultSize()
 
@@ -1051,7 +1083,8 @@ import XCTest
             message: messageWithLinkAndImages,
             contentWidth: defaultScreenSize.width,
             isFirst: true,
-            scrolledId: .constant(nil)
+            scrolledId: .constant(nil),
+            translationLanguage: nil
         )
         .applyDefaultSize()
         
@@ -1091,7 +1124,8 @@ import XCTest
             message: message,
             contentWidth: defaultScreenSize.width,
             isFirst: true,
-            scrolledId: .constant(nil)
+            scrolledId: .constant(nil),
+            translationLanguage: nil
         )
         .applyDefaultSize()
         
@@ -1212,7 +1246,8 @@ import XCTest
             message: textMessage,
             contentWidth: defaultScreenSize.width,
             isFirst: true,
-            scrolledId: .constant(nil)
+            scrolledId: .constant(nil),
+            translationLanguage: nil
         )
         .frame(
             width: defaultScreenSize.width,
@@ -1245,7 +1280,8 @@ import XCTest
             message: textMessage,
             contentWidth: defaultScreenSize.width,
             isFirst: true,
-            scrolledId: .constant(nil)
+            scrolledId: .constant(nil),
+            translationLanguage: nil
         )
         .frame(
             width: defaultScreenSize.width,
@@ -1277,7 +1313,8 @@ import XCTest
             message: textMessage,
             contentWidth: defaultScreenSize.width,
             isFirst: true,
-            scrolledId: .constant(nil)
+            scrolledId: .constant(nil),
+            translationLanguage: nil
         )
         .frame(
             width: defaultScreenSize.width,
@@ -1608,7 +1645,8 @@ import XCTest
             message: textMessage,
             contentWidth: size.width,
             isFirst: true,
-            scrolledId: .constant(nil)
+            scrolledId: .constant(nil),
+            translationLanguage: nil
         )
         .applySize(size)
     }

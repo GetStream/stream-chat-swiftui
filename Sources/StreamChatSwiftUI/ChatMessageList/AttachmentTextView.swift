@@ -11,23 +11,29 @@ public struct AttachmentTextView<Factory: ViewFactory>: View {
     var factory: Factory
     var message: ChatMessage
     var availableWidth: CGFloat
+    var translationLanguage: TranslationLanguage?
 
     public init(
         factory: Factory = DefaultViewFactory.shared,
         message: ChatMessage,
-        availableWidth: CGFloat
+        availableWidth: CGFloat,
+        translationLanguage: TranslationLanguage?
     ) {
         self.factory = factory
         self.message = message
         self.availableWidth = availableWidth
+        self.translationLanguage = translationLanguage
     }
 
     public var body: some View {
-        factory.makeStreamTextView(options: .init(message: message))
-            .padding(.horizontal, tokens.spacingXxs)
-            .fixedSize(horizontal: false, vertical: true)
-            .frame(maxWidth: maxTextWidth, alignment: .leading)
-            .accessibilityIdentifier("MessageTextView")
+        factory.makeStreamTextView(options: .init(
+            message: message,
+            translationLanguage: translationLanguage
+        ))
+        .padding(.horizontal, tokens.spacingXxs)
+        .fixedSize(horizontal: false, vertical: true)
+        .frame(maxWidth: maxTextWidth, alignment: .leading)
+        .accessibilityIdentifier("MessageTextView")
     }
 
     /// Limit text width for messages with portrait image attachment.
