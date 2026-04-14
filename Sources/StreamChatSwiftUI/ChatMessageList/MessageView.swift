@@ -249,15 +249,14 @@ struct StreamTextView: View {
 
     var body: some View {
         if #available(iOS 15, *) {
-            if let attributedText = message.attributedTextContent(
+            let attributedText = message.attributedTextContent(
                 layoutDirection: layoutDirection,
                 translationLanguage: translationLanguage
-            ) {
-                Text(attributedText)
-                    .foregroundColor(textColor(for: message))
-                    .font(fonts.body)
-                    .tint(Color(colors.accentPrimary))
-            }
+            )
+            Text(attributedText)
+                .foregroundColor(textColor(for: message))
+                .font(fonts.body)
+                .tint(Color(colors.accentPrimary))
         } else {
             Text(textContent)
                 .foregroundColor(textColor(for: message))

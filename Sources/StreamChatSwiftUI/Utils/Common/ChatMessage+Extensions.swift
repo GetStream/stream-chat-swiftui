@@ -114,9 +114,9 @@ extension ChatMessage {
     @MainActor func attributedTextContent(
         layoutDirection: LayoutDirection,
         translationLanguage: TranslationLanguage?
-    ) -> AttributedString? {
-        guard type != .ephemeral else { return nil }
-        guard !isDeleted else { return nil }
+    ) -> AttributedString {
+        guard type != .ephemeral else { return AttributedString() }
+        guard !isDeleted else { return AttributedString() }
 
         @Injected(\.utils) var utils
         @Injected(\.colors) var colors
