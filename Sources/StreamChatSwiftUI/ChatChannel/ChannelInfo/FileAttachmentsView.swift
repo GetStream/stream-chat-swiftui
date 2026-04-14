@@ -39,7 +39,7 @@ public struct FileAttachmentsView: View {
                 ScrollView {
                     LazyVStack(spacing: 0) {
                         ForEach(viewModel.attachmentsDataSource) { monthlyDataSource in
-                            ForEach(monthlyDataSource.attachments, id: \.self) { attachment in
+                            ForEach(monthlyDataSource.attachments) { attachment in
                                 let url = attachment.assetURL
 
                                 Button {
@@ -62,7 +62,6 @@ public struct FileAttachmentsView: View {
                                 }
                                 .padding(.vertical, tokens.spacingSm)
                                 .padding(.horizontal)
-                                .withDownloadingStateIndicator(for: attachment.downloadingState, url: attachment.assetURL)
                                 .sheet(item: $viewModel.selectedAttachment) { item in
                                     FileAttachmentPreview(attachment: item)
                                 }

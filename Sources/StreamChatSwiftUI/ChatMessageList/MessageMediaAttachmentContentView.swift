@@ -29,6 +29,8 @@ public struct MessageMediaAttachmentContentView<Factory: ViewFactory>: View {
     let corners: UIRectCorner?
     /// Whether the message is sent by the current user (outgoing).
     let isOutgoing: Bool
+    /// Called when the user taps the retry badge on an upload-failed attachment.
+    let onUploadRetry: (() -> Void)?
 
     @State private var image: UIImage?
     @State private var error: Error?
@@ -40,7 +42,8 @@ public struct MessageMediaAttachmentContentView<Factory: ViewFactory>: View {
         height: CGFloat,
         cornerRadius: CGFloat? = nil,
         corners: UIRectCorner? = nil,
-        isOutgoing: Bool = false
+        isOutgoing: Bool = false,
+        onUploadRetry: (() -> Void)? = nil
     ) {
         @Injected(\.tokens) var tokens
         self.factory = factory
@@ -50,6 +53,14 @@ public struct MessageMediaAttachmentContentView<Factory: ViewFactory>: View {
         self.cornerRadius = cornerRadius ?? tokens.messageBubbleRadiusAttachment
         self.corners = corners
         self.isOutgoing = isOutgoing
+        self.onUploadRetry = onUploadRetry
+    }
+
+    private var isUploading: Bool {
+        if case .uploading = source.uploadingState?.state {
+            return true
+        }
+        return false
     }
 
     public var body: some View {
@@ -61,17 +72,25 @@ public struct MessageMediaAttachmentContentView<Factory: ViewFactory>: View {
                     .frame(width: width, height: height)
                     .clipped()
             } else if error != nil {
-                Color(.secondarySystemBackground)
+                placeholderBackground
             } else {
                 placeholderGradient
             }
 
-            if image == nil && error == nil {
-                LoadingSpinnerView(size: LoadingSpinnerSize.large, bordered: true)
+            if image == nil && error == nil && !isUploading {
+                LoadingSpinnerView(size: LoadingSpinnerSize.medium)
                     .allowsHitTesting(false)
             }
 
-            if source.type == .video && width > 64 && source.uploadingState == nil {
+            if error != nil && source.uploadingState == nil {
+                retryOverlay { loadThumbnail() }
+            }
+
+            if let uploadingState = source.uploadingState {
+                uploadingOverlay(for: uploadingState)
+            }
+
+            if source.type == .video && width > 64 && source.uploadingState == nil && image != nil && error == nil {
                 VideoPlayIndicatorView(size: VideoPlayIndicatorSize.medium)
                     .allowsHitTesting(false)
             }
@@ -85,20 +104,61 @@ public struct MessageMediaAttachmentContentView<Factory: ViewFactory>: View {
         )
         .onAppear {
             guard image == nil else { return }
-            source.generateThumbnail(resize: true, preferredSize: CGSize(width: width, height: height)) { result in
-                switch result {
-                case .success(let image):
-                    self.image = image
-                case .failure(let failure):
-                    self.error = failure
-                }
-            }
+            loadThumbnail()
         }
         .accessibilityIdentifier("MessageMediaAttachmentContentView")
     }
 
-    private var placeholderGradient: some View {
+    // MARK: - Private
+
+    private func loadThumbnail() {
+        error = nil
+        source.generateThumbnail(
+            resize: true,
+            preferredSize: CGSize(width: width, height: height)
+        ) { result in
+            switch result {
+            case .success(let loaded):
+                self.image = loaded
+            case .failure(let failure):
+                self.error = failure
+            }
+        }
+    }
+
+    @ViewBuilder
+    private func uploadingOverlay(for uploadingState: AttachmentUploadingState) -> some View {
+        switch uploadingState.state {
+        case let .uploading(progress):
+            Color(colors.backgroundCoreOverlayLight)
+                .allowsHitTesting(false)
+            LoadingSpinnerView(
+                size: LoadingSpinnerSize.medium,
+                progress: Double(progress)
+            )
+            .allowsHitTesting(false)
+        case .uploadingFailed:
+            retryOverlay { onUploadRetry?() }
+        default:
+            EmptyView()
+        }
+    }
+
+    private func retryOverlay(action: @escaping () -> Void) -> some View {
+        Button(action: action) {
+            ZStack {
+                Color(colors.backgroundCoreOverlayLight)
+                RetryBadgeView()
+            }
+        }
+        .buttonStyle(.plain)
+    }
+
+    private var placeholderBackground: some View {
         Color(isOutgoing ? colors.chatBackgroundAttachmentOutgoing : colors.chatBackgroundAttachmentIncoming)
-            .shimmering()
+    }
+
+    private var placeholderGradient: some View {
+        placeholderBackground.shimmering()
     }
 }

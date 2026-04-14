@@ -626,6 +626,10 @@ internal enum L10n {
       internal static var errorPreview: String { L10n.tr("Localizable", "message.file-attachment.error-preview") }
     }
     internal enum Gallery {
+      /// %d of %d
+      internal static func pageCount(_ p1: Int, _ p2: Int) -> String {
+        return L10n.tr("Localizable", "message.gallery.pageCount", p1, p2)
+      }
       /// Photos
       internal static var photos: String { L10n.tr("Localizable", "message.gallery.photos") }
     }
@@ -758,6 +762,10 @@ internal enum L10n {
       internal static var title: String { L10n.tr("Localizable", "message.search.title") }
     }
     internal enum Sending {
+      /// Retry upload
+      internal static var attachmentRetryUpload: String { L10n.tr("Localizable", "message.sending.attachment-retry-upload") }
+      /// Upload failed
+      internal static var attachmentUploadFailed: String { L10n.tr("Localizable", "message.sending.attachment-upload-failed") }
       /// UPLOADING FAILED
       internal static var attachmentUploadingFailed: String { L10n.tr("Localizable", "message.sending.attachment-uploading-failed") }
     }

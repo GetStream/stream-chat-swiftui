@@ -265,7 +265,8 @@ extension ViewFactory {
             factory: self,
             message: options.message,
             isFirst: options.isFirst,
-            scrolledId: options.scrolledId
+            scrolledId: options.scrolledId,
+            translationLanguage: options.translationLanguage
         )
     }
     
@@ -301,7 +302,8 @@ extension ViewFactory {
             message: options.message,
             width: min(options.availableWidth, utils.messageListConfig.attachmentPreviewWidth),
             isFirst: options.isFirst,
-            scrolledId: options.scrolledId
+            scrolledId: options.scrolledId,
+            translationLanguage: options.translationLanguage
         )
     }
 
@@ -378,12 +380,27 @@ extension ViewFactory {
         )
     }
     
-    public func makeMediaViewerHeader(
-        options: MediaViewerHeaderOptions
-    ) -> some View {
-        MediaViewerHeader(title: options.title, subtitle: options.subtitle, isShown: options.shown)
+    public func makeMediaViewerToolbarModifier(
+        options: MediaViewerToolbarModifierOptions
+    ) -> some ViewModifier {
+        MediaViewerToolbarModifier(
+            title: options.title,
+            subtitle: options.subtitle,
+            isShown: options.isShown
+        )
     }
-    
+
+    public func makeMediaViewerFooterView(
+        options: MediaViewerFooterViewOptions
+    ) -> some View {
+        MediaViewerFooterView(
+            shareContent: options.shareContent,
+            selected: options.selected,
+            totalCount: options.totalCount,
+            gridShown: options.gridShown
+        )
+    }
+
     public func makeVideoPlayerHeaderView(
         options: VideoPlayerHeaderViewOptions
     ) -> some View {
@@ -989,10 +1006,10 @@ extension ViewFactory {
         Divider()
     }
     
-    public func makeAddUsersView(
-        options: AddUsersViewOptions
+    public func makeMemberAddView(
+        options: MemberAddViewOptions
     ) -> some View {
-        AddUsersView(loadedUserIds: options.options.loadedUserIds, onConfirm: options.onConfirm)
+        MemberAddView(loadedUserIds: options.options.loadedUserIds, onConfirm: options.onConfirm)
     }
     
     public func makeAttachmentTextView(
@@ -1001,14 +1018,18 @@ extension ViewFactory {
         AttachmentTextView(
             factory: self,
             message: options.message,
-            availableWidth: options.availableWidth
+            availableWidth: options.availableWidth,
+            translationLanguage: options.translationLanguage
         )
     }
 
     public func makeStreamTextView(
         options: StreamTextViewOptions
     ) -> some View {
-        StreamTextView(message: options.message)
+        StreamTextView(
+            message: options.message,
+            translationLanguage: options.translationLanguage
+        )
     }
 }
 

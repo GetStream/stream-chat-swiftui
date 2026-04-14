@@ -18,7 +18,7 @@ struct MessageTopView: View {
     var usesInvertedStyle: Bool = false
 
     var body: some View {
-        VStack(alignment: messageViewModel.isRightAligned ? .trailing : .leading, spacing: tokens.spacingXxs) {
+        VStack(alignment: messageViewModel.isRightAligned ? .trailing : .leading, spacing: tokens.spacingXs) {
             if messageViewModel.isPinned {
                 MessageAnnotationView(
                     icon: images.pin,

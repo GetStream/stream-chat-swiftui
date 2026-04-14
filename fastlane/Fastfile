@@ -394,6 +394,20 @@ lane :install_runtime do |options|
   install_ios_runtime(version: options[:ios], custom_script: 'Scripts/install_ios_runtime.sh')
 end
 
+desc 'Record UI Snapshots locally'
+lane :record_snapshots_locally do
+  remove_snapshots
+
+  scan(
+    project: xcode_project,
+    scheme: 'StreamChatSwiftUI',
+    testplan: 'StreamChatSwiftUI',
+    configuration: 'Debug',
+    devices: ['iPhone 17 Pro (26.2)'],
+    fail_build: false
+  )
+end
+
 desc 'Remove UI Snapshots'
 lane :remove_snapshots do |options|
   snapshots_path = "../StreamChatSwiftUITests/**/__Snapshots__/**/*.png"

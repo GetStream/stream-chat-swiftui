@@ -4,6 +4,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 # Upcoming
 
 ### ✅ Added
+- Redesign attachment uploading progress and error state indicators [#1408](https://github.com/GetStream/stream-chat-swiftui/pull/1408)
+- Add inline upload progress and retry UI for file attachments [#1408](https://github.com/GetStream/stream-chat-swiftui/pull/1408)
+- Add `RetryBadgeView` for failed uploads and thumbnail loads [#1408](https://github.com/GetStream/stream-chat-swiftui/pull/1408)
 - Add `ComposerConfig.isVoiceRecordingAutoSendEnabled` to support sending a recording instantly on release [#1362](https://github.com/GetStream/stream-chat-swiftui/pull/1362)
 - Redesign `JumpToUnreadButton` [#1351](https://github.com/GetStream/stream-chat-swiftui/pull/1351)
 - Show deleted messages in channel list preview [#1338](https://github.com/GetStream/stream-chat-swiftui/pull/1338)
@@ -12,6 +15,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Redesign the thread replies divider in the message replies list [#1354](https://github.com/GetStream/stream-chat-swiftui/pull/1354)
 
 ### 🐞 Fixed
+- Fix swipe-to-reply icon layout for outgoing messages and RTL [#1402](https://github.com/GetStream/stream-chat-swiftui/pull/1402)
+- Fix unwanted border on the Edit button in Channel Info [#1402](https://github.com/GetStream/stream-chat-swiftui/pull/1402)
+- Fix send button icon not mirroring in RTL layouts [#1397](https://github.com/GetStream/stream-chat-swiftui/pull/1397)
+- Fix composer attachment picker prompt views layout to center all content vertically [#1397](https://github.com/GetStream/stream-chat-swiftui/pull/1397)
+- Fix poll icon inconsistency in the attachment type picker and attachment previews [#1397](https://github.com/GetStream/stream-chat-swiftui/pull/1397)
 - Fix voice recording attachment container rendering when quoting a message [#1388](https://github.com/GetStream/stream-chat-swiftui/pull/1388)
 - Fix annotation button colors in the reactions overlay [#1386](https://github.com/GetStream/stream-chat-swiftui/pull/1386)
 - Fix error indicator position and styling to match v5 design [#1383](https://github.com/GetStream/stream-chat-swiftui/pull/1383)
@@ -31,12 +39,16 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Use fixed width for attachment previews [#1335](https://github.com/GetStream/stream-chat-swiftui/pull/1335)
 - Fix showing bubble for quoted message and file or image attachment [#1335](https://github.com/GetStream/stream-chat-swiftui/pull/1335)
 - Fix scaling of giphy attachments [#1335](https://github.com/GetStream/stream-chat-swiftui/pull/1335)
+- Fix spacings in message annotations [#1403](https://github.com/GetStream/stream-chat-swiftui/pull/1403)
 
 ### 🔄 Changed
+- Rename `AddUsersView`/`AddUsersViewModel` to `MemberAddView`/`MemberAddViewModel` [#1402](https://github.com/GetStream/stream-chat-swiftui/pull/1402)
+- Unify Channel Info navigation headers styling [#1402](https://github.com/GetStream/stream-chat-swiftui/pull/1402)
 - Renamed the `onMessageSent` callback to `willSendMessage` in `MessageComposerViewModel`, `ViewModelsFactory`, and `ComposerViewFactoryOptions` [#1327](https://github.com/GetStream/stream-chat-swiftui/pull/1327)
 - Remove `InjectedChannelInfo` from `ChatChannelListItemView` [#1338](https://github.com/GetStream/stream-chat-swiftui/pull/1338)
 - Rename empty state views from `No` prefix to `Empty` prefix [#1345](https://github.com/GetStream/stream-chat-swiftui/pull/1345)
 - Migrate all the old color tokens to new color tokens [#1350](https://github.com/GetStream/stream-chat-swiftui/pull/1350)
+- Replace `LinkDetectionTextView` with `StreamTextView` that uses `ChatMessage.attributedTextContent(layoutDirection:translationLanguage:)` [#1411](https://github.com/GetStream/stream-chat-swiftui/pull/1411)
 
 # [4.99.1](https://github.com/GetStream/stream-chat-swiftui/releases/tag/4.99.1)
 _April 01, 2026_

@@ -105,7 +105,6 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
                     )
                     .frame(width: messageDisplayInfo.frame.width)
                     .frame(maxHeight: messageDisplayInfo.frame.height)
-                    .environment(\.channelTranslationLanguage, channel.membership?.language)
                     .scaleEffect(popIn || willPopOut ? 1 : 0.95)
                     .animation(willPopOut ? .easeInOut : popInAnimation, value: popIn)
                     messageActionsView(reader: reader)

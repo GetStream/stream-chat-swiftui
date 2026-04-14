@@ -373,6 +373,94 @@ import XCTest
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
 
+    func test_imageAttachments_uploading_snapshot() {
+        // Given
+        let message = ChatMessage.mock(
+            id: .unique,
+            cid: .unique,
+            text: "Uploading...",
+            author: .mock(id: Self.currentUserId),
+            attachments: [ChatChannelTestHelpers.imageAttachment(state: .uploading(progress: 0.5))],
+            localState: .sending,
+            isSentByCurrentUser: true
+        )
+
+        // When
+        let view = testMessageViewContainer(message: message, channel: .mockNonDMChannel(), height: 300)
+
+        // Then
+        AssertSnapshot(view, variants: .onlyUserInterfaceStyles)
+    }
+
+    func test_imageAttachments_uploadingWithoutText_snapshot() {
+        // Given
+        let message = ChatMessage.mock(
+            id: .unique,
+            cid: .unique,
+            text: "",
+            author: .mock(id: Self.currentUserId),
+            attachments: [ChatChannelTestHelpers.imageAttachment(state: .uploading(progress: 0.3))],
+            localState: .sending,
+            isSentByCurrentUser: true
+        )
+
+        // When
+        let view = testMessageViewContainer(message: message, channel: .mockNonDMChannel(), height: 300)
+
+        // Then
+        AssertSnapshot(view, variants: .onlyUserInterfaceStyles)
+    }
+
+    func test_multipleImageAttachments_uploading_snapshot() {
+        // Given
+        let attachments = ChatChannelTestHelpers.imageAttachments(
+            count: 3,
+            originalWidth: 1600,
+            originalHeight: 1200,
+            state: .uploading(progress: 0.6)
+        )
+        let message = ChatMessage.mock(
+            id: .unique,
+            cid: .unique,
+            text: "",
+            author: .mock(id: Self.currentUserId),
+            attachments: attachments,
+            localState: .sending,
+            isSentByCurrentUser: true
+        )
+
+        // When
+        let view = testMessageViewContainer(message: message, channel: .mockNonDMChannel(), height: 300)
+
+        // Then
+        AssertSnapshot(view, variants: .onlyUserInterfaceStyles)
+    }
+
+    func test_multipleImageAttachments_failed_snapshot() {
+        // Given
+        let attachments = ChatChannelTestHelpers.imageAttachments(
+            count: 4,
+            originalWidth: 1600,
+            originalHeight: 1200,
+            state: .uploadingFailed
+        )
+        let message = ChatMessage.mock(
+            id: .unique,
+            cid: .unique,
+            text: "",
+            author: .mock(id: Self.currentUserId),
+            attachments: attachments,
+            localState: .sendingFailed,
+            isSentByCurrentUser: true
+        )
+
+        // When
+        let view = testMessageViewContainer(message: message, channel: .mockNonDMChannel(), height: 300)
+
+        // Then
+        AssertSnapshot(view, variants: .onlyUserInterfaceStyles)
+    }
+
     func test_translatedText_participant_snapshot() {
         // Given
         let message = ChatMessage.mock(
@@ -387,7 +475,6 @@ import XCTest
         
         // When
         let view = testMessageViewContainer(message: message)
-            .environment(\.channelTranslationLanguage, .spanish)
 
         // Then
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
@@ -408,7 +495,6 @@ import XCTest
         
         // When
         let view = testMessageViewContainer(message: message)
-            .environment(\.channelTranslationLanguage, .spanish)
 
         // Then
         AssertSnapshot(view, size: CGSize(width: 375, height: 200))
@@ -550,7 +636,6 @@ import XCTest
         )
         messageViewModel.mockOriginalTextShown = true
         let view = testMessageViewContainer(message: message, messageViewModel: messageViewModel)
-            .environment(\.channelTranslationLanguage, .spanish)
 
         // Then
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
@@ -585,7 +670,6 @@ import XCTest
         )
         messageViewModel.mockOriginalTextShown = false
         let view = testMessageViewContainer(message: message, messageViewModel: messageViewModel)
-            .environment(\.channelTranslationLanguage, .spanish)
 
         // Then
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
@@ -619,7 +703,6 @@ import XCTest
             )
         )
         let view = testMessageViewContainer(message: message, messageViewModel: messageViewModel)
-            .environment(\.channelTranslationLanguage, .spanish)
 
         // Then
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
@@ -748,7 +831,6 @@ import XCTest
             shownAsPreview: true
         )
         .background(Color(colors.backgroundCoreScrim))
-        .environment(\.channelTranslationLanguage, .spanish)
 
         // Then
         AssertSnapshot(view, size: CGSize(width: 375, height: 200))
@@ -907,8 +989,34 @@ import XCTest
                 isSwipeToQuoteReplyPossible: true,
                 quotedMessage: .constant(nil),
                 initialOffsetX: offset
-            )
-            )
+            ))
+            .offset(x: offset)
+
+        // Then
+        AssertSnapshot(view, size: CGSize(width: 375, height: 200))
+    }
+
+    func test_swipeToReplyIndicator_outgoing_snapshot() {
+        // Given
+        let message = ChatMessage.mock(
+            id: .unique,
+            cid: .unique,
+            text: "Swipe to reply message",
+            author: .mock(id: Self.currentUserId, name: "Martin"),
+            localState: nil,
+            isSentByCurrentUser: true
+        )
+        let channel = ChatChannel.mockDMChannel(config: .mock(repliesEnabled: true))
+        let offset: CGFloat = 50
+
+        let view = testMessageViewContainer(message: message, channel: channel)
+            .modifier(SwipeToReplyModifier(
+                message: message,
+                channel: channel,
+                isSwipeToQuoteReplyPossible: true,
+                quotedMessage: .constant(nil),
+                initialOffsetX: offset
+            ))
             .offset(x: offset)
 
         // Then

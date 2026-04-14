@@ -92,10 +92,10 @@ struct MessageContainerView<Factory: ViewFactory>: View {
             }
         }
         .frame(maxWidth: .infinity, alignment: messageViewModel.isRightAligned ? .trailing : .leading)
-        .padding(.top, messageViewModel.topReactionsShown && !messageViewModel.isPinned ? messageListConfig.messageDisplayOptions.reactionsTopPadding(message) : 0)
+        .padding(.top, messageViewModel.topReactionsShown && !messageViewModel.annotationsShown ? messageListConfig.messageDisplayOptions.reactionsTopPadding(message) : 0)
         .padding(.horizontal, messageListConfig.messagePaddings.horizontal)
         .padding(.bottom, showsAllInfo || messageViewModel.annotationsShown ? paddingValue : groupMessageInterItemSpacing)
-        .padding(.top, isLast ? paddingValue : 0)
+        .padding(.top, isLast ? paddingValue : (messageViewModel.annotationsShown ? groupMessageInterItemSpacing : 0))
     }
 
     // MARK: - Sub-views
@@ -110,7 +110,8 @@ struct MessageContainerView<Factory: ViewFactory>: View {
                         message: message,
                         contentWidth: contentWidth,
                         isFirst: showsAllInfo,
-                        scrolledId: $scrolledId
+                        scrolledId: $scrolledId,
+                        translationLanguage: messageViewModel.translationLanguage
                     )
                 }
             } else {
@@ -119,7 +120,8 @@ struct MessageContainerView<Factory: ViewFactory>: View {
                     message: message,
                     contentWidth: contentWidth,
                     isFirst: showsAllInfo,
-                    scrolledId: $scrolledId
+                    scrolledId: $scrolledId,
+                    translationLanguage: messageViewModel.translationLanguage
                 )
             }
         }

@@ -69,6 +69,7 @@
 "message.threads.subtitle" = "with messages";
 
 "message.gallery.photos" = "Photos";
+"message.gallery.pageCount" = "%d of %d";
 "message.cell.pinnedBy" = "Pinned by";
 "message.cell.pinnedByYou" = "Pinned by you";
 "message.cell.unknownPin" = "unknown";
@@ -213,6 +214,8 @@
 
 "composer.suggestions.commands.header" = "Instant Commands";
 "message.sending.attachment-uploading-failed" = "UPLOADING FAILED";
+"message.sending.attachment-upload-failed" = "Upload failed";
+"message.sending.attachment-retry-upload" = "Retry upload";
 
 "composer.recording.tip" = "Hold to record. Release to send.";
 "composer.recording.tipSave" = "Hold to record. Release to save.";

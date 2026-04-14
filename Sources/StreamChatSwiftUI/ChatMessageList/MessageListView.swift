@@ -206,7 +206,6 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
                                     isLast: !showsLastInGroupInfo && message == messages.last
                                 )
                             )
-                            .environment(\.channelTranslationLanguage, channel.membership?.language)
                             .onAppear {
                                 if index == nil {
                                     index = messageListDateUtils.index(for: message, in: messages)
@@ -718,33 +717,5 @@ private class MessageRenderingUtil {
         }
 
         return skipRendering
-    }
-}
-
-private struct ChannelTranslationLanguageKey: EnvironmentKey {
-    static let defaultValue: TranslationLanguage? = nil
-}
-
-private struct MessageViewModelKey: EnvironmentKey {
-    static let defaultValue: MessageViewModel? = nil
-}
-
-extension EnvironmentValues {
-    var channelTranslationLanguage: TranslationLanguage? {
-        get {
-            self[ChannelTranslationLanguageKey.self]
-        }
-        set {
-            self[ChannelTranslationLanguageKey.self] = newValue
-        }
-    }
-    
-    var messageViewModel: MessageViewModel? {
-        get {
-            self[MessageViewModelKey.self]
-        }
-        set {
-            self[MessageViewModelKey.self] = newValue
-        }
     }
 }

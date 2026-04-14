@@ -131,17 +131,21 @@ public final class MessageTextViewOptions: Sendable {
     public let availableWidth: CGFloat
     /// Binding to the currently scrolled message ID.
     public let scrolledId: Binding<String?>
-    
+    /// The translation language to apply, or `nil` to show the original text.
+    public let translationLanguage: TranslationLanguage?
+
     public init(
         message: ChatMessage,
         isFirst: Bool,
         availableWidth: CGFloat,
-        scrolledId: Binding<String?>
+        scrolledId: Binding<String?>,
+        translationLanguage: TranslationLanguage?
     ) {
         self.message = message
         self.isFirst = isFirst
         self.availableWidth = availableWidth
         self.scrolledId = scrolledId
+        self.translationLanguage = translationLanguage
     }
 }
 
@@ -152,9 +156,12 @@ public final class MessageTextViewOptions: Sendable {
 public class StreamTextViewOptions {
     /// The message whose text should be displayed.
     public let message: ChatMessage
+    /// The translation language to apply, or `nil` to show the original text.
+    public let translationLanguage: TranslationLanguage?
 
-    public init(message: ChatMessage) {
+    public init(message: ChatMessage, translationLanguage: TranslationLanguage?) {
         self.message = message
+        self.translationLanguage = translationLanguage
     }
 }
 
@@ -164,10 +171,13 @@ public class AttachmentTextViewOptions {
     public let message: ChatMessage
     /// The maximum width available for the text caption.
     public let availableWidth: CGFloat
+    /// The translation language to apply, or `nil` to show the original text.
+    public let translationLanguage: TranslationLanguage?
 
-    public init(message: ChatMessage, availableWidth: CGFloat) {
+    public init(message: ChatMessage, availableWidth: CGFloat, translationLanguage: TranslationLanguage?) {
         self.message = message
         self.availableWidth = availableWidth
+        self.translationLanguage = translationLanguage
     }
 }
 

@@ -6,6 +6,8 @@ import SwiftUI
 
 /// The button for sending messages.
 public struct SendMessageButton: View {
+    @Environment(\.layoutDirection) private var layoutDirection
+
     @Injected(\.images) private var images
     @Injected(\.tokens) private var tokens
 
@@ -27,6 +29,7 @@ public struct SendMessageButton: View {
             Image(uiImage: images.composerSend)
                 .renderingMode(.template)
                 .frame(width: tokens.iconSizeMd, height: tokens.iconSizeMd)
+                .scaleEffect(x: layoutDirection == .rightToLeft ? -1 : 1, y: 1)
         }
         .disabled(!enabled)
         .accessibilityLabel(Text(L10n.Composer.Placeholder.message))

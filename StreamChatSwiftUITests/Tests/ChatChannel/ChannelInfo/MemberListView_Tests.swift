@@ -28,7 +28,7 @@ import XCTest
         let viewModel = ChatChannelInfoViewModel(channel: group)
 
         // When
-        let view = MemberListView(viewModel: viewModel)
+        let view = MemberListView(factory: DefaultTestViewFactory.shared, viewModel: viewModel)
             .applyDefaultSize()
 
         // Then
@@ -52,7 +52,7 @@ import XCTest
         let viewModel = ChatChannelInfoViewModel(channel: group)
 
         // When
-        let view = MemberListView(viewModel: viewModel)
+        let view = MemberListView(factory: DefaultTestViewFactory.shared, viewModel: viewModel)
             .applyDefaultSize()
 
         // Then
