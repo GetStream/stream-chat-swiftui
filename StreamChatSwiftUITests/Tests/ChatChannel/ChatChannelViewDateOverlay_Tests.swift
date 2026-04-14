@@ -88,7 +88,7 @@ import XCTest
                     cid: mockChannel.cid,
                     text: "Test \(i)",
                     author: .mock(id: .unique, name: "Martin"),
-                    createdAt: Date(timeIntervalSince1970: 100000 - TimeInterval(i) * baseIntervalDistance)
+                    createdAt: Date(timeIntervalSince1970: 100_000 - TimeInterval(i) * baseIntervalDistance)
                 )
             )
         }
