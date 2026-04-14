@@ -17,7 +17,7 @@ public struct AttachmentTextView<Factory: ViewFactory>: View {
         factory: Factory = DefaultViewFactory.shared,
         message: ChatMessage,
         availableWidth: CGFloat,
-        translationLanguage: TranslationLanguage?
+        translationLanguage: TranslationLanguage? = nil
     ) {
         self.factory = factory
         self.message = message

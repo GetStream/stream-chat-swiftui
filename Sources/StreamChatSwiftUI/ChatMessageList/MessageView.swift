@@ -25,7 +25,7 @@ public struct MessageView<Factory: ViewFactory>: View {
         contentWidth: CGFloat,
         isFirst: Bool,
         scrolledId: Binding<String?>,
-        translationLanguage: TranslationLanguage?
+        translationLanguage: TranslationLanguage? = nil
     ) {
         self.factory = factory
         self.message = message

@@ -26,7 +26,7 @@ public struct MessageAttachmentsView<Factory: ViewFactory>: View {
         width: CGFloat,
         isFirst: Bool,
         scrolledId: Binding<String?>,
-        translationLanguage: TranslationLanguage?
+        translationLanguage: TranslationLanguage? = nil
     ) {
         self.factory = factory
         self.message = message
