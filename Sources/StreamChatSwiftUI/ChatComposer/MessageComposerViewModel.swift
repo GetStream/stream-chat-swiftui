@@ -944,7 +944,7 @@ import SwiftUI
         
         do {
             let fileSize = try AttachmentFile(url: url).size
-            let canAdd = fileSize < chatClient.maxAttachmentSize(for: url)
+            let canAdd = fileSize < chatClient.maxAttachmentSize(for: url, fallbackSize: utils.composerConfig.maxAttachmentSize)
             attachmentSizeExceeded = !canAdd
             return canAdd
         } catch {

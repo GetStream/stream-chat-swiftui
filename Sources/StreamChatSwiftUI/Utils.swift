@@ -18,6 +18,7 @@ import StreamChatCommonUI
     public var messageTimestampFormatter: MessageTimestampFormatter
     public var galleryHeaderViewDateFormatter: GalleryHeaderViewDateFormatter
     public var messageDateSeparatorFormatter: MessageDateSeparatorFormatter
+    public var cdn: CDN
     public var videoLoader: VideoLoader
     public var imageLoader: ImageLoader
     public var imageProcessor: ImageProcessor
@@ -82,8 +83,9 @@ import StreamChatCommonUI
         messageTimestampFormatter: MessageTimestampFormatter = ChannelListMessageTimestampFormatter(),
         galleryHeaderViewDateFormatter: GalleryHeaderViewDateFormatter = DefaultGalleryHeaderViewDateFormatter(),
         messageDateSeparatorFormatter: MessageDateSeparatorFormatter = DefaultMessageDateSeparatorFormatter(),
+        cdn: CDN = StreamCDN(),
         videoLoader: VideoLoader? = nil,
-        imageLoader: ImageLoader = StreamImageLoader(downloader: StreamImageDownloader()),
+        imageLoader: ImageLoader? = nil,
         imageProcessor: ImageProcessor = StreamImageProcessor(),
         avPlayerProvider: AVPlayerProvider = DefaultAVPlayerProvider(),
         messageTypeResolver: MessageTypeResolving = MessageTypeResolver(),
@@ -106,13 +108,15 @@ import StreamChatCommonUI
         sortReactions: @escaping (MessageReactionType, MessageReactionType) -> Bool = Utils.defaultSortReactions,
         shouldSyncChannelControllerOnAppear: @escaping (ChatChannelController) -> Bool = { _ in true }
     ) {
+        self.cdn = cdn
         self.markdownFormatter = markdownFormatter
         self.dateFormatter = dateFormatter
         self.messageTimestampFormatter = messageTimestampFormatter
         self.galleryHeaderViewDateFormatter = galleryHeaderViewDateFormatter
         self.messageDateSeparatorFormatter = messageDateSeparatorFormatter
-        self.imageLoader = imageLoader
-        self.videoLoader = videoLoader ?? StreamVideoLoader(imageLoader: imageLoader)
+        let resolvedImageLoader = imageLoader ?? StreamImageLoader(cdn: cdn, downloader: StreamImageDownloader())
+        self.imageLoader = resolvedImageLoader
+        self.videoLoader = videoLoader ?? StreamVideoLoader(cdn: cdn, imageLoader: resolvedImageLoader)
         self.imageProcessor = imageProcessor
         self.channelNameFormatter = channelNameFormatter
         self.avPlayerProvider = avPlayerProvider

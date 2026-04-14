@@ -29,7 +29,7 @@ class APIClientMock: APIClient, StreamChatTestTools.Spy, @unchecked Sendable {
     @Atomic var init_sessionConfiguration: URLSessionConfiguration
     @Atomic var init_requestEncoder: RequestEncoder
     @Atomic var init_requestDecoder: RequestDecoder
-    @Atomic var init_cdnUploader: CDNUploader
+    @Atomic var init_cdnStorage: CDNStorage
     @Atomic var request_expectation: XCTestExpectation
 
     // Cleans up all recorded values
@@ -49,14 +49,14 @@ class APIClientMock: APIClient, StreamChatTestTools.Spy, @unchecked Sendable {
         requestEncoder: RequestEncoder,
         requestDecoder: RequestDecoder,
         attachmentDownloader: AttachmentDownloader,
-        cdnUploader: CDNUploader,
+        cdnStorage: CDNStorage,
         tokenRefresher: ((@escaping @Sendable () -> Void) -> Void)!,
         queueOfflineRequest: @escaping QueueOfflineRequestBlock
     ) {
         init_sessionConfiguration = sessionConfiguration
         init_requestEncoder = requestEncoder
         init_requestDecoder = requestDecoder
-        init_cdnUploader = cdnUploader
+        init_cdnStorage = cdnStorage
         request_expectation = .init()
 
         super.init(
@@ -64,7 +64,7 @@ class APIClientMock: APIClient, StreamChatTestTools.Spy, @unchecked Sendable {
             requestEncoder: requestEncoder,
             requestDecoder: requestDecoder,
             attachmentDownloader: attachmentDownloader,
-            cdnUploader: cdnUploader
+            cdnStorage: cdnStorage
         )
         self.tokenRefresher = tokenRefresher
         self.queueOfflineRequest = queueOfflineRequest
@@ -138,7 +138,7 @@ extension APIClientMock {
             requestEncoder: DefaultRequestEncoder(baseURL: .unique(), apiKey: .init(.unique)),
             requestDecoder: DefaultRequestDecoder(),
             attachmentDownloader: StreamAttachmentDownloader(sessionConfiguration: .ephemeral),
-            cdnUploader: CDNUploader_Mock(),
+            cdnStorage: CDNStorage_Mock(),
             tokenRefresher: { _ in },
             queueOfflineRequest: { _ in }
         )

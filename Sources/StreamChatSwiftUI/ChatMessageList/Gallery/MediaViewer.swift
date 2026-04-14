@@ -191,7 +191,7 @@ struct GridMediaView<Factory: ViewFactory>: View {
 struct StreamVideoPlayer: View {
     @Injected(\.utils) private var utils
 
-    private var cdn: CDN { StreamCDN() }
+    private var cdn: CDN { utils.cdn }
 
     private var avPlayerProvider: AVPlayerProvider {
         utils.avPlayerProvider

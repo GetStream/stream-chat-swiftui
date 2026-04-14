@@ -8,6 +8,8 @@
 import XCTest
 
 final class ChatClientExtensions_Tests: StreamChatTestCase {
+    private let defaultFallback: Int64 = 100 * 1024 * 1024
+
     func test_maxAttachmentSize_file() {
         // Given
         let expectedValue: Int64 = 512
@@ -16,7 +18,7 @@ final class ChatClientExtensions_Tests: StreamChatTestCase {
         ))
         
         // When
-        let size = chatClient.maxAttachmentSize(for: .localYodaQuote)
+        let size = chatClient.maxAttachmentSize(for: .localYodaQuote, fallbackSize: defaultFallback)
         
         // Then
         XCTAssertEqual(size, expectedValue)
@@ -30,7 +32,7 @@ final class ChatClientExtensions_Tests: StreamChatTestCase {
         ))
         
         // When
-        let size = chatClient.maxAttachmentSize(for: .localYodaImage)
+        let size = chatClient.maxAttachmentSize(for: .localYodaImage, fallbackSize: defaultFallback)
         
         // Then
         XCTAssertEqual(size, expectedValue)

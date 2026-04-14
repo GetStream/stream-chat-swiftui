@@ -9,10 +9,13 @@ extension ChatClient {
     /// The maximum attachment size for the file URL.
     ///
     /// The max attachment size can be set from the Stream's Dashboard App Settings.
+    /// Falls back to the value configured in ``ComposerConfig/maxAttachmentSize``.
     ///
-    /// - Parameter fileURL: The file URL of the attachment.
+    /// - Parameters:
+    ///   - fileURL: The file URL of the attachment.
+    ///   - fallbackSize: The fallback size when the server doesn't provide one.
     /// - Returns: The maximum allowed size for the attachment in bytes.
-    func maxAttachmentSize(for fileURL: URL) -> Int64 {
+    func maxAttachmentSize(for fileURL: URL, fallbackSize: Int64) -> Int64 {
         let attachmentType = AttachmentType(fileExtension: fileURL.pathExtension)
         let maxAttachmentSize: Int64? = switch attachmentType {
         case .image:
@@ -23,11 +26,7 @@ extension ChatClient {
         if let maxAttachmentSize, maxAttachmentSize > 0 {
             return maxAttachmentSize
         } else {
-            if let cdnUploader = config.cdnUploader {
-                return type(of: cdnUploader).maxAttachmentSize
-            } else {
-                return 100 * 1024 * 1024
-            }
+            return fallbackSize
         }
     }
 }

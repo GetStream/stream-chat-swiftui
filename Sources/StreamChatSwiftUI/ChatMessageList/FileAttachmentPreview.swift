@@ -14,7 +14,7 @@ public struct FileAttachmentPreview: View {
     @Injected(\.images) private var images
     @Injected(\.utils) private var utils
 
-    private var cdn: CDN { StreamCDN() }
+    private var cdn: CDN { utils.cdn }
 
     let attachment: ChatMessageFileAttachment
     

@@ -15,12 +15,12 @@ import StreamChat
     public init(
         chatClient: ChatClient,
         appearance: Appearance = Appearance(),
-        utils: Utils = Utils()
+        utils: Utils? = nil
     ) {
         Appearance.bundle = .streamChatUI
         self.chatClient = chatClient
         self.appearance = appearance
-        self.utils = utils
+        self.utils = utils ?? Utils(cdn: chatClient.config.cdn)
         StreamChatProviderKey.currentValue = self
     }
 }

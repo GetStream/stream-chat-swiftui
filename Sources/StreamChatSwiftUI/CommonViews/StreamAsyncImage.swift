@@ -83,7 +83,7 @@ public struct StreamAsyncImage<Content: View>: View {
     /// when migrating away from Nuke.
     @MainActor
     private func loadWithNuke(url: URL, resize: ImageResize?) async throws -> StreamAsyncImageResult {
-        let cdn = (utils.imageLoader as? StreamImageLoader)?.cdn ?? StreamCDN()
+        let cdn = utils.cdn
         let cdnRequest = try await cdn.imageRequest(for: url, resize: resize)
 
         var urlRequest = URLRequest(url: cdnRequest.url)

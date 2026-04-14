@@ -10,6 +10,7 @@ import SwiftUI
 /// Helper class that loads assets from the photo library.
 @MainActor public class PhotoAssetLoader: NSObject, ObservableObject {
     @Injected(\.chatClient) private var chatClient
+    @Injected(\.utils) private var utils
 
     @Published var loadedImages = [String: UIImage]()
 
@@ -57,7 +58,7 @@ import SwiftUI
         _ = url?.startAccessingSecurityScopedResource()
         if let assetURL = url,
            let file = try? AttachmentFile(url: assetURL),
-           file.size >= chatClient.maxAttachmentSize(for: assetURL) {
+           file.size >= chatClient.maxAttachmentSize(for: assetURL, fallbackSize: utils.composerConfig.maxAttachmentSize) {
             return true
         } else {
             return false

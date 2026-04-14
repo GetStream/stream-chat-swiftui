@@ -10,10 +10,10 @@ public extension ChatClient {
     /// Create a new instance of mock `ChatClient`
     static func mock(
         isLocalStorageEnabled: Bool = false,
-        customCDNUploader: CDNUploader? = nil
+        customCDNStorage: CDNStorage? = nil
     ) -> ChatClient_Mock {
         var config = ChatClientConfig(apiKey: .init("--== Mock ChatClient ==--"))
-        config.cdnUploader = customCDNUploader
+        config.cdnStorage = customCDNStorage
         config.isLocalStorageEnabled = isLocalStorageEnabled
         config.isClientInActiveMode = false
         config.maxAttachmentCountPerMessage = 10
@@ -28,7 +28,7 @@ public extension ChatClient {
                         requestEncoder: $1,
                         requestDecoder: $2,
                         attachmentDownloader: $3,
-                        cdnUploader: $4
+                        cdnStorage: $4
                     )
                 },
                 webSocketClientBuilder: {
