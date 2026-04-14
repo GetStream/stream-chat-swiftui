@@ -111,24 +111,23 @@ public extension ChatMessage {
 
 @available(iOS 15, *)
 extension ChatMessage {
-    @MainActor func attributedTextContent(
+    /// Returns the message text as a styled `AttributedString` with markdown, mentions, and links applied.
+    ///
+    /// Behavior is controlled by `MessageListConfig.markdownSupportEnabled`, `MessageListConfig.localLinkDetectionEnabled`,
+    /// and `MessageDisplayOptions.messageLinkDisplayResolver`.
+    @MainActor public func attributedTextContent(
         layoutDirection: LayoutDirection,
         translationLanguage: TranslationLanguage?
     ) -> AttributedString {
-        guard type != .ephemeral else { return AttributedString() }
-        guard !isDeleted else { return AttributedString() }
-
         @Injected(\.utils) var utils
         @Injected(\.colors) var colors
         @Injected(\.fonts) var fonts
 
-        // Resolve text: prefer translation, fall back to adjusted text
         let text: String
-        if let translationLanguage,
-           let translatedText = textContent(for: translationLanguage) {
+        if let translationLanguage, let translatedText = textContent(for: translationLanguage) {
             text = translatedText
         } else {
-            text = adjustedText
+            text = textContent ?? ""
         }
 
         let foregroundColor: Color = isSentByCurrentUser

@@ -48,6 +48,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Remove `InjectedChannelInfo` from `ChatChannelListItemView` [#1338](https://github.com/GetStream/stream-chat-swiftui/pull/1338)
 - Rename empty state views from `No` prefix to `Empty` prefix [#1345](https://github.com/GetStream/stream-chat-swiftui/pull/1345)
 - Migrate all the old color tokens to new color tokens [#1350](https://github.com/GetStream/stream-chat-swiftui/pull/1350)
+- Replace `LinkDetectionTextView` with `StreamTextView` that uses `ChatMessage.attributedTextContent(layoutDirection:translationLanguage:)` [#1411](https://github.com/GetStream/stream-chat-swiftui/pull/1411)
 
 # [4.99.1](https://github.com/GetStream/stream-chat-swiftui/releases/tag/4.99.1)
 _April 01, 2026_
