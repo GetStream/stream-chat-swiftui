@@ -475,7 +475,6 @@ import XCTest
         
         // When
         let view = testMessageViewContainer(message: message)
-            .environment(\.channelTranslationLanguage, .spanish)
 
         // Then
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
@@ -496,7 +495,6 @@ import XCTest
         
         // When
         let view = testMessageViewContainer(message: message)
-            .environment(\.channelTranslationLanguage, .spanish)
 
         // Then
         AssertSnapshot(view, size: CGSize(width: 375, height: 200))
@@ -638,7 +636,6 @@ import XCTest
         )
         messageViewModel.mockOriginalTextShown = true
         let view = testMessageViewContainer(message: message, messageViewModel: messageViewModel)
-            .environment(\.channelTranslationLanguage, .spanish)
 
         // Then
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
@@ -673,7 +670,6 @@ import XCTest
         )
         messageViewModel.mockOriginalTextShown = false
         let view = testMessageViewContainer(message: message, messageViewModel: messageViewModel)
-            .environment(\.channelTranslationLanguage, .spanish)
 
         // Then
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
@@ -707,7 +703,6 @@ import XCTest
             )
         )
         let view = testMessageViewContainer(message: message, messageViewModel: messageViewModel)
-            .environment(\.channelTranslationLanguage, .spanish)
 
         // Then
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
@@ -836,7 +831,6 @@ import XCTest
             shownAsPreview: true
         )
         .background(Color(colors.backgroundCoreScrim))
-        .environment(\.channelTranslationLanguage, .spanish)
 
         // Then
         AssertSnapshot(view, size: CGSize(width: 375, height: 200))

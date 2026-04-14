@@ -222,7 +222,6 @@ import XCTest
                 onBackgroundTap: {},
                 onActionExecuted: { _ in }
             )
-            .environment(\.messageViewModel, MessageViewModel(message: testMessage, channel: channel))
         }
 
         // Then

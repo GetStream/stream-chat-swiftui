@@ -75,6 +75,7 @@ import StreamChat
     
     var _audioPlayer: AudioPlaying?
     var _audioRecorder: AudioRecording?
+    var linkDetector = TextLinkDetector()
     var pollsDateFormatter: PollTimestampFormatter = DefaultPollTimestampFormatter()
 
     public init(

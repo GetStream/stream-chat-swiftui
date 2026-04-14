@@ -188,17 +188,21 @@ public final class MessageAttachmentsViewOptions: Sendable {
     public let availableWidth: CGFloat
     /// Binding to the currently scrolled message ID.
     public let scrolledId: Binding<String?>
+    /// The translation language to apply, or `nil` to show the original text.
+    public let translationLanguage: TranslationLanguage?
 
     public init(
         message: ChatMessage,
         isFirst: Bool,
         availableWidth: CGFloat,
-        scrolledId: Binding<String?>
+        scrolledId: Binding<String?>,
+        translationLanguage: TranslationLanguage?
     ) {
         self.message = message
         self.isFirst = isFirst
         self.availableWidth = availableWidth
         self.scrolledId = scrolledId
+        self.translationLanguage = translationLanguage
     }
 }
 

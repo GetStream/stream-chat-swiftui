@@ -17,6 +17,7 @@ public struct MessageAttachmentsView<Factory: ViewFactory>: View {
     let message: ChatMessage
     let width: CGFloat
     let isFirst: Bool
+    let translationLanguage: TranslationLanguage?
     @Binding var scrolledId: String?
 
     public init(
@@ -24,12 +25,14 @@ public struct MessageAttachmentsView<Factory: ViewFactory>: View {
         message: ChatMessage,
         width: CGFloat,
         isFirst: Bool,
-        scrolledId: Binding<String?>
+        scrolledId: Binding<String?>,
+        translationLanguage: TranslationLanguage? = nil
     ) {
         self.factory = factory
         self.message = message
         self.width = width
         self.isFirst = isFirst
+        self.translationLanguage = translationLanguage
         self._scrolledId = scrolledId
     }
 
@@ -114,7 +117,8 @@ public struct MessageAttachmentsView<Factory: ViewFactory>: View {
                 factory.makeAttachmentTextView(
                     options: AttachmentTextViewOptions(
                         message: message,
-                        availableWidth: width
+                        availableWidth: width,
+                        translationLanguage: translationLanguage
                     )
                 )
             }

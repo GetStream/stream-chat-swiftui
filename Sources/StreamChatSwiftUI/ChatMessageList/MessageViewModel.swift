@@ -115,12 +115,13 @@ import StreamChat
         message.isInteractionEnabled && channel.config.quotesEnabled == true
     }
 
-    open var textContent: String {
-        if !originalTextShown, let translatedText {
-            return translatedText
-        }
-
-        return message.adjustedText
+    /// The translation language to use for displaying the message text.
+    ///
+    /// Returns the channel's membership language when the original text is not shown,
+    /// otherwise `nil` to display the original text.
+    public var translationLanguage: TranslationLanguage? {
+        guard !originalTextShown else { return nil }
+        return channel.membership?.language
     }
 
     public var translatedText: String? {
