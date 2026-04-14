@@ -7,10 +7,10 @@ import StreamChatCommonUI
 import SwiftUI
 
 /// A view that loads an image asynchronously using the SDK's ``ImageLoader``
-/// and CDN, then renders content based on the current loading phase.
+/// and CDN requester, then renders content based on the current loading phase.
 ///
 /// This is the single image-loading view for the SwiftUI SDK. It handles:
-/// - CDN URL transformation (signing, headers, caching keys)
+/// - CDN requester URL transformation (signing, headers, caching keys)
 /// - Optional resize parameters for server-side and client-side resizing
 /// - Animated image (GIF) data passthrough
 /// - Cancellation on disappear
@@ -41,7 +41,7 @@ public struct StreamAsyncImage<Content: View>: View {
     ///
     /// - Parameters:
     ///   - url: The image URL, or `nil` for the empty phase.
-    ///   - resize: Optional resize applied both server-side (via CDN) and client-side.
+    ///   - resize: Optional resize applied both server-side (via CDN requester) and client-side.
     ///   - content: A closure that receives the current phase and returns a view.
     public init(
         url: URL?,
@@ -78,13 +78,13 @@ public struct StreamAsyncImage<Content: View>: View {
         }
     }
 
-    /// Loads an image through the Nuke pipeline with CDN transformations.
+    /// Loads an image through the Nuke pipeline with CDN requester transformations.
     /// This is the only Nuke-coupled code path; replace this method
     /// when migrating away from Nuke.
     @MainActor
     private func loadWithNuke(url: URL, resize: ImageResize?) async throws -> StreamAsyncImageResult {
-        let cdn = utils.cdn
-        let cdnRequest = try await cdn.imageRequest(for: url, resize: resize)
+        let cdnRequester = utils.cdnRequester
+        let cdnRequest = try await cdnRequester.imageRequest(for: url, options: .init(resize: resize))
 
         var urlRequest = URLRequest(url: cdnRequest.url)
         if let headers = cdnRequest.headers {

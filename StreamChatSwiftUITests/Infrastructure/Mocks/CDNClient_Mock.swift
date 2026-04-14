@@ -7,10 +7,11 @@ import Foundation
 
 final class CDNStorage_Mock: CDNStorage, @unchecked Sendable {
     lazy var deleteAttachmentMockFunc = MockFunc.mock(for: deleteAttachment)
-    func deleteAttachment(remoteUrl: URL, completion: @escaping @Sendable (Error?) -> Void) {
+    func deleteAttachment(remoteUrl: URL, options: AttachmentDeleteOptions, completion: @escaping @Sendable (Error?) -> Void) {
         deleteAttachmentMockFunc.callAndReturn(
             (
                 remoteUrl,
+                options,
                 completion
             )
         )
@@ -19,7 +20,7 @@ final class CDNStorage_Mock: CDNStorage, @unchecked Sendable {
     lazy var uploadAttachmentMockFunc = MockFunc<
         (
             AnyChatMessageAttachment,
-            (@Sendable (Double) -> Void)?,
+            AttachmentUploadOptions,
             @Sendable (Result<UploadedFile, Error>) -> Void
         ),
         Void
@@ -27,16 +28,16 @@ final class CDNStorage_Mock: CDNStorage, @unchecked Sendable {
 
     func uploadAttachment(
         _ attachment: AnyChatMessageAttachment,
-        progress: (@Sendable (Double) -> Void)?,
+        options: AttachmentUploadOptions,
         completion: @escaping @Sendable (Result<UploadedFile, Error>) -> Void
     ) {
-        uploadAttachmentMockFunc.callAndReturn((attachment, progress, completion))
+        uploadAttachmentMockFunc.callAndReturn((attachment, options, completion))
     }
 
     lazy var uploadAttachmentLocalUrlMockFunc = MockFunc<
         (
             URL,
-            (@Sendable (Double) -> Void)?,
+            AttachmentUploadOptions,
             @Sendable (Result<UploadedFile, Error>) -> Void
         ),
         Void
@@ -44,9 +45,9 @@ final class CDNStorage_Mock: CDNStorage, @unchecked Sendable {
 
     func uploadAttachment(
         localUrl: URL,
-        progress: (@Sendable (Double) -> Void)?,
+        options: AttachmentUploadOptions,
         completion: @escaping @Sendable (Result<UploadedFile, Error>) -> Void
     ) {
-        uploadAttachmentLocalUrlMockFunc.callAndReturn((localUrl, progress, completion))
+        uploadAttachmentLocalUrlMockFunc.callAndReturn((localUrl, options, completion))
     }
 }

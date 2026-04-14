@@ -18,7 +18,7 @@ import StreamChatCommonUI
     public var messageTimestampFormatter: MessageTimestampFormatter
     public var galleryHeaderViewDateFormatter: GalleryHeaderViewDateFormatter
     public var messageDateSeparatorFormatter: MessageDateSeparatorFormatter
-    public var cdn: CDN
+    public var cdnRequester: CDNRequester
     public var videoLoader: VideoLoader
     public var imageLoader: ImageLoader
     public var imageProcessor: ImageProcessor
@@ -83,7 +83,7 @@ import StreamChatCommonUI
         messageTimestampFormatter: MessageTimestampFormatter = ChannelListMessageTimestampFormatter(),
         galleryHeaderViewDateFormatter: GalleryHeaderViewDateFormatter = DefaultGalleryHeaderViewDateFormatter(),
         messageDateSeparatorFormatter: MessageDateSeparatorFormatter = DefaultMessageDateSeparatorFormatter(),
-        cdn: CDN = StreamCDN(),
+        cdnRequester: CDNRequester = StreamCDNRequester(),
         videoLoader: VideoLoader? = nil,
         imageLoader: ImageLoader? = nil,
         imageProcessor: ImageProcessor = StreamImageProcessor(),
@@ -108,15 +108,15 @@ import StreamChatCommonUI
         sortReactions: @escaping (MessageReactionType, MessageReactionType) -> Bool = Utils.defaultSortReactions,
         shouldSyncChannelControllerOnAppear: @escaping (ChatChannelController) -> Bool = { _ in true }
     ) {
-        self.cdn = cdn
+        self.cdnRequester = cdnRequester
         self.markdownFormatter = markdownFormatter
         self.dateFormatter = dateFormatter
         self.messageTimestampFormatter = messageTimestampFormatter
         self.galleryHeaderViewDateFormatter = galleryHeaderViewDateFormatter
         self.messageDateSeparatorFormatter = messageDateSeparatorFormatter
-        let resolvedImageLoader = imageLoader ?? StreamImageLoader(cdn: cdn, downloader: StreamImageDownloader())
+        let resolvedImageLoader = imageLoader ?? StreamImageLoader(cdnRequester: cdnRequester, downloader: StreamImageDownloader())
         self.imageLoader = resolvedImageLoader
-        self.videoLoader = videoLoader ?? StreamVideoLoader(cdn: cdn, imageLoader: resolvedImageLoader)
+        self.videoLoader = videoLoader ?? StreamVideoLoader(cdnRequester: cdnRequester, imageLoader: resolvedImageLoader)
         self.imageProcessor = imageProcessor
         self.channelNameFormatter = channelNameFormatter
         self.avPlayerProvider = avPlayerProvider
@@ -152,11 +152,11 @@ import StreamChatCommonUI
 /// such as injecting authentication headers via a custom `AVURLAsset`.
 ///
 /// The URL passed to ``player(for:completion:)`` has already been resolved
-/// through the `CDN` protocol's `fileRequest(for:completion:)`.
+/// through the `CDNRequester` protocol's `fileRequest(for:completion:)`.
 public protocol AVPlayerProvider {
     /// Creates and returns an `AVPlayer` for the given video URL.
     /// - Parameters:
-    ///   - url: A video URL already resolved through the `CDN`.
+    ///   - url: A video URL already resolved through the `CDNRequester`.
     ///   - completion: A completion that is called when the player is ready or an error occurred.
     func player(
         for url: URL,

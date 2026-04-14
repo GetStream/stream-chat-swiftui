@@ -20,7 +20,7 @@ import StreamChat
         Appearance.bundle = .streamChatUI
         self.chatClient = chatClient
         self.appearance = appearance
-        self.utils = utils ?? Utils(cdn: chatClient.config.cdn)
+        self.utils = utils ?? Utils(cdnRequester: chatClient.config.cdnRequester)
         StreamChatProviderKey.currentValue = self
     }
 }

@@ -191,7 +191,7 @@ struct GridMediaView<Factory: ViewFactory>: View {
 struct StreamVideoPlayer: View {
     @Injected(\.utils) private var utils
 
-    private var cdn: CDN { utils.cdn }
+    private var cdnRequester: CDNRequester { utils.cdnRequester }
 
     private var avPlayerProvider: AVPlayerProvider {
         utils.avPlayerProvider
@@ -218,7 +218,7 @@ struct StreamVideoPlayer: View {
                 avPlayer?.play()
                 return
             }
-            cdn.fileRequest(for: url) { result in
+            cdnRequester.fileRequest(for: url, options: .init()) { result in
                 switch result {
                 case let .success(cdnRequest):
                     avPlayer = AVPlayer(url: cdnRequest.url)
