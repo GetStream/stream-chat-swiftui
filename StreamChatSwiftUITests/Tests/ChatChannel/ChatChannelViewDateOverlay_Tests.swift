@@ -80,7 +80,7 @@ import XCTest
         )
         let mockChannel = ChatChannel.mock(cid: .unique, name: "Test channel")
         var messages = [ChatMessage]()
-        let baseIntervalDistance: TimeInterval = 10000
+        let baseIntervalDistance: TimeInterval = 60
         for i in 0..<3 {
             messages.append(
                 ChatMessage.mock(
@@ -88,7 +88,7 @@ import XCTest
                     cid: mockChannel.cid,
                     text: "Test \(i)",
                     author: .mock(id: .unique, name: "Martin"),
-                    createdAt: Date(timeIntervalSince1970: -TimeInterval(i) * baseIntervalDistance)
+                    createdAt: Date(timeIntervalSince1970: 100000 - TimeInterval(i) * baseIntervalDistance)
                 )
             )
         }
