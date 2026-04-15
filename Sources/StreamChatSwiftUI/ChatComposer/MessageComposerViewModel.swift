@@ -1205,7 +1205,7 @@ final class FileAddedAsset {
             url: imageAttachment.imageURL,
             options: ImageLoadOptions(resize: nil, cdnRequester: chatClient.cdnRequester)
         ) { result in
-            if let image = try? result.get() {
+            if let image = (try? result.get())?.image {
                 let imageAsset = AddedAsset(
                     image: image,
                     id: imageAttachment.id.rawValue,

@@ -42,15 +42,17 @@ public final class MediaAttachment: Identifiable, Equatable, Sendable {
             let imageResize: ImageResize? = resize ? ImageResize(preferredSize) : nil
             utils.mediaLoader.loadImage(
                 url: url,
-                options: ImageLoadOptions(resize: imageResize, cdnRequester: cdnRequester),
-                completion: completion
-            )
+                options: ImageLoadOptions(resize: imageResize, cdnRequester: cdnRequester)
+            ) { result in
+                completion(result.map(\.image))
+            }
         } else if type == .video {
             utils.mediaLoader.loadVideoPreview(
                 at: url,
-                options: VideoLoadOptions(cdnRequester: cdnRequester),
-                completion: completion
-            )
+                options: VideoLoadOptions(cdnRequester: cdnRequester)
+            ) { result in
+                completion(result.map(\.image))
+            }
         }
     }
 

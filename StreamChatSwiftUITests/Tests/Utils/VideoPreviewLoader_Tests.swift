@@ -158,7 +158,7 @@ private class URLOnlyMediaLoader: MediaLoader {
     func loadImage(
         url: URL?,
         options: ImageLoadOptions,
-        completion: @escaping @MainActor (Result<UIImage, Error>) -> Void
+        completion: @escaping @MainActor (Result<MediaLoaderImage, Error>) -> Void
     ) {
         Task { @MainActor in completion(.failure(NSError(domain: "stub", code: 0))) }
     }
@@ -166,23 +166,19 @@ private class URLOnlyMediaLoader: MediaLoader {
     func loadImages(
         from urls: [URL],
         options: ImageBatchLoadOptions,
-        completion: @escaping @MainActor ([UIImage]) -> Void
+        completion: @escaping @MainActor ([MediaLoaderImage]) -> Void
     ) {
         Task { @MainActor in completion([]) }
-    }
-
-    func videoAsset(at url: URL, options: VideoLoadOptions) -> AVURLAsset {
-        AVURLAsset(url: url)
     }
 
     func loadVideoPreview(
         at url: URL,
         options: VideoLoadOptions,
-        completion: @escaping @MainActor (Result<UIImage, Error>) -> Void
+        completion: @escaping @MainActor (Result<MediaLoaderVideoPreview, Error>) -> Void
     ) {
         loadVideoPreviewAtURLCalled = true
         receivedURL = url
-        Task { @MainActor in completion(.success(UIImage())) }
+        Task { @MainActor in completion(.success(MediaLoaderVideoPreview(image: UIImage()))) }
     }
 }
 
@@ -195,7 +191,7 @@ private class FullMediaLoaderTest: MediaLoader {
     func loadImage(
         url: URL?,
         options: ImageLoadOptions,
-        completion: @escaping @MainActor (Result<UIImage, Error>) -> Void
+        completion: @escaping @MainActor (Result<MediaLoaderImage, Error>) -> Void
     ) {
         Task { @MainActor in completion(.failure(NSError(domain: "stub", code: 0))) }
     }
@@ -203,29 +199,29 @@ private class FullMediaLoaderTest: MediaLoader {
     func loadImages(
         from urls: [URL],
         options: ImageBatchLoadOptions,
-        completion: @escaping @MainActor ([UIImage]) -> Void
+        completion: @escaping @MainActor ([MediaLoaderImage]) -> Void
     ) {
         Task { @MainActor in completion([]) }
     }
 
-    func videoAsset(at url: URL, options: VideoLoadOptions) -> AVURLAsset {
-        AVURLAsset(url: url)
-    }
-
-    func loadVideoPreview(at url: URL, options: VideoLoadOptions, completion: @escaping @MainActor (Result<UIImage, Error>) -> Void) {
+    func loadVideoPreview(
+        at url: URL,
+        options: VideoLoadOptions,
+        completion: @escaping @MainActor (Result<MediaLoaderVideoPreview, Error>) -> Void
+    ) {
         loadVideoPreviewAtURLCalled = true
         receivedURL = url
-        Task { @MainActor in completion(.success(UIImage())) }
+        Task { @MainActor in completion(.success(MediaLoaderVideoPreview(image: UIImage()))) }
     }
 
     func loadVideoPreview(
         with attachment: ChatMessageVideoAttachment,
         options: VideoLoadOptions,
-        completion: @escaping @MainActor (Result<UIImage, Error>) -> Void
+        completion: @escaping @MainActor (Result<MediaLoaderVideoPreview, Error>) -> Void
     ) {
         loadVideoPreviewWithAttachmentCalled = true
         receivedAttachment = attachment
-        Task { @MainActor in completion(.success(UIImage())) }
+        Task { @MainActor in completion(.success(MediaLoaderVideoPreview(image: UIImage()))) }
     }
 }
 

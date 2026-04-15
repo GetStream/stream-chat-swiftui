@@ -21,42 +21,48 @@ class ImageLoader_Mock: MediaLoader, @unchecked Sendable {
     func loadImage(
         url: URL?,
         options: ImageLoadOptions,
-        completion: @escaping @MainActor (Result<UIImage, Error>) -> Void
+        completion: @escaping @MainActor (Result<MediaLoaderImage, Error>) -> Void
     ) {
         loadImageCalled = true
         loadImageCallCount += 1
         loadedURLs.append(url)
         StreamConcurrency.onMain {
-            completion(.success(Self.defaultLoadedImage))
+            completion(.success(MediaLoaderImage(image: Self.defaultLoadedImage)))
         }
     }
 
     func loadImages(
         from urls: [URL],
         options: ImageBatchLoadOptions,
-        completion: @escaping @MainActor ([UIImage]) -> Void
+        completion: @escaping @MainActor ([MediaLoaderImage]) -> Void
     ) {
         loadImageCalled = true
         loadImageCallCount += 1
         loadedURLs.append(contentsOf: urls)
 
         StreamConcurrency.onMain {
-            completion([Self.defaultLoadedImage])
+            completion([MediaLoaderImage(image: Self.defaultLoadedImage)])
         }
     }
 
-    func videoAsset(at url: URL, options: VideoLoadOptions) -> AVURLAsset {
-        AVURLAsset(url: url)
+    func videoAsset(
+        at url: URL,
+        options: VideoLoadOptions,
+        completion: @escaping @MainActor (Result<MediaLoaderVideoAsset, Error>) -> Void
+    ) {
+        StreamConcurrency.onMain {
+            completion(.success(MediaLoaderVideoAsset(asset: AVURLAsset(url: url))))
+        }
     }
 
     func loadVideoPreview(
         at url: URL,
         options: VideoLoadOptions,
-        completion: @escaping @MainActor (Result<UIImage, Error>) -> Void
+        completion: @escaping @MainActor (Result<MediaLoaderVideoPreview, Error>) -> Void
     ) {
         loadVideoPreviewCalled = true
         StreamConcurrency.onMain {
-            completion(.success(Self.defaultLoadedImage))
+            completion(.success(MediaLoaderVideoPreview(image: Self.defaultLoadedImage)))
         }
     }
 }
@@ -69,40 +75,46 @@ class TestImagesLoader_Mock: MediaLoader, @unchecked Sendable {
     func loadImage(
         url: URL?,
         options: ImageLoadOptions,
-        completion: @escaping @MainActor (Result<UIImage, Error>) -> Void
+        completion: @escaping @MainActor (Result<MediaLoaderImage, Error>) -> Void
     ) {
         loadImageCalled = true
 
         let image = imageForURL(url)
         StreamConcurrency.onMain {
-            completion(.success(image))
+            completion(.success(MediaLoaderImage(image: image)))
         }
     }
 
     func loadImages(
         from urls: [URL],
         options: ImageBatchLoadOptions,
-        completion: @escaping @MainActor ([UIImage]) -> Void
+        completion: @escaping @MainActor ([MediaLoaderImage]) -> Void
     ) {
         loadImagesCalled = true
 
-        let images = urls.map { imageForURL($0) }
+        let images = urls.map { MediaLoaderImage(image: imageForURL($0)) }
         StreamConcurrency.onMain {
             completion(images)
         }
     }
 
-    func videoAsset(at url: URL, options: VideoLoadOptions) -> AVURLAsset {
-        AVURLAsset(url: url)
+    func videoAsset(
+        at url: URL,
+        options: VideoLoadOptions,
+        completion: @escaping @MainActor (Result<MediaLoaderVideoAsset, Error>) -> Void
+    ) {
+        StreamConcurrency.onMain {
+            completion(.success(MediaLoaderVideoAsset(asset: AVURLAsset(url: url))))
+        }
     }
 
     func loadVideoPreview(
         at url: URL,
         options: VideoLoadOptions,
-        completion: @escaping @MainActor (Result<UIImage, Error>) -> Void
+        completion: @escaping @MainActor (Result<MediaLoaderVideoPreview, Error>) -> Void
     ) {
         StreamConcurrency.onMain {
-            completion(.success(UIImage()))
+            completion(.success(MediaLoaderVideoPreview(image: UIImage())))
         }
     }
 

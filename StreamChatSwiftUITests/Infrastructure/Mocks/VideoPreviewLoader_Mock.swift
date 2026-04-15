@@ -17,42 +17,52 @@ class VideoLoader_Mock: MediaLoader, @unchecked Sendable {
     func loadImage(
         url: URL?,
         options: ImageLoadOptions,
-        completion: @escaping @MainActor (Result<UIImage, Error>) -> Void
+        completion: @escaping @MainActor (Result<MediaLoaderImage, Error>) -> Void
     ) {
         StreamConcurrency.onMain {
-            completion(.success(ImageLoader_Mock.defaultLoadedImage))
+            completion(.success(MediaLoaderImage(image: ImageLoader_Mock.defaultLoadedImage)))
         }
     }
 
     func loadImages(
         from urls: [URL],
         options: ImageBatchLoadOptions,
-        completion: @escaping @MainActor ([UIImage]) -> Void
+        completion: @escaping @MainActor ([MediaLoaderImage]) -> Void
     ) {
         StreamConcurrency.onMain {
-            completion([ImageLoader_Mock.defaultLoadedImage])
+            completion([MediaLoaderImage(image: ImageLoader_Mock.defaultLoadedImage)])
         }
     }
 
-    func videoAsset(at url: URL, options: VideoLoadOptions) -> AVURLAsset {
-        AVURLAsset(url: url)
+    func videoAsset(
+        at url: URL,
+        options: VideoLoadOptions,
+        completion: @escaping @MainActor (Result<MediaLoaderVideoAsset, Error>) -> Void
+    ) {
+        StreamConcurrency.onMain {
+            completion(.success(MediaLoaderVideoAsset(asset: AVURLAsset(url: url))))
+        }
     }
 
-    func loadVideoPreview(at url: URL, options: VideoLoadOptions, completion: @escaping @MainActor (Result<UIImage, Error>) -> Void) {
+    func loadVideoPreview(
+        at url: URL,
+        options: VideoLoadOptions,
+        completion: @escaping @MainActor (Result<MediaLoaderVideoPreview, Error>) -> Void
+    ) {
         loadVideoPreviewCalled = true
 
         StreamConcurrency.onMain {
-            completion(.success(ImageLoader_Mock.defaultLoadedImage))
+            completion(.success(MediaLoaderVideoPreview(image: ImageLoader_Mock.defaultLoadedImage)))
         }
     }
 
     @MainActor func loadVideoPreview(
         with attachment: ChatMessageVideoAttachment,
         options: VideoLoadOptions,
-        completion: @escaping @MainActor (Result<UIImage, Error>) -> Void
+        completion: @escaping @MainActor (Result<MediaLoaderVideoPreview, Error>) -> Void
     ) {
         loadVideoPreviewWithAttachmentCalled = true
 
-        completion(.success(ImageLoader_Mock.defaultLoadedImage))
+        completion(.success(MediaLoaderVideoPreview(image: ImageLoader_Mock.defaultLoadedImage)))
     }
 }
