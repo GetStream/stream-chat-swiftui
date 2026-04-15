@@ -48,7 +48,7 @@ import XCTest
 
     func test_lazyLoadingImage_loadsImageOnAppear() {
         // Given
-        let imageLoader = streamChat?.utils.mediaLoader as? ImageLoader_Mock
+        let imageLoader = streamChat?.utils.mediaLoader as? MediaLoader_Mock
         let source = MediaAttachment(url: .localYodaImage, type: .image)
         let view = LazyLoadingImage(
             source: source,
@@ -77,7 +77,7 @@ import XCTest
 
     func test_lazyLoadingImage_reloadsWhenSourceChanges() {
         // Given
-        let imageLoader = streamChat?.utils.mediaLoader as? ImageLoader_Mock
+        let imageLoader = streamChat?.utils.mediaLoader as? MediaLoader_Mock
         let initialURL = URL(string: "https://example.com/yoda.jpg")!
         let updatedURL = URL(string: "https://example.com/vader.jpg")!
         let source = CurrentValueContainer(MediaAttachment(url: initialURL, type: .image))
@@ -115,7 +115,7 @@ import XCTest
 
     func test_mediaAttachment_generateThumbnail_callsImageLoader() {
         // Given
-        let imageLoader = streamChat?.utils.mediaLoader as? ImageLoader_Mock
+        let imageLoader = streamChat?.utils.mediaLoader as? MediaLoader_Mock
         let attachment = MediaAttachment(url: .localYodaImage, type: .image)
 
         // When

@@ -6,17 +6,18 @@ import AVKit
 import Foundation
 @testable import StreamChat
 import StreamChatCommonUI
-import StreamChatSwiftUI
+@testable import StreamChatSwiftUI
 import UIKit
 import XCTest
 
 /// Mock implementation of `MediaLoader`.
-class ImageLoader_Mock: MediaLoader, @unchecked Sendable {
+class MediaLoader_Mock: MediaLoader, @unchecked Sendable {
     static let defaultLoadedImage = XCTestCase.TestImages.yoda.image
     var loadImageCalled = false
     var loadImageCallCount = 0
     var loadedURLs: [URL?] = []
     var loadVideoPreviewCalled = false
+    var loadVideoPreviewWithAttachmentCalled = false
 
     func loadImage(
         url: URL?,
@@ -40,8 +41,9 @@ class ImageLoader_Mock: MediaLoader, @unchecked Sendable {
         loadImageCallCount += 1
         loadedURLs.append(contentsOf: urls)
 
+        let images = urls.map { _ in MediaLoaderImage(image: Self.defaultLoadedImage) }
         StreamConcurrency.onMain {
-            completion([MediaLoaderImage(image: Self.defaultLoadedImage)])
+            completion(images)
         }
     }
 
@@ -61,6 +63,17 @@ class ImageLoader_Mock: MediaLoader, @unchecked Sendable {
         completion: @escaping @MainActor (Result<MediaLoaderVideoPreview, Error>) -> Void
     ) {
         loadVideoPreviewCalled = true
+        StreamConcurrency.onMain {
+            completion(.success(MediaLoaderVideoPreview(image: Self.defaultLoadedImage)))
+        }
+    }
+
+    func loadVideoPreview(
+        with attachment: ChatMessageVideoAttachment,
+        options: VideoLoadOptions,
+        completion: @escaping @MainActor (Result<MediaLoaderVideoPreview, Error>) -> Void
+    ) {
+        loadVideoPreviewWithAttachmentCalled = true
         StreamConcurrency.onMain {
             completion(.success(MediaLoaderVideoPreview(image: Self.defaultLoadedImage)))
         }

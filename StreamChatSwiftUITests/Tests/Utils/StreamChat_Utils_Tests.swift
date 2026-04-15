@@ -15,14 +15,14 @@ class StreamChat_Utils_Tests: StreamChatTestCase {
 
     override func setUp() {
         let utils = Utils(
-            mediaLoader: ImageLoader_Mock()
+            mediaLoader: MediaLoader_Mock()
         )
         streamChat = StreamChat(chatClient: chatClient, utils: utils)
     }
 
     func test_streamChatUtils_injectMediaLoader_videoPreview() {
         // Given
-        let mediaLoader = utils.mediaLoader as! ImageLoader_Mock
+        let mediaLoader = utils.mediaLoader as! MediaLoader_Mock
 
         // When
         mediaLoader.loadVideoPreview(at: testURL, options: VideoLoadOptions(cdnRequester: CDNRequester_Mock()), completion: { _ in })
@@ -33,7 +33,7 @@ class StreamChat_Utils_Tests: StreamChatTestCase {
 
     func test_streamChatUtils_injectMediaLoader_imageLoading() {
         // Given
-        let mediaLoader = utils.mediaLoader as! ImageLoader_Mock
+        let mediaLoader = utils.mediaLoader as! MediaLoader_Mock
 
         // When
         mediaLoader.loadImage(

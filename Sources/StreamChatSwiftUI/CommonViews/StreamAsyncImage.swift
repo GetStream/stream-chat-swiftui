@@ -77,53 +77,17 @@ public struct StreamAsyncImage<Content: View>: View {
         phase = .loading
 
         do {
-            let result = try await loadWithNuke(url: url, resize: resize)
+            let result = try await NukeImageLoader.loadImage(
+                url: url,
+                resize: resize,
+                cdnRequester: chatClient.config.cdnRequester
+            )
             phase = .success(result)
         } catch {
             if !(error is CancellationError) {
                 phase = .error(error)
             }
         }
-    }
-
-    /// Loads an image through the Nuke pipeline with CDN requester transformations.
-    ///
-    /// Uses Nuke's async `ImageTask.response` which propagates Swift
-    /// concurrency cancellation to the underlying Nuke task automatically.
-    @MainActor
-    private func loadWithNuke(url: URL, resize: ImageResize?) async throws -> StreamAsyncImageResult {
-        let cdnRequester = chatClient.config.cdnRequester
-        let cdnResize = resize.map { CDNImageResize(width: $0.width, height: $0.height, resizeMode: $0.mode.value, crop: $0.mode.cropValue) }
-        let cdnRequest = try await cdnRequester.imageRequest(for: url, options: .init(resize: cdnResize))
-
-        var urlRequest = URLRequest(url: cdnRequest.url)
-        if let headers = cdnRequest.headers {
-            for (key, value) in headers {
-                urlRequest.setValue(value, forHTTPHeaderField: key)
-            }
-        }
-
-        var processors = [ImageProcessing]()
-        if let resize {
-            let size = CGSize(width: resize.width, height: resize.height)
-            if size != .zero {
-                processors.append(ImageProcessors.Resize(size: size))
-            }
-        }
-
-        let request = ImageRequest(
-            urlRequest: urlRequest,
-            processors: processors,
-            userInfo: cdnRequest.cachingKey.map { [ImageRequest.UserInfoKey.imageIdKey: $0 as Any] }
-        )
-
-        let task = ImagePipeline.shared.imageTask(with: request)
-        let response = try await task.response
-        return StreamAsyncImageResult(
-            image: response.image,
-            isAnimated: response.container.type == .gif,
-            animatedImageData: response.container.data
-        )
     }
 }
 
