@@ -29,14 +29,9 @@ import SwiftUI
 /// }
 /// ```
 public struct StreamAsyncImage<Content: View>: View {
-    @Injected(\.utils) private var utils
-    @Injected(\.chatClient) private var chatClient
-
     private let url: URL?
     private let resize: ImageResize?
     private let content: (StreamAsyncImagePhase) -> Content
-
-    @State private var phase = StreamAsyncImagePhase.loading
 
     /// Creates an async image view.
     ///
@@ -55,6 +50,25 @@ public struct StreamAsyncImage<Content: View>: View {
     }
 
     public var body: some View {
+        StreamAsyncImageBody(url: url, resize: resize, content: content)
+    }
+}
+
+/// Private inner view that owns the loading state.
+///
+/// Separated from ``StreamAsyncImage`` so the public struct stays
+/// lightweight during scrolling (no `@State`, no DI resolution).
+/// All cache and network loading runs asynchronously through `.task`.
+private struct StreamAsyncImageBody<Content: View>: View {
+    @Injected(\.chatClient) private var chatClient
+
+    let url: URL?
+    let resize: ImageResize?
+    let content: (StreamAsyncImagePhase) -> Content
+
+    @State private var phase: StreamAsyncImagePhase = .loading
+
+    var body: some View {
         content(phase)
             .compatibility.task(id: taskIdentity) { @MainActor in
                 await loadImage()
@@ -74,13 +88,12 @@ public struct StreamAsyncImage<Content: View>: View {
             return
         }
 
-        phase = .loading
-
         do {
             let result = try await NukeImageLoader.loadImage(
                 url: url,
                 resize: resize,
-                cdnRequester: chatClient.config.cdnRequester
+                cdnRequester: chatClient.config.cdnRequester,
+                onCacheMiss: { phase = .loading }
             )
             phase = .success(result)
         } catch {
