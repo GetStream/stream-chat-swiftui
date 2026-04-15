@@ -109,6 +109,7 @@ class ReactionsDetailViewModel: ObservableObject, ChatReactionListControllerDele
     func messageController(_ controller: ChatMessageController, didChangeMessage change: EntityChange<ChatMessage>) {
         if let message = controller.message {
             self.message = message
+            syncCurrentUserReactions(from: message)
         }
     }
 
@@ -145,5 +146,27 @@ class ReactionsDetailViewModel: ObservableObject, ChatReactionListControllerDele
 
     private var userReactionIDs: Set<MessageReactionType> {
         Set(message.currentUserReactions.map(\.type))
+    }
+
+    private func syncCurrentUserReactions(from message: ChatMessage) {
+        guard let currentUserId = chatClient.currentUserId else { return }
+
+        let currentUserReactions = message.currentUserReactions
+            .sorted { $0.updatedAt > $1.updatedAt }
+        let hadCurrentUserReactions = reactions.contains { $0.author.id == currentUserId }
+
+        guard hadCurrentUserReactions || !currentUserReactions.isEmpty else { return }
+
+        let mergedReactions = reactions
+            .filter { $0.author.id != currentUserId }
+            + currentUserReactions
+
+        let sortedReactions = mergedReactions.sorted { first, second in
+            first.updatedAt > second.updatedAt
+        }
+
+        if reactions != sortedReactions {
+            reactions = sortedReactions
+        }
     }
 }
