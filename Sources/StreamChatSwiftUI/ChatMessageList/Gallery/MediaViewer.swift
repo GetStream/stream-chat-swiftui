@@ -111,6 +111,7 @@ public struct MediaViewer<Factory: ViewFactory>: View {
                     viewFactory.makeMediaViewerFooterView(
                         options: MediaViewerFooterViewOptions(
                             shareContent: sharingContent,
+                            shareFallbackURL: sharingFallbackURL,
                             selected: selected,
                             totalCount: mediaAttachments.count,
                             gridShown: $gridShown
@@ -151,6 +152,14 @@ public struct MediaViewer<Factory: ViewFactory>: View {
         } else {
             []
         }
+    }
+
+    /// Used when there is no in-memory ``UIImage`` (videos never populate ``loadedImages``; images may still be loading).
+    private var sharingFallbackURL: URL? {
+        guard loadedImages[selected] == nil,
+              selected >= 0,
+              selected < mediaAttachments.count else { return nil }
+        return mediaAttachments[selected].url
     }
 }
 
@@ -193,12 +202,20 @@ public struct MediaViewerFooterView: View {
     @Injected(\.tokens) private var tokens
 
     let shareContent: [UIImage]
+    let shareFallbackURL: URL?
     let selected: Int
     let totalCount: Int
     @Binding var gridShown: Bool
 
-    public init(shareContent: [UIImage], selected: Int, totalCount: Int, gridShown: Binding<Bool>) {
+    public init(
+        shareContent: [UIImage],
+        shareFallbackURL: URL? = nil,
+        selected: Int,
+        totalCount: Int,
+        gridShown: Binding<Bool>
+    ) {
         self.shareContent = shareContent
+        self.shareFallbackURL = shareFallbackURL
         self.selected = selected
         self.totalCount = totalCount
         _gridShown = gridShown
@@ -206,7 +223,7 @@ public struct MediaViewerFooterView: View {
 
     public var body: some View {
         HStack {
-            ShareButtonView(content: shareContent)
+            ShareButtonView(content: shareActivityItems)
 
             Spacer()
 
@@ -228,6 +245,16 @@ public struct MediaViewerFooterView: View {
         .padding(.horizontal, tokens.spacingSm)
         .frame(height: 48 + tokens.spacingSm * 2)
         .background(Color(colors.backgroundCoreElevation1))
+    }
+
+    private var shareActivityItems: [Any] {
+        if !shareContent.isEmpty {
+            return shareContent
+        }
+        if let shareFallbackURL {
+            return [shareFallbackURL]
+        }
+        return []
     }
 }
 
