@@ -268,13 +268,13 @@
 				Tests/Utils/ChatClientExtensions_Tests.swift,
 				Tests/Utils/ChatMessageExtensions_Tests.swift,
 				Tests/Utils/ChatUserNamer_Tests.swift,
+				Tests/Utils/MediaLoader_Tests.swift,
 				Tests/Utils/MessagePreviewFormatter_Tests.swift,
 				Tests/Utils/ReactionsIconProvider_Tests.swift,
 				Tests/Utils/SortReactions_Tests.swift,
 				Tests/Utils/StreamChat_Utils_Tests.swift,
 				Tests/Utils/StringExtensions_Tests.swift,
 				Tests/Utils/URLUtils_Tests.swift,
-				Tests/Utils/MediaLoader_Tests.swift,
 				Tests/Utils/ViewFactory_Tests.swift,
 			);
 			target = 8465FBBC2746873A00AF091E /* StreamChatSwiftUITests */;
@@ -1541,7 +1541,7 @@
 			repositoryURL = "https://github.com/GetStream/stream-chat-swift.git";
 			requirement = {
 				kind = revision;
-				revision = e288332e8b50b449fb7c42a573f3fdc588c98480;
+				revision = 5830e77b453afff7313cc12476ad1b8c53b8d215;
 			};
 		};
 		E3A1C01A282BAC66002D1E26 /* XCRemoteSwiftPackageReference "sentry-cocoa" */ = {

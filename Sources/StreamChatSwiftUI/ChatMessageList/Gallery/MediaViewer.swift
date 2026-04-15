@@ -4,6 +4,7 @@
 
 import AVKit
 import StreamChat
+import StreamChatCommonUI
 import SwiftUI
 
 /// View used for displaying image attachments in a gallery.
@@ -291,12 +292,6 @@ struct StreamVideoPlayer: View {
     @Injected(\.utils) private var utils
     @Injected(\.chatClient) private var chatClient
 
-    private var cdnRequester: CDNRequester { chatClient.config.cdnRequester }
-
-    private var avPlayerProvider: AVPlayerProvider {
-        utils.avPlayerProvider
-    }
-
     let url: URL
 
     @State var avPlayer: AVPlayer?
@@ -318,10 +313,13 @@ struct StreamVideoPlayer: View {
                 avPlayer?.play()
                 return
             }
-            cdnRequester.fileRequest(for: url, options: .init()) { result in
+            utils.mediaLoader.loadVideoAsset(
+                at: url,
+                options: VideoLoadOptions(cdnRequester: chatClient.config.cdnRequester)
+            ) { result in
                 switch result {
-                case let .success(cdnRequest):
-                    self.avPlayerProvider.player(for: cdnRequest.url, headers: cdnRequest.headers) { result in
+                case let .success(videoAsset):
+                    utils.avPlayerProvider.player(from: videoAsset) { result in
                         switch result {
                         case let .success(player):
                             self.avPlayer = player

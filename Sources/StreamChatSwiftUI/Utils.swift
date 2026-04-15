@@ -137,52 +137,31 @@ import StreamChatCommonUI
     }
 }
 
-/// Provides a custom `AVPlayer` for a given video URL.
+/// Provides a custom `AVPlayer` from a `MediaLoaderVideoAsset`.
 ///
-/// Conform to this protocol to provide a custom player configuration,
-/// such as injecting authentication headers via a custom `AVURLAsset`.
-///
-/// The URL and optional headers passed to ``player(for:headers:completion:)``
-/// have already been resolved through the `CDNRequester` protocol's
-/// `fileRequest(for:completion:)`.
+/// Conform to this protocol to provide a custom player configuration.
+/// The video asset already contains CDN headers baked into its `AVURLAsset`,
+/// resolved through ``MediaLoader/videoAsset(at:options:completion:)``.
 public protocol AVPlayerProvider {
-    /// Creates and returns an `AVPlayer` for the given video URL.
+    /// Creates and returns an `AVPlayer` from the given video asset.
     /// - Parameters:
-    ///   - url: A video URL already resolved through the `CDNRequester`.
-    ///   - headers: Optional HTTP headers from the CDN request (e.g. authentication).
+    ///   - videoAsset: A video asset already resolved through the `MediaLoader`.
     ///   - completion: A completion that is called when the player is ready or an error occurred.
     func player(
-        for url: URL,
-        headers: [String: String]?,
-        completion: @escaping ((Result<AVPlayer, Error>) -> Void)
+        from videoAsset: MediaLoaderVideoAsset,
+        completion: @escaping (Result<AVPlayer, Error>) -> Void
     )
 }
 
-public extension AVPlayerProvider {
-    /// Default implementation that ignores headers for backwards compatibility.
-    func player(
-        for url: URL,
-        completion: @escaping ((Result<AVPlayer, Error>) -> Void)
-    ) {
-        player(for: url, headers: nil, completion: completion)
-    }
-}
-
-/// The default implementation that creates an `AVPlayer` from the provided URL,
-/// injecting CDN headers when available.
+/// The default implementation that creates an `AVPlayer` from a `MediaLoaderVideoAsset`.
 public final class DefaultAVPlayerProvider: AVPlayerProvider {
     public init() {}
 
     public func player(
-        for url: URL,
-        headers: [String: String]?,
-        completion: @escaping ((Result<AVPlayer, Error>) -> Void)
+        from videoAsset: MediaLoaderVideoAsset,
+        completion: @escaping (Result<AVPlayer, Error>) -> Void
     ) {
-        if let headers, !headers.isEmpty {
-            let asset = AVURLAsset(url: url, options: ["AVURLAssetHTTPHeaderFieldsKey": headers])
-            completion(.success(AVPlayer(playerItem: AVPlayerItem(asset: asset))))
-        } else {
-            completion(.success(AVPlayer(url: url)))
-        }
+        let playerItem = AVPlayerItem(asset: videoAsset.asset)
+        completion(.success(AVPlayer(playerItem: playerItem)))
     }
 }
