@@ -8,6 +8,8 @@
 import XCTest
 
 @MainActor final class ReactionsDetailViewModel_Tests: StreamChatTestCase {
+    private let currentUserId = StreamChatTestCase.currentUserId
+
     // MARK: - Init
 
     func test_init_thenSynchronizeCalled() {
@@ -610,6 +612,98 @@ import XCTest
 
         // Then
         XCTAssertEqual(viewModel.message.text, "Updated text")
+    }
+
+    func test_messageControllerDidChangeMessage_thenCurrentUserReactionIsInsertedImmediately() {
+        // Given
+        let cid = ChannelId.unique
+        let like = MessageReactionType(rawValue: "like")
+        let love = MessageReactionType(rawValue: "love")
+        let message = ChatMessage.mock(cid: cid)
+        let controller = makeReactionListController(messageId: message.id)
+        let existingReaction = ChatMessageReaction.mock(
+            id: "existing",
+            type: love,
+            updatedAt: Date(timeIntervalSince1970: 100),
+            author: .mock(id: "other-user")
+        )
+        controller.reactions_simulated = [existingReaction]
+
+        let viewModel = ReactionsDetailViewModel(message: message, reactionListController: controller)
+        viewModel.controller(controller, didChangeReactions: [])
+
+        let messageController = ChatMessageControllerSUI_Mock.mock(
+            chatClient: chatClient,
+            currentUserId: currentUserId,
+            cid: cid,
+            messageId: message.id
+        )
+        let currentUserReaction = ChatMessageReaction.mock(
+            id: "current-user-reaction",
+            type: like,
+            updatedAt: Date(timeIntervalSince1970: 200),
+            author: .mock(id: currentUserId, name: "You")
+        )
+        let updatedMessage = ChatMessage.mock(
+            id: message.id,
+            cid: cid,
+            reactionScores: [like: 1, love: 1],
+            reactionCounts: [like: 1, love: 1],
+            currentUserReactions: [currentUserReaction]
+        )
+        messageController.message_mock = updatedMessage
+
+        // When
+        viewModel.messageController(messageController, didChangeMessage: .update(updatedMessage))
+
+        // Then
+        XCTAssertEqual(viewModel.reactions.map(\.id), ["current-user-reaction", "existing"])
+    }
+
+    func test_messageControllerDidChangeMessage_thenCurrentUserReactionIsRemovedImmediately() {
+        // Given
+        let cid = ChannelId.unique
+        let like = MessageReactionType(rawValue: "like")
+        let love = MessageReactionType(rawValue: "love")
+        let message = ChatMessage.mock(cid: cid)
+        let controller = makeReactionListController(messageId: message.id)
+        let currentUserReaction = ChatMessageReaction.mock(
+            id: "current-user-reaction",
+            type: like,
+            updatedAt: Date(timeIntervalSince1970: 200),
+            author: .mock(id: currentUserId, name: "You")
+        )
+        let existingReaction = ChatMessageReaction.mock(
+            id: "existing",
+            type: love,
+            updatedAt: Date(timeIntervalSince1970: 100),
+            author: .mock(id: "other-user")
+        )
+        controller.reactions_simulated = [currentUserReaction, existingReaction]
+
+        let viewModel = ReactionsDetailViewModel(message: message, reactionListController: controller)
+        viewModel.controller(controller, didChangeReactions: [])
+
+        let messageController = ChatMessageControllerSUI_Mock.mock(
+            chatClient: chatClient,
+            currentUserId: currentUserId,
+            cid: cid,
+            messageId: message.id
+        )
+        let updatedMessage = ChatMessage.mock(
+            id: message.id,
+            cid: cid,
+            reactionScores: [love: 1],
+            reactionCounts: [love: 1],
+            currentUserReactions: []
+        )
+        messageController.message_mock = updatedMessage
+
+        // When
+        viewModel.messageController(messageController, didChangeMessage: .update(updatedMessage))
+
+        // Then
+        XCTAssertEqual(viewModel.reactions.map(\.id), ["existing"])
     }
 
     func test_messageControllerDidChangeReactions_thenReactionsUpdated() {
