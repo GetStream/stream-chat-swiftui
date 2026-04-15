@@ -6,8 +6,8 @@ import StreamChat
 import StreamChatCommonUI
 import SwiftUI
 
-/// A view that loads an image asynchronously using the SDK's ``ImageLoader``
-/// and CDN requester, then renders content based on the current loading phase.
+/// A view that loads an image asynchronously using the SDK's ``MediaLoader``
+/// and ``CDNRequester``, then renders content based on the current loading phase.
 ///
 /// This is the single image-loading view for the SwiftUI SDK. It handles:
 /// - CDN requester URL transformation (signing, headers, caching keys)
