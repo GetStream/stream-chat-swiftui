@@ -291,7 +291,7 @@ struct StreamVideoPlayer: View {
     @Injected(\.utils) private var utils
     @Injected(\.chatClient) private var chatClient
 
-    private var cdnRequester: CDNRequester { chatClient.cdnRequester }
+    private var cdnRequester: CDNRequester { chatClient.config.cdnRequester }
 
     private var avPlayerProvider: AVPlayerProvider {
         utils.avPlayerProvider

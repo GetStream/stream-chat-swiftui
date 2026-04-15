@@ -37,7 +37,7 @@ public final class MediaAttachment: Identifiable, Equatable, Sendable {
         completion: @escaping @MainActor (Result<UIImage, Error>) -> Void
     ) {
         let utils = InjectedValues[\.utils]
-        let cdnRequester = InjectedValues[\.chatClient].cdnRequester
+        let cdnRequester = InjectedValues[\.chatClient].config.cdnRequester
         if type == .image {
             let imageResize: ImageResize? = resize ? ImageResize(preferredSize) : nil
             utils.mediaLoader.loadImage(

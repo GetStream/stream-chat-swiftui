@@ -84,7 +84,7 @@ public struct StreamAsyncImage<Content: View>: View {
     /// when migrating away from Nuke.
     @MainActor
     private func loadWithNuke(url: URL, resize: ImageResize?) async throws -> StreamAsyncImageResult {
-        let cdnRequester = chatClient.cdnRequester
+        let cdnRequester = chatClient.config.cdnRequester
         let cdnResize = resize.map { CDNImageResize(width: $0.width, height: $0.height, resizeMode: $0.mode.value, crop: $0.mode.cropValue) }
         let cdnRequest = try await cdnRequester.imageRequest(for: url, options: .init(resize: cdnResize))
 
