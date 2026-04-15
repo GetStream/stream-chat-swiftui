@@ -84,7 +84,8 @@ public struct StreamAsyncImage<Content: View>: View {
     @MainActor
     private func loadWithNuke(url: URL, resize: ImageResize?) async throws -> StreamAsyncImageResult {
         let cdnRequester = utils.cdnRequester
-        let cdnRequest = try await cdnRequester.imageRequest(for: url, options: .init(resize: resize))
+        let cdnResize = resize.map { CDNImageResize(width: $0.width, height: $0.height, resizeMode: $0.mode.value, crop: $0.mode.cropValue) }
+        let cdnRequest = try await cdnRequester.imageRequest(for: url, options: .init(resize: cdnResize))
 
         var urlRequest = URLRequest(url: cdnRequest.url)
         if let headers = cdnRequest.headers {
@@ -104,7 +105,7 @@ public struct StreamAsyncImage<Content: View>: View {
         let request = ImageRequest(
             urlRequest: urlRequest,
             processors: processors,
-            userInfo: cdnRequest.cachingKey.map { [.imageIdKey: $0] }
+            userInfo: cdnRequest.cachingKey.map { [ImageRequest.UserInfoKey.imageIdKey: $0 as Any] }
         )
 
         return try await withCheckedThrowingContinuation { continuation in
