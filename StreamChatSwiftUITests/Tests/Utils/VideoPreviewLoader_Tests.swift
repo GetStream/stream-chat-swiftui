@@ -236,16 +236,14 @@ private class ConfigurableImageDownloader: ImageDownloading, @unchecked Sendable
 
     func downloadImage(
         url: URL,
-        headers: [String: String]?,
-        cachingKey: String?,
-        resize: CGSize?,
-        completion: @escaping @MainActor (Result<UIImage, Error>) -> Void
+        options: ImageDownloadingOptions,
+        completion: @escaping @MainActor (Result<DownloadedImage, Error>) -> Void
     ) {
         downloadImageCalled = true
         receivedURL = url
         let result = self.result
         Task { @MainActor in
-            completion(result)
+            completion(result.map { DownloadedImage(image: $0) })
         }
     }
 }
