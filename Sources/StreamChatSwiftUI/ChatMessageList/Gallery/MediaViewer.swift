@@ -156,6 +156,7 @@ public struct MediaViewer<Factory: ViewFactory>: View {
     /// Used when there is no in-memory ``UIImage`` (videos never populate ``loadedImages``; images may still be loading).
     private var sharingFallbackURL: URL? {
         guard loadedImages[selected] == nil,
+              selected >= 0,
               selected < mediaAttachments.count else { return nil }
         return mediaAttachments[selected].url
     }
