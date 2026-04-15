@@ -172,6 +172,14 @@ private class CustomMediaLoader: MediaLoader {
         Task { @MainActor in completion(.failure(NSError(domain: "stub", code: 0))) }
     }
 
+    func loadVideoAsset(
+        at url: URL,
+        options: VideoLoadOptions,
+        completion: @escaping @MainActor (Result<MediaLoaderVideoAsset, Error>) -> Void
+    ) {
+        Task { @MainActor in completion(.success(MediaLoaderVideoAsset(asset: AVURLAsset(url: url)))) }
+    }
+
     func loadVideoPreview(
         with attachment: ChatMessageVideoAttachment,
         options: VideoLoadOptions,
