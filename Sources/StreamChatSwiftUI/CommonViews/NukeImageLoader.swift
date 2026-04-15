@@ -113,7 +113,7 @@ enum NukeImageLoader {
     /// Maps `(url + resize)` → `cachingKey` so ``cachedResult(url:resize:)``
     /// can query Nuke's memory cache using the correct `imageIdKey`.
     /// Populated on the first successful CDN transform for each pair.
-    nonisolated(unsafe) private static let cachingKeyMap = NSCache<NSString, StringBox>()
+    private nonisolated(unsafe) static let cachingKeyMap = NSCache<NSString, StringBox>()
 
     private static func inputKey(url: URL, resize: ImageResize?) -> String {
         let urlPart = url.absoluteString
