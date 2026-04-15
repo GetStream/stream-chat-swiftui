@@ -56,10 +56,15 @@ public struct StreamAsyncImage<Content: View>: View {
 
     public var body: some View {
         content(phase)
-            .onDisappear { phase = .loading }
-            .compatibility.task(id: url?.absoluteString ?? "") { @MainActor in
+            .compatibility.task(id: taskIdentity) { @MainActor in
                 await loadImage()
             }
+    }
+
+    private var taskIdentity: String {
+        let urlPart = url?.absoluteString ?? ""
+        guard let resize else { return urlPart }
+        return "\(urlPart)-\(resize.width)x\(resize.height)-\(resize.mode.value)"
     }
 
     @MainActor
@@ -75,13 +80,16 @@ public struct StreamAsyncImage<Content: View>: View {
             let result = try await loadWithNuke(url: url, resize: resize)
             phase = .success(result)
         } catch {
-            phase = .error(error)
+            if !(error is CancellationError) {
+                phase = .error(error)
+            }
         }
     }
 
     /// Loads an image through the Nuke pipeline with CDN requester transformations.
-    /// This is the only Nuke-coupled code path; replace this method
-    /// when migrating away from Nuke.
+    ///
+    /// Uses Nuke's async `ImageTask.response` which propagates Swift
+    /// concurrency cancellation to the underlying Nuke task automatically.
     @MainActor
     private func loadWithNuke(url: URL, resize: ImageResize?) async throws -> StreamAsyncImageResult {
         let cdnRequester = chatClient.config.cdnRequester
@@ -109,21 +117,13 @@ public struct StreamAsyncImage<Content: View>: View {
             userInfo: cdnRequest.cachingKey.map { [ImageRequest.UserInfoKey.imageIdKey: $0 as Any] }
         )
 
-        return try await withCheckedThrowingContinuation { continuation in
-            ImagePipeline.shared.loadImage(with: request) { result in
-                switch result {
-                case let .success(response):
-                    let imageResult = StreamAsyncImageResult(
-                        image: response.image,
-                        isAnimated: response.container.type == .gif,
-                        animatedImageData: response.container.data
-                    )
-                    continuation.resume(returning: imageResult)
-                case let .failure(error):
-                    continuation.resume(throwing: error)
-                }
-            }
-        }
+        let task = ImagePipeline.shared.imageTask(with: request)
+        let response = try await task.response
+        return StreamAsyncImageResult(
+            image: response.image,
+            isAnimated: response.container.type == .gif,
+            animatedImageData: response.container.data
+        )
     }
 }
 
