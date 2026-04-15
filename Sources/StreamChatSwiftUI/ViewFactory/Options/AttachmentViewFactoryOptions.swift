@@ -310,6 +310,8 @@ public final class MediaViewerToolbarModifierOptions: Sendable {
 public final class MediaViewerFooterViewOptions: Sendable {
     /// The content available for sharing (e.g. loaded images).
     public let shareContent: [UIImage]
+    /// URL to share when ``shareContent`` is empty (e.g. video attachments, or an image still loading).
+    public let shareFallbackURL: URL?
     /// The currently selected media index (zero-based).
     public let selected: Int
     /// The total number of media attachments.
@@ -317,8 +319,15 @@ public final class MediaViewerFooterViewOptions: Sendable {
     /// Binding that controls whether the grid sheet is shown.
     public let gridShown: Binding<Bool>
 
-    public init(shareContent: [UIImage], selected: Int, totalCount: Int, gridShown: Binding<Bool>) {
+    public init(
+        shareContent: [UIImage],
+        shareFallbackURL: URL? = nil,
+        selected: Int,
+        totalCount: Int,
+        gridShown: Binding<Bool>
+    ) {
         self.shareContent = shareContent
+        self.shareFallbackURL = shareFallbackURL
         self.selected = selected
         self.totalCount = totalCount
         self.gridShown = gridShown

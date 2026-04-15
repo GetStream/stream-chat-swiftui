@@ -395,6 +395,7 @@ extension ViewFactory {
     ) -> some View {
         MediaViewerFooterView(
             shareContent: options.shareContent,
+            shareFallbackURL: options.shareFallbackURL,
             selected: options.selected,
             totalCount: options.totalCount,
             gridShown: options.gridShown

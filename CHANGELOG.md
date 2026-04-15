@@ -15,6 +15,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Redesign the thread replies divider in the message replies list [#1354](https://github.com/GetStream/stream-chat-swiftui/pull/1354)
 
 ### 🐞 Fixed
+- Fix empty share sheet when sharing a video from the full-screen media viewer [#1402](https://github.com/GetStream/stream-chat-swiftui/pull/1402)
 - Fix swipe-to-reply icon layout for outgoing messages and RTL [#1402](https://github.com/GetStream/stream-chat-swiftui/pull/1402)
 - Fix unwanted border on the Edit button in Channel Info [#1402](https://github.com/GetStream/stream-chat-swiftui/pull/1402)
 - Fix send button icon not mirroring in RTL layouts [#1397](https://github.com/GetStream/stream-chat-swiftui/pull/1397)
