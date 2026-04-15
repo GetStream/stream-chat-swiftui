@@ -61,4 +61,26 @@ class StreamChat_Utils_Tests: StreamChatTestCase {
         // Then
         XCTAssert(mediaLoader.loadImageCalled == true)
     }
+
+    func test_streamChatUtils_defaultCDNRequester() {
+        // Given
+        let utils = Utils(mediaLoader: MediaLoader_Mock())
+        streamChat = StreamChat(chatClient: chatClient, utils: utils)
+
+        // Then
+        XCTAssert(self.utils.cdnRequester is StreamCDNRequester)
+    }
+
+    func test_streamChatUtils_injectCustomCDNRequester() {
+        // Given
+        let customRequester = CDNRequester_Mock()
+        let utils = Utils(
+            cdnRequester: customRequester,
+            mediaLoader: MediaLoader_Mock()
+        )
+        streamChat = StreamChat(chatClient: chatClient, utils: utils)
+
+        // Then
+        XCTAssert(self.utils.cdnRequester is CDNRequester_Mock)
+    }
 }

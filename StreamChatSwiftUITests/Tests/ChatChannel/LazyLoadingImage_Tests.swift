@@ -133,6 +133,70 @@ import XCTest
         XCTAssertEqual(imageLoader?.loadedURLs.first, .localYodaImage)
     }
 
+    // MARK: - CDN Requester
+
+    func test_mediaAttachment_generateThumbnail_usesInjectedCDNRequester() {
+        // Given
+        let customRequester = CDNRequester_Mock()
+        let mediaLoader = MediaLoader_Mock()
+        let utils = Utils(cdnRequester: customRequester, mediaLoader: mediaLoader)
+        streamChat = StreamChat(chatClient: chatClient, utils: utils)
+        let attachment = MediaAttachment(url: .localYodaImage, type: .image)
+
+        // When
+        let expectation = expectation(description: "Thumbnail generated")
+        attachment.generateThumbnail(
+            resize: true,
+            preferredSize: CGSize(width: 80, height: 80)
+        ) { _ in
+            expectation.fulfill()
+        }
+        wait(for: [expectation], timeout: 2.0)
+
+        // Then
+        XCTAssertEqual(mediaLoader.loadImageOptions.count, 1)
+        XCTAssert(mediaLoader.loadImageOptions.first?.cdnRequester is CDNRequester_Mock)
+    }
+
+    func test_mediaAttachment_videoPreview_usesInjectedCDNRequester() {
+        // Given
+        let customRequester = CDNRequester_Mock()
+        let mediaLoader = MediaLoader_Mock()
+        let utils = Utils(cdnRequester: customRequester, mediaLoader: mediaLoader)
+        streamChat = StreamChat(chatClient: chatClient, utils: utils)
+        let videoAttachment = ChatMessageVideoAttachment(
+            id: .init(cid: .init(type: .messaging, id: "test"), messageId: "msg", index: 0),
+            type: .video,
+            payload: VideoAttachmentPayload(
+                title: nil,
+                videoRemoteURL: URL(string: "https://example.com/video.mp4")!,
+                file: .init(type: .mp4, size: 0, mimeType: nil),
+                extraData: nil
+            ),
+            downloadingState: nil,
+            uploadingState: nil
+        )
+        let attachment = MediaAttachment(
+            url: URL(string: "https://example.com/video.mp4")!,
+            type: .video,
+            videoAttachment: videoAttachment
+        )
+
+        // When
+        let expectation = expectation(description: "Video preview generated")
+        attachment.generateThumbnail(
+            resize: false,
+            preferredSize: CGSize(width: 80, height: 80)
+        ) { _ in
+            expectation.fulfill()
+        }
+        wait(for: [expectation], timeout: 2.0)
+
+        // Then
+        XCTAssertEqual(mediaLoader.loadVideoPreviewOptions.count, 1)
+        XCTAssert(mediaLoader.loadVideoPreviewOptions.first?.cdnRequester is CDNRequester_Mock)
+    }
+
     // MARK: - MediaAttachment Equatable
 
     func test_mediaAttachment_equalityByURL() {
