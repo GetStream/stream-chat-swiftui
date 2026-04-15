@@ -321,7 +321,7 @@ struct StreamVideoPlayer: View {
             cdnRequester.fileRequest(for: url, options: .init()) { result in
                 switch result {
                 case let .success(cdnRequest):
-                    self.avPlayerProvider.player(for: cdnRequest.url) { result in
+                    self.avPlayerProvider.player(for: cdnRequest.url, headers: cdnRequest.headers) { result in
                         switch result {
                         case let .success(player):
                             self.avPlayer = player
