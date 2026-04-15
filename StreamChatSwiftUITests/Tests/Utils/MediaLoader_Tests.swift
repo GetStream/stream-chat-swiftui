@@ -13,41 +13,10 @@ class MediaLoader_Tests: StreamChatTestCase {
     private let thumbnailURL = URL(string: "https://example.com/thumbnail.jpg")!
     private let cdnRequester = CDNRequester_Mock()
 
-    // MARK: - Default Extension (URL-only conformer)
-
-    func test_loadVideoPreviewWithAttachment_defaultExtensionCallsURLMethod() {
-        let loader = URLOnlyMediaLoader()
-        let attachment = makeVideoAttachment(thumbnailURL: thumbnailURL)
-
-        let expectation = expectation(description: "Completion called")
-        var receivedPreview: MediaLoaderVideoPreview?
-        loader.loadVideoPreview(with: attachment, options: VideoLoadOptions(cdnRequester: cdnRequester)) { result in
-            receivedPreview = try? result.get()
-            expectation.fulfill()
-        }
-
-        waitForExpectations(timeout: 1)
-        XCTAssertTrue(loader.loadVideoPreviewAtURLCalled)
-        XCTAssertNotNil(receivedPreview?.image)
-    }
-
-    func test_loadVideoPreviewWithAttachment_defaultExtensionPassesCorrectURL() {
-        let loader = URLOnlyMediaLoader()
-        let attachment = makeVideoAttachment(thumbnailURL: thumbnailURL)
-
-        let expectation = expectation(description: "Completion called")
-        loader.loadVideoPreview(with: attachment, options: VideoLoadOptions(cdnRequester: cdnRequester)) { _ in
-            expectation.fulfill()
-        }
-
-        waitForExpectations(timeout: 1)
-        XCTAssertEqual(loader.receivedURL, attachment.videoURL)
-    }
-
-    // MARK: - Custom conformer implementing both methods
+    // MARK: - Custom conformer
 
     func test_loadVideoPreviewWithAttachment_customImplementationCalled() {
-        let loader = FullMediaLoaderTest()
+        let loader = CustomMediaLoader()
         let attachment = makeVideoAttachment(thumbnailURL: thumbnailURL)
 
         let expectation = expectation(description: "Completion called")
@@ -58,29 +27,12 @@ class MediaLoader_Tests: StreamChatTestCase {
         }
 
         waitForExpectations(timeout: 1)
-        XCTAssertTrue(loader.loadVideoPreviewWithAttachmentCalled)
-        XCTAssertFalse(loader.loadVideoPreviewAtURLCalled)
-        XCTAssertNotNil(receivedPreview?.image)
-    }
-
-    func test_loadVideoPreviewAtURL_customImplementationStillWorks() {
-        let loader = FullMediaLoaderTest()
-
-        let expectation = expectation(description: "Completion called")
-        var receivedPreview: MediaLoaderVideoPreview?
-        loader.loadVideoPreview(at: testURL, options: VideoLoadOptions(cdnRequester: cdnRequester)) { result in
-            receivedPreview = try? result.get()
-            expectation.fulfill()
-        }
-
-        waitForExpectations(timeout: 1)
-        XCTAssertTrue(loader.loadVideoPreviewAtURLCalled)
-        XCTAssertFalse(loader.loadVideoPreviewWithAttachmentCalled)
+        XCTAssertTrue(loader.loadVideoPreviewCalled)
         XCTAssertNotNil(receivedPreview?.image)
     }
 
     func test_loadVideoPreviewWithAttachment_receivesCorrectAttachment() {
-        let loader = FullMediaLoaderTest()
+        let loader = CustomMediaLoader()
         let attachment = makeVideoAttachment(thumbnailURL: thumbnailURL)
 
         let expectation = expectation(description: "Completion called")
@@ -150,50 +102,6 @@ class MediaLoader_Tests: StreamChatTestCase {
         XCTAssertEqual(receivedError?.code, 42)
     }
 
-    // MARK: - StreamMediaLoader loadImages
-
-    func test_streamMediaLoader_loadImages_returnsCorrectCount() {
-        let image = UIImage(systemName: "star.fill")!
-        let downloader = ConfigurableImageDownloader(result: .success(image))
-        let mediaLoader = StreamMediaLoader(downloader: downloader)
-        let urls = [
-            URL(string: "https://example.com/1.jpg")!,
-            URL(string: "https://example.com/2.jpg")!,
-            URL(string: "https://example.com/3.jpg")!
-        ]
-
-        let expectation = expectation(description: "Completion called")
-        var receivedImages: [MediaLoaderImage]?
-        let options = ImageBatchLoadOptions(cdnRequester: cdnRequester)
-        mediaLoader.loadImages(from: urls, options: options) { images in
-            receivedImages = images
-            expectation.fulfill()
-        }
-
-        waitForExpectations(timeout: 2)
-        XCTAssertEqual(receivedImages?.count, 3)
-    }
-
-    func test_streamMediaLoader_loadImages_returnsPlaceholder_onFailure() {
-        let error = NSError(domain: "test", code: 0)
-        let downloader = ConfigurableImageDownloader(result: .failure(error))
-        let mediaLoader = StreamMediaLoader(downloader: downloader)
-        let urls = [URL(string: "https://example.com/fail.jpg")!]
-        let placeholder = UIImage(systemName: "person.fill")!
-
-        let expectation = expectation(description: "Completion called")
-        var receivedImages: [MediaLoaderImage]?
-        let options = ImageBatchLoadOptions(placeholders: [placeholder], cdnRequester: cdnRequester)
-        mediaLoader.loadImages(from: urls, options: options) { images in
-            receivedImages = images
-            expectation.fulfill()
-        }
-
-        waitForExpectations(timeout: 2)
-        XCTAssertEqual(receivedImages?.count, 1)
-        XCTAssertEqual(receivedImages?.first?.image, placeholder)
-    }
-
     // MARK: - StreamMediaLoader with attachment
 
     func test_streamMediaLoader_withAttachment_whenThumbnailURLExists_loadsThumbnailImage() {
@@ -252,41 +160,8 @@ class MediaLoader_Tests: StreamChatTestCase {
 
 // MARK: - Test Doubles
 
-private class URLOnlyMediaLoader: MediaLoader {
-    var loadVideoPreviewAtURLCalled = false
-    var receivedURL: URL?
-
-    func loadImage(
-        url: URL?,
-        options: ImageLoadOptions,
-        completion: @escaping @MainActor (Result<MediaLoaderImage, Error>) -> Void
-    ) {
-        Task { @MainActor in completion(.failure(NSError(domain: "stub", code: 0))) }
-    }
-
-    func loadImages(
-        from urls: [URL],
-        options: ImageBatchLoadOptions,
-        completion: @escaping @MainActor ([MediaLoaderImage]) -> Void
-    ) {
-        Task { @MainActor in completion([]) }
-    }
-
-    func loadVideoPreview(
-        at url: URL,
-        options: VideoLoadOptions,
-        completion: @escaping @MainActor (Result<MediaLoaderVideoPreview, Error>) -> Void
-    ) {
-        loadVideoPreviewAtURLCalled = true
-        receivedURL = url
-        Task { @MainActor in completion(.success(MediaLoaderVideoPreview(image: UIImage()))) }
-    }
-}
-
-private class FullMediaLoaderTest: MediaLoader {
-    var loadVideoPreviewAtURLCalled = false
-    var loadVideoPreviewWithAttachmentCalled = false
-    var receivedURL: URL?
+private class CustomMediaLoader: MediaLoader {
+    var loadVideoPreviewCalled = false
     var receivedAttachment: ChatMessageVideoAttachment?
 
     func loadImage(
@@ -297,30 +172,12 @@ private class FullMediaLoaderTest: MediaLoader {
         Task { @MainActor in completion(.failure(NSError(domain: "stub", code: 0))) }
     }
 
-    func loadImages(
-        from urls: [URL],
-        options: ImageBatchLoadOptions,
-        completion: @escaping @MainActor ([MediaLoaderImage]) -> Void
-    ) {
-        Task { @MainActor in completion([]) }
-    }
-
-    func loadVideoPreview(
-        at url: URL,
-        options: VideoLoadOptions,
-        completion: @escaping @MainActor (Result<MediaLoaderVideoPreview, Error>) -> Void
-    ) {
-        loadVideoPreviewAtURLCalled = true
-        receivedURL = url
-        Task { @MainActor in completion(.success(MediaLoaderVideoPreview(image: UIImage()))) }
-    }
-
     func loadVideoPreview(
         with attachment: ChatMessageVideoAttachment,
         options: VideoLoadOptions,
         completion: @escaping @MainActor (Result<MediaLoaderVideoPreview, Error>) -> Void
     ) {
-        loadVideoPreviewWithAttachmentCalled = true
+        loadVideoPreviewCalled = true
         receivedAttachment = attachment
         Task { @MainActor in completion(.success(MediaLoaderVideoPreview(image: UIImage()))) }
     }

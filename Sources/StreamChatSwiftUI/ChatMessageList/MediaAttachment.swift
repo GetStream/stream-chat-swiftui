@@ -12,19 +12,22 @@ public final class MediaAttachment: Identifiable, Equatable, Sendable {
     public let uploadingState: AttachmentUploadingState?
     public let originalWidth: Double?
     public let originalHeight: Double?
+    let videoAttachment: ChatMessageVideoAttachment?
 
     public init(
         url: URL,
         type: MediaAttachmentType,
         uploadingState: AttachmentUploadingState? = nil,
         originalWidth: Double? = nil,
-        originalHeight: Double? = nil
+        originalHeight: Double? = nil,
+        videoAttachment: ChatMessageVideoAttachment? = nil
     ) {
         self.url = url
         self.type = type
         self.uploadingState = uploadingState
         self.originalWidth = originalWidth
         self.originalHeight = originalHeight
+        self.videoAttachment = videoAttachment
     }
 
     public var id: String {
@@ -46,9 +49,9 @@ public final class MediaAttachment: Identifiable, Equatable, Sendable {
             ) { result in
                 completion(result.map(\.image))
             }
-        } else if type == .video {
+        } else if type == .video, let videoAttachment {
             utils.mediaLoader.loadVideoPreview(
-                at: url,
+                with: videoAttachment,
                 options: VideoLoadOptions(cdnRequester: cdnRequester)
             ) { result in
                 completion(result.map(\.image))
@@ -62,6 +65,7 @@ public final class MediaAttachment: Identifiable, Equatable, Sendable {
             && lhs.uploadingState == rhs.uploadingState
             && lhs.originalWidth == rhs.originalWidth
             && lhs.originalHeight == rhs.originalHeight
+            && lhs.videoAttachment?.id == rhs.videoAttachment?.id
     }
 }
 
@@ -94,7 +98,8 @@ extension MediaAttachment {
             type: .video,
             uploadingState: attachment.uploadingState,
             originalWidth: attachment.originalWidth,
-            originalHeight: attachment.originalHeight
+            originalHeight: attachment.originalHeight,
+            videoAttachment: attachment
         )
     }
 

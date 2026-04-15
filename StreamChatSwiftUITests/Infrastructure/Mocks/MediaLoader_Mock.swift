@@ -19,7 +19,6 @@ class MediaLoader_Mock: MediaLoader, @unchecked Sendable {
     var loadImageCalled = false
     var loadImageCallCount = 0
     var loadedURLs: [URL?] = []
-    var loadVideoPreviewCalled = false
     var loadVideoPreviewWithAttachmentCalled = false
 
     func loadImage(
@@ -36,21 +35,6 @@ class MediaLoader_Mock: MediaLoader, @unchecked Sendable {
         }
     }
 
-    func loadImages(
-        from urls: [URL],
-        options: ImageBatchLoadOptions,
-        completion: @escaping @MainActor ([MediaLoaderImage]) -> Void
-    ) {
-        loadImageCalled = true
-        loadImageCallCount += 1
-        loadedURLs.append(contentsOf: urls)
-
-        let images = urls.map { MediaLoaderImage(image: imageForURL($0)) }
-        StreamConcurrency.onMain {
-            completion(images)
-        }
-    }
-
     func loadVideoAsset(
         at url: URL,
         options: VideoLoadOptions,
@@ -58,17 +42,6 @@ class MediaLoader_Mock: MediaLoader, @unchecked Sendable {
     ) {
         StreamConcurrency.onMain {
             completion(.success(MediaLoaderVideoAsset(asset: AVURLAsset(url: url))))
-        }
-    }
-
-    func loadVideoPreview(
-        at url: URL,
-        options: VideoLoadOptions,
-        completion: @escaping @MainActor (Result<MediaLoaderVideoPreview, Error>) -> Void
-    ) {
-        loadVideoPreviewCalled = true
-        StreamConcurrency.onMain {
-            completion(.success(MediaLoaderVideoPreview(image: Self.defaultLoadedImage)))
         }
     }
 

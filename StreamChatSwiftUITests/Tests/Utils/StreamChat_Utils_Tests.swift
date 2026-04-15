@@ -25,10 +25,26 @@ class StreamChat_Utils_Tests: StreamChatTestCase {
         let mediaLoader = utils.mediaLoader as! MediaLoader_Mock
 
         // When
-        mediaLoader.loadVideoPreview(at: testURL, options: VideoLoadOptions(cdnRequester: CDNRequester_Mock()), completion: { _ in })
+        let attachment = ChatMessageVideoAttachment(
+            id: .init(cid: .init(type: .messaging, id: "test"), messageId: "msg", index: 0),
+            type: .video,
+            payload: VideoAttachmentPayload(
+                title: nil,
+                videoRemoteURL: testURL,
+                file: .init(type: .mp4, size: 0, mimeType: nil),
+                extraData: nil
+            ),
+            downloadingState: nil,
+            uploadingState: nil
+        )
+        mediaLoader.loadVideoPreview(
+            with: attachment,
+            options: VideoLoadOptions(cdnRequester: CDNRequester_Mock()),
+            completion: { _ in }
+        )
 
         // Then
-        XCTAssert(mediaLoader.loadVideoPreviewCalled == true)
+        XCTAssert(mediaLoader.loadVideoPreviewWithAttachmentCalled == true)
     }
 
     func test_streamChatUtils_injectMediaLoader_imageLoading() {
