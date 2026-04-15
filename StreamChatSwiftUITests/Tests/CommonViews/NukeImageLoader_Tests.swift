@@ -8,7 +8,6 @@ import XCTest
 
 @MainActor
 final class NukeImageLoader_Tests: StreamChatTestCase {
-
     // MARK: - cachedResult
 
     func test_cachedResult_returnsNil_whenNoKeyStored() {
