@@ -321,9 +321,6 @@ struct StreamVideoPlayer: View {
             cdnRequester.fileRequest(for: url, options: .init()) { result in
                 switch result {
                 case let .success(cdnRequest):
-                    avPlayer = AVPlayer(url: cdnRequest.url)
-                    try? AVAudioSession.sharedInstance().setCategory(.playback, options: [])
-                    avPlayer?.play()
                     self.avPlayerProvider.player(for: cdnRequest.url) { result in
                         switch result {
                         case let .success(player):
