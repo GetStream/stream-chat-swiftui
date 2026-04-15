@@ -18,6 +18,7 @@ import StreamChatCommonUI
     public var messageTimestampFormatter: MessageTimestampFormatter
     public var galleryHeaderViewDateFormatter: GalleryHeaderViewDateFormatter
     public var messageDateSeparatorFormatter: MessageDateSeparatorFormatter
+    public var cdnRequester: CDNRequester
     public var mediaLoader: MediaLoader
     public var channelNameFormatter: ChannelNameFormatter
     public var avPlayerProvider: AVPlayerProvider
@@ -81,6 +82,7 @@ import StreamChatCommonUI
         messageTimestampFormatter: MessageTimestampFormatter = ChannelListMessageTimestampFormatter(),
         galleryHeaderViewDateFormatter: GalleryHeaderViewDateFormatter = DefaultGalleryHeaderViewDateFormatter(),
         messageDateSeparatorFormatter: MessageDateSeparatorFormatter = DefaultMessageDateSeparatorFormatter(),
+        cdnRequester: CDNRequester = StreamCDNRequester(),
         mediaLoader: MediaLoader? = nil,
         avPlayerProvider: AVPlayerProvider = DefaultAVPlayerProvider(),
         messageTypeResolver: MessageTypeResolving = MessageTypeResolver(),
@@ -108,6 +110,7 @@ import StreamChatCommonUI
         self.messageTimestampFormatter = messageTimestampFormatter
         self.galleryHeaderViewDateFormatter = galleryHeaderViewDateFormatter
         self.messageDateSeparatorFormatter = messageDateSeparatorFormatter
+        self.cdnRequester = cdnRequester
         self.mediaLoader = mediaLoader ?? StreamMediaLoader(downloader: StreamImageDownloader())
         self.channelNameFormatter = channelNameFormatter
         self.avPlayerProvider = avPlayerProvider

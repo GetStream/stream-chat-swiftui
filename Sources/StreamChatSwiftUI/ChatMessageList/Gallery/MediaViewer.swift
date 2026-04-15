@@ -342,7 +342,7 @@ struct StreamVideoPlayer: View {
             }
             utils.mediaLoader.loadVideoAsset(
                 at: url,
-                options: VideoLoadOptions(cdnRequester: chatClient.config.cdnRequester)
+                options: VideoLoadOptions(cdnRequester: utils.cdnRequester)
             ) { result in
                 switch result {
                 case let .success(videoAsset):

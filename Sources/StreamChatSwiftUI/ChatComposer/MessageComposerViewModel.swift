@@ -1203,7 +1203,7 @@ final class FileAddedAsset {
 
         utils.mediaLoader.loadImage(
             url: imageAttachment.imageURL,
-            options: ImageLoadOptions(resize: nil, cdnRequester: chatClient.config.cdnRequester)
+            options: ImageLoadOptions(resize: nil, cdnRequester: utils.cdnRequester)
         ) { result in
             if let image = (try? result.get())?.image {
                 let imageAsset = AddedAsset(

@@ -73,7 +73,7 @@ public struct StreamAsyncImage<Content: View>: View {
 /// The initial phase is resolved by the outer view via a synchronous Nuke
 /// cache lookup. All subsequent loading runs asynchronously through `.task`.
 private struct StreamAsyncImageBody<Content: View>: View {
-    @Injected(\.chatClient) private var chatClient
+    @Injected(\.utils) private var utils
 
     let url: URL?
     let resize: ImageResize?
@@ -106,7 +106,7 @@ private struct StreamAsyncImageBody<Content: View>: View {
             let result = try await NukeImageLoader.loadImage(
                 url: url,
                 resize: resize,
-                cdnRequester: chatClient.config.cdnRequester,
+                cdnRequester: utils.cdnRequester,
                 onCacheMiss: { phase = .loading }
             )
             phase = .success(result)
