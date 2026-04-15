@@ -37,4 +37,43 @@ final class ChatClientExtensions_Tests: StreamChatTestCase {
         // Then
         XCTAssertEqual(size, expectedValue)
     }
+
+    func test_maxAttachmentSize_returnsFallback_whenAppSettingsNil() {
+        // Given — appSettings is nil by default on the mock
+        let fallback: Int64 = 50 * 1024 * 1024
+
+        // When
+        let size = chatClient.maxAttachmentSize(for: .localYodaImage, fallbackSize: fallback)
+
+        // Then
+        XCTAssertEqual(size, fallback)
+    }
+
+    func test_maxAttachmentSize_returnsFallback_whenServerLimitIsZero() {
+        // Given
+        chatClient.mockedAppSettings = .mock(imageUploadConfig: .mock(
+            sizeLimitInBytes: 0
+        ))
+        let fallback: Int64 = 75 * 1024 * 1024
+
+        // When
+        let size = chatClient.maxAttachmentSize(for: .localYodaImage, fallbackSize: fallback)
+
+        // Then
+        XCTAssertEqual(size, fallback)
+    }
+
+    func test_maxAttachmentSize_returnsFallback_whenServerLimitIsNegative() {
+        // Given
+        chatClient.mockedAppSettings = .mock(fileUploadConfig: .mock(
+            sizeLimitInBytes: -1
+        ))
+        let fallback: Int64 = 25 * 1024 * 1024
+
+        // When
+        let size = chatClient.maxAttachmentSize(for: .localYodaQuote, fallbackSize: fallback)
+
+        // Then
+        XCTAssertEqual(size, fallback)
+    }
 }
