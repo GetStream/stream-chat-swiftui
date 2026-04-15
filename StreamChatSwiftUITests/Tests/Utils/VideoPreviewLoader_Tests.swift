@@ -2,39 +2,41 @@
 // Copyright © 2026 Stream.io Inc. All rights reserved.
 //
 
+import AVKit
 @testable import StreamChat
 import StreamChatCommonUI
 @testable import StreamChatSwiftUI
 import XCTest
 
-class VideoLoader_Tests: StreamChatTestCase {
+class MediaLoader_Tests: StreamChatTestCase {
     private let testURL = URL(string: "https://example.com/video.mp4")!
     private let thumbnailURL = URL(string: "https://example.com/thumbnail.jpg")!
+    private let cdnRequester = CDNRequester_Mock()
 
     // MARK: - Default Extension (URL-only conformer)
 
-    func test_loadPreviewWithAttachment_defaultExtensionCallsURLMethod() {
-        let loader = URLOnlyVideoLoader()
+    func test_loadVideoPreviewWithAttachment_defaultExtensionCallsURLMethod() {
+        let loader = URLOnlyMediaLoader()
         let attachment = makeVideoAttachment(thumbnailURL: thumbnailURL)
 
         let expectation = expectation(description: "Completion called")
         var receivedImage: UIImage?
-        loader.loadPreview(with: attachment) { result in
+        loader.loadVideoPreview(with: attachment, options: VideoLoadOptions(cdnRequester: cdnRequester)) { result in
             receivedImage = try? result.get()
             expectation.fulfill()
         }
 
         waitForExpectations(timeout: 1)
-        XCTAssertTrue(loader.loadPreviewAtURLCalled)
+        XCTAssertTrue(loader.loadVideoPreviewAtURLCalled)
         XCTAssertNotNil(receivedImage)
     }
 
-    func test_loadPreviewWithAttachment_defaultExtensionPassesCorrectURL() {
-        let loader = URLOnlyVideoLoader()
+    func test_loadVideoPreviewWithAttachment_defaultExtensionPassesCorrectURL() {
+        let loader = URLOnlyMediaLoader()
         let attachment = makeVideoAttachment(thumbnailURL: thumbnailURL)
 
         let expectation = expectation(description: "Completion called")
-        loader.loadPreview(with: attachment) { _ in
+        loader.loadVideoPreview(with: attachment, options: VideoLoadOptions(cdnRequester: cdnRequester)) { _ in
             expectation.fulfill()
         }
 
@@ -44,45 +46,45 @@ class VideoLoader_Tests: StreamChatTestCase {
 
     // MARK: - Custom conformer implementing both methods
 
-    func test_loadPreviewWithAttachment_customImplementationCalled() {
-        let loader = FullVideoLoaderTest()
+    func test_loadVideoPreviewWithAttachment_customImplementationCalled() {
+        let loader = FullMediaLoaderTest()
         let attachment = makeVideoAttachment(thumbnailURL: thumbnailURL)
 
         let expectation = expectation(description: "Completion called")
         var receivedImage: UIImage?
-        loader.loadPreview(with: attachment) { result in
+        loader.loadVideoPreview(with: attachment, options: VideoLoadOptions(cdnRequester: cdnRequester)) { result in
             receivedImage = try? result.get()
             expectation.fulfill()
         }
 
         waitForExpectations(timeout: 1)
-        XCTAssertTrue(loader.loadPreviewWithAttachmentCalled)
-        XCTAssertFalse(loader.loadPreviewAtURLCalled)
+        XCTAssertTrue(loader.loadVideoPreviewWithAttachmentCalled)
+        XCTAssertFalse(loader.loadVideoPreviewAtURLCalled)
         XCTAssertNotNil(receivedImage)
     }
 
-    func test_loadPreviewAtURL_customImplementationStillWorks() {
-        let loader = FullVideoLoaderTest()
+    func test_loadVideoPreviewAtURL_customImplementationStillWorks() {
+        let loader = FullMediaLoaderTest()
 
         let expectation = expectation(description: "Completion called")
         var receivedImage: UIImage?
-        loader.loadPreview(at: testURL) { result in
+        loader.loadVideoPreview(at: testURL, options: VideoLoadOptions(cdnRequester: cdnRequester)) { result in
             receivedImage = try? result.get()
             expectation.fulfill()
         }
 
         waitForExpectations(timeout: 1)
-        XCTAssertTrue(loader.loadPreviewAtURLCalled)
-        XCTAssertFalse(loader.loadPreviewWithAttachmentCalled)
+        XCTAssertTrue(loader.loadVideoPreviewAtURLCalled)
+        XCTAssertFalse(loader.loadVideoPreviewWithAttachmentCalled)
         XCTAssertNotNil(receivedImage)
     }
 
-    func test_loadPreviewWithAttachment_receivesCorrectAttachment() {
-        let loader = FullVideoLoaderTest()
+    func test_loadVideoPreviewWithAttachment_receivesCorrectAttachment() {
+        let loader = FullMediaLoaderTest()
         let attachment = makeVideoAttachment(thumbnailURL: thumbnailURL)
 
         let expectation = expectation(description: "Completion called")
-        loader.loadPreview(with: attachment) { _ in
+        loader.loadVideoPreview(with: attachment, options: VideoLoadOptions(cdnRequester: cdnRequester)) { _ in
             expectation.fulfill()
         }
 
@@ -91,38 +93,38 @@ class VideoLoader_Tests: StreamChatTestCase {
         XCTAssertEqual(loader.receivedAttachment?.payload.thumbnailURL, thumbnailURL)
     }
 
-    // MARK: - StreamVideoLoader with attachment
+    // MARK: - StreamMediaLoader with attachment
 
-    func test_streamVideoLoader_withAttachment_whenThumbnailURLExists_loadsThumbnailImage() {
-        let imageLoader = ConfigurableImageLoaderTest(result: .success(ConfigurableImageLoaderTest.thumbnailImage))
-        let videoLoader = StreamVideoLoader(imageLoader: imageLoader)
+    func test_streamMediaLoader_withAttachment_whenThumbnailURLExists_loadsThumbnailImage() {
+        let thumbnailImage = UIImage(systemName: "star.fill")!
+        let downloader = ConfigurableImageDownloader(result: .success(thumbnailImage))
+        let mediaLoader = StreamMediaLoader(downloader: downloader)
         let attachment = makeVideoAttachment(thumbnailURL: thumbnailURL)
 
         let expectation = expectation(description: "Completion called")
         var receivedImage: UIImage?
-        videoLoader.loadPreview(with: attachment) { result in
+        mediaLoader.loadVideoPreview(with: attachment, options: VideoLoadOptions(cdnRequester: cdnRequester)) { result in
             receivedImage = try? result.get()
             expectation.fulfill()
         }
 
         waitForExpectations(timeout: 1)
-        XCTAssertTrue(imageLoader.loadImageCalled)
-        XCTAssertEqual(imageLoader.receivedURL, thumbnailURL)
-        XCTAssertEqual(receivedImage, ConfigurableImageLoaderTest.thumbnailImage)
+        XCTAssertTrue(downloader.downloadImageCalled)
+        XCTAssertEqual(receivedImage, thumbnailImage)
     }
 
-    func test_streamVideoLoader_withAttachment_whenNoThumbnailURL_doesNotCallImageLoader() {
-        let imageLoader = ConfigurableImageLoaderTest(result: .success(ConfigurableImageLoaderTest.thumbnailImage))
-        let videoLoader = StreamVideoLoader(imageLoader: imageLoader)
+    func test_streamMediaLoader_withAttachment_whenNoThumbnailURL_doesNotCallImageDownloader() {
+        let downloader = ConfigurableImageDownloader(result: .success(UIImage()))
+        let mediaLoader = StreamMediaLoader(downloader: downloader)
         let attachment = makeVideoAttachment(thumbnailURL: nil)
 
         let expectation = expectation(description: "Completion called")
-        videoLoader.loadPreview(with: attachment) { _ in
+        mediaLoader.loadVideoPreview(with: attachment, options: VideoLoadOptions(cdnRequester: cdnRequester)) { _ in
             expectation.fulfill()
         }
 
         waitForExpectations(timeout: 5)
-        XCTAssertFalse(imageLoader.loadImageCalled)
+        XCTAssertFalse(downloader.downloadImageCalled)
     }
 
     // MARK: - Helpers
@@ -149,46 +151,86 @@ class VideoLoader_Tests: StreamChatTestCase {
 
 // MARK: - Test Doubles
 
-private class URLOnlyVideoLoader: VideoLoader {
-    var loadPreviewAtURLCalled = false
+private class URLOnlyMediaLoader: MediaLoader {
+    var loadVideoPreviewAtURLCalled = false
     var receivedURL: URL?
 
-    func loadPreview(
-        at url: URL,
+    func loadImage(
+        url: URL?,
+        options: ImageLoadOptions,
         completion: @escaping @MainActor (Result<UIImage, Error>) -> Void
     ) {
-        loadPreviewAtURLCalled = true
+        Task { @MainActor in completion(.failure(NSError(domain: "stub", code: 0))) }
+    }
+
+    func loadImages(
+        from urls: [URL],
+        options: ImageBatchLoadOptions,
+        completion: @escaping @MainActor ([UIImage]) -> Void
+    ) {
+        Task { @MainActor in completion([]) }
+    }
+
+    func videoAsset(at url: URL, options: VideoLoadOptions) -> AVURLAsset {
+        AVURLAsset(url: url)
+    }
+
+    func loadVideoPreview(
+        at url: URL,
+        options: VideoLoadOptions,
+        completion: @escaping @MainActor (Result<UIImage, Error>) -> Void
+    ) {
+        loadVideoPreviewAtURLCalled = true
         receivedURL = url
         Task { @MainActor in completion(.success(UIImage())) }
     }
 }
 
-private class FullVideoLoaderTest: VideoLoader {
-    var loadPreviewAtURLCalled = false
-    var loadPreviewWithAttachmentCalled = false
+private class FullMediaLoaderTest: MediaLoader {
+    var loadVideoPreviewAtURLCalled = false
+    var loadVideoPreviewWithAttachmentCalled = false
     var receivedURL: URL?
     var receivedAttachment: ChatMessageVideoAttachment?
 
-    func loadPreview(at url: URL, completion: @escaping @MainActor (Result<UIImage, Error>) -> Void) {
-        loadPreviewAtURLCalled = true
+    func loadImage(
+        url: URL?,
+        options: ImageLoadOptions,
+        completion: @escaping @MainActor (Result<UIImage, Error>) -> Void
+    ) {
+        Task { @MainActor in completion(.failure(NSError(domain: "stub", code: 0))) }
+    }
+
+    func loadImages(
+        from urls: [URL],
+        options: ImageBatchLoadOptions,
+        completion: @escaping @MainActor ([UIImage]) -> Void
+    ) {
+        Task { @MainActor in completion([]) }
+    }
+
+    func videoAsset(at url: URL, options: VideoLoadOptions) -> AVURLAsset {
+        AVURLAsset(url: url)
+    }
+
+    func loadVideoPreview(at url: URL, options: VideoLoadOptions, completion: @escaping @MainActor (Result<UIImage, Error>) -> Void) {
+        loadVideoPreviewAtURLCalled = true
         receivedURL = url
         Task { @MainActor in completion(.success(UIImage())) }
     }
 
-    func loadPreview(
+    func loadVideoPreview(
         with attachment: ChatMessageVideoAttachment,
+        options: VideoLoadOptions,
         completion: @escaping @MainActor (Result<UIImage, Error>) -> Void
     ) {
-        loadPreviewWithAttachmentCalled = true
+        loadVideoPreviewWithAttachmentCalled = true
         receivedAttachment = attachment
         Task { @MainActor in completion(.success(UIImage())) }
     }
 }
 
-private class ConfigurableImageLoaderTest: ImageLoader, @unchecked Sendable {
-    static let thumbnailImage = UIImage(systemName: "star.fill")!
-
-    var loadImageCalled = false
+private class ConfigurableImageDownloader: ImageDownloading, @unchecked Sendable {
+    var downloadImageCalled = false
     var receivedURL: URL?
     private let result: Result<UIImage, Error>
 
@@ -196,27 +238,18 @@ private class ConfigurableImageLoaderTest: ImageLoader, @unchecked Sendable {
         self.result = result
     }
 
-    func loadImage(
-        url: URL?,
-        resize: ImageResize?,
+    func downloadImage(
+        url: URL,
+        headers: [String: String]?,
+        cachingKey: String?,
+        resize: CGSize?,
         completion: @escaping @MainActor (Result<UIImage, Error>) -> Void
     ) {
-        loadImageCalled = true
+        downloadImageCalled = true
         receivedURL = url
+        let result = self.result
         Task { @MainActor in
             completion(result)
-        }
-    }
-
-    func loadImages(
-        from urls: [URL],
-        placeholders: [UIImage],
-        loadThumbnails: Bool,
-        thumbnailSize: CGSize,
-        completion: @escaping @MainActor ([UIImage]) -> Void
-    ) {
-        Task { @MainActor in
-            completion([])
         }
     }
 }

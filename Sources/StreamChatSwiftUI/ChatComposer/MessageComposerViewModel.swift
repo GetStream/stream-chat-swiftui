@@ -1019,6 +1019,7 @@ final class FileAddedAsset {
 
 // The converter responsible to map attachments to assets and vice versa.
 @MainActor class MessageAttachmentsConverter {
+    @Injected(\.chatClient) private var chatClient
     @Injected(\.utils) var utils
 
     /// Converts the added assets to payloads.
@@ -1200,9 +1201,9 @@ final class FileAddedAsset {
             return
         }
 
-        utils.imageLoader.loadImage(
+        utils.mediaLoader.loadImage(
             url: imageAttachment.imageURL,
-            resize: nil
+            options: ImageLoadOptions(resize: nil, cdnRequester: chatClient.cdnRequester)
         ) { result in
             if let image = try? result.get() {
                 let imageAsset = AddedAsset(

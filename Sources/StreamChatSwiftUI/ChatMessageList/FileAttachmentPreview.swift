@@ -12,9 +12,9 @@ public struct FileAttachmentPreview: View {
     @Injected(\.colors) private var colors
     @Injected(\.fonts) private var fonts
     @Injected(\.images) private var images
-    @Injected(\.utils) private var utils
+    @Injected(\.chatClient) private var chatClient
 
-    private var cdnRequester: CDNRequester { utils.cdnRequester }
+    private var cdnRequester: CDNRequester { chatClient.cdnRequester }
 
     let attachment: ChatMessageFileAttachment
     

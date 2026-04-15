@@ -119,6 +119,7 @@
 				Infrastructure/Mocks/AnyEndpoint.swift,
 				Infrastructure/Mocks/APIClient_Mock.swift,
 				Infrastructure/Mocks/CDNClient_Mock.swift,
+				Infrastructure/Mocks/CDNRequester_Mock.swift,
 				Infrastructure/Mocks/ChatMessageControllerSUI_Mock.swift,
 				Infrastructure/Mocks/ChatReactionListControllerSUI_Mock.swift,
 				Infrastructure/Mocks/EventBatcherMock.swift,

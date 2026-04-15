@@ -17,7 +17,7 @@ import UIKit
 
     /// Private vars.
     private lazy var channelNameFormatter = utils.channelNameFormatter
-    private lazy var imageLoader = utils.imageLoader
+    private lazy var mediaLoader = utils.mediaLoader
 
     /// Published vars.
     @Published var channelActions: [ChannelAction]

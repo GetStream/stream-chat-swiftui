@@ -2,6 +2,7 @@
 // Copyright © 2026 Stream.io Inc. All rights reserved.
 //
 
+import AVKit
 import Foundation
 @testable import StreamChat
 import StreamChatCommonUI
@@ -9,16 +10,17 @@ import StreamChatSwiftUI
 import UIKit
 import XCTest
 
-/// Mock implementation of `ImageLoader`.
-class ImageLoader_Mock: ImageLoader, @unchecked Sendable {
+/// Mock implementation of `MediaLoader`.
+class ImageLoader_Mock: MediaLoader, @unchecked Sendable {
     static let defaultLoadedImage = XCTestCase.TestImages.yoda.image
     var loadImageCalled = false
     var loadImageCallCount = 0
     var loadedURLs: [URL?] = []
+    var loadVideoPreviewCalled = false
 
     func loadImage(
         url: URL?,
-        resize: ImageResize?,
+        options: ImageLoadOptions,
         completion: @escaping @MainActor (Result<UIImage, Error>) -> Void
     ) {
         loadImageCalled = true
@@ -31,9 +33,7 @@ class ImageLoader_Mock: ImageLoader, @unchecked Sendable {
 
     func loadImages(
         from urls: [URL],
-        placeholders: [UIImage],
-        loadThumbnails: Bool,
-        thumbnailSize: CGSize,
+        options: ImageBatchLoadOptions,
         completion: @escaping @MainActor ([UIImage]) -> Void
     ) {
         loadImageCalled = true
@@ -44,16 +44,31 @@ class ImageLoader_Mock: ImageLoader, @unchecked Sendable {
             completion([Self.defaultLoadedImage])
         }
     }
+
+    func videoAsset(at url: URL, options: VideoLoadOptions) -> AVURLAsset {
+        AVURLAsset(url: url)
+    }
+
+    func loadVideoPreview(
+        at url: URL,
+        options: VideoLoadOptions,
+        completion: @escaping @MainActor (Result<UIImage, Error>) -> Void
+    ) {
+        loadVideoPreviewCalled = true
+        StreamConcurrency.onMain {
+            completion(.success(Self.defaultLoadedImage))
+        }
+    }
 }
 
-/// Mock implementation of `ImageLoader` that returns different TestImages based on URL.
-class TestImagesLoader_Mock: ImageLoader, @unchecked Sendable {
+/// Mock implementation of `MediaLoader` that returns different TestImages based on URL.
+class TestImagesLoader_Mock: MediaLoader, @unchecked Sendable {
     var loadImageCalled = false
     var loadImagesCalled = false
 
     func loadImage(
         url: URL?,
-        resize: ImageResize?,
+        options: ImageLoadOptions,
         completion: @escaping @MainActor (Result<UIImage, Error>) -> Void
     ) {
         loadImageCalled = true
@@ -66,9 +81,7 @@ class TestImagesLoader_Mock: ImageLoader, @unchecked Sendable {
 
     func loadImages(
         from urls: [URL],
-        placeholders: [UIImage],
-        loadThumbnails: Bool,
-        thumbnailSize: CGSize,
+        options: ImageBatchLoadOptions,
         completion: @escaping @MainActor ([UIImage]) -> Void
     ) {
         loadImagesCalled = true
@@ -76,6 +89,20 @@ class TestImagesLoader_Mock: ImageLoader, @unchecked Sendable {
         let images = urls.map { imageForURL($0) }
         StreamConcurrency.onMain {
             completion(images)
+        }
+    }
+
+    func videoAsset(at url: URL, options: VideoLoadOptions) -> AVURLAsset {
+        AVURLAsset(url: url)
+    }
+
+    func loadVideoPreview(
+        at url: URL,
+        options: VideoLoadOptions,
+        completion: @escaping @MainActor (Result<UIImage, Error>) -> Void
+    ) {
+        StreamConcurrency.onMain {
+            completion(.success(UIImage()))
         }
     }
 

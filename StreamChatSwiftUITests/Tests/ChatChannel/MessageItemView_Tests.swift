@@ -19,8 +19,7 @@ import XCTest
 
         let imageLoader = TestImagesLoader_Mock()
         let utils = Utils(
-            videoLoader: VideoLoader_Mock(),
-            imageLoader: imageLoader,
+            mediaLoader: imageLoader,
             composerConfig: ComposerConfig(isVoiceRecordingEnabled: true)
         )
         streamChat = StreamChat(chatClient: chatClient, utils: utils)

@@ -289,8 +289,9 @@ public struct MediaViewerToolbarModifier: ViewModifier {
 
 struct StreamVideoPlayer: View {
     @Injected(\.utils) private var utils
+    @Injected(\.chatClient) private var chatClient
 
-    private var cdnRequester: CDNRequester { utils.cdnRequester }
+    private var cdnRequester: CDNRequester { chatClient.cdnRequester }
 
     private var avPlayerProvider: AVPlayerProvider {
         utils.avPlayerProvider

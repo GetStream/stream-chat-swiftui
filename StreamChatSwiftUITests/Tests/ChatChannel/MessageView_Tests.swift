@@ -17,8 +17,7 @@ import XCTest
         streamChat = StreamChat(
             chatClient: chatClient,
             utils: Utils(
-                videoLoader: VideoLoader_Mock(),
-                imageLoader: ImageLoader_Mock(),
+                mediaLoader: ImageLoader_Mock(),
                 messageListConfig: .init(markdownSupportEnabled: true),
                 composerConfig: .init(isVoiceRecordingEnabled: true)
             )

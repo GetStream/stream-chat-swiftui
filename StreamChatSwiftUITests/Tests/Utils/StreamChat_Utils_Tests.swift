@@ -4,6 +4,7 @@
 
 import Foundation
 @testable import StreamChat
+import StreamChatCommonUI
 @testable import StreamChatSwiftUI
 import XCTest
 
@@ -14,35 +15,34 @@ class StreamChat_Utils_Tests: StreamChatTestCase {
 
     override func setUp() {
         let utils = Utils(
-            videoLoader: VideoLoader_Mock(),
-            imageLoader: ImageLoader_Mock()
+            mediaLoader: ImageLoader_Mock()
         )
         streamChat = StreamChat(chatClient: chatClient, utils: utils)
     }
 
-    func test_streamChatUtils_injectVideoLoader() {
+    func test_streamChatUtils_injectMediaLoader_videoPreview() {
         // Given
-        let videoLoader = utils.videoLoader as! VideoLoader_Mock
+        let mediaLoader = utils.mediaLoader as! ImageLoader_Mock
 
         // When
-        videoLoader.loadPreview(at: testURL, completion: { _ in })
+        mediaLoader.loadVideoPreview(at: testURL, options: VideoLoadOptions(cdnRequester: CDNRequester_Mock()), completion: { _ in })
 
         // Then
-        XCTAssert(videoLoader.loadPreviewCalled == true)
+        XCTAssert(mediaLoader.loadVideoPreviewCalled == true)
     }
 
-    func test_streamChatUtils_injectImageLoader() {
+    func test_streamChatUtils_injectMediaLoader_imageLoading() {
         // Given
-        let imageLoader = utils.imageLoader as! ImageLoader_Mock
+        let mediaLoader = utils.mediaLoader as! ImageLoader_Mock
 
         // When
-        imageLoader.loadImage(
+        mediaLoader.loadImage(
             url: testURL,
-            resize: nil,
+            options: ImageLoadOptions(cdnRequester: CDNRequester_Mock()),
             completion: { _ in }
         )
 
         // Then
-        XCTAssert(imageLoader.loadImageCalled == true)
+        XCTAssert(mediaLoader.loadImageCalled == true)
     }
 }

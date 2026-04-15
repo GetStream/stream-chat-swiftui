@@ -18,9 +18,7 @@ import StreamChatCommonUI
     public var messageTimestampFormatter: MessageTimestampFormatter
     public var galleryHeaderViewDateFormatter: GalleryHeaderViewDateFormatter
     public var messageDateSeparatorFormatter: MessageDateSeparatorFormatter
-    public var cdnRequester: CDNRequester
-    public var videoLoader: VideoLoader
-    public var imageLoader: ImageLoader
+    public var mediaLoader: MediaLoader
     public var imageProcessor: ImageProcessor
     public var channelNameFormatter: ChannelNameFormatter
     public var avPlayerProvider: AVPlayerProvider
@@ -84,9 +82,7 @@ import StreamChatCommonUI
         messageTimestampFormatter: MessageTimestampFormatter = ChannelListMessageTimestampFormatter(),
         galleryHeaderViewDateFormatter: GalleryHeaderViewDateFormatter = DefaultGalleryHeaderViewDateFormatter(),
         messageDateSeparatorFormatter: MessageDateSeparatorFormatter = DefaultMessageDateSeparatorFormatter(),
-        cdnRequester: CDNRequester = StreamCDNRequester(),
-        videoLoader: VideoLoader? = nil,
-        imageLoader: ImageLoader? = nil,
+        mediaLoader: MediaLoader? = nil,
         imageProcessor: ImageProcessor = StreamImageProcessor(),
         avPlayerProvider: AVPlayerProvider = DefaultAVPlayerProvider(),
         messageTypeResolver: MessageTypeResolving = MessageTypeResolver(),
@@ -109,15 +105,12 @@ import StreamChatCommonUI
         sortReactions: @escaping (MessageReactionType, MessageReactionType) -> Bool = Utils.defaultSortReactions,
         shouldSyncChannelControllerOnAppear: @escaping (ChatChannelController) -> Bool = { _ in true }
     ) {
-        self.cdnRequester = cdnRequester
         self.markdownFormatter = markdownFormatter
         self.dateFormatter = dateFormatter
         self.messageTimestampFormatter = messageTimestampFormatter
         self.galleryHeaderViewDateFormatter = galleryHeaderViewDateFormatter
         self.messageDateSeparatorFormatter = messageDateSeparatorFormatter
-        let resolvedImageLoader = imageLoader ?? StreamImageLoader(cdnRequester: cdnRequester, downloader: StreamImageDownloader())
-        self.imageLoader = resolvedImageLoader
-        self.videoLoader = videoLoader ?? StreamVideoLoader(cdnRequester: cdnRequester, imageLoader: resolvedImageLoader)
+        self.mediaLoader = mediaLoader ?? StreamMediaLoader(downloader: StreamImageDownloader())
         self.imageProcessor = imageProcessor
         self.channelNameFormatter = channelNameFormatter
         self.avPlayerProvider = avPlayerProvider

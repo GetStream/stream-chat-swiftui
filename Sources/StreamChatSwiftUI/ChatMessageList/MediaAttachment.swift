@@ -37,16 +37,18 @@ public final class MediaAttachment: Identifiable, Equatable, Sendable {
         completion: @escaping @MainActor (Result<UIImage, Error>) -> Void
     ) {
         let utils = InjectedValues[\.utils]
+        let cdnRequester = InjectedValues[\.chatClient].cdnRequester
         if type == .image {
             let imageResize: ImageResize? = resize ? ImageResize(preferredSize) : nil
-            utils.imageLoader.loadImage(
+            utils.mediaLoader.loadImage(
                 url: url,
-                resize: imageResize,
+                options: ImageLoadOptions(resize: imageResize, cdnRequester: cdnRequester),
                 completion: completion
             )
         } else if type == .video {
-            utils.videoLoader.loadPreview(
+            utils.mediaLoader.loadVideoPreview(
                 at: url,
+                options: VideoLoadOptions(cdnRequester: cdnRequester),
                 completion: completion
             )
         }

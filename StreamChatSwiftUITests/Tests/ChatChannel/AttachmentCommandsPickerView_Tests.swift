@@ -17,7 +17,7 @@ import XCTest
 
         let imageLoader = TestImagesLoader_Mock()
         let utils = Utils(
-            imageLoader: imageLoader,
+            mediaLoader: imageLoader,
             messageListConfig: MessageListConfig(
                 becomesFirstResponderOnOpen: true,
                 draftMessagesEnabled: true

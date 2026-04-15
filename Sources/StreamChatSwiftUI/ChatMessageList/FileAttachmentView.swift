@@ -226,7 +226,6 @@ struct DownloadShareAttachmentView<Payload: DownloadableAttachmentPayload>: View
     @Injected(\.colors) var colors
     @Injected(\.images) var images
     @Injected(\.chatClient) var chatClient
-    @Injected(\.utils) var utils
 
     @State private var shareSheetShown = false
     @State private var downloadButtonShown: Bool
@@ -280,19 +279,12 @@ struct DownloadShareAttachmentView<Payload: DownloadableAttachmentPayload>: View
         let messageId = attachment.id.messageId
         let cid = attachment.id.cid
         let messageController = chatClient.messageController(cid: cid, messageId: messageId)
-        utils.cdnRequester.fileRequest(for: attachment.remoteURL, options: .init()) { result in
-            switch result {
-            case let .success(cdnRequest):
-                messageController.downloadAttachment(attachment, remoteURL: cdnRequest.url) { result in
-                    if case let .failure(error) = result {
-                        log.error("Error downloading attachment: \(error.localizedDescription)")
-                    } else {
-                        downloadButtonShown = false
-                        shareButtonShown = true
-                    }
-                }
-            case let .failure(error):
-                log.error("Error resolving CDN URL for attachment download: \(error.localizedDescription)")
+        messageController.downloadAttachment(attachment) { result in
+            if case let .failure(error) = result {
+                log.error("Error downloading attachment: \(error.localizedDescription)")
+            } else {
+                downloadButtonShown = false
+                shareButtonShown = true
             }
         }
     }
