@@ -93,6 +93,107 @@ class MediaLoader_Tests: StreamChatTestCase {
         XCTAssertEqual(loader.receivedAttachment?.payload.thumbnailURL, thumbnailURL)
     }
 
+    // MARK: - StreamMediaLoader loadImage
+
+    func test_streamMediaLoader_loadImage_callsDownloader() {
+        let expectedImage = UIImage(systemName: "star.fill")!
+        let downloader = ConfigurableImageDownloader(result: .success(expectedImage))
+        let mediaLoader = StreamMediaLoader(downloader: downloader)
+        let url = URL(string: "https://example.com/image.jpg")!
+
+        let expectation = expectation(description: "Completion called")
+        var receivedImage: MediaLoaderImage?
+        mediaLoader.loadImage(url: url, options: ImageLoadOptions(cdnRequester: cdnRequester)) { result in
+            receivedImage = try? result.get()
+            expectation.fulfill()
+        }
+
+        waitForExpectations(timeout: 1)
+        XCTAssertTrue(downloader.downloadImageCalled)
+        XCTAssertEqual(receivedImage?.image, expectedImage)
+    }
+
+    func test_streamMediaLoader_loadImage_returnsError_whenURLNil() {
+        let downloader = ConfigurableImageDownloader(result: .success(UIImage()))
+        let mediaLoader = StreamMediaLoader(downloader: downloader)
+
+        let expectation = expectation(description: "Completion called")
+        var receivedError: Error?
+        mediaLoader.loadImage(url: nil, options: ImageLoadOptions(cdnRequester: cdnRequester)) { result in
+            if case let .failure(error) = result {
+                receivedError = error
+            }
+            expectation.fulfill()
+        }
+
+        waitForExpectations(timeout: 1)
+        XCTAssertNotNil(receivedError)
+        XCTAssertFalse(downloader.downloadImageCalled)
+    }
+
+    func test_streamMediaLoader_loadImage_propagatesDownloaderError() {
+        let expectedError = NSError(domain: "test", code: 42)
+        let downloader = ConfigurableImageDownloader(result: .failure(expectedError))
+        let mediaLoader = StreamMediaLoader(downloader: downloader)
+        let url = URL(string: "https://example.com/fail.jpg")!
+
+        let expectation = expectation(description: "Completion called")
+        var receivedError: NSError?
+        mediaLoader.loadImage(url: url, options: ImageLoadOptions(cdnRequester: cdnRequester)) { result in
+            if case let .failure(error) = result {
+                receivedError = error as NSError
+            }
+            expectation.fulfill()
+        }
+
+        waitForExpectations(timeout: 1)
+        XCTAssertEqual(receivedError?.code, 42)
+    }
+
+    // MARK: - StreamMediaLoader loadImages
+
+    func test_streamMediaLoader_loadImages_returnsCorrectCount() {
+        let image = UIImage(systemName: "star.fill")!
+        let downloader = ConfigurableImageDownloader(result: .success(image))
+        let mediaLoader = StreamMediaLoader(downloader: downloader)
+        let urls = [
+            URL(string: "https://example.com/1.jpg")!,
+            URL(string: "https://example.com/2.jpg")!,
+            URL(string: "https://example.com/3.jpg")!
+        ]
+
+        let expectation = expectation(description: "Completion called")
+        var receivedImages: [MediaLoaderImage]?
+        let options = ImageBatchLoadOptions(cdnRequester: cdnRequester)
+        mediaLoader.loadImages(from: urls, options: options) { images in
+            receivedImages = images
+            expectation.fulfill()
+        }
+
+        waitForExpectations(timeout: 2)
+        XCTAssertEqual(receivedImages?.count, 3)
+    }
+
+    func test_streamMediaLoader_loadImages_returnsPlaceholder_onFailure() {
+        let error = NSError(domain: "test", code: 0)
+        let downloader = ConfigurableImageDownloader(result: .failure(error))
+        let mediaLoader = StreamMediaLoader(downloader: downloader)
+        let urls = [URL(string: "https://example.com/fail.jpg")!]
+        let placeholder = UIImage(systemName: "person.fill")!
+
+        let expectation = expectation(description: "Completion called")
+        var receivedImages: [MediaLoaderImage]?
+        let options = ImageBatchLoadOptions(placeholders: [placeholder], cdnRequester: cdnRequester)
+        mediaLoader.loadImages(from: urls, options: options) { images in
+            receivedImages = images
+            expectation.fulfill()
+        }
+
+        waitForExpectations(timeout: 2)
+        XCTAssertEqual(receivedImages?.count, 1)
+        XCTAssertEqual(receivedImages?.first?.image, placeholder)
+    }
+
     // MARK: - StreamMediaLoader with attachment
 
     func test_streamMediaLoader_withAttachment_whenThumbnailURLExists_loadsThumbnailImage() {
