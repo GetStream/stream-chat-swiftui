@@ -113,7 +113,7 @@ import XCTest
 
     // MARK: - Generate Thumbnail
 
-    func test_mediaAttachment_generateThumbnail_callsImageLoader() {
+    func test_mediaAttachment_generateThumbnail_callsMediaLoader() {
         // Given
         let imageLoader = streamChat?.utils.mediaLoader as? MediaLoader_Mock
         let attachment = MediaAttachment(url: .localYodaImage, type: .image)
