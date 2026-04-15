@@ -9,6 +9,37 @@ import UIKit
 /// transformations. Isolates all Nuke-specific code so views remain agnostic
 /// of the underlying image loading library.
 enum NukeImageLoader {
+    // MARK: - Synchronous Cache Lookup
+
+    /// Synchronous lookup that queries Nuke's memory cache using a previously
+    /// stored ``CDNRequest/cachingKey``.
+    ///
+    /// After the first load for a given `(url, resize)` pair, the CDN
+    /// requester's `cachingKey` is remembered. Because the `cachingKey`
+    /// already encodes all resize parameters, it is the only identifier
+    /// needed to look up Nuke's memory cache (via `imageIdKey`).
+    ///
+    /// Returns `nil` when the image has never been loaded (no stored key)
+    /// or when Nuke has evicted it from memory.
+    static func cachedResult(url: URL, resize: ImageResize?) -> StreamAsyncImageResult? {
+        let key = inputKey(url: url, resize: resize) as NSString
+        guard let storedKey = cachingKeyMap.object(forKey: key)?.value else { return nil }
+
+        let request = ImageRequest(
+            url: url,
+            processors: makeProcessors(resize: resize),
+            userInfo: [ImageRequest.UserInfoKey.imageIdKey: storedKey as Any]
+        )
+        guard let container = ImagePipeline.shared.cache[request] else { return nil }
+        return StreamAsyncImageResult(
+            image: container.image,
+            isAnimated: container.type == .gif,
+            animatedImageData: container.data
+        )
+    }
+
+    // MARK: - Async Loading
+
     /// Loads an image from the given URL, applying CDN transformations and
     /// optional resize processing.
     ///
@@ -30,6 +61,11 @@ enum NukeImageLoader {
             CDNImageResize(width: $0.width, height: $0.height, resizeMode: $0.mode.value, crop: $0.mode.cropValue)
         }
         let cdnRequest = try await cdnRequester.imageRequest(for: url, options: .init(resize: cdnResize))
+
+        if let cachingKey = cdnRequest.cachingKey {
+            let key = inputKey(url: url, resize: resize) as NSString
+            cachingKeyMap.setObject(StringBox(cachingKey), forKey: key)
+        }
 
         let processors = makeProcessors(resize: resize)
         let userInfo = cdnRequest.cachingKey.map { [ImageRequest.UserInfoKey.imageIdKey: $0 as Any] }
@@ -74,10 +110,26 @@ enum NukeImageLoader {
 
     // MARK: - Private
 
+    /// Maps `(url + resize)` → `cachingKey` so ``cachedResult(url:resize:)``
+    /// can query Nuke's memory cache using the correct `imageIdKey`.
+    /// Populated on the first successful CDN transform for each pair.
+    nonisolated(unsafe) private static let cachingKeyMap = NSCache<NSString, StringBox>()
+
+    private static func inputKey(url: URL, resize: ImageResize?) -> String {
+        let urlPart = url.absoluteString
+        guard let resize else { return urlPart }
+        return "\(urlPart)-\(resize.width)x\(resize.height)-\(resize.mode.value)"
+    }
+
     private static func makeProcessors(resize: ImageResize?) -> [any ImageProcessing] {
         guard let resize else { return [] }
         let size = CGSize(width: resize.width, height: resize.height)
         guard size != .zero else { return [] }
         return [ImageProcessors.Resize(size: size)]
     }
+}
+
+private final class StringBox: @unchecked Sendable {
+    let value: String
+    init(_ value: String) { self.value = value }
 }

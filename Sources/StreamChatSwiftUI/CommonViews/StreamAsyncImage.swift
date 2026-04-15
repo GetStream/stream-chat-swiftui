@@ -50,26 +50,40 @@ public struct StreamAsyncImage<Content: View>: View {
     }
 
     public var body: some View {
-        StreamAsyncImageBody(url: url, resize: resize, content: content)
+        let initialPhase: StreamAsyncImagePhase = {
+            guard let url else { return .empty }
+            if let cached = NukeImageLoader.cachedResult(url: url, resize: resize) {
+                return .success(cached)
+            }
+            return .loading
+        }()
+        StreamAsyncImageBody(
+            url: url,
+            resize: resize,
+            initialPhase: initialPhase,
+            content: content
+        )
     }
 }
 
 /// Private inner view that owns the loading state.
 ///
 /// Separated from ``StreamAsyncImage`` so the public struct stays
-/// lightweight during scrolling (no `@State`, no DI resolution).
-/// All cache and network loading runs asynchronously through `.task`.
+/// lightweight during scrolling (no `@State`, no DI resolution in `init`).
+/// The initial phase is resolved by the outer view via a synchronous Nuke
+/// cache lookup. All subsequent loading runs asynchronously through `.task`.
 private struct StreamAsyncImageBody<Content: View>: View {
     @Injected(\.chatClient) private var chatClient
 
     let url: URL?
     let resize: ImageResize?
+    let initialPhase: StreamAsyncImagePhase
     let content: (StreamAsyncImagePhase) -> Content
 
-    @State private var phase: StreamAsyncImagePhase = .loading
+    @State private var phase: StreamAsyncImagePhase?
 
     var body: some View {
-        content(phase)
+        content(phase ?? initialPhase)
             .compatibility.task(id: taskIdentity) { @MainActor in
                 await loadImage()
             }
