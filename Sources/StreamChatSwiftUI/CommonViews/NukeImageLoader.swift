@@ -3,11 +3,17 @@
 //
 
 import StreamChat
+import StreamChatCommonUI
 import UIKit
 
-/// Internal helper that bridges the vendored Nuke pipeline with CDN requester
-/// transformations. Isolates all Nuke-specific code so views remain agnostic
-/// of the underlying image loading library.
+/// Internal helper that bridges the ``MediaLoader`` with SwiftUI-specific
+/// concerns like synchronous cache lookups and animated image data.
+///
+/// The actual image loading is delegated to the ``MediaLoader``. This type
+/// only adds:
+/// - A synchronous Nuke memory-cache check for instant initial phases
+/// - An `onCacheMiss` callback so ``StreamAsyncImage`` can delay showing
+///   a loading indicator until after the cache check
 enum NukeImageLoader {
     // MARK: - Synchronous Cache Lookup
 
@@ -40,16 +46,13 @@ enum NukeImageLoader {
 
     // MARK: - Async Loading
 
-    /// Loads an image from the given URL, applying CDN transformations and
-    /// optional resize processing.
+    /// Loads an image through the ``MediaLoader``, with an `onCacheMiss`
+    /// callback for phase transitions.
     ///
-    /// Checks Nuke's memory cache (using the ``CDNRequest/cachingKey``) after
-    /// CDN transformation. If the image is already cached, it returns
-    /// immediately without a network request. Otherwise, calls `onCacheMiss`
-    /// (so callers can show a loading state) and fetches from the network.
-    ///
-    /// Uses Nuke's async `ImageTask.response` which propagates Swift
-    /// concurrency cancellation to the underlying download automatically.
+    /// Before hitting the network, resolves the CDN URL and checks Nuke's
+    /// memory cache. If the image is cached, it returns immediately. Otherwise,
+    /// calls `onCacheMiss` (so the caller can show a loading indicator) and
+    /// delegates the actual download to the ``MediaLoader``.
     @MainActor
     static func loadImage(
         url: URL,
@@ -57,55 +60,38 @@ enum NukeImageLoader {
         mediaLoader: MediaLoader,
         onCacheMiss: @MainActor () -> Void = {}
     ) async throws -> StreamAsyncImageResult {
-        let cdnRequester = (mediaLoader as? StreamMediaLoader)?.cdnRequester ?? StreamCDNRequester()
-        let cdnResize = resize.map {
-            CDNImageResize(width: $0.width, height: $0.height, resizeMode: $0.mode.value, crop: $0.mode.cropValue)
-        }
-        let cdnRequest = try await cdnRequester.imageRequest(for: url, options: .init(resize: cdnResize))
+        // Resolve CDN URL to check cache with the correct key
+        if let streamLoader = mediaLoader as? StreamMediaLoader {
+            let cdnResize = resize.map {
+                CDNImageResize(width: $0.width, height: $0.height, resizeMode: $0.mode.value, crop: $0.mode.cropValue)
+            }
+            let cdnRequest = try await streamLoader.cdnRequester.imageRequest(for: url, options: .init(resize: cdnResize))
 
-        if let cachingKey = cdnRequest.cachingKey {
-            let key = inputKey(url: url, resize: resize) as NSString
-            cachingKeyMap.setObject(StringBox(cachingKey), forKey: key)
-        }
+            if let cachingKey = cdnRequest.cachingKey {
+                let key = inputKey(url: url, resize: resize) as NSString
+                cachingKeyMap.setObject(StringBox(cachingKey), forKey: key)
+            }
 
-        let processors = makeProcessors(resize: resize)
-        let userInfo = cdnRequest.cachingKey.map { [ImageRequest.UserInfoKey.imageIdKey: $0 as Any] }
+            let processors = makeProcessors(resize: resize)
+            let userInfo = cdnRequest.cachingKey.map { [ImageRequest.UserInfoKey.imageIdKey: $0 as Any] }
+            let cacheRequest = ImageRequest(url: cdnRequest.url, processors: processors, userInfo: userInfo)
 
-        let cacheRequest = ImageRequest(
-            url: cdnRequest.url,
-            processors: processors,
-            userInfo: userInfo
-        )
-
-        if let container = ImagePipeline.shared.cache[cacheRequest] {
-            return StreamAsyncImageResult(
-                image: container.image,
-                isAnimated: container.type == .gif,
-                animatedImageData: container.data
-            )
+            if let container = ImagePipeline.shared.cache[cacheRequest] {
+                return StreamAsyncImageResult(
+                    image: container.image,
+                    isAnimated: container.type == .gif,
+                    animatedImageData: container.data
+                )
+            }
         }
 
         onCacheMiss()
 
-        var urlRequest = URLRequest(url: cdnRequest.url)
-        if let headers = cdnRequest.headers {
-            for (key, value) in headers {
-                urlRequest.setValue(value, forHTTPHeaderField: key)
-            }
-        }
-
-        let networkRequest = ImageRequest(
-            urlRequest: urlRequest,
-            processors: processors,
-            userInfo: userInfo
-        )
-
-        let task = ImagePipeline.shared.imageTask(with: networkRequest)
-        let response = try await task.response
+        let loaded = try await mediaLoader.loadImage(url: url, options: ImageLoadOptions(resize: resize))
         return StreamAsyncImageResult(
-            image: response.image,
-            isAnimated: response.container.type == .gif,
-            animatedImageData: response.container.data
+            image: loaded.image,
+            isAnimated: loaded.isAnimated,
+            animatedImageData: loaded.animatedImageData
         )
     }
 
@@ -122,7 +108,7 @@ enum NukeImageLoader {
         return "\(urlPart)-\(resize.width)x\(resize.height)-\(resize.mode.value)"
     }
 
-    private static func makeProcessors(resize: ImageResize?) -> [any ImageProcessing] {
+    static func makeProcessors(resize: ImageResize?) -> [any ImageProcessing] {
         guard let resize else { return [] }
         let size = CGSize(width: resize.width, height: resize.height)
         guard size != .zero else { return [] }
