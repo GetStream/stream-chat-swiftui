@@ -109,7 +109,7 @@ private struct StreamAsyncImageBody<Content: View>: View {
             let result = try await NukeImageLoader.loadImage(
                 url: url,
                 resize: resize,
-                cdnRequester: utils.cdnRequester,
+                mediaLoader: utils.mediaLoader,
                 onCacheMiss: { phase = .loading }
             )
             phase = .success(result)

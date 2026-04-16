@@ -3,6 +3,7 @@
 //
 
 @testable import StreamChat
+import StreamChatCommonUI
 @testable import StreamChatSwiftUI
 import XCTest
 
@@ -28,13 +29,14 @@ final class NukeImageLoader_Tests: StreamChatTestCase {
     func test_loadImage_callsOnCacheMiss_whenImageNotCached() async throws {
         let url = URL(string: "https://example.com/test-miss-\(UUID().uuidString).jpg")!
         let cdnRequester = CDNRequester_Mock()
+        let loader = StreamMediaLoader(cdnRequester: cdnRequester, downloader: StreamImageDownloader())
         var cacheMissCalled = false
 
         do {
             _ = try await NukeImageLoader.loadImage(
                 url: url,
                 resize: nil,
-                cdnRequester: cdnRequester,
+                mediaLoader: loader,
                 onCacheMiss: { cacheMissCalled = true }
             )
         } catch {
@@ -49,12 +51,13 @@ final class NukeImageLoader_Tests: StreamChatTestCase {
     func test_loadImage_callsCDNRequester_withCorrectURL() async {
         let url = URL(string: "https://example.com/cdn-check-\(UUID().uuidString).jpg")!
         let cdnRequester = CDNRequester_Mock()
+        let loader = StreamMediaLoader(cdnRequester: cdnRequester, downloader: StreamImageDownloader())
 
         do {
             _ = try await NukeImageLoader.loadImage(
                 url: url,
                 resize: nil,
-                cdnRequester: cdnRequester
+                mediaLoader: loader
             )
         } catch {
             // Expected
@@ -69,13 +72,14 @@ final class NukeImageLoader_Tests: StreamChatTestCase {
     func test_loadImage_passesCDNRequester_withResize() async {
         let url = URL(string: "https://example.com/resize-\(UUID().uuidString).jpg")!
         let cdnRequester = CDNRequester_Mock()
+        let loader = StreamMediaLoader(cdnRequester: cdnRequester, downloader: StreamImageDownloader())
         let resize = ImageResize(CGSize(width: 200, height: 150))
 
         do {
             _ = try await NukeImageLoader.loadImage(
                 url: url,
                 resize: resize,
-                cdnRequester: cdnRequester
+                mediaLoader: loader
             )
         } catch {
             // Expected
@@ -101,6 +105,7 @@ final class NukeImageLoader_Tests: StreamChatTestCase {
         cdnRequester.imageRequestResult = .success(
             CDNRequest(url: cdnURL, cachingKey: uniqueKey)
         )
+        let loader = StreamMediaLoader(cdnRequester: cdnRequester, downloader: StreamImageDownloader())
 
         let originalURL = URL(string: "https://example.com/original-\(uniqueKey)")!
         var cacheMissCalled = false
@@ -108,7 +113,7 @@ final class NukeImageLoader_Tests: StreamChatTestCase {
         let result = try await NukeImageLoader.loadImage(
             url: originalURL,
             resize: nil,
-            cdnRequester: cdnRequester,
+            mediaLoader: loader,
             onCacheMiss: { cacheMissCalled = true }
         )
 
@@ -131,6 +136,7 @@ final class NukeImageLoader_Tests: StreamChatTestCase {
         cdnRequester.imageRequestResult = .success(
             CDNRequest(url: cdnURL, cachingKey: uniqueKey)
         )
+        let loader = StreamMediaLoader(cdnRequester: cdnRequester, downloader: StreamImageDownloader())
 
         let request = ImageRequest(
             url: cdnURL,
@@ -141,7 +147,7 @@ final class NukeImageLoader_Tests: StreamChatTestCase {
         _ = try await NukeImageLoader.loadImage(
             url: originalURL,
             resize: nil,
-            cdnRequester: cdnRequester
+            mediaLoader: loader
         )
 
         let cached = NukeImageLoader.cachedResult(url: originalURL, resize: nil)

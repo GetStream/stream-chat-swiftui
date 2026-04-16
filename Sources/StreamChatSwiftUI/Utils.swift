@@ -18,7 +18,18 @@ import StreamChatCommonUI
     public var messageTimestampFormatter: MessageTimestampFormatter
     public var galleryHeaderViewDateFormatter: GalleryHeaderViewDateFormatter
     public var messageDateSeparatorFormatter: MessageDateSeparatorFormatter
-    public var cdnRequester: CDNRequester
+    /// The CDN requester used for URL transformation (signing, headers, resizing).
+    ///
+    /// - Important: This property is provided for backward compatibility.
+    /// Prefer configuring the CDN requester through ``StreamMediaLoader/init(cdnRequester:downloader:)``
+    /// and setting ``mediaLoader`` instead.
+    @available(*, deprecated, message: "Configure CDNRequester through StreamMediaLoader(cdnRequester:) and set mediaLoader instead.")
+    public var cdnRequester: CDNRequester {
+        get { (mediaLoader as? StreamMediaLoader)?.cdnRequester ?? StreamCDNRequester() }
+        set { mediaLoader = StreamMediaLoader(cdnRequester: newValue, downloader: StreamImageDownloader()) }
+    }
+
+    /// The object responsible for loading images, video previews, and resolving file URLs.
     public var mediaLoader: MediaLoader
     public var channelNameFormatter: ChannelNameFormatter
     public var avPlayerProvider: AVPlayerProvider
@@ -82,7 +93,6 @@ import StreamChatCommonUI
         messageTimestampFormatter: MessageTimestampFormatter = ChannelListMessageTimestampFormatter(),
         galleryHeaderViewDateFormatter: GalleryHeaderViewDateFormatter = DefaultGalleryHeaderViewDateFormatter(),
         messageDateSeparatorFormatter: MessageDateSeparatorFormatter = DefaultMessageDateSeparatorFormatter(),
-        cdnRequester: CDNRequester = StreamCDNRequester(),
         mediaLoader: MediaLoader? = nil,
         avPlayerProvider: AVPlayerProvider = DefaultAVPlayerProvider(),
         messageTypeResolver: MessageTypeResolving = MessageTypeResolver(),
@@ -110,7 +120,6 @@ import StreamChatCommonUI
         self.messageTimestampFormatter = messageTimestampFormatter
         self.galleryHeaderViewDateFormatter = galleryHeaderViewDateFormatter
         self.messageDateSeparatorFormatter = messageDateSeparatorFormatter
-        self.cdnRequester = cdnRequester
         self.mediaLoader = mediaLoader ?? StreamMediaLoader(downloader: StreamImageDownloader())
         self.channelNameFormatter = channelNameFormatter
         self.avPlayerProvider = avPlayerProvider
