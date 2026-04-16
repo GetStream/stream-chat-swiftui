@@ -3,6 +3,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 # Upcoming
 
+### 🔄 Changed
+- Bump `stream-chat-swift` dependency to `develop` @ `ca835ce6621c027a6f97cf37ffe30d18d4d59be6`
+
 ### ✅ Added
 - Redesign attachment uploading progress and error state indicators [#1408](https://github.com/GetStream/stream-chat-swiftui/pull/1408)
 - Add inline upload progress and retry UI for file attachments [#1408](https://github.com/GetStream/stream-chat-swiftui/pull/1408)
