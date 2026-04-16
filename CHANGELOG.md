@@ -3,6 +3,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 # Upcoming
 
+### 🔄 Changed
+
+# [5.0.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/5.0.0)
+_April 16, 2026_
+
 ### ✅ Added
 - Redesign attachment uploading progress and error state indicators [#1408](https://github.com/GetStream/stream-chat-swiftui/pull/1408)
 - Add inline upload progress and retry UI for file attachments [#1408](https://github.com/GetStream/stream-chat-swiftui/pull/1408)
