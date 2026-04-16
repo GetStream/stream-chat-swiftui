@@ -198,11 +198,12 @@ private class CustomMediaLoader: MediaLoader, @unchecked Sendable {
         Task { @MainActor in completion(.success(MediaLoaderVideoPreview(image: UIImage()))) }
     }
 
-    func resolveFileURL(
-        _ url: URL,
-        completion: @escaping @MainActor (Result<CDNRequest, Error>) -> Void
+    func loadFile(
+        at url: URL,
+        options: FileLoadOptions,
+        completion: @escaping @MainActor (Result<MediaLoaderFile, Error>) -> Void
     ) {
-        Task { @MainActor in completion(.success(CDNRequest(url: url))) }
+        Task { @MainActor in completion(.success(MediaLoaderFile(url: url))) }
     }
 }
 

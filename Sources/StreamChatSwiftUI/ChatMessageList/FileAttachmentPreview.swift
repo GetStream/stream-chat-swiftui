@@ -58,10 +58,10 @@ public struct FileAttachmentPreview: View {
                 }
             }
             .onAppear {
-                utils.mediaLoader.resolveFileURL(url) { result in
+                utils.mediaLoader.loadFile(at: url, options: FileLoadOptions()) { result in
                     switch result {
-                    case let .success(cdnRequest):
-                        adjustedUrl = cdnRequest.url
+                    case let .success(file):
+                        adjustedUrl = file.url
                     case let .failure(error):
                         self.error = error
                     }

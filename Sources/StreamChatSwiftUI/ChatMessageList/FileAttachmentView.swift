@@ -280,10 +280,10 @@ struct DownloadShareAttachmentView<Payload: DownloadableAttachmentPayload>: View
         let cid = attachment.id.cid
         let messageController = chatClient.messageController(cid: cid, messageId: messageId)
         let mediaLoader = InjectedValues[\.utils].mediaLoader
-        mediaLoader.resolveFileURL(attachment.remoteURL) { result in
+        mediaLoader.loadFile(at: attachment.remoteURL, options: FileLoadOptions()) { result in
             switch result {
-            case let .success(cdnRequest):
-                messageController.downloadAttachment(attachment, remoteURL: cdnRequest.url) { result in
+            case let .success(file):
+                messageController.downloadAttachment(attachment, remoteURL: file.url) { result in
                     if case let .failure(error) = result {
                         log.error("Error downloading attachment: \(error.localizedDescription)")
                     } else {
