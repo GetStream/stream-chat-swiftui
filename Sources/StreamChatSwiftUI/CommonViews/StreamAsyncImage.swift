@@ -28,6 +28,7 @@ import SwiftUI
 ///     }
 /// }
 /// ```
+@MainActor
 public struct StreamAsyncImage<Content: View>: View {
     private let url: URL?
     private let resize: ImageResize?
@@ -72,6 +73,7 @@ public struct StreamAsyncImage<Content: View>: View {
 /// lightweight during scrolling (no `@State`, no DI resolution in `init`).
 /// The initial phase is resolved by the outer view via a synchronous Nuke
 /// cache lookup. All subsequent loading runs asynchronously through `.task`.
+@MainActor
 private struct StreamAsyncImageBody<Content: View>: View {
     @Injected(\.utils) private var utils
 

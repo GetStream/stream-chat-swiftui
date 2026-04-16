@@ -160,7 +160,7 @@ class MediaLoader_Tests: StreamChatTestCase {
 
 // MARK: - Test Doubles
 
-private class CustomMediaLoader: MediaLoader {
+private class CustomMediaLoader: MediaLoader, @unchecked Sendable {
     var loadVideoPreviewCalled = false
     var receivedAttachment: ChatMessageVideoAttachment?
 

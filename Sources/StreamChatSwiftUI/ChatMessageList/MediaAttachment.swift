@@ -49,7 +49,12 @@ public final class MediaAttachment: Identifiable, Equatable, Sendable {
             ) { result in
                 completion(result.map(\.image))
             }
-        } else if type == .video, let videoAttachment {
+        } else if type == .video {
+            guard let videoAttachment else {
+                log.warning("Missing videoAttachment for .video MediaAttachment, skipping thumbnail generation")
+                completion(.failure(ClientError("Missing videoAttachment for .video MediaAttachment")))
+                return
+            }
             utils.mediaLoader.loadVideoPreview(
                 with: videoAttachment,
                 options: VideoLoadOptions(cdnRequester: cdnRequester)

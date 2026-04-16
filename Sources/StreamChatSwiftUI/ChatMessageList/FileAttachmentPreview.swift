@@ -61,11 +61,13 @@ public struct FileAttachmentPreview: View {
             }
             .onAppear {
                 cdnRequester.fileRequest(for: url, options: .init()) { result in
-                    switch result {
-                    case let .success(cdnRequest):
-                        adjustedUrl = cdnRequest.url
-                    case let .failure(error):
-                        self.error = error
+                    Task { @MainActor in
+                        switch result {
+                        case let .success(cdnRequest):
+                            adjustedUrl = cdnRequest.url
+                        case let .failure(error):
+                            self.error = error
+                        }
                     }
                 }
             }
