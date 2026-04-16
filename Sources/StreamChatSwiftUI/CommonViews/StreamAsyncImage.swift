@@ -105,14 +105,23 @@ private struct StreamAsyncImageBody<Content: View>: View {
             return
         }
 
+        if initialPhase.image == nil {
+            phase = .loading
+        }
+
         do {
-            let result = try await NukeImageLoader.loadImage(
+            let loaded = try await utils.mediaLoader.loadImage(
                 url: url,
-                resize: resize,
-                mediaLoader: utils.mediaLoader,
-                onCacheMiss: { phase = .loading }
+                options: ImageLoadOptions(resize: resize)
             )
-            phase = .success(result)
+            if let cachingKey = loaded.cachingKey {
+                NukeImageLoader.storeCachingKey(cachingKey, url: url, resize: resize)
+            }
+            phase = .success(StreamAsyncImageResult(
+                image: loaded.image,
+                isAnimated: loaded.isAnimated,
+                animatedImageData: loaded.animatedImageData
+            ))
         } catch {
             if !(error is CancellationError) {
                 phase = .error(error)

@@ -2,18 +2,14 @@
 // Copyright © 2026 Stream.io Inc. All rights reserved.
 //
 
-import StreamChat
 import StreamChatCommonUI
 import UIKit
 
-/// Internal helper that bridges the ``MediaLoader`` with SwiftUI-specific
-/// concerns like synchronous cache lookups and animated image data.
+/// Internal helper for synchronous Nuke memory-cache lookups.
 ///
-/// The actual image loading is delegated to the ``MediaLoader``. This type
-/// only adds:
-/// - A synchronous Nuke memory-cache check for instant initial phases
-/// - An `onCacheMiss` callback so ``StreamAsyncImage`` can delay showing
-///   a loading indicator until after the cache check
+/// ``StreamAsyncImage`` uses this to compute an instant `initialPhase`
+/// when a previously loaded image is still in memory. All actual image
+/// loading goes through ``MediaLoader``.
 enum NukeImageLoader {
     // MARK: - Synchronous Cache Lookup
 
@@ -44,62 +40,18 @@ enum NukeImageLoader {
         )
     }
 
-    // MARK: - Async Loading
-
-    /// Loads an image through the ``MediaLoader``, with an `onCacheMiss`
-    /// callback for phase transitions.
+    /// Stores a caching key for a given URL and resize combination.
     ///
-    /// Before hitting the network, resolves the CDN URL and checks Nuke's
-    /// memory cache. If the image is cached, it returns immediately. Otherwise,
-    /// calls `onCacheMiss` (so the caller can show a loading indicator) and
-    /// delegates the actual download to the ``MediaLoader``.
-    @MainActor
-    static func loadImage(
-        url: URL,
-        resize: ImageResize?,
-        mediaLoader: MediaLoader,
-        onCacheMiss: @MainActor () -> Void = {}
-    ) async throws -> StreamAsyncImageResult {
-        // Resolve CDN URL to check cache with the correct key
-        if let streamLoader = mediaLoader as? StreamMediaLoader {
-            let cdnResize = resize.map {
-                CDNImageResize(width: $0.width, height: $0.height, resizeMode: $0.mode.value, crop: $0.mode.cropValue)
-            }
-            let cdnRequest = try await streamLoader.cdnRequester.imageRequest(for: url, options: .init(resize: cdnResize))
-
-            if let cachingKey = cdnRequest.cachingKey {
-                let key = inputKey(url: url, resize: resize) as NSString
-                cachingKeyMap.setObject(StringBox(cachingKey), forKey: key)
-            }
-
-            let processors = makeProcessors(resize: resize)
-            let userInfo = cdnRequest.cachingKey.map { [ImageRequest.UserInfoKey.imageIdKey: $0 as Any] }
-            let cacheRequest = ImageRequest(url: cdnRequest.url, processors: processors, userInfo: userInfo)
-
-            if let container = ImagePipeline.shared.cache[cacheRequest] {
-                return StreamAsyncImageResult(
-                    image: container.image,
-                    isAnimated: container.type == .gif,
-                    animatedImageData: container.data
-                )
-            }
-        }
-
-        onCacheMiss()
-
-        let loaded = try await mediaLoader.loadImage(url: url, options: ImageLoadOptions(resize: resize))
-        return StreamAsyncImageResult(
-            image: loaded.image,
-            isAnimated: loaded.isAnimated,
-            animatedImageData: loaded.animatedImageData
-        )
+    /// Called by ``StreamImageDownloader`` after a successful CDN transform
+    /// so that ``cachedResult(url:resize:)`` can find the image in Nuke's
+    /// memory cache on subsequent lookups.
+    static func storeCachingKey(_ cachingKey: String, url: URL, resize: ImageResize?) {
+        let key = inputKey(url: url, resize: resize) as NSString
+        cachingKeyMap.setObject(StringBox(cachingKey), forKey: key)
     }
 
     // MARK: - Private
 
-    /// Maps `(url + resize)` → `cachingKey` so ``cachedResult(url:resize:)``
-    /// can query Nuke's memory cache using the correct `imageIdKey`.
-    /// Populated on the first successful CDN transform for each pair.
     private nonisolated(unsafe) static let cachingKeyMap = NSCache<NSString, StringBox>()
 
     private static func inputKey(url: URL, resize: ImageResize?) -> String {
