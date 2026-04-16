@@ -54,9 +54,10 @@ enum NukeImageLoader {
     static func loadImage(
         url: URL,
         resize: ImageResize?,
-        cdnRequester: CDNRequester,
+        mediaLoader: MediaLoader,
         onCacheMiss: @MainActor () -> Void = {}
     ) async throws -> StreamAsyncImageResult {
+        let cdnRequester = (mediaLoader as? StreamMediaLoader)?.cdnRequester ?? StreamCDNRequester()
         let cdnResize = resize.map {
             CDNImageResize(width: $0.width, height: $0.height, resizeMode: $0.mode.value, crop: $0.mode.cropValue)
         }

@@ -16,7 +16,7 @@ let package = Package(
         )
     ],
     dependencies: [
-        .package(url: "https://github.com/GetStream/stream-chat-swift.git", from: "5.0.0")
+        .package(url: "https://github.com/GetStream/stream-chat-swift.git", branch: "refactor/media-loader-cdn-requester-dependency-v2")
     ],
     targets: [
         .target(

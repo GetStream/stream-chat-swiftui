@@ -75,6 +75,15 @@ class MediaLoader_Mock: MediaLoader, @unchecked Sendable {
         }
     }
 
+    func resolveFileURL(
+        _ url: URL,
+        completion: @escaping @MainActor (Result<CDNRequest, Error>) -> Void
+    ) {
+        StreamConcurrency.onMain {
+            completion(.success(CDNRequest(url: url)))
+        }
+    }
+
     private func imageForURL(_ url: URL?) -> UIImage {
         guard let url else { return Self.defaultLoadedImage }
         let urlString = url.absoluteString

@@ -40,12 +40,11 @@ public final class MediaAttachment: Identifiable, Equatable, Sendable {
         completion: @escaping @MainActor (Result<UIImage, Error>) -> Void
     ) {
         let utils = InjectedValues[\.utils]
-        let cdnRequester = utils.cdnRequester
         if type == .image {
             let imageResize: ImageResize? = resize ? ImageResize(preferredSize) : nil
             utils.mediaLoader.loadImage(
                 url: url,
-                options: ImageLoadOptions(resize: imageResize, cdnRequester: cdnRequester)
+                options: ImageLoadOptions(resize: imageResize)
             ) { result in
                 completion(result.map(\.image))
             }
@@ -57,7 +56,7 @@ public final class MediaAttachment: Identifiable, Equatable, Sendable {
             }
             utils.mediaLoader.loadVideoPreview(
                 with: videoAttachment,
-                options: VideoLoadOptions(cdnRequester: cdnRequester)
+                options: VideoLoadOptions()
             ) { result in
                 completion(result.map(\.image))
             }

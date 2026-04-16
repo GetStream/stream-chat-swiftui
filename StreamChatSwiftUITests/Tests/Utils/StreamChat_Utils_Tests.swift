@@ -39,7 +39,7 @@ class StreamChat_Utils_Tests: StreamChatTestCase {
         )
         mediaLoader.loadVideoPreview(
             with: attachment,
-            options: VideoLoadOptions(cdnRequester: CDNRequester_Mock()),
+            options: VideoLoadOptions(),
             completion: { _ in }
         )
 
@@ -54,7 +54,7 @@ class StreamChat_Utils_Tests: StreamChatTestCase {
         // When
         mediaLoader.loadImage(
             url: testURL,
-            options: ImageLoadOptions(cdnRequester: CDNRequester_Mock()),
+            options: ImageLoadOptions(),
             completion: { _ in }
         )
 
@@ -62,25 +62,36 @@ class StreamChat_Utils_Tests: StreamChatTestCase {
         XCTAssert(mediaLoader.loadImageCalled == true)
     }
 
-    func test_streamChatUtils_defaultCDNRequester() {
+    func test_streamChatUtils_defaultMediaLoader() {
         // Given
         let utils = Utils(mediaLoader: MediaLoader_Mock())
         streamChat = StreamChat(chatClient: chatClient, utils: utils)
 
         // Then
-        XCTAssert(self.utils.cdnRequester is StreamCDNRequester)
+        XCTAssert(self.utils.mediaLoader is MediaLoader_Mock)
     }
 
-    func test_streamChatUtils_injectCustomCDNRequester() {
+    func test_streamChatUtils_defaultMediaLoader_hasDefaultCDNRequester() {
         // Given
-        let customRequester = CDNRequester_Mock()
-        let utils = Utils(
-            cdnRequester: customRequester,
-            mediaLoader: MediaLoader_Mock()
-        )
+        let utils = Utils()
         streamChat = StreamChat(chatClient: chatClient, utils: utils)
 
         // Then
-        XCTAssert(self.utils.cdnRequester is CDNRequester_Mock)
+        let loader = self.utils.mediaLoader as? StreamMediaLoader
+        XCTAssertNotNil(loader)
+        XCTAssert(loader?.cdnRequester is StreamCDNRequester)
+    }
+
+    func test_streamChatUtils_customCDNRequester_throughMediaLoader() {
+        // Given
+        let customRequester = CDNRequester_Mock()
+        let customLoader = StreamMediaLoader(cdnRequester: customRequester, downloader: StreamImageDownloader())
+        let utils = Utils(mediaLoader: customLoader)
+        streamChat = StreamChat(chatClient: chatClient, utils: utils)
+
+        // Then
+        let loader = self.utils.mediaLoader as? StreamMediaLoader
+        XCTAssertNotNil(loader)
+        XCTAssert(loader?.cdnRequester is CDNRequester_Mock)
     }
 }

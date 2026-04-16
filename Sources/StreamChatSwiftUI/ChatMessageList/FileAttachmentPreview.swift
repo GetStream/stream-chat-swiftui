@@ -14,8 +14,6 @@ public struct FileAttachmentPreview: View {
     @Injected(\.images) private var images
     @Injected(\.utils) private var utils
 
-    private var cdnRequester: CDNRequester { utils.cdnRequester }
-
     let attachment: ChatMessageFileAttachment
     
     @State private var adjustedUrl: URL?
@@ -60,14 +58,12 @@ public struct FileAttachmentPreview: View {
                 }
             }
             .onAppear {
-                cdnRequester.fileRequest(for: url, options: .init()) { result in
-                    Task { @MainActor in
-                        switch result {
-                        case let .success(cdnRequest):
-                            adjustedUrl = cdnRequest.url
-                        case let .failure(error):
-                            self.error = error
-                        }
+                utils.mediaLoader.resolveFileURL(url) { result in
+                    switch result {
+                    case let .success(cdnRequest):
+                        adjustedUrl = cdnRequest.url
+                    case let .failure(error):
+                        self.error = error
                     }
                 }
             }
