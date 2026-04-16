@@ -97,6 +97,7 @@ private struct StreamAsyncImageBody<Content: View>: View {
 
     @MainActor
     private func loadImage() async {
+        phase = nil
         guard let url else {
             phase = .empty
             return

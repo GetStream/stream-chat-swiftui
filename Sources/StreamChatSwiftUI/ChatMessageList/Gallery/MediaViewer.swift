@@ -323,6 +323,7 @@ struct StreamVideoPlayer: View {
 
     @State var avPlayer: AVPlayer?
     @State var error: Error?
+    @State private var isVisible = false
 
     init(url: URL) {
         self.url = url
@@ -336,6 +337,7 @@ struct StreamVideoPlayer: View {
             }
         }
         .onAppear {
+            isVisible = true
             guard avPlayer == nil else {
                 avPlayer?.play()
                 return
@@ -344,9 +346,11 @@ struct StreamVideoPlayer: View {
                 at: url,
                 options: VideoLoadOptions(cdnRequester: utils.cdnRequester)
             ) { result in
+                guard isVisible else { return }
                 switch result {
                 case let .success(videoAsset):
                     utils.avPlayerProvider.player(from: videoAsset) { result in
+                        guard isVisible else { return }
                         switch result {
                         case let .success(player):
                             self.avPlayer = player
@@ -362,6 +366,7 @@ struct StreamVideoPlayer: View {
             }
         }
         .onDisappear {
+            isVisible = false
             avPlayer?.pause()
         }
     }
