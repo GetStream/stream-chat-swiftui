@@ -16,7 +16,7 @@ let package = Package(
         )
     ],
     dependencies: [
-        .package(url: "https://github.com/GetStream/stream-chat-swift.git", branch: "add/improve-custom-cdn")
+        .package(url: "https://github.com/GetStream/stream-chat-swift.git", branch: "develop")
     ],
     targets: [
         .target(
