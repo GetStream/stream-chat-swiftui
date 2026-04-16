@@ -205,8 +205,7 @@ lane :test_ui do |options|
     build_for_testing: options[:build_for_testing],
     skip_build: options[:skip_build],
     number_of_retries: options[:record].to_s.empty? ? 1 : nil,
-    fail_build: !record_mode,
-    output_style: options[:verbose].to_s == 'true' ? 'raw' : nil
+    fail_build: !record_mode
   )
 
   if record_mode && is_ci
