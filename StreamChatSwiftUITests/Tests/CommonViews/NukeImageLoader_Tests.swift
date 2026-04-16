@@ -24,119 +24,13 @@ final class NukeImageLoader_Tests: StreamChatTestCase {
         XCTAssertNil(result)
     }
 
-    // MARK: - loadImage (cache miss path)
+    // MARK: - storeCachingKey + cachedResult
 
-    func test_loadImage_callsOnCacheMiss_whenImageNotCached() async throws {
-        let url = URL(string: "https://example.com/test-miss-\(UUID().uuidString).jpg")!
-        let cdnRequester = CDNRequester_Mock()
-        let loader = StreamMediaLoader(cdnRequester: cdnRequester, downloader: StreamImageDownloader())
-        var cacheMissCalled = false
-
-        do {
-            _ = try await NukeImageLoader.loadImage(
-                url: url,
-                resize: nil,
-                mediaLoader: loader,
-                onCacheMiss: { cacheMissCalled = true }
-            )
-        } catch {
-            // Network error is expected in tests — we only care about the cache miss callback
-        }
-
-        XCTAssertTrue(cacheMissCalled)
-        XCTAssertEqual(cdnRequester.imageRequestCallCount, 1)
-        XCTAssertEqual(cdnRequester.imageRequestCalledWithURLs, [url])
-    }
-
-    func test_loadImage_callsCDNRequester_withCorrectURL() async {
-        let url = URL(string: "https://example.com/cdn-check-\(UUID().uuidString).jpg")!
-        let cdnRequester = CDNRequester_Mock()
-        let loader = StreamMediaLoader(cdnRequester: cdnRequester, downloader: StreamImageDownloader())
-
-        do {
-            _ = try await NukeImageLoader.loadImage(
-                url: url,
-                resize: nil,
-                mediaLoader: loader
-            )
-        } catch {
-            // Expected
-        }
-
-        XCTAssertEqual(cdnRequester.imageRequestCallCount, 1)
-        XCTAssertEqual(cdnRequester.imageRequestCalledWithURLs.first, url)
-    }
-
-    // MARK: - loadImage with resize
-
-    func test_loadImage_passesCDNRequester_withResize() async {
-        let url = URL(string: "https://example.com/resize-\(UUID().uuidString).jpg")!
-        let cdnRequester = CDNRequester_Mock()
-        let loader = StreamMediaLoader(cdnRequester: cdnRequester, downloader: StreamImageDownloader())
-        let resize = ImageResize(CGSize(width: 200, height: 150))
-
-        do {
-            _ = try await NukeImageLoader.loadImage(
-                url: url,
-                resize: resize,
-                mediaLoader: loader
-            )
-        } catch {
-            // Expected
-        }
-
-        XCTAssertEqual(cdnRequester.imageRequestCallCount, 1)
-    }
-
-    // MARK: - loadImage (cache hit after CDN transform)
-
-    func test_loadImage_skipsOnCacheMiss_whenCacheHitAfterTransform() async throws {
+    func test_cachedResult_returnsImage_afterStoringKeyAndPopulatingNukeCache() {
         let testImage = UIImage(systemName: "star.fill")!
         let uniqueKey = "cached-key-\(UUID().uuidString)"
         let cdnURL = URL(string: "https://cdn.example.com/\(uniqueKey)")!
-
-        let request = ImageRequest(
-            url: cdnURL,
-            userInfo: [.imageIdKey: uniqueKey]
-        )
-        ImagePipeline.shared.cache[request] = ImageContainer(image: testImage)
-
-        let cdnRequester = CDNRequester_Mock()
-        cdnRequester.imageRequestResult = .success(
-            CDNRequest(url: cdnURL, cachingKey: uniqueKey)
-        )
-        let loader = StreamMediaLoader(cdnRequester: cdnRequester, downloader: StreamImageDownloader())
-
         let originalURL = URL(string: "https://example.com/original-\(uniqueKey)")!
-        var cacheMissCalled = false
-
-        let result = try await NukeImageLoader.loadImage(
-            url: originalURL,
-            resize: nil,
-            mediaLoader: loader,
-            onCacheMiss: { cacheMissCalled = true }
-        )
-
-        XCTAssertFalse(cacheMissCalled)
-        XCTAssertNotNil(result.image)
-        XCTAssertEqual(cdnRequester.imageRequestCallCount, 1)
-
-        ImagePipeline.shared.cache[request] = nil
-    }
-
-    // MARK: - cachingKeyMap persistence
-
-    func test_cachedResult_returnsImage_afterLoadStoresCachingKey() async throws {
-        let testImage = UIImage(systemName: "heart.fill")!
-        let uniqueKey = "persist-key-\(UUID().uuidString)"
-        let cdnURL = URL(string: "https://cdn.example.com/\(uniqueKey)")!
-        let originalURL = URL(string: "https://example.com/\(uniqueKey)")!
-
-        let cdnRequester = CDNRequester_Mock()
-        cdnRequester.imageRequestResult = .success(
-            CDNRequest(url: cdnURL, cachingKey: uniqueKey)
-        )
-        let loader = StreamMediaLoader(cdnRequester: cdnRequester, downloader: StreamImageDownloader())
 
         let request = ImageRequest(
             url: cdnURL,
@@ -144,15 +38,43 @@ final class NukeImageLoader_Tests: StreamChatTestCase {
         )
         ImagePipeline.shared.cache[request] = ImageContainer(image: testImage)
 
-        _ = try await NukeImageLoader.loadImage(
-            url: originalURL,
-            resize: nil,
-            mediaLoader: loader
-        )
+        NukeImageLoader.storeCachingKey(uniqueKey, url: originalURL, resize: nil)
 
         let cached = NukeImageLoader.cachedResult(url: originalURL, resize: nil)
         XCTAssertNotNil(cached)
         XCTAssertNotNil(cached?.image)
+
+        ImagePipeline.shared.cache[request] = nil
+    }
+
+    func test_cachedResult_returnsNil_whenKeyStoredButNukeCacheEvicted() {
+        let uniqueKey = "evicted-key-\(UUID().uuidString)"
+        let originalURL = URL(string: "https://example.com/evicted-\(uniqueKey)")!
+
+        NukeImageLoader.storeCachingKey(uniqueKey, url: originalURL, resize: nil)
+
+        let cached = NukeImageLoader.cachedResult(url: originalURL, resize: nil)
+        XCTAssertNil(cached)
+    }
+
+    func test_cachedResult_withResize_returnsImage() {
+        let testImage = UIImage(systemName: "heart.fill")!
+        let uniqueKey = "resize-key-\(UUID().uuidString)"
+        let cdnURL = URL(string: "https://cdn.example.com/\(uniqueKey)")!
+        let originalURL = URL(string: "https://example.com/resize-\(uniqueKey)")!
+        let resize = ImageResize(CGSize(width: 200, height: 150))
+
+        let request = ImageRequest(
+            url: cdnURL,
+            processors: NukeImageLoader.makeProcessors(resize: resize),
+            userInfo: [.imageIdKey: uniqueKey]
+        )
+        ImagePipeline.shared.cache[request] = ImageContainer(image: testImage)
+
+        NukeImageLoader.storeCachingKey(uniqueKey, url: originalURL, resize: resize)
+
+        let cached = NukeImageLoader.cachedResult(url: originalURL, resize: resize)
+        XCTAssertNotNil(cached)
 
         ImagePipeline.shared.cache[request] = nil
     }
