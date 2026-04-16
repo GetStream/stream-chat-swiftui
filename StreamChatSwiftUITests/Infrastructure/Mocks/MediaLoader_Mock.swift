@@ -75,12 +75,13 @@ class MediaLoader_Mock: MediaLoader, @unchecked Sendable {
         }
     }
 
-    func resolveFileURL(
-        _ url: URL,
-        completion: @escaping @MainActor (Result<CDNRequest, Error>) -> Void
+    func loadFile(
+        at url: URL,
+        options: FileLoadOptions,
+        completion: @escaping @MainActor (Result<MediaLoaderFile, Error>) -> Void
     ) {
         StreamConcurrency.onMain {
-            completion(.success(CDNRequest(url: url)))
+            completion(.success(MediaLoaderFile(url: url)))
         }
     }
 
