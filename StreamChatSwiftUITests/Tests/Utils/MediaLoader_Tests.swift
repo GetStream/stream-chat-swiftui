@@ -189,6 +189,14 @@ private class CustomMediaLoader: MediaLoader, @unchecked Sendable {
         receivedAttachment = attachment
         Task { @MainActor in completion(.success(MediaLoaderVideoPreview(image: UIImage()))) }
     }
+
+    func loadVideoPreview(
+        at url: URL,
+        options: VideoLoadOptions,
+        completion: @escaping @MainActor (Result<MediaLoaderVideoPreview, Error>) -> Void
+    ) {
+        Task { @MainActor in completion(.success(MediaLoaderVideoPreview(image: UIImage()))) }
+    }
 }
 
 private class ConfigurableImageDownloader: ImageDownloading, @unchecked Sendable {

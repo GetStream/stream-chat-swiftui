@@ -21,6 +21,7 @@ class MediaLoader_Mock: MediaLoader, @unchecked Sendable {
     var loadedURLs: [URL?] = []
     var loadImageOptions: [ImageLoadOptions] = []
     var loadVideoPreviewWithAttachmentCalled = false
+    var loadVideoPreviewAtURLCalled = false
     var loadVideoPreviewOptions: [VideoLoadOptions] = []
     var loadVideoAssetOptions: [VideoLoadOptions] = []
 
@@ -56,6 +57,18 @@ class MediaLoader_Mock: MediaLoader, @unchecked Sendable {
         completion: @escaping @MainActor (Result<MediaLoaderVideoPreview, Error>) -> Void
     ) {
         loadVideoPreviewWithAttachmentCalled = true
+        loadVideoPreviewOptions.append(options)
+        StreamConcurrency.onMain {
+            completion(.success(MediaLoaderVideoPreview(image: Self.defaultLoadedImage)))
+        }
+    }
+
+    func loadVideoPreview(
+        at url: URL,
+        options: VideoLoadOptions,
+        completion: @escaping @MainActor (Result<MediaLoaderVideoPreview, Error>) -> Void
+    ) {
+        loadVideoPreviewAtURLCalled = true
         loadVideoPreviewOptions.append(options)
         StreamConcurrency.onMain {
             completion(.success(MediaLoaderVideoPreview(image: Self.defaultLoadedImage)))
