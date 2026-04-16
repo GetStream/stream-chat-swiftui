@@ -90,8 +90,8 @@ public struct ChannelAvatar: View {
             content: { phase in
                 Group {
                     switch phase {
-                    case .success(let image):
-                        image
+                    case .success(let result):
+                        Image(uiImage: result.image)
                             .resizable()
                             .aspectRatio(contentMode: .fill)
                             .background(colors.borderCoreInverse.toColor)
@@ -100,7 +100,7 @@ public struct ChannelAvatar: View {
                                 showsBorder ? Circle().strokeBorder(colors.borderCoreOpacitySubtle.toColor, lineWidth: 1) : nil
                             )
                             .clipShape(Circle())
-                    case .empty, .loading:
+                    case .empty, .loading, .error:
                         if directMessageChannel, memberCount == 2, let avatar = stackedPlaceholders.first {
                             UserAvatar(
                                 url: avatar.url,

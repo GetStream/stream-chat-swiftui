@@ -944,7 +944,7 @@ import SwiftUI
         
         do {
             let fileSize = try AttachmentFile(url: url).size
-            let canAdd = fileSize < chatClient.maxAttachmentSize(for: url)
+            let canAdd = fileSize <= chatClient.maxAttachmentSize(for: url, fallbackSize: utils.composerConfig.maxAttachmentSize)
             attachmentSizeExceeded = !canAdd
             return canAdd
         } catch {
@@ -1019,6 +1019,7 @@ final class FileAddedAsset {
 
 // The converter responsible to map attachments to assets and vice versa.
 @MainActor class MessageAttachmentsConverter {
+    @Injected(\.chatClient) private var chatClient
     @Injected(\.utils) var utils
 
     /// Converts the added assets to payloads.
@@ -1200,13 +1201,11 @@ final class FileAddedAsset {
             return
         }
 
-        utils.imageLoader.loadImage(
+        utils.mediaLoader.loadImage(
             url: imageAttachment.imageURL,
-            imageCDN: utils.imageCDN,
-            resize: false,
-            preferredSize: nil
+            options: ImageLoadOptions(resize: nil, cdnRequester: utils.cdnRequester)
         ) { result in
-            if let image = try? result.get() {
+            if let image = (try? result.get())?.image {
                 let imageAsset = AddedAsset(
                     image: image,
                     id: imageAttachment.id.rawValue,

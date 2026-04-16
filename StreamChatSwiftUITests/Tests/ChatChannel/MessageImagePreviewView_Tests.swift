@@ -40,7 +40,7 @@ import XCTest
 
     func test_messageImagePreviewView_loadsImage() {
         // Given
-        let imageLoader = streamChat?.utils.imageLoader as? ImageLoader_Mock
+        let imageLoader = streamChat?.utils.mediaLoader as? MediaLoader_Mock
         let view = MessageImagePreviewView(url: .localYodaImage)
 
         // When

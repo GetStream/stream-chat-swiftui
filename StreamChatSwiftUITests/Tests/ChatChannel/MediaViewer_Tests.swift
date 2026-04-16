@@ -110,11 +110,24 @@ class MediaViewer_Tests: StreamChatTestCase {
 
     func test_gridViewVideoAndImage_snapshotLoading() {
         // Given
+        let dummyVideoURL = URL(string: "https://example.com/test.mp4")!
+        let videoAttachment = ChatMessageVideoAttachment(
+            id: .unique,
+            type: .video,
+            payload: VideoAttachmentPayload(
+                title: "test",
+                videoRemoteURL: dummyVideoURL,
+                file: AttachmentFile(type: .mp4, size: 0, mimeType: "video/mp4"),
+                extraData: nil
+            ),
+            downloadingState: nil,
+            uploadingState: nil
+        )
         let view = GridMediaView(
             factory: DefaultViewFactory.shared,
             attachments: [
                 MediaAttachment(url: ChatChannelTestHelpers.testURL, type: .image),
-                MediaAttachment(url: ChatChannelTestHelpers.testURL.appendingPathComponent("test"), type: .video)
+                MediaAttachment(from: videoAttachment)
             ]
         )
         .applyDefaultSize()

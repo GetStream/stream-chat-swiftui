@@ -129,9 +129,9 @@ public final class MediaItem: Identifiable {
     
     @MainActor public var mediaAttachment: MediaAttachment? {
         if let videoAttachment {
-            return MediaAttachment(url: videoAttachment.videoURL, type: .video)
+            return MediaAttachment(from: videoAttachment)
         } else if let imageAttachment {
-            return MediaAttachment(url: imageAttachment.imageURL, type: .image)
+            return MediaAttachment(from: imageAttachment)
         }
         return nil
     }

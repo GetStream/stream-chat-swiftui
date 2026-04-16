@@ -4,6 +4,7 @@
 
 import AVKit
 import StreamChat
+import StreamChatCommonUI
 import SwiftUI
 
 /// View used for displaying image attachments in a gallery.
@@ -316,19 +317,13 @@ public struct MediaViewerToolbarModifier: ViewModifier {
 
 struct StreamVideoPlayer: View {
     @Injected(\.utils) private var utils
-
-    private var fileCDN: FileCDN {
-        utils.fileCDN
-    }
-
-    private var avPlayerProvider: AVPlayerProvider {
-        utils.avPlayerProvider
-    }
+    @Injected(\.chatClient) private var chatClient
 
     let url: URL
 
     @State var avPlayer: AVPlayer?
     @State var error: Error?
+    @State private var isVisible = false
 
     init(url: URL) {
         self.url = url
@@ -342,17 +337,20 @@ struct StreamVideoPlayer: View {
             }
         }
         .onAppear {
+            isVisible = true
             guard avPlayer == nil else {
                 avPlayer?.play()
                 return
             }
-            fileCDN.adjustedURL(for: url) { result in
+            utils.mediaLoader.loadVideoAsset(
+                at: url,
+                options: VideoLoadOptions(cdnRequester: utils.cdnRequester)
+            ) { result in
+                guard isVisible else { return }
                 switch result {
-                case let .success(url):
-                    avPlayer = AVPlayer(url: url)
-                    try? AVAudioSession.sharedInstance().setCategory(.playback, options: [])
-                    avPlayer?.play()
-                    self.avPlayerProvider.player(for: url) { result in
+                case let .success(videoAsset):
+                    utils.avPlayerProvider.player(from: videoAsset) { result in
+                        guard isVisible else { return }
                         switch result {
                         case let .success(player):
                             self.avPlayer = player
@@ -368,6 +366,7 @@ struct StreamVideoPlayer: View {
             }
         }
         .onDisappear {
+            isVisible = false
             avPlayer?.pause()
         }
     }

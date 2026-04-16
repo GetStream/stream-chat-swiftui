@@ -15,9 +15,8 @@ import XCTest
     override func setUp() {
         super.setUp()
 
-        let imageLoader = TestImagesLoader_Mock()
         let utils = Utils(
-            imageLoader: imageLoader,
+            mediaLoader: MediaLoader_Mock(),
             messageListConfig: MessageListConfig(
                 becomesFirstResponderOnOpen: true,
                 draftMessagesEnabled: true

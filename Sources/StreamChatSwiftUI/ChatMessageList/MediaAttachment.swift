@@ -3,6 +3,7 @@
 //
 
 import StreamChat
+import StreamChatCommonUI
 import SwiftUI
 
 public final class MediaAttachment: Identifiable, Equatable, Sendable {
@@ -11,19 +12,22 @@ public final class MediaAttachment: Identifiable, Equatable, Sendable {
     public let uploadingState: AttachmentUploadingState?
     public let originalWidth: Double?
     public let originalHeight: Double?
+    let videoAttachment: ChatMessageVideoAttachment?
 
     public init(
         url: URL,
         type: MediaAttachmentType,
         uploadingState: AttachmentUploadingState? = nil,
         originalWidth: Double? = nil,
-        originalHeight: Double? = nil
+        originalHeight: Double? = nil,
+        videoAttachment: ChatMessageVideoAttachment? = nil
     ) {
         self.url = url
         self.type = type
         self.uploadingState = uploadingState
         self.originalWidth = originalWidth
         self.originalHeight = originalHeight
+        self.videoAttachment = videoAttachment
     }
 
     public var id: String {
@@ -36,19 +40,27 @@ public final class MediaAttachment: Identifiable, Equatable, Sendable {
         completion: @escaping @MainActor (Result<UIImage, Error>) -> Void
     ) {
         let utils = InjectedValues[\.utils]
+        let cdnRequester = utils.cdnRequester
         if type == .image {
-            utils.imageLoader.loadImage(
+            let imageResize: ImageResize? = resize ? ImageResize(preferredSize) : nil
+            utils.mediaLoader.loadImage(
                 url: url,
-                imageCDN: utils.imageCDN,
-                resize: resize,
-                preferredSize: preferredSize,
-                completion: completion
-            )
+                options: ImageLoadOptions(resize: imageResize, cdnRequester: cdnRequester)
+            ) { result in
+                completion(result.map(\.image))
+            }
         } else if type == .video {
-            utils.videoPreviewLoader.loadPreviewForVideo(
-                at: url,
-                completion: completion
-            )
+            guard let videoAttachment else {
+                log.warning("Missing videoAttachment for .video MediaAttachment, skipping thumbnail generation")
+                completion(.failure(ClientError("Missing videoAttachment for .video MediaAttachment")))
+                return
+            }
+            utils.mediaLoader.loadVideoPreview(
+                with: videoAttachment,
+                options: VideoLoadOptions(cdnRequester: cdnRequester)
+            ) { result in
+                completion(result.map(\.image))
+            }
         }
     }
 
@@ -58,6 +70,7 @@ public final class MediaAttachment: Identifiable, Equatable, Sendable {
             && lhs.uploadingState == rhs.uploadingState
             && lhs.originalWidth == rhs.originalWidth
             && lhs.originalHeight == rhs.originalHeight
+            && lhs.videoAttachment?.id == rhs.videoAttachment?.id
     }
 }
 
@@ -90,7 +103,8 @@ extension MediaAttachment {
             type: .video,
             uploadingState: attachment.uploadingState,
             originalWidth: attachment.originalWidth,
-            originalHeight: attachment.originalHeight
+            originalHeight: attachment.originalHeight,
+            videoAttachment: attachment
         )
     }
 

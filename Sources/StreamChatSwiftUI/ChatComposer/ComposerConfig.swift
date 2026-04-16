@@ -23,6 +23,10 @@ public final class ComposerConfig {
     public var adjustMessageOnSend: (String) -> (String)
     public var adjustMessageOnRead: (String) -> (String)
 
+    /// The fallback maximum attachment size in bytes when the server does not provide one.
+    /// The default value is 100 MB.
+    public var maxAttachmentSize: Int64
+
     public init(
         isVoiceRecordingEnabled: Bool = true,
         isVoiceRecordingAutoSendEnabled: Bool = false,
@@ -33,7 +37,8 @@ public final class ComposerConfig {
         gallerySupportedTypes: GallerySupportedTypes = .imagesAndVideo,
         maxGalleryAssetsCount: Int? = nil,
         adjustMessageOnSend: @escaping (String) -> (String) = { $0 },
-        adjustMessageOnRead: @escaping (String) -> (String) = { $0 }
+        adjustMessageOnRead: @escaping (String) -> (String) = { $0 },
+        maxAttachmentSize: Int64 = 100 * 1024 * 1024
     ) {
         self.inputViewMinHeight = inputViewMinHeight
         self.inputViewMaxHeight = inputViewMaxHeight
@@ -45,6 +50,7 @@ public final class ComposerConfig {
         self.maxGalleryAssetsCount = maxGalleryAssetsCount
         self.isVoiceRecordingEnabled = isVoiceRecordingEnabled
         self.isVoiceRecordingAutoSendEnabled = isVoiceRecordingAutoSendEnabled
+        self.maxAttachmentSize = maxAttachmentSize
     }
 }
 

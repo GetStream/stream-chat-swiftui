@@ -589,10 +589,11 @@ import XCTest
     func test_messageComposerVM_maxSizeExceeded() {
         // Given
         let viewModel = makeComposerViewModel()
-        let cdnClient = CDNClient_Mock()
-        CDNClient_Mock.maxAttachmentSize = 5
-        let client = ChatClient.mock(customCDNClient: cdnClient)
-        streamChat = StreamChat(chatClient: client)
+        let client = ChatClient.mock(isLocalStorageEnabled: false)
+        streamChat = StreamChat(
+            chatClient: client,
+            utils: Utils(composerConfig: ComposerConfig(maxAttachmentSize: 5))
+        )
         
         // When
         let newAsset = defaultAsset

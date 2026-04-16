@@ -48,7 +48,7 @@ import XCTest
 
     func test_lazyLoadingImage_loadsImageOnAppear() {
         // Given
-        let imageLoader = streamChat?.utils.imageLoader as? ImageLoader_Mock
+        let imageLoader = streamChat?.utils.mediaLoader as? MediaLoader_Mock
         let source = MediaAttachment(url: .localYodaImage, type: .image)
         let view = LazyLoadingImage(
             source: source,
@@ -77,7 +77,7 @@ import XCTest
 
     func test_lazyLoadingImage_reloadsWhenSourceChanges() {
         // Given
-        let imageLoader = streamChat?.utils.imageLoader as? ImageLoader_Mock
+        let imageLoader = streamChat?.utils.mediaLoader as? MediaLoader_Mock
         let initialURL = URL(string: "https://example.com/yoda.jpg")!
         let updatedURL = URL(string: "https://example.com/vader.jpg")!
         let source = CurrentValueContainer(MediaAttachment(url: initialURL, type: .image))
@@ -113,9 +113,9 @@ import XCTest
 
     // MARK: - Generate Thumbnail
 
-    func test_mediaAttachment_generateThumbnail_callsImageLoader() {
+    func test_mediaAttachment_generateThumbnail_callsMediaLoader() {
         // Given
-        let imageLoader = streamChat?.utils.imageLoader as? ImageLoader_Mock
+        let imageLoader = streamChat?.utils.mediaLoader as? MediaLoader_Mock
         let attachment = MediaAttachment(url: .localYodaImage, type: .image)
 
         // When
@@ -131,6 +131,70 @@ import XCTest
         // Then
         XCTAssertEqual(imageLoader?.loadImageCalled, true)
         XCTAssertEqual(imageLoader?.loadedURLs.first, .localYodaImage)
+    }
+
+    // MARK: - CDN Requester
+
+    func test_mediaAttachment_generateThumbnail_usesInjectedCDNRequester() {
+        // Given
+        let customRequester = CDNRequester_Mock()
+        let mediaLoader = MediaLoader_Mock()
+        let utils = Utils(cdnRequester: customRequester, mediaLoader: mediaLoader)
+        streamChat = StreamChat(chatClient: chatClient, utils: utils)
+        let attachment = MediaAttachment(url: .localYodaImage, type: .image)
+
+        // When
+        let expectation = expectation(description: "Thumbnail generated")
+        attachment.generateThumbnail(
+            resize: true,
+            preferredSize: CGSize(width: 80, height: 80)
+        ) { _ in
+            expectation.fulfill()
+        }
+        wait(for: [expectation], timeout: 2.0)
+
+        // Then
+        XCTAssertEqual(mediaLoader.loadImageOptions.count, 1)
+        XCTAssert(mediaLoader.loadImageOptions.first?.cdnRequester is CDNRequester_Mock)
+    }
+
+    func test_mediaAttachment_videoPreview_usesInjectedCDNRequester() {
+        // Given
+        let customRequester = CDNRequester_Mock()
+        let mediaLoader = MediaLoader_Mock()
+        let utils = Utils(cdnRequester: customRequester, mediaLoader: mediaLoader)
+        streamChat = StreamChat(chatClient: chatClient, utils: utils)
+        let videoAttachment = ChatMessageVideoAttachment(
+            id: .init(cid: .init(type: .messaging, id: "test"), messageId: "msg", index: 0),
+            type: .video,
+            payload: VideoAttachmentPayload(
+                title: nil,
+                videoRemoteURL: URL(string: "https://example.com/video.mp4")!,
+                file: .init(type: .mp4, size: 0, mimeType: nil),
+                extraData: nil
+            ),
+            downloadingState: nil,
+            uploadingState: nil
+        )
+        let attachment = MediaAttachment(
+            url: URL(string: "https://example.com/video.mp4")!,
+            type: .video,
+            videoAttachment: videoAttachment
+        )
+
+        // When
+        let expectation = expectation(description: "Video preview generated")
+        attachment.generateThumbnail(
+            resize: false,
+            preferredSize: CGSize(width: 80, height: 80)
+        ) { _ in
+            expectation.fulfill()
+        }
+        wait(for: [expectation], timeout: 2.0)
+
+        // Then
+        XCTAssertEqual(mediaLoader.loadVideoPreviewOptions.count, 1)
+        XCTAssert(mediaLoader.loadVideoPreviewOptions.first?.cdnRequester is CDNRequester_Mock)
     }
 
     // MARK: - MediaAttachment Equatable

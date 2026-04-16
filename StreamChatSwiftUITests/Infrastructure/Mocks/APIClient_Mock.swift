@@ -23,13 +23,13 @@ class APIClientMock: APIClient, StreamChatTestTools.Spy, @unchecked Sendable {
 
     /// The last endpoint `uploadFile` function was called with.
     @Atomic var uploadFile_attachment: AnyChatMessageAttachment?
-    @Atomic var uploadFile_progress: ((Double) -> Void)?
-    @Atomic var uploadFile_completion: ((Result<URL, Error>) -> Void)?
+    @Atomic var uploadFile_progress: (@Sendable (Double) -> Void)?
+    @Atomic var uploadFile_completion: ((Result<UploadedAttachment, Error>) -> Void)?
 
     @Atomic var init_sessionConfiguration: URLSessionConfiguration
     @Atomic var init_requestEncoder: RequestEncoder
     @Atomic var init_requestDecoder: RequestDecoder
-    @Atomic var init_CDNClient: CDNClient
+    @Atomic var init_cdnStorage: CDNStorage
     @Atomic var request_expectation: XCTestExpectation
 
     // Cleans up all recorded values
@@ -48,42 +48,43 @@ class APIClientMock: APIClient, StreamChatTestTools.Spy, @unchecked Sendable {
         sessionConfiguration: URLSessionConfiguration,
         requestEncoder: RequestEncoder,
         requestDecoder: RequestDecoder,
-        CDNClient: CDNClient,
-        tokenRefresher: ((@escaping () -> Void) -> Void)!,
+        attachmentDownloader: AttachmentDownloader,
+        cdnStorage: CDNStorage,
+        tokenRefresher: ((@escaping @Sendable () -> Void) -> Void)!,
         queueOfflineRequest: @escaping QueueOfflineRequestBlock
     ) {
         init_sessionConfiguration = sessionConfiguration
         init_requestEncoder = requestEncoder
         init_requestDecoder = requestDecoder
-        init_CDNClient = CDNClient
-        let attachmentUploader = StreamAttachmentUploader(cdnClient: CDNClient)
+        init_cdnStorage = cdnStorage
         request_expectation = .init()
 
         super.init(
             sessionConfiguration: sessionConfiguration,
             requestEncoder: requestEncoder,
             requestDecoder: requestDecoder,
-            attachmentDownloader: StreamAttachmentDownloader(sessionConfiguration: sessionConfiguration),
-            attachmentUploader: attachmentUploader,
-            cdnClient: CDNClient
+            attachmentDownloader: attachmentDownloader,
+            cdnStorage: cdnStorage
         )
+        self.tokenRefresher = tokenRefresher
+        self.queueOfflineRequest = queueOfflineRequest
     }
 
     /// Simulates the response of the last `request` method call
-    func test_simulateResponse<Response: Decodable>(_ response: Result<Response, Error>) {
-        let completion = request_completion as? ((Result<Response, Error>) -> Void)
+    func test_simulateResponse<Response: Decodable & Sendable>(_ response: Result<Response, Error>) {
+        let completion = request_completion as? (@Sendable (Result<Response, Error>) -> Void)
         completion?(response)
     }
 
-    func test_simulateRecoveryResponse<Response: Decodable>(_ response: Result<Response, Error>) {
-        let completion = recoveryRequest_completion as? ((Result<Response, Error>) -> Void)
+    func test_simulateRecoveryResponse<Response: Decodable & Sendable>(_ response: Result<Response, Error>) {
+        let completion = recoveryRequest_completion as? (@Sendable (Result<Response, Error>) -> Void)
         completion?(response)
     }
 
     override func request<Response>(
         endpoint: Endpoint<Response>,
-        completion: @escaping (Result<Response, Error>) -> Void
-    ) where Response: Decodable {
+        completion: @escaping @Sendable (Result<Response, Error>) -> Void
+    ) where Response: Decodable & Sendable {
         request_endpoint = AnyEndpoint(endpoint)
         request_completion = completion
         _request_allRecordedCalls.mutate { $0.append((request_endpoint!, request_completion!)) }
@@ -92,17 +93,17 @@ class APIClientMock: APIClient, StreamChatTestTools.Spy, @unchecked Sendable {
 
     override func recoveryRequest<Response>(
         endpoint: Endpoint<Response>,
-        completion: @escaping (Result<Response, Error>) -> Void
-    ) where Response: Decodable {
+        completion: @escaping @Sendable (Result<Response, Error>) -> Void
+    ) where Response: Decodable & Sendable {
         recoveryRequest_endpoint = AnyEndpoint(endpoint)
         recoveryRequest_completion = completion
         _recoveryRequest_allRecordedCalls.mutate { $0.append((recoveryRequest_endpoint!, recoveryRequest_completion!)) }
     }
 
-    func uploadAttachment(
+    override func uploadAttachment(
         _ attachment: AnyChatMessageAttachment,
-        progress: ((Double) -> Void)?,
-        completion: @escaping (Result<URL, Error>) -> Void
+        progress: (@Sendable (Double) -> Void)?,
+        completion: @escaping @Sendable (Result<UploadedAttachment, Error>) -> Void
     ) {
         uploadFile_attachment = attachment
         uploadFile_progress = progress
@@ -136,7 +137,8 @@ extension APIClientMock {
             sessionConfiguration: .ephemeral,
             requestEncoder: DefaultRequestEncoder(baseURL: .unique(), apiKey: .init(.unique)),
             requestDecoder: DefaultRequestDecoder(),
-            CDNClient: CDNClient_Mock(),
+            attachmentDownloader: StreamAttachmentDownloader(sessionConfiguration: .ephemeral),
+            cdnStorage: CDNStorage_Mock(),
             tokenRefresher: { _ in },
             queueOfflineRequest: { _ in }
         )

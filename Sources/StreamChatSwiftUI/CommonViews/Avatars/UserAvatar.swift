@@ -68,8 +68,8 @@ public struct UserAvatar: View {
             content: { phase in
                 Group {
                     switch phase {
-                    case .success(let image):
-                        image
+                    case .success(let result):
+                        Image(uiImage: result.image)
                             .resizable()
                             .aspectRatio(contentMode: .fill)
                             .background(colors.borderCoreInverse.toColor)
@@ -77,7 +77,7 @@ public struct UserAvatar: View {
                             .overlay(
                                 showsBorder ? Circle().strokeBorder(colors.borderCoreOpacitySubtle.toColor, lineWidth: 1) : nil
                             )
-                    case .loading, .empty:
+                    case .loading, .empty, .error:
                         PlaceholderView(initials: initials, size: size)
                     }
                 }

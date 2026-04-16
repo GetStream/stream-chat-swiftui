@@ -3,81 +3,163 @@
 //
 
 import StreamChat
+import StreamChatCommonUI
 import SwiftUI
 
-/// A view that loads an image asynchronously and renders content based
-/// on the current loading phase.
-public struct StreamAsyncImage<ImageContent: View>: View {
-    @Injected(\.utils) var utils
-    
-    let thumbnailSize: CGSize
-    let url: URL?
-    @ViewBuilder let content: (StreamAsyncImagePhase) -> ImageContent
-    @State private var phase = StreamAsyncImagePhase.loading
-    
-    /// Loads an image from the given URL and builds a view based on the
-    /// loading state.
-    ///
-    /// When `url` is `nil` the phase is set to ``StreamAsyncImagePhase/empty``
-    /// immediately without performing a network request.
+/// A view that loads an image asynchronously using the SDK's ``MediaLoader``
+/// and ``CDNRequester``, then renders content based on the current loading phase.
+///
+/// This is the single image-loading view for the SwiftUI SDK. It handles:
+/// - CDN requester URL transformation (signing, headers, caching keys)
+/// - Optional resize parameters for server-side and client-side resizing
+/// - Animated image (GIF) data passthrough
+/// - Cancellation on disappear
+///
+/// ```swift
+/// StreamAsyncImage(url: imageURL) { phase in
+///     switch phase {
+///     case .success(let result):
+///         Image(uiImage: result.image)
+///             .resizable()
+///     case .loading:
+///         ProgressView()
+///     case .empty, .error:
+///         Color.gray
+///     }
+/// }
+/// ```
+@MainActor
+public struct StreamAsyncImage<Content: View>: View {
+    private let url: URL?
+    private let resize: ImageResize?
+    private let content: (StreamAsyncImagePhase) -> Content
+
+    /// Creates an async image view.
     ///
     /// - Parameters:
-    ///   - url: The URL of the image to load, or `nil` if no image is available.
-    ///   - thumbnailSize: The requested thumbnail dimensions used by the image CDN.
-    ///   - content: A closure that takes the current loading phase and returns
-    ///     the view to display.
+    ///   - url: The image URL, or `nil` for the empty phase.
+    ///   - resize: Optional resize applied both server-side (via CDN requester) and client-side.
+    ///   - content: A closure that receives the current phase and returns a view.
+    public init(
+        url: URL?,
+        resize: ImageResize? = nil,
+        @ViewBuilder content: @escaping (StreamAsyncImagePhase) -> Content
+    ) {
+        self.url = url
+        self.resize = resize
+        self.content = content
+    }
+
+    public var body: some View {
+        let initialPhase: StreamAsyncImagePhase = {
+            guard let url else { return .empty }
+            if let cached = NukeImageLoader.cachedResult(url: url, resize: resize) {
+                return .success(cached)
+            }
+            return .loading
+        }()
+        StreamAsyncImageBody(
+            url: url,
+            resize: resize,
+            initialPhase: initialPhase,
+            content: content
+        )
+    }
+}
+
+/// Private inner view that owns the loading state.
+///
+/// Separated from ``StreamAsyncImage`` so the public struct stays
+/// lightweight during scrolling (no `@State`, no DI resolution in `init`).
+/// The initial phase is resolved by the outer view via a synchronous Nuke
+/// cache lookup. All subsequent loading runs asynchronously through `.task`.
+@MainActor
+private struct StreamAsyncImageBody<Content: View>: View {
+    @Injected(\.utils) private var utils
+
+    let url: URL?
+    let resize: ImageResize?
+    let initialPhase: StreamAsyncImagePhase
+    let content: (StreamAsyncImagePhase) -> Content
+
+    @State private var phase: StreamAsyncImagePhase?
+
+    var body: some View {
+        content(phase ?? initialPhase)
+            .compatibility.task(id: taskIdentity) { @MainActor in
+                await loadImage()
+            }
+    }
+
+    private var taskIdentity: String {
+        let urlPart = url?.absoluteString ?? ""
+        guard let resize else { return urlPart }
+        return "\(urlPart)-\(resize.width)x\(resize.height)-\(resize.mode.value)"
+    }
+
+    @MainActor
+    private func loadImage() async {
+        phase = nil
+        guard let url else {
+            phase = .empty
+            return
+        }
+
+        do {
+            let result = try await NukeImageLoader.loadImage(
+                url: url,
+                resize: resize,
+                cdnRequester: utils.cdnRequester,
+                onCacheMiss: { phase = .loading }
+            )
+            phase = .success(result)
+        } catch {
+            if !(error is CancellationError) {
+                phase = .error(error)
+            }
+        }
+    }
+}
+
+// MARK: - Convenience Initializers
+
+extension StreamAsyncImage {
+    /// Creates an async image view with a thumbnail size for avatar-style loading.
     public init(
         url: URL?,
         thumbnailSize: CGSize,
-        content: @escaping (StreamAsyncImagePhase) -> ImageContent
+        @ViewBuilder content: @escaping (StreamAsyncImagePhase) -> Content
     ) {
-        self.url = url
-        self.thumbnailSize = thumbnailSize
-        self.content = content
+        self.init(url: url, resize: ImageResize(thumbnailSize), content: content)
     }
-    
-    public var body: some View {
-        content(phase)
-            .compatibility.task(id: url?.absoluteString ?? "") { @MainActor [imageCDN, imageLoader, url] in
-                guard let url else {
-                    phase = .empty
-                    return
-                }
-                let images = await imageLoader.loadImages(
-                    from: [url].compactMap { $0 },
-                    placeholders: [],
-                    loadThumbnails: true,
-                    thumbnailSize: thumbnailSize,
-                    imageCDN: imageCDN
-                )
-                if let image = images.first {
-                    phase = .success(Image(uiImage: image))
-                } else {
-                    phase = .empty
-                }
-            }
-    }
-    
-    var imageLoader: ImageLoading { utils.imageLoader }
-    var imageCDN: ImageCDN { utils.imageCDN }
 }
 
+// MARK: - Phase & Result
+
 /// The current loading state for ``StreamAsyncImage``.
-public enum StreamAsyncImagePhase: Sendable, Equatable {
-    /// A successfully loaded image.
-    ///
-    /// The associated `Image` value represents the loaded image ready for display.
-    case success(Image)
-    
+public enum StreamAsyncImagePhase {
+    /// The image loaded successfully.
+    case success(StreamAsyncImageResult)
     /// The image is currently loading.
-    ///
-    /// This is the initial phase while the image loader is fetching the image.
-    /// Use this state to display a loading placeholder or progress indicator.
     case loading
-    
-    /// No image is available.
-    ///
-    /// This phase occurs when the URL is `nil` or the image fails to load.
-    /// Use this state to display a placeholder or fallback content.
+    /// No image is available (nil URL).
     case empty
+    /// The load failed with an error.
+    case error(Error)
+
+    /// The loaded image, if available.
+    public var image: Image? {
+        guard case .success(let result) = self else { return nil }
+        return Image(uiImage: result.image)
+    }
+}
+
+/// The result of a successfully loaded image.
+public struct StreamAsyncImageResult {
+    /// The loaded image.
+    public let image: UIImage
+    /// Whether the image is an animated format (e.g. GIF).
+    public let isAnimated: Bool
+    /// The raw image data for animated rendering. `nil` for static images.
+    public let animatedImageData: Data?
 }

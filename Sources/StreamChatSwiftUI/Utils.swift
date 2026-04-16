@@ -5,6 +5,7 @@
 import AVKit
 import Foundation
 import StreamChat
+import StreamChatCommonUI
 
 /// Class providing implementations of several utilities used in the SDK.
 /// The default implementations can be replaced in the init method, or directly via the variables.
@@ -17,11 +18,8 @@ import StreamChat
     public var messageTimestampFormatter: MessageTimestampFormatter
     public var galleryHeaderViewDateFormatter: GalleryHeaderViewDateFormatter
     public var messageDateSeparatorFormatter: MessageDateSeparatorFormatter
-    public var videoPreviewLoader: VideoPreviewLoader
-    public var imageLoader: ImageLoading
-    public var imageCDN: ImageCDN
-    public var imageProcessor: ImageProcessor
-    public var fileCDN: FileCDN
+    public var cdnRequester: CDNRequester
+    public var mediaLoader: MediaLoader
     public var channelNameFormatter: ChannelNameFormatter
     public var avPlayerProvider: AVPlayerProvider
     public var chatUserNamer: ChatUserNamer
@@ -84,11 +82,8 @@ import StreamChat
         messageTimestampFormatter: MessageTimestampFormatter = ChannelListMessageTimestampFormatter(),
         galleryHeaderViewDateFormatter: GalleryHeaderViewDateFormatter = DefaultGalleryHeaderViewDateFormatter(),
         messageDateSeparatorFormatter: MessageDateSeparatorFormatter = DefaultMessageDateSeparatorFormatter(),
-        videoPreviewLoader: VideoPreviewLoader = DefaultVideoPreviewLoader(),
-        imageLoader: ImageLoading = NukeImageLoader(),
-        imageCDN: ImageCDN = StreamImageCDN(),
-        imageProcessor: ImageProcessor = NukeImageProcessor(),
-        fileCDN: FileCDN = DefaultFileCDN(),
+        cdnRequester: CDNRequester = StreamCDNRequester(),
+        mediaLoader: MediaLoader? = nil,
         avPlayerProvider: AVPlayerProvider = DefaultAVPlayerProvider(),
         messageTypeResolver: MessageTypeResolving = MessageTypeResolver(),
         messageActionResolver: MessageActionsResolving = MessageActionsResolver(),
@@ -115,11 +110,8 @@ import StreamChat
         self.messageTimestampFormatter = messageTimestampFormatter
         self.galleryHeaderViewDateFormatter = galleryHeaderViewDateFormatter
         self.messageDateSeparatorFormatter = messageDateSeparatorFormatter
-        self.videoPreviewLoader = videoPreviewLoader
-        self.imageLoader = imageLoader
-        self.imageCDN = imageCDN
-        self.imageProcessor = imageProcessor
-        self.fileCDN = fileCDN
+        self.cdnRequester = cdnRequester
+        self.mediaLoader = mediaLoader ?? StreamMediaLoader(downloader: StreamImageDownloader())
         self.channelNameFormatter = channelNameFormatter
         self.avPlayerProvider = avPlayerProvider
         self.chatUserNamer = chatUserNamer
@@ -148,32 +140,31 @@ import StreamChat
     }
 }
 
-/// Provides a custom `AVPlayer` for a given video URL.
+/// Provides a custom `AVPlayer` from a `MediaLoaderVideoAsset`.
 ///
-/// Conform to this protocol to provide a custom player configuration,
-/// such as injecting authentication headers via a custom `AVURLAsset`.
-///
-/// The URL passed to ``player(for:completion:)`` has already been resolved
-/// through ``FileCDN/adjustedURL(for:completion:)``.
+/// Conform to this protocol to provide a custom player configuration.
+/// The video asset already contains CDN headers baked into its `AVURLAsset`,
+/// resolved through ``MediaLoader/videoAsset(at:options:completion:)``.
 public protocol AVPlayerProvider {
-    /// Creates and returns an `AVPlayer` for the given video URL.
+    /// Creates and returns an `AVPlayer` from the given video asset.
     /// - Parameters:
-    ///   - url: A video URL already resolved through `FileCDN`.
+    ///   - videoAsset: A video asset already resolved through the `MediaLoader`.
     ///   - completion: A completion that is called when the player is ready or an error occurred.
     func player(
-        for url: URL,
-        completion: @escaping ((Result<AVPlayer, Error>) -> Void)
+        from videoAsset: MediaLoaderVideoAsset,
+        completion: @escaping (Result<AVPlayer, Error>) -> Void
     )
 }
 
-/// The default implementation that creates an `AVPlayer` directly from the provided URL.
+/// The default implementation that creates an `AVPlayer` from a `MediaLoaderVideoAsset`.
 public final class DefaultAVPlayerProvider: AVPlayerProvider {
     public init() {}
 
     public func player(
-        for url: URL,
-        completion: @escaping ((Result<AVPlayer, Error>) -> Void)
+        from videoAsset: MediaLoaderVideoAsset,
+        completion: @escaping (Result<AVPlayer, Error>) -> Void
     ) {
-        completion(.success(AVPlayer(url: url)))
+        let playerItem = AVPlayerItem(asset: videoAsset.asset)
+        completion(.success(AVPlayer(playerItem: playerItem)))
     }
 }

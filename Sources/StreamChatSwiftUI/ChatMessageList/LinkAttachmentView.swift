@@ -3,6 +3,7 @@
 //
 
 import StreamChat
+import StreamChatCommonUI
 import SwiftUI
 
 /// Container for presenting link attachments.
@@ -82,16 +83,16 @@ public struct LinkAttachmentView: View {
         VStack(alignment: .leading, spacing: 0) {
             if !imageHidden {
                 ZStack {
-                    LazyImage(imageURL: linkAttachment.previewURL ?? linkAttachment.originalURL) { state in
-                        if let image = state.image {
+                    StreamAsyncImage(
+                        url: linkAttachment.previewURL ?? linkAttachment.originalURL,
+                        resize: ImageResize(CGSize(width: width, height: 0))
+                    ) { phase in
+                        if let image = phase.image {
                             image
                                 .resizable()
                                 .aspectRatio(contentMode: .fill)
                         }
                     }
-                    .onDisappear(.cancel)
-                    .processors([ImageProcessors.Resize(width: width)])
-                    .priority(.high)
                     .frame(height: width / 2)
                     .clipped()
 
