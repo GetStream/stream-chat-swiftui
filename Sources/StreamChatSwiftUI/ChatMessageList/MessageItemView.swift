@@ -30,6 +30,7 @@ public struct MessageItemView<Factory: ViewFactory>: View {
 
     @State private var frame: CGRect = .zero
     @State private var computeFrame = false
+    @State private var isGestureInProgress = false
 
     /// Creates a new message item view.
     /// - Parameters:
@@ -107,6 +108,7 @@ public struct MessageItemView<Factory: ViewFactory>: View {
                     }
                 )
                 .contentShape(Rectangle())
+                .environment(\.isMessageGestureInProgress, isGestureInProgress)
                 .onTapGesture(count: 2) {
                     if messageViewModel.isDoubleTapOverlayEnabled {
                         handleGestureForMessage(showsMessageActions: true)
@@ -180,6 +182,9 @@ public struct MessageItemView<Factory: ViewFactory>: View {
         }
 
         computeFrame.toggle()
+        // Block descendant taps (e.g. attachment image opening the gallery) that may fire
+        // on finger release immediately after the long-press is recognized.
+        isGestureInProgress = true
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
             triggerHapticFeedback(style: .medium)
             onLongPress(
@@ -191,6 +196,9 @@ public struct MessageItemView<Factory: ViewFactory>: View {
                     showsMessageActions: showsMessageActions
                 )
             )
+        }
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+            isGestureInProgress = false
         }
     }
 }
@@ -347,6 +355,19 @@ extension EnvironmentValues {
     var highlightedMessageId: String? {
         get { self[HighlightedMessageIdKey.self] }
         set { self[HighlightedMessageIdKey.self] = newValue }
+    }
+}
+
+/// Signals that a message-level gesture (long-press or double-tap) is currently being handled
+/// and that descendant content (e.g. attachments) should not respond to taps.
+private struct MessageGestureInProgressKey: EnvironmentKey {
+    static let defaultValue: Bool = false
+}
+
+extension EnvironmentValues {
+    var isMessageGestureInProgress: Bool {
+        get { self[MessageGestureInProgressKey.self] }
+        set { self[MessageGestureInProgressKey.self] = newValue }
     }
 }
 

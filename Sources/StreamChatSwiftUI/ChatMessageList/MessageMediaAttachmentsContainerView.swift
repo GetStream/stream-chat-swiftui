@@ -66,6 +66,7 @@ public struct MessageMediaAttachmentsContainerView<Factory: ViewFactory>: View {
     @Injected(\.tokens) private var tokens
     @Injected(\.utils) private var utils
     @Environment(\.layoutDirection) private var layoutDirection
+    @Environment(\.isMessageGestureInProgress) private var isMessageGestureInProgress
 
     let factory: Factory
     let message: ChatMessage
@@ -287,6 +288,9 @@ public struct MessageMediaAttachmentsContainerView<Factory: ViewFactory>: View {
         )
         .contentShape(Rectangle())
         .onTapGesture {
+            // Ignore taps that fire on finger release after a message-level long-press
+            // or double-tap has already been recognized.
+            guard !isMessageGestureInProgress else { return }
             if message.localState == nil {
                 if selectedIndex == index {
                     galleryShown = true
