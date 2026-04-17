@@ -107,11 +107,6 @@ public struct MessageItemView<Factory: ViewFactory>: View {
                     }
                 )
                 .contentShape(Rectangle())
-                .allowsHitTesting(!shownAsPreview || (messageViewModel.usesScrollView))
-                .highPriorityGesture(
-                    TapGesture().onEnded { /* Swallow single taps so attachments (e.g. images) don't open while scrolling stays functional. */ },
-                    including: shownAsPreview ? .all : .none
-                )
                 .onTapGesture(count: 2) {
                     if messageViewModel.isDoubleTapOverlayEnabled {
                         handleGestureForMessage(showsMessageActions: true)
