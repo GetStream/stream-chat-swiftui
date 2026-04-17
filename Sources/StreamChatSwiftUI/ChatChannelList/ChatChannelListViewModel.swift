@@ -181,10 +181,14 @@ import UIKit
         let channelsCount = controller?.channels.count ?? 0
         guard channelsCount > 0 else { return }
 
-        let prefetchIndex: Int = if channelsCount > 15 {
-            channelsCount - 15
+        let pageSize = controller?.query.pagination.pageSize
+        let prefetchIndex: Int
+        if let pageSize {
+            prefetchIndex = max(0, channelsCount - pageSize / 2)
+        } else if channelsCount > 15 {
+            prefetchIndex = channelsCount - 15
         } else {
-            channelsCount - 1
+            prefetchIndex = channelsCount - 1
         }
 
         if index < prefetchIndex {
@@ -193,7 +197,8 @@ import UIKit
 
         if !loadingNextChannels {
             loadingNextChannels = true
-            controller?.loadNextChannels(limit: 30) { [weak self] _ in
+            let limit = pageSize ?? 20
+            controller?.loadNextChannels(limit: limit) { [weak self] _ in
                 guard let self = self else { return }
                 self.loadingNextChannels = false
             }
