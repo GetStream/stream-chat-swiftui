@@ -75,13 +75,13 @@ class MediaLoader_Mock: MediaLoader, @unchecked Sendable {
         }
     }
 
-    func loadFile(
-        at url: URL,
-        options: FileLoadOptions,
-        completion: @escaping @MainActor (Result<MediaLoaderFile, Error>) -> Void
+    func loadFileRequest(
+        for url: URL,
+        options: DownloadFileRequestOptions,
+        completion: @escaping @MainActor (Result<MediaLoaderFileRequest, Error>) -> Void
     ) {
         StreamConcurrency.onMain {
-            completion(.success(MediaLoaderFile(url: url)))
+            completion(.success(MediaLoaderFileRequest(urlRequest: URLRequest(url: url))))
         }
     }
 
