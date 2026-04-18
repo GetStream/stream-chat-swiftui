@@ -105,9 +105,12 @@ private struct StreamAsyncImageBody<Content: View>: View {
             return
         }
 
-        if initialPhase.image == nil {
-            phase = .loading
+        if case .success = initialPhase {
+            phase = initialPhase
+            return
         }
+
+        phase = .loading
 
         do {
             let loaded = try await utils.mediaLoader.loadImage(
