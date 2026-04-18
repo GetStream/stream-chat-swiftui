@@ -55,8 +55,7 @@ public final class MediaAttachment: Identifiable, Equatable, Sendable {
                 return
             }
             utils.mediaLoader.loadVideoPreview(
-                with: videoAttachment,
-                options: VideoLoadOptions()
+                with: videoAttachment
             ) { result in
                 completion(result.map(\.image))
             }
