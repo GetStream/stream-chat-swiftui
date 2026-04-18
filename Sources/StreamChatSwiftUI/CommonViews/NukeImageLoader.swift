@@ -33,17 +33,19 @@ enum NukeImageLoader {
             userInfo: [ImageRequest.UserInfoKey.imageIdKey: storedKey as Any]
         )
         guard let container = ImagePipeline.shared.cache[request] else { return nil }
+        let isAnimated = container.type == .gif
         return StreamAsyncImageResult(
             image: container.image,
-            isAnimated: container.type == .gif,
-            animatedImageData: container.data
+            isAnimated: isAnimated,
+            animatedImageData: isAnimated ? container.data : nil
         )
     }
 
     /// Stores a caching key for a given URL and resize combination.
     ///
-    /// Called by ``StreamImageDownloader`` after a successful CDN transform
-    /// so that ``cachedResult(url:resize:)`` can find the image in Nuke's
+    /// Called by ``StreamAsyncImage`` after a successful load through
+    /// ``MediaLoader/loadImage(url:options:completion:)`` so that
+    /// ``cachedResult(url:resize:)`` can find the image in Nuke's
     /// memory cache on subsequent lookups.
     static func storeCachingKey(_ cachingKey: String, url: URL, resize: ImageResize?) {
         let key = inputKey(url: url, resize: resize) as NSString
