@@ -136,6 +136,67 @@ class MediaLoader_Tests: StreamChatTestCase {
         XCTAssertFalse(downloader.downloadImageCalled)
     }
 
+    // MARK: - StreamMediaLoader loadFileRequest
+
+    func test_streamMediaLoader_loadFileRequest_returnsResolvedURL() {
+        let resolvedURL = URL(string: "https://cdn.example.com/signed?token=abc")!
+        let mock = CDNRequester_Mock()
+        mock.fileRequestResult = .success(CDNRequest(url: resolvedURL))
+        let mediaLoader = StreamMediaLoader(cdnRequester: mock, downloader: ConfigurableImageDownloader(result: .success(UIImage())))
+        let originalURL = URL(string: "https://example.com/file.pdf")!
+
+        let expectation = expectation(description: "Completion called")
+        var receivedRequest: MediaLoaderFileRequest?
+        mediaLoader.loadFileRequest(for: originalURL, options: DownloadFileRequestOptions()) { result in
+            receivedRequest = try? result.get()
+            expectation.fulfill()
+        }
+
+        waitForExpectations(timeout: 1)
+        XCTAssertEqual(receivedRequest?.urlRequest.url, resolvedURL)
+        XCTAssertEqual(mock.fileRequestCallCount, 1)
+        XCTAssertEqual(mock.fileRequestCalledWithURLs.first, originalURL)
+    }
+
+    func test_streamMediaLoader_loadFileRequest_forwardsHeaders() {
+        let resolvedURL = URL(string: "https://cdn.example.com/signed")!
+        let headers = ["Authorization": "Bearer token123", "X-Custom": "value"]
+        let mock = CDNRequester_Mock()
+        mock.fileRequestResult = .success(CDNRequest(url: resolvedURL, headers: headers))
+        let mediaLoader = StreamMediaLoader(cdnRequester: mock, downloader: ConfigurableImageDownloader(result: .success(UIImage())))
+
+        let expectation = expectation(description: "Completion called")
+        var receivedRequest: MediaLoaderFileRequest?
+        mediaLoader.loadFileRequest(for: URL(string: "https://example.com/file.pdf")!, options: DownloadFileRequestOptions()) { result in
+            receivedRequest = try? result.get()
+            expectation.fulfill()
+        }
+
+        waitForExpectations(timeout: 1)
+        let urlRequest = receivedRequest?.urlRequest
+        XCTAssertEqual(urlRequest?.value(forHTTPHeaderField: "Authorization"), "Bearer token123")
+        XCTAssertEqual(urlRequest?.value(forHTTPHeaderField: "X-Custom"), "value")
+    }
+
+    func test_streamMediaLoader_loadFileRequest_propagatesError() {
+        let expectedError = NSError(domain: "test", code: 99)
+        let mock = CDNRequester_Mock()
+        mock.fileRequestResult = .failure(expectedError)
+        let mediaLoader = StreamMediaLoader(cdnRequester: mock, downloader: ConfigurableImageDownloader(result: .success(UIImage())))
+
+        let expectation = expectation(description: "Completion called")
+        var receivedError: NSError?
+        mediaLoader.loadFileRequest(for: URL(string: "https://example.com/file.pdf")!, options: DownloadFileRequestOptions()) { result in
+            if case let .failure(error) = result {
+                receivedError = error as NSError
+            }
+            expectation.fulfill()
+        }
+
+        waitForExpectations(timeout: 1)
+        XCTAssertEqual(receivedError?.code, 99)
+    }
+
     // MARK: - Helpers
 
     private func makeVideoAttachment(
