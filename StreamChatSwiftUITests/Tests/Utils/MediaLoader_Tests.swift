@@ -142,7 +142,7 @@ class MediaLoader_Tests: StreamChatTestCase {
         let resolvedURL = URL(string: "https://cdn.example.com/signed?token=abc")!
         let mock = CDNRequester_Mock()
         mock.fileRequestResult = .success(CDNRequest(url: resolvedURL))
-        let mediaLoader = StreamMediaLoader(cdnRequester: mock, downloader: ConfigurableImageDownloader(result: .success(UIImage())))
+        let mediaLoader = StreamMediaLoader(downloader: ConfigurableImageDownloader(result: .success(UIImage())), cdnRequester: mock)
         let originalURL = URL(string: "https://example.com/file.pdf")!
 
         let expectation = expectation(description: "Completion called")
@@ -163,7 +163,7 @@ class MediaLoader_Tests: StreamChatTestCase {
         let headers = ["Authorization": "Bearer token123", "X-Custom": "value"]
         let mock = CDNRequester_Mock()
         mock.fileRequestResult = .success(CDNRequest(url: resolvedURL, headers: headers))
-        let mediaLoader = StreamMediaLoader(cdnRequester: mock, downloader: ConfigurableImageDownloader(result: .success(UIImage())))
+        let mediaLoader = StreamMediaLoader(downloader: ConfigurableImageDownloader(result: .success(UIImage())), cdnRequester: mock)
 
         let expectation = expectation(description: "Completion called")
         var receivedRequest: MediaLoaderFileRequest?
@@ -182,7 +182,7 @@ class MediaLoader_Tests: StreamChatTestCase {
         let expectedError = NSError(domain: "test", code: 99)
         let mock = CDNRequester_Mock()
         mock.fileRequestResult = .failure(expectedError)
-        let mediaLoader = StreamMediaLoader(cdnRequester: mock, downloader: ConfigurableImageDownloader(result: .success(UIImage())))
+        let mediaLoader = StreamMediaLoader(downloader: ConfigurableImageDownloader(result: .success(UIImage())), cdnRequester: mock)
 
         let expectation = expectation(description: "Completion called")
         var receivedError: NSError?
