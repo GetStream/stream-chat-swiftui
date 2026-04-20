@@ -77,14 +77,18 @@ struct MessageTopView: View {
                 title: messageViewModel.originalTextShown ? nil : L10n.Message.Annotation.translated,
                 buttonTitle: messageViewModel.originalTextShown ? L10n.Message.showTranslation : L10n.Message.showOriginal,
                 buttonAction: {
-                    if messageViewModel.originalTextShown {
-                        messageViewModel.hideOriginalText()
-                    } else {
-                        messageViewModel.showOriginalText()
+                    withAnimation(.easeInOut(duration: 0.25)) {
+                        if messageViewModel.originalTextShown {
+                            messageViewModel.hideOriginalText()
+                        } else {
+                            messageViewModel.showOriginalText()
+                        }
                     }
                 },
                 usesInvertedStyle: usesInvertedStyle
             )
+            .id(messageViewModel.originalTextShown)
+            .transition(.opacity)
         } else {
             MessageAnnotationView(
                 icon: images.annotationTranslation,
