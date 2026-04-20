@@ -85,7 +85,7 @@ class StreamChat_Utils_Tests: StreamChatTestCase {
     func test_streamChatUtils_customCDNRequester_throughMediaLoader() {
         // Given
         let customRequester = CDNRequester_Mock()
-        let customLoader = StreamMediaLoader(cdnRequester: customRequester, downloader: StreamImageDownloader())
+        let customLoader = StreamMediaLoader(downloader: StreamImageDownloader(), cdnRequester: customRequester)
         let utils = Utils(mediaLoader: customLoader)
         streamChat = StreamChat(chatClient: chatClient, utils: utils)
 

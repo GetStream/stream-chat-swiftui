@@ -50,7 +50,7 @@ class MediaLoader_Tests: StreamChatTestCase {
     func test_streamMediaLoader_loadImage_callsDownloader() {
         let expectedImage = UIImage(systemName: "star.fill")!
         let downloader = ConfigurableImageDownloader(result: .success(expectedImage))
-        let mediaLoader = StreamMediaLoader(cdnRequester: cdnRequester, downloader: downloader)
+        let mediaLoader = StreamMediaLoader(downloader: downloader, cdnRequester: cdnRequester)
         let url = URL(string: "https://example.com/image.jpg")!
 
         let expectation = expectation(description: "Completion called")
@@ -67,7 +67,7 @@ class MediaLoader_Tests: StreamChatTestCase {
 
     func test_streamMediaLoader_loadImage_returnsError_whenURLNil() {
         let downloader = ConfigurableImageDownloader(result: .success(UIImage()))
-        let mediaLoader = StreamMediaLoader(cdnRequester: cdnRequester, downloader: downloader)
+        let mediaLoader = StreamMediaLoader(downloader: downloader, cdnRequester: cdnRequester)
 
         let expectation = expectation(description: "Completion called")
         var receivedError: Error?
@@ -86,7 +86,7 @@ class MediaLoader_Tests: StreamChatTestCase {
     func test_streamMediaLoader_loadImage_propagatesDownloaderError() {
         let expectedError = NSError(domain: "test", code: 42)
         let downloader = ConfigurableImageDownloader(result: .failure(expectedError))
-        let mediaLoader = StreamMediaLoader(cdnRequester: cdnRequester, downloader: downloader)
+        let mediaLoader = StreamMediaLoader(downloader: downloader, cdnRequester: cdnRequester)
         let url = URL(string: "https://example.com/fail.jpg")!
 
         let expectation = expectation(description: "Completion called")
@@ -107,7 +107,7 @@ class MediaLoader_Tests: StreamChatTestCase {
     func test_streamMediaLoader_withAttachment_whenThumbnailURLExists_loadsThumbnailImage() {
         let thumbnailImage = UIImage(systemName: "star.fill")!
         let downloader = ConfigurableImageDownloader(result: .success(thumbnailImage))
-        let mediaLoader = StreamMediaLoader(cdnRequester: cdnRequester, downloader: downloader)
+        let mediaLoader = StreamMediaLoader(downloader: downloader, cdnRequester: cdnRequester)
         let attachment = makeVideoAttachment(thumbnailURL: thumbnailURL)
 
         let expectation = expectation(description: "Completion called")
@@ -124,7 +124,7 @@ class MediaLoader_Tests: StreamChatTestCase {
 
     func test_streamMediaLoader_withAttachment_whenNoThumbnailURL_doesNotCallImageDownloader() {
         let downloader = ConfigurableImageDownloader(result: .success(UIImage()))
-        let mediaLoader = StreamMediaLoader(cdnRequester: cdnRequester, downloader: downloader)
+        let mediaLoader = StreamMediaLoader(downloader: downloader, cdnRequester: cdnRequester)
         let attachment = makeVideoAttachment(thumbnailURL: nil)
 
         let expectation = expectation(description: "Completion called")
