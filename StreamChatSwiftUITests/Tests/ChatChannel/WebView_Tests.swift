@@ -15,11 +15,11 @@ class WebView_Tests: StreamChatTestCase {
         throw XCTSkip("Check it out: https://github.com/pointfreeco/swift-snapshot-testing/issues/625")
 
         // Given
-        let url = mockURL
+        let request = URLRequest(url: mockURL)
 
         // When
         let webView = WebView(
-            url: url,
+            request: request,
             isLoading: .constant(false),
             title: .constant("Test"),
             error: .constant(nil)

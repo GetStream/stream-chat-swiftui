@@ -279,11 +279,11 @@ struct DownloadShareAttachmentView<Payload: DownloadableAttachmentPayload>: View
         let messageId = attachment.id.messageId
         let cid = attachment.id.cid
         let messageController = chatClient.messageController(cid: cid, messageId: messageId)
-        let cdnRequester = InjectedValues[\.utils].cdnRequester
-        cdnRequester.fileRequest(for: attachment.remoteURL, options: .init()) { result in
+        let mediaLoader = InjectedValues[\.utils].mediaLoader
+        mediaLoader.loadFileRequest(for: attachment.remoteURL) { result in
             switch result {
-            case let .success(cdnRequest):
-                messageController.downloadAttachment(attachment, remoteURL: cdnRequest.url) { result in
+            case let .success(fileRequest):
+                messageController.downloadAttachment(attachment, request: fileRequest.urlRequest) { result in
                     if case let .failure(error) = result {
                         log.error("Error downloading attachment: \(error.localizedDescription)")
                     } else {

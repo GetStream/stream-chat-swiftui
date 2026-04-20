@@ -105,14 +105,25 @@ private struct StreamAsyncImageBody<Content: View>: View {
             return
         }
 
+        if case .success = initialPhase {
+            phase = initialPhase
+            return
+        }
+
+        phase = .loading
+
         do {
-            let result = try await NukeImageLoader.loadImage(
+            let loaded = try await utils.mediaLoader.loadImage(
                 url: url,
-                resize: resize,
-                cdnRequester: utils.cdnRequester,
-                onCacheMiss: { phase = .loading }
+                options: ImageLoadOptions(resize: resize)
             )
-            phase = .success(result)
+            if let cachingKey = loaded.cachingKey {
+                NukeImageLoader.storeCachingKey(cachingKey, url: url, resize: resize)
+            }
+            phase = .success(StreamAsyncImageResult(
+                image: loaded.image,
+                animatedImageData: loaded.animatedImageData
+            ))
         } catch {
             if !(error is CancellationError) {
                 phase = .error(error)
@@ -158,8 +169,6 @@ public enum StreamAsyncImagePhase {
 public struct StreamAsyncImageResult {
     /// The loaded image.
     public let image: UIImage
-    /// Whether the image is an animated format (e.g. GIF).
-    public let isAnimated: Bool
     /// The raw image data for animated rendering. `nil` for static images.
     public let animatedImageData: Data?
 }
