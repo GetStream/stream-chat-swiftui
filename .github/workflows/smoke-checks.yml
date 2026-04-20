@@ -26,9 +26,19 @@ env:
   GITHUB_PR_NUM: ${{ github.event.pull_request.number }}
 
 jobs:
+  guard:
+    name: Guard
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4.1.1
+      - uses: ./.github/actions/ci-guard
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+
   build-test-app-and-frameworks:
     name: Build Test App and Frameworks
     runs-on: macos-15
+    needs: guard
     if: ${{ github.event.inputs.record_snapshots != 'true' }}
     steps:
     - uses: actions/checkout@v4.1.1
@@ -49,6 +59,7 @@ jobs:
   automated-code-review:
     name: Automated Code Review
     runs-on: macos-14
+    needs: guard
     if: ${{ github.event.inputs.record_snapshots != 'true' }}
     env:
       XCODE_VERSION: "16.1"
@@ -65,6 +76,7 @@ jobs:
   build-old-xcode:
     name: Build SDKs (Old Xcode)
     runs-on: macos-14
+    needs: guard
     if: ${{ github.event.inputs.record_snapshots != 'true' }}
     env:
       XCODE_VERSION: "16.1"
@@ -83,6 +95,7 @@ jobs:
   test-ui-debug:
     name: Test SwiftUI (Debug)
     runs-on: macos-15
+    needs: guard
     env:
       GITHUB_TOKEN: ${{ secrets.CI_BOT_GITHUB_TOKEN }} # to open a PR
     steps:
@@ -124,7 +137,9 @@ jobs:
     name: Launch Allure TestOps
     runs-on: macos-15
     if: ${{ github.event.inputs.record_snapshots != 'true' }}
-    needs: build-test-app-and-frameworks
+    needs:
+      - guard
+      - build-test-app-and-frameworks
     outputs:
       launch_id: ${{ steps.get_launch_id.outputs.launch_id }}
     steps:
@@ -144,6 +159,7 @@ jobs:
     runs-on: macos-15
     if: ${{ github.event.inputs.record_snapshots != 'true' }}
     needs:
+      - guard
       - allure_testops_launch
       - build-test-app-and-frameworks
     env:
@@ -198,7 +214,9 @@ jobs:
     name: Build Demo App
     runs-on: macos-15
     if: ${{ github.event.inputs.record_snapshots != 'true' }}
-    needs: build-test-app-and-frameworks
+    needs:
+      - guard
+      - build-test-app-and-frameworks
     steps:
     - uses: actions/checkout@v4.1.1
     - uses: actions/download-artifact@v4
