@@ -122,7 +122,6 @@ private struct StreamAsyncImageBody<Content: View>: View {
             }
             phase = .success(StreamAsyncImageResult(
                 image: loaded.image,
-                isAnimated: loaded.isAnimated,
                 animatedImageData: loaded.animatedImageData
             ))
         } catch {
@@ -170,8 +169,6 @@ public enum StreamAsyncImagePhase {
 public struct StreamAsyncImageResult {
     /// The loaded image.
     public let image: UIImage
-    /// Whether the image is an animated format (e.g. GIF).
-    public let isAnimated: Bool
     /// The raw image data for animated rendering. `nil` for static images.
     public let animatedImageData: Data?
 }

@@ -33,11 +33,9 @@ enum NukeImageLoader {
             userInfo: [ImageRequest.UserInfoKey.imageIdKey: storedKey as Any]
         )
         guard let container = ImagePipeline.shared.cache[request] else { return nil }
-        let isAnimated = container.type == .gif
         return StreamAsyncImageResult(
             image: container.image,
-            isAnimated: isAnimated,
-            animatedImageData: isAnimated ? container.data : nil
+            animatedImageData: container.type == .gif ? container.data : nil
         )
     }
 
