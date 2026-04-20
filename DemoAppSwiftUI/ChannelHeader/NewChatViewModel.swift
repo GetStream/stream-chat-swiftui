@@ -2,6 +2,7 @@
 // Copyright © 2026 Stream.io Inc. All rights reserved.
 //
 
+import Dispatch
 import StreamChat
 import StreamChatCommonUI
 import StreamChatSwiftUI
@@ -12,7 +13,7 @@ import SwiftUI
 
     @Published var searchText: String = "" {
         didSet {
-            searchUsers(with: searchText)
+            scheduleDebouncedUserSearch()
         }
     }
 
@@ -49,11 +50,16 @@ import SwiftUI
     private lazy var searchController: ChatUserSearchController = chatClient.userSearchController()
     private let lastSeenDateFormatter = DateUtils.timeAgo
 
+    /// Matches UIKit demo `CreateChatViewController.throttleTime` / `CreateGroupViewController.throttleTime`.
+    private let userSearchDebounceMilliseconds = 1000
+    private var userSearchDebounceWorkItem: DispatchWorkItem?
+    private var userSearchRequestGeneration: UInt64 = 0
+
     init() {
         chatUsers = searchController.userArray
         searchController.delegate = self
-        // Empty initial search to get all users
-        searchUsers(with: nil)
+        // Empty initial search to get all users (immediate — not debounced; same as UIKit `viewDidLoad`)
+        performUserSearch(term: nil)
     }
 
     func userTapped(_ user: ChatUser) {
@@ -117,13 +123,31 @@ import SwiftUI
 
     // MARK: - private
 
-    private func searchUsers(with term: String?) {
+    private func scheduleDebouncedUserSearch() {
+        state = .loading
+        userSearchDebounceWorkItem?.cancel()
+        let query = searchText
+        let work = DispatchWorkItem { [weak self] in
+            self?.performUserSearch(term: query.isEmpty ? nil : query)
+        }
+        userSearchDebounceWorkItem = work
+        DispatchQueue.main.asyncAfter(
+            deadline: .now() + .milliseconds(userSearchDebounceMilliseconds),
+            execute: work
+        )
+    }
+
+    private func performUserSearch(term: String?) {
+        userSearchRequestGeneration += 1
+        let generation = userSearchRequestGeneration
         state = .loading
         searchController.search(term: term) { [weak self] error in
+            guard let self else { return }
+            guard generation == self.userSearchRequestGeneration else { return }
             if error != nil {
-                self?.state = .error
+                self.state = .error
             } else {
-                self?.state = .loaded
+                self.state = self.chatUsers.isEmpty ? .noUsers : .loaded
             }
         }
     }
