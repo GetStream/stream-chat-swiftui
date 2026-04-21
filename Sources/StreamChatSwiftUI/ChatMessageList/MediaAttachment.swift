@@ -45,7 +45,7 @@ public final class MediaAttachment: Identifiable, Equatable, Sendable {
             utils.mediaLoader.loadImage(
                 url: url,
                 options: ImageLoadOptions(resize: imageResize)
-            ) { result in
+            ) { @MainActor result in
                 completion(result.map(\.image))
             }
         } else if type == .video {
@@ -56,7 +56,7 @@ public final class MediaAttachment: Identifiable, Equatable, Sendable {
             }
             utils.mediaLoader.loadVideoPreview(
                 with: videoAttachment
-            ) { result in
+            ) { @MainActor result in
                 completion(result.map(\.image))
             }
         }

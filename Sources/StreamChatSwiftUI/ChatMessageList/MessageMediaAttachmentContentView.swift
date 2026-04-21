@@ -206,7 +206,7 @@ public struct MessageMediaAttachmentContentView<Factory: ViewFactory>: View {
         source.generateThumbnail(
             resize: true,
             preferredSize: CGSize(width: width, height: height)
-        ) { result in
+        ) { @MainActor result in
             switch result {
             case let .success(loaded):
                 self.videoPreview = loaded

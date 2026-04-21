@@ -58,7 +58,7 @@ public struct FileAttachmentPreview: View {
                 }
             }
             .onAppear {
-                utils.mediaLoader.loadFileRequest(for: url) { result in
+                utils.mediaLoader.loadFileRequest(for: url) { @MainActor result in
                     switch result {
                     case let .success(result):
                         fileRequest = result.urlRequest
