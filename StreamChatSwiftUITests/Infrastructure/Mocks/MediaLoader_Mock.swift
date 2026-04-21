@@ -85,7 +85,10 @@ class MediaLoader_Mock: MediaLoader, @unchecked Sendable {
         }
     }
 
-    private func imageForURL(_ url: URL?) -> UIImage {
+    /// Synchronous URL-to-image mapping used both by the async `loadImage`
+    /// path and by the snapshot-test sync hook installed in
+    /// `StreamChatTestCase`.
+    func imageForURL(_ url: URL?) -> UIImage {
         guard let url else { return Self.defaultLoadedImage }
         let urlString = url.absoluteString
         if urlString.contains("chewbacca") {

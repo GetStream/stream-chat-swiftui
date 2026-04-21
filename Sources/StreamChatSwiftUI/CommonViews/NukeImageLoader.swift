@@ -24,6 +24,10 @@ enum NukeImageLoader {
     /// Returns `nil` when the image has never been loaded (no stored key)
     /// or when Nuke has evicted it from memory.
     static func cachedResult(url: URL, resize: ImageResize?) -> StreamAsyncImageResult? {
+        if let override = testSyncLookup?(url, resize) {
+            return override
+        }
+
         let key = inputKey(url: url, resize: resize) as NSString
         guard let storedKey = cachingKeyMap.object(forKey: key)?.value else { return nil }
 
@@ -38,6 +42,17 @@ enum NukeImageLoader {
             animatedImageData: container.type == .gif ? container.data : nil
         )
     }
+
+    // MARK: - Test Hook
+
+    /// Test-only hook that lets tests resolve image URLs synchronously.
+    ///
+    /// Snapshot tests run entirely synchronously and cannot drive the async
+    /// ``MediaLoader`` pipeline before the view is captured. Installing a
+    /// resolver here makes ``StreamAsyncImage``'s `initialPhase` return a
+    /// `.success` immediately, so mock images render in the first layout
+    /// pass. In production this is always `nil`.
+    nonisolated(unsafe) static var testSyncLookup: ((URL, ImageResize?) -> StreamAsyncImageResult?)?
 
     /// Stores a caching key for a given URL and resize combination.
     ///
