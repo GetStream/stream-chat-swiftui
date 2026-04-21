@@ -30,12 +30,12 @@ class MediaLoader_Mock: MediaLoader, @unchecked Sendable {
         options: ImageLoadOptions,
         completion: @escaping @MainActor (Result<MediaLoaderImage, Error>) -> Void
     ) {
-        loadImageCalled = true
-        loadImageCallCount += 1
-        loadedURLs.append(url)
-        loadImageOptions.append(options)
-        let image = imageForURL(url)
         StreamConcurrency.onMain {
+            loadImageCalled = true
+            loadImageCallCount += 1
+            loadedURLs.append(url)
+            loadImageOptions.append(options)
+            let image = imageForURL(url)
             completion(.success(MediaLoaderImage(image: image)))
         }
     }
@@ -45,8 +45,8 @@ class MediaLoader_Mock: MediaLoader, @unchecked Sendable {
         options: VideoLoadOptions,
         completion: @escaping @MainActor (Result<MediaLoaderVideoAsset, Error>) -> Void
     ) {
-        loadVideoAssetOptions.append(options)
         StreamConcurrency.onMain {
+            loadVideoAssetOptions.append(options)
             completion(.success(MediaLoaderVideoAsset(asset: AVURLAsset(url: url))))
         }
     }
@@ -56,9 +56,9 @@ class MediaLoader_Mock: MediaLoader, @unchecked Sendable {
         options: VideoLoadOptions,
         completion: @escaping @MainActor (Result<MediaLoaderVideoPreview, Error>) -> Void
     ) {
-        loadVideoPreviewWithAttachmentCalled = true
-        loadVideoPreviewOptions.append(options)
         StreamConcurrency.onMain {
+            loadVideoPreviewWithAttachmentCalled = true
+            loadVideoPreviewOptions.append(options)
             completion(.success(MediaLoaderVideoPreview(image: Self.defaultLoadedImage)))
         }
     }
@@ -68,9 +68,9 @@ class MediaLoader_Mock: MediaLoader, @unchecked Sendable {
         options: VideoLoadOptions,
         completion: @escaping @MainActor (Result<MediaLoaderVideoPreview, Error>) -> Void
     ) {
-        loadVideoPreviewAtURLCalled = true
-        loadVideoPreviewOptions.append(options)
         StreamConcurrency.onMain {
+            loadVideoPreviewAtURLCalled = true
+            loadVideoPreviewOptions.append(options)
             completion(.success(MediaLoaderVideoPreview(image: Self.defaultLoadedImage)))
         }
     }
