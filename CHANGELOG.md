@@ -11,6 +11,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Fix tapping a media attachment in the reactions overlay opening the fullscreen gallery [#1424](https://github.com/GetStream/stream-chat-swiftui/pull/1424)
 - Fix empty space around the previewed message in the reactions overlay not dismissing the overlay [#1424](https://github.com/GetStream/stream-chat-swiftui/pull/1424)
 - Fix long-pressing a message with attachments occasionally opening the fullscreen gallery [#1424](https://github.com/GetStream/stream-chat-swiftui/pull/1424)
+- Fix image attachments briefly showing a loading indicator when reopening a cached image [#1424](https://github.com/GetStream/stream-chat-swiftui/pull/1424)
 
 # [5.0.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/5.0.0)
 _April 16, 2026_
