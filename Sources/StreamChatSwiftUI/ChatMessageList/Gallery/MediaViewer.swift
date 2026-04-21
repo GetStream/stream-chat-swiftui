@@ -343,8 +343,7 @@ struct StreamVideoPlayer: View {
                 return
             }
             utils.mediaLoader.loadVideoAsset(
-                at: url,
-                options: VideoLoadOptions(cdnRequester: utils.cdnRequester)
+                at: url
             ) { result in
                 guard isVisible else { return }
                 switch result {

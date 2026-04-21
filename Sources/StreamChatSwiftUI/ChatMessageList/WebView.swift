@@ -7,7 +7,7 @@ import WebKit
 
 /// SwiftUI web view wrapper for `WKWebView`.
 struct WebView: UIViewRepresentable {
-    var url: URL
+    var request: URLRequest
     @Binding var isLoading: Bool
     @Binding var title: String?
     @Binding var error: Error?
@@ -26,7 +26,7 @@ struct WebView: UIViewRepresentable {
         webView.navigationDelegate = context.coordinator
         webView.allowsBackForwardNavigationGestures = true
         webView.scrollView.isScrollEnabled = true
-        webView.load(URLRequest(url: url))
+        webView.load(request)
         return webView.withAccessibilityIdentifier(identifier: "WKWebView")
     }
 

@@ -14,11 +14,9 @@ public struct FileAttachmentPreview: View {
     @Injected(\.images) private var images
     @Injected(\.utils) private var utils
 
-    private var cdnRequester: CDNRequester { utils.cdnRequester }
-
     let attachment: ChatMessageFileAttachment
     
-    @State private var adjustedUrl: URL?
+    @State private var fileRequest: URLRequest?
     @State private var isLoading = false
     @State private var webViewTitle: String?
     @State private var error: Error?
@@ -45,9 +43,9 @@ public struct FileAttachmentPreview: View {
                         .font(fonts.body)
                         .padding()
                 } else {
-                    if let adjustedUrl {
+                    if let fileRequest {
                         WebView(
-                            url: adjustedUrl,
+                            request: fileRequest,
                             isLoading: $isLoading,
                             title: $webViewTitle,
                             error: $error
@@ -60,14 +58,12 @@ public struct FileAttachmentPreview: View {
                 }
             }
             .onAppear {
-                cdnRequester.fileRequest(for: url, options: .init()) { result in
-                    Task { @MainActor in
-                        switch result {
-                        case let .success(cdnRequest):
-                            adjustedUrl = cdnRequest.url
-                        case let .failure(error):
-                            self.error = error
-                        }
+                utils.mediaLoader.loadFileRequest(for: url) { result in
+                    switch result {
+                    case let .success(result):
+                        fileRequest = result.urlRequest
+                    case let .failure(error):
+                        self.error = error
                     }
                 }
             }

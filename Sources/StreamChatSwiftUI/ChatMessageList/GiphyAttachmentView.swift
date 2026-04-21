@@ -132,7 +132,7 @@ struct LazyGiphyView: View {
         ) { phase in
             switch phase {
             case .success(let result):
-                if result.isAnimated, let gifData = result.animatedImageData {
+                if let gifData = result.animatedImageData {
                     AnimatedGifView(gifData: gifData)
                 } else {
                     Image(uiImage: result.image)
