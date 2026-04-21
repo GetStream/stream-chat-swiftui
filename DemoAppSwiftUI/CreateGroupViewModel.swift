@@ -34,6 +34,18 @@ import SwiftUI
     private var userSearchDebounceWorkItem: DispatchWorkItem?
     private var userSearchRequestGeneration: UInt64 = 0
 
+    private struct ActiveUserSearch: Equatable {
+        var apiTerm: String?
+    }
+
+    private enum UserListFetchCursor: Equatable {
+        case notYetFetched
+        case fetched(apiTerm: String?)
+    }
+
+    private var activeUserSearch: ActiveUserSearch?
+    private var userListFetchCursor: UserListFetchCursor = .notYetFetched
+
     init() {
         chatUsers = searchController.userArray
         searchController.delegate = self
@@ -105,6 +117,16 @@ import SwiftUI
     // MARK: - private
 
     private func scheduleDebouncedUserSearch() {
+        let nextTerm = normalizedUserSearchTerm(searchText)
+        if let active = activeUserSearch, matchesUserSearchTerm(active.apiTerm, nextTerm) {
+            return
+        }
+        if case let .fetched(prev) = userListFetchCursor,
+           matchesUserSearchTerm(prev, nextTerm),
+           state != .error {
+            return
+        }
+
         state = .loading
         userSearchDebounceWorkItem?.cancel()
         let query = searchText
@@ -119,17 +141,35 @@ import SwiftUI
     }
 
     private func performUserSearch(term: String?) {
+        if let active = activeUserSearch, matchesUserSearchTerm(active.apiTerm, term) {
+            return
+        }
+        activeUserSearch = ActiveUserSearch(apiTerm: term)
         userSearchRequestGeneration += 1
         let generation = userSearchRequestGeneration
         state = .loading
         searchController.search(term: term) { [weak self] error in
             guard let self else { return }
             guard generation == self.userSearchRequestGeneration else { return }
+            self.activeUserSearch = nil
             if error != nil {
                 self.state = .error
             } else {
+                self.userListFetchCursor = .fetched(apiTerm: term)
                 self.state = self.chatUsers.isEmpty ? .noUsers : .loaded
             }
+        }
+    }
+
+    private func normalizedUserSearchTerm(_ text: String) -> String? {
+        text.isEmpty ? nil : text
+    }
+
+    private func matchesUserSearchTerm(_ lhs: String?, _ rhs: String?) -> Bool {
+        switch (lhs, rhs) {
+        case (nil, nil): true
+        case let (l?, r?): l == r
+        default: false
         }
     }
 }
