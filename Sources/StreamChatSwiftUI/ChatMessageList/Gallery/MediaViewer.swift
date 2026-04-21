@@ -344,7 +344,7 @@ struct StreamVideoPlayer: View {
             }
             utils.mediaLoader.loadVideoAsset(
                 at: url
-            ) { @MainActor result in
+            ) { result in
                 guard isVisible else { return }
                 switch result {
                 case let .success(videoAsset):

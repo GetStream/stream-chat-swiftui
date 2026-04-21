@@ -78,7 +78,7 @@ struct LazyLoadingImage: View {
         attachment.generateThumbnail(
             resize: resize,
             preferredSize: CGSize(width: width, height: height)
-        ) { @MainActor result in
+        ) { result in
             switch result {
             case let .success(image):
                 self.image = image
