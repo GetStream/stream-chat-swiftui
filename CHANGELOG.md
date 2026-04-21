@@ -7,6 +7,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - `CDNRequester` is now passed in the constructor of `StreamMediaLoader` instead of `Utils` [#1425](https://github.com/GetStream/stream-chat-swiftui/pull/1425)
 
 ### 🐞 Fixed
+- Fix SDK not compiling with Xcode 16 [#1430](https://github.com/GetStream/stream-chat-swiftui/pull/1430)
 - Fix show/hide message translation animation [#1426](https://github.com/GetStream/stream-chat-swiftui/pull/1426)
 - Fix tapping a media attachment in the reactions overlay opening the fullscreen gallery [#1424](https://github.com/GetStream/stream-chat-swiftui/pull/1424)
 - Fix empty space around the previewed message in the reactions overlay not dismissing the overlay [#1424](https://github.com/GetStream/stream-chat-swiftui/pull/1424)
