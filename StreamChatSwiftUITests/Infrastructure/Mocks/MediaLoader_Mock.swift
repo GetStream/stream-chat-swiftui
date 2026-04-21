@@ -30,12 +30,12 @@ class MediaLoader_Mock: MediaLoader, @unchecked Sendable {
         options: ImageLoadOptions,
         completion: @escaping @MainActor (Result<MediaLoaderImage, Error>) -> Void
     ) {
-        loadImageCalled = true
-        loadImageCallCount += 1
-        loadedURLs.append(url)
-        loadImageOptions.append(options)
-        let image = imageForURL(url)
         StreamConcurrency.onMain {
+            loadImageCalled = true
+            loadImageCallCount += 1
+            loadedURLs.append(url)
+            loadImageOptions.append(options)
+            let image = imageForURL(url)
             completion(.success(MediaLoaderImage(image: image)))
         }
     }
@@ -45,8 +45,8 @@ class MediaLoader_Mock: MediaLoader, @unchecked Sendable {
         options: VideoLoadOptions,
         completion: @escaping @MainActor (Result<MediaLoaderVideoAsset, Error>) -> Void
     ) {
-        loadVideoAssetOptions.append(options)
         StreamConcurrency.onMain {
+            loadVideoAssetOptions.append(options)
             completion(.success(MediaLoaderVideoAsset(asset: AVURLAsset(url: url))))
         }
     }
@@ -56,9 +56,9 @@ class MediaLoader_Mock: MediaLoader, @unchecked Sendable {
         options: VideoLoadOptions,
         completion: @escaping @MainActor (Result<MediaLoaderVideoPreview, Error>) -> Void
     ) {
-        loadVideoPreviewWithAttachmentCalled = true
-        loadVideoPreviewOptions.append(options)
         StreamConcurrency.onMain {
+            loadVideoPreviewWithAttachmentCalled = true
+            loadVideoPreviewOptions.append(options)
             completion(.success(MediaLoaderVideoPreview(image: Self.defaultLoadedImage)))
         }
     }
@@ -68,9 +68,9 @@ class MediaLoader_Mock: MediaLoader, @unchecked Sendable {
         options: VideoLoadOptions,
         completion: @escaping @MainActor (Result<MediaLoaderVideoPreview, Error>) -> Void
     ) {
-        loadVideoPreviewAtURLCalled = true
-        loadVideoPreviewOptions.append(options)
         StreamConcurrency.onMain {
+            loadVideoPreviewAtURLCalled = true
+            loadVideoPreviewOptions.append(options)
             completion(.success(MediaLoaderVideoPreview(image: Self.defaultLoadedImage)))
         }
     }
@@ -85,7 +85,10 @@ class MediaLoader_Mock: MediaLoader, @unchecked Sendable {
         }
     }
 
-    private func imageForURL(_ url: URL?) -> UIImage {
+    /// Synchronous URL-to-image mapping used both by the async `loadImage`
+    /// path and by the snapshot-test sync hook installed in
+    /// `StreamChatTestCase`.
+    func imageForURL(_ url: URL?) -> UIImage {
         guard let url else { return Self.defaultLoadedImage }
         let urlString = url.absoluteString
         if urlString.contains("chewbacca") {

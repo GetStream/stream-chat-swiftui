@@ -7,10 +7,17 @@ import SwiftUI
 
 /// A view that renders a single media attachment (image or video) thumbnail.
 ///
-/// Uses ``MediaAttachment/generateThumbnail(resize:preferredSize:completion:)``
-/// to load and display thumbnails.
-/// Shows a gradient placeholder while the thumbnail is loading.
-/// For video attachments, a play icon is overlaid on the thumbnail.
+/// Images are loaded through ``StreamAsyncImage``, which consults Nuke's
+/// in-memory cache synchronously and avoids a loading flash when the
+/// thumbnail was rendered earlier (e.g. when the message is shown again
+/// inside the reactions overlay). Video thumbnails go through
+/// ``MediaAttachment/generateThumbnail(resize:preferredSize:completion:)``
+/// because they can originate from ``AVAssetImageGenerator`` and are not
+/// pure image URLs.
+///
+/// Shows a gradient placeholder and a spinner while the thumbnail is
+/// loading. For video attachments, a play icon is overlaid on the
+/// successfully loaded thumbnail.
 public struct MessageMediaAttachmentContentView<Factory: ViewFactory>: View {
     @Injected(\.colors) private var colors
 
@@ -32,8 +39,12 @@ public struct MessageMediaAttachmentContentView<Factory: ViewFactory>: View {
     /// Called when the user taps the retry badge on an upload-failed attachment.
     let onUploadRetry: (() -> Void)?
 
-    @State private var image: UIImage?
-    @State private var error: Error?
+    /// Video preview image, loaded once on appear.
+    @State private var videoPreview: UIImage?
+    /// Error from the most recent video preview load.
+    @State private var videoPreviewError: Error?
+    /// Bumped to force ``StreamAsyncImage`` to retry a failed image load.
+    @State private var imageRetryToken = 0
 
     public init(
         factory: Factory,
@@ -65,35 +76,7 @@ public struct MessageMediaAttachmentContentView<Factory: ViewFactory>: View {
 
     public var body: some View {
         ZStack {
-            if let image {
-                Image(uiImage: image)
-                    .resizable()
-                    .scaledToFill()
-                    .frame(width: width, height: height)
-                    .clipped()
-            } else if error != nil {
-                placeholderBackground
-            } else {
-                placeholderGradient
-            }
-
-            if image == nil && error == nil && !isUploading {
-                LoadingSpinnerView(size: LoadingSpinnerSize.medium)
-                    .allowsHitTesting(false)
-            }
-
-            if error != nil && source.uploadingState == nil {
-                retryOverlay { loadThumbnail() }
-            }
-
-            if let uploadingState = source.uploadingState {
-                uploadingOverlay(for: uploadingState)
-            }
-
-            if source.type == .video && width > 64 && source.uploadingState == nil && image != nil && error == nil {
-                VideoPlayIndicatorView(size: VideoPlayIndicatorSize.medium)
-                    .allowsHitTesting(false)
-            }
+            thumbnail
         }
         .frame(width: width, height: height)
         .clipShape(
@@ -102,29 +85,138 @@ public struct MessageMediaAttachmentContentView<Factory: ViewFactory>: View {
                 corners: corners ?? [.topLeft, .topRight, .bottomLeft, .bottomRight]
             )
         )
-        .onAppear {
-            guard image == nil else { return }
-            loadThumbnail()
-        }
         .accessibilityIdentifier("MessageMediaAttachmentContentView")
     }
 
-    // MARK: - Private
+    // MARK: - Thumbnail
 
-    private func loadThumbnail() {
-        error = nil
+    @ViewBuilder
+    private var thumbnail: some View {
+        if source.type == .image {
+            imageThumbnail
+        } else if source.type == .video {
+            videoThumbnail
+        } else {
+            placeholderBackground
+        }
+    }
+
+    @ViewBuilder
+    private var imageThumbnail: some View {
+        StreamAsyncImage(
+            url: source.url,
+            resize: ImageResize(CGSize(width: width, height: height))
+        ) { phase in
+            ZStack {
+                phaseBackground(for: phase)
+                imageOverlays(for: phase)
+            }
+        }
+        .id(imageRetryToken)
+    }
+
+    @ViewBuilder
+    private var videoThumbnail: some View {
+        ZStack {
+            videoBackground
+            videoOverlays
+        }
+        .onAppear {
+            guard videoPreview == nil else { return }
+            loadVideoThumbnail()
+        }
+    }
+
+    // MARK: - Phase Rendering (Image)
+
+    @ViewBuilder
+    private func phaseBackground(for phase: StreamAsyncImagePhase) -> some View {
+        switch phase {
+        case let .success(result):
+            Image(uiImage: result.image)
+                .resizable()
+                .scaledToFill()
+                .frame(width: width, height: height)
+                .clipped()
+        case .empty, .error:
+            placeholderBackground
+        case .loading:
+            placeholderGradient
+        }
+    }
+
+    @ViewBuilder
+    private func imageOverlays(for phase: StreamAsyncImagePhase) -> some View {
+        if case .loading = phase, !isUploading {
+            LoadingSpinnerView(size: LoadingSpinnerSize.medium)
+                .allowsHitTesting(false)
+        }
+
+        if case .error = phase, source.uploadingState == nil {
+            retryOverlay { imageRetryToken &+= 1 }
+        }
+
+        if let uploadingState = source.uploadingState {
+            uploadingOverlay(for: uploadingState)
+        }
+    }
+
+    // MARK: - Video Rendering
+
+    @ViewBuilder
+    private var videoBackground: some View {
+        if let videoPreview {
+            Image(uiImage: videoPreview)
+                .resizable()
+                .scaledToFill()
+                .frame(width: width, height: height)
+                .clipped()
+        } else if videoPreviewError != nil {
+            placeholderBackground
+        } else {
+            placeholderGradient
+        }
+    }
+
+    @ViewBuilder
+    private var videoOverlays: some View {
+        if videoPreview == nil, videoPreviewError == nil, !isUploading {
+            LoadingSpinnerView(size: LoadingSpinnerSize.medium)
+                .allowsHitTesting(false)
+        }
+
+        if videoPreviewError != nil, source.uploadingState == nil {
+            retryOverlay { loadVideoThumbnail() }
+        }
+
+        if let uploadingState = source.uploadingState {
+            uploadingOverlay(for: uploadingState)
+        }
+
+        if width > 64, source.uploadingState == nil, videoPreview != nil, videoPreviewError == nil {
+            VideoPlayIndicatorView(size: VideoPlayIndicatorSize.medium)
+                .allowsHitTesting(false)
+        }
+    }
+
+    // MARK: - Video Loading
+
+    private func loadVideoThumbnail() {
+        videoPreviewError = nil
         source.generateThumbnail(
             resize: true,
             preferredSize: CGSize(width: width, height: height)
         ) { result in
             switch result {
-            case .success(let loaded):
-                self.image = loaded
-            case .failure(let failure):
-                self.error = failure
+            case let .success(loaded):
+                self.videoPreview = loaded
+            case let .failure(failure):
+                self.videoPreviewError = failure
             }
         }
     }
+
+    // MARK: - Shared Overlays
 
     @ViewBuilder
     private func uploadingOverlay(for uploadingState: AttachmentUploadingState) -> some View {

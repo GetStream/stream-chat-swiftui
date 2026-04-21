@@ -9,6 +9,14 @@ import XCTest
 
 @MainActor
 final class NukeImageLoader_Tests: StreamChatTestCase {
+    override func setUp() {
+        super.setUp()
+        // These tests exercise the real Nuke cache path, so the default
+        // snapshot-test sync lookup installed by `StreamChatTestCase` must
+        // be disabled.
+        NukeImageLoader.testSyncLookup = nil
+    }
+
     // MARK: - cachedResult
 
     func test_cachedResult_returnsNil_whenNoKeyStored() {

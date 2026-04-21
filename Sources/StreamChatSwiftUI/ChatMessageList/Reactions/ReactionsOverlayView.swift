@@ -83,7 +83,12 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
 
             GeometryReader { reader in
                 let height = reader.frame(in: .local).height
-                Color.clear.preference(key: HeightPreferenceKey.self, value: height)
+                Color.clear
+                    .preference(key: HeightPreferenceKey.self, value: height)
+                    .contentShape(Rectangle())
+                    .onTapGesture {
+                        dismissReactionsOverlay { /* No additional handling. */ }
+                    }
 
                 VStack(alignment: isRightAligned ? .trailing : .leading, spacing: tokens.spacingXs) {
                     reactionsPickerView(reader: reader)
@@ -107,6 +112,9 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
                     .frame(maxHeight: messageDisplayInfo.frame.height)
                     .scaleEffect(popIn || willPopOut ? 1 : 0.95)
                     .animation(willPopOut ? .easeInOut : popInAnimation, value: popIn)
+                    .onTapGesture {
+                        dismissReactionsOverlay { /* No additional handling. */ }
+                    }
                     messageActionsView(reader: reader)
                 }
                 .frame(width: overlayContentWidth, alignment: isRightAligned ? .trailing : .leading)
