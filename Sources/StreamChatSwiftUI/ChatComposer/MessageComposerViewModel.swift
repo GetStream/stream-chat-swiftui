@@ -1202,8 +1202,7 @@ final class FileAddedAsset {
         }
 
         utils.mediaLoader.loadImage(
-            url: imageAttachment.imageURL,
-            options: ImageLoadOptions(resize: nil, cdnRequester: utils.cdnRequester)
+            url: imageAttachment.imageURL
         ) { result in
             if let image = (try? result.get())?.image {
                 let imageAsset = AddedAsset(

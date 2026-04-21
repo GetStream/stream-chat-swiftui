@@ -133,13 +133,12 @@ import XCTest
         XCTAssertEqual(imageLoader?.loadedURLs.first, .localYodaImage)
     }
 
-    // MARK: - CDN Requester
+    // MARK: - MediaLoader Integration
 
-    func test_mediaAttachment_generateThumbnail_usesInjectedCDNRequester() {
+    func test_mediaAttachment_generateThumbnail_usesInjectedMediaLoader() {
         // Given
-        let customRequester = CDNRequester_Mock()
         let mediaLoader = MediaLoader_Mock()
-        let utils = Utils(cdnRequester: customRequester, mediaLoader: mediaLoader)
+        let utils = Utils(mediaLoader: mediaLoader)
         streamChat = StreamChat(chatClient: chatClient, utils: utils)
         let attachment = MediaAttachment(url: .localYodaImage, type: .image)
 
@@ -154,15 +153,14 @@ import XCTest
         wait(for: [expectation], timeout: 2.0)
 
         // Then
-        XCTAssertEqual(mediaLoader.loadImageOptions.count, 1)
-        XCTAssert(mediaLoader.loadImageOptions.first?.cdnRequester is CDNRequester_Mock)
+        XCTAssertEqual(mediaLoader.loadImageCallCount, 1)
+        XCTAssertNotNil(mediaLoader.loadImageOptions.first?.resize)
     }
 
-    func test_mediaAttachment_videoPreview_usesInjectedCDNRequester() {
+    func test_mediaAttachment_videoPreview_usesInjectedMediaLoader() {
         // Given
-        let customRequester = CDNRequester_Mock()
         let mediaLoader = MediaLoader_Mock()
-        let utils = Utils(cdnRequester: customRequester, mediaLoader: mediaLoader)
+        let utils = Utils(mediaLoader: mediaLoader)
         streamChat = StreamChat(chatClient: chatClient, utils: utils)
         let videoAttachment = ChatMessageVideoAttachment(
             id: .init(cid: .init(type: .messaging, id: "test"), messageId: "msg", index: 0),
@@ -193,8 +191,7 @@ import XCTest
         wait(for: [expectation], timeout: 2.0)
 
         // Then
-        XCTAssertEqual(mediaLoader.loadVideoPreviewOptions.count, 1)
-        XCTAssert(mediaLoader.loadVideoPreviewOptions.first?.cdnRequester is CDNRequester_Mock)
+        XCTAssertTrue(mediaLoader.loadVideoPreviewWithAttachmentCalled)
     }
 
     // MARK: - MediaAttachment Equatable
