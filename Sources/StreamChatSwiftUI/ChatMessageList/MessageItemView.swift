@@ -107,17 +107,11 @@ public struct MessageItemView<Factory: ViewFactory>: View {
                     }
                 )
                 .contentShape(Rectangle())
-                .onTapGesture(count: 2) {
-                    if messageViewModel.isDoubleTapOverlayEnabled {
-                        handleGestureForMessage(showsMessageActions: true)
-                    }
-                }
-                .highPriorityGesture(
-                    LongPressGesture(minimumDuration: 0.3)
-                        .onEnded { _ in
-                            handleGestureForMessage(showsMessageActions: true)
-                        }
-                )
+                .modifier(MessageActionsGestureModifier(
+                    shownAsPreview: shownAsPreview,
+                    isDoubleTapEnabled: messageViewModel.isDoubleTapOverlayEnabled,
+                    onActionsTriggered: { handleGestureForMessage(showsMessageActions: true) }
+                ))
                 .modifier(SwipeToReplyModifier(
                     message: message,
                     channel: channel,
@@ -191,6 +185,49 @@ public struct MessageItemView<Factory: ViewFactory>: View {
                     showsMessageActions: showsMessageActions
                 )
             )
+        }
+    }
+}
+
+// MARK: - Message Actions Gesture
+
+/// Attaches the double-tap and long-press gestures that open the message actions
+/// overlay on a `MessageItemView`.
+///
+/// When the message is rendered as a preview inside the reactions overlay
+/// (`shownAsPreview == true`), both gestures are intentionally skipped. Keeping
+/// them would force SwiftUI to wait for double-tap / long-press disambiguation
+/// before delivering a single tap to the overlay's dismiss handler, introducing
+/// a noticeable delay when the user taps the empty space around the message
+/// bubble to dismiss.
+struct MessageActionsGestureModifier: ViewModifier {
+    /// Whether the message is rendered inside the reactions overlay.
+    /// When `true`, no gestures are attached.
+    let shownAsPreview: Bool
+    /// Whether double-tap should trigger the message actions overlay.
+    let isDoubleTapEnabled: Bool
+    /// Invoked when either the double-tap or long-press is recognized.
+    let onActionsTriggered: () -> Void
+
+    private let longPressMinimumDuration: Double = 0.3
+
+    @ViewBuilder
+    func body(content: Content) -> some View {
+        if shownAsPreview {
+            content
+        } else {
+            content
+                .onTapGesture(count: 2) {
+                    if isDoubleTapEnabled {
+                        onActionsTriggered()
+                    }
+                }
+                .highPriorityGesture(
+                    LongPressGesture(minimumDuration: longPressMinimumDuration)
+                        .onEnded { _ in
+                            onActionsTriggered()
+                        }
+                )
         }
     }
 }
