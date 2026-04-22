@@ -10,7 +10,6 @@ import SwiftUI
 public struct MessageItemView<Factory: ViewFactory>: View {
     @StateObject var messageViewModel: MessageViewModel
     @Environment(\.highlightedMessageId) var highlightedMessageId
-    @Environment(\.messageListIsScrolling) private var messageListIsScrolling
 
     @Injected(\.colors) private var colors
     @Injected(\.utils) private var utils
@@ -113,8 +112,7 @@ public struct MessageItemView<Factory: ViewFactory>: View {
                     isDoubleTapEnabled: messageViewModel.isDoubleTapOverlayEnabled,
                     onActionsTriggered: { handleGestureForMessage(showsMessageActions: true) }
                 ))
-                .modifier(ConditionalSwipeToReplyModifier(
-                    isEnabled: !messageListIsScrolling,
+                .modifier(SwipeToReplyModifier(
                     message: message,
                     channel: channel,
                     isSwipeToQuoteReplyPossible: !shownAsPreview && messageViewModel.isSwipeToQuoteReplyPossible,
@@ -359,47 +357,16 @@ struct SwipeToReplyModifier: ViewModifier {
     }
 }
 
-struct ConditionalSwipeToReplyModifier: ViewModifier {
-    let isEnabled: Bool
-    let message: ChatMessage
-    let channel: ChatChannel
-    let isSwipeToQuoteReplyPossible: Bool
-    @Binding var quotedMessage: ChatMessage?
-
-    @ViewBuilder
-    func body(content: Content) -> some View {
-        if isEnabled {
-            content.modifier(SwipeToReplyModifier(
-                message: message,
-                channel: channel,
-                isSwipeToQuoteReplyPossible: isSwipeToQuoteReplyPossible,
-                quotedMessage: $quotedMessage
-            ))
-        } else {
-            content
-        }
-    }
-}
-
 // MARK: - Environment
 
 private struct HighlightedMessageIdKey: EnvironmentKey {
     static let defaultValue: String? = nil
 }
 
-private struct MessageListIsScrollingKey: EnvironmentKey {
-    static let defaultValue = false
-}
-
 extension EnvironmentValues {
     var highlightedMessageId: String? {
         get { self[HighlightedMessageIdKey.self] }
         set { self[HighlightedMessageIdKey.self] = newValue }
-    }
-
-    var messageListIsScrolling: Bool {
-        get { self[MessageListIsScrollingKey.self] }
-        set { self[MessageListIsScrollingKey.self] = newValue }
     }
 }
 

@@ -36,7 +36,6 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
     @State private var keyboardShown = false
     @State private var pendingKeyboardUpdate: Bool?
     @State private var scrollDirection = ScrollDirection.up
-    @State private var isScrolling = false
     @State private var unreadMessagesBannerShown = false
     @State private var unreadButtonDismissed = false
 
@@ -276,7 +275,6 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
                         .id(listId)
                     }
                     .delayedRendering()
-                    .environment(\.messageListIsScrolling, isScrolling)
                     .modifier(factory.styles.makeMessageListModifier(options: MessageListModifierOptions()))
                     .modifier(ScrollTargetLayoutModifier(enabled: loadingNextMessages))
                     .overlay(
@@ -291,7 +289,6 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
                     )
                 }
                 .modifier(ScrollPositionModifier(scrollPosition: loadingNextMessages ? $scrollPosition : .constant(nil)))
-                .modifier(ScrollPhaseTrackingModifier(isScrolling: $isScrolling))
                 .background(
                     factory.makeMessageListBackground(
                         options: MessageListBackgroundOptions(
@@ -519,31 +516,6 @@ struct ScrollPositionModifier: ViewModifier {
         if #available(iOS 17, *) {
             content
                 .scrollPosition(id: $scrollPosition, anchor: .top)
-        } else {
-            content
-        }
-        #else
-        content
-        #endif
-    }
-}
-
-struct ScrollPhaseTrackingModifier: ViewModifier {
-    @Binding var isScrolling: Bool
-
-    func body(content: Content) -> some View {
-        #if swift(>=5.9)
-        if #available(iOS 18, *) {
-            content
-                .onScrollPhaseChange { _, newPhase in
-                    let isCurrentlyScrolling = newPhase.isScrolling
-                    if isScrolling != isCurrentlyScrolling {
-                        isScrolling = isCurrentlyScrolling
-                    }
-                }
-                .onDisappear {
-                    isScrolling = false
-                }
         } else {
             content
         }
