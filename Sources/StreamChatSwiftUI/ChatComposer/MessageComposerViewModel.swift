@@ -486,23 +486,40 @@ import SwiftUI
             !addedVoiceRecordings.isEmpty
     }
     
+    /// The current state of the composer's input view.
+    ///
+    /// Determines which trailing control is rendered (send button, confirm-edit button,
+    /// mic button, or slow-mode indicator) and is the single source of truth shared
+    /// between `ComposerInputView`, `TrailingInputComposerView`, and
+    /// `shouldShowRecordingGestureOverlay`.
+    public var composerInputState: MessageComposerInputState {
+        if cooldownDuration > 0 {
+            return .slowMode(cooldownDuration: cooldownDuration)
+        }
+        if editedMessage?.wrappedValue != nil {
+            return .editing(hasContent: hasContent)
+        }
+        if composerCommand?.displayInfo?.isInstant == true {
+            return .creating(hasContent: hasContent, hasCommand: true)
+        }
+        if utils.composerConfig.isVoiceRecordingEnabled && !hasContent {
+            return .allowAudioRecording
+        }
+        return .creating(hasContent: hasContent, hasCommand: false)
+    }
+
     /// Whether the voice recording gesture overlay should be active.
     ///
-    /// The overlay must only be shown when the mic button is visible or while a recording
-    /// is in progress. It mirrors the conditions used by the trailing composer to render
-    /// the mic (`MessageComposerInputState.allowAudioRecording`): voice recording enabled,
-    /// no slow-mode cooldown, no edited message, no active instant command, and no
-    /// composer content. Otherwise the invisible gesture keeps capturing taps and shows
-    /// the "hold to record" tip even when the user can't see the mic icon.
+    /// Mirrors the visibility of the mic button: the overlay is only active while a
+    /// recording is in progress, or while the composer state is `.allowAudioRecording`
+    /// (voice recording enabled, no slow-mode cooldown, no edited message, no active
+    /// instant command, and no composer content). Otherwise the invisible gesture would
+    /// keep capturing taps and surface the "hold to record" tip without a visible mic.
     public var shouldShowRecordingGestureOverlay: Bool {
-        guard utils.composerConfig.isVoiceRecordingEnabled else { return false }
         if recordingState.isRecording { return true }
         guard recordingState == .initial else { return false }
-        guard cooldownDuration == 0 else { return false }
-        guard editedMessage?.wrappedValue == nil else { return false }
-        guard composerCommand?.displayInfo?.isInstant != true else { return false }
-        guard !hasContent else { return false }
-        return true
+        if case .allowAudioRecording = composerInputState { return true }
+        return false
     }
 
     public var sendInChannelShown: Bool {

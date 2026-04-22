@@ -118,7 +118,11 @@ public final class ComposerInputViewOptions: @unchecked Sendable {
     public let sendInChannelShown: Bool
     /// Binding to whether to show reply in channel.
     public let showReplyInChannel: Binding<Bool>
-    
+    /// The current composer input state, owned by the view model. Drives both the
+    /// trailing button rendered by `ComposerInputView` and the visibility of the voice
+    /// recording gesture overlay.
+    public let composerInputState: MessageComposerInputState
+
     public init(
         channelController: ChatChannelController,
         text: Binding<String>,
@@ -148,7 +152,8 @@ public final class ComposerInputViewOptions: @unchecked Sendable {
         previewRecording: @escaping @MainActor () -> Void,
         showRecordingTip: @escaping @MainActor () -> Void,
         sendInChannelShown: Bool,
-        showReplyInChannel: Binding<Bool>
+        showReplyInChannel: Binding<Bool>,
+        composerInputState: MessageComposerInputState
     ) {
         self.channelController = channelController
         self.text = text
@@ -179,6 +184,7 @@ public final class ComposerInputViewOptions: @unchecked Sendable {
         self.showRecordingTip = showRecordingTip
         self.sendInChannelShown = sendInChannelShown
         self.showReplyInChannel = showReplyInChannel
+        self.composerInputState = composerInputState
     }
 }
 
