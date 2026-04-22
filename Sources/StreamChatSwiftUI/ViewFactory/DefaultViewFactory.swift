@@ -898,8 +898,10 @@ extension ViewFactory {
             currentUserId: chatClient.currentUserId,
             message: options.message
         )
+        let showDelivered = options.message.deliveryStatus(for: options.channel) == .delivered
         return MessageReadIndicatorView(
             readUsers: readUsers,
+            showDelivered: showDelivered,
             localState: options.message.localState,
             usesInvertedStyle: options.usesInvertedStyle
         )
