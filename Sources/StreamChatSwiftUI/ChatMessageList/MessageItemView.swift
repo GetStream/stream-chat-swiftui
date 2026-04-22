@@ -257,9 +257,15 @@ struct SwipeToReplyModifier: ViewModifier {
 
     @State private var offsetX: CGFloat
     @State private var swipeExcludedFrames: [CGRect] = []
-    @GestureState private var offset: CGSize = .zero
 
     private let replyThreshold: CGFloat = 60
+
+    /// How much larger the horizontal drag component must be than the
+    /// vertical component before the drag is recognised as a swipe-to-reply.
+    /// Values > 1 bias ambiguous/diagonal drags toward the enclosing
+    /// scroll view, so the list keeps scrolling unless the user's motion is
+    /// clearly horizontal.
+    private let horizontalDominanceRatio: CGFloat = 2
 
     init(
         message: ChatMessage,
@@ -285,13 +291,19 @@ struct SwipeToReplyModifier: ViewModifier {
         content
             .coordinateSpace(name: "swipeToReply")
             .offset(x: min(offsetX, maximumHorizontalSwipeDisplacement))
-            .gesture(
+            // `.simultaneousGesture` so the enclosing `ScrollView`'s pan
+            // recognizer always keeps running alongside. We never update
+            // `offsetX` unless the motion is clearly horizontal, so vertical
+            // and ambiguous/diagonal drags are effectively no-ops here and
+            // the list keeps scrolling cleanly.
+            .simultaneousGesture(
                 DragGesture(
                     minimumDistance: minimumSwipeDistance,
                     coordinateSpace: .named("swipeToReply")
                 )
-                .updating($offset) { (value, gestureState, _) in
-                    guard isSwipeToQuoteReplyPossible else {
+                .onChanged { value in
+                    guard isSwipeToQuoteReplyPossible,
+                          channel.config.quotesEnabled else {
                         return
                     }
 
@@ -299,29 +311,23 @@ struct SwipeToReplyModifier: ViewModifier {
                         return
                     }
 
-                    let diff = CGSize(
-                        width: value.location.x - value.startLocation.x,
-                        height: value.location.y - value.startLocation.y
-                    )
+                    // Re-evaluate direction on every event instead of
+                    // locking it once, so stale state can never survive
+                    // across gestures and block scrolling on a fresh drag.
+                    // Require horizontal motion to dominate vertical motion
+                    // by `horizontalDominanceRatio` before we move the
+                    // bubble; otherwise stay put and let the scroll view
+                    // handle the pan.
+                    let dx = abs(value.translation.width)
+                    let dy = abs(value.translation.height)
+                    guard dx > dy * horizontalDominanceRatio else { return }
 
-                    if diff == .zero {
-                        gestureState = .zero
-                    } else {
-                        gestureState = value.translation
-                    }
+                    dragChanged(to: value.translation.width)
+                }
+                .onEnded { _ in
+                    setOffsetX(value: 0)
                 }
             )
-            .onChange(of: offset, perform: { _ in
-                if !channel.config.quotesEnabled {
-                    return
-                }
-
-                if offset == .zero {
-                    setOffsetX(value: 0)
-                } else {
-                    dragChanged(to: offset.width)
-                }
-            })
             .onPreferenceChange(SwipeToReplyExcludedFrameKey.self) { frames in
                 swipeExcludedFrames = frames
             }
