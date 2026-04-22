@@ -260,13 +260,6 @@ struct SwipeToReplyModifier: ViewModifier {
 
     private let replyThreshold: CGFloat = 60
 
-    /// How much larger the horizontal drag component must be than the
-    /// vertical component before the drag is recognised as a swipe-to-reply.
-    /// Values > 1 bias ambiguous/diagonal drags toward the enclosing
-    /// scroll view, so the list keeps scrolling unless the user's motion is
-    /// clearly horizontal.
-    private let horizontalDominanceRatio: CGFloat = 2
-
     init(
         message: ChatMessage,
         channel: ChatChannel,
@@ -291,11 +284,6 @@ struct SwipeToReplyModifier: ViewModifier {
         content
             .coordinateSpace(name: "swipeToReply")
             .offset(x: min(offsetX, maximumHorizontalSwipeDisplacement))
-            // `.simultaneousGesture` so the enclosing `ScrollView`'s pan
-            // recognizer always keeps running alongside. We never update
-            // `offsetX` unless the motion is clearly horizontal, so vertical
-            // and ambiguous/diagonal drags are effectively no-ops here and
-            // the list keeps scrolling cleanly.
             .simultaneousGesture(
                 DragGesture(
                     minimumDistance: minimumSwipeDistance,
@@ -310,17 +298,6 @@ struct SwipeToReplyModifier: ViewModifier {
                     if swipeExcludedFrames.contains(where: { $0.contains(value.startLocation) }) {
                         return
                     }
-
-                    // Re-evaluate direction on every event instead of
-                    // locking it once, so stale state can never survive
-                    // across gestures and block scrolling on a fresh drag.
-                    // Require horizontal motion to dominate vertical motion
-                    // by `horizontalDominanceRatio` before we move the
-                    // bubble; otherwise stay put and let the scroll view
-                    // handle the pan.
-                    let dx = abs(value.translation.width)
-                    let dy = abs(value.translation.height)
-                    guard dx > dy * horizontalDominanceRatio else { return }
 
                     dragChanged(to: value.translation.width)
                 }
