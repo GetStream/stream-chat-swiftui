@@ -1413,6 +1413,77 @@ import XCTest
         XCTAssertFalse(viewModel.shouldShowRecordingGestureOverlay)
     }
 
+    func test_shouldShowRecordingGestureOverlay_whenInstantCommandActive_returnsFalse() {
+        // Given
+        let viewModel = makeComposerViewModel()
+        viewModel.recordingState = .initial
+
+        // When
+        viewModel.composerCommand = makeGiphyCommand()
+
+        // Then
+        XCTAssertFalse(
+            viewModel.shouldShowRecordingGestureOverlay,
+            "The overlay must stay hidden while an instant command is active, since the mic button is replaced by the send button."
+        )
+    }
+
+    func test_shouldShowRecordingGestureOverlay_whenInCooldown_returnsFalse() {
+        // Given
+        let viewModel = makeComposerViewModel()
+        viewModel.recordingState = .initial
+
+        // When
+        viewModel.cooldownDuration = 15
+
+        // Then
+        XCTAssertFalse(
+            viewModel.shouldShowRecordingGestureOverlay,
+            "The overlay must stay hidden during slow-mode cooldown, since the mic button is replaced by the cooldown indicator."
+        )
+    }
+
+    func test_shouldShowRecordingGestureOverlay_whenEditingMessage_returnsFalse() {
+        // Given
+        var editedMessage: ChatMessage? = ChatMessage.mock(
+            id: .unique,
+            cid: .unique,
+            text: "Edited",
+            author: .mock(id: .unique)
+        )
+        let editedBinding = Binding<ChatMessage?>(
+            get: { editedMessage },
+            set: { editedMessage = $0 }
+        )
+        let viewModel = MessageComposerViewModel(
+            channelController: makeChannelController(),
+            messageController: nil,
+            editedMessage: editedBinding
+        )
+        viewModel.recordingState = .initial
+
+        // Then
+        XCTAssertFalse(
+            viewModel.shouldShowRecordingGestureOverlay,
+            "The overlay must stay hidden while editing a message, since the mic button is replaced by the confirm-edit button."
+        )
+    }
+
+    func test_shouldShowRecordingGestureOverlay_whenInstantCommandActiveButRecording_returnsTrue() {
+        // Given
+        let viewModel = makeComposerViewModel()
+        viewModel.composerCommand = makeGiphyCommand()
+
+        // When
+        viewModel.recordingState = .recording
+
+        // Then
+        XCTAssertTrue(
+            viewModel.shouldShowRecordingGestureOverlay,
+            "A recording already in progress must keep driving the overlay regardless of other composer state."
+        )
+    }
+
     // MARK: - Snackbar
     
     func test_messageComposer_showRecordingTip_setsSnackBarText() {
