@@ -1469,6 +1469,46 @@ import XCTest
         )
     }
 
+    func test_shouldShowRecordingGestureOverlay_whenCannotSendMessage_returnsFalse() {
+        // Given
+        let channelController = makeChannelController()
+        channelController.channel_mock = .mockDMChannel(
+            ownCapabilities: [.uploadFile, .readEvents]
+        )
+        let viewModel = MessageComposerViewModel(
+            channelController: channelController,
+            messageController: nil
+        )
+        viewModel.recordingState = .initial
+
+        // Then
+        XCTAssertFalse(
+            viewModel.canSendMessage,
+            "Precondition: the mock channel should not grant the send-message capability."
+        )
+        XCTAssertFalse(
+            viewModel.shouldShowRecordingGestureOverlay,
+            "The overlay must stay hidden in frozen/no-send channels, even when voice recording is enabled and the composer is empty."
+        )
+    }
+
+    func test_composerInputState_whenCannotSendMessage_returnsCreatingInsteadOfAllowAudioRecording() {
+        // Given
+        let channelController = makeChannelController()
+        channelController.channel_mock = .mockDMChannel(
+            ownCapabilities: [.uploadFile, .readEvents]
+        )
+        let viewModel = MessageComposerViewModel(
+            channelController: channelController,
+            messageController: nil
+        )
+
+        // Then
+        if case .allowAudioRecording = viewModel.composerInputState {
+            XCTFail("composerInputState must not surface .allowAudioRecording when the channel does not allow sending messages.")
+        }
+    }
+
     func test_shouldShowRecordingGestureOverlay_whenInstantCommandActiveButRecording_returnsTrue() {
         // Given
         let viewModel = makeComposerViewModel()

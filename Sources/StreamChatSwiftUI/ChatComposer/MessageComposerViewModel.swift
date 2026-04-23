@@ -502,7 +502,7 @@ import SwiftUI
         if composerCommand?.displayInfo?.isInstant == true {
             return .creating(hasContent: hasContent, hasCommand: true)
         }
-        if utils.composerConfig.isVoiceRecordingEnabled && !hasContent {
+        if utils.composerConfig.isVoiceRecordingEnabled && !hasContent && canSendMessage {
             return .allowAudioRecording
         }
         return .creating(hasContent: hasContent, hasCommand: false)
@@ -513,12 +513,13 @@ import SwiftUI
     /// Mirrors the visibility of the mic button: the overlay is only active while a
     /// recording is in progress, or while the composer state is `.allowAudioRecording`
     /// (voice recording enabled, no slow-mode cooldown, no edited message, no active
-    /// instant command, and no composer content). Otherwise the invisible gesture would
-    /// keep capturing taps and surface the "hold to record" tip without a visible mic.
+    /// instant command, no composer content, and the channel allows sending messages).
+    /// Otherwise the invisible gesture would keep capturing taps and surface the
+    /// "hold to record" tip without a visible mic.
     public var shouldShowRecordingGestureOverlay: Bool {
         if recordingState.isRecording { return true }
         guard recordingState == .initial else { return false }
-        if case .allowAudioRecording = composerInputState { return true }
+        if case .allowAudioRecording = composerInputState, canSendMessage { return true }
         return false
     }
 
