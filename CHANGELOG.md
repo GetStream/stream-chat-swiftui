@@ -7,6 +7,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - `CDNRequester` is now passed in the constructor of `StreamMediaLoader` instead of `Utils` [#1425](https://github.com/GetStream/stream-chat-swiftui/pull/1425)
 
 ### 🐞 Fixed
+- Fix voice recording gesture and "hold to record" tip firing while the mic button is hidden [#1433](https://github.com/GetStream/stream-chat-swiftui/pull/1433)
 - Fix swipe-to-reply gesture conflicting with message list scrolling [#1431](https://github.com/GetStream/stream-chat-swiftui/pull/1431)
 - Fix double grey checkmarks not showing for delivered messages in the message list [#1432](https://github.com/GetStream/stream-chat-swiftui/pull/1432)
 - Fix SDK not compiling with Xcode 16 [#1430](https://github.com/GetStream/stream-chat-swiftui/pull/1430)

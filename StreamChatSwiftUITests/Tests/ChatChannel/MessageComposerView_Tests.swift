@@ -1310,7 +1310,11 @@ import XCTest
     private func makeComposerViewWithEditedMessage(_ editedMessage: ChatMessage) -> some View {
         let factory = DefaultViewFactory.shared
         let channelController = ChatChannelTestHelpers.makeChannelController(chatClient: chatClient)
-        let viewModel = MessageComposerViewModel(channelController: channelController, messageController: nil)
+        let viewModel = MessageComposerViewModel(
+            channelController: channelController,
+            messageController: nil,
+            editedMessage: .constant(editedMessage)
+        )
         viewModel.attachmentsConverter = SynchronousAttachmentsConverter()
         viewModel.fillEditedMessage(editedMessage)
 

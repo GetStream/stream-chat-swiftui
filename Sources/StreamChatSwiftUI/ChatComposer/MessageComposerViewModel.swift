@@ -486,13 +486,36 @@ import SwiftUI
             !addedVoiceRecordings.isEmpty
     }
     
+    /// The current state of the composer's input view.
+    ///
+    /// Determines which trailing control is rendered (send button, confirm-edit button,
+    /// mic button, or slow-mode indicator) and is the single source of truth shared
+    /// between `ComposerInputView`, `TrailingInputComposerView`, and
+    /// `shouldShowRecordingGestureOverlay`.
+    public var composerInputState: MessageComposerInputState {
+        MessageComposerInputState(
+            cooldownDuration: cooldownDuration,
+            isEditingMessage: editedMessage?.wrappedValue != nil,
+            isInstantCommandActive: composerCommand?.displayInfo?.isInstant == true,
+            isVoiceRecordingEnabled: utils.composerConfig.isVoiceRecordingEnabled,
+            hasContent: hasContent,
+            canSendMessage: canSendMessage
+        )
+    }
+
     /// Whether the voice recording gesture overlay should be active.
     ///
-    /// The overlay must only be shown when the mic button is visible (no content and voice
-    /// recording enabled) or while a recording is in progress.
+    /// Mirrors the visibility of the mic button: the overlay is only active while a
+    /// recording is in progress, or while the composer state is `.allowAudioRecording`
+    /// (voice recording enabled, no slow-mode cooldown, no edited message, no active
+    /// instant command, no composer content, and the channel allows sending messages).
+    /// Otherwise the invisible gesture would keep capturing taps and surface the
+    /// "hold to record" tip without a visible mic.
     public var shouldShowRecordingGestureOverlay: Bool {
-        guard utils.composerConfig.isVoiceRecordingEnabled else { return false }
-        return (recordingState == .initial && !hasContent) || recordingState.isRecording
+        if recordingState.isRecording { return true }
+        guard recordingState == .initial else { return false }
+        if case .allowAudioRecording = composerInputState, canSendMessage { return true }
+        return false
     }
 
     public var sendInChannelShown: Bool {

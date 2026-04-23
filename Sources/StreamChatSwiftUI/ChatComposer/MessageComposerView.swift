@@ -662,23 +662,14 @@ public struct ComposerInputView<Factory: ViewFactory>: View, KeyboardReadable {
     }
 
     private var composerInputState: MessageComposerInputState {
-        if isInCooldown {
-            return .slowMode(cooldownDuration: cooldownDuration)
-        }
-
-        if editedMessage.wrappedValue != nil {
-            return .editing(hasContent: hasContent)
-        }
-
-        if command?.displayInfo?.isInstant == true {
-            return .creating(hasContent: hasContent, hasCommand: true)
-        }
-
-        if utils.composerConfig.isVoiceRecordingEnabled && !hasContent {
-            return .allowAudioRecording
-        }
-
-        return .creating(hasContent: hasContent, hasCommand: false)
+        MessageComposerInputState(
+            cooldownDuration: cooldownDuration,
+            isEditingMessage: editedMessage.wrappedValue != nil,
+            isInstantCommandActive: command?.displayInfo?.isInstant == true,
+            isVoiceRecordingEnabled: utils.composerConfig.isVoiceRecordingEnabled,
+            hasContent: hasContent,
+            canSendMessage: canSendMessage
+        )
     }
 
     private var isInCooldown: Bool {
