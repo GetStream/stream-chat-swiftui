@@ -102,8 +102,7 @@ struct AppleMessageComposerView<Factory: ViewFactory>: View, KeyboardReadable {
                         previewRecording: viewModel.previewRecording,
                         showRecordingTip: viewModel.showRecordingTip,
                         sendInChannelShown: viewModel.sendInChannelShown,
-                        showReplyInChannel: $viewModel.showReplyInChannel,
-                        composerInputState: viewModel.composerInputState
+                        showReplyInChannel: $viewModel.showReplyInChannel
                     )
                 )
             }

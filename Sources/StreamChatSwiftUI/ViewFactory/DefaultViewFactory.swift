@@ -557,8 +557,7 @@ extension ViewFactory {
             previewRecording: options.previewRecording,
             showRecordingTip: options.showRecordingTip,
             sendInChannelShown: options.sendInChannelShown,
-            showReplyInChannel: options.showReplyInChannel,
-            composerInputState: options.composerInputState
+            showReplyInChannel: options.showReplyInChannel
         )
     }
     

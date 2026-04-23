@@ -493,19 +493,14 @@ import SwiftUI
     /// between `ComposerInputView`, `TrailingInputComposerView`, and
     /// `shouldShowRecordingGestureOverlay`.
     public var composerInputState: MessageComposerInputState {
-        if cooldownDuration > 0 {
-            return .slowMode(cooldownDuration: cooldownDuration)
-        }
-        if editedMessage?.wrappedValue != nil {
-            return .editing(hasContent: hasContent)
-        }
-        if composerCommand?.displayInfo?.isInstant == true {
-            return .creating(hasContent: hasContent, hasCommand: true)
-        }
-        if utils.composerConfig.isVoiceRecordingEnabled && !hasContent && canSendMessage {
-            return .allowAudioRecording
-        }
-        return .creating(hasContent: hasContent, hasCommand: false)
+        MessageComposerInputState(
+            cooldownDuration: cooldownDuration,
+            isEditingMessage: editedMessage?.wrappedValue != nil,
+            isInstantCommandActive: composerCommand?.displayInfo?.isInstant == true,
+            isVoiceRecordingEnabled: utils.composerConfig.isVoiceRecordingEnabled,
+            hasContent: hasContent,
+            canSendMessage: canSendMessage
+        )
     }
 
     /// Whether the voice recording gesture overlay should be active.

@@ -110,8 +110,7 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
                         previewRecording: viewModel.previewRecording,
                         showRecordingTip: viewModel.showRecordingTip,
                         sendInChannelShown: viewModel.sendInChannelShown,
-                        showReplyInChannel: $viewModel.showReplyInChannel,
-                        composerInputState: viewModel.composerInputState
+                        showReplyInChannel: $viewModel.showReplyInChannel
                     )
                 )
                 .alert(isPresented: $viewModel.attachmentSizeExceeded) {
@@ -403,10 +402,6 @@ public struct ComposerInputView<Factory: ViewFactory>: View, KeyboardReadable {
     var showRecordingTip: @MainActor () -> Void
     var sendInChannelShown: Bool
     @Binding var showReplyInChannel: Bool
-    /// The composer input state, owned by the parent view model. Drives both the
-    /// trailing button (mic, send, confirm-edit, slow-mode indicator) and the
-    /// `VoiceRecordingGestureOverlay` so the two stay in sync.
-    var composerInputState: MessageComposerInputState
 
     @State var textHeight: CGFloat = TextSizeConstants.defaultInputViewHeight
     @State var keyboardShown = false
@@ -441,8 +436,7 @@ public struct ComposerInputView<Factory: ViewFactory>: View, KeyboardReadable {
         previewRecording: @escaping @MainActor () -> Void,
         showRecordingTip: @escaping @MainActor () -> Void,
         sendInChannelShown: Bool,
-        showReplyInChannel: Binding<Bool>,
-        composerInputState: MessageComposerInputState
+        showReplyInChannel: Binding<Bool>
     ) {
         self.factory = factory
         self.channelController = channelController
@@ -474,7 +468,6 @@ public struct ComposerInputView<Factory: ViewFactory>: View, KeyboardReadable {
         self.showRecordingTip = showRecordingTip
         self.sendInChannelShown = sendInChannelShown
         _showReplyInChannel = showReplyInChannel
-        self.composerInputState = composerInputState
     }
 
     var textFieldHeight: CGFloat {
@@ -666,6 +659,17 @@ public struct ComposerInputView<Factory: ViewFactory>: View, KeyboardReadable {
                 )
             }
         }
+    }
+
+    private var composerInputState: MessageComposerInputState {
+        MessageComposerInputState(
+            cooldownDuration: cooldownDuration,
+            isEditingMessage: editedMessage.wrappedValue != nil,
+            isInstantCommandActive: command?.displayInfo?.isInstant == true,
+            isVoiceRecordingEnabled: utils.composerConfig.isVoiceRecordingEnabled,
+            hasContent: hasContent,
+            canSendMessage: canSendMessage
+        )
     }
 
     private var isInCooldown: Bool {

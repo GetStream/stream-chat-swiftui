@@ -351,8 +351,7 @@ import XCTest
             previewRecording: {},
             showRecordingTip: {},
             sendInChannelShown: false,
-            showReplyInChannel: .constant(false),
-            composerInputState: .slowMode(cooldownDuration: 15)
+            showReplyInChannel: .constant(false)
         )
         .frame(width: composerWidth, height: 200)
 
@@ -694,8 +693,7 @@ import XCTest
             previewRecording: {},
             showRecordingTip: {},
             sendInChannelShown: false,
-            showReplyInChannel: .constant(false),
-            composerInputState: .creating(hasContent: true, hasCommand: false)
+            showReplyInChannel: .constant(false)
         )
         .frame(width: composerWidth, height: 200)
 
@@ -909,8 +907,7 @@ import XCTest
             previewRecording: {},
             showRecordingTip: {},
             sendInChannelShown: false,
-            showReplyInChannel: .constant(false),
-            composerInputState: .creating(hasContent: true, hasCommand: true)
+            showReplyInChannel: .constant(false)
         )
         .frame(width: size.width, height: size.height)
 
@@ -957,8 +954,7 @@ import XCTest
             previewRecording: {},
             showRecordingTip: {},
             sendInChannelShown: false,
-            showReplyInChannel: .constant(false),
-            composerInputState: .creating(hasContent: false, hasCommand: true)
+            showReplyInChannel: .constant(false)
         )
         .frame(width: size.width, height: size.height)
 
@@ -999,8 +995,7 @@ import XCTest
             previewRecording: {},
             showRecordingTip: {},
             sendInChannelShown: false,
-            showReplyInChannel: .constant(false),
-            composerInputState: .creating(hasContent: false, hasCommand: true)
+            showReplyInChannel: .constant(false)
         )
         .frame(width: size.width, height: size.height)
 
