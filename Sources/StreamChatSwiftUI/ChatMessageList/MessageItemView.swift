@@ -257,7 +257,6 @@ struct SwipeToReplyModifier: ViewModifier {
 
     @State private var offsetX: CGFloat
     @State private var swipeExcludedFrames: [CGRect] = []
-    @GestureState private var offset: CGSize = .zero
 
     private let replyThreshold: CGFloat = 60
 
@@ -285,13 +284,14 @@ struct SwipeToReplyModifier: ViewModifier {
         content
             .coordinateSpace(name: "swipeToReply")
             .offset(x: min(offsetX, maximumHorizontalSwipeDisplacement))
-            .gesture(
+            .simultaneousGesture(
                 DragGesture(
                     minimumDistance: minimumSwipeDistance,
                     coordinateSpace: .named("swipeToReply")
                 )
-                .updating($offset) { (value, gestureState, _) in
-                    guard isSwipeToQuoteReplyPossible else {
+                .onChanged { value in
+                    guard isSwipeToQuoteReplyPossible,
+                          channel.config.quotesEnabled else {
                         return
                     }
 
@@ -299,29 +299,12 @@ struct SwipeToReplyModifier: ViewModifier {
                         return
                     }
 
-                    let diff = CGSize(
-                        width: value.location.x - value.startLocation.x,
-                        height: value.location.y - value.startLocation.y
-                    )
-
-                    if diff == .zero {
-                        gestureState = .zero
-                    } else {
-                        gestureState = value.translation
-                    }
+                    dragChanged(to: value.translation.width)
+                }
+                .onEnded { _ in
+                    setOffsetX(value: 0)
                 }
             )
-            .onChange(of: offset, perform: { _ in
-                if !channel.config.quotesEnabled {
-                    return
-                }
-
-                if offset == .zero {
-                    setOffsetX(value: 0)
-                } else {
-                    dragChanged(to: offset.width)
-                }
-            })
             .onPreferenceChange(SwipeToReplyExcludedFrameKey.self) { frames in
                 swipeExcludedFrames = frames
             }
