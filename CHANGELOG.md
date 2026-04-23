@@ -4,6 +4,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 # Upcoming
 
 ### 🔄 Changed
+
+# [5.1.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/5.1.0)
+_April 23, 2026_
+
+### 🔄 Changed
 - `CDNRequester` is now passed in the constructor of `StreamMediaLoader` instead of `Utils` [#1425](https://github.com/GetStream/stream-chat-swiftui/pull/1425)
 
 ### 🐞 Fixed
