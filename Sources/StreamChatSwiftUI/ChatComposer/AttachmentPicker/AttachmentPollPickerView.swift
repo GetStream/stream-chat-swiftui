@@ -24,7 +24,7 @@ struct AttachmentPollPickerView: View {
                 messageController: messageController
             )
         }
-        .onAppear {
+        .onLoad {
             showsCreatePoll = true
         }
     }
