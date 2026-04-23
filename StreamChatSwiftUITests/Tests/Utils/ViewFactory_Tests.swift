@@ -549,6 +549,68 @@ import XCTest
         XCTAssert(view is MessageReadIndicatorView)
     }
 
+    func test_viewFactory_makeMessageReadIndicatorView_whenMessageDelivered_showsDelivered() throws {
+        // Given
+        let viewFactory = DefaultViewFactory.shared
+        let date = Date(timeIntervalSince1970: 100)
+        let message = ChatMessage.mock(
+            id: .unique,
+            cid: .unique,
+            text: "Test",
+            author: .mock(id: Self.currentUserId),
+            createdAt: date.addingTimeInterval(-100),
+            localState: nil,
+            isSentByCurrentUser: true
+        )
+        let channel = ChatChannel.mock(
+            cid: .unique,
+            reads: [
+                .mock(
+                    lastReadAt: .distantPast,
+                    lastReadMessageId: nil,
+                    unreadMessagesCount: 0,
+                    user: .mock(id: .unique),
+                    lastDeliveredAt: date,
+                    lastDeliveredMessageId: message.id
+                )
+            ]
+        )
+
+        // When
+        let view = viewFactory.makeMessageReadIndicatorView(
+            options: MessageReadIndicatorViewOptions(channel: channel, message: message)
+        )
+
+        // Then
+        let indicator = try XCTUnwrap(view as? MessageReadIndicatorView)
+        XCTAssertTrue(indicator.showDelivered)
+        XCTAssertTrue(indicator.readUsers.isEmpty)
+    }
+
+    func test_viewFactory_makeMessageReadIndicatorView_whenMessageNotDelivered_doesNotShowDelivered() throws {
+        // Given
+        let viewFactory = DefaultViewFactory.shared
+        let message = ChatMessage.mock(
+            id: .unique,
+            cid: .unique,
+            text: "Test",
+            author: .mock(id: Self.currentUserId),
+            createdAt: Date(timeIntervalSince1970: 100),
+            localState: nil,
+            isSentByCurrentUser: true
+        )
+        let channel = ChatChannel.mock(cid: .unique)
+
+        // When
+        let view = viewFactory.makeMessageReadIndicatorView(
+            options: MessageReadIndicatorViewOptions(channel: channel, message: message)
+        )
+
+        // Then
+        let indicator = try XCTUnwrap(view as? MessageReadIndicatorView)
+        XCTAssertFalse(indicator.showDelivered)
+    }
+
     func test_viewFactory_makeSystemMessageView() {
         // Given
         let viewFactory = DefaultViewFactory.shared

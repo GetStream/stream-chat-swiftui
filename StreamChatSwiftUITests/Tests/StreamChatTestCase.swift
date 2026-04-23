@@ -29,13 +29,28 @@ import XCTest
     override open func setUp() {
         super.setUp()
         Appearance.bundle = Bundle(for: type(of: self))
+        let mediaLoader = MediaLoader_Mock()
         streamChat = StreamChat(
             chatClient: chatClient,
             utils: Utils(
-                mediaLoader: MediaLoader_Mock(),
+                mediaLoader: mediaLoader,
                 composerConfig: .init(isVoiceRecordingEnabled: true)
             )
         )
+        // Let StreamAsyncImage resolve mock image URLs synchronously so that
+        // snapshot tests capture the loaded image rather than the loading
+        // placeholder. `StreamAsyncImage` uses `.task` to load images, which
+        // completes after the snapshot is taken.
+        NukeImageLoader.testSyncLookup = { url, _ in
+            StreamAsyncImageResult(image: mediaLoader.imageForURL(url), animatedImageData: nil)
+        }
+    }
+
+    override open func tearDown() {
+        NukeImageLoader.testSyncLookup = nil
+        testWindow?.isHidden = true
+        testWindow = nil
+        super.tearDown()
     }
     
     func adjustAppearance(_ block: (inout Appearance) -> Void) {
@@ -69,12 +84,6 @@ import XCTest
         testWindow = window
         hostingController.view.layoutIfNeeded()
         return hostingController
-    }
-
-    override open func tearDown() {
-        testWindow?.isHidden = true
-        testWindow = nil
-        super.tearDown()
     }
 }
 

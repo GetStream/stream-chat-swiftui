@@ -18,7 +18,7 @@ import StreamChatCommonUI
     public var messageTimestampFormatter: MessageTimestampFormatter
     public var galleryHeaderViewDateFormatter: GalleryHeaderViewDateFormatter
     public var messageDateSeparatorFormatter: MessageDateSeparatorFormatter
-    public var cdnRequester: CDNRequester
+    /// The object responsible for loading images, video previews, and resolving file URLs.
     public var mediaLoader: MediaLoader
     public var channelNameFormatter: ChannelNameFormatter
     public var avPlayerProvider: AVPlayerProvider
@@ -82,8 +82,7 @@ import StreamChatCommonUI
         messageTimestampFormatter: MessageTimestampFormatter = ChannelListMessageTimestampFormatter(),
         galleryHeaderViewDateFormatter: GalleryHeaderViewDateFormatter = DefaultGalleryHeaderViewDateFormatter(),
         messageDateSeparatorFormatter: MessageDateSeparatorFormatter = DefaultMessageDateSeparatorFormatter(),
-        cdnRequester: CDNRequester = StreamCDNRequester(),
-        mediaLoader: MediaLoader? = nil,
+        mediaLoader: MediaLoader = StreamMediaLoader(downloader: StreamImageDownloader()),
         avPlayerProvider: AVPlayerProvider = DefaultAVPlayerProvider(),
         messageTypeResolver: MessageTypeResolving = MessageTypeResolver(),
         messageActionResolver: MessageActionsResolving = MessageActionsResolver(),
@@ -110,8 +109,7 @@ import StreamChatCommonUI
         self.messageTimestampFormatter = messageTimestampFormatter
         self.galleryHeaderViewDateFormatter = galleryHeaderViewDateFormatter
         self.messageDateSeparatorFormatter = messageDateSeparatorFormatter
-        self.cdnRequester = cdnRequester
-        self.mediaLoader = mediaLoader ?? StreamMediaLoader(downloader: StreamImageDownloader())
+        self.mediaLoader = mediaLoader
         self.channelNameFormatter = channelNameFormatter
         self.avPlayerProvider = avPlayerProvider
         self.chatUserNamer = chatUserNamer

@@ -2,6 +2,7 @@
 // Copyright © 2026 Stream.io Inc. All rights reserved.
 //
 
+import Dispatch
 import StreamChat
 import StreamChatCommonUI
 import StreamChatSwiftUI
@@ -14,7 +15,7 @@ import SwiftUI
 
     @Published var searchText = "" {
         didSet {
-            searchUsers(with: searchText)
+            scheduleDebouncedUserSearch()
         }
     }
 
@@ -28,11 +29,28 @@ import SwiftUI
     private lazy var searchController: ChatUserSearchController = chatClient.userSearchController()
     private let lastSeenDateFormatter = DateUtils.timeAgo
 
+    /// Matches UIKit demo `CreateGroupViewController.throttleTime`.
+    private let userSearchDebounceMilliseconds = 1000
+    private var userSearchDebounceWorkItem: DispatchWorkItem?
+    private var userSearchRequestGeneration: UInt64 = 0
+
+    private struct ActiveUserSearch: Equatable {
+        var apiTerm: String?
+    }
+
+    private enum UserListFetchCursor: Equatable {
+        case notYetFetched
+        case fetched(apiTerm: String?)
+    }
+
+    private var activeUserSearch: ActiveUserSearch?
+    private var userListFetchCursor: UserListFetchCursor = .notYetFetched
+
     init() {
         chatUsers = searchController.userArray
         searchController.delegate = self
-        // Empty initial search to get all users
-        searchUsers(with: nil)
+        // Empty initial search to get all users (immediate — not debounced)
+        performUserSearch(term: nil)
     }
 
     var canCreateGroup: Bool {
@@ -98,14 +116,60 @@ import SwiftUI
 
     // MARK: - private
 
-    private func searchUsers(with term: String?) {
+    private func scheduleDebouncedUserSearch() {
+        let nextTerm = normalizedUserSearchTerm(searchText)
+        if let active = activeUserSearch, matchesUserSearchTerm(active.apiTerm, nextTerm) {
+            return
+        }
+        if case let .fetched(prev) = userListFetchCursor,
+           matchesUserSearchTerm(prev, nextTerm),
+           state != .error {
+            return
+        }
+
+        state = .loading
+        userSearchDebounceWorkItem?.cancel()
+        let query = searchText
+        let work = DispatchWorkItem { [weak self] in
+            self?.performUserSearch(term: query.isEmpty ? nil : query)
+        }
+        userSearchDebounceWorkItem = work
+        DispatchQueue.main.asyncAfter(
+            deadline: .now() + .milliseconds(userSearchDebounceMilliseconds),
+            execute: work
+        )
+    }
+
+    private func performUserSearch(term: String?) {
+        if let active = activeUserSearch, matchesUserSearchTerm(active.apiTerm, term) {
+            return
+        }
+        activeUserSearch = ActiveUserSearch(apiTerm: term)
+        userSearchRequestGeneration += 1
+        let generation = userSearchRequestGeneration
         state = .loading
         searchController.search(term: term) { [weak self] error in
+            guard let self else { return }
+            guard generation == self.userSearchRequestGeneration else { return }
+            self.activeUserSearch = nil
             if error != nil {
-                self?.state = .error
+                self.state = .error
             } else {
-                self?.state = .loaded
+                self.userListFetchCursor = .fetched(apiTerm: term)
+                self.state = self.chatUsers.isEmpty ? .noUsers : .loaded
             }
+        }
+    }
+
+    private func normalizedUserSearchTerm(_ text: String) -> String? {
+        text.isEmpty ? nil : text
+    }
+
+    private func matchesUserSearchTerm(_ lhs: String?, _ rhs: String?) -> Bool {
+        switch (lhs, rhs) {
+        case (nil, nil): true
+        case let (l?, r?): l == r
+        default: false
         }
     }
 }
