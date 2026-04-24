@@ -36,7 +36,7 @@ struct AttachmentCameraPickerView: View {
                 .fullScreenCover(isPresented: $cameraPickerShown) {
                     CameraImagePickerView(cameraImageAdded: cameraImageAdded)
                 }
-                .onAppear {
+                .onLoad {
                     openCamera()
                 }
             }

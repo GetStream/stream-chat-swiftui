@@ -22,7 +22,7 @@ struct AttachmentFilePickerView: View {
                 onFilesPicked(urls)
             })
         }
-        .onAppear {
+        .onLoad {
             filePickerShown = true
         }
     }
