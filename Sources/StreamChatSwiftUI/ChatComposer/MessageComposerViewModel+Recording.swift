@@ -158,6 +158,7 @@ extension MessageComposerViewModel {
     /// Shows a snackbar confirming the voice message was deleted.
     public func discardRecording() {
         shouldSendOnRecordingFinish = false
+        stopPreviewPlaybackIfNeeded()
         stopRecording()
         recordingState = .initial
         audioRecordingInfo = .initial
@@ -169,6 +170,7 @@ extension MessageComposerViewModel {
     /// If the recording is still in progress (locked state), stops it first.
     public func confirmRecording() {
         if recordingState == .stopped {
+            stopPreviewPlaybackIfNeeded()
             if let pending = pendingAudioRecording {
                 addedVoiceRecordings.append(pending)
                 pendingAudioRecording = nil
@@ -178,6 +180,24 @@ extension MessageComposerViewModel {
         } else {
             stopRecording()
         }
+    }
+
+    /// Stops the shared audio player if it is currently playing one of the composer's
+    /// local voice recordings (the preview, a pending, or an added one).
+    ///
+    /// This is important because the shared `AVPlayer` keeps its `currentItem`
+    /// pointing at the local file URL. When the composer's flow transitions away
+    /// (confirm / discard / send), that file may be uploaded and then removed by
+    /// `AttachmentQueueUploader`, leaving the `AVPlayer` with a dangling asset
+    /// reference — which then breaks playback of every voice message in the
+    /// message list until the AVPlayer is re-created.
+    func stopPreviewPlaybackIfNeeded() {
+        let localURLs: Set<URL> = Set(
+            addedVoiceRecordings.map(\.url)
+                + [pendingAudioRecording?.url].compactMap { $0 }
+        )
+        guard !localURLs.isEmpty else { return }
+        utils.audioPlayer.stop()
     }
 
     /// Transitions to the stopped/preview state so the user can listen

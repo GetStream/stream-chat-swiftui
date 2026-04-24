@@ -378,6 +378,13 @@ import SwiftUI
             checkChannelCooldown()
         }
 
+        // Release the shared audio player's reference to any local voice recording
+        // file we're about to upload. Otherwise the `AVPlayer` can keep playing
+        // the local URL while `AttachmentQueueUploader` removes it after upload,
+        // leaving a dangling asset that breaks playback of every voice message in
+        // the message list.
+        stopPreviewPlaybackIfNeeded()
+
         willSendMessage?()
 
         // Reset edited and quoted message on message finish send.
