@@ -15,7 +15,7 @@ github_repo = ENV['GITHUB_REPOSITORY'] || 'GetStream/stream-chat-swiftui'
 derived_data_path = 'derived_data'
 source_packages_path = 'spm_cache'
 is_localhost = !is_ci
-mock_server_driver_port = 4568
+mock_server_driver_port = 45_633
 swift_environment_path = File.absolute_path('../Sources/StreamChatSwiftUI/Generated/SystemEnvironment+Version.swift')
 @force_check = false
 
