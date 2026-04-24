@@ -24,7 +24,7 @@ import SwiftUI
         }
     }
 
-    @Published public var memberListCollapsed = true
+    @Published public var memberListCollapsed = false
     @Published public var memberListSheetShown = false
     @Published public var editGroupShown = false
     @Published public var isUploadingGroupAvatar = false
@@ -42,7 +42,7 @@ import SwiftUI
     @Published public var keyboardShown = false
     @Published public var addUsersShown = false
     @Published public var selectedParticipant: ParticipantInfo?
-    
+
     open var shouldShowBlockUserButton: Bool {
         showSingleMemberDMView
     }
@@ -63,7 +63,7 @@ import SwiftUI
             channel.ownCapabilities.contains(.leaveChannel)
         }
     }
-    
+
     open var shouldShowMuteChannelButton: Bool {
         channel.ownCapabilities.contains(.muteChannel)
     }
@@ -82,10 +82,10 @@ import SwiftUI
 
     var channelController: ChatChannelController!
     var currentUserController: CurrentChatUserController?
-    
+
     private var memberListController: ChatChannelMemberListController!
     private var loadingUsers = false
-    
+
     public var showSingleMemberDMView: Bool {
         channel.isDirectMessageChannel && participants.count <= 2
     }
@@ -120,7 +120,7 @@ import SwiftUI
             L10n.Alert.Actions.leaveGroupMessage
         }
     }
-    
+
     public var notDisplayedParticipantsCount: Int {
         let total = channel.memberCount
         let displayed = displayedParticipants.count
@@ -366,7 +366,7 @@ import SwiftUI
     private func memberDisplayName(_ member: ChatChannelMember) -> String {
         member.id == chatClient.currentUserId ? L10n.Channel.Item.you : (member.name ?? member.id)
     }
-    
+
     open func participantActions(for participant: ParticipantInfo) -> [ParticipantAction] {
         if participant.id == chatClient.currentUserId {
             var actions = [ParticipantAction]()
@@ -418,7 +418,7 @@ import SwiftUI
                 actions.append(muteUser)
             }
         }
-        
+
         let blockAction = blockParticipantAction(
             participant: participant,
             onDismiss: handleParticipantActionDismiss,
@@ -434,10 +434,10 @@ import SwiftUI
             )
             actions.append(removeUserAction)
         }
-        
+
         return actions
     }
-    
+
     public func muteAction(
         participant: ParticipantInfo,
         onDismiss: @escaping () -> Void,
@@ -498,7 +498,7 @@ import SwiftUI
 
         return unmuteUser
     }
-    
+
     public func removeUserAction(
         participant: ParticipantInfo,
         onDismiss: @escaping () -> Void,
@@ -518,13 +518,13 @@ import SwiftUI
                 }
             }
         }
-        
+
         let confirmationPopup = ConfirmationPopup(
             title: L10n.Channel.Item.removeUserConfirmationTitle,
             message: L10n.Channel.Item.removeUserConfirmationMessage(participant.displayName, channel.name ?? channel.id),
             buttonTitle: L10n.Channel.Item.removeUser
         )
-        
+
         let removeUserAction = ParticipantAction(
             title: L10n.Channel.Item.removeUser,
             iconName: "person.slash",
@@ -535,7 +535,7 @@ import SwiftUI
 
         return removeUserAction
     }
-    
+
     public func blockParticipantAction(
         participant: ParticipantInfo,
         onDismiss: @escaping () -> Void,
