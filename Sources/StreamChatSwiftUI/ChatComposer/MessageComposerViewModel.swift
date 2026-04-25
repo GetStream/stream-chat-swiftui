@@ -175,6 +175,11 @@ import SwiftUI
     /// Set by `sendRecording()` and cleared once the send fires or an error occurs.
     var shouldSendOnRecordingFinish = false
 
+    /// The asset URL the shared audio player is currently pointing at, if any.
+    /// Updated through `AudioPlayingDelegate` so the composer can decide whether
+    /// it owns the currently loaded asset (see `stopPreviewPlaybackIfNeeded`).
+    var currentPlaybackURL: URL?
+
     public var waveformTargetSamples: Int = 100
     public internal(set) var pendingAudioRecording: AddedVoiceRecording?
 
@@ -269,6 +274,8 @@ import SwiftUI
             name: .showChannelSnackBarNotification,
             object: nil
         )
+
+        utils.audioPlayer.subscribe(self)
     }
 
     /// Appends the file to the attachments in the composer input view.
