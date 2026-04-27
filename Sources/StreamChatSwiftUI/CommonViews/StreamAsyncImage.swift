@@ -182,7 +182,6 @@ public struct StreamAsyncImage<Content: View>: View {
         resize.height = resize.height.rounded()
         return resize
     }
-
 }
 
 // MARK: - Test Hook
