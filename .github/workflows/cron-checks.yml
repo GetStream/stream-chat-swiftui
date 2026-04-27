@@ -21,9 +21,9 @@ jobs:
     strategy:
       matrix:
         include:
-          # - ios: "26.2"  # TODO: IOS-1181
-          #   device: "iPhone 17 Pro"
-          #   setup_runtime: false
+          - ios: "26.2"
+            device: "iPhone 17 Pro"
+            setup_runtime: false
           - ios: "18.5"
             device: "iPhone 16 Pro"
             setup_runtime: false
@@ -35,7 +35,7 @@ jobs:
     env:
       GITHUB_EVENT: ${{ toJson(github.event) }}
       ALLURE_TOKEN: ${{ secrets.ALLURE_TOKEN }}
-      XCODE_VERSION: "26.2"
+      XCODE_VERSION: "26.3"
       IOS_SIMULATOR_DEVICE: "${{ matrix.device }} (${{ matrix.ios }})"
     steps:
     - uses: actions/checkout@v4.1.1
