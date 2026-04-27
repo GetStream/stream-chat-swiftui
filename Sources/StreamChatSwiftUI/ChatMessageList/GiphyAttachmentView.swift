@@ -178,12 +178,18 @@ private struct AnimatedGifView: UIViewRepresentable {
             imageView.bottomAnchor.constraint(equalTo: container.bottomAnchor)
         ])
 
-        if let image = try? UIImage(gifData: gifData) {
-            imageView.setGifImage(image)
-        }
-
+        setGif(on: imageView)
         return container
     }
 
-    func updateUIView(_ uiView: UIView, context: Context) {}
+    func updateUIView(_ uiView: UIView, context: Context) {
+        guard let imageView = uiView.subviews.first as? UIImageView else { return }
+        setGif(on: imageView)
+    }
+
+    private func setGif(on imageView: UIImageView) {
+        if let image = try? UIImage(gifData: gifData) {
+            imageView.setGifImage(image)
+        }
+    }
 }
