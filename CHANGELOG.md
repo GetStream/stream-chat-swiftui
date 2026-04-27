@@ -5,6 +5,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### 🐞 Fixed
 - Fix attachment picker re-presenting after navigating back to the channel [#1434](https://github.com/GetStream/stream-chat-swiftui/pull/1434)
+- Fix voice message playback breaking after sending while previewing a recording [#1438](https://github.com/GetStream/stream-chat-swiftui/pull/1438)
+- Fix Send button briefly flashing before the mic when confirming an edit [#1438](https://github.com/GetStream/stream-chat-swiftui/pull/1438)
+- Fix gray flash on the voice recording play/pause button [#1438](https://github.com/GetStream/stream-chat-swiftui/pull/1438)
+- Fix attachments being interactive in the long-press message preview [#1438](https://github.com/GetStream/stream-chat-swiftui/pull/1438)
 
 # [5.1.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/5.1.0)
 _April 23, 2026_

@@ -21,6 +21,15 @@ extension AudioRecordingInfo {
     static let initial = AudioRecordingInfo(waveform: [], duration: 0)
 }
 
+extension MessageComposerViewModel: AudioPlayingDelegate {
+    public func audioPlayer(
+        _ audioPlayer: AudioPlaying,
+        didUpdateContext context: AudioPlaybackContext
+    ) {
+        currentPlaybackURL = context.assetLocation
+    }
+}
+
 extension MessageComposerViewModel: AudioRecordingDelegate {
     public func audioRecorder(
         _ audioRecorder: AudioRecording,
@@ -158,6 +167,7 @@ extension MessageComposerViewModel {
     /// Shows a snackbar confirming the voice message was deleted.
     public func discardRecording() {
         shouldSendOnRecordingFinish = false
+        stopPreviewPlaybackIfNeeded()
         stopRecording()
         recordingState = .initial
         audioRecordingInfo = .initial
@@ -169,6 +179,7 @@ extension MessageComposerViewModel {
     /// If the recording is still in progress (locked state), stops it first.
     public func confirmRecording() {
         if recordingState == .stopped {
+            stopPreviewPlaybackIfNeeded()
             if let pending = pendingAudioRecording {
                 addedVoiceRecordings.append(pending)
                 pendingAudioRecording = nil
@@ -178,6 +189,30 @@ extension MessageComposerViewModel {
         } else {
             stopRecording()
         }
+    }
+
+    /// Stops the shared audio player if it currently has one of the composer's
+    /// local voice recordings loaded (the preview, a pending, or an added one).
+    ///
+    /// This is important because the shared `AVPlayer` keeps its `currentItem`
+    /// pointing at the local file URL. When the composer's flow transitions away
+    /// (confirm / discard / send), that file may be uploaded and then removed by
+    /// `AttachmentQueueUploader`, leaving the `AVPlayer` with a dangling asset
+    /// reference — which then breaks playback of every voice message in the
+    /// message list until the AVPlayer is re-created.
+    ///
+    /// `currentPlaybackURL` is kept in sync via `AudioPlayingDelegate` so we
+    /// only stop the player when its loaded asset actually belongs to this
+    /// composer, leaving unrelated playback (e.g. a voice message in the list)
+    /// untouched.
+    func stopPreviewPlaybackIfNeeded() {
+        guard let currentPlaybackURL else { return }
+        let localURLs: Set<URL> = Set(
+            addedVoiceRecordings.map(\.url)
+                + [pendingAudioRecording?.url].compactMap { $0 }
+        )
+        guard localURLs.contains(currentPlaybackURL) else { return }
+        utils.audioPlayer.stop()
     }
 
     /// Transitions to the stopped/preview state so the user can listen

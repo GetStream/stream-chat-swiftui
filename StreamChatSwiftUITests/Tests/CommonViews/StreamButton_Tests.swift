@@ -24,6 +24,49 @@ final class StreamButton_Tests: StreamChatTestCase {
 
         AssertSnapshot(view, variants: [.defaultLight], size: snapshotSize)
     }
+
+    func test_streamIconButton_showsPressedStateFalse_doesNotApplyPressedOverlay() {
+        let view = HStack(spacing: 16) {
+            StreamIconButton(
+                role: .secondary,
+                style: .outline,
+                size: .medium,
+                showsPressedState: true,
+                action: {}
+            ) {
+                Image(systemName: "play.fill")
+                    .font(.system(size: 20))
+            }
+
+            StreamIconButton(
+                role: .secondary,
+                style: .outline,
+                size: .medium,
+                showsPressedState: false,
+                action: {}
+            ) {
+                Image(systemName: "play.fill")
+                    .font(.system(size: 20))
+            }
+        }
+        .padding()
+
+        AssertSnapshot(view, variants: [.defaultLight], size: CGSize(width: 200, height: 100))
+    }
+
+    func test_playPauseButton_playing_snapshot() {
+        let view = PlayPauseButton(isPlaying: true, onTap: {})
+            .padding()
+
+        AssertSnapshot(view, variants: [.defaultLight], size: CGSize(width: 100, height: 100))
+    }
+
+    func test_playPauseButton_paused_snapshot() {
+        let view = PlayPauseButton(isPlaying: false, onTap: {})
+            .padding()
+
+        AssertSnapshot(view, variants: [.defaultLight], size: CGSize(width: 100, height: 100))
+    }
 }
 
 private enum StreamButtonSnapshotContentMode: String, CaseIterable {

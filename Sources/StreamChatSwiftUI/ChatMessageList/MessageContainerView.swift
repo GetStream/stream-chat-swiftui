@@ -113,6 +113,7 @@ struct MessageContainerView<Factory: ViewFactory>: View {
                         scrolledId: $scrolledId,
                         translationLanguage: messageViewModel.translationLanguage
                     )
+                    .allowsHitTesting(!shownAsPreview)
                 }
             } else {
                 MessageView(
@@ -123,6 +124,7 @@ struct MessageContainerView<Factory: ViewFactory>: View {
                     scrolledId: $scrolledId,
                     translationLanguage: messageViewModel.translationLanguage
                 )
+                .allowsHitTesting(!shownAsPreview)
             }
         }
         .overlay(

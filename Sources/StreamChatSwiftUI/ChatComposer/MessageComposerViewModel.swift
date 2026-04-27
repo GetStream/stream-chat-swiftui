@@ -175,6 +175,11 @@ import SwiftUI
     /// Set by `sendRecording()` and cleared once the send fires or an error occurs.
     var shouldSendOnRecordingFinish = false
 
+    /// The asset URL the shared audio player is currently pointing at, if any.
+    /// Updated through `AudioPlayingDelegate` so the composer can decide whether
+    /// it owns the currently loaded asset (see `stopPreviewPlaybackIfNeeded`).
+    var currentPlaybackURL: URL?
+
     public var waveformTargetSamples: Int = 100
     public internal(set) var pendingAudioRecording: AddedVoiceRecording?
 
@@ -269,6 +274,8 @@ import SwiftUI
             name: .showChannelSnackBarNotification,
             object: nil
         )
+
+        utils.audioPlayer.subscribe(self)
     }
 
     /// Appends the file to the attachments in the composer input view.
@@ -378,12 +385,27 @@ import SwiftUI
             checkChannelCooldown()
         }
 
+        // Release the shared audio player's reference to any local voice recording
+        // file we're about to upload. Otherwise the `AVPlayer` can keep playing
+        // the local URL while `AttachmentQueueUploader` removes it after upload,
+        // leaving a dangling asset that breaks playback of every voice message in
+        // the message list.
+        stopPreviewPlaybackIfNeeded()
+
         willSendMessage?()
 
-        // Reset edited and quoted message on message finish send
+        // Reset edited and quoted message on message finish send.
+        // The reset is deferred to align with `clearText()`'s delayed `text = ""`
+        // update. Otherwise, if the send/edit API completes before the deferred
+        // text clear runs (common for optimistic local edits), we'd briefly
+        // observe `editedMessage == nil` while `text` is still non-empty, which
+        // makes the trailing composer button flash from ConfirmEdit → Send →
+        // Mic instead of transitioning directly to the microphone.
         let completion: @MainActor () -> Void = { [weak self] in
-            self?.editedMessage?.wrappedValue = nil
-            self?.quotedMessage?.wrappedValue = nil
+            DispatchQueue.main.asyncAfter(deadline: .now() + Self.clearTextDelay) {
+                self?.editedMessage?.wrappedValue = nil
+                self?.quotedMessage?.wrappedValue = nil
+            }
             completion?()
         }
 
@@ -909,13 +931,23 @@ import SwiftUI
         }
     }
     
+    /// Delay used when clearing `text` after sending/editing a message.
+    ///
+    /// Needed because autocompleting text from the keyboard updates `text` on
+    /// the next runloop cycle and would otherwise override an immediate
+    /// `text = ""` assignment. The send completion defers resetting
+    /// `editedMessage`/`quotedMessage` by the same delay so the trailing
+    /// composer button can transition directly to its post-send state
+    /// (e.g. from ConfirmEdit to the microphone) without a visual flash.
+    fileprivate static let clearTextDelay: TimeInterval = 0.1
+
     private func clearText() {
         // This is needed because of autocompleting text from the keyboard.
         // The update of the text is done in the next cycle, so it overrides
         // the setting of this value to empty string.
         // isSendingMessage is also reset here so the guard in sendMessage() stays
         // active for the full delay, preventing double-sends.
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) { [weak self] in
+        DispatchQueue.main.asyncAfter(deadline: .now() + Self.clearTextDelay) { [weak self] in
             self?.text = ""
             self?.isSendingMessage = false
         }
