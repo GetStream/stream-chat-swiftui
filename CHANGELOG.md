@@ -3,6 +3,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 # Upcoming
 
+### ✅ Added
+- Add `StreamAsyncImage` initializers that accept a pre-loaded `UIImage`, both as the sole content and as an initial seed alongside a `URL`, so callers can render an in-memory bitmap without going through the loading phase
+
 ### 🐞 Fixed
 - Fix attachment picker re-presenting after navigating back to the channel [#1434](https://github.com/GetStream/stream-chat-swiftui/pull/1434)
 - Fix voice message playback breaking after sending while previewing a recording [#1438](https://github.com/GetStream/stream-chat-swiftui/pull/1438)

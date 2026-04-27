@@ -46,24 +46,58 @@ public struct StreamAsyncImage<Content: View>: View {
     private let resize: ImageResize?
     private let content: (StreamAsyncImagePhase) -> Content
 
-    @State private var phase: StreamAsyncImagePhase = .empty
+    @State private var phase: StreamAsyncImagePhase
 
     /// Creates an async image view.
     ///
     /// - Parameters:
     ///   - url: The image URL, or `nil` for the empty phase.
+    ///   - image: An optional pre-loaded image used as the initial render.
+    ///     When provided, the view skips the ``StreamAsyncImagePhase/loading``
+    ///     phase entirely and renders this image on the first frame. If a
+    ///     `url` is also provided, the loader runs in the background and
+    ///     swaps in the resolved image once it arrives. Useful when the
+    ///     caller already has the bitmap in memory (for example a snapshot
+    ///     or a hand-off from a parent view) and wants to avoid the
+    ///     placeholder flicker on first appearance.
     ///   - resize: Optional resize applied both server-side (via CDN requester) and client-side.
     ///     Sub-point dimensions are rounded to integer points so layout jitter
     ///     between renders does not produce a different CDN URL or cache key.
     ///   - content: A closure that receives the current phase and returns a view.
     public init(
         url: URL?,
+        image: UIImage? = nil,
         resize: ImageResize? = nil,
         @ViewBuilder content: @escaping (StreamAsyncImagePhase) -> Content
     ) {
         self.url = url
         self.resize = Self.normalizedResize(resize)
         self.content = content
+        if let image {
+            _phase = State(initialValue: .success(StreamAsyncImageResult(
+                image: image,
+                animatedImageData: nil
+            )))
+        } else {
+            _phase = State(initialValue: .empty)
+        }
+    }
+
+    /// Creates a view that renders a pre-loaded image without performing
+    /// any asynchronous loading.
+    ///
+    /// Useful for callers that already have the bitmap in memory and want
+    /// to plug it into the same content closure used elsewhere with
+    /// ``StreamAsyncImage``.
+    ///
+    /// - Parameters:
+    ///   - image: The image to render.
+    ///   - content: A closure that receives the current phase and returns a view.
+    public init(
+        image: UIImage,
+        @ViewBuilder content: @escaping (StreamAsyncImagePhase) -> Content
+    ) {
+        self.init(url: nil, image: image, resize: nil, content: content)
     }
 
     public var body: some View {
@@ -97,6 +131,11 @@ public struct StreamAsyncImage<Content: View>: View {
     @MainActor
     private func loadImage() async {
         guard let url else {
+            // Keep a seeded `UIImage` (set in `init(image:)`) on screen even
+            // when no URL was provided.
+            if case .success = phase {
+                return
+            }
             phase = .empty
             return
         }
@@ -120,9 +159,15 @@ public struct StreamAsyncImage<Content: View>: View {
                 animatedImageData: loaded.animatedImageData
             ))
         } catch {
-            if !(error is CancellationError) {
-                phase = .error(error)
+            guard !(error is CancellationError) else { return }
+            // Don't wipe an already-rendered image on a failed reload —
+            // keep showing the previous result instead of dropping to
+            // `.error`. The view only surfaces an error when nothing has
+            // ever loaded successfully.
+            if case .success = phase {
+                return
             }
+            phase = .error(error)
         }
     }
 
