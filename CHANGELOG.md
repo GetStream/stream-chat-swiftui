@@ -3,9 +3,6 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 # Upcoming
 
-### ✅ Added
-- Add `StreamAsyncImage` initializer that accepts a pre-loaded `UIImage` to skip the loading phase [#1439](https://github.com/GetStream/stream-chat-swiftui/pull/1439)
-
 ### 🐞 Fixed
 - Fix attachment picker re-presenting after navigating back to the channel [#1434](https://github.com/GetStream/stream-chat-swiftui/pull/1434)
 - Fix voice message playback breaking after sending while previewing a recording [#1438](https://github.com/GetStream/stream-chat-swiftui/pull/1438)
@@ -13,7 +10,6 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Fix gray flash on the voice recording play/pause button [#1438](https://github.com/GetStream/stream-chat-swiftui/pull/1438)
 - Fix attachments being interactive in the long-press message preview [#1438](https://github.com/GetStream/stream-chat-swiftui/pull/1438)
 - Fix image attachments flickering when adding or removing a reaction [#1439](https://github.com/GetStream/stream-chat-swiftui/pull/1439)
-- Fix Giphy not refreshing when shuffling [#1439](https://github.com/GetStream/stream-chat-swiftui/pull/1439)
 
 # [5.1.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/5.1.0)
 _April 23, 2026_
