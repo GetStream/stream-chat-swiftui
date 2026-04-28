@@ -216,18 +216,25 @@ struct MessageActionsGestureModifier: ViewModifier {
         if shownAsPreview {
             content
         } else {
-            content
-                .onTapGesture(count: 2) {
-                    if isDoubleTapEnabled {
-                        onActionsTriggered()
-                    }
+            let withTap = content.onTapGesture(count: 2) {
+                if isDoubleTapEnabled {
+                    onActionsTriggered()
                 }
-                .highPriorityGesture(
-                    LongPressGesture(minimumDuration: longPressMinimumDuration)
-                        .onEnded { _ in
-                            onActionsTriggered()
-                        }
-                )
+            }
+            let longPress = LongPressGesture(minimumDuration: longPressMinimumDuration)
+                .onEnded { _ in
+                    onActionsTriggered()
+                }
+
+            // On iOS 17 a `.highPriorityGesture(LongPressGesture)` here ends
+            // up monopolising touches across the whole message item view,
+            // starving the parent `ScrollView`'s pan recognizer and breaking
+            // vertical scrolling.
+            if #available(iOS 18, *) {
+                withTap.highPriorityGesture(longPress)
+            } else {
+                withTap.gesture(longPress)
+            }
         }
     }
 }
