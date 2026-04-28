@@ -121,7 +121,20 @@ public struct StreamAsyncImage<Content: View>: View {
     }
 
     private var taskIdentity: String {
-        let urlPart = url?.absoluteString ?? ""
+        // Strip all query parameters from the URL so dynamic ones (CDN
+        // signing, expiry, anti-cache tokens, …) never churn `.task`.
+        // The image identity for caching purposes is owned by the LLC's
+        // `StreamCDNRequester.buildCachingKey`; here we only need a
+        // stable identifier per `(image path, render size)` pair so the
+        // task doesn't re-run when the same image is re-signed.
+        let urlPart: String
+        if let url {
+            var components = URLComponents(url: url, resolvingAgainstBaseURL: false)
+            components?.query = nil
+            urlPart = components?.url?.absoluteString ?? url.absoluteString
+        } else {
+            urlPart = ""
+        }
         guard let resize else { return urlPart }
         return "\(urlPart)-\(resize.width)x\(resize.height)-\(resize.mode.value)"
     }
