@@ -133,9 +133,7 @@ public struct StreamAsyncImage<Content: View>: View {
         guard let url else {
             // Keep a seeded `UIImage` (set in `init(image:)`) on screen even
             // when no URL was provided.
-            if case .success = phase {
-                return
-            }
+            if phase.isSuccess { return }
             phase = .empty
             return
         }
@@ -145,7 +143,7 @@ public struct StreamAsyncImage<Content: View>: View {
         // keep the previous image on screen until the loader returns the
         // new one — for cached images that handoff is sub-frame, so the
         // user never sees a placeholder.
-        if case .success = phase {} else {
+        if !phase.isSuccess {
             phase = .loading
         }
 
@@ -164,9 +162,7 @@ public struct StreamAsyncImage<Content: View>: View {
             // keep showing the previous result instead of dropping to
             // `.error`. The view only surfaces an error when nothing has
             // ever loaded successfully.
-            if case .success = phase {
-                return
-            }
+            if phase.isSuccess { return }
             phase = .error(error)
         }
     }
@@ -231,6 +227,17 @@ public enum StreamAsyncImagePhase {
     public var image: Image? {
         guard case .success(let result) = self else { return nil }
         return Image(uiImage: result.image)
+    }
+}
+
+private extension StreamAsyncImagePhase {
+    /// `true` when the phase is rendering a successfully loaded image.
+    /// Used to keep an already-rendered image on screen across URL
+    /// changes and failed reloads instead of dropping back to the
+    /// loading or error placeholder.
+    var isSuccess: Bool {
+        if case .success = self { return true }
+        return false
     }
 }
 
