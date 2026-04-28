@@ -133,16 +133,13 @@ public struct StreamAsyncImage<Content: View>: View {
         guard let url else {
             // Keep a seeded `UIImage` (set in `init(image:)`) on screen even
             // when no URL was provided.
-            if phase.isSuccess { return }
+            if phase.isSuccess {
+                return
+            }
             phase = .empty
             return
         }
 
-        // Only flip to the loading phase if no image has been rendered yet.
-        // When the URL changes on a view that already shows an image, we
-        // keep the previous image on screen until the loader returns the
-        // new one — for cached images that handoff is sub-frame, so the
-        // user never sees a placeholder.
         if !phase.isSuccess {
             phase = .loading
         }
@@ -158,11 +155,6 @@ public struct StreamAsyncImage<Content: View>: View {
             ))
         } catch {
             guard !(error is CancellationError) else { return }
-            // Don't wipe an already-rendered image on a failed reload —
-            // keep showing the previous result instead of dropping to
-            // `.error`. The view only surfaces an error when nothing has
-            // ever loaded successfully.
-            if phase.isSuccess { return }
             phase = .error(error)
         }
     }
@@ -178,23 +170,6 @@ public struct StreamAsyncImage<Content: View>: View {
         resize.height = resize.height.rounded()
         return resize
     }
-}
-
-// MARK: - Test Hook
-
-/// Test-only hook used by snapshot tests to resolve image URLs
-/// synchronously.
-///
-/// Snapshot tests capture the view after one synchronous layout pass,
-/// before the `.task` modifier has a chance to drive the async
-/// ``MediaLoader`` pipeline. Installing a resolver here makes
-/// ``StreamAsyncImage``'s initial render use the resolved image
-/// directly. In production this is always `nil`.
-///
-/// Lives on a non-generic namespace because static stored properties
-/// are not supported on generic types.
-enum StreamAsyncImageTestHooks {
-    nonisolated(unsafe) static var syncResolver: ((URL, ImageResize?) -> StreamAsyncImageResult?)?
 }
 
 // MARK: - Convenience Initializers
@@ -247,4 +222,21 @@ public struct StreamAsyncImageResult {
     public let image: UIImage
     /// The raw image data for animated rendering. `nil` for static images.
     public let animatedImageData: Data?
+}
+
+// MARK: - Test Hook
+
+/// Test-only hook used by snapshot tests to resolve image URLs
+/// synchronously.
+///
+/// Snapshot tests capture the view after one synchronous layout pass,
+/// before the `.task` modifier has a chance to drive the async
+/// ``MediaLoader`` pipeline. Installing a resolver here makes
+/// ``StreamAsyncImage``'s initial render use the resolved image
+/// directly. In production this is always `nil`.
+///
+/// Lives on a non-generic namespace because static stored properties
+/// are not supported on generic types.
+enum StreamAsyncImageTestHooks {
+    nonisolated(unsafe) static var syncResolver: ((URL, ImageResize?) -> StreamAsyncImageResult?)?
 }
