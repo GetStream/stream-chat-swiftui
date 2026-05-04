@@ -868,9 +868,6 @@ import SwiftUI
                 utils.channelControllerFactory.clearCurrentController()
                 cleanupAudioPlayer()
                 ImageCache.shared.trim(toCost: utils.messageListConfig.cacheSizeOnChatDismiss)
-                if !channelDataSource.hasLoadedAllNextMessages {
-                    channelDataSource.loadFirstPage { _ in }
-                }
             }
         }
     }
