@@ -7,6 +7,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Fix channel list preview showing "No messages" after a mid-page jump [#1442](https://github.com/GetStream/stream-chat-swiftui/pull/1442)
 - Avoid an extra channel-fetch request when leaving a channel [#1442](https://github.com/GetStream/stream-chat-swiftui/pull/1442)
 - Fix message list vertical scrolling not working on iOS 17 [#1441](https://github.com/GetStream/stream-chat-swiftui/pull/1441)
+- Fix tapping image attachments, quoted messages, and link previews not working on iOS 17 [#1443](https://github.com/GetStream/stream-chat-swiftui/pull/1443)
 - Fix attachment picker re-presenting after navigating back to the channel [#1434](https://github.com/GetStream/stream-chat-swiftui/pull/1434)
 - Fix voice message playback breaking after sending while previewing a recording [#1438](https://github.com/GetStream/stream-chat-swiftui/pull/1438)
 - Fix Send button briefly flashing before the mic when confirming an edit [#1438](https://github.com/GetStream/stream-chat-swiftui/pull/1438)
