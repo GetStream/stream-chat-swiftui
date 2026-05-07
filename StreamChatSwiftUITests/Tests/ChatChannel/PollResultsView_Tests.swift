@@ -184,12 +184,43 @@ import XCTest
         let user3 = ChatUser.mock(id: "user3", name: "Charlie")
 
         let option1Votes = [
-            PollVote.mock(pollId: pollId, optionId: "opt1", user: user1),
-            PollVote.mock(pollId: pollId, optionId: "opt1", user: user2),
-            PollVote.mock(pollId: pollId, optionId: "opt1", user: user3)
+            PollVote.mock(
+                pollId: pollId,
+                optionId: "opt1",
+                user: user1,
+                // 2 minutes ago
+                createdAt: Date().addingTimeInterval(-120)
+            ),
+            PollVote.mock(
+                pollId: pollId,
+                optionId: "opt1",
+                user: user2,
+                // 3 days ago
+                createdAt: Date().addingTimeInterval(-86400 * 3)
+            ),
+            PollVote.mock(
+                pollId: pollId,
+                optionId: "opt1",
+                user: user3,
+                // 10 days ago
+                createdAt: Date().addingTimeInterval(-86400 * 10)
+            )
         ]
         let option2Votes = [
-            PollVote.mock(pollId: pollId, optionId: "opt2", user: user2)
+            PollVote.mock(
+                pollId: pollId,
+                optionId: "opt2",
+                user: user2,
+                // 01/01/70
+                createdAt: Date(timeIntervalSince1970: 100)
+            ),
+            PollVote.mock(
+                pollId: pollId,
+                optionId: "opt2",
+                user: user1,
+                // yesterday
+                createdAt: Date().addingTimeInterval(-86400 * 1)
+            )
         ]
 
         let options = [
