@@ -94,14 +94,14 @@
 "message.polls.toolbar.results-title" = "Poll Results";
 "message.polls.unknown-vote-author" = "Anonymous";
 "message.polls.date.day-at-time" = "%@ at %@";
-"message.polls.date.days-ago" = "%dd ago";
-"message.polls.date.weeks-ago" = "%dw ago";
 "message.polls.option" = "Option %d";
 "message.polls.question" = "Question";
 "message.polls.vote-singular" = "%d vote";
 "message.polls.votes" = "%d votes";
 "message.polls.votes-total" = "%d votes total";
 "message.polls.snackbar.poll-ended" = "Poll ended";
+"polls.date.days-ago" = "%dd ago";
+"polls.date.weeks-ago" = "%dw ago";
 
 "message.translatedTo" = "Translated to %@";
 "message.showOriginal" = "Show Original";

@@ -701,14 +701,6 @@ internal enum L10n {
         internal static func dayAtTime(_ p1: Any, _ p2: Any) -> String {
           return L10n.tr("Localizable", "message.polls.date.day-at-time", String(describing: p1), String(describing: p2))
         }
-        /// %dd ago
-        internal static func daysAgo(_ p1: Int) -> String {
-          return L10n.tr("Localizable", "message.polls.date.days-ago", p1)
-        }
-        /// %dw ago
-        internal static func weeksAgo(_ p1: Int) -> String {
-          return L10n.tr("Localizable", "message.polls.date.weeks-ago", p1)
-        }
       }
       internal enum Snackbar {
         /// Poll ended
@@ -814,6 +806,19 @@ internal enum L10n {
       /// Plural format key: "%1$@%2$#@typing@"
       internal static func users(_ p1: Any, _ p2: Int) -> String {
         return L10n.tr("Localizable", "messageList.typingIndicator.users", String(describing: p1), p2)
+      }
+    }
+  }
+
+  internal enum Polls {
+    internal enum Date {
+      /// %dd ago
+      internal static func daysAgo(_ p1: Int) -> String {
+        return L10n.tr("Localizable", "polls.date.days-ago", p1)
+      }
+      /// %dw ago
+      internal static func weeksAgo(_ p1: Int) -> String {
+        return L10n.tr("Localizable", "polls.date.weeks-ago", p1)
       }
     }
   }
