@@ -183,13 +183,49 @@ import XCTest
         let user2 = ChatUser.mock(id: "user2", name: "Bob")
         let user3 = ChatUser.mock(id: "user3", name: "Charlie")
 
+        // All vote timestamps are derived from the same anchor so the relative-date
+        // buckets ("today", "yesterday", "Nd ago", "Nw ago") stay consistent across
+        // the votes within a single test run.
+        let now = Date()
+
         let option1Votes = [
-            PollVote.mock(pollId: pollId, optionId: "opt1", user: user1),
-            PollVote.mock(pollId: pollId, optionId: "opt1", user: user2),
-            PollVote.mock(pollId: pollId, optionId: "opt1", user: user3)
+            PollVote.mock(
+                pollId: pollId,
+                optionId: "opt1",
+                user: user1,
+                // 2 minutes ago
+                createdAt: now.addingTimeInterval(-120)
+            ),
+            PollVote.mock(
+                pollId: pollId,
+                optionId: "opt1",
+                user: user2,
+                // 3 days ago
+                createdAt: now.addingTimeInterval(-86400 * 3)
+            ),
+            PollVote.mock(
+                pollId: pollId,
+                optionId: "opt1",
+                user: user3,
+                // 10 days ago
+                createdAt: now.addingTimeInterval(-86400 * 10)
+            )
         ]
         let option2Votes = [
-            PollVote.mock(pollId: pollId, optionId: "opt2", user: user2)
+            PollVote.mock(
+                pollId: pollId,
+                optionId: "opt2",
+                user: user2,
+                // 01/01/70
+                createdAt: Date(timeIntervalSince1970: 100)
+            ),
+            PollVote.mock(
+                pollId: pollId,
+                optionId: "opt2",
+                user: user1,
+                // yesterday
+                createdAt: now.addingTimeInterval(-86400 * 1)
+            )
         ]
 
         let options = [
