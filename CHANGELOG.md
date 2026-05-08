@@ -4,7 +4,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 # Upcoming
 
 ### 🐞 Fixed
-- Fix Poll relative-date strings ignoring customer overrides [#1445](https://github.com/GetStream/stream-chat-swiftui/pull/1445)
+- Fix poll relative-date strings in `PollResultsView` not being correctly localized [#1445](https://github.com/GetStream/stream-chat-swiftui/pull/1445)
 - Fix custom `Appearance.localizationProvider` not applying to shared formatters [#1445](https://github.com/GetStream/stream-chat-swiftui/pull/1445)
 - Fix channel list preview showing "No messages" after a mid-page jump [#1442](https://github.com/GetStream/stream-chat-swiftui/pull/1442)
 - Avoid an extra channel-fetch request when leaving a channel [#1442](https://github.com/GetStream/stream-chat-swiftui/pull/1442)
