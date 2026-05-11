@@ -3,7 +3,6 @@
 //
 
 import Foundation
-@testable import StreamChatSwiftUI
 import XCTest
 
 let channelAttributes = ChannelListPage.Attributes.self
@@ -958,7 +957,7 @@ extension UserRobot {
         let image = attributes.giphyImage(in: cell).wait()
         XCTAssertTrue(image.exists, "Giphy image does not exist", file: file, line: line)
         XCTAssertTrue(
-            image.label.hasPrefix(L10n.Message.GiphyAttachment.accessibilityLabel),
+            image.label.hasPrefix("Giphy"),
             "Giphy image is missing the expected VoiceOver label, got: \(image.label)",
             file: file,
             line: line
