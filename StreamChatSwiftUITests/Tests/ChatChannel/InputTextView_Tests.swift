@@ -17,16 +17,22 @@ final class InputTextView_Tests: StreamChatTestCase {
 
     func test_accessibilityHint_whenTextIsNonEmpty_returnsSuperHint() {
         // While the user is typing, VoiceOver should announce the typed text
-        // as the value, not the placeholder as a hint.
+        // as the value rather than the placeholder as a hint. Verify the
+        // override yields exactly the same hint as a plain UITextView would.
         let textView = makeTextView(placeholder: "@username", text: "hello")
+        let baseline = UITextView()
+        baseline.text = "hello"
 
-        XCTAssertNotEqual(textView.accessibilityHint, "@username")
+        XCTAssertEqual(textView.accessibilityHint, baseline.accessibilityHint)
     }
 
     func test_accessibilityHint_whenPlaceholderIsEmpty_doesNotOverride() {
+        // With no placeholder text, the override has nothing to expose and
+        // should fall back to UITextView's default hint behaviour.
         let textView = makeTextView(placeholder: "", text: "")
+        let baseline = UITextView()
 
-        XCTAssertNotEqual(textView.accessibilityHint, "")
+        XCTAssertEqual(textView.accessibilityHint, baseline.accessibilityHint)
     }
 
     // MARK: - Regression guards
