@@ -3,6 +3,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 # Upcoming
 
+### 🔄 Changed
+
+# [5.1.1](https://github.com/GetStream/stream-chat-swiftui/releases/tag/5.1.1)
+_May 11, 2026_
+
 ### 🐞 Fixed
 - Fix poll relative-date strings in `PollResultsView` not being correctly localized [#1445](https://github.com/GetStream/stream-chat-swiftui/pull/1445)
 - Fix custom `Appearance.localizationProvider` not applying to shared formatters [#1445](https://github.com/GetStream/stream-chat-swiftui/pull/1445)
