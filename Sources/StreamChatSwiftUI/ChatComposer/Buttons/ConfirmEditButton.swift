@@ -11,10 +11,16 @@ public struct ConfirmEditButton: View {
 
     var enabled: Bool
     var onTap: () -> Void
+    var accessibilityLabel: String?
 
-    public init(enabled: Bool, onTap: @escaping () -> Void) {
+    public init(
+        enabled: Bool,
+        onTap: @escaping () -> Void,
+        accessibilityLabel: String? = nil
+    ) {
         self.enabled = enabled
         self.onTap = onTap
+        self.accessibilityLabel = accessibilityLabel
     }
 
     public var body: some View {
@@ -29,7 +35,11 @@ public struct ConfirmEditButton: View {
                 .frame(width: tokens.iconSizeMd, height: tokens.iconSizeMd)
         }
         .disabled(!enabled)
-        .accessibilityLabel(Text(L10n.Composer.Title.edit))
+        .accessibilityLabel(Text(resolvedAccessibilityLabel))
         .accessibilityIdentifier("ConfirmEditButton")
+    }
+
+    private var resolvedAccessibilityLabel: String {
+        accessibilityLabel ?? L10n.Composer.Title.edit
     }
 }

@@ -55,6 +55,16 @@ class InputTextView: UITextView, AccessibilityView {
     
     var onImagePasted: ((UIImage) -> Void)?
 
+    override open var accessibilityValue: String? {
+        get {
+            if text.isEmpty, let placeholder = placeholderLabel.text, !placeholder.isEmpty {
+                return placeholder
+            }
+            return super.accessibilityValue
+        }
+        set { super.accessibilityValue = newValue }
+    }
+
     override open var semanticContentAttribute: UISemanticContentAttribute {
         didSet {
             placeholderLabel.semanticContentAttribute = semanticContentAttribute

@@ -23,7 +23,8 @@ struct TrailingInputComposerView<Factory: ViewFactory>: View {
                 factory.makeConfirmEditButton(
                     options: ConfirmEditButtonOptions(
                         enabled: hasContent,
-                        onTap: sendMessage
+                        onTap: sendMessage,
+                        accessibilityLabel: L10n.Composer.Title.save
                     )
                 )
             } else {

@@ -614,7 +614,8 @@ extension ViewFactory {
     ) -> some View {
         ConfirmEditButton(
             enabled: options.enabled,
-            onTap: options.onTap
+            onTap: options.onTap,
+            accessibilityLabel: options.accessibilityLabel
         )
     }
     

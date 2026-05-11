@@ -298,13 +298,19 @@ public final class ConfirmEditButtonOptions: Sendable {
     public let enabled: Bool
     /// Callback when the button is tapped.
     public let onTap: @MainActor @Sendable () -> Void
+    /// Custom VoiceOver label, used to override the default "Edit Message"
+    /// when the same button confirms a different action (e.g. submitting an
+    /// instant command like `/giphy`).
+    public let accessibilityLabel: String?
 
     public init(
         enabled: Bool,
-        onTap: @escaping @MainActor @Sendable () -> Void
+        onTap: @escaping @MainActor @Sendable () -> Void,
+        accessibilityLabel: String? = nil
     ) {
         self.enabled = enabled
         self.onTap = onTap
+        self.accessibilityLabel = accessibilityLabel
     }
 }
 

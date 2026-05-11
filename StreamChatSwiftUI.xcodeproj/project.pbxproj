@@ -189,6 +189,7 @@
 				Tests/ChatChannel/CreatePollViewModel_Tests.swift,
 				Tests/ChatChannel/EditedMessageView_Tests.swift,
 				Tests/ChatChannel/FileAttachmentView_Tests.swift,
+				Tests/ChatChannel/InputTextView_Tests.swift,
 				Tests/ChatChannel/LazyLoadingImage_Tests.swift,
 				Tests/ChatChannel/MediaAttachmentGalleryOrdering_Tests.swift,
 				Tests/ChatChannel/MediaViewer_Tests.swift,
