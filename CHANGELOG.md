@@ -3,6 +3,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 # Upcoming
 
+### ✅ Added
+- VoiceOver now announces Giphy message bubbles with the Giphy title (e.g. "Giphy, happy cat") instead of just "Giphy" [#1448](https://github.com/GetStream/stream-chat-swiftui/pull/1448)
+
 ### 🔄 Changed
 
 # [5.1.1](https://github.com/GetStream/stream-chat-swiftui/releases/tag/5.1.1)
