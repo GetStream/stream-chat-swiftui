@@ -3,6 +3,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 # Upcoming
 
+### ✅ Added
+- Improve VoiceOver experience for composer instant commands and user mentions: announce the suggestions overlay on appear, expose user list items as `[username], user, X of N`, read the command-mode placeholder, announce the trailing button as `Save` in command mode, and announce when an instant command was sent [#1450](https://github.com/GetStream/stream-chat-swiftui/pull/1450)
+
 ### 🔄 Changed
 
 # [5.1.1](https://github.com/GetStream/stream-chat-swiftui/releases/tag/5.1.1)
