@@ -638,6 +638,9 @@ public struct ScrollToBottomButton<Factory: ViewFactory>: View {
             .modifier(factory.styles.makeScrollToBottomButtonModifier(options: .init()))
             .accessibilityLabel(Text(L10n.Channel.List.ScrollToBottom.title))
             .accessibilityIdentifier("ScrollToBottomButton")
+            // Floats over the message list, so raise the sort priority to make it
+            // reachable from VoiceOver without swiping through every message in between.
+            .accessibilitySortPriority(1)
             .badgeNotification(count: unreadCount)
             .padding(tokens.spacingMd)
         }
