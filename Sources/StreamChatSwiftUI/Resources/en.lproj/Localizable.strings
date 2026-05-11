@@ -232,6 +232,8 @@
 
 "message.file-attachment.error-preview" = "Error occured while previewing the file.";
 "message.giphy-attachment.title" = "GIPHY";
+"message.giphy-attachment.accessibility-label" = "Giphy";
+"message.giphy-attachment.accessibility-label-with-title" = "Giphy, %@";
 
 "message.search.title" = "Search";
 "message.search.cancel" = "Cancel";
