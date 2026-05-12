@@ -171,14 +171,10 @@ public struct CreatePollView<Factory: ViewFactory>: View {
     /// Posts a VoiceOver screen change announcement naming the sheet so users
     /// orient themselves on open instead of landing on the bare "Close" button.
     private func postScreenChangedAnnouncement() {
-        let title = L10n.Composer.Polls.createPoll
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-            if #available(iOS 17.0, *) {
-                AccessibilityNotification.ScreenChanged(title).post()
-            } else {
-                UIAccessibility.post(notification: .screenChanged, argument: title)
-            }
-        }
+        ComposerAccessibilityAnnouncer.announce(
+            L10n.Composer.Polls.createPoll,
+            kind: .screenChanged
+        )
     }
 
     @ViewBuilder
