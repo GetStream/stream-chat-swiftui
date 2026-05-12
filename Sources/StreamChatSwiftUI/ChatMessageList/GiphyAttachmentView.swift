@@ -61,6 +61,9 @@ public struct GiphyAttachmentView<Factory: ViewFactory>: View {
                     )
                 )
             )
+            .accessibilityElement(children: .ignore)
+            .accessibilityAddTraits(.isImage)
+            .accessibilityLabel(giphyAccessibilityLabel)
 
             if visibleOnlyToCurrentUser {
                 HStack {
@@ -104,6 +107,14 @@ public struct GiphyAttachmentView<Factory: ViewFactory>: View {
 
     private var giphyActions: [AttachmentAction] {
         message.giphyAttachments[0].actions
+    }
+
+    var giphyAccessibilityLabel: String {
+        let title = message.giphyAttachments[0].title?.trimmingCharacters(in: .whitespacesAndNewlines)
+        if let title, !title.isEmpty {
+            return L10n.Message.GiphyAttachment.accessibilityLabelWithTitle(title)
+        }
+        return L10n.Message.GiphyAttachment.accessibilityLabel
     }
 
     private func execute(action: AttachmentAction) {
