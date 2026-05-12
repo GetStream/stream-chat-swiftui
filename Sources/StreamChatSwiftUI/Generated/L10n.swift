@@ -309,6 +309,14 @@ internal enum L10n {
       /// Also send in channel
       internal static var channelReply: String { L10n.tr("Localizable", "composer.checkmark.channel-reply") }
     }
+    internal enum Command {
+      internal enum Sent {
+        /// %@ command sent
+        internal static func accessibilityAnnouncement(_ p1: Any) -> String {
+          return L10n.tr("Localizable", "composer.command.sent.accessibility-announcement", String(describing: p1))
+        }
+      }
+    }
     internal enum Commands {
       /// Giphy
       internal static var giphy: String { L10n.tr("Localizable", "composer.commands.giphy") }
@@ -469,8 +477,24 @@ internal enum L10n {
     }
     internal enum Suggestions {
       internal enum Commands {
+        /// Instant Commands, %d options
+        internal static func accessibilityAnnouncement(_ p1: Int) -> String {
+          return L10n.tr("Localizable", "composer.suggestions.commands.accessibility-announcement", p1)
+        }
         /// Instant Commands
         internal static var header: String { L10n.tr("Localizable", "composer.suggestions.commands.header") }
+      }
+      internal enum Mentions {
+        /// User list, %d results
+        internal static func accessibilityAnnouncement(_ p1: Int) -> String {
+          return L10n.tr("Localizable", "composer.suggestions.mentions.accessibility-announcement", p1)
+        }
+      }
+      internal enum User {
+        /// %1$@, user, %2$d of %3$d
+        internal static func accessibilityLabel(_ p1: Any, _ p2: Int, _ p3: Int) -> String {
+          return L10n.tr("Localizable", "composer.suggestions.user.accessibility-label", String(describing: p1), p2, p3)
+        }
       }
     }
     internal enum Title {
@@ -478,6 +502,8 @@ internal enum L10n {
       internal static var edit: String { L10n.tr("Localizable", "composer.title.edit") }
       /// Reply to Message
       internal static var reply: String { L10n.tr("Localizable", "composer.title.reply") }
+      /// Save
+      internal static var save: String { L10n.tr("Localizable", "composer.title.save") }
     }
   }
 

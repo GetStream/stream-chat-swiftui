@@ -28,11 +28,20 @@ public struct UserSuggestionsView<Factory: ViewFactory>: View {
     public var body: some View {
         ScrollView {
             LazyVStack(spacing: 0) {
-                ForEach(users) { user in
+                ForEach(Array(users.enumerated()), id: \.element.id) { index, user in
                     UserSuggestionView(
                         factory: factory,
                         user: user,
                         userSelected: userSelected
+                    )
+                    .accessibilityLabel(
+                        Text(
+                            L10n.Composer.Suggestions.User.accessibilityLabel(
+                                user.name ?? user.id,
+                                index + 1,
+                                users.count
+                            )
+                        )
                     )
                 }
             }
@@ -40,6 +49,11 @@ public struct UserSuggestionsView<Factory: ViewFactory>: View {
         .padding(.vertical, tokens.spacingXs)
         .frame(height: viewHeight)
         .animation(.easeInOut, value: users.count)
+        .onAppear {
+            ComposerAccessibilityAnnouncer.announce(
+                L10n.Composer.Suggestions.Mentions.accessibilityAnnouncement(users.count)
+            )
+        }
     }
 
     private var viewHeight: CGFloat {
