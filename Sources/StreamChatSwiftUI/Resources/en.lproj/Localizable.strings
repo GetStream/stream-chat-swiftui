@@ -198,6 +198,12 @@
 "composer.polls.hide-who-voted" = "Hide who voted";
 "composer.polls.let-others-add-options" = "Let others add options";
 "composer.polls.allow-others-to-add-comments" = "Allow others to add comments";
+"composer.polls.accessibility.save-button" = "Save Poll";
+"composer.polls.accessibility.reorder-option" = "Reorder option";
+"composer.polls.accessibility.reorder-option-position" = "Option %1$lld of %2$lld";
+"composer.polls.accessibility.decrease-vote-limit" = "Decrease vote limit";
+"composer.polls.accessibility.increase-vote-limit" = "Increase vote limit";
+"composer.polls.accessibility.vote-limit" = "Vote limit";
 "composer.audio-recording.start" = "Start recording audio message";
 "composer.audio-recording.stop" = "Stop recording audio message";
 

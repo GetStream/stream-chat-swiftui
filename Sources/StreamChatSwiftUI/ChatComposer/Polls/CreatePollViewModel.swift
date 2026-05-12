@@ -105,6 +105,12 @@ import SwiftUI
         return optionsErrorIndices.contains(index)
     }
 
+    /// The number of reorderable options (excluding the trailing empty
+    /// placeholder), used to build the "Option N of M" accessibility value.
+    var reorderableOptionCount: Int {
+        options.filter { !$0.text.isEmpty }.count
+    }
+
     // MARK: - Option Mutations
 
     func updateOption(id: UUID, value: String) {
@@ -124,6 +130,27 @@ import SwiftUI
 
     func moveOptions(from source: IndexSet, to destination: Int) {
         options.move(fromOffsets: source, toOffset: destination)
+    }
+
+    /// Accessibility-driven reordering: moves the option one position up
+    /// (`.decrement`) or down (`.increment`) in the list. Used as the
+    /// adjustable action backing the reorder handle, so VoiceOver users can
+    /// reorder via the rotor without a drag gesture. No-op past the bounds
+    /// or onto the trailing empty placeholder.
+    func moveOption(id: UUID, direction: AccessibilityAdjustmentDirection) -> Bool {
+        guard let index = options.firstIndex(where: { $0.id == id }) else { return false }
+        switch direction {
+        case .decrement:
+            guard index > 0 else { return false }
+            moveOptions(from: IndexSet(integer: index), to: index - 1)
+            return true
+        case .increment:
+            guard index < options.count - 2 else { return false }
+            moveOptions(from: IndexSet(integer: index), to: index + 2)
+            return true
+        @unknown default:
+            return false
+        }
     }
 
     func replaceAllOptions(_ newTexts: [String]) {

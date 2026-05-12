@@ -426,6 +426,22 @@ internal enum L10n {
       internal static var suggestOption: String { L10n.tr("Localizable", "composer.polls.suggest-option") }
       /// Choose between 2–10 options
       internal static var typeNumberMinMaxRange: String { L10n.tr("Localizable", "composer.polls.type-number-min-max-range") }
+      internal enum Accessibility {
+        /// Decrease vote limit
+        internal static var decreaseVoteLimit: String { L10n.tr("Localizable", "composer.polls.accessibility.decrease-vote-limit") }
+        /// Increase vote limit
+        internal static var increaseVoteLimit: String { L10n.tr("Localizable", "composer.polls.accessibility.increase-vote-limit") }
+        /// Reorder option
+        internal static var reorderOption: String { L10n.tr("Localizable", "composer.polls.accessibility.reorder-option") }
+        /// Option %1$lld of %2$lld
+        internal static func reorderOptionPosition(_ p1: Int, _ p2: Int) -> String {
+          return L10n.tr("Localizable", "composer.polls.accessibility.reorder-option-position", p1, p2)
+        }
+        /// Save Poll
+        internal static var saveButton: String { L10n.tr("Localizable", "composer.polls.accessibility.save-button") }
+        /// Vote limit
+        internal static var voteLimit: String { L10n.tr("Localizable", "composer.polls.accessibility.vote-limit") }
+      }
     }
     internal enum Quoted {
       /// Audio
