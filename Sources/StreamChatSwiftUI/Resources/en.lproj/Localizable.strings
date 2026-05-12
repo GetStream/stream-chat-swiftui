@@ -148,6 +148,7 @@
 
 "composer.title.edit" = "Edit Message";
 "composer.title.reply" = "Reply to Message";
+"composer.title.save" = "Save";
 "composer.placeholder.message" = "Message";
 "composer.placeholder.messageDisabled" = "You can't send messages in this channel";
 "composer.placeholder.slow-mode" = "Slow mode, wait %ds...";
@@ -213,6 +214,10 @@
 
 
 "composer.suggestions.commands.header" = "Instant Commands";
+"composer.suggestions.commands.accessibility-announcement" = "Instant Commands, %d options";
+"composer.suggestions.mentions.accessibility-announcement" = "User list, %d results";
+"composer.suggestions.user.accessibility-label" = "%1$@, user, %2$d of %3$d";
+"composer.command.sent.accessibility-announcement" = "%@ command sent";
 "message.sending.attachment-uploading-failed" = "UPLOADING FAILED";
 "message.sending.attachment-upload-failed" = "Upload failed";
 "message.sending.attachment-retry-upload" = "Retry upload";
@@ -232,6 +237,8 @@
 
 "message.file-attachment.error-preview" = "Error occured while previewing the file.";
 "message.giphy-attachment.title" = "GIPHY";
+"message.giphy-attachment.accessibility-label" = "Giphy";
+"message.giphy-attachment.accessibility-label-with-title" = "Giphy, %@";
 
 "message.search.title" = "Search";
 "message.search.cancel" = "Cancel";
