@@ -660,6 +660,12 @@ internal enum L10n {
       internal static var photos: String { L10n.tr("Localizable", "message.gallery.photos") }
     }
     internal enum GiphyAttachment {
+      /// Giphy
+      internal static var accessibilityLabel: String { L10n.tr("Localizable", "message.giphy-attachment.accessibility-label") }
+      /// Giphy, %@
+      internal static func accessibilityLabelWithTitle(_ p1: Any) -> String {
+        return L10n.tr("Localizable", "message.giphy-attachment.accessibility-label-with-title", String(describing: p1))
+      }
       /// GIPHY
       internal static var title: String { L10n.tr("Localizable", "message.giphy-attachment.title") }
     }
