@@ -4,6 +4,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 # Upcoming
 
 ### ✅ Added
+- Improve VoiceOver experience for the Create Poll sheet [#1451](https://github.com/GetStream/stream-chat-swiftui/pull/1451)
 - Make the scroll-to-bottom button reachable from VoiceOver without swiping through every message in between [#1449](https://github.com/GetStream/stream-chat-swiftui/pull/1449)
 - Improve VoiceOver experience for composer instant commands and user mentions [#1450](https://github.com/GetStream/stream-chat-swiftui/pull/1450)
 - VoiceOver now announces Giphy message bubbles with the Giphy title instead of just "Giphy" [#1448](https://github.com/GetStream/stream-chat-swiftui/pull/1448)
