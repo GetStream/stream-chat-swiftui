@@ -3,6 +3,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 # Upcoming
 
+### 🔄 Changed
+
+# [5.2.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/5.2.0)
+_May 13, 2026_
+
 ### ✅ Added
 - Improve VoiceOver experience for the Create Poll sheet [#1451](https://github.com/GetStream/stream-chat-swiftui/pull/1451)
 - Make the scroll-to-bottom button reachable from VoiceOver without swiping through every message in between [#1449](https://github.com/GetStream/stream-chat-swiftui/pull/1449)
