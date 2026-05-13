@@ -9,6 +9,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Improve VoiceOver experience for composer instant commands and user mentions [#1450](https://github.com/GetStream/stream-chat-swiftui/pull/1450)
 - VoiceOver now announces Giphy message bubbles with the Giphy title instead of just "Giphy" [#1448](https://github.com/GetStream/stream-chat-swiftui/pull/1448)
 
+### 🐞 Fixed
+- Avoid marking the channel as read while the latest message is still being sent [#1452](https://github.com/GetStream/stream-chat-swiftui/pull/1452)
+
 # [5.1.1](https://github.com/GetStream/stream-chat-swiftui/releases/tag/5.1.1)
 _May 11, 2026_
 

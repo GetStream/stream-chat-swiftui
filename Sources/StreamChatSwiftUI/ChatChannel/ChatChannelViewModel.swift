@@ -36,6 +36,7 @@ import SwiftUI
     private var readsString = ""
     private var canMarkRead = false
     private var hasSetInitialCanMarkRead = false
+    private var pendingMarkReadMessageId: MessageId?
     private var currentUserSentNewMessage = false
     
     private lazy var messagesDateFormatter = utils.dateFormatter
@@ -515,6 +516,13 @@ import SwiftUI
             updateScrolledIdToNewestMessage()
             currentUserSentNewMessage = false
         }
+        
+        if let pendingMarkReadMessageId,
+           let pendingMarkReadMessage = messages.first(where: { $0.id == pendingMarkReadMessageId }),
+           !pendingMarkReadMessage.isLocalOnly {
+            self.pendingMarkReadMessageId = nil
+            sendReadEventIfNeeded(for: pendingMarkReadMessage)
+        }
     }
     
     func dataSource(
@@ -643,6 +651,10 @@ import SwiftUI
             return
         }
         if let read = channel.read(for: currentUserId), read.lastReadAt > message.createdAt {
+            return
+        }
+        if message.isLocalOnly {
+            pendingMarkReadMessageId = message.id
             return
         }
         throttler.execute { [weak self] in
