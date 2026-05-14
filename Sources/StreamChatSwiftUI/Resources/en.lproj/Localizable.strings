@@ -204,6 +204,7 @@
 "composer.polls.accessibility.decrease-vote-limit" = "Decrease vote limit";
 "composer.polls.accessibility.increase-vote-limit" = "Increase vote limit";
 "composer.polls.accessibility.vote-limit" = "Vote limit";
+"composer.polls.accessibility.poll-added" = "Poll added to message";
 "composer.audio-recording.start" = "Start recording audio message";
 "composer.audio-recording.stop" = "Stop recording audio message";
 

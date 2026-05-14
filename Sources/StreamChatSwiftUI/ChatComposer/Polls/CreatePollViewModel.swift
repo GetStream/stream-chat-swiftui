@@ -213,6 +213,7 @@ import SwiftUI
             switch result {
             case let .success(messageId):
                 log.debug("Created poll in message with id \(messageId)")
+                ComposerAccessibilityAnnouncer.announce(L10n.Composer.Polls.Accessibility.pollAdded)
                 completion()
             case let .failure(error):
                 log.error("Error creating a poll: \(error.localizedDescription)")

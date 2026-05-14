@@ -431,6 +431,8 @@ internal enum L10n {
         internal static var decreaseVoteLimit: String { L10n.tr("Localizable", "composer.polls.accessibility.decrease-vote-limit") }
         /// Increase vote limit
         internal static var increaseVoteLimit: String { L10n.tr("Localizable", "composer.polls.accessibility.increase-vote-limit") }
+        /// Poll added to message
+        internal static var pollAdded: String { L10n.tr("Localizable", "composer.polls.accessibility.poll-added") }
         /// Reorder option
         internal static var reorderOption: String { L10n.tr("Localizable", "composer.polls.accessibility.reorder-option") }
         /// Option %1$lld of %2$lld
