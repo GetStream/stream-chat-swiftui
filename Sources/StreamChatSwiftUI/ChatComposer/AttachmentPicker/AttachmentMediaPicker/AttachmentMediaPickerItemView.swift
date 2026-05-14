@@ -68,25 +68,7 @@ public struct AttachmentMediaPickerItemView: View {
                             .allowsHitTesting(true)
                             .onTapGesture {
                                 withAnimation {
-                                    let resolvedURL = asset.mediaType == .image ? assetJpgURL() : assetURL
-                                    if let url = resolvedURL {
-                                        let width = Double(asset.pixelWidth)
-                                        let height = Double(asset.pixelHeight)
-                                        let durationSeconds: TimeInterval? = asset.mediaType == .video ? asset.duration : nil
-                                        onImageTap(
-                                            AddedAsset(
-                                                image: image,
-                                                id: asset.localIdentifier,
-                                                url: url,
-                                                type: assetType,
-                                                extraData: asset.mediaType == .video ? ["duration": .number(asset.duration)] : [:],
-                                                originalWidth: width > 0 ? width : nil,
-                                                originalHeight: height > 0 ? height : nil,
-                                                duration: durationSeconds
-                                            )
-                                        )
-                                    }
-                                    idOverlay = UUID()
+                                    handleAssetTap(image: image, currentlySelected: selected)
                                 }
                             }
                     }
@@ -127,8 +109,17 @@ public struct AttachmentMediaPickerItemView: View {
                 }
             }
             .allowsHitTesting(false)
+            .accessibilityHidden(true)
             .id(idOverlay)
         )
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel(accessibilityLabel)
+        .accessibilityAddTraits(.isButton)
+        .accessibilityAddTraits(selected ? .isSelected : [])
+        .accessibilityAction {
+            guard let image = assetLoader.loadedImages[asset.localIdentifier] else { return }
+            handleAssetTap(image: image, currentlySelected: selected)
+        }
         .onAppear {
             loading = false
             
@@ -171,6 +162,61 @@ public struct AttachmentMediaPickerItemView: View {
 
     private var assetDurationText: String {
         utils.mediaBadgeDurationFormatter.longFormat(asset.duration)
+    }
+
+    private var accessibilityLabel: String {
+        switch asset.mediaType {
+        case .video:
+            let duration = Self.accessibilityDurationFormatter.string(from: asset.duration) ?? assetDurationText
+            return L10n.Composer.MediaPicker.Accessibility.video(duration)
+        default:
+            return L10n.Composer.MediaPicker.Accessibility.photo
+        }
+    }
+
+    private static let accessibilityDurationFormatter: DateComponentsFormatter = {
+        let formatter = DateComponentsFormatter()
+        formatter.unitsStyle = .full
+        formatter.allowedUnits = [.hour, .minute, .second]
+        formatter.zeroFormattingBehavior = .dropLeading
+        return formatter
+    }()
+
+    private func handleAssetTap(image: UIImage, currentlySelected: Bool) {
+        let resolvedURL = asset.mediaType == .image ? assetJpgURL() : assetURL
+        guard let url = resolvedURL else { return }
+        let width = Double(asset.pixelWidth)
+        let height = Double(asset.pixelHeight)
+        let durationSeconds: TimeInterval? = asset.mediaType == .video ? asset.duration : nil
+        onImageTap(
+            AddedAsset(
+                image: image,
+                id: asset.localIdentifier,
+                url: url,
+                type: assetType,
+                extraData: asset.mediaType == .video ? ["duration": .number(asset.duration)] : [:],
+                originalWidth: width > 0 ? width : nil,
+                originalHeight: height > 0 ? height : nil,
+                duration: durationSeconds
+            )
+        )
+        idOverlay = UUID()
+        announceSelectionChange(willBeSelected: !currentlySelected)
+    }
+
+    private func announceSelectionChange(willBeSelected: Bool) {
+        let message: String
+        switch (asset.mediaType, willBeSelected) {
+        case (.video, true):
+            message = L10n.Composer.MediaPicker.Accessibility.videoAdded
+        case (.video, false):
+            message = L10n.Composer.MediaPicker.Accessibility.videoRemoved
+        case (_, true):
+            message = L10n.Composer.MediaPicker.Accessibility.photoAdded
+        case (_, false):
+            message = L10n.Composer.MediaPicker.Accessibility.photoRemoved
+        }
+        ComposerAccessibilityAnnouncer.announce(message)
     }
 
     /// The original photo is usually in HEIC format.

@@ -205,6 +205,14 @@
 "composer.polls.accessibility.increase-vote-limit" = "Increase vote limit";
 "composer.polls.accessibility.vote-limit" = "Vote limit";
 "composer.polls.accessibility.poll-added" = "Poll added to message";
+"composer.attachment.accessibility.open" = "Add attachment";
+"composer.attachment.accessibility.close" = "Close attachments";
+"composer.media-picker.accessibility.photo" = "Photo";
+"composer.media-picker.accessibility.video" = "Video, %@";
+"composer.media-picker.accessibility.photo-added" = "Photo added to message";
+"composer.media-picker.accessibility.photo-removed" = "Photo removed from message";
+"composer.media-picker.accessibility.video-added" = "Video added to message";
+"composer.media-picker.accessibility.video-removed" = "Video removed from message";
 "composer.audio-recording.start" = "Start recording audio message";
 "composer.audio-recording.stop" = "Stop recording audio message";
 

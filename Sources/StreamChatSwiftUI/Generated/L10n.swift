@@ -289,6 +289,14 @@ internal enum L10n {
   }
 
   internal enum Composer {
+    internal enum Attachment {
+      internal enum Accessibility {
+        /// Close attachments
+        internal static var close: String { L10n.tr("Localizable", "composer.attachment.accessibility.close") }
+        /// Add attachment
+        internal static var `open`: String { L10n.tr("Localizable", "composer.attachment.accessibility.open") }
+      }
+    }
     internal enum AudioRecording {
       /// Start recording audio message
       internal static var start: String { L10n.tr("Localizable", "composer.audio-recording.start") }
@@ -364,6 +372,24 @@ internal enum L10n {
       internal static var accessSettings: String { L10n.tr("Localizable", "composer.images.access-settings") }
       /// You have not granted access to the photo library.
       internal static var noAccessLibrary: String { L10n.tr("Localizable", "composer.images.no-access-library") }
+    }
+    internal enum MediaPicker {
+      internal enum Accessibility {
+        /// Photo
+        internal static var photo: String { L10n.tr("Localizable", "composer.media-picker.accessibility.photo") }
+        /// Photo added to message
+        internal static var photoAdded: String { L10n.tr("Localizable", "composer.media-picker.accessibility.photo-added") }
+        /// Photo removed from message
+        internal static var photoRemoved: String { L10n.tr("Localizable", "composer.media-picker.accessibility.photo-removed") }
+        /// Video, %@
+        internal static func video(_ p1: Any) -> String {
+          return L10n.tr("Localizable", "composer.media-picker.accessibility.video", String(describing: p1))
+        }
+        /// Video added to message
+        internal static var videoAdded: String { L10n.tr("Localizable", "composer.media-picker.accessibility.video-added") }
+        /// Video removed from message
+        internal static var videoRemoved: String { L10n.tr("Localizable", "composer.media-picker.accessibility.video-removed") }
+      }
     }
     internal enum Picker {
       /// Cancel

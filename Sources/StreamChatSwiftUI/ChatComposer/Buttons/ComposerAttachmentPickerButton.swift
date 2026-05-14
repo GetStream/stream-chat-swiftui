@@ -37,10 +37,12 @@ public struct ComposerAttachmentPickerButton<Factory: ViewFactory>: View, Keyboa
                 .frame(width: tokens.iconSizeMd, height: tokens.iconSizeMd)
                 .foregroundColor(Color(colors.buttonSecondaryText))
                 .rotationEffect(.degrees(isExpanded ? 45 : 0))
+                .padding(tokens.buttonPaddingYLg)
+                .contentShape(Rectangle())
         }
-        .padding(tokens.buttonPaddingYLg)
         .foregroundColor(Color(colors.buttonSecondaryText))
         .modifier(factory.styles.makeComposerButtonViewModifier(options: .init()))
+        .accessibilityLabel(isExpanded ? L10n.Composer.Attachment.Accessibility.close : L10n.Composer.Attachment.Accessibility.open)
         .onChange(of: pickerTypeState) { _ in
             triggerHapticFeedback(style: .soft)
         }
