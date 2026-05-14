@@ -22,6 +22,7 @@ struct AttachmentFilePickerView: View {
                 onFilesPicked(urls)
             })
         }
+        .restoresAccessibilityFocusOnDismiss(of: $filePickerShown)
         .onLoad {
             filePickerShown = true
         }
