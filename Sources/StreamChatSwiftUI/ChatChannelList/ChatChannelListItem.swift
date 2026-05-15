@@ -219,15 +219,10 @@ public struct ChatChannelListItem<Factory: ViewFactory>: View {
     @ViewBuilder
     private var attachmentIconView: some View {
         if let iconImage = previewAttachmentIconImage {
-            let icon = Image(uiImage: iconImage)
+            Image(uiImage: iconImage)
                 .customizable()
                 .frame(width: tokens.iconSizeSm, height: tokens.iconSizeSm)
                 .accessibilityHidden(true)
-            if layoutDirection == .rightToLeft {
-                icon.scaleEffect(x: -1, y: 1)
-            } else {
-                icon
-            }
         }
     }
 
