@@ -14,8 +14,6 @@ public struct ChatChannelListItem<Factory: ViewFactory>: View {
     @Injected(\.chatClient) private var chatClient
     @Injected(\.tokens) private var tokens
 
-    @Environment(\.layoutDirection) private var layoutDirection
-
     var factory: Factory
     var channel: ChatChannel
     var channelName: String
@@ -226,36 +224,14 @@ public struct ChatChannelListItem<Factory: ViewFactory>: View {
         }
     }
 
-    /// Renders a label followed by a colon. In left-to-right layouts this
-    /// produces `Leia Organa:`; in right-to-left layouts the colon ends up on
-    /// the leading side of the label (`:Leia Organa`) regardless of the bidi
-    /// direction of the label content.
-    ///
-    /// In RTL the colon and label are placed in an `HStack` whose layout
-    /// direction is locked to left-to-right. This prevents SwiftUI from
-    /// merging the colon with the label as a single bidi run and lets us
-    /// position the colon explicitly on the visual side that reads as the
-    /// label's trailing punctuation in RTL.
-    @ViewBuilder
     private func labelWithColon(
         _ text: String,
         weight: Font.Weight = .regular,
         trailingSpace: Bool = false
     ) -> some View {
-        if layoutDirection == .rightToLeft {
-            // Visual layout (left-to-right) is `[optional space][:]<label>` so
-            // that reading right-to-left it becomes `<label>:[space]…`.
-            HStack(spacing: 0) {
-                if trailingSpace {
-                    Text(verbatim: " ").fontWeight(weight)
-                }
-                Text(verbatim: ":").fontWeight(weight)
-                Text(text).fontWeight(weight)
-            }
-            .environment(\.layoutDirection, .leftToRight)
-        } else {
-            let suffix = trailingSpace ? ": " : ":"
-            Text("\(text)\(suffix)").fontWeight(weight)
+        HStack(spacing: 0) {
+            Text(text).fontWeight(weight)
+            Text(verbatim: trailingSpace ? ": " : ":").fontWeight(weight)
         }
     }
 
