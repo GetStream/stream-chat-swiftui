@@ -14,6 +14,8 @@ public struct ChatChannelListItem<Factory: ViewFactory>: View {
     @Injected(\.chatClient) private var chatClient
     @Injected(\.tokens) private var tokens
 
+    @Environment(\.layoutDirection) private var layoutDirection
+
     var factory: Factory
     var channel: ChatChannel
     var channelName: String
@@ -61,13 +63,13 @@ public struct ChatChannelListItem<Factory: ViewFactory>: View {
                         }
 
                         Spacer()
-                        
+
                         SubtitleText(
                             text: timestampText,
                             color: Color(colors.textTertiary)
                         )
                         .accessibilityIdentifier("timestampView")
-                        
+
                         if !isSelected && channel.unreadCount != .noUnread {
                             BadgeNotificationView(
                                 count: channel.unreadCount.messages
@@ -76,24 +78,10 @@ public struct ChatChannelListItem<Factory: ViewFactory>: View {
                     }
 
                     HStack(spacing: tokens.spacingXxxs) {
-                        if shouldShowReadEvents {
-                            MessageReadIndicatorView(
-                                readUsers: channel.readUsers(
-                                    currentUserId: chatClient.currentUserId,
-                                    message: previewMessage
-                                ),
-                                showDelivered: previewMessage?.deliveryStatus(for: channel) == .delivered,
-                                localState: previewMessage?.localState
-                            )
-                        }
-                        
+                        readIndicator
                         subtitleView
-
                         Spacer()
-                        
-                        if channel.isMuted, mutedLayoutStyle == .bottomRightCorner {
-                            mutedIcon
-                        }
+                        mutedTrailingIcon
                     }
                 }
             }
@@ -106,6 +94,27 @@ public struct ChatChannelListItem<Factory: ViewFactory>: View {
 
     private var mutedLayoutStyle: ChannelItemMutedLayoutStyle {
         utils.channelListConfig.channelItemMutedStyle
+    }
+
+    @ViewBuilder
+    private var readIndicator: some View {
+        if shouldShowReadEvents {
+            MessageReadIndicatorView(
+                readUsers: channel.readUsers(
+                    currentUserId: chatClient.currentUserId,
+                    message: previewMessage
+                ),
+                showDelivered: previewMessage?.deliveryStatus(for: channel) == .delivered,
+                localState: previewMessage?.localState
+            )
+        }
+    }
+
+    @ViewBuilder
+    private var mutedTrailingIcon: some View {
+        if channel.isMuted, mutedLayoutStyle == .bottomRightCorner {
+            mutedIcon
+        }
     }
 
     private var previewMessage: ChatMessage? {
@@ -150,17 +159,16 @@ public struct ChatChannelListItem<Factory: ViewFactory>: View {
                 )
             } else if utils.messageListConfig.draftMessagesEnabled, let draftText = draftMessageText {
                 HStack(spacing: 2) {
-                    Text("\(L10n.Message.Preview.draft): ")
-                        .font(fonts.subheadline).fontWeight(.semibold)
+                    labelWithColon(L10n.Message.Preview.draft, weight: .semibold, trailingSpace: true)
+                        .font(fonts.subheadline)
                         .foregroundColor(Color(colors.accentPrimary))
                     SubtitleText(text: draftText)
                 }
             } else if previewMessage?.isDeleted == true {
                 HStack(spacing: tokens.spacingXxs) {
                     if previewMessage?.isSentByCurrentUser == true {
-                        Text("\(L10n.Channel.Item.you):")
+                        labelWithColon(L10n.Channel.Item.you, weight: .semibold)
                             .font(fonts.subheadline)
-                            .fontWeight(.semibold)
                     }
                     Image(systemName: "nosign")
                         .resizable()
@@ -177,9 +185,8 @@ public struct ChatChannelListItem<Factory: ViewFactory>: View {
                     utils.messagePreviewFormatter.formatContent(for: $0, in: channel)
                 } ?? subtitleText
                 HStack(spacing: tokens.spacingXxs) {
-                    Text("\(authorName):")
+                    labelWithColon(authorName, weight: .semibold)
                         .font(fonts.subheadline)
-                        .fontWeight(.semibold)
                         .foregroundColor(Color(colors.textTertiary))
                     attachmentIconView
                     Text(contentString)
@@ -198,7 +205,6 @@ public struct ChatChannelListItem<Factory: ViewFactory>: View {
             } else {
                 SubtitleText(text: subtitleText)
             }
-            Spacer()
         }
         .accessibilityIdentifier("subtitleView")
     }
@@ -213,10 +219,48 @@ public struct ChatChannelListItem<Factory: ViewFactory>: View {
     @ViewBuilder
     private var attachmentIconView: some View {
         if let iconImage = previewAttachmentIconImage {
-            Image(uiImage: iconImage)
+            let icon = Image(uiImage: iconImage)
                 .customizable()
                 .frame(width: tokens.iconSizeSm, height: tokens.iconSizeSm)
                 .accessibilityHidden(true)
+            if layoutDirection == .rightToLeft {
+                icon.scaleEffect(x: -1, y: 1)
+            } else {
+                icon
+            }
+        }
+    }
+
+    /// Renders a label followed by a colon. In left-to-right layouts this
+    /// produces `Leia Organa:`; in right-to-left layouts the colon ends up on
+    /// the leading side of the label (`:Leia Organa`) regardless of the bidi
+    /// direction of the label content.
+    ///
+    /// In RTL the colon and label are placed in an `HStack` whose layout
+    /// direction is locked to left-to-right. This prevents SwiftUI from
+    /// merging the colon with the label as a single bidi run and lets us
+    /// position the colon explicitly on the visual side that reads as the
+    /// label's trailing punctuation in RTL.
+    @ViewBuilder
+    private func labelWithColon(
+        _ text: String,
+        weight: Font.Weight = .regular,
+        trailingSpace: Bool = false
+    ) -> some View {
+        if layoutDirection == .rightToLeft {
+            // Visual layout (left-to-right) is `[optional space][:]<label>` so
+            // that reading right-to-left it becomes `<label>:[space]…`.
+            HStack(spacing: 0) {
+                if trailingSpace {
+                    Text(verbatim: " ").fontWeight(weight)
+                }
+                Text(verbatim: ":").fontWeight(weight)
+                Text(text).fontWeight(weight)
+            }
+            .environment(\.layoutDirection, .leftToRight)
+        } else {
+            let suffix = trailingSpace ? ": " : ":"
+            Text("\(text)\(suffix)").fontWeight(weight)
         }
     }
 
