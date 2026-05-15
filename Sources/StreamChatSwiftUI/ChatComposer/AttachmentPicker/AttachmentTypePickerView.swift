@@ -115,5 +115,6 @@ public struct AttachmentTypePickerButton: View {
                 .customizable()
                 .frame(width: 18, height: 18)
         }
+        .accessibilityAddTraits(isSelected ? .isSelected : [])
     }
 }
