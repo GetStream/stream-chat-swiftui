@@ -102,7 +102,7 @@ import XCTest
         .frame(width: defaultScreenSize.width)
 
         // Then
-        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
+        AssertSnapshot(view)
     }
 
     func test_channelListItem_muted_channelNameStyle() throws {
@@ -125,7 +125,7 @@ import XCTest
         .frame(width: defaultScreenSize.width)
 
         // Then
-        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
+        AssertSnapshot(view)
     }
 
     func test_channelListItem_muted_bottomRightCornerStyle() throws {
@@ -148,7 +148,7 @@ import XCTest
         .frame(width: defaultScreenSize.width)
 
         // Then
-        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
+        AssertSnapshot(view)
     }
 
     func test_channelListItem_giphyMessage() throws {
