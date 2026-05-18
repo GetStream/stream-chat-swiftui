@@ -258,6 +258,33 @@ import XCTest
         AssertSnapshot(view, variants: [.rightToLeftLayout])
     }
 
+    func test_pollOptionAllVotesView_rightToLeft_snapshot() {
+        let pollId = "all-votes-rtl"
+        let optionId = "opt1"
+        let users = (1...4).map { ChatUser.mock(id: "user\($0)", name: "User \($0)") }
+        let votes = users.map {
+            PollVote.mock(
+                pollId: pollId,
+                optionId: optionId,
+                user: $0,
+                createdAt: Date(timeIntervalSince1970: 100)
+            )
+        }
+        let option = PollOption.mock(id: optionId, text: "Barcelona", latestVotes: votes)
+        let poll = Poll.mock(pollId: pollId, options: [
+            option,
+            PollOption.mock(id: "opt2", text: "Lisbon", latestVotes: [])
+        ])
+
+        let viewModel = PollOptionAllVotesViewModel(poll: poll, option: option)
+        viewModel.pollVotes = votes
+
+        let view = PollOptionAllVotesView(factory: DefaultViewFactory.shared, viewModel: viewModel)
+            .applyDefaultSize()
+
+        AssertSnapshot(view, variants: [.rightToLeftLayout])
+    }
+
     func test_pollAttachmentView_allComments() {
         // Given
         let poll = Poll.mock()
