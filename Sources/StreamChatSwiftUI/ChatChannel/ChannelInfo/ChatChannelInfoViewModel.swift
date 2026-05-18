@@ -8,7 +8,7 @@ import StreamChat
 import SwiftUI
 
 // View model for the `ChatChannelInfoView`.
-@MainActor public class ChatChannelInfoViewModel: ObservableObject, ChatChannelControllerDelegate {
+@MainActor open class ChatChannelInfoViewModel: ObservableObject, ChatChannelControllerDelegate {
     @Injected(\.chatClient) private var chatClient
     @Injected(\.utils) private var utils
     @Injected(\.images) private var images
