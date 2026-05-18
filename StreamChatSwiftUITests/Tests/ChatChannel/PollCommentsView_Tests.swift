@@ -223,6 +223,55 @@ import XCTest
         AssertSnapshot(view, variants: .onlyUserInterfaceStyles)
     }
 
+    // MARK: - RTL
+
+    func test_pollCommentsView_rightToLeft_snapshot() {
+        let (viewModel, poll, pollController) = makeViewModel(
+            comments: makeMultipleComments(pollId: "rtl-multi")
+        )
+
+        let view = PollCommentsView(
+            factory: DefaultViewFactory.shared,
+            poll: poll,
+            pollController: pollController,
+            viewModel: viewModel
+        )
+        .applyDefaultSize()
+
+        AssertSnapshot(view, variants: [.rightToLeftLayout])
+    }
+
+    func test_pollCommentsView_ownCommentWithUpdateButton_rightToLeft_snapshot() {
+        let currentUserId = StreamChatTestCase.currentUserId
+        let ownComment = makeComment(
+            pollId: "rtl-own",
+            text: "My suggestion is to go with the first option.",
+            user: .mock(id: currentUserId, name: "You")
+        )
+        let otherComment = makeComment(
+            pollId: "rtl-own",
+            text: "I prefer the second option personally.",
+            user: .mock(id: "user2", name: "Bob"),
+            timeOffset: -3600
+        )
+
+        let (viewModel, poll, pollController) = makeViewModel(
+            pollId: "rtl-own",
+            setPollOnController: true,
+            comments: [ownComment, otherComment]
+        )
+
+        let view = PollCommentsView(
+            factory: DefaultViewFactory.shared,
+            poll: poll,
+            pollController: pollController,
+            viewModel: viewModel
+        )
+        .applyDefaultSize()
+
+        AssertSnapshot(view, variants: [.rightToLeftLayout])
+    }
+
     // MARK: - Helpers
 
     private let referenceDate = Date(timeIntervalSince1970: 1_700_000_000)
