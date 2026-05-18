@@ -113,6 +113,7 @@ public struct EditGroupView<Factory: ViewFactory>: View {
         TextField(L10n.ChatInfo.Edit.groupName, text: $name)
             .font(fonts.body)
             .foregroundColor(Color(colors.textPrimary))
+            .multilineTextAlignment(.leading)
             .padding(tokens.spacingMd)
             .background(
                 RoundedRectangle(cornerRadius: tokens.radiusLg)
