@@ -9,7 +9,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ### 🐞 Fixed
 - Fix RTL layout issues in the channel list swipe actions and channel preview [#1459](https://github.com/GetStream/stream-chat-swiftui/pull/1459)
 - Restore `open` access on `ChatChannelInfoViewModel` so it can be subclassed again [#1460](https://github.com/GetStream/stream-chat-swiftui/pull/1460)
-- Fix RTL layout issues across poll views, including the vote progress bar and the Create Poll text fields [#1462](https://github.com/GetStream/stream-chat-swiftui/pull/1462)
+- Fix RTL layout issues across all poll views [#1462](https://github.com/GetStream/stream-chat-swiftui/pull/1462)
 
 ### 🔄 Changed
 
