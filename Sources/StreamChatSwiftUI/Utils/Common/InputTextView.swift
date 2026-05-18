@@ -55,6 +55,21 @@ class InputTextView: UITextView, AccessibilityView {
     
     var onImagePasted: ((UIImage) -> Void)?
 
+    override open var accessibilityHint: String? {
+        // Expose the (possibly dynamic) placeholder as the accessibility hint
+        // so VoiceOver announces the command-mode placeholder (e.g. "@username")
+        // when the field is empty. `accessibilityHint` does not back
+        // `XCUIElement.text` / `XCUIElement.value` / `XCUIElement.label`, so UI
+        // tests that assert a cleared composer continue to see an empty value.
+        get {
+            if text.isEmpty, let placeholder = placeholderLabel.text, !placeholder.isEmpty {
+                return placeholder
+            }
+            return super.accessibilityHint
+        }
+        set { super.accessibilityHint = newValue }
+    }
+
     override open var semanticContentAttribute: UISemanticContentAttribute {
         didSet {
             placeholderLabel.semanticContentAttribute = semanticContentAttribute

@@ -30,21 +30,20 @@ public struct AttachmentCommandsPickerView: View {
                 VStack(spacing: 0) {
                     ForEach(instantCommands, id: \.id) { command in
                         if let displayInfo = command.displayInfo {
-                            AttachmentCommandRow(displayInfo: displayInfo)
-                                .contentShape(Rectangle())
-                                .highPriorityGesture(
-                                    TapGesture().onEnded {
-                                        let composerCommand = ComposerCommand(
-                                            id: command.id,
-                                            typingSuggestion: TypingSuggestion.empty,
-                                            displayInfo: displayInfo,
-                                            replacesMessageSent: command.replacesMessageSent
-                                        )
-                                        onCommandSelected(composerCommand)
-                                    }
+                            Button {
+                                let composerCommand = ComposerCommand(
+                                    id: command.id,
+                                    typingSuggestion: TypingSuggestion.empty,
+                                    displayInfo: displayInfo,
+                                    replacesMessageSent: command.replacesMessageSent
                                 )
-                                .accessibilityElement(children: .contain)
-                                .accessibilityIdentifier("AttachmentCommandView_\(command.id)")
+                                onCommandSelected(composerCommand)
+                            } label: {
+                                AttachmentCommandRow(displayInfo: displayInfo)
+                            }
+                            .buttonStyle(.plain)
+                            .accessibilityElement(children: .combine)
+                            .accessibilityIdentifier("AttachmentCommandView_\(command.id)")
                         }
                     }
                 }

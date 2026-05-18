@@ -61,13 +61,13 @@ public struct ChatChannelListItem<Factory: ViewFactory>: View {
                         }
 
                         Spacer()
-                        
+
                         SubtitleText(
                             text: timestampText,
                             color: Color(colors.textTertiary)
                         )
                         .accessibilityIdentifier("timestampView")
-                        
+
                         if !isSelected && channel.unreadCount != .noUnread {
                             BadgeNotificationView(
                                 count: channel.unreadCount.messages
@@ -76,24 +76,10 @@ public struct ChatChannelListItem<Factory: ViewFactory>: View {
                     }
 
                     HStack(spacing: tokens.spacingXxxs) {
-                        if shouldShowReadEvents {
-                            MessageReadIndicatorView(
-                                readUsers: channel.readUsers(
-                                    currentUserId: chatClient.currentUserId,
-                                    message: previewMessage
-                                ),
-                                showDelivered: previewMessage?.deliveryStatus(for: channel) == .delivered,
-                                localState: previewMessage?.localState
-                            )
-                        }
-                        
+                        readIndicator
                         subtitleView
-
                         Spacer()
-                        
-                        if channel.isMuted, mutedLayoutStyle == .bottomRightCorner {
-                            mutedIcon
-                        }
+                        mutedTrailingIcon
                     }
                 }
             }
@@ -106,6 +92,27 @@ public struct ChatChannelListItem<Factory: ViewFactory>: View {
 
     private var mutedLayoutStyle: ChannelItemMutedLayoutStyle {
         utils.channelListConfig.channelItemMutedStyle
+    }
+
+    @ViewBuilder
+    private var readIndicator: some View {
+        if shouldShowReadEvents {
+            MessageReadIndicatorView(
+                readUsers: channel.readUsers(
+                    currentUserId: chatClient.currentUserId,
+                    message: previewMessage
+                ),
+                showDelivered: previewMessage?.deliveryStatus(for: channel) == .delivered,
+                localState: previewMessage?.localState
+            )
+        }
+    }
+
+    @ViewBuilder
+    private var mutedTrailingIcon: some View {
+        if channel.isMuted, mutedLayoutStyle == .bottomRightCorner {
+            mutedIcon
+        }
     }
 
     private var previewMessage: ChatMessage? {
@@ -150,17 +157,16 @@ public struct ChatChannelListItem<Factory: ViewFactory>: View {
                 )
             } else if utils.messageListConfig.draftMessagesEnabled, let draftText = draftMessageText {
                 HStack(spacing: 2) {
-                    Text("\(L10n.Message.Preview.draft): ")
-                        .font(fonts.subheadline).fontWeight(.semibold)
+                    labelWithColon(L10n.Message.Preview.draft, weight: .semibold, trailingSpace: true)
+                        .font(fonts.subheadline)
                         .foregroundColor(Color(colors.accentPrimary))
                     SubtitleText(text: draftText)
                 }
             } else if previewMessage?.isDeleted == true {
                 HStack(spacing: tokens.spacingXxs) {
                     if previewMessage?.isSentByCurrentUser == true {
-                        Text("\(L10n.Channel.Item.you):")
+                        labelWithColon(L10n.Channel.Item.you, weight: .semibold)
                             .font(fonts.subheadline)
-                            .fontWeight(.semibold)
                     }
                     Image(systemName: "nosign")
                         .resizable()
@@ -177,9 +183,8 @@ public struct ChatChannelListItem<Factory: ViewFactory>: View {
                     utils.messagePreviewFormatter.formatContent(for: $0, in: channel)
                 } ?? subtitleText
                 HStack(spacing: tokens.spacingXxs) {
-                    Text("\(authorName):")
+                    labelWithColon(authorName, weight: .semibold)
                         .font(fonts.subheadline)
-                        .fontWeight(.semibold)
                         .foregroundColor(Color(colors.textTertiary))
                     attachmentIconView
                     Text(contentString)
@@ -198,7 +203,6 @@ public struct ChatChannelListItem<Factory: ViewFactory>: View {
             } else {
                 SubtitleText(text: subtitleText)
             }
-            Spacer()
         }
         .accessibilityIdentifier("subtitleView")
     }
@@ -217,6 +221,17 @@ public struct ChatChannelListItem<Factory: ViewFactory>: View {
                 .customizable()
                 .frame(width: tokens.iconSizeSm, height: tokens.iconSizeSm)
                 .accessibilityHidden(true)
+        }
+    }
+
+    private func labelWithColon(
+        _ text: String,
+        weight: Font.Weight = .regular,
+        trailingSpace: Bool = false
+    ) -> some View {
+        HStack(spacing: 0) {
+            Text(text).fontWeight(weight)
+            Text(verbatim: trailingSpace ? ": " : ":").fontWeight(weight)
         }
     }
 

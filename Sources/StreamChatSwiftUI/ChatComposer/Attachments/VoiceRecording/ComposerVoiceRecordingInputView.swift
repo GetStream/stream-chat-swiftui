@@ -99,7 +99,9 @@ struct ComposerVoiceRecordingInputView<Factory: ViewFactory>: View {
                     Image(systemName: handler.isPlaying ? "pause.fill" : "play.fill")
                         .font(.system(size: 16))
                         .foregroundColor(Color(colors.textPrimary))
+                        .transaction { $0.animation = nil }
                 }
+                .buttonStyle(.plain)
                 .frame(width: 48, height: 48)
                 .accessibilityLabel(Text(handler.isPlaying
                         ? L10n.Composer.AudioRecording.stop

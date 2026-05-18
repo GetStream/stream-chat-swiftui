@@ -193,10 +193,6 @@ class MessageListPage {
         static func giphyImage(in messageCell: XCUIElement) -> XCUIElement {
             messageCell.images["GiphyAttachmentView"].firstMatch
         }
-
-        static func giphyLabel(in messageCell: XCUIElement) -> XCUIElement {
-            messageCell.staticTexts["GiphyAttachmentView"]
-        }
         
         static func actionButtons() -> XCUIElementQuery {
             app.buttons.matching(NSPredicate(format: "identifier LIKE 'GiphyAttachmentView'"))

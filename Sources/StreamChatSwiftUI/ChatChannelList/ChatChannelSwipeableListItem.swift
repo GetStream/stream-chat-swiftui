@@ -9,6 +9,8 @@ import SwiftUI
 public struct ChatChannelSwipeableListItem<Factory: ViewFactory, ChannelListItem: View>: View {
     @Injected(\.colors) private var colors
 
+    @Environment(\.layoutDirection) private var layoutDirection
+
     @State private var offsetX: CGFloat = 0
     @State private var openSideLock: SwipeDirection?
 
@@ -109,7 +111,10 @@ public struct ChatChannelSwipeableListItem<Factory: ViewFactory, ChannelListItem
                 dragEnded()
                 verticalScrolling = false
             } else if !verticalScrolling {
-                dragChanged(to: offset.width)
+                // Mirror the gesture's horizontal translation in RTL so the
+                // internal logic always interprets negative offsets as a
+                // trailing-direction swipe regardless of layout direction.
+                dragChanged(to: isRightToLeft ? -offset.width : offset.width)
             }
         })
         .onChange(of: swipedChannelId, perform: { _ in
@@ -258,6 +263,10 @@ public struct ChatChannelSwipeableListItem<Factory: ViewFactory, ChannelListItem
 
     private func width(for direction: SwipeDirection) -> CGFloat {
         direction == .leading ? itemWidth : menuWidth
+    }
+
+    private var isRightToLeft: Bool {
+        layoutDirection == .rightToLeft
     }
 }
 

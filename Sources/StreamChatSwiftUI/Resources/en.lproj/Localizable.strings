@@ -94,14 +94,14 @@
 "message.polls.toolbar.results-title" = "Poll Results";
 "message.polls.unknown-vote-author" = "Anonymous";
 "message.polls.date.day-at-time" = "%@ at %@";
-"message.polls.date.days-ago" = "%dd ago";
-"message.polls.date.weeks-ago" = "%dw ago";
 "message.polls.option" = "Option %d";
 "message.polls.question" = "Question";
 "message.polls.vote-singular" = "%d vote";
 "message.polls.votes" = "%d votes";
 "message.polls.votes-total" = "%d votes total";
 "message.polls.snackbar.poll-ended" = "Poll ended";
+"polls.date.days-ago" = "%dd ago";
+"polls.date.weeks-ago" = "%dw ago";
 
 "message.translatedTo" = "Translated to %@";
 "message.showOriginal" = "Show Original";
@@ -148,6 +148,7 @@
 
 "composer.title.edit" = "Edit Message";
 "composer.title.reply" = "Reply to Message";
+"composer.title.save" = "Save";
 "composer.placeholder.message" = "Message";
 "composer.placeholder.messageDisabled" = "You can't send messages in this channel";
 "composer.placeholder.slow-mode" = "Slow mode, wait %ds...";
@@ -197,6 +198,21 @@
 "composer.polls.hide-who-voted" = "Hide who voted";
 "composer.polls.let-others-add-options" = "Let others add options";
 "composer.polls.allow-others-to-add-comments" = "Allow others to add comments";
+"composer.polls.accessibility.save-button" = "Save Poll";
+"composer.polls.accessibility.reorder-option" = "Reorder option";
+"composer.polls.accessibility.reorder-option-position" = "Option %1$lld of %2$lld";
+"composer.polls.accessibility.decrease-vote-limit" = "Decrease vote limit";
+"composer.polls.accessibility.increase-vote-limit" = "Increase vote limit";
+"composer.polls.accessibility.vote-limit" = "Vote limit";
+"composer.polls.accessibility.poll-added" = "Poll added to message";
+"composer.attachment.accessibility.open" = "Add attachment";
+"composer.attachment.accessibility.close" = "Close attachments";
+"composer.media-picker.accessibility.photo" = "Photo";
+"composer.media-picker.accessibility.video" = "Video, %@";
+"composer.media-picker.accessibility.photo-added" = "Photo added to message";
+"composer.media-picker.accessibility.photo-removed" = "Photo removed from message";
+"composer.media-picker.accessibility.video-added" = "Video added to message";
+"composer.media-picker.accessibility.video-removed" = "Video removed from message";
 "composer.audio-recording.start" = "Start recording audio message";
 "composer.audio-recording.stop" = "Stop recording audio message";
 
@@ -213,6 +229,10 @@
 
 
 "composer.suggestions.commands.header" = "Instant Commands";
+"composer.suggestions.commands.accessibility-announcement" = "Instant Commands, %d options";
+"composer.suggestions.mentions.accessibility-announcement" = "User list, %d results";
+"composer.suggestions.user.accessibility-label" = "%1$@, user, %2$d of %3$d";
+"composer.command.sent.accessibility-announcement" = "%@ command sent";
 "message.sending.attachment-uploading-failed" = "UPLOADING FAILED";
 "message.sending.attachment-upload-failed" = "Upload failed";
 "message.sending.attachment-retry-upload" = "Retry upload";
@@ -232,6 +252,8 @@
 
 "message.file-attachment.error-preview" = "Error occured while previewing the file.";
 "message.giphy-attachment.title" = "GIPHY";
+"message.giphy-attachment.accessibility-label" = "Giphy";
+"message.giphy-attachment.accessibility-label-with-title" = "Giphy, %@";
 
 "message.search.title" = "Search";
 "message.search.cancel" = "Cancel";

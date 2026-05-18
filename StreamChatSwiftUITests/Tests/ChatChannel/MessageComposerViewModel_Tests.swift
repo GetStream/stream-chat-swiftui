@@ -1919,6 +1919,214 @@ import XCTest
         XCTAssertEqual(channelController.deleteDraftMessage_callCount, 0)
     }
 
+    // MARK: - stopPreviewPlaybackIfNeeded
+
+    func test_stopPreviewPlaybackIfNeeded_stopsAudioPlayer_whenPlayerLoadedWithPendingRecording() {
+        // Given
+        let mockPlayer = MockAudioPlayer()
+        streamChat?.utils._audioPlayer = mockPlayer
+        let viewModel = makeComposerViewModel()
+        viewModel.pendingAudioRecording = AddedVoiceRecording(url: mockURL, duration: 1, waveform: [])
+        simulatePlayerLoaded(viewModel: viewModel, player: mockPlayer, assetLocation: mockURL)
+
+        // When
+        viewModel.stopPreviewPlaybackIfNeeded()
+
+        // Then
+        XCTAssertTrue(mockPlayer.stopWasCalled)
+    }
+
+    func test_stopPreviewPlaybackIfNeeded_stopsAudioPlayer_whenPlayerLoadedWithAddedRecording() {
+        // Given
+        let mockPlayer = MockAudioPlayer()
+        streamChat?.utils._audioPlayer = mockPlayer
+        let viewModel = makeComposerViewModel()
+        viewModel.addedVoiceRecordings = [AddedVoiceRecording(url: mockURL, duration: 1, waveform: [])]
+        simulatePlayerLoaded(viewModel: viewModel, player: mockPlayer, assetLocation: mockURL)
+
+        // When
+        viewModel.stopPreviewPlaybackIfNeeded()
+
+        // Then
+        XCTAssertTrue(mockPlayer.stopWasCalled)
+    }
+
+    func test_stopPreviewPlaybackIfNeeded_doesNotStopAudioPlayer_whenNoRecordings() {
+        // Given
+        let mockPlayer = MockAudioPlayer()
+        streamChat?.utils._audioPlayer = mockPlayer
+        let viewModel = makeComposerViewModel()
+        viewModel.pendingAudioRecording = nil
+        viewModel.addedVoiceRecordings = []
+
+        // When
+        viewModel.stopPreviewPlaybackIfNeeded()
+
+        // Then
+        XCTAssertFalse(mockPlayer.stopWasCalled)
+    }
+
+    func test_stopPreviewPlaybackIfNeeded_doesNotStopAudioPlayer_whenPlayerLoadedWithUnrelatedURL() {
+        // Given — the composer has local recordings, but the shared player is
+        // playing a message-list voice message (unrelated URL). The composer
+        // must not stop the player and break that unrelated playback.
+        let mockPlayer = MockAudioPlayer()
+        streamChat?.utils._audioPlayer = mockPlayer
+        let viewModel = makeComposerViewModel()
+        viewModel.addedVoiceRecordings = [AddedVoiceRecording(url: mockURL, duration: 1, waveform: [])]
+        let unrelatedURL = URL(fileURLWithPath: "/tmp/unrelated-message-list-voice.aac")
+        simulatePlayerLoaded(viewModel: viewModel, player: mockPlayer, assetLocation: unrelatedURL)
+
+        // When
+        viewModel.stopPreviewPlaybackIfNeeded()
+
+        // Then
+        XCTAssertFalse(mockPlayer.stopWasCalled)
+    }
+
+    func test_stopPreviewPlaybackIfNeeded_doesNotStopAudioPlayer_whenPlayerHasNoLoadedAsset() {
+        // Given — local recordings exist but the player has not loaded any
+        // asset yet (currentPlaybackURL is nil).
+        let mockPlayer = MockAudioPlayer()
+        streamChat?.utils._audioPlayer = mockPlayer
+        let viewModel = makeComposerViewModel()
+        viewModel.pendingAudioRecording = AddedVoiceRecording(url: mockURL, duration: 1, waveform: [])
+
+        // When
+        viewModel.stopPreviewPlaybackIfNeeded()
+
+        // Then
+        XCTAssertFalse(mockPlayer.stopWasCalled)
+    }
+
+    func test_discardRecording_stopsAudioPlayer_whenPlayerLoadedWithPendingRecording() {
+        // Given
+        let mockPlayer = MockAudioPlayer()
+        streamChat?.utils._audioPlayer = mockPlayer
+        let viewModel = makeComposerViewModel()
+        viewModel.recordingState = .locked
+        viewModel.pendingAudioRecording = AddedVoiceRecording(url: mockURL, duration: 1, waveform: [])
+        simulatePlayerLoaded(viewModel: viewModel, player: mockPlayer, assetLocation: mockURL)
+
+        // When
+        viewModel.discardRecording()
+
+        // Then
+        XCTAssertTrue(mockPlayer.stopWasCalled)
+    }
+
+    func test_confirmRecording_stopsAudioPlayer_whenPlayerLoadedWithPendingRecording() {
+        // Given
+        let mockPlayer = MockAudioPlayer()
+        streamChat?.utils._audioPlayer = mockPlayer
+        let viewModel = makeComposerViewModel()
+        viewModel.recordingState = .stopped
+        viewModel.pendingAudioRecording = AddedVoiceRecording(url: mockURL, duration: 1, waveform: [])
+        simulatePlayerLoaded(viewModel: viewModel, player: mockPlayer, assetLocation: mockURL)
+
+        // When
+        viewModel.confirmRecording()
+
+        // Then
+        XCTAssertTrue(mockPlayer.stopWasCalled)
+    }
+
+    func test_sendMessage_stopsAudioPlayer_whenPlayerLoadedWithAddedRecording() {
+        // Given
+        let mockPlayer = MockAudioPlayer()
+        streamChat?.utils._audioPlayer = mockPlayer
+        let viewModel = makeComposerViewModel()
+        viewModel.addedVoiceRecordings = [AddedVoiceRecording(url: mockURL, duration: 1, waveform: [])]
+        viewModel.text = "test"
+        simulatePlayerLoaded(viewModel: viewModel, player: mockPlayer, assetLocation: mockURL)
+
+        // When
+        viewModel.sendMessage()
+
+        // Then
+        XCTAssertTrue(mockPlayer.stopWasCalled)
+    }
+
+    /// Drives the view model's `AudioPlayingDelegate` callback so `currentPlaybackURL`
+    /// reflects what the shared player has loaded — required by the gating in
+    /// `stopPreviewPlaybackIfNeeded`.
+    private func simulatePlayerLoaded(
+        viewModel: MessageComposerViewModel,
+        player: AudioPlaying,
+        assetLocation: URL?
+    ) {
+        let context = AudioPlaybackContext(
+            assetLocation: assetLocation,
+            duration: 0,
+            currentTime: 0,
+            state: .paused,
+            rate: .zero,
+            isSeeking: false
+        )
+        viewModel.audioPlayer(player, didUpdateContext: context)
+    }
+
+    // MARK: - Deferred editedMessage/quotedMessage reset
+
+    func test_sendMessage_doesNotImmediatelyClearEditedMessage() {
+        // Given
+        var editedMessage: ChatMessage? = ChatMessage.mock(
+            id: .unique,
+            cid: .unique,
+            text: "Edited",
+            author: .mock(id: .unique)
+        )
+        let editedBinding = Binding<ChatMessage?>(
+            get: { editedMessage },
+            set: { editedMessage = $0 }
+        )
+        let viewModel = MessageComposerViewModel(
+            channelController: makeChannelController(),
+            messageController: nil,
+            editedMessage: editedBinding
+        )
+        viewModel.text = "updated text"
+
+        // When
+        viewModel.sendMessage()
+
+        // Then — editedMessage must NOT be cleared synchronously, preventing a
+        // brief ConfirmEdit → Send → Mic flash in the trailing composer button.
+        XCTAssertNotNil(
+            editedMessage,
+            "editedMessage should not be cleared immediately after sendMessage()"
+        )
+    }
+
+    func test_sendMessage_doesNotImmediatelyClearQuotedMessage() {
+        // Given
+        var quotedMessage: ChatMessage? = ChatMessage.mock(
+            id: .unique,
+            cid: .unique,
+            text: "Quoted",
+            author: .mock(id: .unique)
+        )
+        let quotedBinding = Binding<ChatMessage?>(
+            get: { quotedMessage },
+            set: { quotedMessage = $0 }
+        )
+        let viewModel = MessageComposerViewModel(
+            channelController: makeChannelController(),
+            messageController: nil,
+            quotedMessage: quotedBinding
+        )
+        viewModel.text = "reply text"
+
+        // When
+        viewModel.sendMessage()
+
+        // Then — quotedMessage must NOT be cleared synchronously.
+        XCTAssertNotNil(
+            quotedMessage,
+            "quotedMessage should not be cleared immediately after sendMessage()"
+        )
+    }
+
     // MARK: - sendRecording
 
     func test_sendRecording_whenRecording_setsShouldSendOnRecordingFinish() {

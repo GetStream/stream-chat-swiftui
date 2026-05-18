@@ -113,6 +113,7 @@ struct MessageContainerView<Factory: ViewFactory>: View {
                         scrolledId: $scrolledId,
                         translationLanguage: messageViewModel.translationLanguage
                     )
+                    .allowsHitTesting(!shownAsPreview)
                 }
             } else {
                 MessageView(
@@ -123,6 +124,7 @@ struct MessageContainerView<Factory: ViewFactory>: View {
                     scrolledId: $scrolledId,
                     translationLanguage: messageViewModel.translationLanguage
                 )
+                .allowsHitTesting(!shownAsPreview)
             }
         }
         .overlay(
@@ -145,10 +147,6 @@ struct MessageContainerView<Factory: ViewFactory>: View {
             messageViewModel.failureIndicatorShown ? SendFailureIndicator() : nil
         )
         .frame(maxWidth: contentWidth, alignment: messageViewModel.isRightAligned ? .trailing : .leading)
-        .highPriorityGesture(
-            TapGesture().onEnded { /* Swallow taps on the bubble so attachments don't open and the overlay doesn't dismiss. */ },
-            including: shownAsPreview ? .all : .none
-        )
     }
 
     @ViewBuilder

@@ -15,9 +15,10 @@ public struct PlayPauseButton: View {
     }
 
     public var body: some View {
-        StreamIconButton(role: .secondary, style: .outline, size: .medium, action: onTap) {
+        StreamIconButton(role: .secondary, style: .outline, size: .medium, showsPressedState: false, action: onTap) {
             Image(systemName: isPlaying ? "pause.fill" : "play.fill")
                 .font(.system(size: 20))
+                .transaction { $0.animation = nil }
         }
         .accessibilityLabel(Text(isPlaying ? "Pause" : "Play"))
     }

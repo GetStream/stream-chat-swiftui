@@ -4,6 +4,7 @@
 
 @testable import StreamChat
 @testable import StreamChatSwiftUI
+import SwiftUI
 import XCTest
 
 @MainActor final class CreatePollViewModel_Tests: StreamChatTestCase {
@@ -284,6 +285,72 @@ import XCTest
         XCTAssertEqual(viewModel.options[0].id, originalIds[2])
         XCTAssertEqual(viewModel.options[1].id, originalIds[0])
         XCTAssertEqual(viewModel.options[2].id, originalIds[1])
+    }
+
+    // MARK: - Accessibility-driven reordering
+
+    func test_moveOption_decrement_movesUpOnePosition() {
+        let viewModel = makeViewModel()
+        viewModel.replaceAllOptions(["A", "B", "C", ""])
+        let targetId = viewModel.options[1].id
+
+        XCTAssertTrue(viewModel.moveOption(id: targetId, direction: .decrement))
+
+        XCTAssertEqual(viewModel.optionTexts, ["B", "A", "C", ""])
+    }
+
+    func test_moveOption_increment_movesDownOnePosition() {
+        let viewModel = makeViewModel()
+        viewModel.replaceAllOptions(["A", "B", "C", ""])
+        let targetId = viewModel.options[0].id
+
+        XCTAssertTrue(viewModel.moveOption(id: targetId, direction: .increment))
+
+        XCTAssertEqual(viewModel.optionTexts, ["B", "A", "C", ""])
+    }
+
+    func test_moveOption_decrement_atFirstPosition_doesNothing() {
+        let viewModel = makeViewModel()
+        viewModel.replaceAllOptions(["A", "B", ""])
+        let firstId = viewModel.options[0].id
+
+        XCTAssertFalse(viewModel.moveOption(id: firstId, direction: .decrement))
+
+        XCTAssertEqual(viewModel.optionTexts, ["A", "B", ""])
+    }
+
+    func test_moveOption_increment_atLastReorderablePosition_doesNothing() {
+        // The trailing empty placeholder is not movable, so the last reorderable
+        // option must not be swapped down into it.
+        let viewModel = makeViewModel()
+        viewModel.replaceAllOptions(["A", "B", ""])
+        let lastReorderableId = viewModel.options[1].id
+
+        XCTAssertFalse(viewModel.moveOption(id: lastReorderableId, direction: .increment))
+
+        XCTAssertEqual(viewModel.optionTexts, ["A", "B", ""])
+    }
+
+    func test_moveOption_unknownId_doesNothing() {
+        let viewModel = makeViewModel()
+        viewModel.replaceAllOptions(["A", "B"])
+
+        XCTAssertFalse(viewModel.moveOption(id: UUID(), direction: .increment))
+
+        XCTAssertEqual(viewModel.optionTexts, ["A", "B"])
+    }
+
+    // MARK: - Reorderable Option Count
+
+    func test_reorderableOptionCount_excludesTrailingEmptyPlaceholder() {
+        let viewModel = makeViewModel()
+        viewModel.replaceAllOptions(["A", "B", "C", ""])
+        XCTAssertEqual(viewModel.reorderableOptionCount, 3)
+    }
+
+    func test_reorderableOptionCount_initialEmptyOption_isZero() {
+        let viewModel = makeViewModel()
+        XCTAssertEqual(viewModel.reorderableOptionCount, 0)
     }
 
     // MARK: - Option Mutations: replaceAllOptions

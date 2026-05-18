@@ -45,6 +45,7 @@ public struct CreatePollView<Factory: ViewFactory>: View {
                     settingsSection
                     Spacer()
                         .modifier(CreatePollRowModifier(topSpacing: 0, bottomSpacing: 0))
+                        .accessibilityHidden(true)
                 }
                 .environment(\.defaultMinListRowHeight, 1)
                 .listStyle(.plain)
@@ -69,6 +70,7 @@ public struct CreatePollView<Factory: ViewFactory>: View {
                 )
             )
             .navigationBarTitleDisplayMode(.inline)
+            .onAppear(perform: postScreenChangedAnnouncement)
         }
         .actionSheet(isPresented: $viewModel.discardConfirmationShown) {
             ActionSheet(
@@ -120,10 +122,13 @@ public struct CreatePollView<Factory: ViewFactory>: View {
                 bottomSpacing: tokens.spacingXxs
             ))
 
-        ForEach(viewModel.options) { option in
+        let reorderableCount = viewModel.reorderableOptionCount
+        ForEach(Array(viewModel.options.enumerated()), id: \.element.id) { index, option in
             let isLast = viewModel.isLastOption(option)
             CreatePollOptionRow(
                 text: option.text,
+                position: option.text.isEmpty ? nil : index + 1,
+                totalCount: reorderableCount,
                 showsReorderIcon: !option.text.isEmpty,
                 showsDeleteButton: !isLast,
                 showsError: viewModel.showsOptionError(for: option),
@@ -138,6 +143,10 @@ public struct CreatePollView<Factory: ViewFactory>: View {
                     Task { @MainActor in
                         viewModel.removeOption(id: id)
                     }
+                },
+                onAccessibilityMove: { direction in
+                    let id = option.id
+                    return viewModel.moveOption(id: id, direction: direction)
                 }
             )
         }
@@ -156,6 +165,16 @@ public struct CreatePollView<Factory: ViewFactory>: View {
         Color.clear
             .frame(height: tokens.spacingLg)
             .modifier(CreatePollRowModifier(topSpacing: 0, bottomSpacing: 0))
+            .accessibilityHidden(true)
+    }
+
+    /// Posts a VoiceOver screen change announcement naming the sheet so users
+    /// orient themselves on open instead of landing on the bare "Close" button.
+    private func postScreenChangedAnnouncement() {
+        ComposerAccessibilityAnnouncer.announce(
+            L10n.Composer.Polls.createPoll,
+            kind: .screenChanged
+        )
     }
 
     @ViewBuilder
@@ -209,6 +228,7 @@ public struct CreatePollView<Factory: ViewFactory>: View {
                 Toggle("", isOn: $viewModel.multipleAnswers)
                     .labelsHidden()
             }
+            .accessibilityElement(children: .combine)
 
             if viewModel.multipleAnswers, viewModel.maxVotesShown {
                 VStack(alignment: .leading, spacing: tokens.spacingXs) {
@@ -226,6 +246,7 @@ public struct CreatePollView<Factory: ViewFactory>: View {
                             .labelsHidden()
                     }
                     .padding(.vertical, tokens.spacingXxxs)
+                    .accessibilityElement(children: .combine)
 
                     if viewModel.maxVotesEnabled {
                         CreatePollMaxVotesStepper(
@@ -293,6 +314,8 @@ private struct CreatePollToolbarModifier<Factory: ViewFactory>: ViewModifier {
             }
             .modifier(factory.styles.makeToolbarConfirmActionModifier(options: .init()))
             .disabled(!canCreatePoll)
+            .accessibilityLabel(Text(L10n.Composer.Polls.Accessibility.saveButton))
+            .accessibilityRemoveTraits(.isSelected)
         }
     }
 }
@@ -306,20 +329,20 @@ private struct CreatePollOptionRow: View {
     @Injected(\.tokens) private var tokens
 
     let text: String
+    let position: Int?
+    let totalCount: Int
     let showsReorderIcon: Bool
     let showsDeleteButton: Bool
     let showsError: Bool
     let onTextChanged: @Sendable (String) -> Void
     let onDelete: () -> Void
+    let onAccessibilityMove: (AccessibilityAdjustmentDirection) -> Bool
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             HStack(spacing: tokens.spacingXs) {
                 if showsReorderIcon {
-                    Image(uiImage: images.pollOptionDragIcon)
-                        .renderingMode(.template)
-                        .font(.system(size: tokens.iconSizeSm))
-                        .foregroundColor(Color(colors.textTertiary))
+                    reorderHandle
                 }
                 TextField(
                     L10n.Composer.Polls.addOption,
@@ -347,6 +370,24 @@ private struct CreatePollOptionRow: View {
                 .strokeBorder(Color(colors.borderCoreDefault), lineWidth: 1)
         )
         .moveDisabled(!showsDeleteButton)
+    }
+
+    private var reorderHandle: some View {
+        Image(uiImage: images.pollOptionDragIcon)
+            .renderingMode(.template)
+            .font(.system(size: tokens.iconSizeSm))
+            .foregroundColor(Color(colors.textTertiary))
+            .accessibilityElement()
+            .accessibilityLabel(Text(L10n.Composer.Polls.Accessibility.reorderOption))
+            .accessibilityValue(Text(reorderAccessibilityValue))
+            .accessibilityAdjustableAction { direction in
+                _ = onAccessibilityMove(direction)
+            }
+    }
+
+    private var reorderAccessibilityValue: String {
+        guard let position else { return "" }
+        return L10n.Composer.Polls.Accessibility.reorderOptionPosition(position, totalCount)
     }
 
     private var duplicateErrorLabel: some View {
@@ -392,6 +433,7 @@ private struct CreatePollSettingCard<Content: View>: View {
         .padding(tokens.spacingMd)
         .background(Color(colors.backgroundCoreSurfaceCard))
         .clipShape(RoundedRectangle(cornerRadius: tokens.radiusLg))
+        .accessibilityElement(children: .combine)
         .modifier(CreatePollRowModifier(
             topSpacing: tokens.spacingXs,
             bottomSpacing: tokens.spacingXs
@@ -414,26 +456,37 @@ private struct CreatePollMaxVotesStepper: View {
 
     var body: some View {
         HStack(spacing: tokens.spacingXxs) {
-            stepperButton(systemName: "minus", enabled: canDecrement, action: onDecrement)
+            stepperButton(
+                systemName: "minus",
+                enabled: canDecrement,
+                accessibilityLabel: L10n.Composer.Polls.Accessibility.decreaseVoteLimit,
+                action: onDecrement
+            )
 
             Text(text)
                 .font(fonts.body)
                 .foregroundColor(Color(colors.textPrimary))
                 .frame(width: tokens.buttonVisualHeightMd, height: tokens.buttonVisualHeightLg)
+                .accessibilityElement(children: .ignore)
+                .accessibilityLabel(Text(L10n.Composer.Polls.Accessibility.voteLimit))
+                .accessibilityValue(Text(text))
 
-            stepperButton(systemName: "plus", enabled: canIncrement, action: onIncrement)
+            stepperButton(
+                systemName: "plus",
+                enabled: canIncrement,
+                accessibilityLabel: L10n.Composer.Polls.Accessibility.increaseVoteLimit,
+                action: onIncrement
+            )
         }
     }
 
     private func stepperButton(
         systemName: String,
         enabled: Bool,
+        accessibilityLabel: String,
         action: @escaping () -> Void
     ) -> some View {
-        Button {
-            guard enabled else { return }
-            action()
-        } label: {
+        Button(action: action) {
             Image(systemName: systemName)
                 .font(.system(size: tokens.iconSizeSm))
                 .foregroundColor(Color(enabled ? colors.textPrimary : colors.textTertiary))
@@ -448,7 +501,9 @@ private struct CreatePollMaxVotesStepper: View {
                 .contentShape(Circle())
         }
         .buttonStyle(.borderless)
+        .disabled(!enabled)
         .frame(width: tokens.buttonVisualHeightLg, height: tokens.buttonVisualHeightLg)
+        .accessibilityLabel(Text(accessibilityLabel))
     }
 }
 

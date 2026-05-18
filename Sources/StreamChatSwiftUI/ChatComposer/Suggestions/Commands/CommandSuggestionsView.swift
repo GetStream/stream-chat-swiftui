@@ -44,6 +44,11 @@ struct CommandSuggestionsView: View {
         .frame(height: viewHeight)
         .animation(.easeInOut, value: instantCommands.count)
         .accessibilityElement(children: .contain)
+        .onAppear {
+            ComposerAccessibilityAnnouncer.announce(
+                L10n.Composer.Suggestions.Commands.accessibilityAnnouncement(instantCommands.count)
+            )
+        }
     }
 
     private var viewHeight: CGFloat {

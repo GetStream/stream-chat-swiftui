@@ -2,17 +2,14 @@
 // Copyright © 2026 Stream.io Inc. All rights reserved.
 //
 
+import StreamChatCommonUI
 import SwiftUI
 
 // MARK: - Appearance + Default
 
-public extension Appearance {
-    static let `default`: Appearance = .init()
-}
-
 /// Provides the default value of the `Appearance` class.
 public struct AppearanceKey: EnvironmentKey {
-    public static var defaultValue: Appearance { StreamConcurrency.onMain { Appearance() } }
+    public static var defaultValue: Appearance { StreamConcurrency.onMain { Appearance.default } }
 }
 
 extension EnvironmentValues {

@@ -40,8 +40,8 @@ final class PollOptionAllVotesViewModel_Tests: StreamChatTestCase {
         
         // When
         let votes = [
-            PollVote.mock(pollId: poll.id, optionId: option.id),
-            PollVote.mock(pollId: poll.id, optionId: option.id)
+            PollVote.mock(pollId: poll.id, optionId: option.id, updatedAt: nil),
+            PollVote.mock(pollId: poll.id, optionId: option.id, updatedAt: nil)
         ]
         controller.votes_simulated = votes
         viewModel.refresh()
@@ -152,7 +152,7 @@ final class PollOptionAllVotesViewModel_Tests: StreamChatTestCase {
         )
         
         // When - appear with vote not in list
-        let otherVote = PollVote.mock(pollId: poll.id, optionId: "other_option")
+        let otherVote = PollVote.mock(pollId: poll.id, optionId: "other_option", updatedAt: nil)
         viewModel.onAppear(vote: otherVote)
         
         // Then
@@ -246,7 +246,8 @@ final class PollOptionAllVotesViewModel_Tests: StreamChatTestCase {
             PollVote.mock(
                 id: "vote_\(index)",
                 pollId: pollId,
-                optionId: optionId
+                optionId: optionId,
+                updatedAt: nil
             )
         }
     }

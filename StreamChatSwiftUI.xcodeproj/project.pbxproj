@@ -189,6 +189,8 @@
 				Tests/ChatChannel/CreatePollViewModel_Tests.swift,
 				Tests/ChatChannel/EditedMessageView_Tests.swift,
 				Tests/ChatChannel/FileAttachmentView_Tests.swift,
+				Tests/ChatChannel/GiphyAttachmentView_Tests.swift,
+				Tests/ChatChannel/InputTextView_Tests.swift,
 				Tests/ChatChannel/LazyLoadingImage_Tests.swift,
 				Tests/ChatChannel/MediaAttachmentGalleryOrdering_Tests.swift,
 				Tests/ChatChannel/MediaViewer_Tests.swift,
@@ -255,7 +257,6 @@
 				Tests/CommonViews/BadgeCountView_Tests.swift,
 				Tests/CommonViews/BadgeNotificationView_Tests.swift,
 				Tests/CommonViews/GalleryHeaderView_Tests.swift,
-				Tests/CommonViews/NukeImageLoader_Tests.swift,
 				Tests/CommonViews/RadioCheckView_Tests.swift,
 				Tests/CommonViews/SearchBar_Tests.swift,
 				Tests/CommonViews/SnackBarView_Tests.swift,
@@ -1522,8 +1523,8 @@
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/GetStream/stream-chat-swift.git";
 			requirement = {
-				minimumVersion = 5.1.0;
 				kind = upToNextMajorVersion;
+				minimumVersion = 5.2.0;
 			};
 		};
 		E3A1C01A282BAC66002D1E26 /* XCRemoteSwiftPackageReference "sentry-cocoa" */ = {

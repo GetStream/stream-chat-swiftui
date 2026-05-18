@@ -134,6 +134,27 @@ import XCTest
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
 
+    func test_trailingSwipeActionsView_rightToLeft_snapshot() {
+        // Given - in RTL, the action buttons should be aligned to the leading
+        // (left) edge with the destructive/primary action appearing leftmost.
+        let channel = ChatChannel.mockDMChannel()
+        let view = TrailingSwipeActionsView(
+            channel: channel,
+            offsetX: -160,
+            buttonWidth: 80,
+            leftButtonTapped: { _ in },
+            rightButtonTapped: { _ in }
+        )
+        .frame(
+            width: defaultScreenSize.width,
+            height: 64
+        )
+        .environment(\.layoutDirection, .rightToLeft)
+
+        // Then
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
+    }
+
     func test_channelListView_channelAvatarUpdated() {
         // Given
         let controller = makeChannelListController()

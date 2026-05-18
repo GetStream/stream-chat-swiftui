@@ -62,6 +62,7 @@ struct StreamIconButton<Icon: View>: View {
     private let style: StreamButtonVisualStyle
     private let size: StreamButtonSize
     private let isSelected: Bool
+    private let showsPressedState: Bool
     private let action: () -> Void
 
     init(
@@ -69,6 +70,7 @@ struct StreamIconButton<Icon: View>: View {
         style: StreamButtonVisualStyle = .solid,
         size: StreamButtonSize = .medium,
         isSelected: Bool = false,
+        showsPressedState: Bool = true,
         action: @escaping () -> Void,
         @ViewBuilder icon: () -> Icon
     ) {
@@ -76,6 +78,7 @@ struct StreamIconButton<Icon: View>: View {
         self.style = style
         self.size = size
         self.isSelected = isSelected
+        self.showsPressedState = showsPressedState
         self.icon = icon()
         self.action = action
     }
@@ -90,7 +93,8 @@ struct StreamIconButton<Icon: View>: View {
                 style: style,
                 size: size,
                 isIconOnly: true,
-                isSelected: isSelected
+                isSelected: isSelected,
+                showsPressedState: showsPressedState
             )
         )
     }
@@ -154,19 +158,22 @@ struct StreamButtonStyle: ButtonStyle {
     let size: StreamButtonSize
     let isIconOnly: Bool
     let isSelected: Bool
+    let showsPressedState: Bool
 
     init(
         role: StreamButtonRole = .primary,
         style: StreamButtonVisualStyle = .solid,
         size: StreamButtonSize = .medium,
         isIconOnly: Bool,
-        isSelected: Bool = false
+        isSelected: Bool = false,
+        showsPressedState: Bool = true
     ) {
         self.role = role
         self.style = style
         self.size = size
         self.isIconOnly = isIconOnly
         self.isSelected = isSelected
+        self.showsPressedState = showsPressedState
     }
 
     func makeBody(configuration: Configuration) -> some View {
@@ -253,7 +260,7 @@ struct StreamButtonStyle: ButtonStyle {
 
     private func interactionOverlayColor(isPressed: Bool) -> UIColor? {
         guard isEnabled else { return nil }
-        if isPressed { return colors.backgroundUtilityPressed }
+        if isPressed && showsPressedState { return colors.backgroundUtilityPressed }
         if isSelected { return colors.backgroundUtilitySelected }
         return nil
     }

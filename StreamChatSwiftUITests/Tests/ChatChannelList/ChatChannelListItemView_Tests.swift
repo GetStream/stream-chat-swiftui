@@ -102,7 +102,7 @@ import XCTest
         .frame(width: defaultScreenSize.width)
 
         // Then
-        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
+        AssertSnapshot(view)
     }
 
     func test_channelListItem_muted_channelNameStyle() throws {
@@ -125,7 +125,7 @@ import XCTest
         .frame(width: defaultScreenSize.width)
 
         // Then
-        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
+        AssertSnapshot(view)
     }
 
     func test_channelListItem_muted_bottomRightCornerStyle() throws {
@@ -148,7 +148,7 @@ import XCTest
         .frame(width: defaultScreenSize.width)
 
         // Then
-        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
+        AssertSnapshot(view)
     }
 
     func test_channelListItem_giphyMessage() throws {
@@ -263,7 +263,7 @@ import XCTest
         // Given
         let currentUserId = Self.currentUserId
         let message = try mockPollMessage(isSentByCurrentUser: false, latestVotes: [
-            .mock(pollId: .unique, optionId: .unique, user: .mock(id: currentUserId)),
+            .mock(pollId: .unique, optionId: .unique, user: .mock(id: currentUserId), updatedAt: nil),
             .unique,
             .unique
         ])
@@ -285,9 +285,9 @@ import XCTest
         // Given
         let currentUserId = Self.currentUserId
         let message = try mockPollMessage(isSentByCurrentUser: false, latestVotes: [
-            .mock(pollId: .unique, optionId: .unique, user: .mock(id: .unique, name: "Steve Jobs")),
+            .mock(pollId: .unique, optionId: .unique, user: .mock(id: .unique, name: "Steve Jobs"), updatedAt: nil),
             .unique,
-            .mock(pollId: .unique, optionId: .unique, user: .mock(id: currentUserId))
+            .mock(pollId: .unique, optionId: .unique, user: .mock(id: currentUserId), updatedAt: nil)
         ])
         let channel = ChatChannel.mock(cid: .unique, membership: .mock(id: currentUserId), latestMessages: [message])
 
@@ -764,6 +764,156 @@ import XCTest
 
         // Then
         AssertSnapshot(view)
+    }
+
+    // MARK: - RTL
+
+    func test_channelListItem_groupChannel_videoAttachmentPreview_rightToLeft() throws {
+        // Given - mirrors the IOS-1667 reproduction: a group channel where another
+        // user sent a video message with a text caption. In RTL the author name
+        // colon must move to the leading (left) side of the name and the video
+        // icon must be horizontally mirrored.
+        let message = try mockVideoMessage(text: "Ahahah", isSentByCurrentUser: false)
+        let channel = ChatChannel.mockNonDMChannel(
+            name: "Group Chat",
+            latestMessages: [message]
+        )
+
+        // When
+        let view = ChatChannelListItem(
+            channel: channel,
+            channelName: "Group Chat",
+            onItemTap: { _ in }
+        )
+        .frame(width: defaultScreenSize.width)
+        .environment(\.layoutDirection, .rightToLeft)
+
+        // Then
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
+    }
+
+    func test_channelListItem_groupChannel_authorNamePrefix_rightToLeft() throws {
+        // Given - in RTL the colon attached to the author name must appear on
+        // the leading (left) side, e.g. ":John Hey everyone!".
+        let message = ChatMessage.mock(
+            id: .unique,
+            cid: .unique,
+            text: "Hey everyone!",
+            type: .regular,
+            author: .mock(id: "other-user", name: "John"),
+            createdAt: Date(timeIntervalSince1970: 100),
+            localState: nil,
+            isSentByCurrentUser: false
+        )
+        let channel = ChatChannel.mockNonDMChannel(
+            name: "Group Chat",
+            latestMessages: [message]
+        )
+
+        // When
+        let view = ChatChannelListItem(
+            channel: channel,
+            channelName: "Group Chat",
+            onItemTap: { _ in }
+        )
+        .frame(width: defaultScreenSize.width)
+        .environment(\.layoutDirection, .rightToLeft)
+
+        // Then
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
+    }
+
+    func test_channelListItem_draftMessage_rightToLeft() throws {
+        // Given - in RTL the "Draft" label colon must appear on the leading
+        // (left) side, e.g. ":Draft Draft message".
+        let message = DraftMessage.mock(text: "Draft message")
+        let channel = ChatChannel.mock(cid: .unique, latestMessages: [.mock()], draftMessage: message)
+
+        // When
+        let view = ChatChannelListItem(
+            channel: channel,
+            channelName: "Test",
+            onItemTap: { _ in }
+        )
+        .frame(width: defaultScreenSize.width)
+        .environment(\.layoutDirection, .rightToLeft)
+
+        // Then
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
+    }
+
+    func test_channelListItem_messageDeliveredAndRead_rightToLeft() throws {
+        // Given - in RTL the read receipt indicator should remain on the
+        // visual left side (column-aligned with the timestamp), not next to
+        // "You" on the right where automatic HStack mirroring would place it.
+        let date = Date(timeIntervalSince1970: 100)
+        let message = ChatMessage.mock(
+            id: .unique,
+            cid: .unique,
+            text: "Test message",
+            author: .mock(id: .unique, name: "Darth Vader"),
+            createdAt: date.addingTimeInterval(-100),
+            isSentByCurrentUser: true
+        )
+        let channel = ChatChannel.mock(
+            cid: .unique,
+            lastMessageAt: date,
+            config: .mock(readEventsEnabled: true),
+            reads: [
+                .init(
+                    lastReadAt: date.addingTimeInterval(10),
+                    lastReadMessageId: message.id,
+                    unreadMessagesCount: 0,
+                    user: .unique,
+                    lastDeliveredAt: date,
+                    lastDeliveredMessageId: message.id
+                )
+            ],
+            latestMessages: [message]
+        )
+
+        // When
+        let view = ChatChannelListItem(
+            channel: channel,
+            channelName: "Test",
+            onItemTap: { _ in }
+        )
+        .frame(width: defaultScreenSize.width)
+        .environment(\.layoutDirection, .rightToLeft)
+
+        // Then
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
+    }
+
+    func test_channelListItem_deletedMessage_sentByCurrentUser_rightToLeft() throws {
+        // Given - in RTL the "You:" prefix colon must appear on the leading
+        // (left) side of "You".
+        let date = Date(timeIntervalSince1970: 100)
+        let message = ChatMessage.mock(
+            id: .unique,
+            cid: .unique,
+            text: "Deleted message",
+            author: .mock(id: Self.currentUserId, name: "Me"),
+            createdAt: date.addingTimeInterval(-100),
+            deletedAt: date,
+            isSentByCurrentUser: true
+        )
+        let channel = ChatChannel.mock(
+            cid: .unique,
+            latestMessages: [message]
+        )
+
+        // When
+        let view = ChatChannelListItem(
+            channel: channel,
+            channelName: "Test",
+            onItemTap: { _ in }
+        )
+        .frame(width: defaultScreenSize.width)
+        .environment(\.layoutDirection, .rightToLeft)
+
+        // Then
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
 
     // MARK: - private
