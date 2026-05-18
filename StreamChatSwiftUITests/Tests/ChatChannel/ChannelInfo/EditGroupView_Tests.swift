@@ -38,6 +38,31 @@ import XCTest
         AssertSnapshot(view, variants: [.smallDark])
     }
 
+    func test_editGroupView_emptyNameRightToLeft_snapshot() {
+        // Given
+        let viewModel = mockGroupViewModel(name: "")
+        viewModel.channelName = ""
+
+        // When
+        let view = EditGroupView(factory: DefaultTestViewFactory.shared, viewModel: viewModel)
+            .applyDefaultSize()
+
+        // Then
+        AssertSnapshot(view, variants: [.rightToLeftLayout])
+    }
+
+    func test_editGroupView_filledNameRightToLeft_snapshot() {
+        // Given
+        let viewModel = mockGroupViewModel(name: "Design Team")
+
+        // When
+        let view = EditGroupView(factory: DefaultTestViewFactory.shared, viewModel: viewModel)
+            .applyDefaultSize()
+
+        // Then
+        AssertSnapshot(view, variants: [.rightToLeftLayout])
+    }
+
     // MARK: - GroupAvatarPickerSheetView snapshots
 
     func test_groupAvatarPickerSheetView_snapshot() {
