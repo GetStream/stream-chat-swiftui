@@ -196,6 +196,95 @@ import XCTest
         AssertSnapshot(view, variants: .onlyUserInterfaceStyles)
     }
 
+    func test_pollAttachmentView_rightToLeft_snapshot() {
+        let poll = Poll.mock(
+            name: "Choose your favourite city",
+            options: [
+                .mock(id: "opt1", text: "Barcelona", latestVotes: makeVotes(count: 4, prefix: "es")),
+                .mock(id: "opt2", text: "Lisbon", latestVotes: makeVotes(count: 2, prefix: "pt")),
+                .mock(id: "opt3", text: "Amsterdam", latestVotes: makeVotes(count: 1, prefix: "nl"))
+            ]
+        )
+        let message = ChatMessage.mock(
+            id: .unique,
+            cid: .unique,
+            text: "",
+            author: .mock(id: .unique),
+            poll: poll
+        )
+
+        let view = PollAttachmentView(
+            factory: DefaultViewFactory.shared,
+            message: message,
+            poll: poll,
+            isFirst: true,
+            width: defaultScreenSize.width
+        )
+        .frame(width: defaultScreenSize.width, height: 320)
+
+        AssertSnapshot(view, variants: [.rightToLeftLayout])
+    }
+
+    func test_pollAttachmentView_closedPoll_rightToLeft_snapshot() {
+        let poll = Poll.mock(
+            pollId: "closed-rtl",
+            name: "Where do you live?",
+            allowAnswers: false,
+            allowUserSuggestedOptions: false,
+            enforceUniqueVote: true,
+            isClosed: true,
+            options: [
+                .mock(id: "c1", text: "Barcelona", latestVotes: makeVotes(count: 3, prefix: "es")),
+                .mock(id: "c2", text: "Lisbon", latestVotes: makeVotes(count: 1, prefix: "pt"))
+            ]
+        )
+        let message = ChatMessage.mock(
+            id: .unique,
+            cid: .unique,
+            text: "",
+            author: .mock(id: .unique),
+            poll: poll
+        )
+
+        let view = PollAttachmentView(
+            factory: DefaultViewFactory.shared,
+            message: message,
+            poll: poll,
+            isFirst: true,
+            width: defaultScreenSize.width
+        )
+        .frame(width: defaultScreenSize.width, height: 220)
+
+        AssertSnapshot(view, variants: [.rightToLeftLayout])
+    }
+
+    func test_pollOptionAllVotesView_rightToLeft_snapshot() {
+        let pollId = "all-votes-rtl"
+        let optionId = "opt1"
+        let users = (1...4).map { ChatUser.mock(id: "user\($0)", name: "User \($0)") }
+        let votes = users.map {
+            PollVote.mock(
+                pollId: pollId,
+                optionId: optionId,
+                user: $0,
+                createdAt: Date(timeIntervalSince1970: 100)
+            )
+        }
+        let option = PollOption.mock(id: optionId, text: "Barcelona", latestVotes: votes)
+        let poll = Poll.mock(pollId: pollId, options: [
+            option,
+            PollOption.mock(id: "opt2", text: "Lisbon", latestVotes: [])
+        ])
+
+        let viewModel = PollOptionAllVotesViewModel(poll: poll, option: option)
+        viewModel.pollVotes = votes
+
+        let view = PollOptionAllVotesView(factory: DefaultViewFactory.shared, viewModel: viewModel)
+            .applyDefaultSize()
+
+        AssertSnapshot(view, variants: [.rightToLeftLayout])
+    }
+
     func test_pollAttachmentView_allComments() {
         // Given
         let poll = Poll.mock()
@@ -214,5 +303,19 @@ import XCTest
 
         // Then
         AssertSnapshot(view, variants: .onlyUserInterfaceStyles)
+    }
+}
+
+// MARK: - Helpers
+
+private extension PollAttachmentView_Tests {
+    func makeVotes(count: Int, prefix: String) -> [PollVote] {
+        (0..<count).map { index in
+            PollVote.mock(
+                pollId: "poll-id",
+                optionId: "opt-\(prefix)",
+                user: .mock(id: "\(prefix)-\(index)", name: "User \(index)")
+            )
+        }
     }
 }

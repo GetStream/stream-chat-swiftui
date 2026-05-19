@@ -175,6 +175,46 @@ import XCTest
         AssertSnapshot(view, variants: .onlyUserInterfaceStyles)
     }
 
+    // MARK: - RTL
+
+    func test_pollResultsView_rightToLeft_snapshot() {
+        let poll = makePollWithMultipleOptionsRTL()
+        let viewModel = PollAttachmentViewModel(message: .mock(poll: poll), poll: poll)
+
+        let view = PollResultsView(viewModel: viewModel, factory: DefaultViewFactory.shared)
+            .applyDefaultSize()
+
+        AssertSnapshot(view, variants: [.rightToLeftLayout])
+    }
+
+    func test_pollResultsView_withTrophy_rightToLeft_snapshot() {
+        let poll = makePollWithClearWinnerRTL()
+        let viewModel = PollAttachmentViewModel(message: .mock(poll: poll), poll: poll)
+
+        let view = PollResultsView(viewModel: viewModel, factory: DefaultViewFactory.shared)
+            .applyDefaultSize()
+
+        AssertSnapshot(view, variants: [.rightToLeftLayout])
+    }
+
+    func test_pollOptionResultsView_withViewAllButton_rightToLeft_snapshot() {
+        let poll = makePollWithManyVotesRTL()
+        let option = poll.options[0]
+
+        let view = PollOptionResultsView(
+            factory: DefaultViewFactory.shared,
+            poll: poll,
+            option: option,
+            optionIndex: 1,
+            votes: Array(option.latestVotes.prefix(5)),
+            hasMostVotes: true,
+            allButtonShown: true
+        )
+        .frame(width: defaultScreenSize.width)
+
+        AssertSnapshot(view, variants: [.rightToLeftLayout])
+    }
+
     // MARK: - Helpers
 
     private func makePollWithMultipleOptions() -> Poll {
@@ -327,5 +367,85 @@ import XCTest
         ]
 
         return Poll.mock(pollId: pollId, options: options)
+    }
+
+    private func makePollWithMultipleOptionsRTL() -> Poll {
+        let pollId = "multi-options-rtl"
+        let users = [
+            ChatUser.mock(id: "user1", name: "Alice"),
+            ChatUser.mock(id: "user2", name: "Bob"),
+            ChatUser.mock(id: "user3", name: "Charlie")
+        ]
+        let option1Votes = users.map {
+            PollVote.mock(
+                pollId: pollId,
+                optionId: "opt1",
+                user: $0,
+                createdAt: Date(timeIntervalSince1970: 100)
+            )
+        }
+        let option2Votes = [
+            PollVote.mock(
+                pollId: pollId,
+                optionId: "opt2",
+                user: users[1],
+                createdAt: Date(timeIntervalSince1970: 100)
+            )
+        ]
+
+        let options = [
+            PollOption.mock(id: "opt1", text: "Barcelona", latestVotes: option1Votes),
+            PollOption.mock(id: "opt2", text: "Lisbon", latestVotes: option2Votes)
+        ]
+
+        return Poll.mock(pollId: pollId, name: "Choose your favourite city", options: options)
+    }
+
+    private func makePollWithClearWinnerRTL() -> Poll {
+        let pollId = "winner-rtl"
+        let users = (1...5).map { ChatUser.mock(id: "user\($0)", name: "User \($0)") }
+
+        let winnerVotes = users.map {
+            PollVote.mock(
+                pollId: pollId,
+                optionId: "winner",
+                user: $0,
+                createdAt: Date(timeIntervalSince1970: 100)
+            )
+        }
+        let loserVotes = [
+            PollVote.mock(
+                pollId: pollId,
+                optionId: "loser",
+                user: users[0],
+                createdAt: Date(timeIntervalSince1970: 100)
+            )
+        ]
+
+        let options = [
+            PollOption.mock(id: "winner", text: "Barcelona", latestVotes: winnerVotes),
+            PollOption.mock(id: "loser", text: "Lisbon", latestVotes: loserVotes)
+        ]
+
+        return Poll.mock(pollId: pollId, name: "Where do you go?", options: options)
+    }
+
+    private func makePollWithManyVotesRTL() -> Poll {
+        let pollId = "many-votes-rtl"
+        let votes = (1...8).map { i in
+            PollVote.mock(
+                pollId: pollId,
+                optionId: "popular",
+                user: .mock(id: "user\(i)", name: "User \(i)"),
+                createdAt: Date(timeIntervalSince1970: 100)
+            )
+        }
+
+        let options = [
+            PollOption.mock(id: "popular", text: "Barcelona", latestVotes: votes),
+            PollOption.mock(id: "other", text: "Copenhagen", latestVotes: [])
+        ]
+
+        return Poll.mock(pollId: pollId, name: "Where do you go?", options: options)
     }
 }
