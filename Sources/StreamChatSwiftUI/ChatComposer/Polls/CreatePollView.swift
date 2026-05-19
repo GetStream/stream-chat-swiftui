@@ -39,12 +39,7 @@ public struct CreatePollView<Factory: ViewFactory>: View {
         NavigationView {
             VStack(spacing: 0) {
                 List {
-                    if #available(iOS 15.0, *) {
-                        CreatePollFocusableFields(viewModel: viewModel)
-                    } else {
-                        questionSection
-                        optionsSection
-                    }
+                    createPollFields(viewModel: viewModel)
                     settingsSpacer
                     settingsSection
                     Spacer()
@@ -93,63 +88,7 @@ public struct CreatePollView<Factory: ViewFactory>: View {
         }
     }
 
-    // MARK: - Sections
-
-    private var questionSection: some View {
-        CreatePollQuestionContainer {
-            TextField(L10n.Composer.Polls.askQuestion, text: $viewModel.question)
-        }
-    }
-
-    @ViewBuilder
-    private var optionsSection: some View {
-        CreatePollOptionsLabelRow()
-
-        let reorderableCount = viewModel.reorderableOptionCount
-        ForEach(Array(viewModel.options.enumerated()), id: \.element.id) { index, option in
-            let isLast = viewModel.isLastOption(option)
-            CreatePollOptionRow(
-                position: option.text.isEmpty ? nil : index + 1,
-                totalCount: reorderableCount,
-                showsReorderIcon: !option.text.isEmpty,
-                showsDeleteButton: !isLast,
-                showsError: viewModel.showsOptionError(for: option),
-                onDelete: {
-                    let id = option.id
-                    Task { @MainActor in
-                        viewModel.removeOption(id: id)
-                    }
-                },
-                onAccessibilityMove: { direction in
-                    let id = option.id
-                    return viewModel.moveOption(id: id, direction: direction)
-                },
-                field: {
-                    TextField(
-                        L10n.Composer.Polls.addOption,
-                        text: Binding(
-                            get: { option.text },
-                            set: { newText in
-                                let id = option.id
-                                Task { @MainActor in
-                                    viewModel.updateOption(id: id, value: newText)
-                                }
-                            }
-                        )
-                    )
-                }
-            )
-        }
-        .onMove { indices, newOffset in
-            Task { @MainActor in
-                viewModel.moveOptions(from: indices, to: newOffset)
-            }
-        }
-        .modifier(CreatePollRowModifier(
-            topSpacing: tokens.spacingXxs,
-            bottomSpacing: tokens.spacingXxs
-        ))
-    }
+    // MARK: - Settings
 
     private var settingsSpacer: some View {
         Color.clear
@@ -310,24 +249,113 @@ private struct CreatePollToolbarModifier<Factory: ViewFactory>: ViewModifier {
     }
 }
 
+// MARK: - Fields
+
+/// Renders the question + options portion of the form and (on iOS 15+) wires
+/// the keyboard's `Next` return-key to advance focus between fields. A
+/// `@ViewBuilder` function (rather than a wrapper view) so the resolved
+/// branch reaches the enclosing `List` directly and is expanded into one
+/// row per field, hiding the availability split from the parent view.
+@MainActor @ViewBuilder
+private func createPollFields(viewModel: CreatePollViewModel) -> some View {
+    if #available(iOS 15.0, *) {
+        CreatePollFocusedFields(viewModel: viewModel)
+    } else {
+        CreatePollPlainFields(viewModel: viewModel)
+    }
+}
+
+@available(iOS 15.0, *)
+private struct CreatePollFocusedFields: View {
+    @ObservedObject var viewModel: CreatePollViewModel
+    @FocusState private var focused: CreatePollFocusField?
+
+    var body: some View {
+        CreatePollQuestionContainer(text: $viewModel.question) { textField in
+            textField.modifier(CreatePollFieldFocus(
+                focused: $focused,
+                field: .question,
+                onSubmit: { focused = firstOption }
+            ))
+        }
+        CreatePollOptionsLabelRow()
+        createPollOptionRows(viewModel: viewModel) { option, textField in
+            textField.modifier(CreatePollFieldFocus(
+                focused: $focused,
+                field: .option(option.id),
+                onSubmit: { focused = nextOption(after: option.id) }
+            ))
+        }
+    }
+
+    private var firstOption: CreatePollFocusField? {
+        viewModel.options.first.map { .option($0.id) }
+    }
+
+    /// Returns the focus target after the option identified by `id`, or `nil`
+    /// when there is none (which dismisses the keyboard). If the user just
+    /// typed into the trailing empty placeholder, the view model has already
+    /// appended a new placeholder so focus lands on it.
+    private func nextOption(after id: UUID) -> CreatePollFocusField? {
+        guard
+            let index = viewModel.options.firstIndex(where: { $0.id == id }),
+            index + 1 < viewModel.options.count
+        else { return nil }
+        return .option(viewModel.options[index + 1].id)
+    }
+}
+
+private struct CreatePollPlainFields: View {
+    @ObservedObject var viewModel: CreatePollViewModel
+
+    var body: some View {
+        CreatePollQuestionContainer(text: $viewModel.question)
+        CreatePollOptionsLabelRow()
+        createPollOptionRows(viewModel: viewModel)
+    }
+}
+
+private enum CreatePollFocusField: Hashable {
+    case question
+    case option(UUID)
+}
+
+/// Wraps a `TextField` so the keyboard's `Next` button moves focus to the
+/// caller-supplied next target. iOS 15+ only.
+@available(iOS 15.0, *)
+private struct CreatePollFieldFocus: ViewModifier {
+    let focused: FocusState<CreatePollFocusField?>.Binding
+    let field: CreatePollFocusField
+    let onSubmit: () -> Void
+
+    func body(content: Content) -> some View {
+        content
+            .focused(focused, equals: field)
+            .submitLabel(.next)
+            .onSubmit(onSubmit)
+    }
+}
+
 // MARK: - Question Container
 
-/// Renders the "Question" label plus a styled rounded container around an
-/// arbitrary text field. The field is injected so callers can attach the
-/// SwiftUI Focus API (iOS 15+) without duplicating the container chrome.
-private struct CreatePollQuestionContainer<Field: View>: View {
+/// Owns the question `TextField`. Callers can pass a `decorate` closure to
+/// layer modifiers (e.g. focus) on the text field without duplicating the
+/// container chrome or the binding. The convenience init handles the
+/// common "no decoration" case.
+private struct CreatePollQuestionContainer<DecoratedField: View>: View {
     @Injected(\.colors) private var colors
     @Injected(\.fonts) private var fonts
     @Injected(\.tokens) private var tokens
 
-    @ViewBuilder var field: () -> Field
+    @Binding var text: String
+    @ViewBuilder var decorate: (TextField<Text>) -> DecoratedField
 
     var body: some View {
         VStack(alignment: .leading, spacing: tokens.spacingXs) {
             Text(L10n.Composer.Polls.question)
                 .font(fonts.body)
                 .foregroundColor(Color(colors.textPrimary))
-            field()
+            decorate(TextField(L10n.Composer.Polls.askQuestion, text: $text))
                 .font(fonts.body)
                 .foregroundColor(Color(colors.inputTextDefault))
                 .multilineTextAlignment(.leading)
@@ -343,6 +371,12 @@ private struct CreatePollQuestionContainer<Field: View>: View {
             topSpacing: tokens.spacingXxs,
             bottomSpacing: tokens.spacingSm
         ))
+    }
+}
+
+extension CreatePollQuestionContainer where DecoratedField == TextField<Text> {
+    init(text: Binding<String>) {
+        self.init(text: text, decorate: { $0 })
     }
 }
 
@@ -364,22 +398,83 @@ private struct CreatePollOptionsLabelRow: View {
     }
 }
 
+// MARK: - Option Rows
+
+/// Builds the reorderable `ForEach` of option rows. Callers can pass a
+/// `decorate` closure to layer modifiers (e.g. focus) on each row's text
+/// field, keeping the row layout and view-model wiring in one place.
+///
+/// Implemented as a function (not a `View`) so the returned modified
+/// `ForEach` resolves into the enclosing `body`'s `TupleView` and `List`
+/// can expand it into one row per option.
+@MainActor @ViewBuilder
+private func createPollOptionRows<DecoratedField: View>(
+    viewModel: CreatePollViewModel,
+    @ViewBuilder decorate: @escaping (PollOptionEntry, TextField<Text>) -> DecoratedField
+) -> some View {
+    let tokens = InjectedValues[\.tokens]
+    let reorderableCount = viewModel.reorderableOptionCount
+    ForEach(Array(viewModel.options.enumerated()), id: \.element.id) { index, option in
+        CreatePollOptionRow(
+            text: option.text,
+            position: option.text.isEmpty ? nil : index + 1,
+            totalCount: reorderableCount,
+            showsReorderIcon: !option.text.isEmpty,
+            showsDeleteButton: !viewModel.isLastOption(option),
+            showsError: viewModel.showsOptionError(for: option),
+            onTextChanged: { newText in
+                let id = option.id
+                Task { @MainActor in
+                    viewModel.updateOption(id: id, value: newText)
+                }
+            },
+            onDelete: {
+                let id = option.id
+                Task { @MainActor in
+                    viewModel.removeOption(id: id)
+                }
+            },
+            onAccessibilityMove: { direction in
+                let id = option.id
+                return viewModel.moveOption(id: id, direction: direction)
+            },
+            decorate: { textField in decorate(option, textField) }
+        )
+    }
+    .onMove { indices, newOffset in
+        Task { @MainActor in
+            viewModel.moveOptions(from: indices, to: newOffset)
+        }
+    }
+    .modifier(CreatePollRowModifier(
+        topSpacing: tokens.spacingXxs,
+        bottomSpacing: tokens.spacingXxs
+    ))
+}
+
+@MainActor @ViewBuilder
+private func createPollOptionRows(viewModel: CreatePollViewModel) -> some View {
+    createPollOptionRows(viewModel: viewModel) { _, textField in textField }
+}
+
 // MARK: - Option Row
 
-private struct CreatePollOptionRow<Field: View>: View {
+private struct CreatePollOptionRow<DecoratedField: View>: View {
     @Injected(\.colors) private var colors
     @Injected(\.images) private var images
     @Injected(\.fonts) private var fonts
     @Injected(\.tokens) private var tokens
 
+    let text: String
     let position: Int?
     let totalCount: Int
     let showsReorderIcon: Bool
     let showsDeleteButton: Bool
     let showsError: Bool
+    let onTextChanged: @Sendable (String) -> Void
     let onDelete: () -> Void
     let onAccessibilityMove: (AccessibilityAdjustmentDirection) -> Bool
-    @ViewBuilder var field: () -> Field
+    @ViewBuilder var decorate: (TextField<Text>) -> DecoratedField
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
@@ -387,10 +482,15 @@ private struct CreatePollOptionRow<Field: View>: View {
                 if showsReorderIcon {
                     reorderHandle
                 }
-                field()
-                    .font(fonts.body)
-                    .foregroundColor(Color(colors.inputTextDefault))
-                    .multilineTextAlignment(.leading)
+                decorate(
+                    TextField(
+                        L10n.Composer.Polls.addOption,
+                        text: Binding(get: { text }, set: onTextChanged)
+                    )
+                )
+                .font(fonts.body)
+                .foregroundColor(Color(colors.inputTextDefault))
+                .multilineTextAlignment(.leading)
                 if showsDeleteButton {
                     Button(action: onDelete) {
                         Image(systemName: "minus.circle")
@@ -445,119 +545,6 @@ private struct CreatePollOptionRow<Field: View>: View {
         .clipped()
         .opacity(showsError ? 1 : 0)
     }
-}
-
-// MARK: - Focusable Fields (iOS 15+)
-
-/// Routes the keyboard's "next" return-key action between the question and
-/// option text fields using SwiftUI's Focus API. Lives in a separate view so
-/// `@FocusState` (iOS 15+) can be declared without lowering the public view's
-/// availability.
-@available(iOS 15.0, *)
-private struct CreatePollFocusableFields: View {
-    @Injected(\.colors) private var colors
-    @Injected(\.fonts) private var fonts
-    @Injected(\.tokens) private var tokens
-
-    @ObservedObject var viewModel: CreatePollViewModel
-    @FocusState private var focusedField: CreatePollFocusField?
-
-    var body: some View {
-        Group {
-            questionRow
-            CreatePollOptionsLabelRow()
-            optionRows
-        }
-    }
-
-    private var questionRow: some View {
-        CreatePollQuestionContainer {
-            TextField(L10n.Composer.Polls.askQuestion, text: $viewModel.question)
-                .focused($focusedField, equals: .question)
-                .submitLabel(.next)
-                .onSubmit(focusFirstOption)
-        }
-    }
-
-    @ViewBuilder
-    private var optionRows: some View {
-        let reorderableCount = viewModel.reorderableOptionCount
-        ForEach(Array(viewModel.options.enumerated()), id: \.element.id) { index, option in
-            let isLast = viewModel.isLastOption(option)
-            CreatePollOptionRow(
-                position: option.text.isEmpty ? nil : index + 1,
-                totalCount: reorderableCount,
-                showsReorderIcon: !option.text.isEmpty,
-                showsDeleteButton: !isLast,
-                showsError: viewModel.showsOptionError(for: option),
-                onDelete: {
-                    let id = option.id
-                    Task { @MainActor in
-                        viewModel.removeOption(id: id)
-                    }
-                },
-                onAccessibilityMove: { direction in
-                    let id = option.id
-                    return viewModel.moveOption(id: id, direction: direction)
-                },
-                field: {
-                    let optionID = option.id
-                    TextField(
-                        L10n.Composer.Polls.addOption,
-                        text: Binding(
-                            get: { option.text },
-                            set: { newText in
-                                Task { @MainActor in
-                                    viewModel.updateOption(id: optionID, value: newText)
-                                }
-                            }
-                        )
-                    )
-                    .focused($focusedField, equals: .option(optionID))
-                    .submitLabel(.next)
-                    .onSubmit { advanceFocus(after: optionID) }
-                }
-            )
-        }
-        .onMove { indices, newOffset in
-            Task { @MainActor in
-                viewModel.moveOptions(from: indices, to: newOffset)
-            }
-        }
-        .modifier(CreatePollRowModifier(
-            topSpacing: tokens.spacingXxs,
-            bottomSpacing: tokens.spacingXxs
-        ))
-    }
-
-    private func focusFirstOption() {
-        guard let first = viewModel.options.first else {
-            focusedField = nil
-            return
-        }
-        focusedField = .option(first.id)
-    }
-
-    /// Moves focus to the option after `id`. If the user just typed into the
-    /// trailing empty placeholder, the view model has already appended a new
-    /// placeholder so focus lands on it; otherwise the keyboard dismisses.
-    private func advanceFocus(after id: UUID) {
-        guard let index = viewModel.options.firstIndex(where: { $0.id == id }) else {
-            focusedField = nil
-            return
-        }
-        let nextIndex = index + 1
-        guard nextIndex < viewModel.options.count else {
-            focusedField = nil
-            return
-        }
-        focusedField = .option(viewModel.options[nextIndex].id)
-    }
-}
-
-private enum CreatePollFocusField: Hashable {
-    case question
-    case option(UUID)
 }
 
 // MARK: - Setting Card
