@@ -39,7 +39,7 @@ public struct CreatePollView<Factory: ViewFactory>: View {
         NavigationView {
             VStack(spacing: 0) {
                 List {
-                    CreatePollInputFields(viewModel: viewModel)
+                    CreatePollForm(viewModel: viewModel)
                     settingsSpacer
                     settingsSection
                     Spacer()
@@ -249,39 +249,38 @@ private struct CreatePollToolbarModifier<Factory: ViewFactory>: ViewModifier {
     }
 }
 
-// MARK: - Input Fields
+// MARK: - Form
 
-/// Renders the question + options portion of the form and (on iOS 15+)
-/// wires the keyboard's `Next` return-key to advance focus between
-/// fields. Hides the availability split from the parent view so
-/// `CreatePollView.body` can reference a single entry point.
-private struct CreatePollInputFields: View {
+/// The form body composing the two interactive sections (question +
+/// options) and, on iOS 15+, coordinating keyboard focus across them.
+/// Hides the availability split from `CreatePollView.body` so the
+/// parent can reference a single entry point.
+private struct CreatePollForm: View {
     @ObservedObject var viewModel: CreatePollViewModel
 
     var body: some View {
         if #available(iOS 15.0, *) {
-            CreatePollFocusedInputFields(viewModel: viewModel)
+            CreatePollFocusedForm(viewModel: viewModel)
         } else {
-            CreatePollPlainInputFields(viewModel: viewModel)
+            CreatePollPlainForm(viewModel: viewModel)
         }
     }
 }
 
 @available(iOS 15.0, *)
-private struct CreatePollFocusedInputFields: View {
+private struct CreatePollFocusedForm: View {
     @ObservedObject var viewModel: CreatePollViewModel
     @FocusState private var focused: CreatePollInputField?
 
     var body: some View {
-        CreatePollQuestionContainer(text: $viewModel.question) { textField in
+        CreatePollQuestion(text: $viewModel.question) { textField in
             textField.modifier(CreatePollInputFieldFocus(
                 focused: $focused,
                 field: .question,
                 onSubmit: { focused = firstOption }
             ))
         }
-        CreatePollOptionsLabelRow()
-        CreatePollOptionRows(viewModel: viewModel) { option, textField in
+        CreatePollOptions(viewModel: viewModel) { option, textField in
             textField.modifier(CreatePollInputFieldFocus(
                 focused: $focused,
                 field: .option(option.id),
@@ -307,13 +306,12 @@ private struct CreatePollFocusedInputFields: View {
     }
 }
 
-private struct CreatePollPlainInputFields: View {
+private struct CreatePollPlainForm: View {
     @ObservedObject var viewModel: CreatePollViewModel
 
     var body: some View {
-        CreatePollQuestionContainer(text: $viewModel.question)
-        CreatePollOptionsLabelRow()
-        CreatePollOptionRows(viewModel: viewModel)
+        CreatePollQuestion(text: $viewModel.question)
+        CreatePollOptions(viewModel: viewModel)
     }
 }
 
@@ -338,13 +336,12 @@ private struct CreatePollInputFieldFocus: ViewModifier {
     }
 }
 
-// MARK: - Question Container
+// MARK: - Question
 
-/// Owns the question `TextField`. Callers can pass a `decorate` closure to
-/// layer modifiers (e.g. focus) on the text field without duplicating the
-/// container chrome or the binding. The convenience init handles the
-/// common "no decoration" case.
-private struct CreatePollQuestionContainer<DecoratedField: View>: View {
+/// The poll's question section: a labeled `TextField` for the question
+/// text. The optional `decorate` closure lets callers layer extra
+/// modifiers (e.g. focus) on the text field without duplicating chrome.
+private struct CreatePollQuestion<DecoratedField: View>: View {
     @Injected(\.colors) private var colors
     @Injected(\.fonts) private var fonts
     @Injected(\.tokens) private var tokens
@@ -376,18 +373,25 @@ private struct CreatePollQuestionContainer<DecoratedField: View>: View {
     }
 }
 
-extension CreatePollQuestionContainer where DecoratedField == TextField<Text> {
+extension CreatePollQuestion where DecoratedField == TextField<Text> {
     init(text: Binding<String>) {
         self.init(text: text, decorate: { $0 })
     }
 }
 
-// MARK: - Options Label Row
+// MARK: - Options
 
-private struct CreatePollOptionsLabelRow: View {
+/// The poll's options section: a label header followed by the
+/// reorderable list of option rows. The optional `decorate` closure
+/// lets callers layer extra modifiers (e.g. focus) on each row's text
+/// field without duplicating row chrome or view-model wiring.
+private struct CreatePollOptions<DecoratedField: View>: View {
     @Injected(\.colors) private var colors
     @Injected(\.fonts) private var fonts
     @Injected(\.tokens) private var tokens
+
+    @ObservedObject var viewModel: CreatePollViewModel
+    @ViewBuilder var decorate: (PollOptionEntry, TextField<Text>) -> DecoratedField
 
     var body: some View {
         Text(L10n.Composer.Polls.options)
@@ -397,21 +401,7 @@ private struct CreatePollOptionsLabelRow: View {
                 topSpacing: tokens.spacingSm,
                 bottomSpacing: tokens.spacingXxs
             ))
-    }
-}
 
-// MARK: - Option Rows
-
-/// Renders the reorderable list of option rows. Callers can pass a
-/// `decorate` closure to layer modifiers (e.g. focus) on each row's text
-/// field, keeping the row layout and view-model wiring in one place.
-private struct CreatePollOptionRows<DecoratedField: View>: View {
-    @Injected(\.tokens) private var tokens
-
-    @ObservedObject var viewModel: CreatePollViewModel
-    @ViewBuilder var decorate: (PollOptionEntry, TextField<Text>) -> DecoratedField
-
-    var body: some View {
         let reorderableCount = viewModel.reorderableOptionCount
         ForEach(Array(viewModel.options.enumerated()), id: \.element.id) { index, option in
             CreatePollOptionRow(
@@ -452,7 +442,7 @@ private struct CreatePollOptionRows<DecoratedField: View>: View {
     }
 }
 
-extension CreatePollOptionRows where DecoratedField == TextField<Text> {
+extension CreatePollOptions where DecoratedField == TextField<Text> {
     init(viewModel: CreatePollViewModel) {
         self.init(viewModel: viewModel) { _, textField in textField }
     }
