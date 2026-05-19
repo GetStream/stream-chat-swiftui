@@ -109,7 +109,7 @@ public struct CreatePollView<Factory: ViewFactory>: View {
     @ViewBuilder
     private var settingsSection: some View {
         if viewModel.multipleAnswersShown {
-            multipleVotesCard
+            CreatePollMultipleVotesCard(viewModel: viewModel)
         }
 
         if viewModel.anonymousPollShown {
@@ -138,64 +138,6 @@ public struct CreatePollView<Factory: ViewFactory>: View {
                 Toggle("", isOn: $viewModel.allowComments).labelsHidden()
             }
         }
-    }
-
-    // MARK: - Multiple Votes Card
-
-    private var multipleVotesCard: some View {
-        VStack(alignment: .leading, spacing: tokens.spacingMd) {
-            HStack(spacing: tokens.spacingMd) {
-                VStack(alignment: .leading, spacing: tokens.spacingXxs) {
-                    Text(L10n.Composer.Polls.multipleAnswers)
-                        .font(fonts.body)
-                        .foregroundColor(Color(colors.textPrimary))
-                    Text(L10n.Composer.Polls.selectMoreThanOneOption)
-                        .font(fonts.subheadline)
-                        .foregroundColor(Color(colors.textTertiary))
-                }
-                .frame(maxWidth: .infinity, alignment: .leading)
-                Toggle("", isOn: $viewModel.multipleAnswers)
-                    .labelsHidden()
-            }
-            .accessibilityElement(children: .combine)
-
-            if viewModel.multipleAnswers, viewModel.maxVotesShown {
-                VStack(alignment: .leading, spacing: tokens.spacingXs) {
-                    HStack(spacing: tokens.spacingSm) {
-                        VStack(alignment: .leading, spacing: tokens.spacingXxs) {
-                            Text(L10n.Composer.Polls.maximumVotesPerPerson)
-                                .font(fonts.body)
-                                .foregroundColor(Color(colors.textPrimary))
-                            Text(L10n.Composer.Polls.typeNumberMinMaxRange)
-                                .font(fonts.subheadline)
-                                .foregroundColor(Color(colors.textTertiary))
-                        }
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                        Toggle("", isOn: $viewModel.maxVotesEnabled)
-                            .labelsHidden()
-                    }
-                    .padding(.vertical, tokens.spacingXxxs)
-                    .accessibilityElement(children: .combine)
-
-                    if viewModel.maxVotesEnabled {
-                        CreatePollMaxVotesStepper(
-                            text: viewModel.maxVotesText,
-                            canDecrement: viewModel.canDecrementMaxVotes,
-                            canIncrement: viewModel.canIncrementMaxVotes,
-                            onDecrement: viewModel.decrementMaxVotes,
-                            onIncrement: viewModel.incrementMaxVotes
-                        )
-                    }
-                }
-            }
-        }
-        .padding(tokens.spacingMd)
-        .background(Color(colors.backgroundCoreSurfaceCard))
-        .clipShape(RoundedRectangle(cornerRadius: tokens.radiusLg))
-        .modifier(CreatePollRowModifier(
-            topSpacing: tokens.spacingXs,
-            bottomSpacing: tokens.spacingXs
-        ))
     }
 }
 
@@ -570,6 +512,80 @@ private struct CreatePollSettingCard<Content: View>: View {
             topSpacing: tokens.spacingXs,
             bottomSpacing: tokens.spacingXs
         ))
+    }
+}
+
+// MARK: - Multiple Votes Card
+
+/// The "Allow multiple answers" setting card. When enabled (and the
+/// view model exposes a max-votes setting), it reveals a nested
+/// "Max votes per person" sub-section with a toggle and stepper.
+private struct CreatePollMultipleVotesCard: View {
+    @Injected(\.colors) private var colors
+    @Injected(\.fonts) private var fonts
+    @Injected(\.tokens) private var tokens
+
+    @ObservedObject var viewModel: CreatePollViewModel
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: tokens.spacingMd) {
+            HStack(spacing: tokens.spacingMd) {
+                VStack(alignment: .leading, spacing: tokens.spacingXxs) {
+                    Text(L10n.Composer.Polls.multipleAnswers)
+                        .font(fonts.body)
+                        .foregroundColor(Color(colors.textPrimary))
+                    Text(L10n.Composer.Polls.selectMoreThanOneOption)
+                        .font(fonts.subheadline)
+                        .foregroundColor(Color(colors.textTertiary))
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+                Toggle("", isOn: $viewModel.multipleAnswers)
+                    .labelsHidden()
+            }
+            .accessibilityElement(children: .combine)
+
+            if viewModel.multipleAnswers, viewModel.maxVotesShown {
+                maxVotesSection
+            }
+        }
+        .padding(tokens.spacingMd)
+        .background(Color(colors.backgroundCoreSurfaceCard))
+        .clipShape(RoundedRectangle(cornerRadius: tokens.radiusLg))
+        .modifier(CreatePollRowModifier(
+            topSpacing: tokens.spacingXs,
+            bottomSpacing: tokens.spacingXs
+        ))
+    }
+
+    @ViewBuilder
+    private var maxVotesSection: some View {
+        VStack(alignment: .leading, spacing: tokens.spacingXs) {
+            HStack(spacing: tokens.spacingSm) {
+                VStack(alignment: .leading, spacing: tokens.spacingXxs) {
+                    Text(L10n.Composer.Polls.maximumVotesPerPerson)
+                        .font(fonts.body)
+                        .foregroundColor(Color(colors.textPrimary))
+                    Text(L10n.Composer.Polls.typeNumberMinMaxRange)
+                        .font(fonts.subheadline)
+                        .foregroundColor(Color(colors.textTertiary))
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+                Toggle("", isOn: $viewModel.maxVotesEnabled)
+                    .labelsHidden()
+            }
+            .padding(.vertical, tokens.spacingXxxs)
+            .accessibilityElement(children: .combine)
+
+            if viewModel.maxVotesEnabled {
+                CreatePollMaxVotesStepper(
+                    text: viewModel.maxVotesText,
+                    canDecrement: viewModel.canDecrementMaxVotes,
+                    canIncrement: viewModel.canIncrementMaxVotes,
+                    onDecrement: viewModel.decrementMaxVotes,
+                    onIncrement: viewModel.incrementMaxVotes
+                )
+            }
+        }
     }
 }
 
