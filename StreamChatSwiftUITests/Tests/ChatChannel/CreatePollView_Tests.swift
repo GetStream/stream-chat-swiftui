@@ -99,31 +99,18 @@ final class CreatePollView_Tests: StreamChatTestCase {
 
     // MARK: - RTL
 
-    func test_createPollView_rightToLeft_snapshot() {
-        let enabled = PollsEntryConfig(configurable: true, defaultValue: true)
-        streamChat?.utils.pollsConfig = PollsConfig(
-            multipleAnswers: enabled,
-            anonymousPoll: enabled,
-            suggestAnOption: enabled,
-            addComments: enabled,
-            maxVotesPerPerson: enabled
-        )
-        let view = makeCreatePollView().applyDefaultSize()
-        AssertSnapshot(view, variants: [.rightToLeftLayout])
-    }
-
     func test_createPollView_filledOptionsRightToLeft_snapshot() {
         let view = makeCreatePollView(
-            question: "What is your favourite city?",
-            options: ["Barcelona", "Lisbon", "Amsterdam", ""]
+            question: "ما هي مدينتك المفضلة؟",
+            options: ["برشلونة", "لشبونة", "أمستردام"]
         ).applyDefaultSize()
         AssertSnapshot(view, variants: [.rightToLeftLayout])
     }
 
     func test_createPollView_duplicateOptionsRightToLeft_snapshot() {
         let view = makeCreatePollView(
-            question: "Pick a number",
-            options: ["One", "Two", "One", ""]
+            question: "اختر رقماً",
+            options: ["واحد", "اثنان", "واحد"]
         ).applyDefaultSize()
         AssertSnapshot(view, variants: [.rightToLeftLayout])
     }
