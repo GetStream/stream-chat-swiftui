@@ -98,6 +98,7 @@ public struct CreatePollView<Factory: ViewFactory>: View {
             TextField(L10n.Composer.Polls.askQuestion, text: $viewModel.question)
                 .font(fonts.body)
                 .foregroundColor(Color(colors.inputTextDefault))
+                .multilineTextAlignment(.leading)
                 .padding(.horizontal, tokens.spacingMd)
                 .padding(.vertical, tokens.spacingSm)
                 .frame(minHeight: 48)
@@ -350,6 +351,7 @@ private struct CreatePollOptionRow: View {
                 )
                 .font(fonts.body)
                 .foregroundColor(Color(colors.inputTextDefault))
+                .multilineTextAlignment(.leading)
                 if showsDeleteButton {
                     Button(action: onDelete) {
                         Image(systemName: "minus.circle")

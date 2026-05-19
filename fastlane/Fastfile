@@ -23,7 +23,7 @@ before_all do |lane|
   if is_ci
     setup_ci
     setup_git_config
-    select_xcode(version: xcode_version) unless [:sonar_upload, :allure_launch, :allure_upload, :copyright, :merge_main].include?(lane)
+    select_xcode(version: xcode_version) unless [:sonar_upload, :allure_launch, :allure_upload, :copyright, :merge_main, :pr].include?(lane)
   end
 end
 
@@ -109,6 +109,10 @@ end
 lane :get_sdk_version_from_environment do
   version = File.read(swift_environment_path).match(/String\s+=\s+"([^"]+)"/)[1]
   version.downcase.include?('beta') ? version : version.split('-').first
+end
+
+lane :pr do
+  next_pr_number(github_repo: github_repo)
 end
 
 private_lane :appstore_api_key do

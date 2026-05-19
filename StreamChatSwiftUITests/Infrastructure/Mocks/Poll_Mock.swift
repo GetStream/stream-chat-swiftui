@@ -61,6 +61,7 @@ extension Poll {
     
     static func mock(
         pollId: String = .unique,
+        name: String = "Test poll",
         allowAnswers: Bool = true,
         allowUserSuggestedOptions: Bool = true,
         enforceUniqueVote: Bool = false,
@@ -82,7 +83,7 @@ extension Poll {
             pollDescription: "Test",
             enforceUniqueVote: enforceUniqueVote,
             id: pollId,
-            name: "Test poll",
+            name: name,
             updatedAt: Date(),
             voteCount: voteCountsByOption.values.reduce(0, +),
             extraData: [:],
