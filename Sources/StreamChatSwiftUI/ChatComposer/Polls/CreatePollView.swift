@@ -39,8 +39,12 @@ public struct CreatePollView<Factory: ViewFactory>: View {
         NavigationView {
             VStack(spacing: 0) {
                 List {
-                    questionSection
-                    optionsSection
+                    if #available(iOS 15.0, *) {
+                        CreatePollFocusableFields(viewModel: viewModel)
+                    } else {
+                        questionSection
+                        optionsSection
+                    }
                     settingsSpacer
                     settingsSection
                     Spacer()
@@ -49,6 +53,7 @@ public struct CreatePollView<Factory: ViewFactory>: View {
                 }
                 .environment(\.defaultMinListRowHeight, 1)
                 .listStyle(.plain)
+                .modifier(CreatePollScrollDismissesKeyboardModifier())
             }
             .background(Color(colors.backgroundCoreElevation1).ignoresSafeArea())
             .modifier(
@@ -91,54 +96,24 @@ public struct CreatePollView<Factory: ViewFactory>: View {
     // MARK: - Sections
 
     private var questionSection: some View {
-        VStack(alignment: .leading, spacing: tokens.spacingXs) {
-            Text(L10n.Composer.Polls.question)
-                .font(fonts.body)
-                .foregroundColor(Color(colors.textPrimary))
+        CreatePollQuestionContainer {
             TextField(L10n.Composer.Polls.askQuestion, text: $viewModel.question)
-                .font(fonts.body)
-                .foregroundColor(Color(colors.inputTextDefault))
-                .multilineTextAlignment(.leading)
-                .padding(.horizontal, tokens.spacingMd)
-                .padding(.vertical, tokens.spacingSm)
-                .frame(minHeight: 48)
-                .background(
-                    RoundedRectangle(cornerRadius: tokens.radiusLg)
-                        .strokeBorder(Color(colors.borderCoreDefault), lineWidth: 1)
-                )
         }
-        .modifier(CreatePollRowModifier(
-            topSpacing: tokens.spacingXxs,
-            bottomSpacing: tokens.spacingSm
-        ))
     }
 
     @ViewBuilder
     private var optionsSection: some View {
-        Text(L10n.Composer.Polls.options)
-            .font(fonts.body)
-            .foregroundColor(Color(colors.textPrimary))
-            .modifier(CreatePollRowModifier(
-                topSpacing: tokens.spacingSm,
-                bottomSpacing: tokens.spacingXxs
-            ))
+        CreatePollOptionsLabelRow()
 
         let reorderableCount = viewModel.reorderableOptionCount
         ForEach(Array(viewModel.options.enumerated()), id: \.element.id) { index, option in
             let isLast = viewModel.isLastOption(option)
             CreatePollOptionRow(
-                text: option.text,
                 position: option.text.isEmpty ? nil : index + 1,
                 totalCount: reorderableCount,
                 showsReorderIcon: !option.text.isEmpty,
                 showsDeleteButton: !isLast,
                 showsError: viewModel.showsOptionError(for: option),
-                onTextChanged: { newText in
-                    let id = option.id
-                    Task { @MainActor in
-                        viewModel.updateOption(id: id, value: newText)
-                    }
-                },
                 onDelete: {
                     let id = option.id
                     Task { @MainActor in
@@ -148,6 +123,20 @@ public struct CreatePollView<Factory: ViewFactory>: View {
                 onAccessibilityMove: { direction in
                     let id = option.id
                     return viewModel.moveOption(id: id, direction: direction)
+                },
+                field: {
+                    TextField(
+                        L10n.Composer.Polls.addOption,
+                        text: Binding(
+                            get: { option.text },
+                            set: { newText in
+                                let id = option.id
+                                Task { @MainActor in
+                                    viewModel.updateOption(id: id, value: newText)
+                                }
+                            }
+                        )
+                    )
                 }
             )
         }
@@ -321,23 +310,76 @@ private struct CreatePollToolbarModifier<Factory: ViewFactory>: ViewModifier {
     }
 }
 
+// MARK: - Question Container
+
+/// Renders the "Question" label plus a styled rounded container around an
+/// arbitrary text field. The field is injected so callers can attach the
+/// SwiftUI Focus API (iOS 15+) without duplicating the container chrome.
+private struct CreatePollQuestionContainer<Field: View>: View {
+    @Injected(\.colors) private var colors
+    @Injected(\.fonts) private var fonts
+    @Injected(\.tokens) private var tokens
+
+    @ViewBuilder var field: () -> Field
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: tokens.spacingXs) {
+            Text(L10n.Composer.Polls.question)
+                .font(fonts.body)
+                .foregroundColor(Color(colors.textPrimary))
+            field()
+                .font(fonts.body)
+                .foregroundColor(Color(colors.inputTextDefault))
+                .multilineTextAlignment(.leading)
+                .padding(.horizontal, tokens.spacingMd)
+                .padding(.vertical, tokens.spacingSm)
+                .frame(minHeight: 48)
+                .background(
+                    RoundedRectangle(cornerRadius: tokens.radiusLg)
+                        .strokeBorder(Color(colors.borderCoreDefault), lineWidth: 1)
+                )
+        }
+        .modifier(CreatePollRowModifier(
+            topSpacing: tokens.spacingXxs,
+            bottomSpacing: tokens.spacingSm
+        ))
+    }
+}
+
+// MARK: - Options Label Row
+
+private struct CreatePollOptionsLabelRow: View {
+    @Injected(\.colors) private var colors
+    @Injected(\.fonts) private var fonts
+    @Injected(\.tokens) private var tokens
+
+    var body: some View {
+        Text(L10n.Composer.Polls.options)
+            .font(fonts.body)
+            .foregroundColor(Color(colors.textPrimary))
+            .modifier(CreatePollRowModifier(
+                topSpacing: tokens.spacingSm,
+                bottomSpacing: tokens.spacingXxs
+            ))
+    }
+}
+
 // MARK: - Option Row
 
-private struct CreatePollOptionRow: View {
+private struct CreatePollOptionRow<Field: View>: View {
     @Injected(\.colors) private var colors
     @Injected(\.images) private var images
     @Injected(\.fonts) private var fonts
     @Injected(\.tokens) private var tokens
 
-    let text: String
     let position: Int?
     let totalCount: Int
     let showsReorderIcon: Bool
     let showsDeleteButton: Bool
     let showsError: Bool
-    let onTextChanged: @Sendable (String) -> Void
     let onDelete: () -> Void
     let onAccessibilityMove: (AccessibilityAdjustmentDirection) -> Bool
+    @ViewBuilder var field: () -> Field
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
@@ -345,13 +387,10 @@ private struct CreatePollOptionRow: View {
                 if showsReorderIcon {
                     reorderHandle
                 }
-                TextField(
-                    L10n.Composer.Polls.addOption,
-                    text: Binding(get: { text }, set: onTextChanged)
-                )
-                .font(fonts.body)
-                .foregroundColor(Color(colors.inputTextDefault))
-                .multilineTextAlignment(.leading)
+                field()
+                    .font(fonts.body)
+                    .foregroundColor(Color(colors.inputTextDefault))
+                    .multilineTextAlignment(.leading)
                 if showsDeleteButton {
                     Button(action: onDelete) {
                         Image(systemName: "minus.circle")
@@ -406,6 +445,119 @@ private struct CreatePollOptionRow: View {
         .clipped()
         .opacity(showsError ? 1 : 0)
     }
+}
+
+// MARK: - Focusable Fields (iOS 15+)
+
+/// Routes the keyboard's "next" return-key action between the question and
+/// option text fields using SwiftUI's Focus API. Lives in a separate view so
+/// `@FocusState` (iOS 15+) can be declared without lowering the public view's
+/// availability.
+@available(iOS 15.0, *)
+private struct CreatePollFocusableFields: View {
+    @Injected(\.colors) private var colors
+    @Injected(\.fonts) private var fonts
+    @Injected(\.tokens) private var tokens
+
+    @ObservedObject var viewModel: CreatePollViewModel
+    @FocusState private var focusedField: CreatePollFocusField?
+
+    var body: some View {
+        Group {
+            questionRow
+            CreatePollOptionsLabelRow()
+            optionRows
+        }
+    }
+
+    private var questionRow: some View {
+        CreatePollQuestionContainer {
+            TextField(L10n.Composer.Polls.askQuestion, text: $viewModel.question)
+                .focused($focusedField, equals: .question)
+                .submitLabel(.next)
+                .onSubmit(focusFirstOption)
+        }
+    }
+
+    @ViewBuilder
+    private var optionRows: some View {
+        let reorderableCount = viewModel.reorderableOptionCount
+        ForEach(Array(viewModel.options.enumerated()), id: \.element.id) { index, option in
+            let isLast = viewModel.isLastOption(option)
+            CreatePollOptionRow(
+                position: option.text.isEmpty ? nil : index + 1,
+                totalCount: reorderableCount,
+                showsReorderIcon: !option.text.isEmpty,
+                showsDeleteButton: !isLast,
+                showsError: viewModel.showsOptionError(for: option),
+                onDelete: {
+                    let id = option.id
+                    Task { @MainActor in
+                        viewModel.removeOption(id: id)
+                    }
+                },
+                onAccessibilityMove: { direction in
+                    let id = option.id
+                    return viewModel.moveOption(id: id, direction: direction)
+                },
+                field: {
+                    let optionID = option.id
+                    TextField(
+                        L10n.Composer.Polls.addOption,
+                        text: Binding(
+                            get: { option.text },
+                            set: { newText in
+                                Task { @MainActor in
+                                    viewModel.updateOption(id: optionID, value: newText)
+                                }
+                            }
+                        )
+                    )
+                    .focused($focusedField, equals: .option(optionID))
+                    .submitLabel(.next)
+                    .onSubmit { advanceFocus(after: optionID) }
+                }
+            )
+        }
+        .onMove { indices, newOffset in
+            Task { @MainActor in
+                viewModel.moveOptions(from: indices, to: newOffset)
+            }
+        }
+        .modifier(CreatePollRowModifier(
+            topSpacing: tokens.spacingXxs,
+            bottomSpacing: tokens.spacingXxs
+        ))
+    }
+
+    private func focusFirstOption() {
+        guard let first = viewModel.options.first else {
+            focusedField = nil
+            return
+        }
+        focusedField = .option(first.id)
+    }
+
+    /// Moves focus to the option after `id`. If the user just typed into the
+    /// trailing empty placeholder, the view model has already appended a new
+    /// placeholder so focus lands on it; otherwise the keyboard dismisses.
+    private func advanceFocus(after id: UUID) {
+        guard let index = viewModel.options.firstIndex(where: { $0.id == id }) else {
+            focusedField = nil
+            return
+        }
+        let nextIndex = index + 1
+        guard nextIndex < viewModel.options.count else {
+            focusedField = nil
+            return
+        }
+        focusedField = .option(viewModel.options[nextIndex].id)
+    }
+}
+
+private enum CreatePollFocusField: Hashable {
+    case question
+    case option(UUID)
 }
 
 // MARK: - Setting Card
@@ -506,6 +658,21 @@ private struct CreatePollMaxVotesStepper: View {
         .disabled(!enabled)
         .frame(width: tokens.buttonVisualHeightLg, height: tokens.buttonVisualHeightLg)
         .accessibilityLabel(Text(accessibilityLabel))
+    }
+}
+
+// MARK: - Scroll Dismisses Keyboard
+
+/// Dismisses the keyboard interactively when the user drags the list. Lets
+/// people pull the keyboard down without first tapping outside any text
+/// field. Gated on iOS 16+ where `scrollDismissesKeyboard` is available.
+private struct CreatePollScrollDismissesKeyboardModifier: ViewModifier {
+    func body(content: Content) -> some View {
+        if #available(iOS 16.0, *) {
+            content.scrollDismissesKeyboard(.interactively)
+        } else {
+            content
+        }
     }
 }
 
