@@ -11,7 +11,6 @@ struct AppConfigurationView: View {
     @State private var reactionsStyle = AppConfiguration.default.reactionsStyle
     @State private var reactionsPlacement = AppConfiguration.default.reactionsPlacement
     @State private var appStyle = AppConfiguration.default.appStyle
-    @State private var forceRTL = AppConfiguration.default.forceRTL
     @State private var voiceRecordingAutoSend = AppConfiguration.default.isVoiceRecordingAutoSendEnabled
 
     var body: some View {
@@ -42,15 +41,11 @@ struct AppConfigurationView: View {
                 Section("Voice Recording") {
                     Toggle("Auto-send on release", isOn: $voiceRecordingAutoSend)
                 }
-                Section("Layout") {
-                    Toggle("Force RTL (preview)", isOn: $forceRTL)
-                }
             }
             .navigationBarTitleDisplayMode(.inline)
             .navigationTitle("App Configuration")
         }
         .onChange(of: channelPinningEnabled, perform: { AppConfiguration.default.isChannelPinningFeatureEnabled = $0 })
-        .onChange(of: forceRTL) { AppConfiguration.default.forceRTL = $0 }
         .onChange(of: reactionsStyle) { newStyle in
             AppConfiguration.default.reactionsStyle = newStyle
             InjectedValues[\.utils].messageListConfig = AppConfiguration.makeMessageListConfig()
