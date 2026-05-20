@@ -15,7 +15,6 @@ struct StreamLogoLaunch: View {
                 .ignoresSafeArea()
             ZStack {
                 Image("STREAMMARK")
-                    .scaleEffect(0.6)
                     .rotationEffect(
                         .degrees(swinging ? -10 : 10),
                         anchor: swinging ? .bottomLeading : .bottomTrailing
