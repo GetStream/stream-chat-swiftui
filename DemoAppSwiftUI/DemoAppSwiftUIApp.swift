@@ -11,7 +11,6 @@ import SwiftUI
 struct DemoAppSwiftUIApp: App {
     @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
     @Injected(\.chatClient) public var chatClient: ChatClient
-    @State private var appConfig = AppConfiguration.default
 
     @ObservedObject var appState = AppState.shared
     @ObservedObject var notificationsHandler = NotificationsHandler.shared
@@ -40,7 +39,6 @@ struct DemoAppSwiftUIApp: App {
                         .tabItem { Label("Threads", systemImage: "text.bubble") }
                         .badge(appState.unreadCount.threads)
                 }
-                .environment(\.layoutDirection, appConfig.forceRTL ? .rightToLeft : .leftToRight)
                 .id(appState.contentIdentifier)
             }
         }

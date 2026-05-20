@@ -13,8 +13,6 @@ final class AppConfiguration {
     var translationLanguage: TranslationLanguage?
     /// A flag indicating whether the channel pinning feature is enabled.
     var isChannelPinningFeatureEnabled = false
-    /// Force RTL layout for preview (e.g. demo app).
-    var forceRTL = false
     /// Reactions display style in the message list (clustered vs segmented).
     var reactionsStyle: ReactionsStyle = .segmented
     /// Reactions placement relative to the message (top or bottom).
