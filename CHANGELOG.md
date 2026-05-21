@@ -3,6 +3,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 # Upcoming
 
+### 🔄 Changed
+
+# [5.3.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/5.3.0)
+_May 21, 2026_
+
 ### ✅ Added
 - Improve VoiceOver experience for the attachment picker [#1456](https://github.com/GetStream/stream-chat-swiftui/pull/1456) [#1457](https://github.com/GetStream/stream-chat-swiftui/pull/1457)
 - Improve keyboard handling in the Create Poll sheet so the `Next` return key advances between fields [#1464](https://github.com/GetStream/stream-chat-swiftui/pull/1464)
