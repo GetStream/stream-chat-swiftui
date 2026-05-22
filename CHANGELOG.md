@@ -6,7 +6,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ### 🔄 Changed
 
 ### ⚠️ Deprecated
-- Deprecate `ViewFactory.makeVideoPlayerHeaderView(options:)` and `ViewFactory.makeVideoPlayerFooterView(options:)`, plus the `VideoPlayerHeaderViewOptions` and `VideoPlayerFooterViewOptions` types. Override `makeMediaViewer(options:)` for a custom full-screen video player, or `makeMediaViewerToolbarModifier`/`makeMediaViewerFooterView` to customize just the toolbar/bottom bar.
+- Deprecate `ViewFactory.makeVideoPlayerHeaderView(options:)` and `ViewFactory.makeVideoPlayerFooterView(options:)`, plus the `VideoPlayerHeaderViewOptions` and `VideoPlayerFooterViewOptions` types. Override `makeMediaViewer(options:)` for a custom full-screen video player, or `makeMediaViewerToolbarModifier`/`makeMediaViewerFooterView` to customize just the toolbar/bottom bar. [#1472](https://github.com/GetStream/stream-chat-swiftui/pull/1472)
 
 # [5.3.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/5.3.0)
 _May 21, 2026_
