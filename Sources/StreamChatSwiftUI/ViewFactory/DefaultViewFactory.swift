@@ -402,21 +402,6 @@ extension ViewFactory {
         )
     }
 
-    public func makeVideoPlayerHeaderView(
-        options: VideoPlayerHeaderViewOptions
-    ) -> some View {
-        MediaViewerHeader(title: options.title, subtitle: options.subtitle, isShown: options.shown)
-    }
-    
-    public func makeVideoPlayerFooterView(
-        options: VideoPlayerFooterViewOptions
-    ) -> some View {
-        VideoPlayerFooterView(
-            attachment: options.attachment,
-            shown: options.shown
-        )
-    }
-    
     public func makeDeletedMessageView(
         options: DeletedMessageViewOptions
     ) -> some View {
@@ -1034,6 +1019,22 @@ extension ViewFactory {
             message: options.message,
             translationLanguage: options.translationLanguage
         )
+    }
+
+    // MARK: - Deprecated
+
+    @available(*, deprecated, message: "Override `makeMediaViewer(options:)` for a custom full-screen video player, or `makeMediaViewerToolbarModifier`/`makeMediaViewerFooterView` to customize just the toolbar/bottom bar. Will be removed in a future major release.")
+    public func makeVideoPlayerHeaderView(
+        options: VideoPlayerHeaderViewOptions
+    ) -> some View {
+        EmptyView()
+    }
+
+    @available(*, deprecated, message: "Override `makeMediaViewer(options:)` for a custom full-screen video player, or `makeMediaViewerToolbarModifier`/`makeMediaViewerFooterView` to customize just the toolbar/bottom bar. Will be removed in a future major release.")
+    public func makeVideoPlayerFooterView(
+        options: VideoPlayerFooterViewOptions
+    ) -> some View {
+        EmptyView()
     }
 }
 

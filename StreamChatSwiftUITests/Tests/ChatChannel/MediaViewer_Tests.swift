@@ -33,19 +33,6 @@ class MediaViewer_Tests: StreamChatTestCase {
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
 
-    func test_mediaViewerHeader_snapshot() {
-        // Given
-        let header = MediaViewerHeader(
-            title: "Test",
-            subtitle: "Subtitle",
-            isShown: .constant(true)
-        )
-        .frame(width: defaultScreenSize.width, height: 44)
-
-        // Then
-        assertSnapshot(matching: header, as: .image(perceptualPrecision: precision))
-    }
-
     func test_mediaViewerHeader_withMessageCreatedToday_snapshot() {
         // Given
         let imageMessage = ChatMessage.mock(
