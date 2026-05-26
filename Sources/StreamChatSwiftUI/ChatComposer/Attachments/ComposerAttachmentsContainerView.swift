@@ -23,6 +23,8 @@ public struct ComposerAttachmentsContainerView: View {
     @Injected(\.colors) private var colors
     @Injected(\.tokens) private var tokens
 
+    @Environment(\.layoutDirection) private var layoutDirection
+
     public var assets: [ComposerAsset]
     public var onDiscardAttachment: (String) -> Void
 
@@ -38,7 +40,7 @@ public struct ComposerAttachmentsContainerView: View {
         ScrollViewReader { proxy in
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack(spacing: tokens.spacingXs) {
-                    ForEach(assets) { asset in
+                    ForEach(displayedAssets) { asset in
                         assetView(for: asset)
                             .padding(tokens.spacingXxs)
                             .id(asset.id)
@@ -57,6 +59,21 @@ public struct ComposerAttachmentsContainerView: View {
                 }
             }
         }
+    }
+
+    /// The order in which assets are rendered inside the horizontal HStack.
+    ///
+    /// In RTL, the HStack lays its first child at the visible leading edge
+    /// (right) and grows toward the trailing edge (left), but the horizontal
+    /// ScrollView anchors its content to absolute x=0 regardless. Appending a
+    /// new asset to the end of the array therefore inserts it at absolute x=0,
+    /// pushing every already-visible attachment toward the right and producing
+    /// the visible shift. Reversing the order in RTL means newly appended
+    /// assets land at the trailing (off-screen) side of the HStack instead, so
+    /// the already-visible attachments keep their position when a new one is
+    /// added.
+    private var displayedAssets: [ComposerAsset] {
+        layoutDirection == .rightToLeft ? assets.reversed() : assets
     }
 
     @ViewBuilder
