@@ -262,6 +262,8 @@ struct SlideToCancelLabel: View {
     @Injected(\.colors) private var colors
     @Injected(\.fonts) private var fonts
 
+    @Environment(\.layoutDirection) private var layoutDirection
+
     let location: CGPoint
 
     var body: some View {
@@ -297,7 +299,15 @@ struct SlideToCancelLabel: View {
         .animation(.interactiveSpring(response: 0.35, dampingFraction: 0.8), value: location.x)
     }
 
+    /// The visible offset for the label as it follows the drag.
+    ///
+    /// `location.x` is normalized by `VoiceRecordingGestureOverlay` so that
+    /// negative values always represent dragging toward the cancel direction.
+    /// To translate that back to actual screen coordinates we flip the sign
+    /// in RTL — the user drags rightward there, so the label must move
+    /// rightward (positive X) too.
     private var slideOffset: CGFloat {
-        min(0, location.x)
+        let towardCancel = min(0, location.x)
+        return layoutDirection == .rightToLeft ? -towardCancel : towardCancel
     }
 }
