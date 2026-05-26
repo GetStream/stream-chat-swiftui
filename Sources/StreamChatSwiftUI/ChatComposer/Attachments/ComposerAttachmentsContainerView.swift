@@ -48,6 +48,7 @@ public struct ComposerAttachmentsContainerView: View {
                     tailAnchor
                 }
                 .padding(.trailing, tokens.spacingXs)
+                .transaction { $0.animation = nil }
             }
             .onChange(of: assets.count) { [assets] newValue in
                 guard newValue > assets.count else { return }
