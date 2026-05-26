@@ -98,6 +98,84 @@ class MessageListView_Tests: StreamChatTestCase {
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
 
+    func test_messageListView_withSystemMessage() {
+        // Given
+        let channelConfig = ChannelConfig(reactionsEnabled: true)
+        let channel = ChatChannel.mockDMChannel(config: channelConfig)
+        let systemMessageId = MessageId.unique
+        let systemMessage = ChatMessage.mock(
+            id: systemMessageId,
+            cid: channel.cid,
+            text: "Martin joined the channel",
+            type: .system,
+            author: .mock(id: .unique)
+        )
+        let messages = LazyCachedMapCollection(source: [systemMessage], map: { $0 })
+        let view = MessageListView(
+            factory: DefaultViewFactory.shared,
+            channel: channel,
+            messages: messages,
+            messagesGroupingInfo: [:],
+            scrolledId: .constant(nil),
+            showScrollToLatestButton: .constant(false),
+            quotedMessage: .constant(nil),
+            currentDateString: nil,
+            listId: "listId",
+            isMessageThread: false,
+            shouldShowTypingIndicator: false,
+            onMessageAppear: { _, _ in },
+            onScrollToBottom: {},
+            onLongPress: { _ in }
+        )
+        .applyDefaultSize()
+
+        // Then
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
+    }
+
+    func test_messageListView_withSystemMessageAndNewMessagesSeparator() {
+        // Given
+        let messageListConfig = MessageListConfig(showNewMessagesSeparator: true)
+        let utils = Utils(dateFormatter: EmptyDateFormatter(), messageListConfig: messageListConfig)
+        streamChat = StreamChat(chatClient: chatClient, utils: utils)
+
+        let channelConfig = ChannelConfig(reactionsEnabled: true)
+        let channel = ChatChannel.mockDMChannel(
+            config: channelConfig,
+            unreadCount: .mock(messages: 1)
+        )
+        let systemMessageId = MessageId.unique
+        let systemMessage = ChatMessage.mock(
+            id: systemMessageId,
+            cid: channel.cid,
+            text: "Martin joined the channel",
+            type: .system,
+            author: .mock(id: .unique)
+        )
+        let messages = LazyCachedMapCollection(source: [systemMessage], map: { $0 })
+        let view = MessageListView(
+            factory: DefaultViewFactory.shared,
+            channel: channel,
+            messages: messages,
+            messagesGroupingInfo: [:],
+            scrolledId: .constant(nil),
+            showScrollToLatestButton: .constant(false),
+            quotedMessage: .constant(nil),
+            currentDateString: nil,
+            listId: "listId",
+            isMessageThread: false,
+            shouldShowTypingIndicator: false,
+            firstUnreadMessageId: .constant(systemMessageId),
+            onMessageAppear: { _, _ in },
+            onScrollToBottom: {},
+            onLongPress: { _ in }
+        )
+        .applyDefaultSize()
+
+        // Then
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
+    }
+
     // MARK: - Init with ChatChannelViewModel snapshot tests
 
     func test_messageListView_viewModelInit_withReactions() {

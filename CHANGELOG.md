@@ -3,7 +3,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 # Upcoming
 
-### 🔄 Changed
+### 🐞 Fixed
+- Fix `SystemMessageView` not expanding to full width, causing misaligned text in the message list [#1474](https://github.com/GetStream/stream-chat-swiftui/pull/1474)
 
 # [4.100.1](https://github.com/GetStream/stream-chat-swiftui/releases/tag/4.100.1)
 _May 22, 2026_

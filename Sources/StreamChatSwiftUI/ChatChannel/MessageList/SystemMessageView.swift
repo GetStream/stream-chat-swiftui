@@ -22,5 +22,6 @@ public struct SystemMessageView: View {
             .foregroundColor(Color(colors.textLowEmphasis))
             .standardPadding()
             .accessibilityIdentifier("SystemMessageView")
+            .frame(maxWidth: .infinity)
     }
 }
