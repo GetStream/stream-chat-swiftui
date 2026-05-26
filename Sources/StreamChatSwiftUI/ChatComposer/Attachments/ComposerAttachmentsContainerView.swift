@@ -62,18 +62,34 @@ public struct ComposerAttachmentsContainerView: View {
                 .padding(.trailing, tokens.spacingXs)
             }
             .onAppear { syncOrderedAssets(with: assets) }
-            .onChange(of: assets) { newAssets in
+            .onChange(of: assets) { [assets] newAssets in
+                let didGrow = newAssets.count > assets.count
                 syncOrderedAssets(with: newAssets)
-            }
-            .onChange(of: assets.count) { [assets] newValue in
-                guard newValue > assets.count else { return }
 
+                guard didGrow else { return }
+
+                let newestId = newAssets.last?.id
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) {
                     withAnimation {
-                        proxy.scrollTo(tailId, anchor: .trailing)
+                        scrollToNewest(using: proxy, newestId: newestId)
                     }
                 }
             }
+        }
+    }
+
+    /// Reveals the newly-added asset inside the scroll view.
+    ///
+    /// In LTR the new asset is appended to the end of the HStack so we scroll
+    /// to `tailAnchor` (which sits just past it). In RTL the new asset is
+    /// prepended to the HStack and visually lives at the leading edge (right),
+    /// so we scroll directly to its id with the leading anchor — `tailAnchor`
+    /// would scroll the opposite way and reveal the oldest entries instead.
+    private func scrollToNewest(using proxy: ScrollViewProxy, newestId: String?) {
+        if layoutDirection == .rightToLeft, let newestId {
+            proxy.scrollTo(newestId, anchor: .leading)
+        } else {
+            proxy.scrollTo(tailId, anchor: .trailing)
         }
     }
 
