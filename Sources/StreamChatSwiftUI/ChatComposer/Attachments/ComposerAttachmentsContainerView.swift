@@ -28,6 +28,18 @@ public struct ComposerAttachmentsContainerView: View {
     public var assets: [ComposerAsset]
     public var onDiscardAttachment: (String) -> Void
 
+    /// Locally-ordered copy of `assets` used for rendering.
+    ///
+    /// In LTR this mirrors `assets` exactly. In RTL, newly appended assets are
+    /// inserted at index 0 instead. The HStack lays its first child at the
+    /// visible leading edge (right) and grows toward the trailing edge, but
+    /// the horizontal ScrollView anchors its content to absolute `x = 0`
+    /// regardless of layout direction — so appending at the end of the array
+    /// places the new asset at `x = 0` and pushes every already-visible
+    /// thumbnail rightward. Prepending instead keeps the existing thumbnails
+    /// fixed in place when a new asset is added.
+    @State private var orderedAssets: [ComposerAsset] = []
+
     public init(
         assets: [ComposerAsset],
         onDiscardAttachment: @escaping (String) -> Void
@@ -35,12 +47,12 @@ public struct ComposerAttachmentsContainerView: View {
         self.assets = assets
         self.onDiscardAttachment = onDiscardAttachment
     }
-    
+
     public var body: some View {
         ScrollViewReader { proxy in
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack(spacing: tokens.spacingXs) {
-                    ForEach(displayedAssets) { asset in
+                    ForEach(orderedAssets) { asset in
                         assetView(for: asset)
                             .padding(tokens.spacingXxs)
                             .id(asset.id)
@@ -48,6 +60,10 @@ public struct ComposerAttachmentsContainerView: View {
                     tailAnchor
                 }
                 .padding(.trailing, tokens.spacingXs)
+            }
+            .onAppear { syncOrderedAssets(with: assets) }
+            .onChange(of: assets) { newAssets in
+                syncOrderedAssets(with: newAssets)
             }
             .onChange(of: assets.count) { [assets] newValue in
                 guard newValue > assets.count else { return }
@@ -61,19 +77,23 @@ public struct ComposerAttachmentsContainerView: View {
         }
     }
 
-    /// The order in which assets are rendered inside the horizontal HStack.
+    /// Reconciles `orderedAssets` with the latest `assets` array.
     ///
-    /// In RTL, the HStack lays its first child at the visible leading edge
-    /// (right) and grows toward the trailing edge (left), but the horizontal
-    /// ScrollView anchors its content to absolute x=0 regardless. Appending a
-    /// new asset to the end of the array therefore inserts it at absolute x=0,
-    /// pushing every already-visible attachment toward the right and producing
-    /// the visible shift. Reversing the order in RTL means newly appended
-    /// assets land at the trailing (off-screen) side of the HStack instead, so
-    /// the already-visible attachments keep their position when a new one is
-    /// added.
-    private var displayedAssets: [ComposerAsset] {
-        layoutDirection == .rightToLeft ? assets.reversed() : assets
+    /// New entries (those not already present by id) are inserted at the end
+    /// in LTR and at index 0 in RTL; missing entries are removed.
+    private func syncOrderedAssets(with newAssets: [ComposerAsset]) {
+        let existingIds = Set(orderedAssets.map(\.id))
+        let incomingIds = Set(newAssets.map(\.id))
+
+        orderedAssets.removeAll { !incomingIds.contains($0.id) }
+
+        for asset in newAssets where !existingIds.contains(asset.id) {
+            if layoutDirection == .rightToLeft {
+                orderedAssets.insert(asset, at: 0)
+            } else {
+                orderedAssets.append(asset)
+            }
+        }
     }
 
     @ViewBuilder
