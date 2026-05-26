@@ -10,6 +10,8 @@ struct DismissButtonOverlayModifier: ViewModifier {
     @Injected(\.tokens) private var tokens
     @Injected(\.images) private var images
 
+    @Environment(\.layoutDirection) private var layoutDirection
+
     let onDismiss: (() -> Void)
 
     init(onDismiss: @escaping (() -> Void)) {
@@ -42,9 +44,16 @@ struct DismissButtonOverlayModifier: ViewModifier {
                 )
         }
         .buttonStyle(PlainButtonStyle())
-        .offset(x: dismissButtonOverlap, y: -dismissButtonOverlap)
+        .offset(x: horizontalOffset, y: -dismissButtonOverlap)
         .accessibilityLabel(L10n.Composer.Quoted.dismiss)
         .accessibilityIdentifier("DismissButtonOverlay")
+    }
+
+    /// `.offset` uses absolute screen coordinates, so we mirror the
+    /// horizontal nudge in RTL — otherwise the button sticks toward the
+    /// inside of the attachment instead of poking out from the corner.
+    private var horizontalOffset: CGFloat {
+        layoutDirection == .rightToLeft ? -dismissButtonOverlap : dismissButtonOverlap
     }
 
     private var dismissButtonOverlap: CGFloat {
