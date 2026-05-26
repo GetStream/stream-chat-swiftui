@@ -256,7 +256,6 @@
 				Tests/CommonViews/Avatars/UserAvatar_Tests.swift,
 				Tests/CommonViews/BadgeCountView_Tests.swift,
 				Tests/CommonViews/BadgeNotificationView_Tests.swift,
-				Tests/CommonViews/GalleryHeaderView_Tests.swift,
 				Tests/CommonViews/RadioCheckView_Tests.swift,
 				Tests/CommonViews/SearchBar_Tests.swift,
 				Tests/CommonViews/SnackBarView_Tests.swift,

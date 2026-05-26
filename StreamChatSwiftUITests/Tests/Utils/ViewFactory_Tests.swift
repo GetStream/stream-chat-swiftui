@@ -1063,24 +1063,7 @@ import XCTest
         // Then
         XCTAssert(modifier is MediaViewerToolbarModifier)
     }
-    
-    func test_viewFactory_makeVideoPlayerHeaderView() {
-        // Given
-        let viewFactory = DefaultViewFactory.shared
-        
-        // When
-        let view = viewFactory.makeVideoPlayerHeaderView(
-            options: VideoPlayerHeaderViewOptions(
-                title: .unique,
-                subtitle: .unique,
-                shown: .constant(true)
-            )
-        )
-            
-        // Then
-        XCTAssert(view is MediaViewerHeader)
-    }
-    
+
     func test_viewFactory_makeMemberAddView() {
         // Given
         let viewFactory = DefaultViewFactory.shared
