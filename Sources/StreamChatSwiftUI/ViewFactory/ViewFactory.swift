@@ -239,18 +239,6 @@ import SwiftUI
     /// - Returns: View displayed in the media viewer footer slot.
     func makeMediaViewerFooterView(options: MediaViewerFooterViewOptions) -> MediaViewerFooterViewType
 
-    associatedtype VideoPlayerHeaderViewType: View
-    /// Creates the video player header view presented with a sheet.
-    /// - Parameter options: the options for creating the video player header view.
-    /// - Returns: View displayed in the video player header slot.
-    func makeVideoPlayerHeaderView(options: VideoPlayerHeaderViewOptions) -> VideoPlayerHeaderViewType
-    
-    associatedtype VideoPlayerFooterViewType: View
-    /// Creates the video player footer view presented with a sheet.
-    /// - Parameter options: the options for creating the video player footer view.
-    /// - Returns: View displayed in the video player footer slot.
-    func makeVideoPlayerFooterView(options: VideoPlayerFooterViewOptions) -> VideoPlayerFooterViewType
-
     associatedtype DeletedMessageViewType: View
     /// Creates the deleted message view.
     /// - Parameter options: the options for creating the deleted message view.
@@ -633,4 +621,16 @@ import SwiftUI
     func makeStreamTextView(
         options: StreamTextViewOptions
     ) -> StreamTextViewType
+
+    // MARK: - Deprecated
+
+    @available(*, deprecated, message: "Override `makeMediaViewer(options:)` for a custom full-screen video player, or `makeMediaViewerToolbarModifier`/`makeMediaViewerFooterView` to customize just the toolbar/bottom bar. Will be removed in a future major release.")
+    associatedtype VideoPlayerHeaderViewType: View
+    @available(*, deprecated, message: "Override `makeMediaViewer(options:)` for a custom full-screen video player, or `makeMediaViewerToolbarModifier`/`makeMediaViewerFooterView` to customize just the toolbar/bottom bar. Will be removed in a future major release.")
+    func makeVideoPlayerHeaderView(options: VideoPlayerHeaderViewOptions) -> VideoPlayerHeaderViewType
+
+    @available(*, deprecated, message: "Override `makeMediaViewer(options:)` for a custom full-screen video player, or `makeMediaViewerToolbarModifier`/`makeMediaViewerFooterView` to customize just the toolbar/bottom bar. Will be removed in a future major release.")
+    associatedtype VideoPlayerFooterViewType: View
+    @available(*, deprecated, message: "Override `makeMediaViewer(options:)` for a custom full-screen video player, or `makeMediaViewerToolbarModifier`/`makeMediaViewerFooterView` to customize just the toolbar/bottom bar. Will be removed in a future major release.")
+    func makeVideoPlayerFooterView(options: VideoPlayerFooterViewOptions) -> VideoPlayerFooterViewType
 }
