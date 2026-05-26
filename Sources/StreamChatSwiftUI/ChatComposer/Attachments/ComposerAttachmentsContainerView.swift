@@ -48,28 +48,18 @@ public struct ComposerAttachmentsContainerView: View {
                     tailAnchor
                 }
                 .padding(.trailing, tokens.spacingXs)
-                .transaction { $0.animation = nil }
+                .animation(nil, value: assets)
             }
             .onChange(of: assets.count) { [assets] newValue in
                 guard newValue > assets.count else { return }
 
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) {
+                DispatchQueue.main.async {
                     withAnimation {
-                        proxy.scrollTo(tailId, anchor: scrollAnchor)
+                        proxy.scrollTo(tailId, anchor: .trailing)
                     }
                 }
             }
         }
-    }
-
-    /// The viewport edge where the just-appended asset comes to rest.
-    ///
-    /// `tailAnchor` sits at the trailing end of the HStack, which is the
-    /// right edge in LTR and the left edge in RTL. Aligning the scroll view
-    /// to that same edge reveals the newest asset on whichever side it
-    /// actually landed.
-    private var scrollAnchor: UnitPoint {
-        layoutDirection == .rightToLeft ? .leading : .trailing
     }
 
     @ViewBuilder
