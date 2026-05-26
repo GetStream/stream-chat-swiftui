@@ -3,6 +3,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 # Upcoming
 
+### 🐞 Fixed
+- Fix a crash when stale message appearance callbacks use an index that is no longer valid for the displayed message list. [#1476](https://github.com/GetStream/stream-chat-swiftui/pull/1476)
+
 ### 🔄 Changed
 
 ### ⚠️ Deprecated
