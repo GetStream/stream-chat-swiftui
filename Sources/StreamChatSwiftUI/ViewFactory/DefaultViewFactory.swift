@@ -303,7 +303,12 @@ extension ViewFactory {
             width: min(options.availableWidth, utils.messageListConfig.attachmentPreviewWidth),
             isFirst: options.isFirst,
             scrolledId: options.scrolledId,
-            translationLanguage: options.translationLanguage
+            translationLanguage: options.translationLanguage,
+            messageModifierInfo: MessageAttachmentsBubbleConfiguration.messageModifierInfo(
+                for: options.message,
+                isFirst: options.isFirst
+            ),
+            bubbleInsets: MessageAttachmentsBubbleConfiguration.bubbleInsets(for: options.message)
         )
     }
 

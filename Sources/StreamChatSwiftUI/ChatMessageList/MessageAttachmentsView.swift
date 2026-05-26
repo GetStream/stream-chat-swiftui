@@ -18,6 +18,8 @@ public struct MessageAttachmentsView<Factory: ViewFactory>: View {
     let width: CGFloat
     let isFirst: Bool
     let translationLanguage: TranslationLanguage?
+    private let messageModifierInfo: MessageModifierInfo?
+    private let bubbleInsets: EdgeInsets
     @Binding var scrolledId: String?
 
     public init(
@@ -28,11 +30,49 @@ public struct MessageAttachmentsView<Factory: ViewFactory>: View {
         scrolledId: Binding<String?>,
         translationLanguage: TranslationLanguage? = nil
     ) {
+        self.init(
+            factory: factory,
+            message: message,
+            width: width,
+            isFirst: isFirst,
+            scrolledId: scrolledId,
+            translationLanguage: translationLanguage,
+            messageModifierInfo: MessageAttachmentsBubbleConfiguration.messageModifierInfo(
+                for: message,
+                isFirst: isFirst
+            ),
+            bubbleInsets: MessageAttachmentsBubbleConfiguration.bubbleInsets(for: message)
+        )
+    }
+
+    /// Creates a message attachments view with configurable outer bubble styling.
+    ///
+    /// - Parameters:
+    ///   - factory: The view factory used to build attachment subviews.
+    ///   - message: The message containing attachments or quoted content.
+    ///   - width: The available width for the attachments.
+    ///   - isFirst: Whether this message is the first message in a message group.
+    ///   - scrolledId: Binding to the currently scrolled message id.
+    ///   - translationLanguage: The translation language to apply, or `nil` to show the original text.
+    ///   - messageModifierInfo: Information used to apply the outer attachment bubble. Pass `nil` to hide the outer bubble.
+    ///   - bubbleInsets: Insets applied inside the outer attachment bubble. This does not affect message-list row spacing or inner attachment container padding.
+    public init(
+        factory: Factory,
+        message: ChatMessage,
+        width: CGFloat,
+        isFirst: Bool,
+        scrolledId: Binding<String?>,
+        translationLanguage: TranslationLanguage? = nil,
+        messageModifierInfo: MessageModifierInfo?,
+        bubbleInsets: EdgeInsets
+    ) {
         self.factory = factory
         self.message = message
         self.width = width
         self.isFirst = isFirst
         self.translationLanguage = translationLanguage
+        self.messageModifierInfo = messageModifierInfo
+        self.bubbleInsets = bubbleInsets
         self._scrolledId = scrolledId
     }
 
@@ -123,25 +163,46 @@ public struct MessageAttachmentsView<Factory: ViewFactory>: View {
                 )
             }
         }
-        .if(MessageAttachmentsBubbleConfiguration.isBubbleShown(for: message)) { view in
-            view
-                .padding(MessageAttachmentsBubbleConfiguration.bubbleContentPadding(for: message))
-                .modifier(
-                    factory.styles.makeMessageViewModifier(
-                        for: MessageModifierInfo(
-                            message: message,
-                            isFirst: isFirst
-                        )
-                    )
-                )
-        }
+        .modifier(
+            MessageAttachmentsBubbleModifier(
+                factory: factory,
+                messageModifierInfo: messageModifierInfo,
+                bubbleInsets: bubbleInsets
+            )
+        )
         .accessibilityElement(children: .contain)
         .accessibilityIdentifier("MessageAttachmentsView")
     }
 }
 
+private struct MessageAttachmentsBubbleModifier<Factory: ViewFactory>: ViewModifier {
+    let factory: Factory
+    let messageModifierInfo: MessageModifierInfo?
+    let bubbleInsets: EdgeInsets
+    
+    @ViewBuilder
+    func body(content: Content) -> some View {
+        if let messageModifierInfo {
+            content
+                .padding(bubbleInsets)
+                .modifier(
+                    factory.styles.makeMessageViewModifier(
+                        for: messageModifierInfo
+                    )
+                )
+        } else {
+            content
+        }
+    }
+}
+
 /// Bubble styling configuration for stacked attachments.
 enum MessageAttachmentsBubbleConfiguration {
+    @MainActor static func messageModifierInfo(for message: ChatMessage, isFirst: Bool) -> MessageModifierInfo? {
+        guard isBubbleShown(for: message) else { return nil }
+        return MessageModifierInfo(message: message, isFirst: isFirst)
+    }
+
     @MainActor static func isBubbleShown(for message: ChatMessage) -> Bool {
         if message.hasSingleMediaAttachmentWithoutCaption {
             return false
@@ -149,14 +210,19 @@ enum MessageAttachmentsBubbleConfiguration {
         return true
     }
     
-    @MainActor static func bubbleContentPadding(for message: ChatMessage) -> CGFloat {
-        guard isBubbleShown(for: message) else { return 0 }
+    @MainActor static func bubbleInsets(for message: ChatMessage) -> EdgeInsets {
+        guard isBubbleShown(for: message) else { return EdgeInsets() }
         // Single voice and file don't have extra padding
         if message.hasSingleFileOrVoiceAttachmentWithoutCaption {
-            return 0
+            return EdgeInsets()
         }
         @Injected(\.tokens) var tokens
-        return tokens.spacingXs
+        return EdgeInsets(
+            top: tokens.spacingXs,
+            leading: tokens.spacingXs,
+            bottom: tokens.spacingXs,
+            trailing: tokens.spacingXs
+        )
     }
     
     @MainActor static func attachmentBackgroundColor(for message: ChatMessage) -> Color {

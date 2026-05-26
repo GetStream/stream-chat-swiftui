@@ -225,6 +225,73 @@ import XCTest
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
 
+    func test_messageViewAttachmentBubble_customInsets_snapshot() {
+        // Given
+        let message = customAttachmentBubbleMessage()
+        let factory = CustomAttachmentBubbleFactory(
+            bubbleInsets: EdgeInsets(top: 4, leading: 24, bottom: 16, trailing: 40)
+        )
+        let size = CGSize(width: defaultScreenSize.width, height: 300)
+
+        // When
+        let view = MessageView(
+            factory: factory,
+            message: message,
+            contentWidth: size.width,
+            isFirst: true,
+            scrolledId: .constant(nil)
+        )
+        .applySize(size)
+
+        // Then
+        AssertSnapshot(view, size: size)
+    }
+
+    func test_messageViewAttachmentBubble_customCornerRadius_snapshot() {
+        // Given
+        let message = customAttachmentBubbleMessage()
+        let factory = CustomAttachmentBubbleFactory(
+            bubbleInsets: EdgeInsets(top: 8, leading: 8, bottom: 8, trailing: 8),
+            cornerRadius: 4
+        )
+        let size = CGSize(width: defaultScreenSize.width, height: 300)
+
+        // When
+        let view = MessageView(
+            factory: factory,
+            message: message,
+            contentWidth: size.width,
+            isFirst: true,
+            scrolledId: .constant(nil)
+        )
+        .applySize(size)
+
+        // Then
+        AssertSnapshot(view, size: size)
+    }
+
+    func test_messageViewAttachmentBubble_customBubbleForSingleMediaWithoutCaption_snapshot() {
+        // Given
+        let message = customAttachmentBubbleMessage(text: "")
+        let factory = CustomAttachmentBubbleFactory(
+            bubbleInsets: EdgeInsets(top: 8, leading: 8, bottom: 8, trailing: 8)
+        )
+        let size = CGSize(width: defaultScreenSize.width, height: 300)
+
+        // When
+        let view = MessageView(
+            factory: factory,
+            message: message,
+            contentWidth: size.width,
+            isFirst: true,
+            scrolledId: .constant(nil)
+        )
+        .applySize(size)
+
+        // Then
+        AssertSnapshot(view, size: size)
+    }
+
     func test_messageViewImage_snapshot2Images() {
         // Given
         let imageMessage = ChatMessage.mock(
@@ -1611,5 +1678,51 @@ import XCTest
             scrolledId: .constant(nil)
         )
         .applySize(size)
+    }
+
+    private func customAttachmentBubbleMessage(text: String = "Photo caption") -> ChatMessage {
+        ChatMessage.mock(
+            id: .unique,
+            cid: .unique,
+            text: text,
+            author: .mock(id: Self.currentUserId, name: "Martin"),
+            attachments: ChatChannelTestHelpers.imageAttachments(
+                count: 1,
+                originalWidth: 1600,
+                originalHeight: 1200
+            ),
+            isSentByCurrentUser: true
+        )
+    }
+}
+
+private final class CustomAttachmentBubbleFactory: ViewFactory {
+    @Injected(\.chatClient) var chatClient
+    
+    var styles = RegularStyles()
+    let bubbleInsets: EdgeInsets
+    let cornerRadius: CGFloat?
+    
+    init(bubbleInsets: EdgeInsets, cornerRadius: CGFloat? = nil) {
+        self.bubbleInsets = bubbleInsets
+        self.cornerRadius = cornerRadius
+    }
+    
+    func makeMessageAttachmentsView(options: MessageAttachmentsViewOptions) -> some View {
+        @Injected(\.utils) var utils
+        return MessageAttachmentsView(
+            factory: self,
+            message: options.message,
+            width: min(options.availableWidth, utils.messageListConfig.attachmentPreviewWidth),
+            isFirst: options.isFirst,
+            scrolledId: options.scrolledId,
+            translationLanguage: options.translationLanguage,
+            messageModifierInfo: MessageModifierInfo(
+                message: options.message,
+                isFirst: options.isFirst,
+                cornerRadius: cornerRadius
+            ),
+            bubbleInsets: bubbleInsets
+        )
     }
 }

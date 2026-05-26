@@ -3,6 +3,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 # Upcoming
 
+### ✅ Added
+- Add customising `MessageAttachmentsView` bubble
+
 ### 🐞 Fixed
 - Fix `SystemMessageView` not expanding to full width, causing misaligned text in the message list [#1475](https://github.com/GetStream/stream-chat-swiftui/pull/1475)
 
