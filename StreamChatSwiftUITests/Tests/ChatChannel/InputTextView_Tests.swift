@@ -54,6 +54,35 @@ final class InputTextView_Tests: StreamChatTestCase {
         XCTAssertNotEqual(textView.accessibilityLabel, "@username")
     }
 
+    // MARK: - Text Direction
+
+    func test_textAlignment_isNatural_inRTLLayout() {
+        // Forcing `.right` on a UITextView causes trailing whitespace to be
+        // visually trimmed. Using `.natural` lets bidi resolve trailing
+        // spaces so pressing space in an RTL composer is visible.
+        let textView = makeTextView(placeholder: "@username", text: "")
+        textView.semanticContentAttribute = .forceRightToLeft
+
+        XCTAssertEqual(textView.textAlignment, .natural)
+    }
+
+    func test_textAlignment_isNatural_inLTRLayout() {
+        let textView = makeTextView(placeholder: "@username", text: "")
+        textView.semanticContentAttribute = .forceLeftToRight
+
+        XCTAssertEqual(textView.textAlignment, .natural)
+    }
+
+    func test_placeholderAlignment_followsLayoutDirection() {
+        let textView = makeTextView(placeholder: "@username", text: "")
+
+        textView.semanticContentAttribute = .forceRightToLeft
+        XCTAssertEqual(textView.placeholderLabel.textAlignment, .right)
+
+        textView.semanticContentAttribute = .forceLeftToRight
+        XCTAssertEqual(textView.placeholderLabel.textAlignment, .left)
+    }
+
     // MARK: - Helpers
 
     private func makeTextView(placeholder: String, text: String) -> InputTextView {
