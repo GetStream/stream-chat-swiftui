@@ -117,6 +117,14 @@ import SwiftUI
         ).isEmpty && channel.config.typingEventsEnabled
     }
 
+    /// The formatted typing indicator text for the channel.
+    ///
+    /// Derived from the channel's currently-typing users; can be passed to
+    /// ``SubtitleTypingIndicatorView`` to avoid recomputing it inside the view.
+    public var typingIndicatorText: String {
+        channel.typingIndicatorString(currentUserId: chatClient.currentUserId)
+    }
+
     /// A boolean value indicating whether the draft messages feature is enabled.
     public var isDraftMessagesEnabled: Bool {
         utils.messageListConfig.draftMessagesEnabled
@@ -194,7 +202,7 @@ import SwiftUI
             return .failedToSend()
         }
         if shouldShowTypingIndicator {
-            return .typing(channel: channel)
+            return .typing(text: typingIndicatorText)
         }
         if isDraftMessagesEnabled, let draftText = draftMessageText {
             return .draft(text: draftText)

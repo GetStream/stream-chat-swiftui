@@ -92,10 +92,7 @@ public struct ChatChannelListItem<Factory: ViewFactory>: View {
                                 localState: viewModel.previewMessageLocalState
                             )
                         }
-                        ChatChannelListItemSubtitleView(
-                            factory: factory,
-                            subtitle: viewModel.subtitle
-                        )
+                        ChatChannelListItemSubtitleView(subtitle: viewModel.subtitle)
                         Spacer()
                         if viewModel.shouldShowMutedTrailingIcon {
                             ChatChannelListItemMutedIcon()
@@ -163,17 +160,11 @@ public struct ChatChannelListItemMutedIcon: View {
 /// ``ChatChannelListItemSubtitle`` value. Variants include: failed-to-send,
 /// typing, draft, deleted, author-prefixed preview, attachment-only preview,
 /// and plain subtitle text.
-///
-/// The view is generic over `Factory` because the typing variant is rendered
-/// via `factory.makeSubtitleTypingIndicatorView(options:)`.
-public struct ChatChannelListItemSubtitleView<Factory: ViewFactory>: View {
-    /// The factory used to build the typing indicator view.
-    public let factory: Factory
+public struct ChatChannelListItemSubtitleView: View {
     /// The subtitle variant to render.
     public let subtitle: ChatChannelListItemSubtitle
 
-    public init(factory: Factory, subtitle: ChatChannelListItemSubtitle) {
-        self.factory = factory
+    public init(subtitle: ChatChannelListItemSubtitle) {
         self.subtitle = subtitle
     }
 
@@ -189,10 +180,8 @@ public struct ChatChannelListItemSubtitleView<Factory: ViewFactory>: View {
         switch subtitle.kind {
         case .failedToSend:
             ChatChannelListItemFailedToSendView()
-        case let .typing(channel):
-            factory.makeSubtitleTypingIndicatorView(
-                options: SubtitleTypingIndicatorViewOptions(channel: channel)
-            )
+        case let .typing(text):
+            SubtitleTypingIndicatorView(text: text)
         case let .draft(text):
             ChatChannelListItemDraftPreviewView(draftMessageText: text)
         case let .deleted(isSentByCurrentUser):

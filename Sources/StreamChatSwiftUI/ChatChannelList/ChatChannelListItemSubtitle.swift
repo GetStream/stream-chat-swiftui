@@ -2,7 +2,6 @@
 // Copyright © 2026 Stream.io Inc. All rights reserved.
 //
 
-import StreamChat
 import SwiftUI
 
 /// Describes which variant the channel list item subtitle should render.
@@ -17,7 +16,7 @@ import SwiftUI
 public struct ChatChannelListItemSubtitle {
     enum Kind {
         case failedToSend
-        case typing(channel: ChatChannel)
+        case typing(text: String)
         case draft(text: String)
         case deleted(isSentByCurrentUser: Bool)
         case authorPreview(authorName: String, contentText: String, attachmentIcon: UIImage?)
@@ -37,8 +36,9 @@ public struct ChatChannelListItemSubtitle {
     }
 
     /// Typing-indicator variant: shown while other users in the channel are typing.
-    public static func typing(channel: ChatChannel) -> ChatChannelListItemSubtitle {
-        .init(.typing(channel: channel))
+    /// The provided text is rendered as-is alongside the animated typing dots.
+    public static func typing(text: String) -> ChatChannelListItemSubtitle {
+        .init(.typing(text: text))
     }
 
     /// Draft variant: shown when there is a pending draft message in the channel.
