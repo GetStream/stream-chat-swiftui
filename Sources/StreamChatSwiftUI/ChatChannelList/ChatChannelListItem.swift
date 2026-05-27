@@ -65,9 +65,8 @@ public struct ChatChannelListItem<Factory: ViewFactory>: View {
                 VStack(alignment: .leading, spacing: tokens.spacingXxs) {
                     HStack {
                         ChatChannelListItemTitleView(
-                            name: viewModel.channelName,
-                            isMuted: viewModel.isMuted,
-                            mutedLayoutStyle: viewModel.mutedLayoutStyle
+                            channelName: viewModel.channelName,
+                            shouldShowInlineMutedIcon: viewModel.shouldShowInlineMutedIcon
                         )
 
                         Spacer()
@@ -96,8 +95,8 @@ public struct ChatChannelListItem<Factory: ViewFactory>: View {
                         ChatChannelListItemSubtitleView(
                             factory: factory,
                             channel: viewModel.channel,
-                            isLastMessageFailedToSend: viewModel.lastMessageFailedToSend,
-                            isShowingTypingIndicator: viewModel.shouldShowTypingIndicator,
+                            lastMessageFailedToSend: viewModel.lastMessageFailedToSend,
+                            shouldShowTypingIndicator: viewModel.shouldShowTypingIndicator,
                             isDraftMessagesEnabled: viewModel.isDraftMessagesEnabled,
                             draftMessageText: viewModel.draftMessageText,
                             isPreviewMessageDeleted: viewModel.isPreviewMessageDeleted,
@@ -122,217 +121,28 @@ public struct ChatChannelListItem<Factory: ViewFactory>: View {
     }
 }
 
-/// The view model for the channel list item view.
-///
-/// It contains the default presentation logic for the channel list item data.
-@MainActor public final class ChatChannelListItemViewModel {
-    @Injected(\.utils) private var utils
-    @Injected(\.chatClient) private var chatClient
-
-    /// The channel represented by this item.
-    public let channel: ChatChannel
-
-    /// The display name of the channel.
-    public let channelName: String
-
-    public init(channel: ChatChannel, channelName: String) {
-        self.channel = channel
-        self.channelName = channelName
-    }
-
-    // MARK: - Title row
-
-    /// The formatted timestamp of the last message in the channel.
-    public var timestampText: String {
-        if let lastMessageAt = channel.lastMessageAt {
-            return utils.messageTimestampFormatter.format(lastMessageAt)
-        }
-        return ""
-    }
-
-    /// The number of unread messages in the channel.
-    public var unreadCount: Int {
-        channel.unreadCount.messages
-    }
-
-    /// A boolean value indicating whether the channel has any unread content.
-    public var hasUnread: Bool {
-        channel.unreadCount != .noUnread
-    }
-
-    /// A boolean value indicating whether the channel is muted.
-    public var isMuted: Bool {
-        channel.isMuted
-    }
-
-    /// The configured layout style for the muted icon.
-    public var mutedLayoutStyle: ChannelItemMutedLayoutStyle {
-        utils.channelListConfig.channelItemMutedStyle
-    }
-
-    /// A boolean value indicating whether the muted icon should be rendered
-    /// inline next to the channel name.
-    public var shouldShowInlineMutedIcon: Bool {
-        isMuted && mutedLayoutStyle == .afterChannelName
-    }
-
-    /// A boolean value indicating whether the muted icon should be rendered
-    /// in the trailing bottom corner of the item.
-    public var shouldShowMutedTrailingIcon: Bool {
-        isMuted && mutedLayoutStyle == .bottomRightCorner
-    }
-
-    // MARK: - Read indicator
-
-    /// A boolean value indicating whether the read events indicator should be shown.
-    public var shouldShowReadEvents: Bool {
-        if shouldShowTypingIndicator || lastMessageFailedToSend {
-            return false
-        }
-        if utils.messageListConfig.draftMessagesEnabled && draftMessageText != nil {
-            return false
-        }
-        if let message = previewMessage,
-           message.isSentByCurrentUser,
-           !message.isDeleted {
-            return channel.config.readEventsEnabled
-        }
-        return false
-    }
-
-    /// The users that have read the preview message.
-    public var readUsers: [ChatUser] {
-        channel.readUsers(
-            currentUserId: chatClient.currentUserId,
-            message: previewMessage
-        )
-    }
-
-    /// A boolean value indicating whether the read indicator should
-    /// show the delivered state.
-    public var showDelivered: Bool {
-        previewMessage?.deliveryStatus(for: channel) == .delivered
-    }
-
-    /// The local message state of the preview message.
-    public var previewMessageLocalState: LocalMessageState? {
-        previewMessage?.localState
-    }
-
-    // MARK: - Subtitle row
-
-    /// A boolean value indicating whether the last message failed to send.
-    public var lastMessageFailedToSend: Bool {
-        previewMessage?.localState == .sendingFailed
-    }
-
-    /// A boolean value indicating whether a typing indicator should be shown
-    /// in the subtitle area.
-    public var shouldShowTypingIndicator: Bool {
-        !channel.currentlyTypingUsersFiltered(
-            currentUserId: chatClient.currentUserId
-        ).isEmpty && channel.config.typingEventsEnabled
-    }
-
-    /// A boolean value indicating whether the draft messages feature is enabled.
-    public var isDraftMessagesEnabled: Bool {
-        utils.messageListConfig.draftMessagesEnabled
-    }
-
-    /// The formatted draft message text, when there is a draft for this channel.
-    public var draftMessageText: String? {
-        guard let draftMessage = channel.draftMessage else { return nil }
-        return utils.messagePreviewFormatter.formatContent(for: ChatMessage(draftMessage), in: channel)
-    }
-
-    /// A boolean value indicating whether the preview message is deleted.
-    public var isPreviewMessageDeleted: Bool {
-        previewMessage?.isDeleted == true
-    }
-
-    /// A boolean value indicating whether the preview message was sent by the
-    /// current user.
-    public var isPreviewMessageSentByCurrentUser: Bool {
-        previewMessage?.isSentByCurrentUser == true
-    }
-
-    /// The author name to display before the subtitle content, when applicable.
-    ///
-    /// Returns `nil` for direct message channels with two members, polls, or
-    /// when there is no preview message.
-    public var subtitleAuthorName: String? {
-        guard let previewMessage,
-              previewMessage.poll == nil,
-              !(channel.isDirectMessageChannel && channel.memberCount == 2) else {
-            return nil
-        }
-        if previewMessage.isSentByCurrentUser {
-            return L10n.Channel.Item.you
-        }
-        return previewMessage.author.name ?? previewMessage.author.id
-    }
-
-    /// The formatted subtitle text for the channel item.
-    ///
-    /// Used as the fallback when no other subtitle variant applies, and as the
-    /// typing indicator string when typing is active.
-    public var subtitleText: String {
-        if shouldShowTypingIndicator {
-            return channel.typingIndicatorString(currentUserId: chatClient.currentUserId)
-        }
-        if let previewMessage {
-            return utils.messagePreviewFormatter.format(previewMessage, in: channel)
-        }
-        return L10n.Channel.Item.emptyMessages
-    }
-
-    /// The preview message content text without any author name prefix.
-    public var previewContentText: String {
-        guard let previewMessage else { return "" }
-        return utils.messagePreviewFormatter.formatContent(for: previewMessage, in: channel)
-    }
-
-    /// The icon image for the preview message attachment, when present.
-    public var previewAttachmentIconImage: UIImage? {
-        guard let message = previewMessage else { return nil }
-        let resolver = MessageAttachmentPreviewResolver(message: message)
-        guard let previewIcon = resolver.previewIcon else { return nil }
-        return utils.messageAttachmentPreviewIconProvider.image(for: previewIcon)
-    }
-
-    // MARK: - Private
-
-    private var previewMessage: ChatMessage? {
-        channel.latestMessages.first(where: { $0.type != .ephemeral })
-    }
-}
-
 /// The title view used in the channel list item.
 ///
-/// Renders the channel name and, depending on `mutedLayoutStyle`, an inline
-/// muted icon after the name.
+/// Renders the channel name and, when `shouldShowInlineMutedIcon` is `true`,
+/// an inline muted icon after the name.
 public struct ChatChannelListItemTitleView: View {
     /// The channel display name.
-    public let name: String
-    /// Whether the channel is muted.
-    public let isMuted: Bool
-    /// The layout style that determines where the muted icon is rendered.
-    public let mutedLayoutStyle: ChannelItemMutedLayoutStyle
+    public let channelName: String
+    /// Whether the muted icon should be shown inline next to the channel name.
+    public let shouldShowInlineMutedIcon: Bool
 
     public init(
-        name: String,
-        isMuted: Bool = false,
-        mutedLayoutStyle: ChannelItemMutedLayoutStyle = .bottomRightCorner
+        channelName: String,
+        shouldShowInlineMutedIcon: Bool
     ) {
-        self.name = name
-        self.isMuted = isMuted
-        self.mutedLayoutStyle = mutedLayoutStyle
+        self.channelName = channelName
+        self.shouldShowInlineMutedIcon = shouldShowInlineMutedIcon
     }
 
     public var body: some View {
         HStack(spacing: 6) {
-            ChatTitleView(name: name)
-            if isMuted, mutedLayoutStyle == .afterChannelName {
+            ChatTitleView(name: channelName)
+            if shouldShowInlineMutedIcon {
                 ChatChannelListItemMutedIcon()
                     .frame(maxHeight: 14)
                     .padding(.bottom, -2)
@@ -367,19 +177,14 @@ public struct ChatChannelListItemMutedIcon: View {
 /// The view is generic over `Factory` because the typing variant is rendered
 /// via `factory.makeSubtitleTypingIndicatorView(options:)`.
 public struct ChatChannelListItemSubtitleView<Factory: ViewFactory>: View {
-    @Injected(\.fonts) private var fonts
-    @Injected(\.colors) private var colors
-    @Injected(\.images) private var images
-    @Injected(\.tokens) private var tokens
-
     /// The factory used to build the typing indicator view.
     public let factory: Factory
     /// The channel used as input to the typing indicator options.
     public let channel: ChatChannel
     /// Whether the last message failed to send.
-    public let isLastMessageFailedToSend: Bool
+    public let lastMessageFailedToSend: Bool
     /// Whether the typing indicator should be shown.
-    public let isShowingTypingIndicator: Bool
+    public let shouldShowTypingIndicator: Bool
     /// Whether the draft messages feature is enabled.
     public let isDraftMessagesEnabled: Bool
     /// The formatted draft message text, when present.
@@ -398,10 +203,10 @@ public struct ChatChannelListItemSubtitleView<Factory: ViewFactory>: View {
     public let previewAttachmentIconImage: UIImage?
 
     public init(
-        factory: Factory = DefaultViewFactory.shared,
+        factory: Factory,
         channel: ChatChannel,
-        isLastMessageFailedToSend: Bool,
-        isShowingTypingIndicator: Bool,
+        lastMessageFailedToSend: Bool,
+        shouldShowTypingIndicator: Bool,
         isDraftMessagesEnabled: Bool,
         draftMessageText: String?,
         isPreviewMessageDeleted: Bool,
@@ -413,8 +218,8 @@ public struct ChatChannelListItemSubtitleView<Factory: ViewFactory>: View {
     ) {
         self.factory = factory
         self.channel = channel
-        self.isLastMessageFailedToSend = isLastMessageFailedToSend
-        self.isShowingTypingIndicator = isShowingTypingIndicator
+        self.lastMessageFailedToSend = lastMessageFailedToSend
+        self.shouldShowTypingIndicator = shouldShowTypingIndicator
         self.isDraftMessagesEnabled = isDraftMessagesEnabled
         self.draftMessageText = draftMessageText
         self.isPreviewMessageDeleted = isPreviewMessageDeleted
@@ -427,90 +232,34 @@ public struct ChatChannelListItemSubtitleView<Factory: ViewFactory>: View {
 
     public var body: some View {
         HStack(spacing: 4) {
-            if isLastMessageFailedToSend {
-                HStack(spacing: tokens.spacingXxs) {
-                    Image(uiImage: images.messageListErrorIndicator)
-                        .customizable()
-                        .frame(width: 16, height: 16)
-                        .foregroundColor(Color(colors.badgeBackgroundError))
-                        .accessibilityHidden(true)
-                    Text(L10n.Channel.Item.messageFailedToSend)
-                }
-                .font(fonts.subheadline)
-                .foregroundColor(Color(colors.accentError))
-                .lineLimit(1)
-            } else if isShowingTypingIndicator {
+            if lastMessageFailedToSend {
+                ChatChannelListItemFailedToSendView()
+            } else if shouldShowTypingIndicator {
                 factory.makeSubtitleTypingIndicatorView(
                     options: SubtitleTypingIndicatorViewOptions(channel: channel)
                 )
             } else if isDraftMessagesEnabled, let draftText = draftMessageText {
-                HStack(spacing: 2) {
-                    labelWithColon(L10n.Message.Preview.draft, weight: .semibold, trailingSpace: true)
-                        .font(fonts.subheadline)
-                        .foregroundColor(Color(colors.accentPrimary))
-                    SubtitleText(text: draftText)
-                }
+                ChatChannelListItemDraftPreviewView(draftMessageText: draftText)
             } else if isPreviewMessageDeleted {
-                HStack(spacing: tokens.spacingXxs) {
-                    if isPreviewMessageSentByCurrentUser {
-                        labelWithColon(L10n.Channel.Item.you, weight: .semibold)
-                            .font(fonts.subheadline)
-                    }
-                    Image(systemName: "nosign")
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: 16, height: 16)
-                        .accessibilityHidden(true)
-                    Text(L10n.Message.deletedMessagePlaceholder)
-                }
-                .lineLimit(1)
-                .font(fonts.subheadline)
-                .foregroundColor(Color(colors.textTertiary))
+                ChatChannelListItemDeletedPreviewView(
+                    isPreviewMessageSentByCurrentUser: isPreviewMessageSentByCurrentUser
+                )
             } else if let authorName = subtitleAuthorName {
-                HStack(spacing: tokens.spacingXxs) {
-                    labelWithColon(authorName, weight: .semibold)
-                        .font(fonts.subheadline)
-                        .foregroundColor(Color(colors.textTertiary))
-                    attachmentIconView
-                    Text(previewContentText)
-                }
-                .lineLimit(1)
-                .font(fonts.subheadline)
-                .foregroundColor(Color(colors.textSecondary))
+                ChatChannelListItemAuthorPreviewView(
+                    subtitleAuthorName: authorName,
+                    previewContentText: previewContentText,
+                    previewAttachmentIconImage: previewAttachmentIconImage
+                )
             } else if previewAttachmentIconImage != nil {
-                HStack(spacing: tokens.spacingXxs) {
-                    attachmentIconView
-                    Text(subtitleText)
-                }
-                .lineLimit(1)
-                .font(fonts.subheadline)
-                .foregroundColor(Color(colors.textSecondary))
+                ChatChannelListItemAttachmentPreviewView(
+                    subtitleText: subtitleText,
+                    previewAttachmentIconImage: previewAttachmentIconImage
+                )
             } else {
                 SubtitleText(text: subtitleText)
             }
         }
         .accessibilityIdentifier("subtitleView")
-    }
-
-    @ViewBuilder
-    private var attachmentIconView: some View {
-        if let iconImage = previewAttachmentIconImage {
-            Image(uiImage: iconImage)
-                .customizable()
-                .frame(width: tokens.iconSizeSm, height: tokens.iconSizeSm)
-                .accessibilityHidden(true)
-        }
-    }
-
-    private func labelWithColon(
-        _ text: String,
-        weight: Font.Weight = .regular,
-        trailingSpace: Bool = false
-    ) -> some View {
-        HStack(spacing: 0) {
-            Text(text).fontWeight(weight)
-            Text(verbatim: trailingSpace ? ": " : ":").fontWeight(weight)
-        }
     }
 }
 
@@ -536,5 +285,203 @@ public final class ChannelItemMutedLayoutStyle: Hashable, Sendable {
 
     public func hash(into hasher: inout Hasher) {
         hasher.combine(identifier)
+    }
+}
+
+// MARK: - Subtitle variants
+
+/// Failed-to-send subtitle variant for the channel list item: an error icon
+/// followed by the "message failed to send" label.
+public struct ChatChannelListItemFailedToSendView: View {
+    @Injected(\.fonts) private var fonts
+    @Injected(\.colors) private var colors
+    @Injected(\.images) private var images
+    @Injected(\.tokens) private var tokens
+
+    public init() {}
+
+    public var body: some View {
+        HStack(spacing: tokens.spacingXxs) {
+            Image(uiImage: images.messageListErrorIndicator)
+                .customizable()
+                .frame(width: 16, height: 16)
+                .foregroundColor(Color(colors.badgeBackgroundError))
+                .accessibilityHidden(true)
+            Text(L10n.Channel.Item.messageFailedToSend)
+        }
+        .font(fonts.subheadline)
+        .foregroundColor(Color(colors.accentError))
+        .lineLimit(1)
+    }
+}
+
+/// Draft subtitle variant for the channel list item: a "Draft:" prefix
+/// followed by the draft message text.
+public struct ChatChannelListItemDraftPreviewView: View {
+    @Injected(\.fonts) private var fonts
+    @Injected(\.colors) private var colors
+
+    /// The formatted draft message text.
+    public let draftMessageText: String
+
+    public init(draftMessageText: String) {
+        self.draftMessageText = draftMessageText
+    }
+
+    public var body: some View {
+        HStack(spacing: 2) {
+            LabelWithColon(text: L10n.Message.Preview.draft, weight: .semibold, trailingSpace: true)
+                .font(fonts.subheadline)
+                .foregroundColor(Color(colors.accentPrimary))
+            SubtitleText(text: draftMessageText)
+        }
+    }
+}
+
+/// Deleted-preview subtitle variant for the channel list item: an optional
+/// "You:" prefix when the deleted message was sent by the current user,
+/// followed by a "nosign" icon and the deleted placeholder text.
+public struct ChatChannelListItemDeletedPreviewView: View {
+    @Injected(\.fonts) private var fonts
+    @Injected(\.colors) private var colors
+    @Injected(\.tokens) private var tokens
+
+    /// Whether the deleted preview message was sent by the current user.
+    public let isPreviewMessageSentByCurrentUser: Bool
+
+    public init(isPreviewMessageSentByCurrentUser: Bool) {
+        self.isPreviewMessageSentByCurrentUser = isPreviewMessageSentByCurrentUser
+    }
+
+    public var body: some View {
+        HStack(spacing: tokens.spacingXxs) {
+            if isPreviewMessageSentByCurrentUser {
+                LabelWithColon(text: L10n.Channel.Item.you, weight: .semibold)
+                    .font(fonts.subheadline)
+            }
+            Image(systemName: "nosign")
+                .resizable()
+                .scaledToFit()
+                .frame(width: 16, height: 16)
+                .accessibilityHidden(true)
+            Text(L10n.Message.deletedMessagePlaceholder)
+        }
+        .lineLimit(1)
+        .font(fonts.subheadline)
+        .foregroundColor(Color(colors.textTertiary))
+    }
+}
+
+/// Author-prefixed subtitle variant for the channel list item: "Author:"
+/// followed by an optional attachment icon and the preview content text.
+public struct ChatChannelListItemAuthorPreviewView: View {
+    @Injected(\.fonts) private var fonts
+    @Injected(\.colors) private var colors
+    @Injected(\.tokens) private var tokens
+
+    /// The author name shown before the preview content.
+    public let subtitleAuthorName: String
+    /// The preview message content text.
+    public let previewContentText: String
+    /// The icon image for the preview message attachment, when present.
+    public let previewAttachmentIconImage: UIImage?
+
+    public init(
+        subtitleAuthorName: String,
+        previewContentText: String,
+        previewAttachmentIconImage: UIImage?
+    ) {
+        self.subtitleAuthorName = subtitleAuthorName
+        self.previewContentText = previewContentText
+        self.previewAttachmentIconImage = previewAttachmentIconImage
+    }
+
+    public var body: some View {
+        HStack(spacing: tokens.spacingXxs) {
+            LabelWithColon(text: subtitleAuthorName, weight: .semibold)
+                .font(fonts.subheadline)
+                .foregroundColor(Color(colors.textTertiary))
+            ChatChannelListItemAttachmentIcon(image: previewAttachmentIconImage)
+            Text(previewContentText)
+        }
+        .lineLimit(1)
+        .font(fonts.subheadline)
+        .foregroundColor(Color(colors.textSecondary))
+    }
+}
+
+/// Attachment-only subtitle variant for the channel list item: an attachment
+/// icon followed by the preview text (used when there is no author prefix
+/// to show).
+public struct ChatChannelListItemAttachmentPreviewView: View {
+    @Injected(\.fonts) private var fonts
+    @Injected(\.colors) private var colors
+    @Injected(\.tokens) private var tokens
+
+    /// The formatted subtitle text shown next to the attachment icon.
+    public let subtitleText: String
+    /// The icon image for the preview message attachment, when present.
+    public let previewAttachmentIconImage: UIImage?
+
+    public init(
+        subtitleText: String,
+        previewAttachmentIconImage: UIImage?
+    ) {
+        self.subtitleText = subtitleText
+        self.previewAttachmentIconImage = previewAttachmentIconImage
+    }
+
+    public var body: some View {
+        HStack(spacing: tokens.spacingXxs) {
+            ChatChannelListItemAttachmentIcon(image: previewAttachmentIconImage)
+            Text(subtitleText)
+        }
+        .lineLimit(1)
+        .font(fonts.subheadline)
+        .foregroundColor(Color(colors.textSecondary))
+    }
+}
+
+/// The attachment icon used by the channel list item preview variants that
+/// display an attachment glyph before the text.
+public struct ChatChannelListItemAttachmentIcon: View {
+    @Injected(\.tokens) private var tokens
+
+    /// The image to render as the attachment icon. Renders nothing when `nil`.
+    public let image: UIImage?
+
+    public init(image: UIImage?) {
+        self.image = image
+    }
+
+    @ViewBuilder
+    public var body: some View {
+        if let image {
+            Image(uiImage: image)
+                .customizable()
+                .frame(width: tokens.iconSizeSm, height: tokens.iconSizeSm)
+                .accessibilityHidden(true)
+        }
+    }
+}
+
+/// A label followed by a colon (and optional trailing space). Used as the
+/// author / draft / "You" prefix inside the subtitle variants.
+private struct LabelWithColon: View {
+    let text: String
+    let weight: Font.Weight
+    let trailingSpace: Bool
+
+    init(text: String, weight: Font.Weight = .regular, trailingSpace: Bool = false) {
+        self.text = text
+        self.weight = weight
+        self.trailingSpace = trailingSpace
+    }
+
+    var body: some View {
+        HStack(spacing: 0) {
+            Text(text).fontWeight(weight)
+            Text(verbatim: trailingSpace ? ": " : ":").fontWeight(weight)
+        }
     }
 }
