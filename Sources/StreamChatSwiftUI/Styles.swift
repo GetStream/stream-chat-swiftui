@@ -256,12 +256,12 @@ public final class MessageStackedAttachmentsBubbleModifierOptions {
 public final class MessageAttachmentBubbleModifierOptions {
     public let message: ChatMessage
     public let isFirst: Bool
-    public let attachmentType: AttachmentType
+    public let attachmentType: AttachmentType?
 
     public init(
         message: ChatMessage,
         isFirst: Bool,
-        attachmentType: AttachmentType
+        attachmentType: AttachmentType? = nil
     ) {
         self.message = message
         self.isFirst = isFirst

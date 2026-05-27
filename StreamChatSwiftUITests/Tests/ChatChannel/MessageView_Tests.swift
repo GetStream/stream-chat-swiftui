@@ -1996,15 +1996,15 @@ private struct CustomMessageAttachmentBubbleModifier: ViewModifier {
 
     private var borderColor: Color {
         switch options.attachmentType {
-        case .file:
+        case .some(.file):
             return .red
-        case .voiceRecording:
+        case .some(.voiceRecording):
             return .green
-        case .linkPreview:
+        case .some(.linkPreview):
             return .purple
-        case .image:
+        case .some(.image):
             return .blue
-        case .video:
+        case .some(.video):
             return .orange
         default:
             return Color(colors.accentPrimary)
@@ -2013,7 +2013,7 @@ private struct CustomMessageAttachmentBubbleModifier: ViewModifier {
 
     private var borderWidth: CGFloat {
         switch options.attachmentType {
-        case .linkPreview:
+        case .some(.linkPreview):
             return 3
         default:
             return 2

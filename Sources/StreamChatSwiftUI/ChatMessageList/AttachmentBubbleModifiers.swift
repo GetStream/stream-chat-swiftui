@@ -120,7 +120,7 @@ struct DefaultMessageAttachmentBubbleModifier: ViewModifier {
     @ViewBuilder
     func body(content: Content) -> some View {
         switch options.attachmentType {
-        case .file:
+        case .some(.file):
             content.modifier(AttachmentContainerModifier(
                 bubbleInsets: EdgeInsets(),
                 backgroundColor: defaultAttachmentBackgroundColor,
@@ -128,7 +128,7 @@ struct DefaultMessageAttachmentBubbleModifier: ViewModifier {
                 cornerRadius: tokens.messageBubbleRadiusAttachment,
                 corners: attachmentCorners(isSingleWithoutCaption: options.message.isSingleFileWithoutCaption)
             ))
-        case .voiceRecording:
+        case .some(.voiceRecording):
             // A voice recording quoted without a caption renders flat inside the message bubble.
             if isVoiceRecordingContainerShown {
                 content.modifier(AttachmentContainerModifier(
@@ -146,7 +146,7 @@ struct DefaultMessageAttachmentBubbleModifier: ViewModifier {
             } else {
                 content
             }
-        case .linkPreview:
+        case .some(.linkPreview):
             content.modifier(AttachmentContainerModifier(
                 bubbleInsets: EdgeInsets(),
                 backgroundColor: defaultAttachmentBackgroundColor,
@@ -154,7 +154,7 @@ struct DefaultMessageAttachmentBubbleModifier: ViewModifier {
                 cornerRadius: tokens.messageBubbleRadiusAttachment,
                 corners: .allCorners
             ))
-        case .image, .video:
+        case .some(.image), .some(.video):
             content.modifier(AttachmentContainerModifier(
                 bubbleInsets: EdgeInsets(),
                 backgroundColor: .clear,
@@ -163,6 +163,14 @@ struct DefaultMessageAttachmentBubbleModifier: ViewModifier {
                     : nil,
                 cornerRadius: mediaCornerRadius,
                 corners: attachmentCorners(isSingleWithoutCaption: options.message.hasSingleMediaAttachmentWithoutCaption)
+            ))
+        case .none:
+            content.modifier(AttachmentContainerModifier(
+                bubbleInsets: EdgeInsets(),
+                backgroundColor: defaultAttachmentBackgroundColor,
+                borderColor: nil,
+                cornerRadius: tokens.messageBubbleRadiusAttachment,
+                corners: .allCorners
             ))
         default:
             // Other attachment types (e.g. giphy, audio, custom) are not wrapped in a container bubble.
