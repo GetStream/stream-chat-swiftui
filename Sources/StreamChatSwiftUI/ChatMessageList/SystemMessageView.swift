@@ -30,5 +30,6 @@ public struct SystemMessageView: View {
                     .stroke(Color(colors.borderCoreSubtle), lineWidth: 1)
             )
             .standardPadding()
+            .frame(maxWidth: .infinity)
     }
 }
