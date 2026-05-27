@@ -114,15 +114,21 @@ class InputTextView: UITextView, AccessibilityView {
     }
 
     private func applyTextAlignmentForCurrentDirection() {
+        // The text view itself always uses `.natural` alignment so that
+        // characters whose visual position depends on bidi resolution
+        // (including spaces, especially trailing ones) are rendered
+        // correctly. Forcing `.right`/`.left` on a UITextView causes
+        // trailing whitespace to be visually trimmed which makes pressing
+        // spacebar appear to do nothing in RTL composers.
+        // The placeholder follows the configured layout direction so that
+        // it appears on the correct side of an empty composer.
+        textAlignment = .natural
         switch semanticContentAttribute {
         case .forceRightToLeft:
-            textAlignment = .right
             placeholderLabel.textAlignment = .right
         case .forceLeftToRight:
-            textAlignment = .left
             placeholderLabel.textAlignment = .left
         default:
-            textAlignment = .natural
             placeholderLabel.textAlignment = .natural
         }
     }
