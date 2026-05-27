@@ -39,17 +39,17 @@ public protocol Styles {
     /// - Parameter messageModifierInfo: the message modifier info, that will be applied to the message.
     func makeMessageViewModifier(for messageModifierInfo: MessageModifierInfo) -> MessageViewModifier
 
-    associatedtype MessageStackedAttachmentsBubbleModifier: ViewModifier
+    associatedtype MessageAttachmentsViewModifier: ViewModifier
     /// Returns a view modifier applied to the outer stacked attachments bubble.
-    func makeMessageStackedAttachmentsBubbleModifier(
-        options: MessageStackedAttachmentsBubbleModifierOptions
-    ) -> MessageStackedAttachmentsBubbleModifier
+    func makeMessageAttachmentsViewModifier(
+        options: MessageAttachmentsViewModifierOptions
+    ) -> MessageAttachmentsViewModifier
 
-    associatedtype MessageAttachmentBubbleModifier: ViewModifier
+    associatedtype MessageAttachmentItemViewModifier: ViewModifier
     /// Returns a view modifier applied to an individual attachment bubble.
-    func makeMessageAttachmentBubbleModifier(
-        options: MessageAttachmentBubbleModifierOptions
-    ) -> MessageAttachmentBubbleModifier
+    func makeMessageAttachmentItemViewModifier(
+        options: MessageAttachmentItemViewModifierOptions
+    ) -> MessageAttachmentItemViewModifier
 
     associatedtype BouncedMessageActionsModifierType: ViewModifier
     /// Returns a view modifier applied to the bounced message actions.
@@ -106,16 +106,16 @@ extension Styles {
         )
     }
 
-    public func makeMessageStackedAttachmentsBubbleModifier(
-        options: MessageStackedAttachmentsBubbleModifierOptions
+    public func makeMessageAttachmentsViewModifier(
+        options: MessageAttachmentsViewModifierOptions
     ) -> some ViewModifier {
-        DefaultMessageStackedAttachmentsBubbleModifier(styles: self, options: options)
+        DefaultMessageAttachmentsViewModifier(styles: self, options: options)
     }
 
-    public func makeMessageAttachmentBubbleModifier(
-        options: MessageAttachmentBubbleModifierOptions
+    public func makeMessageAttachmentItemViewModifier(
+        options: MessageAttachmentItemViewModifierOptions
     ) -> some ViewModifier {
-        DefaultMessageAttachmentBubbleModifier(options: options)
+        DefaultMessageAttachmentItemViewModifier(options: options)
     }
     
     public func makeBouncedMessageActionsModifier(viewModel: ChatChannelViewModel) -> some ViewModifier {
@@ -242,7 +242,7 @@ public class ToolbarConfirmActionModifierOptions {
 }
 
 /// Options for styling the outer attachments stack bubble.
-public final class MessageStackedAttachmentsBubbleModifierOptions {
+public final class MessageAttachmentsViewModifierOptions {
     public let message: ChatMessage
     public let isFirst: Bool
 
@@ -253,7 +253,7 @@ public final class MessageStackedAttachmentsBubbleModifierOptions {
 }
 
 /// Options for styling an individual attachment bubble.
-public final class MessageAttachmentBubbleModifierOptions {
+public final class MessageAttachmentItemViewModifierOptions {
     public let message: ChatMessage
     public let isFirst: Bool
     public let attachmentType: AttachmentType?

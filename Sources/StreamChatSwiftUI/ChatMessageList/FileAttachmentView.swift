@@ -37,8 +37,8 @@ public struct FileAttachmentsContainer<Factory: ViewFactory>: View {
                     isFirst: isFirst
                 )
                 .modifier(
-                    factory.styles.makeMessageAttachmentBubbleModifier(
-                        options: MessageAttachmentBubbleModifierOptions(
+                    factory.styles.makeMessageAttachmentItemViewModifier(
+                        options: MessageAttachmentItemViewModifierOptions(
                             message: message,
                             isFirst: isFirst,
                             attachmentType: .file

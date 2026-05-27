@@ -42,8 +42,8 @@ public struct ChatQuotedMessageView<Factory: ViewFactory>: View {
             )
         )
         .modifier(
-            factory.styles.makeMessageAttachmentBubbleModifier(
-                options: MessageAttachmentBubbleModifierOptions(
+            factory.styles.makeMessageAttachmentItemViewModifier(
+                options: MessageAttachmentItemViewModifierOptions(
                     message: parentMessage,
                     isFirst: true
                 )

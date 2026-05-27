@@ -149,29 +149,29 @@ import XCTest
         XCTAssert(view is MessageAttachmentsView<DefaultViewFactory>)
     }
 
-    func test_styles_makeMessageStackedAttachmentsBubbleModifier() {
+    func test_styles_makeMessageAttachmentsViewModifier() {
         // Given
         let styles = RegularStyles()
 
         // When
-        let modifier = styles.makeMessageStackedAttachmentsBubbleModifier(
-            options: MessageStackedAttachmentsBubbleModifierOptions(
+        let modifier = styles.makeMessageAttachmentsViewModifier(
+            options: MessageAttachmentsViewModifierOptions(
                 message: message,
                 isFirst: true
             )
         )
 
         // Then
-        XCTAssert(modifier is DefaultMessageStackedAttachmentsBubbleModifier<RegularStyles>)
+        XCTAssert(modifier is DefaultMessageAttachmentsViewModifier<RegularStyles>)
     }
 
-    func test_styles_makeMessageAttachmentBubbleModifier() {
+    func test_styles_makeMessageAttachmentItemViewModifier() {
         // Given
         let styles = RegularStyles()
 
         // When
-        let modifier = styles.makeMessageAttachmentBubbleModifier(
-            options: MessageAttachmentBubbleModifierOptions(
+        let modifier = styles.makeMessageAttachmentItemViewModifier(
+            options: MessageAttachmentItemViewModifierOptions(
                 message: message,
                 isFirst: true,
                 attachmentType: .file
@@ -179,7 +179,7 @@ import XCTest
         )
 
         // Then
-        XCTAssert(modifier is DefaultMessageAttachmentBubbleModifier)
+        XCTAssert(modifier is DefaultMessageAttachmentItemViewModifier)
     }
 
     func test_viewFactory_makeImageAttachmentView() {

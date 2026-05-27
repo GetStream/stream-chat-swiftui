@@ -275,8 +275,8 @@ public struct MessageMediaAttachmentsContainerView<Factory: ViewFactory>: View {
             } : nil
         )
         .modifier(
-            factory.styles.makeMessageAttachmentBubbleModifier(
-                options: MessageAttachmentBubbleModifierOptions(
+            factory.styles.makeMessageAttachmentItemViewModifier(
+                options: MessageAttachmentItemViewModifierOptions(
                     message: message,
                     isFirst: isFirst,
                     attachmentType: item.type == .video ? .video : .image

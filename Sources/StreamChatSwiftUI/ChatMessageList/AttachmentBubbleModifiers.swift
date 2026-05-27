@@ -8,8 +8,8 @@ import SwiftUI
 /// Applies attachment container styling.
 ///
 /// Use this view modifier for customising individual attachment views.
-/// - SeeAlso: ``Styles/makeMessageAttachmentBubbleModifier(options:)->ViewModifier``
-public struct AttachmentContainerModifier: ViewModifier {
+/// - SeeAlso: ``Styles/makeMessageAttachmentItemViewModifier(options:)->ViewModifier``
+public struct AttachmentContainerViewModifier: ViewModifier {
     let bubbleInsets: EdgeInsets
     let backgroundColor: Color
     let borderColor: Color?
@@ -56,15 +56,15 @@ public struct AttachmentContainerModifier: ViewModifier {
     }
 }
 
-struct DefaultMessageStackedAttachmentsBubbleModifier<Style: Styles>: ViewModifier {
+struct DefaultMessageAttachmentsViewModifier<Style: Styles>: ViewModifier {
     @Injected(\.tokens) private var tokens
 
     let styles: Style
-    let options: MessageStackedAttachmentsBubbleModifierOptions
+    let options: MessageAttachmentsViewModifierOptions
 
     init(
         styles: Style,
-        options: MessageStackedAttachmentsBubbleModifierOptions
+        options: MessageAttachmentsViewModifierOptions
     ) {
         self.styles = styles
         self.options = options
@@ -105,15 +105,15 @@ struct DefaultMessageStackedAttachmentsBubbleModifier<Style: Styles>: ViewModifi
     }
 }
 
-struct DefaultMessageAttachmentBubbleModifier: ViewModifier {
+struct DefaultMessageAttachmentItemViewModifier: ViewModifier {
     @Injected(\.colors) private var colors
     @Injected(\.tokens) private var tokens
     @Injected(\.utils) private var utils
     @Environment(\.layoutDirection) private var layoutDirection
 
-    let options: MessageAttachmentBubbleModifierOptions
+    let options: MessageAttachmentItemViewModifierOptions
 
-    init(options: MessageAttachmentBubbleModifierOptions) {
+    init(options: MessageAttachmentItemViewModifierOptions) {
         self.options = options
     }
 
@@ -121,7 +121,7 @@ struct DefaultMessageAttachmentBubbleModifier: ViewModifier {
     func body(content: Content) -> some View {
         switch options.attachmentType {
         case .some(.file):
-            content.modifier(AttachmentContainerModifier(
+            content.modifier(AttachmentContainerViewModifier(
                 bubbleInsets: EdgeInsets(),
                 backgroundColor: defaultAttachmentBackgroundColor,
                 borderColor: Color(colors.borderCoreDefault),
@@ -131,7 +131,7 @@ struct DefaultMessageAttachmentBubbleModifier: ViewModifier {
         case .some(.voiceRecording):
             // A voice recording quoted without a caption renders flat inside the message bubble.
             if isVoiceRecordingContainerShown {
-                content.modifier(AttachmentContainerModifier(
+                content.modifier(AttachmentContainerViewModifier(
                     bubbleInsets: EdgeInsets(
                         top: tokens.spacingXs,
                         leading: tokens.spacingXs,
@@ -147,7 +147,7 @@ struct DefaultMessageAttachmentBubbleModifier: ViewModifier {
                 content
             }
         case .some(.linkPreview):
-            content.modifier(AttachmentContainerModifier(
+            content.modifier(AttachmentContainerViewModifier(
                 bubbleInsets: EdgeInsets(),
                 backgroundColor: defaultAttachmentBackgroundColor,
                 borderColor: Color(colors.borderCoreDefault),
@@ -155,7 +155,7 @@ struct DefaultMessageAttachmentBubbleModifier: ViewModifier {
                 corners: .allCorners
             ))
         case .some(.image), .some(.video):
-            content.modifier(AttachmentContainerModifier(
+            content.modifier(AttachmentContainerViewModifier(
                 bubbleInsets: EdgeInsets(),
                 backgroundColor: .clear,
                 borderColor: options.message.hasSingleMediaAttachmentWithoutCaption
@@ -165,7 +165,7 @@ struct DefaultMessageAttachmentBubbleModifier: ViewModifier {
                 corners: attachmentCorners(isSingleWithoutCaption: options.message.hasSingleMediaAttachmentWithoutCaption)
             ))
         case .none:
-            content.modifier(AttachmentContainerModifier(
+            content.modifier(AttachmentContainerViewModifier(
                 bubbleInsets: EdgeInsets(),
                 backgroundColor: defaultAttachmentBackgroundColor,
                 borderColor: nil,

@@ -43,8 +43,8 @@ public struct LinkAttachmentContainer<Factory: ViewFactory>: View {
             )
             .frame(width: width, alignment: message.isRightAligned ? .trailing : .leading)
             .modifier(
-                factory.styles.makeMessageAttachmentBubbleModifier(
-                    options: MessageAttachmentBubbleModifierOptions(
+                factory.styles.makeMessageAttachmentItemViewModifier(
+                    options: MessageAttachmentItemViewModifierOptions(
                         message: message,
                         isFirst: isFirst,
                         attachmentType: .linkPreview

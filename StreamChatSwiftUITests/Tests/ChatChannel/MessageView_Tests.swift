@@ -1935,20 +1935,20 @@ private final class CustomAttachmentBubbleStyles: DefaultTestStyles {
         self.attachmentBubbleCornerRadius = attachmentBubbleCornerRadius
     }
 
-    func makeMessageStackedAttachmentsBubbleModifier(
-        options: MessageStackedAttachmentsBubbleModifierOptions
+    func makeMessageAttachmentsViewModifier(
+        options: MessageAttachmentsViewModifierOptions
     ) -> some ViewModifier {
-        CustomStackedAttachmentsBubbleModifier(
+        CustomMessageAttachmentsViewModifier(
             options: options,
             bubbleInsets: stackedBubbleInsets,
             cornerRadius: stackedBubbleCornerRadius
         )
     }
 
-    func makeMessageAttachmentBubbleModifier(
-        options: MessageAttachmentBubbleModifierOptions
+    func makeMessageAttachmentItemViewModifier(
+        options: MessageAttachmentItemViewModifierOptions
     ) -> some ViewModifier {
-        CustomMessageAttachmentBubbleModifier(
+        CustomMessageAttachmentItemViewModifier(
             options: options,
             bubbleInsets: attachmentBubbleInsets,
             cornerRadius: attachmentBubbleCornerRadius
@@ -1956,8 +1956,8 @@ private final class CustomAttachmentBubbleStyles: DefaultTestStyles {
     }
 }
 
-private struct CustomStackedAttachmentsBubbleModifier: ViewModifier {
-    let options: MessageStackedAttachmentsBubbleModifierOptions
+private struct CustomMessageAttachmentsViewModifier: ViewModifier {
+    let options: MessageAttachmentsViewModifierOptions
     let bubbleInsets: EdgeInsets
     let cornerRadius: CGFloat?
 
@@ -1974,16 +1974,16 @@ private struct CustomStackedAttachmentsBubbleModifier: ViewModifier {
     }
 }
 
-private struct CustomMessageAttachmentBubbleModifier: ViewModifier {
+private struct CustomMessageAttachmentItemViewModifier: ViewModifier {
     @Injected(\.colors) private var colors
 
-    let options: MessageAttachmentBubbleModifierOptions
+    let options: MessageAttachmentItemViewModifierOptions
     let bubbleInsets: EdgeInsets
     let cornerRadius: CGFloat
 
     func body(content: Content) -> some View {
         content.modifier(
-            AttachmentContainerModifier(
+            AttachmentContainerViewModifier(
                 bubbleInsets: bubbleInsets,
                 backgroundColor: Color(colors.backgroundCoreSurfaceDefault),
                 borderColor: borderColor,

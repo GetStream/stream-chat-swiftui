@@ -124,8 +124,8 @@ public struct MessageAttachmentsView<Factory: ViewFactory>: View {
             }
         }
         .modifier(
-            factory.styles.makeMessageStackedAttachmentsBubbleModifier(
-                options: MessageStackedAttachmentsBubbleModifierOptions(
+            factory.styles.makeMessageAttachmentsViewModifier(
+                options: MessageAttachmentsViewModifierOptions(
                     message: message,
                     isFirst: isFirst
                 )

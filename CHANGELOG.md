@@ -4,7 +4,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 # Upcoming
 
 ### ✅ Added
-- Add message attachment bubble customisation via `AttachmentContainerModifier` and new `Styles` modifiers [#1477](https://github.com/GetStream/stream-chat-swiftui/pull/1477)
+- Add message attachment bubble customisation via `AttachmentContainerViewModifier` and new `Styles` modifiers [#1477](https://github.com/GetStream/stream-chat-swiftui/pull/1477)
 
 ### 🐞 Fixed
 - Fix index out of range crash when loading more messages [#1476](https://github.com/GetStream/stream-chat-swiftui/pull/1476)

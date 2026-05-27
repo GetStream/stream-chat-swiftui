@@ -52,8 +52,8 @@ public struct VoiceRecordingContainerView<Factory: ViewFactory>: View {
                     isSentByCurrentUser: message.isSentByCurrentUser
                 )
                 .modifier(
-                    factory.styles.makeMessageAttachmentBubbleModifier(
-                        options: MessageAttachmentBubbleModifierOptions(
+                    factory.styles.makeMessageAttachmentItemViewModifier(
+                        options: MessageAttachmentItemViewModifierOptions(
                             message: message,
                             isFirst: isFirst,
                             attachmentType: .voiceRecording
