@@ -830,6 +830,27 @@ import XCTest
         // Then
         XCTAssertEqual(3, viewModel.messages.count)
     }
+
+    func test_chatChannelVM_handleMessageAppear_whenDisplayedMessagesAreBehindDataSourceMessages_doesNotCrash() {
+        // Given
+        let message1 = ChatMessage.mock()
+        let message2 = ChatMessage.mock()
+        let replacementMessage = ChatMessage.mock()
+        let channelController = makeChannelController(messages: [message1, message2])
+        let viewModel = ChatChannelViewModel(channelController: channelController)
+        
+        viewModel.dataSource(
+            channelDataSource: ChatChannelDataSource(controller: channelController),
+            didUpdateMessages: [replacementMessage],
+            changes: [.remove(message2, index: IndexPath(row: 1, section: 0))]
+        )
+        
+        // When
+        viewModel.handleMessageAppear(index: 1, scrollDirection: .down)
+        
+        // Then
+        XCTAssertEqual([replacementMessage], viewModel.messages)
+    }
     
     func test_chatChannelVM_keepFirstUnreadIndexSetAfterMarkingTheChannelAsRead() {
         // Given
