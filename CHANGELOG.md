@@ -10,7 +10,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Fix the voice recording slide-to-cancel label moving in the wrong direction in RTL languages [#1478](https://github.com/GetStream/stream-chat-swiftui/pull/1478)
 - Fix attachments shifting when adding attachments to the composer in RTL languages [#1478](https://github.com/GetStream/stream-chat-swiftui/pull/1478)
 
-### 🔄 Changed
+### ✅ Added
 - Make `VoiceRecordingGestureOverlay` and `VoiceRecordingLockView` public (#1481)[https://github.com/GetStream/stream-chat-swiftui/pull/1481]
 
 ### ⚠️ Deprecated
