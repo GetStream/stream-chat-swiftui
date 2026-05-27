@@ -456,4 +456,137 @@ import XCTest
 
         XCTAssertFalse(viewModel.shouldShowTypingIndicator)
     }
+
+    // MARK: - Subtitle (combined)
+
+    func test_subtitle_whenLastMessageFailedToSend_returnsFailedToSend() {
+        let message = ChatMessage.mock(
+            id: .unique,
+            cid: .unique,
+            text: "Hi",
+            author: .mock(id: Self.currentUserId, name: "Me"),
+            localState: .sendingFailed,
+            isSentByCurrentUser: true
+        )
+        let channel = ChatChannel.mock(cid: .unique, latestMessages: [message])
+        let viewModel = ChatChannelListItemViewModel(channel: channel, channelName: "T")
+
+        guard case .failedToSend = viewModel.subtitle.kind else {
+            return XCTFail("Expected .failedToSend, got \(viewModel.subtitle.kind)")
+        }
+    }
+
+    func test_subtitle_whenTyping_returnsTypingWithChannel() {
+        let typingUser = ChatUser.mock(id: "yoda", name: "Yoda")
+        let channel = ChatChannel.mock(
+            cid: .unique,
+            config: .mock(typingEventsEnabled: true),
+            currentlyTypingUsers: [typingUser]
+        )
+        let viewModel = ChatChannelListItemViewModel(channel: channel, channelName: "T")
+
+        guard case let .typing(typingChannel) = viewModel.subtitle.kind else {
+            return XCTFail("Expected .typing, got \(viewModel.subtitle.kind)")
+        }
+        XCTAssertEqual(typingChannel.cid, channel.cid)
+    }
+
+    func test_subtitle_whenDraftAvailableAndEnabled_returnsDraftWithText() {
+        let draft = DraftMessage.mock(text: "Draft text")
+        let channel = ChatChannel.mock(cid: .unique, draftMessage: draft)
+        let viewModel = ChatChannelListItemViewModel(channel: channel, channelName: "T")
+
+        guard case let .draft(text) = viewModel.subtitle.kind else {
+            return XCTFail("Expected .draft, got \(viewModel.subtitle.kind)")
+        }
+        XCTAssertEqual(text, "Draft text")
+    }
+
+    func test_subtitle_whenPreviewMessageDeleted_returnsDeleted() {
+        let message = ChatMessage.mock(
+            id: .unique,
+            cid: .unique,
+            text: "Hi",
+            author: .mock(id: Self.currentUserId, name: "Me"),
+            createdAt: Date(timeIntervalSince1970: 0),
+            deletedAt: Date(timeIntervalSince1970: 100),
+            isSentByCurrentUser: true
+        )
+        let channel = ChatChannel.mock(cid: .unique, latestMessages: [message])
+        let viewModel = ChatChannelListItemViewModel(channel: channel, channelName: "T")
+
+        guard case let .deleted(isSentByCurrentUser) = viewModel.subtitle.kind else {
+            return XCTFail("Expected .deleted, got \(viewModel.subtitle.kind)")
+        }
+        XCTAssertTrue(isSentByCurrentUser)
+    }
+
+    func test_subtitle_whenGroupChannelWithMessage_returnsAuthorPreview() {
+        let message = ChatMessage.mock(
+            id: .unique,
+            cid: .unique,
+            text: "Hello there",
+            author: .mock(id: "yoda", name: "Yoda"),
+            isSentByCurrentUser: false
+        )
+        let channel = ChatChannel.mockNonDMChannel(latestMessages: [message])
+        let viewModel = ChatChannelListItemViewModel(channel: channel, channelName: "Group")
+
+        guard case let .authorPreview(authorName, contentText, attachmentIcon) = viewModel.subtitle.kind else {
+            return XCTFail("Expected .authorPreview, got \(viewModel.subtitle.kind)")
+        }
+        XCTAssertEqual(authorName, "Yoda")
+        XCTAssertTrue(contentText.contains("Hello there"))
+        XCTAssertNil(attachmentIcon)
+    }
+
+    func test_subtitle_whenDMChannelWithoutAuthorPrefix_returnsPlainText() {
+        let message = ChatMessage.mock(
+            id: .unique,
+            cid: .unique,
+            text: "Hi",
+            author: .mock(id: "other", name: "Other"),
+            isSentByCurrentUser: false
+        )
+        let channel = ChatChannel.mockDMChannel(memberCount: 2, latestMessages: [message])
+        let viewModel = ChatChannelListItemViewModel(channel: channel, channelName: "Other")
+
+        guard case let .plain(text) = viewModel.subtitle.kind else {
+            return XCTFail("Expected .plain, got \(viewModel.subtitle.kind)")
+        }
+        XCTAssertTrue(text.contains("Hi"))
+    }
+
+    func test_subtitle_whenNoPreviewMessage_returnsPlainEmptyPlaceholder() {
+        let channel = ChatChannel.mock(cid: .unique, latestMessages: [])
+        let viewModel = ChatChannelListItemViewModel(channel: channel, channelName: "T")
+
+        guard case let .plain(text) = viewModel.subtitle.kind else {
+            return XCTFail("Expected .plain, got \(viewModel.subtitle.kind)")
+        }
+        XCTAssertEqual(text, L10n.Channel.Item.emptyMessages)
+    }
+
+    func test_subtitle_precedence_failedToSendBeatsTyping() {
+        let typingUser = ChatUser.mock(id: "yoda", name: "Yoda")
+        let failed = ChatMessage.mock(
+            id: .unique,
+            cid: .unique,
+            text: "Hi",
+            author: .mock(id: Self.currentUserId, name: "Me"),
+            localState: .sendingFailed,
+            isSentByCurrentUser: true
+        )
+        let channel = ChatChannel.mock(
+            cid: .unique,
+            config: .mock(typingEventsEnabled: true),
+            currentlyTypingUsers: [typingUser],
+            latestMessages: [failed]
+        )
+        let viewModel = ChatChannelListItemViewModel(channel: channel, channelName: "T")
+
+        guard case .failedToSend = viewModel.subtitle.kind else {
+            return XCTFail("Expected .failedToSend to win over typing, got \(viewModel.subtitle.kind)")
+        }
+    }
 }

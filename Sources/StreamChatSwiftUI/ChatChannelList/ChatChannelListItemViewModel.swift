@@ -183,6 +183,38 @@ import SwiftUI
         return utils.messageAttachmentPreviewIconProvider.image(for: previewIcon)
     }
 
+    /// The subtitle variant to render for the channel list item.
+    ///
+    /// Combines the granular subtitle flags above into a single value that
+    /// can be passed to ``ChatChannelListItemSubtitleView``. The order of
+    /// precedence is: failed-to-send, typing, draft, deleted, author preview,
+    /// attachment preview, then plain text fallback.
+    public var subtitle: ChatChannelListItemSubtitle {
+        if lastMessageFailedToSend {
+            return .failedToSend()
+        }
+        if shouldShowTypingIndicator {
+            return .typing(channel: channel)
+        }
+        if isDraftMessagesEnabled, let draftText = draftMessageText {
+            return .draft(text: draftText)
+        }
+        if isPreviewMessageDeleted {
+            return .deleted(isSentByCurrentUser: isPreviewMessageSentByCurrentUser)
+        }
+        if let authorName = subtitleAuthorName {
+            return .authorPreview(
+                authorName: authorName,
+                contentText: previewContentText,
+                attachmentIcon: previewAttachmentIconImage
+            )
+        }
+        if let attachmentIcon = previewAttachmentIconImage {
+            return .attachmentPreview(text: subtitleText, attachmentIcon: attachmentIcon)
+        }
+        return .plain(text: subtitleText)
+    }
+
     // MARK: - Private
 
     private var previewMessage: ChatMessage? {

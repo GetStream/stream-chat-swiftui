@@ -94,17 +94,7 @@ public struct ChatChannelListItem<Factory: ViewFactory>: View {
                         }
                         ChatChannelListItemSubtitleView(
                             factory: factory,
-                            channel: viewModel.channel,
-                            lastMessageFailedToSend: viewModel.lastMessageFailedToSend,
-                            shouldShowTypingIndicator: viewModel.shouldShowTypingIndicator,
-                            isDraftMessagesEnabled: viewModel.isDraftMessagesEnabled,
-                            draftMessageText: viewModel.draftMessageText,
-                            isPreviewMessageDeleted: viewModel.isPreviewMessageDeleted,
-                            isPreviewMessageSentByCurrentUser: viewModel.isPreviewMessageSentByCurrentUser,
-                            subtitleAuthorName: viewModel.subtitleAuthorName,
-                            subtitleText: viewModel.subtitleText,
-                            previewContentText: viewModel.previewContentText,
-                            previewAttachmentIconImage: viewModel.previewAttachmentIconImage
+                            subtitle: viewModel.subtitle
                         )
                         Spacer()
                         if viewModel.shouldShowMutedTrailingIcon {
@@ -169,97 +159,60 @@ public struct ChatChannelListItemMutedIcon: View {
 
 /// The subtitle view used by the channel list item.
 ///
-/// Renders one of the channel preview variants based on the provided primitive
-/// flags. The variants, evaluated in order, are: failed-to-send, typing,
-/// draft, deleted, author-prefixed preview, attachment-only preview, and
-/// plain subtitle text.
+/// Renders one of the channel preview variants described by the provided
+/// ``ChatChannelListItemSubtitle`` value. Variants include: failed-to-send,
+/// typing, draft, deleted, author-prefixed preview, attachment-only preview,
+/// and plain subtitle text.
 ///
 /// The view is generic over `Factory` because the typing variant is rendered
 /// via `factory.makeSubtitleTypingIndicatorView(options:)`.
 public struct ChatChannelListItemSubtitleView<Factory: ViewFactory>: View {
     /// The factory used to build the typing indicator view.
     public let factory: Factory
-    /// The channel used as input to the typing indicator options.
-    public let channel: ChatChannel
-    /// Whether the last message failed to send.
-    public let lastMessageFailedToSend: Bool
-    /// Whether the typing indicator should be shown.
-    public let shouldShowTypingIndicator: Bool
-    /// Whether the draft messages feature is enabled.
-    public let isDraftMessagesEnabled: Bool
-    /// The formatted draft message text, when present.
-    public let draftMessageText: String?
-    /// Whether the preview message is deleted.
-    public let isPreviewMessageDeleted: Bool
-    /// Whether the preview message was sent by the current user.
-    public let isPreviewMessageSentByCurrentUser: Bool
-    /// The author name to show before the subtitle content, when applicable.
-    public let subtitleAuthorName: String?
-    /// The formatted subtitle text (preview, typing string, or empty placeholder).
-    public let subtitleText: String
-    /// The preview message content text without any author name prefix.
-    public let previewContentText: String
-    /// The icon image for the preview message attachment, when present.
-    public let previewAttachmentIconImage: UIImage?
+    /// The subtitle variant to render.
+    public let subtitle: ChatChannelListItemSubtitle
 
-    public init(
-        factory: Factory,
-        channel: ChatChannel,
-        lastMessageFailedToSend: Bool,
-        shouldShowTypingIndicator: Bool,
-        isDraftMessagesEnabled: Bool,
-        draftMessageText: String?,
-        isPreviewMessageDeleted: Bool,
-        isPreviewMessageSentByCurrentUser: Bool,
-        subtitleAuthorName: String?,
-        subtitleText: String,
-        previewContentText: String,
-        previewAttachmentIconImage: UIImage?
-    ) {
+    public init(factory: Factory, subtitle: ChatChannelListItemSubtitle) {
         self.factory = factory
-        self.channel = channel
-        self.lastMessageFailedToSend = lastMessageFailedToSend
-        self.shouldShowTypingIndicator = shouldShowTypingIndicator
-        self.isDraftMessagesEnabled = isDraftMessagesEnabled
-        self.draftMessageText = draftMessageText
-        self.isPreviewMessageDeleted = isPreviewMessageDeleted
-        self.isPreviewMessageSentByCurrentUser = isPreviewMessageSentByCurrentUser
-        self.subtitleAuthorName = subtitleAuthorName
-        self.subtitleText = subtitleText
-        self.previewContentText = previewContentText
-        self.previewAttachmentIconImage = previewAttachmentIconImage
+        self.subtitle = subtitle
     }
 
     public var body: some View {
         HStack(spacing: 4) {
-            if lastMessageFailedToSend {
-                ChatChannelListItemFailedToSendView()
-            } else if shouldShowTypingIndicator {
-                factory.makeSubtitleTypingIndicatorView(
-                    options: SubtitleTypingIndicatorViewOptions(channel: channel)
-                )
-            } else if isDraftMessagesEnabled, let draftText = draftMessageText {
-                ChatChannelListItemDraftPreviewView(draftMessageText: draftText)
-            } else if isPreviewMessageDeleted {
-                ChatChannelListItemDeletedPreviewView(
-                    isPreviewMessageSentByCurrentUser: isPreviewMessageSentByCurrentUser
-                )
-            } else if let authorName = subtitleAuthorName {
-                ChatChannelListItemAuthorPreviewView(
-                    subtitleAuthorName: authorName,
-                    previewContentText: previewContentText,
-                    previewAttachmentIconImage: previewAttachmentIconImage
-                )
-            } else if previewAttachmentIconImage != nil {
-                ChatChannelListItemAttachmentPreviewView(
-                    subtitleText: subtitleText,
-                    previewAttachmentIconImage: previewAttachmentIconImage
-                )
-            } else {
-                SubtitleText(text: subtitleText)
-            }
+            content
         }
         .accessibilityIdentifier("subtitleView")
+    }
+
+    @ViewBuilder
+    private var content: some View {
+        switch subtitle.kind {
+        case .failedToSend:
+            ChatChannelListItemFailedToSendView()
+        case let .typing(channel):
+            factory.makeSubtitleTypingIndicatorView(
+                options: SubtitleTypingIndicatorViewOptions(channel: channel)
+            )
+        case let .draft(text):
+            ChatChannelListItemDraftPreviewView(draftMessageText: text)
+        case let .deleted(isSentByCurrentUser):
+            ChatChannelListItemDeletedPreviewView(
+                isPreviewMessageSentByCurrentUser: isSentByCurrentUser
+            )
+        case let .authorPreview(authorName, contentText, attachmentIcon):
+            ChatChannelListItemAuthorPreviewView(
+                subtitleAuthorName: authorName,
+                previewContentText: contentText,
+                previewAttachmentIconImage: attachmentIcon
+            )
+        case let .attachmentPreview(text, attachmentIcon):
+            ChatChannelListItemAttachmentPreviewView(
+                subtitleText: text,
+                previewAttachmentIconImage: attachmentIcon
+            )
+        case let .plain(text):
+            SubtitleText(text: text)
+        }
     }
 }
 
