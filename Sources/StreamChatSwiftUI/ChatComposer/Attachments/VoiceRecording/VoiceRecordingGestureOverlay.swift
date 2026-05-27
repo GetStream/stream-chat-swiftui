@@ -7,6 +7,8 @@ import SwiftUI
 /// Transparent overlay that handles voice recording gestures. Placed on MessageComposerView
 /// so the drag can extend beyond the mic button bounds (e.g. drag up to lock).
 struct VoiceRecordingGestureOverlay: View {
+    @Environment(\.layoutDirection) private var layoutDirection
+
     @Binding var recordingState: VoiceRecordingState
     @Binding var gestureLocation: CGPoint
 
@@ -35,7 +37,7 @@ struct VoiceRecordingGestureOverlay: View {
             .gesture(
                 DragGesture(minimumDistance: 0)
                     .onChanged { value in
-                        let translation = CGPoint(x: value.translation.width, y: value.translation.height)
+                        let translation = normalizedTranslation(for: value.translation)
                         if !longPressed {
                             longPressStarted = Date()
                             longPressed = true
@@ -74,5 +76,18 @@ struct VoiceRecordingGestureOverlay: View {
                         }
                     }
             )
+    }
+
+    /// Returns the drag translation normalized so that the X axis always points
+    /// away from the mic button toward the cancel direction (negative X).
+    ///
+    /// In LTR the mic button is on the trailing/right side and the user drags
+    /// left to cancel — so we use the raw translation as-is. In RTL the mic
+    /// button is on the left side and the user drags right to cancel — we flip
+    /// the X so that downstream cancel/slide logic can operate in a single
+    /// coordinate system regardless of layout direction.
+    private func normalizedTranslation(for translation: CGSize) -> CGPoint {
+        let normalizedX = layoutDirection == .rightToLeft ? -translation.width : translation.width
+        return CGPoint(x: normalizedX, y: translation.height)
     }
 }

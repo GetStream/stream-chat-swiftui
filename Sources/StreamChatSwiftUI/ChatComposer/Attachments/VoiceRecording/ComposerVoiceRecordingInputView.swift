@@ -293,11 +293,7 @@ struct SlideToCancelLabel: View {
             direction: .trailingToLeading,
             intensity: .subtle
         )
-        .offset(x: slideOffset)
+        .offset(x: min(0, location.x))
         .animation(.interactiveSpring(response: 0.35, dampingFraction: 0.8), value: location.x)
-    }
-
-    private var slideOffset: CGFloat {
-        min(0, location.x)
     }
 }
