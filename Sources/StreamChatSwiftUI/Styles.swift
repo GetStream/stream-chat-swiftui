@@ -2,6 +2,7 @@
 // Copyright © 2026 Stream.io Inc. All rights reserved.
 //
 
+import StreamChat
 import SwiftUI
 
 @MainActor
@@ -37,6 +38,18 @@ public protocol Styles {
     /// Returns a view modifier applied to the message view.
     /// - Parameter messageModifierInfo: the message modifier info, that will be applied to the message.
     func makeMessageViewModifier(for messageModifierInfo: MessageModifierInfo) -> MessageViewModifier
+
+    associatedtype MessageStackedAttachmentsBubbleModifier: ViewModifier
+    /// Returns a view modifier applied to the outer stacked attachments bubble.
+    func makeMessageStackedAttachmentsBubbleModifier(
+        options: MessageStackedAttachmentsBubbleModifierOptions
+    ) -> MessageStackedAttachmentsBubbleModifier
+
+    associatedtype MessageAttachmentBubbleModifier: ViewModifier
+    /// Returns a view modifier applied to an individual attachment bubble.
+    func makeMessageAttachmentBubbleModifier(
+        options: MessageAttachmentBubbleModifierOptions
+    ) -> MessageAttachmentBubbleModifier
 
     associatedtype BouncedMessageActionsModifierType: ViewModifier
     /// Returns a view modifier applied to the bounced message actions.
@@ -91,6 +104,18 @@ extension Styles {
             cornerRadius: messageModifierInfo.cornerRadius,
             forceLeftToRight: messageModifierInfo.forceLeftToRight
         )
+    }
+
+    public func makeMessageStackedAttachmentsBubbleModifier(
+        options: MessageStackedAttachmentsBubbleModifierOptions
+    ) -> some ViewModifier {
+        DefaultMessageStackedAttachmentsBubbleModifier(styles: self, options: options)
+    }
+
+    public func makeMessageAttachmentBubbleModifier(
+        options: MessageAttachmentBubbleModifierOptions
+    ) -> some ViewModifier {
+        DefaultMessageAttachmentBubbleModifier(options: options)
     }
     
     public func makeBouncedMessageActionsModifier(viewModel: ChatChannelViewModel) -> some ViewModifier {
@@ -214,6 +239,34 @@ public class ScrollToBottomButtonModifierOptions {
 
 public class ToolbarConfirmActionModifierOptions {
     public init() {}
+}
+
+/// Options for styling the outer attachments stack bubble.
+public final class MessageStackedAttachmentsBubbleModifierOptions {
+    public let message: ChatMessage
+    public let isFirst: Bool
+
+    public init(message: ChatMessage, isFirst: Bool) {
+        self.message = message
+        self.isFirst = isFirst
+    }
+}
+
+/// Options for styling an individual attachment bubble.
+public final class MessageAttachmentBubbleModifierOptions {
+    public let message: ChatMessage
+    public let isFirst: Bool
+    public let attachmentType: AttachmentType
+
+    public init(
+        message: ChatMessage,
+        isFirst: Bool,
+        attachmentType: AttachmentType
+    ) {
+        self.message = message
+        self.isFirst = isFirst
+        self.attachmentType = attachmentType
+    }
 }
 
 public struct ComposerBackgroundRegularViewModifier: ViewModifier {

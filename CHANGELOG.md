@@ -4,7 +4,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 # Upcoming
 
 ### ✅ Added
-- Add customising `MessageAttachmentsView` bubble [#1477](https://github.com/GetStream/stream-chat-swiftui/pull/1477)
+- Add message attachment bubble customisation via `AttachmentContainerModifier` and new `Styles` modifiers [#1477](https://github.com/GetStream/stream-chat-swiftui/pull/1477)
 
 ### 🐞 Fixed
 - Fix `SystemMessageView` not expanding to full width, causing misaligned text in the message list [#1475](https://github.com/GetStream/stream-chat-swiftui/pull/1475)

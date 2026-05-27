@@ -51,7 +51,15 @@ public struct VoiceRecordingContainerView<Factory: ViewFactory>: View {
                     ),
                     isSentByCurrentUser: message.isSentByCurrentUser
                 )
-                .modifier(MessageAttachmentsBubbleConfiguration.VoiceRecordingContainerModifier(message: message, isFirst: isFirst))
+                .modifier(
+                    factory.styles.makeMessageAttachmentBubbleModifier(
+                        options: MessageAttachmentBubbleModifierOptions(
+                            message: message,
+                            isFirst: isFirst,
+                            attachmentType: .voiceRecording
+                        )
+                    )
+                )
             }
         }
         .frame(width: width, alignment: message.isRightAligned ? .trailing : .leading)
@@ -76,10 +84,6 @@ public struct VoiceRecordingContainerView<Factory: ViewFactory>: View {
         .onAppear {
             player.subscribe(handler)
         }
-    }
-    
-    private func index(for attachment: ChatMessageVoiceRecordingAttachment) -> Int {
-        message.voiceRecordingAttachments.firstIndex(of: attachment) ?? 0
     }
 }
 

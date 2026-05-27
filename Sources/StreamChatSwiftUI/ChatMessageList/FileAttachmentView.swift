@@ -36,11 +36,15 @@ public struct FileAttachmentsContainer<Factory: ViewFactory>: View {
                     width: width,
                     isFirst: isFirst
                 )
-                .modifier(MessageAttachmentsBubbleConfiguration.AttachmentContainerModifier(
-                    message: message,
-                    isFirst: isFirst,
-                    isSingleWithoutCaption: message.text.isEmpty && attachments.count == 1
-                ))
+                .modifier(
+                    factory.styles.makeMessageAttachmentBubbleModifier(
+                        options: MessageAttachmentBubbleModifierOptions(
+                            message: message,
+                            isFirst: isFirst,
+                            attachmentType: .file
+                        )
+                    )
+                )
             }
         }
         .accessibilityIdentifier("FileAttachmentsContainer")
