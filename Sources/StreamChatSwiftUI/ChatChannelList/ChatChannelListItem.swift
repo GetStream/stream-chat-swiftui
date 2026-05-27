@@ -154,57 +154,6 @@ public struct ChatChannelListItemMutedIcon: View {
     }
 }
 
-/// The subtitle view used by the channel list item.
-///
-/// Renders one of the channel preview variants described by the provided
-/// ``ChatChannelListItemSubtitle`` value. Variants include: failed-to-send,
-/// typing, draft, deleted, author-prefixed preview, attachment-only preview,
-/// and plain subtitle text.
-public struct ChatChannelListItemSubtitleView: View {
-    /// The subtitle variant to render.
-    public let subtitle: ChatChannelListItemSubtitle
-
-    public init(subtitle: ChatChannelListItemSubtitle) {
-        self.subtitle = subtitle
-    }
-
-    public var body: some View {
-        HStack(spacing: 4) {
-            content
-        }
-        .accessibilityIdentifier("subtitleView")
-    }
-
-    @ViewBuilder
-    private var content: some View {
-        switch subtitle.kind {
-        case .failedToSend:
-            ChatChannelListItemFailedToSendView()
-        case let .typing(text):
-            SubtitleTypingIndicatorView(text: text)
-        case let .draft(text):
-            ChatChannelListItemDraftPreviewView(draftMessageText: text)
-        case let .deleted(isSentByCurrentUser):
-            ChatChannelListItemDeletedPreviewView(
-                isPreviewMessageSentByCurrentUser: isSentByCurrentUser
-            )
-        case let .authorPreview(authorName, contentText, attachmentIcon):
-            ChatChannelListItemAuthorPreviewView(
-                subtitleAuthorName: authorName,
-                previewContentText: contentText,
-                previewAttachmentIconImage: attachmentIcon
-            )
-        case let .attachmentPreview(text, attachmentIcon):
-            ChatChannelListItemAttachmentPreviewView(
-                subtitleText: text,
-                previewAttachmentIconImage: attachmentIcon
-            )
-        case let .plain(text):
-            SubtitleText(text: text)
-        }
-    }
-}
-
 /// The style for the muted icon in the channel list item.
 public final class ChannelItemMutedLayoutStyle: Hashable, Sendable {
     let identifier: String
