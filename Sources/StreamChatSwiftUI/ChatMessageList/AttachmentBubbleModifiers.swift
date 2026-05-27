@@ -37,8 +37,8 @@ public struct AttachmentContainerViewModifier: ViewModifier {
         content
             .padding(bubbleInsets)
             .background(backgroundColor)
-            .clipShape(shape)
             .overlay(borderOverlay)
+            .clipShape(shape)
     }
 
     private var shape: BubbleBackgroundShape {
