@@ -4,16 +4,21 @@
 
 import SwiftUI
 
-/// Describes which variant the channel list item subtitle should render.
+/// Describes which variant the channel list item message preview should render.
+///
+/// The message preview is the second line of the row that summarises the
+/// channel's latest activity: the most recent message (with author prefix,
+/// attachment glyph, or deleted placeholder), a pending draft, a typing
+/// indicator, or a "failed to send" status.
 ///
 /// Built with the provided static factory methods. The underlying representation
 /// is intentionally hidden so new variants can be added in the future without
 /// breaking source compatibility for clients that switch on it.
 ///
-/// Use ``ChatChannelListItemViewModel/subtitle`` to obtain the default value
-/// for a given channel, or construct one of the variants explicitly when
-/// customizing the subtitle in a custom view.
-public struct ChatChannelListItemSubtitle {
+/// Use ``ChatChannelListItemViewModel/messagePreview`` to obtain the default
+/// value for a given channel, or construct one of the variants explicitly when
+/// rendering ``ChatChannelListItemMessagePreviewView`` in a custom layout.
+public struct ChatChannelListItemMessagePreview {
     enum Kind {
         case failedToSend
         case typing(text: String)
@@ -31,23 +36,23 @@ public struct ChatChannelListItemSubtitle {
     }
 
     /// Failed-to-send variant: shown when the last message failed to send.
-    public static func failedToSend() -> ChatChannelListItemSubtitle {
+    public static func failedToSend() -> ChatChannelListItemMessagePreview {
         .init(.failedToSend)
     }
 
     /// Typing-indicator variant: shown while other users in the channel are typing.
     /// The provided text is rendered as-is alongside the animated typing dots.
-    public static func typing(text: String) -> ChatChannelListItemSubtitle {
+    public static func typing(text: String) -> ChatChannelListItemMessagePreview {
         .init(.typing(text: text))
     }
 
     /// Draft variant: shown when there is a pending draft message in the channel.
-    public static func draft(text: String) -> ChatChannelListItemSubtitle {
+    public static func draft(text: String) -> ChatChannelListItemMessagePreview {
         .init(.draft(text: text))
     }
 
     /// Deleted variant: shown when the preview message has been deleted.
-    public static func deleted(isSentByCurrentUser: Bool) -> ChatChannelListItemSubtitle {
+    public static func deleted(isSentByCurrentUser: Bool) -> ChatChannelListItemMessagePreview {
         .init(.deleted(isSentByCurrentUser: isSentByCurrentUser))
     }
 
@@ -57,7 +62,7 @@ public struct ChatChannelListItemSubtitle {
         authorName: String,
         contentText: String,
         attachmentIcon: UIImage?
-    ) -> ChatChannelListItemSubtitle {
+    ) -> ChatChannelListItemMessagePreview {
         .init(.authorPreview(
             authorName: authorName,
             contentText: contentText,
@@ -70,40 +75,40 @@ public struct ChatChannelListItemSubtitle {
     public static func attachmentPreview(
         text: String,
         attachmentIcon: UIImage?
-    ) -> ChatChannelListItemSubtitle {
+    ) -> ChatChannelListItemMessagePreview {
         .init(.attachmentPreview(text: text, attachmentIcon: attachmentIcon))
     }
 
-    /// Plain subtitle text variant: used as the fallback when no other variant applies.
-    public static func plain(text: String) -> ChatChannelListItemSubtitle {
+    /// Plain preview text variant: used as the fallback when no other variant applies.
+    public static func plain(text: String) -> ChatChannelListItemMessagePreview {
         .init(.plain(text: text))
     }
 }
 
-/// The subtitle view used by the channel list item.
+/// The message preview view used by the channel list item.
 ///
 /// Renders one of the channel preview variants described by the provided
-/// ``ChatChannelListItemSubtitle`` value. Variants include: failed-to-send,
+/// ``ChatChannelListItemMessagePreview`` value. Variants include: failed-to-send,
 /// typing, draft, deleted, author-prefixed preview, attachment-only preview,
-/// and plain subtitle text.
-public struct ChatChannelListItemSubtitleView: View {
-    /// The subtitle variant to render.
-    public let subtitle: ChatChannelListItemSubtitle
+/// and plain preview text.
+public struct ChatChannelListItemMessagePreviewView: View {
+    /// The message preview variant to render.
+    public let messagePreview: ChatChannelListItemMessagePreview
 
-    public init(subtitle: ChatChannelListItemSubtitle) {
-        self.subtitle = subtitle
+    public init(messagePreview: ChatChannelListItemMessagePreview) {
+        self.messagePreview = messagePreview
     }
 
     public var body: some View {
         HStack(spacing: 4) {
             content
         }
-        .accessibilityIdentifier("subtitleView")
+        .accessibilityIdentifier("messagePreviewView")
     }
 
     @ViewBuilder
     private var content: some View {
-        switch subtitle.kind {
+        switch messagePreview.kind {
         case .failedToSend:
             ChatChannelListItemFailedToSendView()
         case let .typing(text):
@@ -116,13 +121,13 @@ public struct ChatChannelListItemSubtitleView: View {
             )
         case let .authorPreview(authorName, contentText, attachmentIcon):
             ChatChannelListItemAuthorPreviewView(
-                subtitleAuthorName: authorName,
+                messagePreviewAuthorName: authorName,
                 previewContentText: contentText,
                 previewAttachmentIconImage: attachmentIcon
             )
         case let .attachmentPreview(text, attachmentIcon):
             ChatChannelListItemAttachmentPreviewView(
-                subtitleText: text,
+                messagePreviewText: text,
                 previewAttachmentIconImage: attachmentIcon
             )
         case let .plain(text):

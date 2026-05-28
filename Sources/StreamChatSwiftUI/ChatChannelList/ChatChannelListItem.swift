@@ -92,7 +92,7 @@ public struct ChatChannelListItem<Factory: ViewFactory>: View {
                                 localState: viewModel.previewMessageLocalState
                             )
                         }
-                        ChatChannelListItemSubtitleView(subtitle: viewModel.subtitle)
+                        ChatChannelListItemMessagePreviewView(messagePreview: viewModel.messagePreview)
                         Spacer()
                         if viewModel.shouldShowMutedTrailingIcon {
                             ChatChannelListItemMutedIcon()
@@ -164,11 +164,11 @@ public final class ChannelItemMutedLayoutStyle: Hashable, Sendable {
     }
 
     /// This style shows the muted icon at the bottom right corner of the channel item.
-    /// The subtitle text shows the last message preview text.
+    /// The message preview shows the last message preview text.
     public static let bottomRightCorner: ChannelItemMutedLayoutStyle = .init("bottomRightCorner")
 
     /// This style shows the muted icon after the channel name.
-    /// The subtitle text shows the last message preview text.
+    /// The message preview shows the last message preview text.
     public static let afterChannelName: ChannelItemMutedLayoutStyle = .init("afterChannelName")
 
     public static func == (lhs: ChannelItemMutedLayoutStyle, rhs: ChannelItemMutedLayoutStyle) -> Bool {
@@ -180,10 +180,10 @@ public final class ChannelItemMutedLayoutStyle: Hashable, Sendable {
     }
 }
 
-// MARK: - Subtitle variants
+// MARK: - Message preview variants
 
-/// Failed-to-send subtitle variant for the channel list item: an error icon
-/// followed by the "message failed to send" label.
+/// Failed-to-send message preview variant for the channel list item: an error
+/// icon followed by the "message failed to send" label.
 public struct ChatChannelListItemFailedToSendView: View {
     @Injected(\.fonts) private var fonts
     @Injected(\.colors) private var colors
@@ -207,7 +207,7 @@ public struct ChatChannelListItemFailedToSendView: View {
     }
 }
 
-/// Draft subtitle variant for the channel list item: a "Draft:" prefix
+/// Draft message preview variant for the channel list item: a "Draft:" prefix
 /// followed by the draft message text.
 public struct ChatChannelListItemDraftPreviewView: View {
     @Injected(\.fonts) private var fonts
@@ -230,7 +230,7 @@ public struct ChatChannelListItemDraftPreviewView: View {
     }
 }
 
-/// Deleted-preview subtitle variant for the channel list item: an optional
+/// Deleted message preview variant for the channel list item: an optional
 /// "You:" prefix when the deleted message was sent by the current user,
 /// followed by a "nosign" icon and the deleted placeholder text.
 public struct ChatChannelListItemDeletedPreviewView: View {
@@ -264,33 +264,34 @@ public struct ChatChannelListItemDeletedPreviewView: View {
     }
 }
 
-/// Author-prefixed subtitle variant for the channel list item: "Author:"
-/// followed by an optional attachment icon and the preview content text.
+/// Author-prefixed message preview variant for the channel list item:
+/// "Author:" followed by an optional attachment icon and the preview content
+/// text.
 public struct ChatChannelListItemAuthorPreviewView: View {
     @Injected(\.fonts) private var fonts
     @Injected(\.colors) private var colors
     @Injected(\.tokens) private var tokens
 
     /// The author name shown before the preview content.
-    public let subtitleAuthorName: String
+    public let messagePreviewAuthorName: String
     /// The preview message content text.
     public let previewContentText: String
     /// The icon image for the preview message attachment, when present.
     public let previewAttachmentIconImage: UIImage?
 
     public init(
-        subtitleAuthorName: String,
+        messagePreviewAuthorName: String,
         previewContentText: String,
         previewAttachmentIconImage: UIImage?
     ) {
-        self.subtitleAuthorName = subtitleAuthorName
+        self.messagePreviewAuthorName = messagePreviewAuthorName
         self.previewContentText = previewContentText
         self.previewAttachmentIconImage = previewAttachmentIconImage
     }
 
     public var body: some View {
         HStack(spacing: tokens.spacingXxs) {
-            LabelWithColon(text: subtitleAuthorName, weight: .semibold)
+            LabelWithColon(text: messagePreviewAuthorName, weight: .semibold)
                 .font(fonts.subheadline)
                 .foregroundColor(Color(colors.textTertiary))
             ChatChannelListItemAttachmentIcon(image: previewAttachmentIconImage)
@@ -302,31 +303,31 @@ public struct ChatChannelListItemAuthorPreviewView: View {
     }
 }
 
-/// Attachment-only subtitle variant for the channel list item: an attachment
-/// icon followed by the preview text (used when there is no author prefix
-/// to show).
+/// Attachment-only message preview variant for the channel list item: an
+/// attachment icon followed by the preview text (used when there is no author
+/// prefix to show).
 public struct ChatChannelListItemAttachmentPreviewView: View {
     @Injected(\.fonts) private var fonts
     @Injected(\.colors) private var colors
     @Injected(\.tokens) private var tokens
 
-    /// The formatted subtitle text shown next to the attachment icon.
-    public let subtitleText: String
+    /// The formatted message preview text shown next to the attachment icon.
+    public let messagePreviewText: String
     /// The icon image for the preview message attachment, when present.
     public let previewAttachmentIconImage: UIImage?
 
     public init(
-        subtitleText: String,
+        messagePreviewText: String,
         previewAttachmentIconImage: UIImage?
     ) {
-        self.subtitleText = subtitleText
+        self.messagePreviewText = messagePreviewText
         self.previewAttachmentIconImage = previewAttachmentIconImage
     }
 
     public var body: some View {
         HStack(spacing: tokens.spacingXxs) {
             ChatChannelListItemAttachmentIcon(image: previewAttachmentIconImage)
-            Text(subtitleText)
+            Text(messagePreviewText)
         }
         .lineLimit(1)
         .font(fonts.subheadline)
@@ -334,8 +335,8 @@ public struct ChatChannelListItemAttachmentPreviewView: View {
     }
 }
 
-/// The attachment icon used by the channel list item preview variants that
-/// display an attachment glyph before the text.
+/// The attachment icon used by the channel list item message preview variants
+/// that display an attachment glyph before the text.
 public struct ChatChannelListItemAttachmentIcon: View {
     @Injected(\.tokens) private var tokens
 
@@ -358,7 +359,7 @@ public struct ChatChannelListItemAttachmentIcon: View {
 }
 
 /// A label followed by a colon (and optional trailing space). Used as the
-/// author / draft / "You" prefix inside the subtitle variants.
+/// author / draft / "You" prefix inside the message preview variants.
 private struct LabelWithColon: View {
     let text: String
     let weight: Font.Weight

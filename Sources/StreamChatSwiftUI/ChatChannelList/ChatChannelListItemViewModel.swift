@@ -111,7 +111,7 @@ import SwiftUI
         previewMessage?.localState
     }
 
-    // MARK: - Subtitle row
+    // MARK: - Message preview
 
     /// A boolean value indicating whether the last message failed to send.
     open var lastMessageFailedToSend: Bool {
@@ -119,7 +119,7 @@ import SwiftUI
     }
 
     /// A boolean value indicating whether a typing indicator should be shown
-    /// in the subtitle area.
+    /// in the message preview area.
     open var shouldShowTypingIndicator: Bool {
         !channel.currentlyTypingUsersFiltered(
             currentUserId: chatClient.currentUserId
@@ -156,11 +156,11 @@ import SwiftUI
         previewMessage?.isSentByCurrentUser == true
     }
 
-    /// The author name to display before the subtitle content, when applicable.
+    /// The author name to display before the message preview content, when applicable.
     ///
     /// Returns `nil` for direct message channels with two members, polls, or
     /// when there is no preview message.
-    open var subtitleAuthorName: String? {
+    open var messagePreviewAuthorName: String? {
         guard let previewMessage,
               previewMessage.poll == nil,
               !(channel.isDirectMessageChannel && channel.memberCount == 2) else {
@@ -172,11 +172,11 @@ import SwiftUI
         return previewMessage.author.name ?? previewMessage.author.id
     }
 
-    /// The formatted subtitle text for the channel item.
+    /// The formatted message preview text for the channel item.
     ///
-    /// Used as the fallback when no other subtitle variant applies, and as the
-    /// typing indicator string when typing is active.
-    open var subtitleText: String {
+    /// Used as the fallback when no other message preview variant applies, and
+    /// as the typing indicator string when typing is active.
+    open var messagePreviewText: String {
         if shouldShowTypingIndicator {
             return channel.typingIndicatorString(currentUserId: chatClient.currentUserId)
         }
@@ -200,13 +200,13 @@ import SwiftUI
         return utils.messageAttachmentPreviewIconProvider.image(for: previewIcon)
     }
 
-    /// The subtitle variant to render for the channel list item.
+    /// The message preview variant to render for the channel list item.
     ///
-    /// Combines the granular subtitle flags above into a single value that
-    /// can be passed to ``ChatChannelListItemSubtitleView``. The order of
-    /// precedence is: failed-to-send, typing, draft, deleted, author preview,
-    /// attachment preview, then plain text fallback.
-    open var subtitle: ChatChannelListItemSubtitle {
+    /// Combines the granular message preview flags above into a single value
+    /// that can be passed to ``ChatChannelListItemMessagePreviewView``. The
+    /// order of precedence is: failed-to-send, typing, draft, deleted, author
+    /// preview, attachment preview, then plain text fallback.
+    open var messagePreview: ChatChannelListItemMessagePreview {
         if lastMessageFailedToSend {
             return .failedToSend()
         }
@@ -219,7 +219,7 @@ import SwiftUI
         if isPreviewMessageDeleted {
             return .deleted(isSentByCurrentUser: isPreviewMessageSentByCurrentUser)
         }
-        if let authorName = subtitleAuthorName {
+        if let authorName = messagePreviewAuthorName {
             return .authorPreview(
                 authorName: authorName,
                 contentText: previewContentText,
@@ -227,9 +227,9 @@ import SwiftUI
             )
         }
         if let attachmentIcon = previewAttachmentIconImage {
-            return .attachmentPreview(text: subtitleText, attachmentIcon: attachmentIcon)
+            return .attachmentPreview(text: messagePreviewText, attachmentIcon: attachmentIcon)
         }
-        return .plain(text: subtitleText)
+        return .plain(text: messagePreviewText)
     }
 
     // MARK: - Private
