@@ -92,7 +92,7 @@ public struct ChatChannelListItem<Factory: ViewFactory>: View {
                                 localState: viewModel.previewMessageLocalState
                             )
                         }
-                        ChatChannelListItemMessagePreviewView(messagePreview: viewModel.messagePreview)
+                        ChatChannelListItemPreviewView(viewModel.preview)
                         Spacer()
                         if viewModel.shouldShowMutedTrailingIcon {
                             ChatChannelListItemMutedIcon()
@@ -180,7 +180,7 @@ public final class ChannelItemMutedLayoutStyle: Hashable, Sendable {
     }
 }
 
-// MARK: - Message preview variants
+// MARK: - Preview variants
 
 /// Failed-to-send message preview variant for the channel list item: an error
 /// icon followed by the "message failed to send" label.

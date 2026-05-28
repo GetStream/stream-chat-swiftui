@@ -39,11 +39,11 @@ enum ChannelListPage {
         }
 
         static func lastMessage(in cell: XCUIElement) -> XCUIElement {
-            cell.staticTexts["messagePreviewView"]
+            cell.staticTexts["previewView"]
         }
 
         static func lastMessageText(in cell: XCUIElement) -> String {
-            let previewElements = cell.staticTexts.matching(identifier: "messagePreviewView")
+            let previewElements = cell.staticTexts.matching(identifier: "previewView")
             _ = previewElements.firstMatch.wait()
             var combinedText = ""
             for i in 0..<previewElements.count {

@@ -99,15 +99,15 @@ import SwiftUI
         previewMessage?.localState
     }
 
-    // MARK: - Message preview
+    // MARK: - Preview
 
-    /// The message preview variant to render for the channel list item.
+    /// The preview variant to render for the channel list item.
     ///
-    /// Pass it to ``ChatChannelListItemMessagePreviewView``. The default
+    /// Pass it to ``ChatChannelListItemPreviewView``. The default
     /// implementation picks the first applicable variant in this order of
-    /// precedence: failed-to-send, typing, draft, deleted, author preview,
-    /// attachment preview, then plain text.
-    open var messagePreview: ChatChannelListItemMessagePreview {
+    /// precedence: failed-to-send, typing, draft, deleted, then a regular
+    /// message.
+    open var preview: ChatChannelListItemPreview {
         if lastMessageFailedToSend {
             return .failedToSend()
         }
@@ -120,17 +120,14 @@ import SwiftUI
         if isPreviewMessageDeleted {
             return .deleted(isSentByCurrentUser: isPreviewMessageSentByCurrentUser)
         }
-        if let authorName = messagePreviewAuthorName {
-            return .authorPreview(
+        let authorName = messagePreviewAuthorName
+        return .message(
+            .init(
+                text: authorName == nil ? messagePreviewText : previewContentText,
                 authorName: authorName,
-                contentText: previewContentText,
                 attachmentIcon: previewAttachmentIconImage
             )
-        }
-        if let attachmentIcon = previewAttachmentIconImage {
-            return .attachmentPreview(text: messagePreviewText, attachmentIcon: attachmentIcon)
-        }
-        return .plain(text: messagePreviewText)
+        )
     }
 
     // MARK: - Private

@@ -126,7 +126,7 @@ struct DemoAppChatChannelListItem: View {
             }
             Spacer()
         }
-        .accessibilityIdentifier("messagePreviewView")
+        .accessibilityIdentifier("previewView")
     }
 
     private var shouldShowReadEvents: Bool {
