@@ -68,17 +68,6 @@ import XCTest
         XCTAssertTrue(viewModel.hasUnread)
     }
 
-    func test_isMuted_followsChannelMuteDetails() {
-        let muted = ChatChannel.mock(
-            cid: .unique,
-            muteDetails: .init(createdAt: .unique, updatedAt: .unique, expiresAt: nil)
-        )
-        let notMuted = ChatChannel.mock(cid: .unique)
-
-        XCTAssertTrue(ChatChannelListItemViewModel(channel: muted, channelName: "T").isMuted)
-        XCTAssertFalse(ChatChannelListItemViewModel(channel: notMuted, channelName: "T").isMuted)
-    }
-
     func test_shouldShowInlineMutedIcon_whenMutedAndAfterChannelNameStyle_returnsTrue() {
         streamChat?.utils.channelListConfig.channelItemMutedStyle = .afterChannelName
         let channel = ChatChannel.mock(
@@ -111,96 +100,7 @@ import XCTest
         XCTAssertFalse(viewModel.shouldShowMutedTrailingIcon)
     }
 
-    // MARK: - Message preview: author
-
-    func test_messagePreviewAuthorName_whenDMChannelWithTwoMembers_returnsNil() {
-        let message = ChatMessage.mock(
-            id: .unique,
-            cid: .unique,
-            text: "Hi",
-            author: .mock(id: "other", name: "Other"),
-            isSentByCurrentUser: false
-        )
-        let channel = ChatChannel.mockDMChannel(memberCount: 2, latestMessages: [message])
-        let viewModel = ChatChannelListItemViewModel(channel: channel, channelName: "Other")
-
-        XCTAssertNil(viewModel.messagePreviewAuthorName)
-    }
-
-    func test_messagePreviewAuthorName_whenGroupChannelSentByCurrentUser_returnsYou() {
-        let message = ChatMessage.mock(
-            id: .unique,
-            cid: .unique,
-            text: "Hi",
-            author: .mock(id: Self.currentUserId, name: "Me"),
-            isSentByCurrentUser: true
-        )
-        let channel = ChatChannel.mockNonDMChannel(latestMessages: [message])
-        let viewModel = ChatChannelListItemViewModel(channel: channel, channelName: "Group")
-
-        XCTAssertEqual(viewModel.messagePreviewAuthorName, L10n.Channel.Item.you)
-    }
-
-    func test_messagePreviewAuthorName_whenGroupChannelSentByOther_returnsAuthorName() {
-        let message = ChatMessage.mock(
-            id: .unique,
-            cid: .unique,
-            text: "Hi",
-            author: .mock(id: "yoda", name: "Yoda"),
-            isSentByCurrentUser: false
-        )
-        let channel = ChatChannel.mockNonDMChannel(latestMessages: [message])
-        let viewModel = ChatChannelListItemViewModel(channel: channel, channelName: "Group")
-
-        XCTAssertEqual(viewModel.messagePreviewAuthorName, "Yoda")
-    }
-
-    func test_messagePreviewAuthorName_whenPreviewMessageIsPoll_returnsNil() {
-        let pollMessage = ChatMessage.mock(
-            id: .unique,
-            cid: .unique,
-            text: "",
-            author: .mock(id: "u", name: "User"),
-            isSentByCurrentUser: false,
-            poll: .mock(name: "Pick one")
-        )
-        let channel = ChatChannel.mockNonDMChannel(latestMessages: [pollMessage])
-        let viewModel = ChatChannelListItemViewModel(channel: channel, channelName: "Group")
-
-        XCTAssertNil(viewModel.messagePreviewAuthorName)
-    }
-
-    func test_messagePreviewAuthorName_whenNoPreviewMessage_returnsNil() {
-        let channel = ChatChannel.mockNonDMChannel(latestMessages: [])
-        let viewModel = ChatChannelListItemViewModel(channel: channel, channelName: "Group")
-
-        XCTAssertNil(viewModel.messagePreviewAuthorName)
-    }
-
-    // MARK: - Message preview: text
-
-    func test_messagePreviewText_whenNoPreviewMessage_returnsEmptyMessagesPlaceholder() {
-        let channel = ChatChannel.mock(cid: .unique, latestMessages: [])
-        let viewModel = ChatChannelListItemViewModel(channel: channel, channelName: "T")
-
-        XCTAssertEqual(viewModel.messagePreviewText, L10n.Channel.Item.emptyMessages)
-    }
-
-    func test_messagePreviewText_whenPreviewMessagePresent_returnsFormattedString() {
-        let message = ChatMessage.mock(
-            id: .unique,
-            cid: .unique,
-            text: "Hello there",
-            author: .mock(id: "u", name: "User"),
-            isSentByCurrentUser: false
-        )
-        let channel = ChatChannel.mockNonDMChannel(latestMessages: [message])
-        let viewModel = ChatChannelListItemViewModel(channel: channel, channelName: "Group")
-
-        XCTAssertTrue(viewModel.messagePreviewText.contains("Hello there"))
-    }
-
-    func test_previewMessage_skipsEphemeralMessages() {
+    func test_messagePreview_skipsEphemeralMessages() {
         let regular = ChatMessage.mock(
             id: .unique,
             cid: .unique,
@@ -222,118 +122,10 @@ import XCTest
         let channel = ChatChannel.mockDMChannel(memberCount: 2, latestMessages: [ephemeral, regular])
         let viewModel = ChatChannelListItemViewModel(channel: channel, channelName: "Other")
 
-        XCTAssertFalse(viewModel.isPreviewMessageSentByCurrentUser)
-        XCTAssertTrue(viewModel.messagePreviewText.contains("Hello there"))
-    }
-
-    func test_isPreviewMessageDeleted_whenPreviewIsDeleted_returnsTrue() {
-        let date = Date(timeIntervalSince1970: 100)
-        let message = ChatMessage.mock(
-            id: .unique,
-            cid: .unique,
-            text: "Deleted",
-            author: .mock(id: "u", name: "User"),
-            createdAt: date.addingTimeInterval(-100),
-            deletedAt: date,
-            isSentByCurrentUser: false
-        )
-        let channel = ChatChannel.mock(cid: .unique, latestMessages: [message])
-        let viewModel = ChatChannelListItemViewModel(channel: channel, channelName: "T")
-
-        XCTAssertTrue(viewModel.isPreviewMessageDeleted)
-    }
-
-    func test_isPreviewMessageSentByCurrentUser_followsMessageFlag() {
-        let mine = ChatMessage.mock(
-            id: .unique,
-            cid: .unique,
-            text: "Hi",
-            author: .mock(id: Self.currentUserId, name: "Me"),
-            isSentByCurrentUser: true
-        )
-        let others = ChatMessage.mock(
-            id: .unique,
-            cid: .unique,
-            text: "Hi",
-            author: .mock(id: "other", name: "Other"),
-            isSentByCurrentUser: false
-        )
-
-        let mineChannel = ChatChannel.mock(cid: .unique, latestMessages: [mine])
-        let othersChannel = ChatChannel.mock(cid: .unique, latestMessages: [others])
-
-        XCTAssertTrue(
-            ChatChannelListItemViewModel(channel: mineChannel, channelName: "T")
-                .isPreviewMessageSentByCurrentUser
-        )
-        XCTAssertFalse(
-            ChatChannelListItemViewModel(channel: othersChannel, channelName: "T")
-                .isPreviewMessageSentByCurrentUser
-        )
-    }
-
-    // MARK: - Failed to send
-
-    func test_lastMessageFailedToSend_whenLocalStateIsSendingFailed_returnsTrue() {
-        let message = ChatMessage.mock(
-            id: .unique,
-            cid: .unique,
-            text: "Hi",
-            author: .mock(id: Self.currentUserId, name: "Me"),
-            localState: .sendingFailed,
-            isSentByCurrentUser: true
-        )
-        let channel = ChatChannel.mock(cid: .unique, latestMessages: [message])
-        let viewModel = ChatChannelListItemViewModel(channel: channel, channelName: "T")
-
-        XCTAssertTrue(viewModel.lastMessageFailedToSend)
-    }
-
-    func test_lastMessageFailedToSend_whenLocalStateIsNil_returnsFalse() {
-        let message = ChatMessage.mock(
-            id: .unique,
-            cid: .unique,
-            text: "Hi",
-            author: .mock(id: Self.currentUserId, name: "Me"),
-            localState: nil,
-            isSentByCurrentUser: true
-        )
-        let channel = ChatChannel.mock(cid: .unique, latestMessages: [message])
-        let viewModel = ChatChannelListItemViewModel(channel: channel, channelName: "T")
-
-        XCTAssertFalse(viewModel.lastMessageFailedToSend)
-    }
-
-    // MARK: - Drafts
-
-    func test_isDraftMessagesEnabled_followsConfig() {
-        streamChat?.utils.messageListConfig = .init(draftMessagesEnabled: true)
-        let channel = ChatChannel.mock(cid: .unique)
-        XCTAssertTrue(
-            ChatChannelListItemViewModel(channel: channel, channelName: "T")
-                .isDraftMessagesEnabled
-        )
-
-        streamChat?.utils.messageListConfig = .init(draftMessagesEnabled: false)
-        XCTAssertFalse(
-            ChatChannelListItemViewModel(channel: channel, channelName: "T")
-                .isDraftMessagesEnabled
-        )
-    }
-
-    func test_draftMessageText_whenNoDraft_returnsNil() {
-        let channel = ChatChannel.mock(cid: .unique, draftMessage: nil)
-        let viewModel = ChatChannelListItemViewModel(channel: channel, channelName: "T")
-
-        XCTAssertNil(viewModel.draftMessageText)
-    }
-
-    func test_draftMessageText_whenDraftPresent_returnsFormattedString() {
-        let draft = DraftMessage.mock(text: "Draft text")
-        let channel = ChatChannel.mock(cid: .unique, draftMessage: draft)
-        let viewModel = ChatChannelListItemViewModel(channel: channel, channelName: "T")
-
-        XCTAssertEqual(viewModel.draftMessageText, "Draft text")
+        guard case let .plain(text) = viewModel.messagePreview.kind else {
+            return XCTFail("Expected .plain, got \(viewModel.messagePreview.kind)")
+        }
+        XCTAssertTrue(text.contains("Hello there"))
     }
 
     // MARK: - Read events
@@ -437,43 +229,6 @@ import XCTest
         XCTAssertEqual(viewModel.previewMessageLocalState, .sendingFailed)
     }
 
-    // MARK: - Typing indicator
-
-    func test_shouldShowTypingIndicator_whenNoOneIsTyping_returnsFalse() {
-        let channel = ChatChannel.mock(
-            cid: .unique,
-            config: .mock(typingEventsEnabled: true),
-            currentlyTypingUsers: []
-        )
-        let viewModel = ChatChannelListItemViewModel(channel: channel, channelName: "T")
-
-        XCTAssertFalse(viewModel.shouldShowTypingIndicator)
-    }
-
-    func test_shouldShowTypingIndicator_whenSomeoneIsTypingAndEventsEnabled_returnsTrue() {
-        let typingUser = ChatUser.mock(id: "yoda", name: "Yoda")
-        let channel = ChatChannel.mock(
-            cid: .unique,
-            config: .mock(typingEventsEnabled: true),
-            currentlyTypingUsers: [typingUser]
-        )
-        let viewModel = ChatChannelListItemViewModel(channel: channel, channelName: "T")
-
-        XCTAssertTrue(viewModel.shouldShowTypingIndicator)
-    }
-
-    func test_shouldShowTypingIndicator_whenTypingEventsDisabled_returnsFalse() {
-        let typingUser = ChatUser.mock(id: "yoda", name: "Yoda")
-        let channel = ChatChannel.mock(
-            cid: .unique,
-            config: .mock(typingEventsEnabled: false),
-            currentlyTypingUsers: [typingUser]
-        )
-        let viewModel = ChatChannelListItemViewModel(channel: channel, channelName: "T")
-
-        XCTAssertFalse(viewModel.shouldShowTypingIndicator)
-    }
-
     // MARK: - Message preview (combined)
 
     func test_messagePreview_whenLastMessageFailedToSend_returnsFailedToSend() {
@@ -505,23 +260,8 @@ import XCTest
         guard case let .typing(text) = viewModel.messagePreview.kind else {
             return XCTFail("Expected .typing, got \(viewModel.messagePreview.kind)")
         }
-        XCTAssertEqual(text, viewModel.typingIndicatorText)
+        XCTAssertEqual(text, channel.typingIndicatorString(currentUserId: Self.currentUserId))
         XCTAssertFalse(text.isEmpty)
-    }
-
-    func test_typingIndicatorText_matchesChannelTypingIndicatorString() {
-        let typingUser = ChatUser.mock(id: "yoda", name: "Yoda")
-        let channel = ChatChannel.mock(
-            cid: .unique,
-            config: .mock(typingEventsEnabled: true),
-            currentlyTypingUsers: [typingUser]
-        )
-        let viewModel = ChatChannelListItemViewModel(channel: channel, channelName: "T")
-
-        XCTAssertEqual(
-            viewModel.typingIndicatorText,
-            channel.typingIndicatorString(currentUserId: Self.currentUserId)
-        )
     }
 
     func test_messagePreview_whenDraftAvailableAndEnabled_returnsDraftWithText() {

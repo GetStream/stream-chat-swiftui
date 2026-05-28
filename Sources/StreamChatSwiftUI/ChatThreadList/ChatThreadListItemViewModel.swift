@@ -153,9 +153,9 @@ import SwiftUI
         Array(thread.threadParticipants.prefix(3).map(\.user))
     }
 
-    /// The author of the latest reply in the thread, used by the latest-reply
-    /// avatar properties above.
-    open var latestReplyAuthor: ChatUser? {
+    // MARK: - Private
+
+    private var latestReplyAuthor: ChatUser? {
         thread.latestReplies.last?.author
     }
 }
