@@ -5,6 +5,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### ✅ Added
 - Add message attachment bubble customisation via `Styles.makeMessageAttachmentsViewModifier(options:)` and `Styles.makeMessageAttachmentItemViewModifier(options:)` [#1477](https://github.com/GetStream/stream-chat-swiftui/pull/1477)
+- Make `VoiceRecordingGestureOverlay` and `VoiceRecordingLockView` public (#1481)[https://github.com/GetStream/stream-chat-swiftui/pull/1481]
 
 ### 🐞 Fixed
 - Fix index out of range crash when loading more messages [#1476](https://github.com/GetStream/stream-chat-swiftui/pull/1476)
@@ -12,9 +13,6 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Show trailing spaces in the composer text input in RTL languages [#1478](https://github.com/GetStream/stream-chat-swiftui/pull/1478)
 - Fix the voice recording slide-to-cancel label moving in the wrong direction in RTL languages [#1478](https://github.com/GetStream/stream-chat-swiftui/pull/1478)
 - Fix attachments shifting when adding attachments to the composer in RTL languages [#1478](https://github.com/GetStream/stream-chat-swiftui/pull/1478)
-
-### ✅ Added
-- Make `VoiceRecordingGestureOverlay` and `VoiceRecordingLockView` public (#1481)[https://github.com/GetStream/stream-chat-swiftui/pull/1481]
 
 ### ⚠️ Deprecated
 - Deprecate `ViewFactory.makeVideoPlayerHeaderView(options:)` and `ViewFactory.makeVideoPlayerFooterView(options:)`, plus the `VideoPlayerHeaderViewOptions` and `VideoPlayerFooterViewOptions` types. Override `makeMediaViewer(options:)` for a custom full-screen video player, or `makeMediaViewerToolbarModifier`/`makeMediaViewerFooterView` to customize just the toolbar/bottom bar. [#1472](https://github.com/GetStream/stream-chat-swiftui/pull/1472)
