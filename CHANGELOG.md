@@ -5,7 +5,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### ✅ Added
 - Add message attachment bubble customisation via `Styles.makeMessageAttachmentsViewModifier(options:)` and `Styles.makeMessageAttachmentItemViewModifier(options:)` [#1477](https://github.com/GetStream/stream-chat-swiftui/pull/1477)
-- Make `VoiceRecordingGestureOverlay` and `VoiceRecordingLockView` public (#1481)[https://github.com/GetStream/stream-chat-swiftui/pull/1481]
+- Make `VoiceRecordingGestureOverlay` and `VoiceRecordingLockView` public [#1481](https://github.com/GetStream/stream-chat-swiftui/pull/1481)
 
 ### 🐞 Fixed
 - Fix index out of range crash when loading more messages [#1476](https://github.com/GetStream/stream-chat-swiftui/pull/1476)
