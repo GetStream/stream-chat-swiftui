@@ -87,13 +87,13 @@ struct DefaultMessageAttachmentsViewModifier<Style: Styles>: ViewModifier {
     }
 
     private var isBubbleShown: Bool {
-        !options.message.hasSingleMediaAttachmentWithoutCaption
+        !options.message.hasSingleAttachment(of: [.image, .video], captioned: false)
     }
 
     private var bubbleInsets: EdgeInsets {
         guard isBubbleShown else { return EdgeInsets() }
         // Single voice and file don't have extra padding.
-        if options.message.hasSingleFileOrVoiceAttachmentWithoutCaption {
+        if options.message.hasSingleAttachment(of: [.file, .voiceRecording], captioned: false) {
             return EdgeInsets()
         }
         return EdgeInsets(
@@ -126,7 +126,7 @@ struct DefaultMessageAttachmentItemViewModifier: ViewModifier {
                 backgroundColor: defaultAttachmentBackgroundColor,
                 borderColor: Color(colors.borderCoreDefault),
                 cornerRadius: tokens.messageBubbleRadiusAttachment,
-                corners: attachmentCorners(isSingleWithoutCaption: options.message.isSingleFileWithoutCaption)
+                corners: attachmentCorners(isSingleWithoutCaption: options.message.hasSingleAttachment(of: [.file], captioned: false))
             ))
         case .some(.voiceRecording):
             // A voice recording quoted without a caption renders flat inside the message bubble.
@@ -141,7 +141,7 @@ struct DefaultMessageAttachmentItemViewModifier: ViewModifier {
                     backgroundColor: defaultAttachmentBackgroundColor,
                     borderColor: Color(colors.borderCoreDefault),
                     cornerRadius: tokens.messageBubbleRadiusAttachment,
-                    corners: attachmentCorners(isSingleWithoutCaption: options.message.isSingleVoiceWithoutCaption)
+                    corners: attachmentCorners(isSingleWithoutCaption: options.message.hasSingleAttachment(of: [.voiceRecording], captioned: false))
                 ))
             } else {
                 content
@@ -158,11 +158,11 @@ struct DefaultMessageAttachmentItemViewModifier: ViewModifier {
             content.modifier(AttachmentContainerViewModifier(
                 bubbleInsets: EdgeInsets(),
                 backgroundColor: .clear,
-                borderColor: options.message.hasSingleMediaAttachmentWithoutCaption
+                borderColor: options.message.hasSingleAttachment(of: [.image, .video], captioned: false)
                     ? options.message.bubbleBorder(colors: colors)
                     : nil,
                 cornerRadius: mediaCornerRadius,
-                corners: attachmentCorners(isSingleWithoutCaption: options.message.hasSingleMediaAttachmentWithoutCaption)
+                corners: attachmentCorners(isSingleWithoutCaption: options.message.hasSingleAttachment(of: [.image, .video], captioned: false))
             ))
         case .none:
             content.modifier(AttachmentContainerViewModifier(
@@ -180,14 +180,14 @@ struct DefaultMessageAttachmentItemViewModifier: ViewModifier {
 
     private var defaultAttachmentBackgroundColor: Color {
         // Single file and voice attachments are rendered in a bubble, but the attachment itself does not have an additional darker background.
-        if options.message.hasSingleFileOrVoiceAttachmentWithoutCaption {
+        if options.message.hasSingleAttachment(of: [.file, .voiceRecording], captioned: false) {
             return .clear
         }
         return Color(options.message.isSentByCurrentUser ? colors.chatBackgroundAttachmentOutgoing : colors.chatBackgroundAttachmentIncoming)
     }
 
     private var mediaCornerRadius: CGFloat {
-        options.message.hasSingleMediaAttachmentWithoutCaption
+        options.message.hasSingleAttachment(of: [.image, .video], captioned: false)
             ? tokens.messageBubbleRadiusGroupBottom
             : tokens.messageBubbleRadiusAttachment
     }
@@ -208,26 +208,9 @@ struct DefaultMessageAttachmentItemViewModifier: ViewModifier {
 }
 
 extension ChatMessage {
-    var hasSingleMediaAttachmentWithCaption: Bool {
-        guard !text.isEmpty, quotedMessage == nil else { return false }
-        return attachmentCounts.count == 1 && (attachmentCounts[.image] == 1 || attachmentCounts[.video] == 1)
-    }
-
-    fileprivate var hasSingleFileOrVoiceAttachmentWithoutCaption: Bool {
-        guard text.isEmpty, quotedMessage == nil else { return false }
-        return attachmentCounts.count == 1 && (attachmentCounts[.file] == 1 || attachmentCounts[.voiceRecording] == 1)
-    }
-
-    fileprivate var hasSingleMediaAttachmentWithoutCaption: Bool {
-        guard text.isEmpty, quotedMessage == nil else { return false }
-        return attachmentCounts.count == 1 && (attachmentCounts[.image] == 1 || attachmentCounts[.video] == 1)
-    }
-
-    fileprivate var isSingleFileWithoutCaption: Bool {
-        text.isEmpty && fileAttachments.count == 1
-    }
-
-    fileprivate var isSingleVoiceWithoutCaption: Bool {
-        text.isEmpty && voiceRecordingAttachments.count == 1
+    func hasSingleAttachment(of types: Set<AttachmentType>, captioned: Bool) -> Bool {
+        guard quotedMessage == nil else { return false }
+        guard captioned ? !text.isEmpty : text.isEmpty else { return false }
+        return attachmentCounts.count == 1 && types.contains { attachmentCounts[$0] == 1 }
     }
 }

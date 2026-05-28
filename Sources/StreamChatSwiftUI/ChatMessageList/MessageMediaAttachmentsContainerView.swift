@@ -262,8 +262,7 @@ public struct MessageMediaAttachmentsContainerView<Factory: ViewFactory>: View {
             source: item,
             width: width,
             height: height,
-            cornerRadius: 0,
-            corners: .allCorners,
+            cornerRadius: 0, // corner style is applied by makeMessageAttachmentItemViewModifier
             isOutgoing: message.isSentByCurrentUser,
             onUploadRetry: item.uploadingState?.state == .uploadingFailed ? { [message, chatClient] in
                 guard let cid = message.cid else { return }
