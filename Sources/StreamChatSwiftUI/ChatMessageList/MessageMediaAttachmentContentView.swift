@@ -79,15 +79,12 @@ public struct MessageMediaAttachmentContentView<Factory: ViewFactory>: View {
             thumbnail
         }
         .frame(width: width, height: height)
-        .if(cornerRadius > 0, transform: { content in
-            content
-                .clipShape(
-                    BubbleBackgroundShape(
-                        cornerRadius: cornerRadius,
-                        corners: corners ?? [.topLeft, .topRight, .bottomLeft, .bottomRight]
-                    )
-                )
-        })
+        .clipShape(
+            BubbleBackgroundShape(
+                cornerRadius: cornerRadius,
+                corners: corners ?? [.topLeft, .topRight, .bottomLeft, .bottomRight]
+            )
+        )
         .accessibilityIdentifier("MessageMediaAttachmentContentView")
     }
 

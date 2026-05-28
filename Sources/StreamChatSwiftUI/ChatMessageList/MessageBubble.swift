@@ -165,6 +165,8 @@ public struct BubbleBackgroundShape: Shape {
     var corners: UIRectCorner
 
     public func path(in rect: CGRect) -> Path {
+        guard cornerRadius > 0 else { return Path(rect) }
+        
         let radius = min(cornerRadius, min(rect.width, rect.height) / 2)
         let topLeftRadius = corners.contains(.topLeft) ? radius : 0
         let topRightRadius = corners.contains(.topRight) ? radius : 0
