@@ -149,6 +149,39 @@ import XCTest
         XCTAssert(view is MessageAttachmentsView<DefaultViewFactory>)
     }
 
+    func test_styles_makeMessageAttachmentsViewModifier() {
+        // Given
+        let styles = RegularStyles()
+
+        // When
+        let modifier = styles.makeMessageAttachmentsViewModifier(
+            options: MessageAttachmentsViewModifierOptions(
+                message: message,
+                isFirst: true
+            )
+        )
+
+        // Then
+        XCTAssert(modifier is DefaultMessageAttachmentsViewModifier<RegularStyles>)
+    }
+
+    func test_styles_makeMessageAttachmentItemViewModifier() {
+        // Given
+        let styles = RegularStyles()
+
+        // When
+        let modifier = styles.makeMessageAttachmentItemViewModifier(
+            options: MessageAttachmentItemViewModifierOptions(
+                message: message,
+                isFirst: true,
+                attachmentType: .file
+            )
+        )
+
+        // Then
+        XCTAssert(modifier is DefaultMessageAttachmentItemViewModifier)
+    }
+
     func test_viewFactory_makeImageAttachmentView() {
         // Given
         let viewFactory = DefaultViewFactory.shared

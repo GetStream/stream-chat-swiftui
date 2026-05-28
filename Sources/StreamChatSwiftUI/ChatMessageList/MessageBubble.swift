@@ -87,34 +87,46 @@ public struct MessageBubbleModifier: ViewModifier {
     }
 }
 
-/// Modifier that enables bubble container.
+/// A reusable modifier that draws a bubble-shaped background, optional border, and configurable content insets.
 public struct BubbleModifier: ViewModifier {
     @Injected(\.colors) private var colors
 
     var corners: UIRectCorner
     var backgroundColors: [Color]
     var borderColor: Color?
+    var borderWidth: CGFloat
     var cornerRadius: CGFloat
+    var contentInsets: EdgeInsets
 
-    public init(corners: UIRectCorner, backgroundColors: [Color], borderColor: Color? = nil, cornerRadius: CGFloat = 18) {
+    /// Creates a bubble modifier.
+    /// - Parameters:
+    ///   - corners: The corners to round.
+    ///   - backgroundColors: The bubble background colors. Pass multiple colors to render a vertical gradient.
+    ///   - borderColor: The border color. If `nil`, the default border color is used.
+    ///   - borderWidth: The border stroke width. Pass `0` to hide the border.
+    ///   - cornerRadius: The bubble corner radius.
+    ///   - contentInsets: Insets applied to the content before drawing the bubble.
+    public init(
+        corners: UIRectCorner,
+        backgroundColors: [Color],
+        borderColor: Color? = nil,
+        borderWidth: CGFloat = 1,
+        cornerRadius: CGFloat = 18,
+        contentInsets: EdgeInsets = EdgeInsets()
+    ) {
         self.corners = corners
         self.backgroundColors = backgroundColors
         self.borderColor = borderColor
+        self.borderWidth = borderWidth
         self.cornerRadius = cornerRadius
+        self.contentInsets = contentInsets
     }
 
     public func body(content: Content) -> some View {
         content
+            .padding(contentInsets)
             .background(background)
-            .overlay(
-                BubbleBackgroundShape(
-                    cornerRadius: cornerRadius, corners: corners
-                )
-                .stroke(
-                    borderColor ?? Color(colors.borderCoreDefault),
-                    lineWidth: 1.0
-                )
-            )
+            .overlay(borderOverlay)
             .clipShape(
                 BubbleBackgroundShape(
                     cornerRadius: cornerRadius,
@@ -137,6 +149,20 @@ public struct BubbleModifier: ViewModifier {
             Color.clear
         }
     }
+
+    @ViewBuilder
+    private var borderOverlay: some View {
+        if borderWidth > 0 {
+            BubbleBackgroundShape(
+                cornerRadius: cornerRadius,
+                corners: corners
+            )
+            .stroke(
+                borderColor ?? Color(colors.borderCoreDefault),
+                lineWidth: borderWidth
+            )
+        }
+    }
 }
 
 /// Shape that allows rounding of arbitrary corners.
@@ -145,6 +171,8 @@ public struct BubbleBackgroundShape: Shape {
     var corners: UIRectCorner
 
     public func path(in rect: CGRect) -> Path {
+        guard cornerRadius > 0 else { return Path(rect) }
+        
         let radius = min(cornerRadius, min(rect.width, rect.height) / 2)
         let topLeftRadius = corners.contains(.topLeft) ? radius : 0
         let topRightRadius = corners.contains(.topRight) ? radius : 0

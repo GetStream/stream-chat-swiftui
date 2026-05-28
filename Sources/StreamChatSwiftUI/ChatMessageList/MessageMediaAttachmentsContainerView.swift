@@ -64,8 +64,6 @@ public struct MessageMediaAttachmentsContainerView<Factory: ViewFactory>: View {
     @Injected(\.colors) private var colors
     @Injected(\.fonts) private var fonts
     @Injected(\.tokens) private var tokens
-    @Injected(\.utils) private var utils
-    @Environment(\.layoutDirection) private var layoutDirection
 
     let factory: Factory
     let message: ChatMessage
@@ -259,15 +257,12 @@ public struct MessageMediaAttachmentsContainerView<Factory: ViewFactory>: View {
         height: CGFloat,
         index: Int
     ) -> some View {
-        let effectiveRadius = isSingleMediaWithoutCaption ? tokens.messageBubbleRadiusGroupBottom : cornerRadius
-        let effectiveCorners: UIRectCorner? = isSingleMediaWithoutCaption ? noCaptionBubbleCorners : nil
         return MessageMediaAttachmentContentView(
             factory: factory,
             source: item,
             width: width,
             height: height,
-            cornerRadius: effectiveRadius,
-            corners: effectiveCorners,
+            cornerRadius: 0, // corner style is applied by makeMessageAttachmentItemViewModifier
             isOutgoing: message.isSentByCurrentUser,
             onUploadRetry: item.uploadingState?.state == .uploadingFailed ? { [message, chatClient] in
                 guard let cid = message.cid else { return }
@@ -279,10 +274,12 @@ public struct MessageMediaAttachmentsContainerView<Factory: ViewFactory>: View {
             } : nil
         )
         .modifier(
-            MediaBorderOverlayModifier(
-                cornerRadius: effectiveRadius,
-                corners: effectiveCorners,
-                borderColor: message.bubbleBorder(colors: colors)
+            factory.styles.makeMessageAttachmentItemViewModifier(
+                options: MessageAttachmentItemViewModifierOptions(
+                    message: message,
+                    isFirst: isFirst,
+                    attachmentType: item.type == .video ? .video : .image
+                )
             )
         )
         .contentShape(Rectangle())
@@ -300,19 +297,6 @@ public struct MessageMediaAttachmentsContainerView<Factory: ViewFactory>: View {
     }
 
     // MARK: - Data
-
-    private var isSingleMediaWithoutCaption: Bool {
-        message.text.isEmpty && sources.count == 1
-    }
-
-    private var noCaptionBubbleCorners: UIRectCorner {
-        let forceLeftToRight = utils.messageListConfig.messageListAlignment == .leftAligned
-        return message.bubbleCorners(
-            isFirst: isFirst,
-            forceLeftToRight: forceLeftToRight,
-            layoutDirection: layoutDirection
-        )
-    }
 
     private func containerSize(for itemCount: Int) -> CGSize {
         Self.containerSize(for: itemCount, orientation: orientation, maxItemWidth: width)
@@ -340,25 +324,5 @@ public struct MessageMediaAttachmentsContainerView<Factory: ViewFactory>: View {
 
     private var remainingCount: Int {
         max(sources.count - maxDisplayedItems, 0)
-    }
-}
-
-/// Conditionally draws a bubble-shaped border stroke around the content.
-/// When `corners` is `nil` (multi-item gallery cells), no overlay is drawn.
-private struct MediaBorderOverlayModifier: ViewModifier {
-    let cornerRadius: CGFloat
-    let corners: UIRectCorner?
-    let borderColor: Color
-
-    func body(content: Content) -> some View {
-        content.overlay(borderOverlay)
-    }
-
-    @ViewBuilder
-    private var borderOverlay: some View {
-        if let corners {
-            BubbleBackgroundShape(cornerRadius: cornerRadius, corners: corners)
-                .stroke(borderColor, lineWidth: 1)
-        }
     }
 }

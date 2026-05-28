@@ -4,7 +4,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 # Upcoming
 
 ### ✅ Added
-- Expose `ChatChannelListItemViewModel` and reusable sub-views for the channel list item, and open both `ChatChannelListItemViewModel` and `ChatThreadListItemViewModel` for subclassing [#1482](https://github.com/GetStream/stream-chat-swiftui/pull/1482)
+- Expose `ChatChannelListItemViewModel` and reusable sub-views for the channel list item [#1482](https://github.com/GetStream/stream-chat-swiftui/pull/1482)
+- Open `ChatThreadListItemViewModel` for subclassing [#1482](https://github.com/GetStream/stream-chat-swiftui/pull/1482)
+- Add message attachment bubble customisation via `Styles.makeMessageAttachmentsViewModifier(options:)` and `Styles.makeMessageAttachmentItemViewModifier(options:)` [#1477](https://github.com/GetStream/stream-chat-swiftui/pull/1477)
 
 ### 🐞 Fixed
 - Fix index out of range crash when loading more messages [#1476](https://github.com/GetStream/stream-chat-swiftui/pull/1476)
@@ -13,7 +15,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Fix the voice recording slide-to-cancel label moving in the wrong direction in RTL languages [#1478](https://github.com/GetStream/stream-chat-swiftui/pull/1478)
 - Fix attachments shifting when adding attachments to the composer in RTL languages [#1478](https://github.com/GetStream/stream-chat-swiftui/pull/1478)
 
-### 🔄 Changed
+### ✅ Added
+- Make `VoiceRecordingGestureOverlay` and `VoiceRecordingLockView` public (#1481)[https://github.com/GetStream/stream-chat-swiftui/pull/1481]
 
 ### ⚠️ Deprecated
 - Deprecate `ViewFactory.makeVideoPlayerHeaderView(options:)` and `ViewFactory.makeVideoPlayerFooterView(options:)`, plus the `VideoPlayerHeaderViewOptions` and `VideoPlayerFooterViewOptions` types. Override `makeMediaViewer(options:)` for a custom full-screen video player, or `makeMediaViewerToolbarModifier`/`makeMediaViewerFooterView` to customize just the toolbar/bottom bar. [#1472](https://github.com/GetStream/stream-chat-swiftui/pull/1472)

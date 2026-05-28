@@ -2,6 +2,7 @@
 // Copyright © 2026 Stream.io Inc. All rights reserved.
 //
 
+import StreamChat
 import SwiftUI
 
 @MainActor
@@ -37,6 +38,20 @@ public protocol Styles {
     /// Returns a view modifier applied to the message view.
     /// - Parameter messageModifierInfo: the message modifier info, that will be applied to the message.
     func makeMessageViewModifier(for messageModifierInfo: MessageModifierInfo) -> MessageViewModifier
+
+    associatedtype MessageAttachmentsViewModifier: ViewModifier
+    /// Returns a view modifier applied to the view that wraps a message's quoted-message reference and attachment stack.
+    /// - Parameter options: Context for the message attachments view being styled.
+    func makeMessageAttachmentsViewModifier(
+        options: MessageAttachmentsViewModifierOptions
+    ) -> MessageAttachmentsViewModifier
+
+    associatedtype MessageAttachmentItemViewModifier: ViewModifier
+    /// Returns a view modifier applied to an individual attachment item or quoted-message reference bubble.
+    /// - Parameter options: Context for the attachment item or quoted-message reference bubble being styled.
+    func makeMessageAttachmentItemViewModifier(
+        options: MessageAttachmentItemViewModifierOptions
+    ) -> MessageAttachmentItemViewModifier
 
     associatedtype BouncedMessageActionsModifierType: ViewModifier
     /// Returns a view modifier applied to the bounced message actions.
@@ -91,6 +106,18 @@ extension Styles {
             cornerRadius: messageModifierInfo.cornerRadius,
             forceLeftToRight: messageModifierInfo.forceLeftToRight
         )
+    }
+
+    public func makeMessageAttachmentsViewModifier(
+        options: MessageAttachmentsViewModifierOptions
+    ) -> some ViewModifier {
+        DefaultMessageAttachmentsViewModifier(styles: self, options: options)
+    }
+
+    public func makeMessageAttachmentItemViewModifier(
+        options: MessageAttachmentItemViewModifierOptions
+    ) -> some ViewModifier {
+        DefaultMessageAttachmentItemViewModifier(options: options)
     }
     
     public func makeBouncedMessageActionsModifier(viewModel: ChatChannelViewModel) -> some ViewModifier {
@@ -214,6 +241,48 @@ public class ScrollToBottomButtonModifierOptions {
 
 public class ToolbarConfirmActionModifierOptions {
     public init() {}
+}
+
+/// Options for styling the view that wraps a message's attachment stack.
+public final class MessageAttachmentsViewModifierOptions {
+    /// The message whose attachments are displayed.
+    public let message: ChatMessage
+    /// Whether this message is the first message in a message group.
+    public let isFirst: Bool
+
+    /// Creates options for styling a message attachments view.
+    /// - Parameters:
+    ///   - message: The message whose attachments are displayed.
+    ///   - isFirst: Whether this message is the first message in a message group.
+    public init(message: ChatMessage, isFirst: Bool) {
+        self.message = message
+        self.isFirst = isFirst
+    }
+}
+
+/// Options for styling an individual attachment item or quoted-message reference bubble.
+public final class MessageAttachmentItemViewModifierOptions {
+    /// The message that owns the attachment item or quoted-message reference bubble.
+    public let message: ChatMessage
+    /// Whether this message is the first message in a message group.
+    public let isFirst: Bool
+    /// The attachment type being styled, or `nil` when styling a quoted-message reference bubble.
+    public let attachmentType: AttachmentType?
+
+    /// Creates options for styling an attachment item or quoted-message reference bubble.
+    /// - Parameters:
+    ///   - message: The message that owns the attachment item or quoted-message reference bubble.
+    ///   - isFirst: Whether this message is the first message in a message group.
+    ///   - attachmentType: The attachment type being styled, or `nil` for quoted-message reference bubbles.
+    public init(
+        message: ChatMessage,
+        isFirst: Bool,
+        attachmentType: AttachmentType? = nil
+    ) {
+        self.message = message
+        self.isFirst = isFirst
+        self.attachmentType = attachmentType
+    }
 }
 
 public struct ComposerBackgroundRegularViewModifier: ViewModifier {
