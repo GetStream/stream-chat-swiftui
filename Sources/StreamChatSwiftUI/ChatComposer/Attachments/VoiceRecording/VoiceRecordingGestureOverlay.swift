@@ -6,7 +6,7 @@ import SwiftUI
 
 /// Transparent overlay that handles voice recording gestures. Placed on MessageComposerView
 /// so the drag can extend beyond the mic button bounds (e.g. drag up to lock).
-struct VoiceRecordingGestureOverlay: View {
+public struct VoiceRecordingGestureOverlay: View {
     @Environment(\.layoutDirection) private var layoutDirection
 
     @Binding var recordingState: VoiceRecordingState
@@ -25,8 +25,26 @@ struct VoiceRecordingGestureOverlay: View {
 
     @State private var longPressed = false
     @State private var longPressStarted: Date?
+    
+    public init(
+        recordingState: Binding<VoiceRecordingState>,
+        gestureLocation: Binding<CGPoint>,
+        onRecordingStarted: @escaping () -> Void,
+        onGestureCompleted: @escaping () -> Void,
+        onRecordingReleased: @escaping () -> Void,
+        onRecordingCancelled: @escaping () -> Void,
+        onShortTapDetected: @escaping () -> Void
+    ) {
+        _recordingState = recordingState
+        _gestureLocation = gestureLocation
+        self.onRecordingStarted = onRecordingStarted
+        self.onGestureCompleted = onGestureCompleted
+        self.onRecordingReleased = onRecordingReleased
+        self.onRecordingCancelled = onRecordingCancelled
+        self.onShortTapDetected = onShortTapDetected
+    }
 
-    var body: some View {
+    public var body: some View {
         Color.clear
             .contentShape(Rectangle())
             .frame(
