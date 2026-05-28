@@ -151,6 +151,7 @@ public struct ChatChannelListItemMutedIcon: View {
             .customizable()
             .frame(height: tokens.iconSizeMd)
             .foregroundColor(Color(colors.textTertiary))
+            .accessibilityLabel(Text(L10n.Channel.Item.muted))
     }
 }
 
