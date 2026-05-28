@@ -8,7 +8,9 @@ import SwiftUI
 /// The view model for the channel list item view.
 ///
 /// It contains the default presentation logic for the channel list item data.
-@MainActor public final class ChatChannelListItemViewModel {
+/// Subclass and override the `open` properties to customize what the channel
+/// list item displays.
+@MainActor open class ChatChannelListItemViewModel {
     @Injected(\.utils) private var utils
     @Injected(\.chatClient) private var chatClient
 
@@ -26,7 +28,7 @@ import SwiftUI
     // MARK: - Title row
 
     /// The formatted timestamp of the last message in the channel.
-    public var timestampText: String {
+    open var timestampText: String {
         if let lastMessageAt = channel.lastMessageAt {
             return utils.messageTimestampFormatter.format(lastMessageAt)
         }
@@ -34,41 +36,41 @@ import SwiftUI
     }
 
     /// The number of unread messages in the channel.
-    public var unreadCount: Int {
+    open var unreadCount: Int {
         channel.unreadCount.messages
     }
 
     /// A boolean value indicating whether the channel has any unread content.
-    public var hasUnread: Bool {
+    open var hasUnread: Bool {
         channel.unreadCount != .noUnread
     }
 
     /// A boolean value indicating whether the channel is muted.
-    public var isMuted: Bool {
+    open var isMuted: Bool {
         channel.isMuted
     }
 
     /// The configured layout style for the muted icon.
-    public var mutedLayoutStyle: ChannelItemMutedLayoutStyle {
+    open var mutedLayoutStyle: ChannelItemMutedLayoutStyle {
         utils.channelListConfig.channelItemMutedStyle
     }
 
     /// A boolean value indicating whether the muted icon should be rendered
     /// inline next to the channel name.
-    public var shouldShowInlineMutedIcon: Bool {
+    open var shouldShowInlineMutedIcon: Bool {
         isMuted && mutedLayoutStyle == .afterChannelName
     }
 
     /// A boolean value indicating whether the muted icon should be rendered
     /// in the trailing bottom corner of the item.
-    public var shouldShowMutedTrailingIcon: Bool {
+    open var shouldShowMutedTrailingIcon: Bool {
         isMuted && mutedLayoutStyle == .bottomRightCorner
     }
 
     // MARK: - Read indicator
 
     /// A boolean value indicating whether the read events indicator should be shown.
-    public var shouldShowReadEvents: Bool {
+    open var shouldShowReadEvents: Bool {
         if shouldShowTypingIndicator || lastMessageFailedToSend {
             return false
         }
@@ -84,7 +86,7 @@ import SwiftUI
     }
 
     /// The users that have read the preview message.
-    public var readUsers: [ChatUser] {
+    open var readUsers: [ChatUser] {
         channel.readUsers(
             currentUserId: chatClient.currentUserId,
             message: previewMessage
@@ -93,25 +95,25 @@ import SwiftUI
 
     /// A boolean value indicating whether the read indicator should
     /// show the delivered state.
-    public var showDelivered: Bool {
+    open var showDelivered: Bool {
         previewMessage?.deliveryStatus(for: channel) == .delivered
     }
 
     /// The local message state of the preview message.
-    public var previewMessageLocalState: LocalMessageState? {
+    open var previewMessageLocalState: LocalMessageState? {
         previewMessage?.localState
     }
 
     // MARK: - Subtitle row
 
     /// A boolean value indicating whether the last message failed to send.
-    public var lastMessageFailedToSend: Bool {
+    open var lastMessageFailedToSend: Bool {
         previewMessage?.localState == .sendingFailed
     }
 
     /// A boolean value indicating whether a typing indicator should be shown
     /// in the subtitle area.
-    public var shouldShowTypingIndicator: Bool {
+    open var shouldShowTypingIndicator: Bool {
         !channel.currentlyTypingUsersFiltered(
             currentUserId: chatClient.currentUserId
         ).isEmpty && channel.config.typingEventsEnabled
@@ -121,29 +123,29 @@ import SwiftUI
     ///
     /// Derived from the channel's currently-typing users; can be passed to
     /// ``SubtitleTypingIndicatorView`` to avoid recomputing it inside the view.
-    public var typingIndicatorText: String {
+    open var typingIndicatorText: String {
         channel.typingIndicatorString(currentUserId: chatClient.currentUserId)
     }
 
     /// A boolean value indicating whether the draft messages feature is enabled.
-    public var isDraftMessagesEnabled: Bool {
+    open var isDraftMessagesEnabled: Bool {
         utils.messageListConfig.draftMessagesEnabled
     }
 
     /// The formatted draft message text, when there is a draft for this channel.
-    public var draftMessageText: String? {
+    open var draftMessageText: String? {
         guard let draftMessage = channel.draftMessage else { return nil }
         return utils.messagePreviewFormatter.formatContent(for: ChatMessage(draftMessage), in: channel)
     }
 
     /// A boolean value indicating whether the preview message is deleted.
-    public var isPreviewMessageDeleted: Bool {
+    open var isPreviewMessageDeleted: Bool {
         previewMessage?.isDeleted == true
     }
 
     /// A boolean value indicating whether the preview message was sent by the
     /// current user.
-    public var isPreviewMessageSentByCurrentUser: Bool {
+    open var isPreviewMessageSentByCurrentUser: Bool {
         previewMessage?.isSentByCurrentUser == true
     }
 
@@ -151,7 +153,7 @@ import SwiftUI
     ///
     /// Returns `nil` for direct message channels with two members, polls, or
     /// when there is no preview message.
-    public var subtitleAuthorName: String? {
+    open var subtitleAuthorName: String? {
         guard let previewMessage,
               previewMessage.poll == nil,
               !(channel.isDirectMessageChannel && channel.memberCount == 2) else {
@@ -167,7 +169,7 @@ import SwiftUI
     ///
     /// Used as the fallback when no other subtitle variant applies, and as the
     /// typing indicator string when typing is active.
-    public var subtitleText: String {
+    open var subtitleText: String {
         if shouldShowTypingIndicator {
             return channel.typingIndicatorString(currentUserId: chatClient.currentUserId)
         }
@@ -178,13 +180,13 @@ import SwiftUI
     }
 
     /// The preview message content text without any author name prefix.
-    public var previewContentText: String {
+    open var previewContentText: String {
         guard let previewMessage else { return "" }
         return utils.messagePreviewFormatter.formatContent(for: previewMessage, in: channel)
     }
 
     /// The icon image for the preview message attachment, when present.
-    public var previewAttachmentIconImage: UIImage? {
+    open var previewAttachmentIconImage: UIImage? {
         guard let message = previewMessage else { return nil }
         let resolver = MessageAttachmentPreviewResolver(message: message)
         guard let previewIcon = resolver.previewIcon else { return nil }
@@ -197,7 +199,7 @@ import SwiftUI
     /// can be passed to ``ChatChannelListItemSubtitleView``. The order of
     /// precedence is: failed-to-send, typing, draft, deleted, author preview,
     /// attachment preview, then plain text fallback.
-    public var subtitle: ChatChannelListItemSubtitle {
+    open var subtitle: ChatChannelListItemSubtitle {
         if lastMessageFailedToSend {
             return .failedToSend()
         }
