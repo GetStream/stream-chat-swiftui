@@ -87,7 +87,7 @@ public struct MessageBubbleModifier: ViewModifier {
     }
 }
 
-/// Modifier that enables bubble container.
+/// A reusable modifier that draws a bubble-shaped background, optional border, and configurable content insets.
 public struct BubbleModifier: ViewModifier {
     @Injected(\.colors) private var colors
 
@@ -98,6 +98,14 @@ public struct BubbleModifier: ViewModifier {
     var cornerRadius: CGFloat
     var contentInsets: EdgeInsets
 
+    /// Creates a bubble modifier.
+    /// - Parameters:
+    ///   - corners: The corners to round.
+    ///   - backgroundColors: The bubble background colors. Pass multiple colors to render a vertical gradient.
+    ///   - borderColor: The border color. If `nil`, the default border color is used.
+    ///   - borderWidth: The border stroke width. Pass `0` to hide the border.
+    ///   - cornerRadius: The bubble corner radius.
+    ///   - contentInsets: Insets applied to the content before drawing the bubble.
     public init(
         corners: UIRectCorner,
         backgroundColors: [Color],

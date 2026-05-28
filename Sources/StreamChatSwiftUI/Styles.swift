@@ -40,13 +40,15 @@ public protocol Styles {
     func makeMessageViewModifier(for messageModifierInfo: MessageModifierInfo) -> MessageViewModifier
 
     associatedtype MessageAttachmentsViewModifier: ViewModifier
-    /// Returns a view modifier applied to the outer stacked attachments bubble.
+    /// Returns a view modifier applied to the view that wraps a message's quoted-message reference and attachment stack.
+    /// - Parameter options: Context for the message attachments view being styled.
     func makeMessageAttachmentsViewModifier(
         options: MessageAttachmentsViewModifierOptions
     ) -> MessageAttachmentsViewModifier
 
     associatedtype MessageAttachmentItemViewModifier: ViewModifier
-    /// Returns a view modifier applied to an individual attachment bubble.
+    /// Returns a view modifier applied to an individual attachment item or quoted-message reference bubble.
+    /// - Parameter options: Context for the attachment item or quoted-message reference bubble being styled.
     func makeMessageAttachmentItemViewModifier(
         options: MessageAttachmentItemViewModifierOptions
     ) -> MessageAttachmentItemViewModifier
@@ -241,23 +243,37 @@ public class ToolbarConfirmActionModifierOptions {
     public init() {}
 }
 
-/// Options for styling the outer attachments stack bubble.
+/// Options for styling the view that wraps a message's attachment stack.
 public final class MessageAttachmentsViewModifierOptions {
+    /// The message whose attachments are displayed.
     public let message: ChatMessage
+    /// Whether this message is the first message in a message group.
     public let isFirst: Bool
 
+    /// Creates options for styling a message attachments view.
+    /// - Parameters:
+    ///   - message: The message whose attachments are displayed.
+    ///   - isFirst: Whether this message is the first message in a message group.
     public init(message: ChatMessage, isFirst: Bool) {
         self.message = message
         self.isFirst = isFirst
     }
 }
 
-/// Options for styling an individual attachment bubble.
+/// Options for styling an individual attachment item or quoted-message reference bubble.
 public final class MessageAttachmentItemViewModifierOptions {
+    /// The message that owns the attachment item or quoted-message reference bubble.
     public let message: ChatMessage
+    /// Whether this message is the first message in a message group.
     public let isFirst: Bool
+    /// The attachment type being styled, or `nil` when styling a quoted-message reference bubble.
     public let attachmentType: AttachmentType?
 
+    /// Creates options for styling an attachment item or quoted-message reference bubble.
+    /// - Parameters:
+    ///   - message: The message that owns the attachment item or quoted-message reference bubble.
+    ///   - isFirst: Whether this message is the first message in a message group.
+    ///   - attachmentType: The attachment type being styled, or `nil` for quoted-message reference bubbles.
     public init(
         message: ChatMessage,
         isFirst: Bool,
