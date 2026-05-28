@@ -3,6 +3,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 # Upcoming
 
+### 🔄 Changed
+
+# [5.4.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/5.4.0)
+_May 28, 2026_
+
 ### ✅ Added
 - Add message attachment bubble customisation via `Styles.makeMessageAttachmentsViewModifier(options:)` and `Styles.makeMessageAttachmentItemViewModifier(options:)` [#1477](https://github.com/GetStream/stream-chat-swiftui/pull/1477)
 - Make `VoiceRecordingGestureOverlay` and `VoiceRecordingLockView` public [#1481](https://github.com/GetStream/stream-chat-swiftui/pull/1481)
