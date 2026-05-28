@@ -106,12 +106,12 @@ struct DefaultMessageAttachmentItemViewModifier: ViewModifier {
                 contentInsets: EdgeInsets()
             ))
         case .some(.image), .some(.video):
+            let showsBorder = options.message.hasSingleAttachment(of: [.image, .video], captioned: false)
             content.modifier(BubbleModifier(
-                corners: attachmentCorners(isSingleWithoutCaption: options.message.hasSingleAttachment(of: [.image, .video], captioned: false)),
+                corners: attachmentCorners(isSingleWithoutCaption: showsBorder),
                 backgroundColors: [.clear],
-                borderColor: options.message.hasSingleAttachment(of: [.image, .video], captioned: false)
-                    ? options.message.bubbleBorder(colors: colors)
-                    : nil,
+                borderColor: showsBorder ? options.message.bubbleBorder(colors: colors) : nil,
+                borderWidth: showsBorder ? 1 : 0,
                 cornerRadius: mediaCornerRadius,
                 contentInsets: EdgeInsets()
             ))
@@ -120,6 +120,7 @@ struct DefaultMessageAttachmentItemViewModifier: ViewModifier {
                 corners: .allCorners,
                 backgroundColors: [defaultAttachmentBackgroundColor],
                 borderColor: nil,
+                borderWidth: 0,
                 cornerRadius: tokens.messageBubbleRadiusAttachment,
                 contentInsets: EdgeInsets()
             ))
