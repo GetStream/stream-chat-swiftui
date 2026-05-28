@@ -5,57 +5,7 @@
 import StreamChat
 import SwiftUI
 
-/// Applies attachment container styling.
-///
-/// Use this view modifier for customising individual attachment views.
-/// - SeeAlso: ``Styles/makeMessageAttachmentItemViewModifier(options:)->ViewModifier``
-public struct AttachmentContainerViewModifier: ViewModifier {
-    let bubbleInsets: EdgeInsets
-    let backgroundColor: Color
-    let borderColor: Color?
-    let borderWidth: CGFloat
-    let cornerRadius: CGFloat
-    let corners: UIRectCorner
-
-    public init(
-        bubbleInsets: EdgeInsets,
-        backgroundColor: Color,
-        borderColor: Color?,
-        borderWidth: CGFloat = 1,
-        cornerRadius: CGFloat,
-        corners: UIRectCorner
-    ) {
-        self.bubbleInsets = bubbleInsets
-        self.backgroundColor = backgroundColor
-        self.borderColor = borderColor
-        self.borderWidth = borderWidth
-        self.cornerRadius = cornerRadius
-        self.corners = corners
-    }
-
-    public func body(content: Content) -> some View {
-        content
-            .padding(bubbleInsets)
-            .background(backgroundColor)
-            .overlay(borderOverlay)
-            .clipShape(shape)
-    }
-
-    private var shape: BubbleBackgroundShape {
-        BubbleBackgroundShape(
-            cornerRadius: cornerRadius,
-            corners: corners
-        )
-    }
-
-    @ViewBuilder
-    private var borderOverlay: some View {
-        if let borderColor {
-            shape.stroke(borderColor, lineWidth: borderWidth)
-        }
-    }
-}
-
+/// Default view modifier used by ``Styles/makeMessageAttachmentsViewModifier(options:)``.
 struct DefaultMessageAttachmentsViewModifier<Style: Styles>: ViewModifier {
     @Injected(\.tokens) private var tokens
 
@@ -105,6 +55,7 @@ struct DefaultMessageAttachmentsViewModifier<Style: Styles>: ViewModifier {
     }
 }
 
+/// Default view modifier used by ``Styles/makeMessageAttachmentItemViewModifier(options:)``.
 struct DefaultMessageAttachmentItemViewModifier: ViewModifier {
     @Injected(\.colors) private var colors
     @Injected(\.tokens) private var tokens
@@ -121,56 +72,56 @@ struct DefaultMessageAttachmentItemViewModifier: ViewModifier {
     func body(content: Content) -> some View {
         switch options.attachmentType {
         case .some(.file):
-            content.modifier(AttachmentContainerViewModifier(
-                bubbleInsets: EdgeInsets(),
-                backgroundColor: defaultAttachmentBackgroundColor,
+            content.modifier(BubbleModifier(
+                corners: attachmentCorners(isSingleWithoutCaption: options.message.hasSingleAttachment(of: [.file], captioned: false)),
+                backgroundColors: [defaultAttachmentBackgroundColor],
                 borderColor: Color(colors.borderCoreDefault),
                 cornerRadius: tokens.messageBubbleRadiusAttachment,
-                corners: attachmentCorners(isSingleWithoutCaption: options.message.hasSingleAttachment(of: [.file], captioned: false))
+                contentInsets: EdgeInsets()
             ))
         case .some(.voiceRecording):
             // A voice recording quoted without a caption renders flat inside the message bubble.
             if isVoiceRecordingContainerShown {
-                content.modifier(AttachmentContainerViewModifier(
-                    bubbleInsets: EdgeInsets(
+                content.modifier(BubbleModifier(
+                    corners: attachmentCorners(isSingleWithoutCaption: options.message.hasSingleAttachment(of: [.voiceRecording], captioned: false)),
+                    backgroundColors: [defaultAttachmentBackgroundColor],
+                    borderColor: Color(colors.borderCoreDefault),
+                    cornerRadius: tokens.messageBubbleRadiusAttachment,
+                    contentInsets: EdgeInsets(
                         top: tokens.spacingXs,
                         leading: tokens.spacingXs,
                         bottom: tokens.spacingXs,
                         trailing: tokens.spacingXs
-                    ),
-                    backgroundColor: defaultAttachmentBackgroundColor,
-                    borderColor: Color(colors.borderCoreDefault),
-                    cornerRadius: tokens.messageBubbleRadiusAttachment,
-                    corners: attachmentCorners(isSingleWithoutCaption: options.message.hasSingleAttachment(of: [.voiceRecording], captioned: false))
+                    )
                 ))
             } else {
                 content
             }
         case .some(.linkPreview):
-            content.modifier(AttachmentContainerViewModifier(
-                bubbleInsets: EdgeInsets(),
-                backgroundColor: defaultAttachmentBackgroundColor,
+            content.modifier(BubbleModifier(
+                corners: .allCorners,
+                backgroundColors: [defaultAttachmentBackgroundColor],
                 borderColor: Color(colors.borderCoreDefault),
                 cornerRadius: tokens.messageBubbleRadiusAttachment,
-                corners: .allCorners
+                contentInsets: EdgeInsets()
             ))
         case .some(.image), .some(.video):
-            content.modifier(AttachmentContainerViewModifier(
-                bubbleInsets: EdgeInsets(),
-                backgroundColor: .clear,
+            content.modifier(BubbleModifier(
+                corners: attachmentCorners(isSingleWithoutCaption: options.message.hasSingleAttachment(of: [.image, .video], captioned: false)),
+                backgroundColors: [.clear],
                 borderColor: options.message.hasSingleAttachment(of: [.image, .video], captioned: false)
                     ? options.message.bubbleBorder(colors: colors)
                     : nil,
                 cornerRadius: mediaCornerRadius,
-                corners: attachmentCorners(isSingleWithoutCaption: options.message.hasSingleAttachment(of: [.image, .video], captioned: false))
+                contentInsets: EdgeInsets()
             ))
         case .none:
-            content.modifier(AttachmentContainerViewModifier(
-                bubbleInsets: EdgeInsets(),
-                backgroundColor: defaultAttachmentBackgroundColor,
+            content.modifier(BubbleModifier(
+                corners: .allCorners,
+                backgroundColors: [defaultAttachmentBackgroundColor],
                 borderColor: nil,
                 cornerRadius: tokens.messageBubbleRadiusAttachment,
-                corners: .allCorners
+                contentInsets: EdgeInsets()
             ))
         default:
             // Other attachment types (e.g. giphy, audio, custom) are not wrapped in a container bubble.

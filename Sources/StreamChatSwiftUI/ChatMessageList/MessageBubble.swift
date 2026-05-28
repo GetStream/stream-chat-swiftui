@@ -94,17 +94,29 @@ public struct BubbleModifier: ViewModifier {
     var corners: UIRectCorner
     var backgroundColors: [Color]
     var borderColor: Color?
+    var borderWidth: CGFloat
     var cornerRadius: CGFloat
+    var contentInsets: EdgeInsets
 
-    public init(corners: UIRectCorner, backgroundColors: [Color], borderColor: Color? = nil, cornerRadius: CGFloat = 18) {
+    public init(
+        corners: UIRectCorner,
+        backgroundColors: [Color],
+        borderColor: Color? = nil,
+        borderWidth: CGFloat = 1,
+        cornerRadius: CGFloat = 18,
+        contentInsets: EdgeInsets = EdgeInsets()
+    ) {
         self.corners = corners
         self.backgroundColors = backgroundColors
         self.borderColor = borderColor
+        self.borderWidth = borderWidth
         self.cornerRadius = cornerRadius
+        self.contentInsets = contentInsets
     }
 
     public func body(content: Content) -> some View {
         content
+            .padding(contentInsets)
             .background(background)
             .overlay(
                 BubbleBackgroundShape(
@@ -112,7 +124,7 @@ public struct BubbleModifier: ViewModifier {
                 )
                 .stroke(
                     borderColor ?? Color(colors.borderCoreDefault),
-                    lineWidth: 1.0
+                    lineWidth: borderWidth
                 )
             )
             .clipShape(

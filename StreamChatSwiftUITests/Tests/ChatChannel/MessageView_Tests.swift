@@ -1983,13 +1983,13 @@ private struct CustomMessageAttachmentItemViewModifier: ViewModifier {
 
     func body(content: Content) -> some View {
         content.modifier(
-            AttachmentContainerViewModifier(
-                bubbleInsets: bubbleInsets,
-                backgroundColor: Color(colors.backgroundCoreSurfaceDefault),
+            BubbleModifier(
+                corners: .allCorners,
+                backgroundColors: [Color(colors.backgroundCoreSurfaceDefault)],
                 borderColor: borderColor,
                 borderWidth: borderWidth,
                 cornerRadius: cornerRadius,
-                corners: .allCorners
+                contentInsets: bubbleInsets
             )
         )
     }
