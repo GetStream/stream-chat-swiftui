@@ -126,15 +126,7 @@ public struct BubbleModifier: ViewModifier {
         content
             .padding(contentInsets)
             .background(background)
-            .overlay(
-                BubbleBackgroundShape(
-                    cornerRadius: cornerRadius, corners: corners
-                )
-                .stroke(
-                    borderColor ?? Color(colors.borderCoreDefault),
-                    lineWidth: borderWidth
-                )
-            )
+            .overlay(borderOverlay)
             .clipShape(
                 BubbleBackgroundShape(
                     cornerRadius: cornerRadius,
@@ -155,6 +147,20 @@ public struct BubbleModifier: ViewModifier {
             )
         } else {
             Color.clear
+        }
+    }
+
+    @ViewBuilder
+    private var borderOverlay: some View {
+        if borderWidth > 0 {
+            BubbleBackgroundShape(
+                cornerRadius: cornerRadius,
+                corners: corners
+            )
+            .stroke(
+                borderColor ?? Color(colors.borderCoreDefault),
+                lineWidth: borderWidth
+            )
         }
     }
 }

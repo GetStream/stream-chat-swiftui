@@ -75,7 +75,7 @@ struct DefaultMessageAttachmentItemViewModifier: ViewModifier {
             content.modifier(BubbleModifier(
                 corners: attachmentCorners(isSingleWithoutCaption: options.message.hasSingleAttachment(of: [.file], captioned: false)),
                 backgroundColors: [defaultAttachmentBackgroundColor],
-                borderColor: Color(colors.borderCoreDefault),
+                borderWidth: 0,
                 cornerRadius: tokens.messageBubbleRadiusAttachment,
                 contentInsets: EdgeInsets()
             ))
@@ -85,7 +85,7 @@ struct DefaultMessageAttachmentItemViewModifier: ViewModifier {
                 content.modifier(BubbleModifier(
                     corners: attachmentCorners(isSingleWithoutCaption: options.message.hasSingleAttachment(of: [.voiceRecording], captioned: false)),
                     backgroundColors: [defaultAttachmentBackgroundColor],
-                    borderColor: Color(colors.borderCoreDefault),
+                    borderWidth: 0,
                     cornerRadius: tokens.messageBubbleRadiusAttachment,
                     contentInsets: EdgeInsets(
                         top: tokens.spacingXs,
@@ -101,7 +101,7 @@ struct DefaultMessageAttachmentItemViewModifier: ViewModifier {
             content.modifier(BubbleModifier(
                 corners: .allCorners,
                 backgroundColors: [defaultAttachmentBackgroundColor],
-                borderColor: Color(colors.borderCoreDefault),
+                borderWidth: 0,
                 cornerRadius: tokens.messageBubbleRadiusAttachment,
                 contentInsets: EdgeInsets()
             ))
