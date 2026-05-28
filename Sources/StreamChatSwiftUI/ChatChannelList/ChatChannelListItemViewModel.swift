@@ -18,11 +18,18 @@ import SwiftUI
     public let channel: ChatChannel
 
     /// The display name of the channel.
-    public let channelName: String
+    ///
+    /// The default implementation returns the channel name passed to the
+    /// initializer. Subclasses can override this to provide a custom display
+    /// name (for example, derived from custom channel data) and may call
+    /// `super.channelName` to fall back to the initializer value.
+    open var channelName: String { providedChannelName }
+
+    private let providedChannelName: String
 
     public init(channel: ChatChannel, channelName: String) {
         self.channel = channel
-        self.channelName = channelName
+        providedChannelName = channelName
     }
 
     // MARK: - Title row

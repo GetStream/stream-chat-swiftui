@@ -16,6 +16,23 @@ import XCTest
 
     // MARK: - Title row
 
+    func test_channelName_returnsInitializerValueByDefault() {
+        let channel = ChatChannel.mock(cid: .unique)
+        let viewModel = ChatChannelListItemViewModel(channel: channel, channelName: "Provided")
+
+        XCTAssertEqual(viewModel.channelName, "Provided")
+    }
+
+    func test_channelName_canBeOverriddenBySubclass() {
+        final class CustomViewModel: ChatChannelListItemViewModel {
+            override var channelName: String { "Overridden" }
+        }
+        let channel = ChatChannel.mock(cid: .unique)
+        let viewModel = CustomViewModel(channel: channel, channelName: "Test")
+
+        XCTAssertEqual(viewModel.channelName, "Overridden")
+    }
+
     func test_timestampText_whenLastMessageAtIsNil_returnsEmptyString() {
         let channel = ChatChannel.mock(cid: .unique, lastMessageAt: nil)
         let viewModel = ChatChannelListItemViewModel(channel: channel, channelName: "Test")
