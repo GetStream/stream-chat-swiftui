@@ -130,6 +130,39 @@ import SwiftUI
         )
     }
 
+    /// The formatted text of the pending draft message in the channel, or
+    /// `nil` when no draft exists. Used by ``preview`` to render the `.draft`
+    /// variant.
+    open var draftMessageText: String? {
+        guard let draftMessage = channel.draftMessage else { return nil }
+        return utils.messagePreviewFormatter.formatContent(for: ChatMessage(draftMessage), in: channel)
+    }
+
+    /// The author prefix shown before the message preview text. Returns
+    /// `"You"` when the current user sent the latest message, the author's
+    /// display name in group channels, and `nil` for direct message channels
+    /// with two members and for poll previews.
+    open var messagePreviewAuthorName: String? {
+        guard let previewMessage,
+              previewMessage.poll == nil,
+              !(channel.isDirectMessageChannel && channel.memberCount == 2) else {
+            return nil
+        }
+        if previewMessage.isSentByCurrentUser {
+            return L10n.Channel.Item.you
+        }
+        return previewMessage.author.name ?? previewMessage.author.id
+    }
+
+    /// The leading attachment glyph for the latest message's first
+    /// attachment, or `nil` when the message has no attachments to preview.
+    open var previewAttachmentIconImage: UIImage? {
+        guard let message = previewMessage else { return nil }
+        let resolver = MessageAttachmentPreviewResolver(message: message)
+        guard let previewIcon = resolver.previewIcon else { return nil }
+        return utils.messageAttachmentPreviewIconProvider.image(for: previewIcon)
+    }
+
     // MARK: - Private
 
     private let providedChannelName: String
@@ -160,29 +193,12 @@ import SwiftUI
         utils.messageListConfig.draftMessagesEnabled
     }
 
-    private var draftMessageText: String? {
-        guard let draftMessage = channel.draftMessage else { return nil }
-        return utils.messagePreviewFormatter.formatContent(for: ChatMessage(draftMessage), in: channel)
-    }
-
     private var isPreviewMessageDeleted: Bool {
         previewMessage?.isDeleted == true
     }
 
     private var isPreviewMessageSentByCurrentUser: Bool {
         previewMessage?.isSentByCurrentUser == true
-    }
-
-    private var messagePreviewAuthorName: String? {
-        guard let previewMessage,
-              previewMessage.poll == nil,
-              !(channel.isDirectMessageChannel && channel.memberCount == 2) else {
-            return nil
-        }
-        if previewMessage.isSentByCurrentUser {
-            return L10n.Channel.Item.you
-        }
-        return previewMessage.author.name ?? previewMessage.author.id
     }
 
     private var messagePreviewText: String {
@@ -195,12 +211,5 @@ import SwiftUI
     private var previewContentText: String {
         guard let previewMessage else { return "" }
         return utils.messagePreviewFormatter.formatContent(for: previewMessage, in: channel)
-    }
-
-    private var previewAttachmentIconImage: UIImage? {
-        guard let message = previewMessage else { return nil }
-        let resolver = MessageAttachmentPreviewResolver(message: message)
-        guard let previewIcon = resolver.previewIcon else { return nil }
-        return utils.messageAttachmentPreviewIconProvider.image(for: previewIcon)
     }
 }
