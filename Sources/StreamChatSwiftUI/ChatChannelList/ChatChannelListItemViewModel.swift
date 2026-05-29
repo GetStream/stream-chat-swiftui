@@ -109,16 +109,16 @@ import SwiftUI
     /// message.
     public var preview: ChannelItemPreview {
         if lastMessageFailedToSend {
-            return .failedToSend()
+            return .failedToSend(.init())
         }
         if shouldShowTypingIndicator {
-            return .typing(channel: channel)
+            return .typing(.init(channel: channel))
         }
         if isDraftMessagesEnabled, let draftText = draftMessageText {
-            return .draft(text: draftText)
+            return .draft(.init(text: draftText))
         }
         if isPreviewMessageDeleted {
-            return .deleted(isSentByCurrentUser: isPreviewMessageSentByCurrentUser)
+            return .deleted(.init(isSentByCurrentUser: isPreviewMessageSentByCurrentUser))
         }
         return .message(
             .init(

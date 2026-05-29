@@ -122,10 +122,8 @@ import XCTest
         let channel = ChatChannel.mockDMChannel(memberCount: 2, latestMessages: [ephemeral, regular])
         let viewModel = ChatChannelListItemViewModel(channel: channel, channelName: "Other")
 
-        guard case let .message(content) = viewModel.preview.kind else {
-            return XCTFail("Expected .message, got \(viewModel.preview.kind)")
-        }
-        XCTAssertTrue(content.text.contains("Hello there"))
+        XCTAssertNotNil(viewModel.preview.message)
+        XCTAssertTrue(viewModel.preview.message?.text.contains("Hello there") == true)
     }
 
     // MARK: - Read events
@@ -243,9 +241,7 @@ import XCTest
         let channel = ChatChannel.mock(cid: .unique, latestMessages: [message])
         let viewModel = ChatChannelListItemViewModel(channel: channel, channelName: "T")
 
-        guard case .failedToSend = viewModel.preview.kind else {
-            return XCTFail("Expected .failedToSend, got \(viewModel.preview.kind)")
-        }
+        XCTAssertNotNil(viewModel.preview.failedToSend)
     }
 
     func test_preview_whenTyping_returnsTypingWithChannel() {
@@ -257,10 +253,8 @@ import XCTest
         )
         let viewModel = ChatChannelListItemViewModel(channel: channel, channelName: "T")
 
-        guard case let .typing(typingChannel) = viewModel.preview.kind else {
-            return XCTFail("Expected .typing, got \(viewModel.preview.kind)")
-        }
-        XCTAssertEqual(typingChannel.cid, channel.cid)
+        XCTAssertNotNil(viewModel.preview.typing)
+        XCTAssertEqual(viewModel.preview.typing?.channel.cid, channel.cid)
     }
 
     func test_preview_whenDraftAvailableAndEnabled_returnsDraftWithText() {
@@ -268,10 +262,8 @@ import XCTest
         let channel = ChatChannel.mock(cid: .unique, draftMessage: draft)
         let viewModel = ChatChannelListItemViewModel(channel: channel, channelName: "T")
 
-        guard case let .draft(text) = viewModel.preview.kind else {
-            return XCTFail("Expected .draft, got \(viewModel.preview.kind)")
-        }
-        XCTAssertEqual(text, "Draft text")
+        XCTAssertNotNil(viewModel.preview.draft)
+        XCTAssertEqual(viewModel.preview.draft?.text, "Draft text")
     }
 
     func test_preview_whenPreviewMessageDeleted_returnsDeleted() {
@@ -287,10 +279,8 @@ import XCTest
         let channel = ChatChannel.mock(cid: .unique, latestMessages: [message])
         let viewModel = ChatChannelListItemViewModel(channel: channel, channelName: "T")
 
-        guard case let .deleted(isSentByCurrentUser) = viewModel.preview.kind else {
-            return XCTFail("Expected .deleted, got \(viewModel.preview.kind)")
-        }
-        XCTAssertTrue(isSentByCurrentUser)
+        XCTAssertNotNil(viewModel.preview.deleted)
+        XCTAssertEqual(viewModel.preview.deleted?.isSentByCurrentUser, true)
     }
 
     func test_preview_whenGroupChannelWithMessage_includesAuthorName() {
@@ -304,12 +294,10 @@ import XCTest
         let channel = ChatChannel.mockNonDMChannel(latestMessages: [message])
         let viewModel = ChatChannelListItemViewModel(channel: channel, channelName: "Group")
 
-        guard case let .message(content) = viewModel.preview.kind else {
-            return XCTFail("Expected .message, got \(viewModel.preview.kind)")
-        }
-        XCTAssertEqual(content.authorName, "Yoda")
-        XCTAssertTrue(content.text.contains("Hello there"))
-        XCTAssertNil(content.attachmentIcon)
+        XCTAssertNotNil(viewModel.preview.message)
+        XCTAssertEqual(viewModel.preview.message?.authorName, "Yoda")
+        XCTAssertTrue(viewModel.preview.message?.text.contains("Hello there") == true)
+        XCTAssertNil(viewModel.preview.message?.attachmentIcon)
     }
 
     func test_preview_whenDMChannel_omitsAuthorName() {
@@ -323,23 +311,19 @@ import XCTest
         let channel = ChatChannel.mockDMChannel(memberCount: 2, latestMessages: [message])
         let viewModel = ChatChannelListItemViewModel(channel: channel, channelName: "Other")
 
-        guard case let .message(content) = viewModel.preview.kind else {
-            return XCTFail("Expected .message, got \(viewModel.preview.kind)")
-        }
-        XCTAssertNil(content.authorName)
-        XCTAssertTrue(content.text.contains("Hi"))
+        XCTAssertNotNil(viewModel.preview.message)
+        XCTAssertNil(viewModel.preview.message?.authorName)
+        XCTAssertTrue(viewModel.preview.message?.text.contains("Hi") == true)
     }
 
     func test_preview_whenNoPreviewMessage_returnsEmptyPlaceholderText() {
         let channel = ChatChannel.mock(cid: .unique, latestMessages: [])
         let viewModel = ChatChannelListItemViewModel(channel: channel, channelName: "T")
 
-        guard case let .message(content) = viewModel.preview.kind else {
-            return XCTFail("Expected .message, got \(viewModel.preview.kind)")
-        }
-        XCTAssertEqual(content.text, L10n.Channel.Item.emptyMessages)
-        XCTAssertNil(content.authorName)
-        XCTAssertNil(content.attachmentIcon)
+        XCTAssertNotNil(viewModel.preview.message)
+        XCTAssertEqual(viewModel.preview.message?.text, L10n.Channel.Item.emptyMessages)
+        XCTAssertNil(viewModel.preview.message?.authorName)
+        XCTAssertNil(viewModel.preview.message?.attachmentIcon)
     }
 
     func test_preview_precedence_failedToSendBeatsTyping() {
@@ -360,8 +344,6 @@ import XCTest
         )
         let viewModel = ChatChannelListItemViewModel(channel: channel, channelName: "T")
 
-        guard case .failedToSend = viewModel.preview.kind else {
-            return XCTFail("Expected .failedToSend to win over typing, got \(viewModel.preview.kind)")
-        }
+        XCTAssertNotNil(viewModel.preview.failedToSend)
     }
 }
