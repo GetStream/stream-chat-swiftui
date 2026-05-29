@@ -12,10 +12,6 @@ import SwiftUI
 /// glyph, or deleted placeholder), a pending draft, a typing indicator, or
 /// a "failed to send" status.
 ///
-/// Built with the provided static factory methods. The underlying representation
-/// is intentionally hidden so new variants can be added in the future without
-/// breaking source compatibility for clients that switch on it.
-///
 /// Use ``ChatChannelListItemViewModel/preview`` to obtain the default value
 /// for a given channel, or construct one of the variants explicitly when
 /// rendering ``ChannelItemPreviewView`` in a custom layout.
