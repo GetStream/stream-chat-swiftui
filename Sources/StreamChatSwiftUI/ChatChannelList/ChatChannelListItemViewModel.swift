@@ -103,11 +103,11 @@ import SwiftUI
 
     /// The preview variant to render for the channel list item.
     ///
-    /// Pass it to ``ChatChannelListItemPreviewView``. The default
+    /// Pass it to ``ChannelItemPreviewView``. The default
     /// implementation picks the first applicable variant in this order of
     /// precedence: failed-to-send, typing, draft, deleted, then a regular
     /// message.
-    open var preview: ChatChannelListItemPreview {
+    open var preview: ChannelItemPreview {
         if lastMessageFailedToSend {
             return .failedToSend()
         }

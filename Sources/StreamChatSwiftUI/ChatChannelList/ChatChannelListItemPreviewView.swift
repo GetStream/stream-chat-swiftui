@@ -17,8 +17,8 @@ import SwiftUI
 ///
 /// Use ``ChatChannelListItemViewModel/preview`` to obtain the default value
 /// for a given channel, or construct one of the variants explicitly when
-/// rendering ``ChatChannelListItemPreviewView`` in a custom layout.
-public struct ChatChannelListItemPreview {
+/// rendering ``ChannelItemPreviewView`` in a custom layout.
+public struct ChannelItemPreview {
     /// The content of a regular message preview row.
     ///
     /// Renders as an optional leading attachment icon, an optional `Author:`
@@ -63,23 +63,23 @@ public struct ChatChannelListItemPreview {
     }
 
     /// Failed-to-send variant: shown when the last message failed to send.
-    public static func failedToSend() -> ChatChannelListItemPreview {
+    public static func failedToSend() -> ChannelItemPreview {
         .init(.failedToSend)
     }
 
     /// Typing-indicator variant: shown while other users in the channel are typing.
     /// The provided text is rendered as-is alongside the animated typing dots.
-    public static func typing(text: String) -> ChatChannelListItemPreview {
+    public static func typing(text: String) -> ChannelItemPreview {
         .init(.typing(text: text))
     }
 
     /// Draft variant: shown when there is a pending draft message in the channel.
-    public static func draft(text: String) -> ChatChannelListItemPreview {
+    public static func draft(text: String) -> ChannelItemPreview {
         .init(.draft(text: text))
     }
 
     /// Deleted variant: shown when the preview message has been deleted.
-    public static func deleted(isSentByCurrentUser: Bool) -> ChatChannelListItemPreview {
+    public static func deleted(isSentByCurrentUser: Bool) -> ChannelItemPreview {
         .init(.deleted(isSentByCurrentUser: isSentByCurrentUser))
     }
 
@@ -87,7 +87,7 @@ public struct ChatChannelListItemPreview {
     /// regular message. The provided ``MessageContent`` controls whether an
     /// author prefix and/or attachment icon are rendered alongside the
     /// preview text.
-    public static func message(_ content: MessageContent) -> ChatChannelListItemPreview {
+    public static func message(_ content: MessageContent) -> ChannelItemPreview {
         .init(.message(content))
     }
 }
@@ -95,14 +95,14 @@ public struct ChatChannelListItemPreview {
 /// The preview view used by the channel list item.
 ///
 /// Renders one of the preview variants described by the provided
-/// ``ChatChannelListItemPreview`` value. Variants include: failed-to-send,
+/// ``ChannelItemPreview`` value. Variants include: failed-to-send,
 /// typing, draft, deleted, and a regular message (with optional author
 /// prefix and attachment icon).
-public struct ChatChannelListItemPreviewView: View {
+public struct ChannelItemPreviewView: View {
     /// The preview variant to render.
-    public let preview: ChatChannelListItemPreview
+    public let preview: ChannelItemPreview
 
-    public init(_ preview: ChatChannelListItemPreview) {
+    public init(_ preview: ChannelItemPreview) {
         self.preview = preview
     }
 
@@ -117,13 +117,13 @@ public struct ChatChannelListItemPreviewView: View {
     private var content: some View {
         switch preview.kind {
         case .failedToSend:
-            ChatChannelListItemFailedToSendView()
+            ChannelItemFailedToSendView()
         case let .typing(text):
             SubtitleTypingIndicatorView(text: text)
         case let .draft(text):
-            ChatChannelListItemDraftPreviewView(draftMessageText: text)
+            ChannelItemDraftPreviewView(draftMessageText: text)
         case let .deleted(isSentByCurrentUser):
-            ChatChannelListItemDeletedPreviewView(
+            ChannelItemDeletedPreviewView(
                 isPreviewMessageSentByCurrentUser: isSentByCurrentUser
             )
         case let .message(content):
@@ -133,16 +133,16 @@ public struct ChatChannelListItemPreviewView: View {
 
     @ViewBuilder
     private func messageView(
-        for content: ChatChannelListItemPreview.MessageContent
+        for content: ChannelItemPreview.MessageContent
     ) -> some View {
         if let authorName = content.authorName {
-            ChatChannelListItemAuthorPreviewView(
+            ChannelItemAuthorPreviewView(
                 messagePreviewAuthorName: authorName,
                 previewContentText: content.text,
                 previewAttachmentIconImage: content.attachmentIcon
             )
         } else if let attachmentIcon = content.attachmentIcon {
-            ChatChannelListItemAttachmentPreviewView(
+            ChannelItemAttachmentPreviewView(
                 messagePreviewText: content.text,
                 previewAttachmentIconImage: attachmentIcon
             )

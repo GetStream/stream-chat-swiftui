@@ -64,7 +64,7 @@ public struct ChatChannelListItem<Factory: ViewFactory>: View {
 
                 VStack(alignment: .leading, spacing: tokens.spacingXxs) {
                     HStack {
-                        ChatChannelListItemTitleView(
+                        ChannelItemTitleView(
                             channelName: viewModel.channelName,
                             shouldShowInlineMutedIcon: viewModel.shouldShowInlineMutedIcon
                         )
@@ -92,7 +92,7 @@ public struct ChatChannelListItem<Factory: ViewFactory>: View {
                                 localState: viewModel.previewMessageLocalState
                             )
                         }
-                        ChatChannelListItemPreviewView(viewModel.preview)
+                        ChannelItemPreviewView(viewModel.preview)
                         Spacer()
                         if viewModel.shouldShowMutedTrailingIcon {
                             ChatChannelListItemMutedIcon()
@@ -112,7 +112,7 @@ public struct ChatChannelListItem<Factory: ViewFactory>: View {
 ///
 /// Renders the channel name and, when `shouldShowInlineMutedIcon` is `true`,
 /// an inline muted icon after the name.
-public struct ChatChannelListItemTitleView: View {
+public struct ChannelItemTitleView: View {
     /// The channel display name.
     public let channelName: String
     /// Whether the muted icon should be shown inline next to the channel name.
@@ -184,7 +184,7 @@ public final class ChannelItemMutedLayoutStyle: Hashable, Sendable {
 
 /// Failed-to-send message preview variant for the channel list item: an error
 /// icon followed by the "message failed to send" label.
-public struct ChatChannelListItemFailedToSendView: View {
+public struct ChannelItemFailedToSendView: View {
     @Injected(\.fonts) private var fonts
     @Injected(\.colors) private var colors
     @Injected(\.images) private var images
@@ -209,7 +209,7 @@ public struct ChatChannelListItemFailedToSendView: View {
 
 /// Draft message preview variant for the channel list item: a "Draft:" prefix
 /// followed by the draft message text.
-public struct ChatChannelListItemDraftPreviewView: View {
+public struct ChannelItemDraftPreviewView: View {
     @Injected(\.fonts) private var fonts
     @Injected(\.colors) private var colors
 
@@ -233,7 +233,7 @@ public struct ChatChannelListItemDraftPreviewView: View {
 /// Deleted message preview variant for the channel list item: an optional
 /// "You:" prefix when the deleted message was sent by the current user,
 /// followed by a "nosign" icon and the deleted placeholder text.
-public struct ChatChannelListItemDeletedPreviewView: View {
+public struct ChannelItemDeletedPreviewView: View {
     @Injected(\.fonts) private var fonts
     @Injected(\.colors) private var colors
     @Injected(\.tokens) private var tokens
@@ -267,7 +267,7 @@ public struct ChatChannelListItemDeletedPreviewView: View {
 /// Author-prefixed message preview variant for the channel list item:
 /// "Author:" followed by an optional attachment icon and the preview content
 /// text.
-public struct ChatChannelListItemAuthorPreviewView: View {
+public struct ChannelItemAuthorPreviewView: View {
     @Injected(\.fonts) private var fonts
     @Injected(\.colors) private var colors
     @Injected(\.tokens) private var tokens
@@ -306,7 +306,7 @@ public struct ChatChannelListItemAuthorPreviewView: View {
 /// Attachment-only message preview variant for the channel list item: an
 /// attachment icon followed by the preview text (used when there is no author
 /// prefix to show).
-public struct ChatChannelListItemAttachmentPreviewView: View {
+public struct ChannelItemAttachmentPreviewView: View {
     @Injected(\.fonts) private var fonts
     @Injected(\.colors) private var colors
     @Injected(\.tokens) private var tokens
