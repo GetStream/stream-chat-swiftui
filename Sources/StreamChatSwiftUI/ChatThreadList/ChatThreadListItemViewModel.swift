@@ -101,7 +101,7 @@ import SwiftUI
     }
 
     /// The number of unread replies.
-    open var unreadRepliesCount: Int {
+    public var unreadRepliesCount: Int {
         let currentUserRead = thread.reads.first(
             where: { $0.user.id == chatClient.currentUserId }
         )
@@ -114,17 +114,17 @@ import SwiftUI
     }
 
     /// A boolean value indicating if the latest reply author is online.
-    open var isLatestReplyAuthorOnline: Bool {
+    public var isLatestReplyAuthorOnline: Bool {
         latestReplyAuthor?.isOnline ?? false
     }
 
     /// The latest reply author's image url.
-    open var latestReplyAuthorImageURL: URL? {
+    public var latestReplyAuthorImageURL: URL? {
         latestReplyAuthor?.imageURL
     }
 
     /// The latest reply author's user ID.
-    open var latestReplyAuthorId: String {
+    public var latestReplyAuthorId: String {
         latestReplyAuthor?.id ?? ""
     }
 
@@ -137,7 +137,7 @@ import SwiftUI
     }
 
     /// The author of the parent message.
-    open var parentMessageAuthor: ChatUser {
+    public var parentMessageAuthor: ChatUser {
         thread.parentMessage.author
     }
 
