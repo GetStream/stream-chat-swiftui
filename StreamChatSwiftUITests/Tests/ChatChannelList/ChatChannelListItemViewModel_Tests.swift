@@ -68,7 +68,7 @@ import XCTest
         XCTAssertTrue(viewModel.hasUnread)
     }
 
-    func test_shouldShowInlineMutedIcon_whenMutedAndAfterChannelNameStyle_returnsTrue() {
+    func test_showInlineMutedIcon_whenMutedAndAfterChannelNameStyle_returnsTrue() {
         streamChat?.utils.channelListConfig.channelItemMutedStyle = .afterChannelName
         let channel = ChatChannel.mock(
             cid: .unique,
@@ -76,11 +76,11 @@ import XCTest
         )
         let viewModel = ChatChannelListItemViewModel(channel: channel, channelName: "T")
 
-        XCTAssertTrue(viewModel.shouldShowInlineMutedIcon)
-        XCTAssertFalse(viewModel.shouldShowMutedTrailingIcon)
+        XCTAssertTrue(viewModel.showInlineMutedIcon)
+        XCTAssertFalse(viewModel.showMutedTrailingIcon)
     }
 
-    func test_shouldShowMutedTrailingIcon_whenMutedAndBottomRightCornerStyle_returnsTrue() {
+    func test_showMutedTrailingIcon_whenMutedAndBottomRightCornerStyle_returnsTrue() {
         streamChat?.utils.channelListConfig.channelItemMutedStyle = .bottomRightCorner
         let channel = ChatChannel.mock(
             cid: .unique,
@@ -88,16 +88,16 @@ import XCTest
         )
         let viewModel = ChatChannelListItemViewModel(channel: channel, channelName: "T")
 
-        XCTAssertTrue(viewModel.shouldShowMutedTrailingIcon)
-        XCTAssertFalse(viewModel.shouldShowInlineMutedIcon)
+        XCTAssertTrue(viewModel.showMutedTrailingIcon)
+        XCTAssertFalse(viewModel.showInlineMutedIcon)
     }
 
     func test_mutedIconFlags_whenChannelIsNotMuted_returnFalse() {
         let channel = ChatChannel.mock(cid: .unique)
         let viewModel = ChatChannelListItemViewModel(channel: channel, channelName: "T")
 
-        XCTAssertFalse(viewModel.shouldShowInlineMutedIcon)
-        XCTAssertFalse(viewModel.shouldShowMutedTrailingIcon)
+        XCTAssertFalse(viewModel.showInlineMutedIcon)
+        XCTAssertFalse(viewModel.showMutedTrailingIcon)
     }
 
     func test_preview_skipsEphemeralMessages() {
@@ -130,7 +130,7 @@ import XCTest
 
     // MARK: - Read events
 
-    func test_shouldShowReadEvents_whenLastMessageFailedToSend_returnsFalse() {
+    func test_showReadEvents_whenLastMessageFailedToSend_returnsFalse() {
         let message = ChatMessage.mock(
             id: .unique,
             cid: .unique,
@@ -142,10 +142,10 @@ import XCTest
         let channel = ChatChannel.mock(cid: .unique, latestMessages: [message])
         let viewModel = ChatChannelListItemViewModel(channel: channel, channelName: "T")
 
-        XCTAssertFalse(viewModel.shouldShowReadEvents)
+        XCTAssertFalse(viewModel.showReadEvents)
     }
 
-    func test_shouldShowReadEvents_whenDraftPresentAndDraftsEnabled_returnsFalse() {
+    func test_showReadEvents_whenDraftPresentAndDraftsEnabled_returnsFalse() {
         let myMessage = ChatMessage.mock(
             id: .unique,
             cid: .unique,
@@ -161,10 +161,10 @@ import XCTest
         )
         let viewModel = ChatChannelListItemViewModel(channel: channel, channelName: "T")
 
-        XCTAssertFalse(viewModel.shouldShowReadEvents)
+        XCTAssertFalse(viewModel.showReadEvents)
     }
 
-    func test_shouldShowReadEvents_whenSentByCurrentUserAndReadEventsEnabled_returnsTrue() {
+    func test_showReadEvents_whenSentByCurrentUserAndReadEventsEnabled_returnsTrue() {
         let message = ChatMessage.mock(
             id: .unique,
             cid: .unique,
@@ -179,10 +179,10 @@ import XCTest
         )
         let viewModel = ChatChannelListItemViewModel(channel: channel, channelName: "T")
 
-        XCTAssertTrue(viewModel.shouldShowReadEvents)
+        XCTAssertTrue(viewModel.showReadEvents)
     }
 
-    func test_shouldShowReadEvents_whenSentByOtherUser_returnsFalse() {
+    func test_showReadEvents_whenSentByOtherUser_returnsFalse() {
         let message = ChatMessage.mock(
             id: .unique,
             cid: .unique,
@@ -193,10 +193,10 @@ import XCTest
         let channel = ChatChannel.mock(cid: .unique, latestMessages: [message])
         let viewModel = ChatChannelListItemViewModel(channel: channel, channelName: "T")
 
-        XCTAssertFalse(viewModel.shouldShowReadEvents)
+        XCTAssertFalse(viewModel.showReadEvents)
     }
 
-    func test_shouldShowReadEvents_whenReadEventsDisabled_returnsFalse() {
+    func test_showReadEvents_whenReadEventsDisabled_returnsFalse() {
         let message = ChatMessage.mock(
             id: .unique,
             cid: .unique,
@@ -211,7 +211,7 @@ import XCTest
         )
         let viewModel = ChatChannelListItemViewModel(channel: channel, channelName: "T")
 
-        XCTAssertFalse(viewModel.shouldShowReadEvents)
+        XCTAssertFalse(viewModel.showReadEvents)
     }
 
     func test_previewMessageLocalState_returnsPreviewMessageLocalState() {

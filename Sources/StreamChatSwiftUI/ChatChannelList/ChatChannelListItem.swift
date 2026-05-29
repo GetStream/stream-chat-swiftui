@@ -66,7 +66,7 @@ public struct ChatChannelListItem<Factory: ViewFactory>: View {
                     HStack {
                         ChannelItemTitleView(
                             channelName: viewModel.channelName,
-                            shouldShowInlineMutedIcon: viewModel.shouldShowInlineMutedIcon
+                            showInlineMutedIcon: viewModel.showInlineMutedIcon
                         )
 
                         Spacer()
@@ -85,16 +85,16 @@ public struct ChatChannelListItem<Factory: ViewFactory>: View {
                     }
 
                     HStack(spacing: tokens.spacingXxxs) {
-                        if viewModel.shouldShowReadEvents {
+                        if viewModel.showReadEvents {
                             MessageReadIndicatorView(
                                 readUsers: viewModel.readUsers,
-                                showDelivered: viewModel.shouldShowDelivered,
+                                showDelivered: viewModel.showDelivered,
                                 localState: viewModel.previewMessageLocalState
                             )
                         }
                         ChannelItemPreviewView(factory: factory, preview: viewModel.preview)
                         Spacer()
-                        if viewModel.shouldShowMutedTrailingIcon {
+                        if viewModel.showMutedTrailingIcon {
                             ChannelItemMutedIcon()
                         }
                     }
@@ -110,26 +110,26 @@ public struct ChatChannelListItem<Factory: ViewFactory>: View {
 
 /// The title view used in the channel list item.
 ///
-/// Renders the channel name and, when `shouldShowInlineMutedIcon` is `true`,
+/// Renders the channel name and, when `showInlineMutedIcon` is `true`,
 /// an inline muted icon after the name.
 public struct ChannelItemTitleView: View {
     /// The channel display name.
     public let channelName: String
     /// Whether the muted icon should be shown inline next to the channel name.
-    public let shouldShowInlineMutedIcon: Bool
+    public let showInlineMutedIcon: Bool
 
     public init(
         channelName: String,
-        shouldShowInlineMutedIcon: Bool
+        showInlineMutedIcon: Bool
     ) {
         self.channelName = channelName
-        self.shouldShowInlineMutedIcon = shouldShowInlineMutedIcon
+        self.showInlineMutedIcon = showInlineMutedIcon
     }
 
     public var body: some View {
         HStack(spacing: 6) {
             ChatTitleView(name: channelName)
-            if shouldShowInlineMutedIcon {
+            if showInlineMutedIcon {
                 ChannelItemMutedIcon()
                     .frame(maxHeight: 14)
                     .padding(.bottom, -2)

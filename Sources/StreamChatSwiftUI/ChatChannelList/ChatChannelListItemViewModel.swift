@@ -52,20 +52,20 @@ import SwiftUI
 
     /// A boolean value indicating whether the muted icon should be rendered
     /// inline next to the channel name.
-    open var shouldShowInlineMutedIcon: Bool {
+    public var showInlineMutedIcon: Bool {
         isMuted && mutedLayoutStyle == .afterChannelName
     }
 
     /// A boolean value indicating whether the muted icon should be rendered
     /// in the trailing bottom corner of the item.
-    open var shouldShowMutedTrailingIcon: Bool {
+    public var showMutedTrailingIcon: Bool {
         isMuted && mutedLayoutStyle == .bottomRightCorner
     }
 
     // MARK: - Read indicator
 
     /// A boolean value indicating whether the read events indicator should be shown.
-    open var shouldShowReadEvents: Bool {
+    public var showReadEvents: Bool {
         if shouldShowTypingIndicator || lastMessageFailedToSend {
             return false
         }
@@ -90,7 +90,7 @@ import SwiftUI
 
     /// A boolean value indicating whether the read indicator should
     /// show the delivered state.
-    open var shouldShowDelivered: Bool {
+    public var showDelivered: Bool {
         previewMessage?.deliveryStatus(for: channel) == .delivered
     }
 
@@ -107,7 +107,7 @@ import SwiftUI
     /// implementation picks the first applicable variant in this order of
     /// precedence: failed-to-send, typing, draft, deleted, then a regular
     /// message.
-    open var preview: ChannelItemPreview {
+    public var preview: ChannelItemPreview {
         if lastMessageFailedToSend {
             return .failedToSend()
         }
