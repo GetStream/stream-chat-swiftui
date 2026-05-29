@@ -17,6 +17,13 @@ import SwiftUI
     /// The channel represented by this item.
     public let channel: ChatChannel
 
+    public init(channel: ChatChannel, channelName: String) {
+        self.channel = channel
+        providedChannelName = channelName
+    }
+
+    // MARK: - Title row
+
     /// The display name of the channel.
     ///
     /// The default implementation returns the channel name passed to the
@@ -24,13 +31,6 @@ import SwiftUI
     /// name (for example, derived from custom channel data) and may call
     /// `super.channelName` to fall back to the initializer value.
     open var channelName: String { providedChannelName }
-
-    public init(channel: ChatChannel, channelName: String) {
-        self.channel = channel
-        providedChannelName = channelName
-    }
-
-    // MARK: - Title row
 
     /// The formatted timestamp of the last message in the channel.
     open var timestampText: String {
