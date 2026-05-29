@@ -43,20 +43,23 @@ public struct ChannelItemPreviewView<Factory: ViewFactory>: View {
 
     @ViewBuilder
     private var content: some View {
-        if preview.failedToSend != nil {
+        switch preview.content {
+        case is ChannelItemPreview.FailedToSendContent:
             ChannelItemFailedToSendView()
-        } else if let typing = preview.typing {
+        case let typing as ChannelItemPreview.TypingContent:
             factory.makeSubtitleTypingIndicatorView(
                 options: SubtitleTypingIndicatorViewOptions(channel: typing.channel)
             )
-        } else if let draft = preview.draft {
+        case let draft as ChannelItemPreview.DraftContent:
             ChannelItemDraftPreviewView(draftMessageText: draft.text)
-        } else if let deleted = preview.deleted {
+        case let deleted as ChannelItemPreview.DeletedContent:
             ChannelItemDeletedPreviewView(
                 isPreviewMessageSentByCurrentUser: deleted.isSentByCurrentUser
             )
-        } else if let message = preview.message {
+        case let message as ChannelItemPreview.MessageContent:
             ChannelItemMessagePreviewView(message)
+        default:
+            EmptyView()
         }
     }
 }
@@ -239,7 +242,7 @@ private struct LabelWithColon: View {
 public struct ChannelItemPreview {
     /// Failed-to-send variant: shown when the last message failed to send.
     public static func failedToSend(_ content: FailedToSendContent) -> ChannelItemPreview {
-        .init(failedToSend: content)
+        .init(content: content)
     }
 
     /// Typing-indicator variant: shown while other users in the channel are
@@ -247,66 +250,56 @@ public struct ChannelItemPreview {
     /// `makeSubtitleTypingIndicatorView(options:)` can derive the typing text
     /// from `channel.currentlyTypingUsers`.
     public static func typing(_ content: TypingContent) -> ChannelItemPreview {
-        .init(typing: content)
+        .init(content: content)
     }
 
     /// Draft variant: shown when there is a pending draft message in the channel.
     public static func draft(_ content: DraftContent) -> ChannelItemPreview {
-        .init(draft: content)
+        .init(content: content)
     }
 
     /// Deleted variant: shown when the preview message has been deleted.
     public static func deleted(_ content: DeletedContent) -> ChannelItemPreview {
-        .init(deleted: content)
+        .init(content: content)
     }
 
     /// Regular message variant: shown when the latest channel activity is a
-    /// regular message. The provided ``MessageContent`` controls whether an
-    /// author prefix and/or attachment icon are rendered alongside the
-    /// preview text.
+    /// regular message. The provided ``ChannelItemPreview/MessageContent``
+    /// controls whether an author prefix and/or attachment icon are rendered
+    /// alongside the preview text.
     public static func message(_ content: MessageContent) -> ChannelItemPreview {
-        .init(message: content)
+        .init(content: content)
     }
 
-    /// Set when the last message failed to send.
-    public let failedToSend: FailedToSendContent?
+    /// The content describing which variant to render.
+    public let content: any Content
 
-    /// Set while other users in the channel are typing.
-    public let typing: TypingContent?
-
-    /// Set when there is a pending draft message in the channel.
-    public let draft: DraftContent?
-
-    /// Set when the latest message in the channel has been deleted.
-    public let deleted: DeletedContent?
-
-    /// Set when the latest channel activity is a regular message.
-    public let message: MessageContent?
-
-    private init(
-        failedToSend: FailedToSendContent? = nil,
-        typing: TypingContent? = nil,
-        draft: DraftContent? = nil,
-        deleted: DeletedContent? = nil,
-        message: MessageContent? = nil
-    ) {
-        self.failedToSend = failedToSend
-        self.typing = typing
-        self.draft = draft
-        self.deleted = deleted
-        self.message = message
+    /// Wraps the provided content. Use this to render a custom variant by
+    /// passing your own ``ChannelItemPreview/Content`` conforming type.
+    public init(content: any Content) {
+        self.content = content
     }
+
+    /// A type that provides the data for a channel item preview variant.
+    ///
+    /// The built-in variants are ``ChannelItemPreview/FailedToSendContent``,
+    /// ``ChannelItemPreview/TypingContent``, ``ChannelItemPreview/DraftContent``,
+    /// ``ChannelItemPreview/DeletedContent`` and ``ChannelItemPreview/MessageContent``.
+    /// Conform your own type to render a custom variant: wrap it in a
+    /// ``ChannelItemPreview`` via ``ChannelItemPreview/init(content:)`` and match
+    /// it (with `as`) in a custom preview view.
+    public protocol Content {}
 
     /// The data needed to render the failed-to-send variant.
     ///
     /// Carries no data, but exists so the variant has a value type like the
-    /// others and can be detected via ``ChannelItemPreview/failedToSend``.
-    public struct FailedToSendContent {
+    /// others and can be matched (with `as`) against ``ChannelItemPreview/content``.
+    public struct FailedToSendContent: Content {
         public init() {}
     }
 
     /// The data needed to render the typing variant.
-    public struct TypingContent {
+    public struct TypingContent: Content {
         /// The channel whose typing users drive the indicator text.
         public let channel: ChatChannel
 
@@ -316,7 +309,7 @@ public struct ChannelItemPreview {
     }
 
     /// The data needed to render the draft variant.
-    public struct DraftContent {
+    public struct DraftContent: Content {
         /// The formatted draft message text.
         public let text: String
 
@@ -326,7 +319,7 @@ public struct ChannelItemPreview {
     }
 
     /// The data needed to render the deleted variant.
-    public struct DeletedContent {
+    public struct DeletedContent: Content {
         /// Whether the deleted message was sent by the current user.
         public let isSentByCurrentUser: Bool
 
@@ -340,7 +333,7 @@ public struct ChannelItemPreview {
     /// Renders as an optional leading attachment icon, an optional `Author:`
     /// prefix, and the preview text. Pass `nil` for any decoration you want
     /// to omit.
-    public struct MessageContent {
+    public struct MessageContent: Content {
         /// The preview text shown after the optional author prefix.
         public let text: String
 
