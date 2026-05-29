@@ -168,7 +168,7 @@ public struct ChannelItemFailedToSendView: View {
         HStack(spacing: tokens.spacingXxs) {
             Image(uiImage: images.messageListErrorIndicator)
                 .customizable()
-                .frame(width: 16, height: 16)
+                .frame(width: tokens.iconSizeSm, height: tokens.iconSizeSm)
                 .foregroundColor(Color(colors.badgeBackgroundError))
                 .accessibilityHidden(true)
             Text(L10n.Channel.Item.messageFailedToSend)
@@ -226,7 +226,7 @@ public struct ChannelItemDeletedPreviewView: View {
             Image(systemName: "nosign")
                 .resizable()
                 .scaledToFit()
-                .frame(width: 16, height: 16)
+                .frame(width: tokens.iconSizeSm, height: tokens.iconSizeSm)
                 .accessibilityHidden(true)
             Text(L10n.Message.deletedMessagePlaceholder)
         }
