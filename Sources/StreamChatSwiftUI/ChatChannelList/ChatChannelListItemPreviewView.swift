@@ -239,7 +239,7 @@ private struct LabelWithColon: View {
 /// Use ``ChatChannelListItemViewModel/preview`` to obtain the default value
 /// for a given channel, or construct one of the variants explicitly when
 /// rendering ``ChannelItemPreviewView`` in a custom layout.
-public struct ChannelItemPreview {
+public struct ChannelItemPreview: Sendable {
     /// Failed-to-send variant: shown when the last message failed to send.
     public static func failedToSend(_ content: FailedToSendContent) -> ChannelItemPreview {
         .init(content: content)
@@ -288,7 +288,7 @@ public struct ChannelItemPreview {
     /// Conform your own type to render a custom variant: wrap it in a
     /// ``ChannelItemPreview`` via ``ChannelItemPreview/init(content:)`` and match
     /// it (with `as`) in a custom preview view.
-    public protocol Content {}
+    public protocol Content: Sendable {}
 
     /// The data needed to render the failed-to-send variant.
     ///
