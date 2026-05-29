@@ -120,14 +120,30 @@ import SwiftUI
         if isPreviewMessageDeleted {
             return .deleted(isSentByCurrentUser: isPreviewMessageSentByCurrentUser)
         }
-        let authorName = messagePreviewAuthorName
         return .message(
             .init(
-                text: authorName == nil ? messagePreviewText : previewContentText,
-                authorName: authorName,
+                text: messagePreviewText,
+                authorName: messagePreviewAuthorName,
                 attachmentIcon: previewAttachmentIconImage
             )
         )
+    }
+
+    /// The text shown in the regular message preview variant.
+    ///
+    /// When ``messagePreviewAuthorName`` is non-`nil` the view already
+    /// renders that author label as a prefix, so this returns just the
+    /// formatted content of the preview message to avoid duplicating the
+    /// author name. When ``messagePreviewAuthorName`` is `nil` (direct
+    /// message channels with two members, poll previews, empty channels)
+    /// the formatter is allowed to include its own author prefix where it
+    /// makes sense, or falls back to the empty channel placeholder.
+    open var messagePreviewText: String {
+        guard let previewMessage else { return L10n.Channel.Item.emptyMessages }
+        if messagePreviewAuthorName != nil {
+            return utils.messagePreviewFormatter.formatContent(for: previewMessage, in: channel)
+        }
+        return utils.messagePreviewFormatter.format(previewMessage, in: channel)
     }
 
     /// The formatted text of the pending draft message in the channel, or
@@ -199,17 +215,5 @@ import SwiftUI
 
     private var isPreviewMessageSentByCurrentUser: Bool {
         previewMessage?.isSentByCurrentUser == true
-    }
-
-    private var messagePreviewText: String {
-        if let previewMessage {
-            return utils.messagePreviewFormatter.format(previewMessage, in: channel)
-        }
-        return L10n.Channel.Item.emptyMessages
-    }
-
-    private var previewContentText: String {
-        guard let previewMessage else { return "" }
-        return utils.messagePreviewFormatter.formatContent(for: previewMessage, in: channel)
     }
 }
