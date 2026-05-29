@@ -136,16 +136,11 @@ struct HideTabBarModifierForiOS16: ViewModifier {
     }
 }
 
-// MARK: - Deprecations
+// MARK: - Convenience Initializers
 
 public extension ChatChannelNavigatableListItem {
     /// Convenience initializer that builds the default ``ChatChannelListItem``
     /// internally and wraps it with navigation behavior.
-    @available(
-        *,
-        deprecated,
-        message: "Build the channel item yourself (e.g. ChatChannelListItem) and pass it via init(channel:channelListItem:channelDestination:selectedChannel:handleTabBarVisibility:)."
-    )
     init<Factory: ViewFactory>(
         factory: Factory,
         channel: ChatChannel,
@@ -173,12 +168,8 @@ public extension ChatChannelNavigatableListItem {
     }
 
     /// Convenience initializer that builds the default ``ChatChannelListItem``
-    /// internally and wraps it with navigation behavior.
-    @available(
-        *,
-        deprecated,
-        message: "Build the channel item yourself (e.g. ChatChannelListItem) and pass it via init(channel:channelListItem:channelDestination:selectedChannel:handleTabBarVisibility:)."
-    )
+    /// internally and wraps it with navigation behavior, defaulting to the
+    /// shared ``DefaultViewFactory``.
     init<Factory: DefaultViewFactory>(
         factory: Factory = .shared,
         channel: ChatChannel,
@@ -205,4 +196,3 @@ public extension ChatChannelNavigatableListItem {
         )
     }
 }
-
