@@ -55,14 +55,18 @@ extension ViewFactory {
     ) -> some View {
         let utils = InjectedValues[\.utils]
         let listItem = ChatChannelNavigatableListItem(
-            factory: self,
             channel: options.channel,
-            channelName: options.channelName,
-            disabled: options.disabled,
-            handleTabBarVisibility: utils.messageListConfig.handleTabBarVisibility,
-            selectedChannel: options.selectedChannel,
+            channelListItem: ChatChannelListItem(
+                factory: self,
+                channel: options.channel,
+                channelName: options.channelName,
+                isSelected: options.selectedChannel.wrappedValue?.channel.cid == options.channel.cid,
+                disabled: options.disabled,
+                onItemTap: options.onItemTap
+            ),
             channelDestination: options.channelDestination,
-            onItemTap: options.onItemTap
+            selectedChannel: options.selectedChannel,
+            handleTabBarVisibility: utils.messageListConfig.handleTabBarVisibility
         )
         return ChatChannelSwipeableListItem(
             factory: self,
