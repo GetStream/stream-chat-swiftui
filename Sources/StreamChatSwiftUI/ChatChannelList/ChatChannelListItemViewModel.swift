@@ -95,7 +95,7 @@ import SwiftUI
     }
 
     /// The local message state of the preview message.
-    open var previewMessageLocalState: LocalMessageState? {
+    public var previewMessageLocalState: LocalMessageState? {
         previewMessage?.localState
     }
 
