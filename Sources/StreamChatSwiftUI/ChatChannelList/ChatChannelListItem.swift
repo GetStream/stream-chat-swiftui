@@ -95,7 +95,7 @@ public struct ChatChannelListItem<Factory: ViewFactory>: View {
                         ChannelItemPreviewView(viewModel.preview)
                         Spacer()
                         if viewModel.shouldShowMutedTrailingIcon {
-                            ChatChannelListItemMutedIcon()
+                            ChannelItemMutedIcon()
                         }
                     }
                 }
@@ -130,7 +130,7 @@ public struct ChannelItemTitleView: View {
         HStack(spacing: 6) {
             ChatTitleView(name: channelName)
             if shouldShowInlineMutedIcon {
-                ChatChannelListItemMutedIcon()
+                ChannelItemMutedIcon()
                     .frame(maxHeight: 14)
                     .padding(.bottom, -2)
             }
@@ -139,7 +139,7 @@ public struct ChannelItemTitleView: View {
 }
 
 /// The muted icon used by the channel list item.
-public struct ChatChannelListItemMutedIcon: View {
+public struct ChannelItemMutedIcon: View {
     @Injected(\.colors) private var colors
     @Injected(\.images) private var images
     @Injected(\.tokens) private var tokens
