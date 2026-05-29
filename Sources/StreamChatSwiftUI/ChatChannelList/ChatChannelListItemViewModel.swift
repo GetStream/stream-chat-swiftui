@@ -41,12 +41,12 @@ import SwiftUI
     }
 
     /// The number of unread messages in the channel.
-    open var unreadCount: Int {
+    public var unreadCount: Int {
         channel.unreadCount.messages
     }
 
     /// A boolean value indicating whether the channel has any unread content.
-    open var hasUnread: Bool {
+    public var hasUnread: Bool {
         channel.unreadCount != .noUnread
     }
 
@@ -81,7 +81,7 @@ import SwiftUI
     }
 
     /// The users that have read the preview message.
-    open var readUsers: [ChatUser] {
+    public var readUsers: [ChatUser] {
         channel.readUsers(
             currentUserId: chatClient.currentUserId,
             message: previewMessage
