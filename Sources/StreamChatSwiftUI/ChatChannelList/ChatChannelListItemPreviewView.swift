@@ -2,6 +2,7 @@
 // Copyright © 2026 Stream.io Inc. All rights reserved.
 //
 
+import StreamChat
 import SwiftUI
 
 /// Describes which variant the channel list item preview should render.
@@ -50,7 +51,7 @@ public struct ChannelItemPreview {
 
     enum Kind {
         case failedToSend
-        case typing(text: String)
+        case typing(channel: ChatChannel)
         case draft(text: String)
         case deleted(isSentByCurrentUser: Bool)
         case message(MessageContent)
@@ -67,10 +68,12 @@ public struct ChannelItemPreview {
         .init(.failedToSend)
     }
 
-    /// Typing-indicator variant: shown while other users in the channel are typing.
-    /// The provided text is rendered as-is alongside the animated typing dots.
-    public static func typing(text: String) -> ChannelItemPreview {
-        .init(.typing(text: text))
+    /// Typing-indicator variant: shown while other users in the channel are
+    /// typing. The provided channel is forwarded to the view factory so
+    /// `makeSubtitleTypingIndicatorView(options:)` can derive the typing text
+    /// from `channel.currentlyTypingUsers`.
+    public static func typing(channel: ChatChannel) -> ChannelItemPreview {
+        .init(.typing(channel: channel))
     }
 
     /// Draft variant: shown when there is a pending draft message in the channel.
@@ -98,11 +101,26 @@ public struct ChannelItemPreview {
 /// ``ChannelItemPreview`` value. Variants include: failed-to-send,
 /// typing, draft, deleted, and a regular message (with optional author
 /// prefix and attachment icon).
-public struct ChannelItemPreviewView: View {
+///
+/// The typing variant is always routed through the view factory's
+/// ``ViewFactory/makeSubtitleTypingIndicatorView(options:)``, so customers that
+/// override that factory method see their custom typing view inside the
+/// channel item.
+public struct ChannelItemPreviewView<Factory: ViewFactory>: View {
     /// The preview variant to render.
     public let preview: ChannelItemPreview
 
-    public init(_ preview: ChannelItemPreview) {
+    private let factory: Factory
+
+    /// Renders the provided preview. The typing variant is routed through
+    /// `factory.makeSubtitleTypingIndicatorView(options:)`, so customer
+    /// overrides of the factory method are honored. Defaults to
+    /// ``DefaultViewFactory``.
+    public init(
+        factory: Factory = DefaultViewFactory.shared,
+        preview: ChannelItemPreview
+    ) {
+        self.factory = factory
         self.preview = preview
     }
 
@@ -118,8 +136,10 @@ public struct ChannelItemPreviewView: View {
         switch preview.kind {
         case .failedToSend:
             ChannelItemFailedToSendView()
-        case let .typing(text):
-            SubtitleTypingIndicatorView(text: text)
+        case let .typing(channel):
+            factory.makeSubtitleTypingIndicatorView(
+                options: SubtitleTypingIndicatorViewOptions(channel: channel)
+            )
         case let .draft(text):
             ChannelItemDraftPreviewView(draftMessageText: text)
         case let .deleted(isSentByCurrentUser):

@@ -92,7 +92,7 @@ public struct ChatChannelListItem<Factory: ViewFactory>: View {
                                 localState: viewModel.previewMessageLocalState
                             )
                         }
-                        ChannelItemPreviewView(viewModel.preview)
+                        ChannelItemPreviewView(factory: factory, preview: viewModel.preview)
                         Spacer()
                         if viewModel.shouldShowMutedTrailingIcon {
                             ChannelItemMutedIcon()

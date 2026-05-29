@@ -106,34 +106,18 @@ public struct TypingIndicatorDotsView: View {
 public struct SubtitleTypingIndicatorView: View {
     @Injected(\.chatClient) private var chatClient
 
-    let channel: ChatChannel?
-    let text: String?
+    let channel: ChatChannel
 
     /// Derives the typing text from the channel's currently-typing users.
     public init(channel: ChatChannel) {
         self.channel = channel
-        text = nil
-    }
-
-    /// Renders the provided typing text directly. Use this when the text is
-    /// already computed (e.g. by a view model) and overrides what would
-    /// otherwise come from `ChatChannel.typingIndicatorString(currentUserId:)`.
-    public init(text: String) {
-        channel = nil
-        self.text = text
     }
 
     public var body: some View {
         HStack {
             TypingIndicatorDotsView()
-            SubtitleText(text: resolvedText)
+            SubtitleText(text: channel.typingIndicatorString(currentUserId: chatClient.currentUserId))
         }
-    }
-
-    private var resolvedText: String {
-        if let text { return text }
-        guard let channel else { return "" }
-        return channel.typingIndicatorString(currentUserId: chatClient.currentUserId)
     }
 }
 

@@ -112,7 +112,7 @@ import SwiftUI
             return .failedToSend()
         }
         if shouldShowTypingIndicator {
-            return .typing(text: typingIndicatorText)
+            return .typing(channel: channel)
         }
         if isDraftMessagesEnabled, let draftText = draftMessageText {
             return .draft(text: draftText)
@@ -156,10 +156,6 @@ import SwiftUI
         ).isEmpty && channel.config.typingEventsEnabled
     }
 
-    private var typingIndicatorText: String {
-        channel.typingIndicatorString(currentUserId: chatClient.currentUserId)
-    }
-
     private var isDraftMessagesEnabled: Bool {
         utils.messageListConfig.draftMessagesEnabled
     }
@@ -190,9 +186,6 @@ import SwiftUI
     }
 
     private var messagePreviewText: String {
-        if shouldShowTypingIndicator {
-            return typingIndicatorText
-        }
         if let previewMessage {
             return utils.messagePreviewFormatter.format(previewMessage, in: channel)
         }

@@ -248,7 +248,7 @@ import XCTest
         }
     }
 
-    func test_preview_whenTyping_returnsTypingWithText() {
+    func test_preview_whenTyping_returnsTypingWithChannel() {
         let typingUser = ChatUser.mock(id: "yoda", name: "Yoda")
         let channel = ChatChannel.mock(
             cid: .unique,
@@ -257,11 +257,10 @@ import XCTest
         )
         let viewModel = ChatChannelListItemViewModel(channel: channel, channelName: "T")
 
-        guard case let .typing(text) = viewModel.preview.kind else {
+        guard case let .typing(typingChannel) = viewModel.preview.kind else {
             return XCTFail("Expected .typing, got \(viewModel.preview.kind)")
         }
-        XCTAssertEqual(text, channel.typingIndicatorString(currentUserId: Self.currentUserId))
-        XCTAssertFalse(text.isEmpty)
+        XCTAssertEqual(typingChannel.cid, channel.cid)
     }
 
     func test_preview_whenDraftAvailableAndEnabled_returnsDraftWithText() {
