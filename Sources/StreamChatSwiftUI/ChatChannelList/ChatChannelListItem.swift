@@ -88,7 +88,7 @@ public struct ChatChannelListItem<Factory: ViewFactory>: View {
                         if viewModel.shouldShowReadEvents {
                             MessageReadIndicatorView(
                                 readUsers: viewModel.readUsers,
-                                showDelivered: viewModel.showDelivered,
+                                showDelivered: viewModel.shouldShowDelivered,
                                 localState: viewModel.previewMessageLocalState
                             )
                         }

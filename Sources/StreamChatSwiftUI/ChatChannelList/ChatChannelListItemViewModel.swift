@@ -90,7 +90,7 @@ import SwiftUI
 
     /// A boolean value indicating whether the read indicator should
     /// show the delivered state.
-    open var showDelivered: Bool {
+    open var shouldShowDelivered: Bool {
         previewMessage?.deliveryStatus(for: channel) == .delivered
     }
 
