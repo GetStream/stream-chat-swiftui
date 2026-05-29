@@ -164,11 +164,9 @@ public final class ChannelItemMutedLayoutStyle: Hashable, Sendable {
     }
 
     /// This style shows the muted icon at the bottom right corner of the channel item.
-    /// The message preview shows the last message preview text.
     public static let bottomRightCorner: ChannelItemMutedLayoutStyle = .init("bottomRightCorner")
 
     /// This style shows the muted icon after the channel name.
-    /// The message preview shows the last message preview text.
     public static let afterChannelName: ChannelItemMutedLayoutStyle = .init("afterChannelName")
 
     public static func == (lhs: ChannelItemMutedLayoutStyle, rhs: ChannelItemMutedLayoutStyle) -> Bool {
