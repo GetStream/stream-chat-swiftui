@@ -242,7 +242,7 @@ public struct ChannelItemMessagePreviewView: View {
                 LabelWithColon(text: authorName, weight: .semibold)
                     .foregroundColor(Color(colors.textTertiary))
             }
-            ChatChannelListItemAttachmentIcon(image: content.attachmentIcon)
+            ChannelListItemAttachmentIcon(image: content.attachmentIcon)
             Text(content.text)
         }
         .lineLimit(1)
@@ -253,7 +253,7 @@ public struct ChannelItemMessagePreviewView: View {
 
 /// The attachment icon used by the channel list item message preview variants
 /// that display an attachment glyph before the text.
-public struct ChatChannelListItemAttachmentIcon: View {
+public struct ChannelListItemAttachmentIcon: View {
     @Injected(\.tokens) private var tokens
 
     /// The image to render as the attachment icon. Renders nothing when `nil`.
