@@ -127,27 +127,7 @@ public struct ChannelItemPreviewView: View {
                 isPreviewMessageSentByCurrentUser: isSentByCurrentUser
             )
         case let .message(content):
-            messageView(for: content)
-        }
-    }
-
-    @ViewBuilder
-    private func messageView(
-        for content: ChannelItemPreview.MessageContent
-    ) -> some View {
-        if let authorName = content.authorName {
-            ChannelItemAuthorPreviewView(
-                messagePreviewAuthorName: authorName,
-                previewContentText: content.text,
-                previewAttachmentIconImage: content.attachmentIcon
-            )
-        } else if let attachmentIcon = content.attachmentIcon {
-            ChannelItemAttachmentPreviewView(
-                messagePreviewText: content.text,
-                previewAttachmentIconImage: attachmentIcon
-            )
-        } else {
-            SubtitleText(text: content.text)
+            ChannelItemMessagePreviewView(content)
         }
     }
 }
@@ -236,70 +216,34 @@ public struct ChannelItemDeletedPreviewView: View {
     }
 }
 
-/// Author-prefixed message preview variant for the channel list item:
-/// "Author:" followed by an optional attachment icon and the preview content
-/// text.
-public struct ChannelItemAuthorPreviewView: View {
+/// Regular message preview variant for the channel list item: renders the
+/// preview text, optionally prefixed by an "Author:" label and an inline
+/// attachment icon.
+///
+/// Both decorations are optional. Pass a ``ChannelItemPreview/MessageContent``
+/// with `authorName` and `attachmentIcon` set to `nil` to render the plain
+/// preview text on its own (the shape used for direct message channels
+/// without attachments).
+public struct ChannelItemMessagePreviewView: View {
     @Injected(\.fonts) private var fonts
     @Injected(\.colors) private var colors
     @Injected(\.tokens) private var tokens
 
-    /// The author name shown before the preview content.
-    public let messagePreviewAuthorName: String
-    /// The preview message content text.
-    public let previewContentText: String
-    /// The icon image for the preview message attachment, when present.
-    public let previewAttachmentIconImage: UIImage?
+    /// The message content to render.
+    public let content: ChannelItemPreview.MessageContent
 
-    public init(
-        messagePreviewAuthorName: String,
-        previewContentText: String,
-        previewAttachmentIconImage: UIImage?
-    ) {
-        self.messagePreviewAuthorName = messagePreviewAuthorName
-        self.previewContentText = previewContentText
-        self.previewAttachmentIconImage = previewAttachmentIconImage
+    public init(_ content: ChannelItemPreview.MessageContent) {
+        self.content = content
     }
 
     public var body: some View {
         HStack(spacing: tokens.spacingXxs) {
-            LabelWithColon(text: messagePreviewAuthorName, weight: .semibold)
-                .font(fonts.subheadline)
-                .foregroundColor(Color(colors.textTertiary))
-            ChatChannelListItemAttachmentIcon(image: previewAttachmentIconImage)
-            Text(previewContentText)
-        }
-        .lineLimit(1)
-        .font(fonts.subheadline)
-        .foregroundColor(Color(colors.textSecondary))
-    }
-}
-
-/// Attachment-only message preview variant for the channel list item: an
-/// attachment icon followed by the preview text (used when there is no author
-/// prefix to show).
-public struct ChannelItemAttachmentPreviewView: View {
-    @Injected(\.fonts) private var fonts
-    @Injected(\.colors) private var colors
-    @Injected(\.tokens) private var tokens
-
-    /// The formatted message preview text shown next to the attachment icon.
-    public let messagePreviewText: String
-    /// The icon image for the preview message attachment, when present.
-    public let previewAttachmentIconImage: UIImage?
-
-    public init(
-        messagePreviewText: String,
-        previewAttachmentIconImage: UIImage?
-    ) {
-        self.messagePreviewText = messagePreviewText
-        self.previewAttachmentIconImage = previewAttachmentIconImage
-    }
-
-    public var body: some View {
-        HStack(spacing: tokens.spacingXxs) {
-            ChatChannelListItemAttachmentIcon(image: previewAttachmentIconImage)
-            Text(messagePreviewText)
+            if let authorName = content.authorName {
+                LabelWithColon(text: authorName, weight: .semibold)
+                    .foregroundColor(Color(colors.textTertiary))
+            }
+            ChatChannelListItemAttachmentIcon(image: content.attachmentIcon)
+            Text(content.text)
         }
         .lineLimit(1)
         .font(fonts.subheadline)
