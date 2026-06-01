@@ -3,15 +3,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 # Upcoming
 
-### 🔄 Changed
-
-# [5.4.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/5.4.0)
-_May 28, 2026_
-
 ### ✅ Added
 - Expose `ChatChannelListItemViewModel` and reusable sub-views for the channel list item [#1482](https://github.com/GetStream/stream-chat-swiftui/pull/1482)
 - Open `ChatThreadListItemViewModel` for subclassing [#1482](https://github.com/GetStream/stream-chat-swiftui/pull/1482)
 - Allow injecting a custom channel list item view into `ChatChannelNavigatableListItem` to reuse the navigation logic [#1482](https://github.com/GetStream/stream-chat-swiftui/pull/1482)
+
+# [5.4.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/5.4.0)
+_May 28, 2026_
+
 - Add message attachment bubble customisation via `Styles.makeMessageAttachmentsViewModifier(options:)` and `Styles.makeMessageAttachmentItemViewModifier(options:)` [#1477](https://github.com/GetStream/stream-chat-swiftui/pull/1477)
 - Make `VoiceRecordingGestureOverlay` and `VoiceRecordingLockView` public [#1481](https://github.com/GetStream/stream-chat-swiftui/pull/1481)
 
