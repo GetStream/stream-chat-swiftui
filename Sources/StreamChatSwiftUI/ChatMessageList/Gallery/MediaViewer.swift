@@ -238,7 +238,7 @@ public struct MediaViewerFooterView: View {
             } icon: {
                 Image(uiImage: images.gallery)
                     .customizable()
-                    .frame(width: 16, height: 16)
+                    .frame(width: tokens.iconSizeSm, height: tokens.iconSizeSm)
                     .foregroundColor(Color(colors.textSecondary))
             }
         }

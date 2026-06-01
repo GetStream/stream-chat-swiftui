@@ -108,6 +108,7 @@ public struct SubtitleTypingIndicatorView: View {
 
     let channel: ChatChannel
 
+    /// Derives the typing text from the channel's currently-typing users.
     public init(channel: ChatChannel) {
         self.channel = channel
     }
