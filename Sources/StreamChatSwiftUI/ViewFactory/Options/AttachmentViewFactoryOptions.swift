@@ -334,37 +334,6 @@ public final class MediaViewerFooterViewOptions: Sendable {
     }
 }
 
-// MARK: - Video Player Options
-
-/// Options for creating the video player header view.
-public final class VideoPlayerHeaderViewOptions: Sendable {
-    /// The title to display in the header.
-    public let title: String
-    /// The subtitle to display in the header.
-    public let subtitle: String
-    /// Binding to whether the header is shown.
-    public let shown: Binding<Bool>
-    
-    public init(title: String, subtitle: String, shown: Binding<Bool>) {
-        self.title = title
-        self.subtitle = subtitle
-        self.shown = shown
-    }
-}
-
-/// Options for creating the video player footer view.
-public final class VideoPlayerFooterViewOptions: Sendable {
-    /// The video attachment being played.
-    public let attachment: ChatMessageVideoAttachment
-    /// Binding to whether the footer is shown.
-    public let shown: Binding<Bool>
-    
-    public init(attachment: ChatMessageVideoAttachment, shown: Binding<Bool>) {
-        self.attachment = attachment
-        self.shown = shown
-    }
-}
-
 // MARK: - Attachment Picker Options
 
 /// Options for creating the attachment picker view.
@@ -548,5 +517,38 @@ public final class AttachmentCameraPickerViewOptions: Sendable {
     ) {
         self.cameraPickerShown = cameraPickerShown
         self.cameraImageAdded = cameraImageAdded
+    }
+}
+
+// MARK: - Deprecated
+
+/// Options for creating the video player header view.
+@available(*, deprecated, message: "Consumed only by the deprecated `makeVideoPlayerHeaderView`; use `makeMediaViewer(options:)` for full-screen media playback. Will be removed in a future major release.")
+public final class VideoPlayerHeaderViewOptions: Sendable {
+    /// The title to display in the header.
+    public let title: String
+    /// The subtitle to display in the header.
+    public let subtitle: String
+    /// Binding to whether the header is shown.
+    public let shown: Binding<Bool>
+
+    public init(title: String, subtitle: String, shown: Binding<Bool>) {
+        self.title = title
+        self.subtitle = subtitle
+        self.shown = shown
+    }
+}
+
+/// Options for creating the video player footer view.
+@available(*, deprecated, message: "Consumed only by the deprecated `makeVideoPlayerFooterView`; use `makeMediaViewer(options:)` for full-screen media playback. Will be removed in a future major release.")
+public final class VideoPlayerFooterViewOptions: Sendable {
+    /// The video attachment being played.
+    public let attachment: ChatMessageVideoAttachment
+    /// Binding to whether the footer is shown.
+    public let shown: Binding<Bool>
+
+    public init(attachment: ChatMessageVideoAttachment, shown: Binding<Bool>) {
+        self.attachment = attachment
+        self.shown = shown
     }
 }

@@ -412,6 +412,7 @@ import SwiftUI
         if let composerCommand, composerCommand.id != "instantCommands" {
             let commandId = composerCommand.id
             let commandText = text
+            let commandDisplayName = composerCommand.displayInfo?.displayName ?? composerCommand.id
             commandsHandler.executeOnMessageSent(
                 composerCommand: composerCommand
             ) { [weak self] error in
@@ -421,7 +422,10 @@ import SwiftUI
                 self?.clearInputData()
                 completion()
             }
-            
+            ComposerAccessibilityAnnouncer.announce(
+                L10n.Composer.Command.Sent.accessibilityAnnouncement(commandDisplayName)
+            )
+
             if composerCommand.replacesMessageSent {
                 return
             }

@@ -1547,6 +1547,35 @@ import XCTest
         AssertSnapshot(view, variants: [.defaultLight, .defaultDark], size: size)
     }
 
+    func test_messageComposerView_rtlWithImageAttachments() {
+        // Given – verify that multiple image attachments are laid out
+        // correctly in RTL, with the dismiss buttons positioned on the correct
+        // (top-trailing in RTL == top-leading visually) corner of every asset.
+        let size = CGSize(width: composerWidth, height: 200)
+        let factory = DefaultViewFactory.shared
+        let channelController = ChatChannelTestHelpers.makeChannelController(chatClient: chatClient)
+        let viewModel = MessageComposerViewModel(channelController: channelController, messageController: nil)
+        viewModel.updateAddedAssets([
+            AddedAsset(image: TestImages.yoda.image, id: "1", url: TestImages.yoda.url, type: .image),
+            AddedAsset(image: TestImages.yoda.image, id: "2", url: TestImages.yoda.url, type: .image)
+        ])
+
+        // When – RTL layout
+        let view = MessageComposerView(
+            viewFactory: factory,
+            viewModel: viewModel,
+            channelController: channelController,
+            quotedMessage: .constant(nil),
+            editedMessage: .constant(nil),
+            willSendMessage: {}
+        )
+        .environment(\.layoutDirection, .rightToLeft)
+        .frame(width: size.width, height: size.height)
+
+        // Then
+        AssertSnapshot(view, variants: [.defaultLight], size: size, suffix: "rtl")
+    }
+
     func test_messageComposerView_liquidGlass_withImageAttachment() {
         // Given
         let size = CGSize(width: composerWidth, height: 200)

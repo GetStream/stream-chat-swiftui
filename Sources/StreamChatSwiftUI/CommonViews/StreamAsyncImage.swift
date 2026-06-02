@@ -15,6 +15,16 @@ import SwiftUI
 /// - Animated image (GIF) data passthrough
 /// - Cancellation on disappear
 ///
+/// The view delegates all caching to the configured ``MediaLoader``: when
+/// the loader resolves an already-cached image the completion fires
+/// without crossing a network, so cached images appear within a frame.
+/// The view never shows the ``StreamAsyncImagePhase/loading`` phase once
+/// it has rendered an image — subsequent URL updates keep the previously
+/// loaded image on screen until the new one arrives. This avoids the
+/// loading flicker when, for example, reacting to a message reflows the
+/// bubble and SwiftUI re-asks for the same attachment with a freshly
+/// signed URL.
+///
 /// ```swift
 /// StreamAsyncImage(url: imageURL) { phase in
 ///     switch phase {
@@ -30,105 +40,148 @@ import SwiftUI
 /// ```
 @MainActor
 public struct StreamAsyncImage<Content: View>: View {
+    @Injected(\.utils) private var utils
+
     private let url: URL?
     private let resize: ImageResize?
     private let content: (StreamAsyncImagePhase) -> Content
+
+    @State private var phase: StreamAsyncImagePhase
 
     /// Creates an async image view.
     ///
     /// - Parameters:
     ///   - url: The image URL, or `nil` for the empty phase.
+    ///   - image: An optional pre-loaded image used as the initial render.
+    ///     When provided, the view skips the ``StreamAsyncImagePhase/loading``
+    ///     phase entirely and renders this image on the first frame. If a
+    ///     `url` is also provided, the loader runs in the background and
+    ///     swaps in the resolved image once it arrives. Useful when the
+    ///     caller already has the bitmap in memory (for example a snapshot
+    ///     or a hand-off from a parent view) and wants to avoid the
+    ///     placeholder flicker on first appearance.
     ///   - resize: Optional resize applied both server-side (via CDN requester) and client-side.
+    ///     Sub-point dimensions are rounded to integer points so layout jitter
+    ///     between renders does not produce a different CDN URL or cache key.
     ///   - content: A closure that receives the current phase and returns a view.
     public init(
         url: URL?,
+        image: UIImage? = nil,
         resize: ImageResize? = nil,
         @ViewBuilder content: @escaping (StreamAsyncImagePhase) -> Content
     ) {
         self.url = url
-        self.resize = resize
+        self.resize = Self.normalizedResize(resize)
         self.content = content
+        if let image {
+            _phase = State(initialValue: .success(StreamAsyncImageResult(
+                image: image,
+                animatedImageData: nil
+            )))
+        } else {
+            _phase = State(initialValue: .empty)
+        }
+    }
+
+    /// Creates a view that renders a pre-loaded image without performing
+    /// any asynchronous loading.
+    ///
+    /// Useful for callers that already have the bitmap in memory and want
+    /// to plug it into the same content closure used elsewhere with
+    /// ``StreamAsyncImage``.
+    ///
+    /// - Parameters:
+    ///   - image: The image to render.
+    ///   - content: A closure that receives the current phase and returns a view.
+    public init(
+        image: UIImage,
+        @ViewBuilder content: @escaping (StreamAsyncImagePhase) -> Content
+    ) {
+        self.init(url: nil, image: image, resize: nil, content: content)
     }
 
     public var body: some View {
-        let initialPhase: StreamAsyncImagePhase = {
-            guard let url else { return .empty }
-            if let cached = NukeImageLoader.cachedResult(url: url, resize: resize) {
-                return .success(cached)
-            }
-            return .loading
-        }()
-        StreamAsyncImageBody(
-            url: url,
-            resize: resize,
-            initialPhase: initialPhase,
-            content: content
-        )
-    }
-}
-
-/// Private inner view that owns the loading state.
-///
-/// Separated from ``StreamAsyncImage`` so the public struct stays
-/// lightweight during scrolling (no `@State`, no DI resolution in `init`).
-/// The initial phase is resolved by the outer view via a synchronous Nuke
-/// cache lookup. All subsequent loading runs asynchronously through `.task`.
-@MainActor
-private struct StreamAsyncImageBody<Content: View>: View {
-    @Injected(\.utils) private var utils
-
-    let url: URL?
-    let resize: ImageResize?
-    let initialPhase: StreamAsyncImagePhase
-    let content: (StreamAsyncImagePhase) -> Content
-
-    @State private var phase: StreamAsyncImagePhase?
-
-    var body: some View {
-        content(phase ?? initialPhase)
+        content(resolvedPhase)
             .compatibility.task(id: taskIdentity) { @MainActor in
                 await loadImage()
             }
     }
 
+    // MARK: - Phase Resolution
+
+    /// Resolves the phase used for rendering, allowing the test sync
+    /// resolver to short-circuit the async pipeline so snapshot tests
+    /// capture the loaded image instead of the empty placeholder.
+    private var resolvedPhase: StreamAsyncImagePhase {
+        if case .success = phase { return phase }
+        if let url, let resolver = StreamAsyncImageTestHooks.syncResolver, let result = resolver(url, resize) {
+            return .success(result)
+        }
+        return phase
+    }
+
     private var taskIdentity: String {
-        let urlPart = url?.absoluteString ?? ""
+        // Strip all query parameters from the URL so dynamic ones (CDN
+        // signing, expiry, anti-cache tokens, …) never churn `.task`.
+        // The image identity for caching purposes is owned by the LLC's
+        // `StreamCDNRequester.buildCachingKey`; here we only need a
+        // stable identifier per `(image path, render size)` pair so the
+        // task doesn't re-run when the same image is re-signed.
+        let urlPart: String
+        if let url {
+            var components = URLComponents(url: url, resolvingAgainstBaseURL: false)
+            components?.query = nil
+            urlPart = components?.url?.absoluteString ?? url.absoluteString
+        } else {
+            urlPart = ""
+        }
         guard let resize else { return urlPart }
         return "\(urlPart)-\(resize.width)x\(resize.height)-\(resize.mode.value)"
     }
 
+    // MARK: - Loading
+
     @MainActor
     private func loadImage() async {
-        phase = nil
         guard let url else {
+            // Keep a seeded `UIImage` (set in `init(image:)`) on screen even
+            // when no URL was provided.
+            if phase.isSuccess {
+                return
+            }
             phase = .empty
             return
         }
 
-        if case .success = initialPhase {
-            phase = initialPhase
-            return
+        if !phase.isSuccess {
+            phase = .loading
         }
-
-        phase = .loading
 
         do {
             let loaded = try await utils.mediaLoader.loadImage(
                 url: url,
                 options: ImageLoadOptions(resize: resize)
             )
-            if let cachingKey = loaded.cachingKey {
-                NukeImageLoader.storeCachingKey(cachingKey, url: url, resize: resize)
-            }
             phase = .success(StreamAsyncImageResult(
                 image: loaded.image,
                 animatedImageData: loaded.animatedImageData
             ))
         } catch {
-            if !(error is CancellationError) {
-                phase = .error(error)
-            }
+            guard !(error is CancellationError) else { return }
+            phase = .error(error)
         }
+    }
+
+    // MARK: - Resize Normalization
+
+    /// Rounds the resize dimensions to integer points so sub-point layout
+    /// jitter (for example `251.999…` vs `252.0`) maps to the same CDN
+    /// URL, the same Nuke processor, and therefore the same cache entry.
+    private static func normalizedResize(_ resize: ImageResize?) -> ImageResize? {
+        guard var resize else { return nil }
+        resize.width = resize.width.rounded()
+        resize.height = resize.height.rounded()
+        return resize
     }
 }
 
@@ -165,10 +218,38 @@ public enum StreamAsyncImagePhase {
     }
 }
 
+private extension StreamAsyncImagePhase {
+    /// `true` when the phase is rendering a successfully loaded image.
+    /// Used to keep an already-rendered image on screen across URL
+    /// changes and failed reloads instead of dropping back to the
+    /// loading or error placeholder.
+    var isSuccess: Bool {
+        if case .success = self { return true }
+        return false
+    }
+}
+
 /// The result of a successfully loaded image.
 public struct StreamAsyncImageResult {
     /// The loaded image.
     public let image: UIImage
     /// The raw image data for animated rendering. `nil` for static images.
     public let animatedImageData: Data?
+}
+
+// MARK: - Test Hook
+
+/// Test-only hook used by snapshot tests to resolve image URLs
+/// synchronously.
+///
+/// Snapshot tests capture the view after one synchronous layout pass,
+/// before the `.task` modifier has a chance to drive the async
+/// ``MediaLoader`` pipeline. Installing a resolver here makes
+/// ``StreamAsyncImage``'s initial render use the resolved image
+/// directly. In production this is always `nil`.
+///
+/// Lives on a non-generic namespace because static stored properties
+/// are not supported on generic types.
+enum StreamAsyncImageTestHooks {
+    nonisolated(unsafe) static var syncResolver: ((URL, ImageResize?) -> StreamAsyncImageResult?)?
 }

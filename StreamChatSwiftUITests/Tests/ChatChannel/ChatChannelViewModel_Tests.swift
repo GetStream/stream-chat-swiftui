@@ -830,6 +830,27 @@ import XCTest
         // Then
         XCTAssertEqual(3, viewModel.messages.count)
     }
+
+    func test_chatChannelVM_handleMessageAppear_whenDisplayedMessagesAreBehindDataSourceMessages_doesNotCrash() {
+        // Given
+        let message1 = ChatMessage.mock()
+        let message2 = ChatMessage.mock()
+        let replacementMessage = ChatMessage.mock()
+        let channelController = makeChannelController(messages: [message1, message2])
+        let viewModel = ChatChannelViewModel(channelController: channelController)
+        
+        viewModel.dataSource(
+            channelDataSource: ChatChannelDataSource(controller: channelController),
+            didUpdateMessages: [replacementMessage],
+            changes: [.remove(message2, index: IndexPath(row: 1, section: 0))]
+        )
+        
+        // When
+        viewModel.handleMessageAppear(index: 1, scrollDirection: .down)
+        
+        // Then
+        XCTAssertEqual([replacementMessage], viewModel.messages)
+    }
     
     func test_chatChannelVM_keepFirstUnreadIndexSetAfterMarkingTheChannelAsRead() {
         // Given
@@ -975,8 +996,93 @@ import XCTest
         XCTAssert(true)
     }
 
+    // MARK: - Pending markRead Tests
+
+    func test_chatChannelVM_sendReadEventIfNeeded_whenLatestMessageIsLocalOnly_thenMarkReadIsNotCalled() {
+        // Given - the latest message is still in flight (e.g., the user's first message
+        // in an empty channel).
+        let pendingMessage = ChatMessage.mock(localState: .pendingSend)
+        let channelController = makeChannelController(messages: [pendingMessage])
+        channelController.channel_mock = .mockDMChannel(reads: [])
+        channelController.hasLoadedAllNextMessages_mock = true
+        let viewModel = ChatChannelViewModel(channelController: channelController)
+        viewModel.currentUserMarkedMessageUnread = false
+        viewModel.throttler = Throttler_Mock(interval: 0)
+
+        // When
+        viewModel.handleMessageAppear(index: 0, scrollDirection: .down)
+
+        // Then - markRead must not be called while the message is still local-only.
+        XCTAssertEqual(0, channelController.markReadCallCount)
+    }
+
+    func test_chatChannelVM_sendReadEventIfNeeded_whenPendingMessageBecomesSent_thenMarkReadIsCalled() {
+        // Given - empty channel that received a local pendingSend message.
+        let messageId: MessageId = .unique
+        let pendingMessage = ChatMessage.mock(id: messageId, localState: .pendingSend)
+        let channelController = makeChannelController(messages: [pendingMessage])
+        channelController.channel_mock = .mockDMChannel(reads: [])
+        channelController.hasLoadedAllNextMessages_mock = true
+        let viewModel = ChatChannelViewModel(channelController: channelController)
+        viewModel.currentUserMarkedMessageUnread = false
+        viewModel.throttler = Throttler_Mock(interval: 0)
+        viewModel.handleMessageAppear(index: 0, scrollDirection: .down)
+        XCTAssertEqual(0, channelController.markReadCallCount)
+
+        // When - the same message transitions to fully sent (localState becomes nil).
+        let sentMessage = ChatMessage.mock(id: messageId, localState: nil)
+        channelController.messages_mock = [sentMessage]
+        let dataSource = ChatChannelDataSource(controller: channelController)
+        viewModel.dataSource(
+            channelDataSource: dataSource,
+            didUpdateMessages: [sentMessage],
+            changes: [.update(sentMessage, index: IndexPath(row: 0, section: 0))]
+        )
+
+        // Then - markRead fires exactly once for the now-sent latest message.
+        XCTAssertEqual(1, channelController.markReadCallCount)
+    }
+
+    func test_chatChannelVM_sendReadEventIfNeeded_whenNonEmptyChannelReceivesPendingMessage_thenMarkReadIsCalledOnlyAfterSent() {
+        // Given - non-empty channel already at the bottom.
+        let existing = ChatMessage.mock(id: .unique, localState: nil)
+        let channelController = makeChannelController(messages: [existing])
+        channelController.channel_mock = .mockDMChannel(reads: [])
+        channelController.hasLoadedAllNextMessages_mock = true
+        let viewModel = ChatChannelViewModel(channelController: channelController)
+        viewModel.currentUserMarkedMessageUnread = false
+        viewModel.throttler = Throttler_Mock(interval: 0)
+        viewModel.handleMessageAppear(index: 0, scrollDirection: .down)
+        let baseline = channelController.markReadCallCount
+
+        // When - user sends a new message; it appears in `.pendingSend` first.
+        let newId: MessageId = .unique
+        let pendingMessage = ChatMessage.mock(id: newId, localState: .pendingSend)
+        channelController.messages_mock = [pendingMessage, existing]
+        let dataSource = ChatChannelDataSource(controller: channelController)
+        viewModel.dataSource(
+            channelDataSource: dataSource,
+            didUpdateMessages: [pendingMessage, existing],
+            changes: [.insert(pendingMessage, index: IndexPath(row: 0, section: 0))]
+        )
+        viewModel.handleMessageAppear(index: 0, scrollDirection: .down)
+        XCTAssertEqual(baseline, channelController.markReadCallCount)
+
+        // When - the new message transitions to sent.
+        let sentMessage = ChatMessage.mock(id: newId, localState: nil)
+        channelController.messages_mock = [sentMessage, existing]
+        viewModel.dataSource(
+            channelDataSource: dataSource,
+            didUpdateMessages: [sentMessage, existing],
+            changes: [.update(sentMessage, index: IndexPath(row: 0, section: 0))]
+        )
+
+        // Then - markRead fires exactly once for the now-sent latest message.
+        XCTAssertEqual(baseline + 1, channelController.markReadCallCount)
+    }
+
     // MARK: - highlightMessage Tests
-    
+
     func test_highlightMessage_highlightsWhenSkipHighlightMessageIdIsNotSet() {
         // Given
         let message = ChatMessage.mock()

@@ -55,14 +55,18 @@ extension ViewFactory {
     ) -> some View {
         let utils = InjectedValues[\.utils]
         let listItem = ChatChannelNavigatableListItem(
-            factory: self,
             channel: options.channel,
-            channelName: options.channelName,
-            disabled: options.disabled,
-            handleTabBarVisibility: utils.messageListConfig.handleTabBarVisibility,
-            selectedChannel: options.selectedChannel,
+            channelListItem: ChatChannelListItem(
+                factory: self,
+                channel: options.channel,
+                channelName: options.channelName,
+                isSelected: options.selectedChannel.wrappedValue?.channel.cid == options.channel.cid,
+                disabled: options.disabled,
+                onItemTap: options.onItemTap
+            ),
             channelDestination: options.channelDestination,
-            onItemTap: options.onItemTap
+            selectedChannel: options.selectedChannel,
+            handleTabBarVisibility: utils.messageListConfig.handleTabBarVisibility
         )
         return ChatChannelSwipeableListItem(
             factory: self,
@@ -402,21 +406,6 @@ extension ViewFactory {
         )
     }
 
-    public func makeVideoPlayerHeaderView(
-        options: VideoPlayerHeaderViewOptions
-    ) -> some View {
-        MediaViewerHeader(title: options.title, subtitle: options.subtitle, isShown: options.shown)
-    }
-    
-    public func makeVideoPlayerFooterView(
-        options: VideoPlayerFooterViewOptions
-    ) -> some View {
-        VideoPlayerFooterView(
-            attachment: options.attachment,
-            shown: options.shown
-        )
-    }
-    
     public func makeDeletedMessageView(
         options: DeletedMessageViewOptions
     ) -> some View {
@@ -614,7 +603,8 @@ extension ViewFactory {
     ) -> some View {
         ConfirmEditButton(
             enabled: options.enabled,
-            onTap: options.onTap
+            onTap: options.onTap,
+            accessibilityLabel: options.accessibilityLabel
         )
     }
     
@@ -1033,6 +1023,22 @@ extension ViewFactory {
             message: options.message,
             translationLanguage: options.translationLanguage
         )
+    }
+
+    // MARK: - Deprecated
+
+    @available(*, deprecated, message: "Override `makeMediaViewer(options:)` for a custom full-screen video player, or `makeMediaViewerToolbarModifier`/`makeMediaViewerFooterView` to customize just the toolbar/bottom bar. Will be removed in a future major release.")
+    public func makeVideoPlayerHeaderView(
+        options: VideoPlayerHeaderViewOptions
+    ) -> some View {
+        EmptyView()
+    }
+
+    @available(*, deprecated, message: "Override `makeMediaViewer(options:)` for a custom full-screen video player, or `makeMediaViewerToolbarModifier`/`makeMediaViewerFooterView` to customize just the toolbar/bottom bar. Will be removed in a future major release.")
+    public func makeVideoPlayerFooterView(
+        options: VideoPlayerFooterViewOptions
+    ) -> some View {
+        EmptyView()
     }
 }
 

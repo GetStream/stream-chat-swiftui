@@ -55,6 +55,21 @@ class InputTextView: UITextView, AccessibilityView {
     
     var onImagePasted: ((UIImage) -> Void)?
 
+    override open var accessibilityHint: String? {
+        // Expose the (possibly dynamic) placeholder as the accessibility hint
+        // so VoiceOver announces the command-mode placeholder (e.g. "@username")
+        // when the field is empty. `accessibilityHint` does not back
+        // `XCUIElement.text` / `XCUIElement.value` / `XCUIElement.label`, so UI
+        // tests that assert a cleared composer continue to see an empty value.
+        get {
+            if text.isEmpty, let placeholder = placeholderLabel.text, !placeholder.isEmpty {
+                return placeholder
+            }
+            return super.accessibilityHint
+        }
+        set { super.accessibilityHint = newValue }
+    }
+
     override open var semanticContentAttribute: UISemanticContentAttribute {
         didSet {
             placeholderLabel.semanticContentAttribute = semanticContentAttribute
@@ -99,15 +114,21 @@ class InputTextView: UITextView, AccessibilityView {
     }
 
     private func applyTextAlignmentForCurrentDirection() {
+        // The text view itself always uses `.natural` alignment so that
+        // characters whose visual position depends on bidi resolution
+        // (including spaces, especially trailing ones) are rendered
+        // correctly. Forcing `.right`/`.left` on a UITextView causes
+        // trailing whitespace to be visually trimmed which makes pressing
+        // spacebar appear to do nothing in RTL composers.
+        // The placeholder follows the configured layout direction so that
+        // it appears on the correct side of an empty composer.
+        textAlignment = .natural
         switch semanticContentAttribute {
         case .forceRightToLeft:
-            textAlignment = .right
             placeholderLabel.textAlignment = .right
         case .forceLeftToRight:
-            textAlignment = .left
             placeholderLabel.textAlignment = .left
         default:
-            textAlignment = .natural
             placeholderLabel.textAlignment = .natural
         }
     }

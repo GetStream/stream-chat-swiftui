@@ -75,6 +75,11 @@ public struct AttachmentMediaPickerView: View {
             }
             .animation(nil)
         }
+        .onChange(of: collection.count) { _ in
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                UIAccessibility.post(notification: .screenChanged, argument: nil)
+            }
+        }
     }
 
     private var accessDeniedContent: some View {

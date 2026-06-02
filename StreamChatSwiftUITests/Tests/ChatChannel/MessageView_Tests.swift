@@ -225,6 +225,217 @@ import XCTest
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
 
+    func test_messageViewAttachmentBubble_defaultSingleImageWithoutCaption_snapshot() {
+        // Given
+        let attachment = AttachmentBubbleSnapshotAttachment.image
+        let size = attachmentBubbleSnapshotSize(for: attachment, caption: nil)
+
+        // When
+        let view = attachmentBubbleMessageView(
+            factory: DefaultViewFactory.shared,
+            attachment: attachment,
+            caption: nil
+        )
+
+        // Then
+        AssertSnapshot(view, size: size)
+    }
+
+    func test_messageViewAttachmentBubble_defaultSingleVideoWithCaption_snapshot() {
+        // Given
+        let attachment = AttachmentBubbleSnapshotAttachment.video
+        let caption = "Video caption"
+        let size = attachmentBubbleSnapshotSize(for: attachment, caption: caption)
+
+        // When
+        let view = attachmentBubbleMessageView(
+            factory: DefaultViewFactory.shared,
+            attachment: attachment,
+            caption: caption
+        )
+
+        // Then
+        AssertSnapshot(view, size: size)
+    }
+
+    func test_messageViewAttachmentBubble_customSingleImageWithoutCaption_snapshot() {
+        // Given
+        let attachment = AttachmentBubbleSnapshotAttachment.image
+        let size = attachmentBubbleSnapshotSize(for: attachment, caption: nil)
+
+        // When
+        let view = attachmentBubbleMessageView(
+            factory: CustomAttachmentBubbleFactory(),
+            attachment: attachment,
+            caption: nil
+        )
+
+        // Then
+        AssertSnapshot(view, size: size)
+    }
+
+    func test_messageViewAttachmentBubble_customSingleVideoWithoutCaption_snapshot() {
+        // Given
+        let attachment = AttachmentBubbleSnapshotAttachment.video
+        let size = attachmentBubbleSnapshotSize(for: attachment, caption: nil)
+
+        // When
+        let view = attachmentBubbleMessageView(
+            factory: CustomAttachmentBubbleFactory(),
+            attachment: attachment,
+            caption: nil
+        )
+
+        // Then
+        AssertSnapshot(view, size: size)
+    }
+
+    func test_messageViewAttachmentBubble_customSingleVoiceWithoutCaption_snapshot() {
+        // Given
+        let attachment = AttachmentBubbleSnapshotAttachment.voice
+        let size = attachmentBubbleSnapshotSize(for: attachment, caption: nil)
+
+        // When
+        let view = attachmentBubbleMessageView(
+            factory: CustomAttachmentBubbleFactory(),
+            attachment: attachment,
+            caption: nil
+        )
+
+        // Then
+        AssertSnapshot(view, size: size)
+    }
+
+    func test_messageViewAttachmentBubble_customSingleFileWithoutCaption_snapshot() {
+        // Given
+        let attachment = AttachmentBubbleSnapshotAttachment.file
+        let size = attachmentBubbleSnapshotSize(for: attachment, caption: nil)
+
+        // When
+        let view = attachmentBubbleMessageView(
+            factory: CustomAttachmentBubbleFactory(),
+            attachment: attachment,
+            caption: nil
+        )
+
+        // Then
+        AssertSnapshot(view, size: size)
+    }
+
+    func test_messageViewAttachmentBubble_customSingleImageWithCaption_snapshot() {
+        // Given
+        let attachment = AttachmentBubbleSnapshotAttachment.image
+        let caption = "Image caption"
+        let size = attachmentBubbleSnapshotSize(for: attachment, caption: caption)
+
+        // When
+        let view = attachmentBubbleMessageView(
+            factory: CustomAttachmentBubbleFactory(),
+            attachment: attachment,
+            caption: caption
+        )
+
+        // Then
+        AssertSnapshot(view, size: size)
+    }
+
+    func test_messageViewAttachmentBubble_customSingleVideoWithCaption_snapshot() {
+        // Given
+        let attachment = AttachmentBubbleSnapshotAttachment.video
+        let caption = "Video caption"
+        let size = attachmentBubbleSnapshotSize(for: attachment, caption: caption)
+
+        // When
+        let view = attachmentBubbleMessageView(
+            factory: CustomAttachmentBubbleFactory(),
+            attachment: attachment,
+            caption: caption
+        )
+
+        // Then
+        AssertSnapshot(view, size: size)
+    }
+
+    func test_messageViewAttachmentBubble_customSingleVoiceWithCaption_snapshot() {
+        // Given
+        let attachment = AttachmentBubbleSnapshotAttachment.voice
+        let caption = "Voice caption"
+        let size = attachmentBubbleSnapshotSize(for: attachment, caption: caption)
+
+        // When
+        let view = attachmentBubbleMessageView(
+            factory: CustomAttachmentBubbleFactory(),
+            attachment: attachment,
+            caption: caption
+        )
+
+        // Then
+        AssertSnapshot(view, size: size)
+    }
+
+    func test_messageViewAttachmentBubble_customSingleFileWithCaption_snapshot() {
+        // Given
+        let attachment = AttachmentBubbleSnapshotAttachment.file
+        let caption = "File caption"
+        let size = attachmentBubbleSnapshotSize(for: attachment, caption: caption)
+
+        // When
+        let view = attachmentBubbleMessageView(
+            factory: CustomAttachmentBubbleFactory(),
+            attachment: attachment,
+            caption: caption
+        )
+
+        // Then
+        AssertSnapshot(view, size: size)
+    }
+
+    func test_messageViewAttachmentBubble_customLinkPreview_snapshot() {
+        // Given
+        let attachment = AttachmentBubbleSnapshotAttachment.link
+        let size = attachmentBubbleSnapshotSize(for: attachment, caption: nil)
+
+        // When
+        let view = attachmentBubbleMessageView(
+            factory: CustomAttachmentBubbleFactory(),
+            attachment: attachment,
+            caption: nil
+        )
+
+        // Then
+        AssertSnapshot(view, size: size)
+    }
+
+    func test_messageViewAttachmentBubble_customMultiImageWithoutCaption_snapshot() {
+        // Given
+        let message = ChatMessage.mock(
+            id: .unique,
+            cid: .unique,
+            text: "",
+            author: .mock(id: Self.currentUserId, name: "Martin"),
+            attachments: ChatChannelTestHelpers.imageAttachments(
+                count: 2,
+                originalWidth: 1600,
+                originalHeight: 1200
+            ),
+            isSentByCurrentUser: true
+        )
+        let size = CGSize(width: defaultScreenSize.width, height: 300)
+
+        // When
+        let view = MessageView(
+            factory: CustomAttachmentBubbleFactory(),
+            message: message,
+            contentWidth: size.width,
+            isFirst: true,
+            scrolledId: .constant(nil)
+        )
+        .applySize(size)
+
+        // Then
+        AssertSnapshot(view, size: size)
+    }
+
     func test_messageViewImage_snapshot2Images() {
         // Given
         let imageMessage = ChatMessage.mock(
@@ -1611,5 +1822,201 @@ import XCTest
             scrolledId: .constant(nil)
         )
         .applySize(size)
+    }
+
+    private func attachmentBubbleMessageView<Factory: ViewFactory>(
+        factory: Factory,
+        attachment: AttachmentBubbleSnapshotAttachment,
+        caption: String?
+    ) -> some View {
+        let size = attachmentBubbleSnapshotSize(for: attachment, caption: caption)
+        return MessageView(
+            factory: factory,
+            message: attachmentBubbleMessage(attachment: attachment, caption: caption),
+            contentWidth: size.width,
+            isFirst: true,
+            scrolledId: .constant(nil)
+        )
+        .applySize(size)
+    }
+
+    private func attachmentBubbleMessage(
+        attachment: AttachmentBubbleSnapshotAttachment,
+        caption: String?
+    ) -> ChatMessage {
+        return ChatMessage.mock(
+            id: .unique,
+            cid: .unique,
+            text: caption ?? "",
+            author: .mock(id: Self.currentUserId, name: "Martin"),
+            attachments: attachment.attachments,
+            isSentByCurrentUser: true
+        )
+    }
+
+    private func attachmentBubbleSnapshotSize(
+        for attachment: AttachmentBubbleSnapshotAttachment,
+        caption: String?
+    ) -> CGSize {
+        let hasCaption = caption?.isEmpty == false
+        switch attachment {
+        case .image, .video:
+            return CGSize(width: defaultScreenSize.width, height: hasCaption ? 320 : 300)
+        case .link:
+            return CGSize(width: defaultScreenSize.width, height: 300)
+        case .file, .voice:
+            return CGSize(width: defaultScreenSize.width, height: hasCaption ? 220 : 180)
+        }
+    }
+}
+
+private enum AttachmentBubbleSnapshotAttachment {
+    case image
+    case video
+    case voice
+    case file
+    case link
+
+    var attachments: [AnyChatMessageAttachment] {
+        switch self {
+        case .image:
+            return ChatChannelTestHelpers.imageAttachments(
+                count: 1,
+                originalWidth: 1600,
+                originalHeight: 1200
+            )
+        case .video:
+            return ChatChannelTestHelpers.videoAttachments
+        case .voice:
+            return ChatChannelTestHelpers.voiceRecordingAttachments
+        case .file:
+            return ChatChannelTestHelpers.fileAttachments
+        case .link:
+            return ChatChannelTestHelpers.linkAttachments
+        }
+    }
+}
+
+private final class CustomAttachmentBubbleFactory: ViewFactory {
+    @Injected(\.chatClient) var chatClient
+    
+    var styles: CustomAttachmentBubbleStyles
+    
+    init(
+        stackedBubbleInsets: EdgeInsets = EdgeInsets(top: 8, leading: 12, bottom: 10, trailing: 14),
+        stackedBubbleCornerRadius: CGFloat = 6,
+        attachmentBubbleInsets: EdgeInsets = EdgeInsets(top: 3, leading: 5, bottom: 7, trailing: 9),
+        attachmentBubbleCornerRadius: CGFloat = 4
+    ) {
+        self.styles = CustomAttachmentBubbleStyles(
+            stackedBubbleInsets: stackedBubbleInsets,
+            stackedBubbleCornerRadius: stackedBubbleCornerRadius,
+            attachmentBubbleInsets: attachmentBubbleInsets,
+            attachmentBubbleCornerRadius: attachmentBubbleCornerRadius
+        )
+    }
+}
+
+private final class CustomAttachmentBubbleStyles: DefaultTestStyles {
+    let stackedBubbleInsets: EdgeInsets
+    let stackedBubbleCornerRadius: CGFloat
+    let attachmentBubbleInsets: EdgeInsets
+    let attachmentBubbleCornerRadius: CGFloat
+
+    init(
+        stackedBubbleInsets: EdgeInsets,
+        stackedBubbleCornerRadius: CGFloat,
+        attachmentBubbleInsets: EdgeInsets,
+        attachmentBubbleCornerRadius: CGFloat
+    ) {
+        self.stackedBubbleInsets = stackedBubbleInsets
+        self.stackedBubbleCornerRadius = stackedBubbleCornerRadius
+        self.attachmentBubbleInsets = attachmentBubbleInsets
+        self.attachmentBubbleCornerRadius = attachmentBubbleCornerRadius
+    }
+
+    func makeMessageAttachmentsViewModifier(
+        options: MessageAttachmentsViewModifierOptions
+    ) -> some ViewModifier {
+        CustomMessageAttachmentsViewModifier(
+            options: options,
+            bubbleInsets: stackedBubbleInsets,
+            cornerRadius: stackedBubbleCornerRadius
+        )
+    }
+
+    func makeMessageAttachmentItemViewModifier(
+        options: MessageAttachmentItemViewModifierOptions
+    ) -> some ViewModifier {
+        CustomMessageAttachmentItemViewModifier(
+            options: options,
+            bubbleInsets: attachmentBubbleInsets,
+            cornerRadius: attachmentBubbleCornerRadius
+        )
+    }
+}
+
+private struct CustomMessageAttachmentsViewModifier: ViewModifier {
+    let options: MessageAttachmentsViewModifierOptions
+    let bubbleInsets: EdgeInsets
+    let cornerRadius: CGFloat?
+
+    func body(content: Content) -> some View {
+        content
+            .padding(bubbleInsets)
+            .modifier(
+                MessageBubbleModifier(
+                    message: options.message,
+                    isFirst: options.isFirst,
+                    cornerRadius: cornerRadius
+                )
+            )
+    }
+}
+
+private struct CustomMessageAttachmentItemViewModifier: ViewModifier {
+    @Injected(\.colors) private var colors
+
+    let options: MessageAttachmentItemViewModifierOptions
+    let bubbleInsets: EdgeInsets
+    let cornerRadius: CGFloat
+
+    func body(content: Content) -> some View {
+        content.modifier(
+            BubbleModifier(
+                corners: .allCorners,
+                backgroundColors: [Color(colors.backgroundCoreSurfaceDefault)],
+                borderColor: borderColor,
+                borderWidth: borderWidth,
+                cornerRadius: cornerRadius,
+                contentInsets: bubbleInsets
+            )
+        )
+    }
+
+    private var borderColor: Color {
+        switch options.attachmentType {
+        case .some(.file):
+            return .red
+        case .some(.voiceRecording):
+            return .green
+        case .some(.linkPreview):
+            return .purple
+        case .some(.image):
+            return .blue
+        case .some(.video):
+            return .orange
+        default:
+            return Color(colors.accentPrimary)
+        }
+    }
+
+    private var borderWidth: CGFloat {
+        switch options.attachmentType {
+        case .some(.linkPreview):
+            return 3
+        default:
+            return 2
+        }
     }
 }

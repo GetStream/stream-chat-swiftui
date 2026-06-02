@@ -38,16 +38,16 @@ import XCTest
             )
         )
         // Let StreamAsyncImage resolve mock image URLs synchronously so that
-        // snapshot tests capture the loaded image rather than the loading
+        // snapshot tests capture the loaded image rather than the empty
         // placeholder. `StreamAsyncImage` uses `.task` to load images, which
         // completes after the snapshot is taken.
-        NukeImageLoader.testSyncLookup = { url, _ in
+        StreamAsyncImageTestHooks.syncResolver = { url, _ in
             StreamAsyncImageResult(image: mediaLoader.imageForURL(url), animatedImageData: nil)
         }
     }
 
     override open func tearDown() {
-        NukeImageLoader.testSyncLookup = nil
+        StreamAsyncImageTestHooks.syncResolver = nil
         testWindow?.isHidden = true
         testWindow = nil
         super.tearDown()

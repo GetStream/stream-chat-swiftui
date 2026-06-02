@@ -305,18 +305,19 @@ struct PollVotesIndicatorView: View {
     private let height: CGFloat = 8
 
     var body: some View {
-        GeometryReader { reader in
-            ZStack(alignment: .leading) {
-                RoundedRectangle(cornerRadius: tokens.radiusMax)
-                    .fill(Color(trackColor))
-                    .frame(width: reader.size.width, height: height)
-
-                RoundedRectangle(cornerRadius: tokens.radiusMax)
-                    .fill(Color(fillColor))
-                    .frame(width: reader.size.width * ratio, height: height)
-            }
-        }
-        .frame(height: height)
+        Capsule()
+            .fill(Color(trackColor))
+            .overlay(
+                GeometryReader { reader in
+                    HStack(spacing: 0) {
+                        Capsule()
+                            .fill(Color(fillColor))
+                            .frame(width: reader.size.width * ratio)
+                        Spacer(minLength: 0)
+                    }
+                }
+            )
+            .frame(height: height)
     }
 
     private var trackColor: UIColor {

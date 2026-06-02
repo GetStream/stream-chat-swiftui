@@ -149,6 +149,39 @@ import XCTest
         XCTAssert(view is MessageAttachmentsView<DefaultViewFactory>)
     }
 
+    func test_styles_makeMessageAttachmentsViewModifier() {
+        // Given
+        let styles = RegularStyles()
+
+        // When
+        let modifier = styles.makeMessageAttachmentsViewModifier(
+            options: MessageAttachmentsViewModifierOptions(
+                message: message,
+                isFirst: true
+            )
+        )
+
+        // Then
+        XCTAssert(modifier is DefaultMessageAttachmentsViewModifier<RegularStyles>)
+    }
+
+    func test_styles_makeMessageAttachmentItemViewModifier() {
+        // Given
+        let styles = RegularStyles()
+
+        // When
+        let modifier = styles.makeMessageAttachmentItemViewModifier(
+            options: MessageAttachmentItemViewModifierOptions(
+                message: message,
+                isFirst: true,
+                attachmentType: .file
+            )
+        )
+
+        // Then
+        XCTAssert(modifier is DefaultMessageAttachmentItemViewModifier)
+    }
+
     func test_viewFactory_makeImageAttachmentView() {
         // Given
         let viewFactory = DefaultViewFactory.shared
@@ -1063,24 +1096,7 @@ import XCTest
         // Then
         XCTAssert(modifier is MediaViewerToolbarModifier)
     }
-    
-    func test_viewFactory_makeVideoPlayerHeaderView() {
-        // Given
-        let viewFactory = DefaultViewFactory.shared
-        
-        // When
-        let view = viewFactory.makeVideoPlayerHeaderView(
-            options: VideoPlayerHeaderViewOptions(
-                title: .unique,
-                subtitle: .unique,
-                shown: .constant(true)
-            )
-        )
-            
-        // Then
-        XCTAssert(view is MediaViewerHeader)
-    }
-    
+
     func test_viewFactory_makeMemberAddView() {
         // Given
         let viewFactory = DefaultViewFactory.shared

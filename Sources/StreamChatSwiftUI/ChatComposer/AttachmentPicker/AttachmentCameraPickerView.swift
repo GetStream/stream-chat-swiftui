@@ -36,6 +36,7 @@ struct AttachmentCameraPickerView: View {
                 .fullScreenCover(isPresented: $cameraPickerShown) {
                     CameraImagePickerView(cameraImageAdded: cameraImageAdded)
                 }
+                .restoresAccessibilityFocusOnDismiss(of: $cameraPickerShown)
                 .onLoad {
                     openCamera()
                 }
@@ -129,7 +130,7 @@ struct AttachmentImagePickerView: UIViewControllerRepresentable {
     var onAssetPicked: (AddedAsset) -> Void
 
     func makeUIViewController(context: Context) -> UIImagePickerController {
-        let pickerController = UIImagePickerController()
+        let pickerController = StreamCameraImagePickerController()
         pickerController.delegate = context.coordinator
         if UIImagePickerController.isSourceTypeAvailable(sourceType) {
             pickerController.sourceType = sourceType
@@ -156,6 +157,18 @@ struct AttachmentImagePickerView: UIViewControllerRepresentable {
     }
 
     typealias Coordinator = ImagePickerCoordinator
+}
+
+/// `UIImagePickerController` subclass that clears the accessibility label
+/// inherited from the SDK module so VoiceOver stops announcing "StreamChat"
+/// in between Apple's native camera elements (e.g. "Viewfinder, StreamChat,
+/// flash auto focus").
+private final class StreamCameraImagePickerController: UIImagePickerController {
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        accessibilityLabel = ""
+        view.accessibilityLabel = ""
+    }
 }
 
 final class ImagePickerCoordinator: NSObject, UIImagePickerControllerDelegate, UINavigationControllerDelegate {

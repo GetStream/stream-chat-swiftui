@@ -38,7 +38,7 @@ public struct AttachmentTextView<Factory: ViewFactory>: View {
 
     /// Limit text width for messages with portrait image attachment.
     private var maxTextWidth: CGFloat {
-        guard message.hasSingleMediaAttachmentWithCaption else { return availableWidth }
+        guard message.hasSingleAttachment(of: [.image, .video], captioned: true) else { return availableWidth }
         let mediaAttachments = MediaAttachment.galleryOrdered(from: message)
         let orientation = MediaGalleryOrientation(mediaAttachments: mediaAttachments)
         let size = MessageMediaAttachmentsContainerView<Factory>.containerSize(

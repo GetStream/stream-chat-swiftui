@@ -954,8 +954,14 @@ extension UserRobot {
         line: UInt = #line
     ) -> Self {
         let cell = messageCell(withIndex: messageCellIndex, file: file, line: line).wait()
-        XCTAssertTrue(attributes.giphyLabel(in: cell).wait().exists, "Giphy label does not exist")
-        XCTAssertTrue(attributes.giphyImage(in: cell).exists, "Giphy image does not exist")
+        let image = attributes.giphyImage(in: cell).wait()
+        XCTAssertTrue(image.exists, "Giphy image does not exist", file: file, line: line)
+        XCTAssertTrue(
+            image.label.hasPrefix("Giphy"),
+            "Giphy image is missing the expected VoiceOver label, got: \(image.label)",
+            file: file,
+            line: line
+        )
         return self
     }
 
@@ -966,7 +972,12 @@ extension UserRobot {
         line: UInt = #line
     ) -> Self {
         let cell = messageCell(withIndex: messageCellIndex, file: file, line: line)
-        XCTAssertFalse(attributes.giphyLabel(in: cell).waitForDisappearance().exists, "Giphy label exists")
+        XCTAssertFalse(
+            attributes.giphyImage(in: cell).waitForDisappearance().exists,
+            "Giphy image exists",
+            file: file,
+            line: line
+        )
         XCTAssertEqual(0, attributes.giphyButtons(in: cell).count)
         return self
     }

@@ -9,16 +9,12 @@ import SwiftUI
 /// Container for presenting link attachments.
 /// In case of more than one link, only the first link is previewed.
 public struct LinkAttachmentContainer<Factory: ViewFactory>: View {
-    @Injected(\.colors) private var colors
-
     var factory: Factory
     var message: ChatMessage
     var width: CGFloat
     var isFirst: Bool
     var onImageTap: ((ChatMessageLinkAttachment) -> Void)?
     @Binding var scrolledId: String?
-
-    private let padding: CGFloat = 8
     
     public init(
         factory: Factory,
@@ -46,8 +42,15 @@ public struct LinkAttachmentContainer<Factory: ViewFactory>: View {
                 onImageTap: onImageTap
             )
             .frame(width: width, alignment: message.isRightAligned ? .trailing : .leading)
-            .background(MessageAttachmentsBubbleConfiguration.attachmentBackgroundColor(for: message))
-            .roundWithBorder()
+            .modifier(
+                factory.styles.makeMessageAttachmentItemViewModifier(
+                    options: MessageAttachmentItemViewModifierOptions(
+                        message: message,
+                        isFirst: isFirst,
+                        attachmentType: .linkPreview
+                    )
+                )
+            )
             .accessibilityIdentifier("LinkAttachmentContainer")
         }
     }

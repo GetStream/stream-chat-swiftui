@@ -637,7 +637,7 @@ public struct ComposerInputView<Factory: ViewFactory>: View, KeyboardReadable {
                     onDiscardAttachment: removeAttachmentWithId
                 )
                 .transition(.scale)
-                .animation(.default)
+                .animation(.default, value: composerAssets.isEmpty)
             }
 
             if !addedVoiceRecordings.isEmpty {

@@ -147,10 +147,6 @@ struct MessageContainerView<Factory: ViewFactory>: View {
             messageViewModel.failureIndicatorShown ? SendFailureIndicator() : nil
         )
         .frame(maxWidth: contentWidth, alignment: messageViewModel.isRightAligned ? .trailing : .leading)
-        .highPriorityGesture(
-            TapGesture().onEnded { /* Swallow taps on the bubble so attachments don't open and the overlay doesn't dismiss. */ },
-            including: shownAsPreview ? .all : .none
-        )
     }
 
     @ViewBuilder

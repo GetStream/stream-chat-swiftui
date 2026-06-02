@@ -61,6 +61,7 @@ extension Poll {
     
     static func mock(
         pollId: String = .unique,
+        name: String = "Test poll",
         allowAnswers: Bool = true,
         allowUserSuggestedOptions: Bool = true,
         enforceUniqueVote: Bool = false,
@@ -82,7 +83,7 @@ extension Poll {
             pollDescription: "Test",
             enforceUniqueVote: enforceUniqueVote,
             id: pollId,
-            name: "Test poll",
+            name: name,
             updatedAt: Date(),
             voteCount: voteCountsByOption.values.reduce(0, +),
             extraData: [:],
@@ -118,18 +119,18 @@ extension PollOption {
 extension PollVote {
     static func mock(
         id: String = .unique,
-        createdAt: Date = .unique,
-        updatedAt: Date = .unique,
         pollId: String,
         optionId: String?,
         isAnswer: Bool = false,
         answerText: String? = nil,
-        user: ChatUser? = nil
+        user: ChatUser? = nil,
+        createdAt: Date? = nil,
+        updatedAt: Date? = nil
     ) -> PollVote {
         PollVote(
-            id: .unique,
-            createdAt: Date(timeIntervalSince1970: 100),
-            updatedAt: Date(),
+            id: id,
+            createdAt: createdAt ?? Date(timeIntervalSince1970: 100),
+            updatedAt: updatedAt ?? Date(),
             pollId: pollId,
             optionId: optionId,
             isAnswer: isAnswer,
@@ -149,13 +150,13 @@ extension Poll {
                     .map { voteIndex in
                         PollVote.mock(
                             id: String(format: "vote_%03d", voteIndex),
-                            createdAt: Date(timeIntervalSinceReferenceDate: TimeInterval(voteIndex)),
-                            updatedAt: Date(timeIntervalSinceReferenceDate: TimeInterval(voteIndex) + 0.5),
                             pollId: pollId,
                             optionId: optionId,
                             isAnswer: false,
                             answerText: nil,
-                            user: nil
+                            user: nil,
+                            createdAt: Date(timeIntervalSinceReferenceDate: TimeInterval(voteIndex)),
+                            updatedAt: Date(timeIntervalSinceReferenceDate: TimeInterval(voteIndex) + 0.5)
                         )
                     }
                 return PollOption.mock(

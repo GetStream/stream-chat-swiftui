@@ -134,6 +134,77 @@ import XCTest
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
 
+    func test_messageListView_systemMessageOnly() {
+        // Given
+        let channel = ChatChannel.mockDMChannel()
+        let systemMessageId = MessageId.unique
+        let systemMessage = ChatMessage.mock(
+            id: systemMessageId,
+            cid: channel.cid,
+            text: "Martin created the channel",
+            type: .system,
+            author: .mock(id: "system")
+        )
+        let view = MessageListView(
+            factory: DefaultViewFactory.shared,
+            channel: channel,
+            messages: [systemMessage],
+            messagesGroupingInfo: [:],
+            scrolledId: .constant(nil),
+            showScrollToLatestButton: .constant(false),
+            quotedMessage: .constant(nil),
+            currentDateString: nil,
+            listId: "listId",
+            isMessageThread: false,
+            shouldShowTypingIndicator: false,
+            onMessageAppear: { _, _ in },
+            onScrollToBottom: {},
+            onLongPress: { _ in }
+        )
+        .applyDefaultSize()
+
+        // Then
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
+    }
+
+    func test_messageListView_systemMessageWithNewMessagesSeparator() {
+        // Given
+        let messageListConfig = MessageListConfig(showNewMessagesSeparator: true)
+        let utils = Utils(dateFormatter: EmptyDateFormatter(), messageListConfig: messageListConfig)
+        streamChat = StreamChat(chatClient: chatClient, utils: utils)
+
+        let channel = ChatChannel.mockDMChannel(unreadCount: .mock(messages: 1))
+        let systemMessageId = MessageId.unique
+        let systemMessage = ChatMessage.mock(
+            id: systemMessageId,
+            cid: channel.cid,
+            text: "Martin created the channel",
+            type: .system,
+            author: .mock(id: "system")
+        )
+        let view = MessageListView(
+            factory: DefaultViewFactory.shared,
+            channel: channel,
+            messages: [systemMessage],
+            messagesGroupingInfo: [:],
+            scrolledId: .constant(nil),
+            showScrollToLatestButton: .constant(false),
+            quotedMessage: .constant(nil),
+            currentDateString: nil,
+            listId: "listId",
+            isMessageThread: false,
+            shouldShowTypingIndicator: false,
+            firstUnreadMessageId: .constant(systemMessageId),
+            onMessageAppear: { _, _ in },
+            onScrollToBottom: {},
+            onLongPress: { _ in }
+        )
+        .applyDefaultSize()
+
+        // Then
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
+    }
+
     func test_messageListView_jumpToUnreadButton() {
         // Given
         let channelConfig = ChannelConfig(reactionsEnabled: true)

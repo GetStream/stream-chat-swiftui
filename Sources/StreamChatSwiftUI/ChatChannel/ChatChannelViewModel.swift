@@ -36,6 +36,7 @@ import SwiftUI
     private var readsString = ""
     private var canMarkRead = false
     private var hasSetInitialCanMarkRead = false
+    private var pendingMarkReadMessageId: MessageId?
     private var currentUserSentNewMessage = false
     
     private lazy var messagesDateFormatter = utils.dateFormatter
@@ -396,7 +397,7 @@ import SwiftUI
     }
 
     open func handleMessageAppear(index: Int, scrollDirection: ScrollDirection) {
-        if index >= channelDataSource.messages.count || loadingMessagesAround {
+        if !messages.indices.contains(index) || loadingMessagesAround {
             return
         }
         
@@ -515,6 +516,13 @@ import SwiftUI
             updateScrolledIdToNewestMessage()
             currentUserSentNewMessage = false
         }
+        
+        if let pendingMarkReadMessageId,
+           let pendingMarkReadMessage = messages.first(where: { $0.id == pendingMarkReadMessageId }),
+           !pendingMarkReadMessage.isLocalOnly {
+            self.pendingMarkReadMessageId = nil
+            sendReadEventIfNeeded(for: pendingMarkReadMessage)
+        }
     }
     
     func dataSource(
@@ -581,7 +589,7 @@ import SwiftUI
     // MARK: - private
 
     private func checkForOlderMessages(index: Int) {
-        guard index >= channelDataSource.messages.count - 25 else { return }
+        guard index >= messages.count - 25 else { return }
         guard !loadingPreviousMessages else { return }
         guard !channelController.hasLoadedAllPreviousMessages else { return }
         
@@ -600,6 +608,7 @@ import SwiftUI
     }
         
     private func checkForNewerMessages(index: Int) {
+        guard messages.indices.contains(index) else { return }
         guard index <= 5 else { return }
         guard !loadingNextMessages else { return }
         guard !channelController.hasLoadedAllNextMessages else { return }
@@ -643,6 +652,10 @@ import SwiftUI
             return
         }
         if let read = channel.read(for: currentUserId), read.lastReadAt > message.createdAt {
+            return
+        }
+        if message.isLocalOnly {
+            pendingMarkReadMessageId = message.id
             return
         }
         throttler.execute { [weak self] in
@@ -868,9 +881,6 @@ import SwiftUI
                 utils.channelControllerFactory.clearCurrentController()
                 cleanupAudioPlayer()
                 ImageCache.shared.trim(toCost: utils.messageListConfig.cacheSizeOnChatDismiss)
-                if !channelDataSource.hasLoadedAllNextMessages {
-                    channelDataSource.loadFirstPage { _ in }
-                }
             }
         }
     }

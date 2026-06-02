@@ -97,6 +97,24 @@ final class CreatePollView_Tests: StreamChatTestCase {
         AssertSnapshot(view, variants: .onlyUserInterfaceStyles)
     }
 
+    // MARK: - RTL
+
+    func test_createPollView_filledOptionsRightToLeft_snapshot() {
+        let view = makeCreatePollView(
+            question: "ما هي مدينتك المفضلة؟",
+            options: ["برشلونة", "لشبونة", "أمستردام"]
+        ).applyDefaultSize()
+        AssertSnapshot(view, variants: [.rightToLeftLayout])
+    }
+
+    func test_createPollView_duplicateOptionsRightToLeft_snapshot() {
+        let view = makeCreatePollView(
+            question: "اختر رقماً",
+            options: ["واحد", "اثنان", "واحد"]
+        ).applyDefaultSize()
+        AssertSnapshot(view, variants: [.rightToLeftLayout])
+    }
+
     // MARK: - Helpers
 
     private func makeCreatePollView() -> CreatePollView<DefaultTestViewFactory> {

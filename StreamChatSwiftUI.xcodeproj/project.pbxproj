@@ -189,6 +189,8 @@
 				Tests/ChatChannel/CreatePollViewModel_Tests.swift,
 				Tests/ChatChannel/EditedMessageView_Tests.swift,
 				Tests/ChatChannel/FileAttachmentView_Tests.swift,
+				Tests/ChatChannel/GiphyAttachmentView_Tests.swift,
+				Tests/ChatChannel/InputTextView_Tests.swift,
 				Tests/ChatChannel/LazyLoadingImage_Tests.swift,
 				Tests/ChatChannel/MediaAttachmentGalleryOrdering_Tests.swift,
 				Tests/ChatChannel/MediaViewer_Tests.swift,
@@ -236,6 +238,7 @@
 				Tests/ChatChannel/VoiceRecordingHandler_Tests.swift,
 				Tests/ChatChannel/WebView_Tests.swift,
 				Tests/ChatChannelList/ChatChannelListItemView_Tests.swift,
+				Tests/ChatChannelList/ChatChannelListItemViewModel_Tests.swift,
 				Tests/ChatChannelList/ChatChannelListTestHelpers.swift,
 				Tests/ChatChannelList/ChatChannelListView_Tests.swift,
 				Tests/ChatChannelList/ChatChannelListViewModel_Tests.swift,
@@ -254,8 +257,6 @@
 				Tests/CommonViews/Avatars/UserAvatar_Tests.swift,
 				Tests/CommonViews/BadgeCountView_Tests.swift,
 				Tests/CommonViews/BadgeNotificationView_Tests.swift,
-				Tests/CommonViews/GalleryHeaderView_Tests.swift,
-				Tests/CommonViews/NukeImageLoader_Tests.swift,
 				Tests/CommonViews/RadioCheckView_Tests.swift,
 				Tests/CommonViews/SearchBar_Tests.swift,
 				Tests/CommonViews/SnackBarView_Tests.swift,
@@ -1522,7 +1523,7 @@
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/GetStream/stream-chat-swift.git";
 			requirement = {
-				branch = "grouped-channels-v5";
+				branch = develop;
 				kind = branch;
 			};
 		};

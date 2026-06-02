@@ -10,7 +10,7 @@ import SwiftUI
 /// Morphs between two visual states with a single smooth animation:
 /// - **Unlocked** (capsule): lock.open ↔ lock + chevron.up arrow
 /// - **Locked** (circle): lock only, chevron collapses to zero height
-struct VoiceRecordingLockView: View {
+public struct VoiceRecordingLockView: View {
     @Injected(\.colors) var colors
     @Injected(\.tokens) var tokens
 
@@ -29,8 +29,16 @@ struct VoiceRecordingLockView: View {
     private var lockSymbolName: String {
         isLocked || lockProgress >= 0.5 ? "lock" : "lock.open"
     }
+    
+    public init(
+        dragLocation: CGPoint = .zero,
+        isLocked: Bool = false
+    ) {
+        self.dragLocation = dragLocation
+        self.isLocked = isLocked
+    }
 
-    var body: some View {
+    public var body: some View {
         VStack(spacing: isLocked ? 0 : tokens.spacingXxs) {
             lockIcon
                 .animation(.spring(response: 0.35, dampingFraction: 0.75), value: lockProgress)
