@@ -363,7 +363,7 @@ struct ChatChannelInfoViewHeaderViewModifier: ViewModifier {
         }
 
         ToolbarItem(placement: .navigationBarTrailing) {
-            if !viewModel.showSingleMemberDMView {
+            if !viewModel.showSingleMemberDMView && viewModel.channel.canUpdateChannel {
                 editButton
             }
         }

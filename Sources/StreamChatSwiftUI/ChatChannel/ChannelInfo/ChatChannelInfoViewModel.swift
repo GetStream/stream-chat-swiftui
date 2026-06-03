@@ -370,7 +370,7 @@ import SwiftUI
     open func participantActions(for participant: ParticipantInfo) -> [ParticipantAction] {
         if participant.id == chatClient.currentUserId {
             var actions = [ParticipantAction]()
-            if !showSingleMemberDMView {
+            if !showSingleMemberDMView && shouldShowLeaveConversationButton {
                 actions.append(leaveGroupAction(
                     onDismiss: handleParticipantActionDismiss,
                     onError: handleParticipantActionError
