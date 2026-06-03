@@ -3,6 +3,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 # Upcoming
 
+### 🔄 Changed
+
+# [5.5.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/5.5.0)
+_June 03, 2026_
+
 ### ✅ Added
 - Expose `ChatChannelListItemViewModel` and reusable sub-views for the channel list item [#1482](https://github.com/GetStream/stream-chat-swiftui/pull/1482)
 - Open `ChatThreadListItemViewModel` for subclassing [#1482](https://github.com/GetStream/stream-chat-swiftui/pull/1482)
