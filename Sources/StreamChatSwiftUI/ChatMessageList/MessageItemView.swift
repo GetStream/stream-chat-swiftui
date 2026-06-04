@@ -192,7 +192,8 @@ public struct MessageItemView<Factory: ViewFactory>: View {
 // MARK: - Message Actions Gesture
 
 /// Attaches the double-tap and long-press gestures that open the message actions
-/// overlay on a `MessageItemView`.
+/// overlay on a `MessageItemView`, plus a default accessibility action so the
+/// overlay can be opened with a single VoiceOver double tap.
 ///
 /// When the message is rendered as a preview inside the reactions overlay
 /// (`shownAsPreview == true`), both gestures are intentionally skipped. Keeping
@@ -216,7 +217,15 @@ struct MessageActionsGestureModifier: ViewModifier {
         if shownAsPreview {
             content
         } else {
-            let withTap = content.onTapGesture(count: 2) {
+            // VoiceOver delivers its activation gesture (the "double tap") as a
+            // single synthesized tap, which matches neither the count-2 tap nor the
+            // long press below, so neither fires for VoiceOver users. Expose the
+            // actions overlay as the element's default accessibility action so a
+            // single VoiceOver double tap opens it reliably.
+            let base = content.accessibilityAction {
+                onActionsTriggered()
+            }
+            let withTap = base.onTapGesture(count: 2) {
                 if isDoubleTapEnabled {
                     onActionsTriggered()
                 }

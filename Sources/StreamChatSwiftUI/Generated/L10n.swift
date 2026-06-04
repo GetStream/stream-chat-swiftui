@@ -810,6 +810,8 @@ internal enum L10n {
     internal enum Reactions {
       /// You
       internal static var currentUser: String { L10n.tr("Localizable", "message.reactions.currentUser") }
+      /// More reactions
+      internal static var more: String { L10n.tr("Localizable", "message.reactions.more") }
       /// Tap to remove
       internal static var tapToRemove: String { L10n.tr("Localizable", "message.reactions.tap-to-remove") }
     }

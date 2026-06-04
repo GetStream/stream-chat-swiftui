@@ -109,6 +109,8 @@ public struct ReactionsAnimatableView: View {
                 Circle().strokeBorder(Color(colors.buttonSecondaryBorder), lineWidth: 1)
             )
             .padding(tokens.spacingXs)
+            .accessibilityLabel(L10n.Message.Reactions.more)
+            .accessibilityIdentifier("moreReactions")
         }
         .padding(.leading, tokens.spacingXxs)
         .reactionsBubble(for: message, background: colors.backgroundCoreElevation2)
@@ -152,6 +154,9 @@ public struct ReactionAnimatableView: View {
                     .resizable()
                     .scaledToFit()
                     .frame(width: useLargeIcons ? 25 : 20, height: useLargeIcons ? 27 : 20)
+                    .accessibilityLabel(reactionAccessibilityLabel)
+                    .accessibilityAddTraits(isUserReaction ? [.isButton, .isSelected] : .isButton)
+                    .accessibilityHint(isUserReaction ? L10n.Message.Reactions.tapToRemove : "")
             }
             .frame(width: ButtonSize.large, height: ButtonSize.large)
             .background(reactionSelectedBackgroundColor(for: reaction)?.clipShape(Circle()))
@@ -190,6 +195,24 @@ public struct ReactionAnimatableView: View {
 
     private var userReactionIDs: Set<MessageReactionType> {
         Set(message.currentUserReactions.map(\.type))
+    }
+
+    /// Whether the current user has already added this reaction.
+    private var isUserReaction: Bool {
+        userReactionIDs.contains(reaction)
+    }
+
+    /// A spoken label for the reaction, preferring the emoji (VoiceOver reads its
+    /// name, e.g. "thumbs up") and falling back to the raw reaction type.
+    private var reactionAccessibilityLabel: String {
+        if let emoji = images.availableMessagesReactionEmojis[reaction] {
+            return emoji
+        }
+        if let dictionary = images.availableEmojis.first(where: { $0["key"] == reaction.rawValue }),
+           let emoji = dictionary["value"] {
+            return emoji
+        }
+        return reaction.rawValue
     }
 }
 
