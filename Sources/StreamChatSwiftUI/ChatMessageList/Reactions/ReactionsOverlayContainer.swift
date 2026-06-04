@@ -154,9 +154,6 @@ public struct ReactionAnimatableView: View {
                     .resizable()
                     .scaledToFit()
                     .frame(width: useLargeIcons ? 25 : 20, height: useLargeIcons ? 27 : 20)
-                    .accessibilityLabel(reactionAccessibilityLabel)
-                    .accessibilityAddTraits(isUserReaction ? [.isButton, .isSelected] : .isButton)
-                    .accessibilityHint(isUserReaction ? L10n.Message.Reactions.tapToRemove : "")
             }
             .frame(width: ButtonSize.large, height: ButtonSize.large)
             .background(reactionSelectedBackgroundColor(for: reaction)?.clipShape(Circle()))
@@ -176,7 +173,12 @@ public struct ReactionAnimatableView: View {
                     animationStates[index] = 1
                 }
             }
-            .accessibilityElement(children: .contain)
+            // VoiceOver announces the whole button as one element: the emoji name,
+            // a selected state and a "tap to remove" hint when the current user has
+            // already added this reaction. The button trait is already implied.
+            .accessibilityLabel(reactionAccessibilityLabel)
+            .accessibilityAddTraits(isUserReaction ? .isSelected : [])
+            .accessibilityHint(isUserReaction ? L10n.Message.Reactions.tapToRemove : "")
             .accessibilityIdentifier("reaction-\(reaction.rawValue)")
         }
     }
