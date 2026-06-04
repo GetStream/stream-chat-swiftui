@@ -4,6 +4,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 # Upcoming
 
 ### 🔄 Changed
+- Improve VoiceOver support for the message reactions and actions overlay [#1491](https://github.com/GetStream/stream-chat-swiftui/pull/1491)
 
 # [5.5.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/5.5.0)
 _June 03, 2026_
