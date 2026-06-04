@@ -14,6 +14,12 @@ _June 03, 2026_
 - Open `ChatThreadListItemViewModel` for subclassing [#1482](https://github.com/GetStream/stream-chat-swiftui/pull/1482)
 - Allow injecting a custom channel list item view into `ChatChannelNavigatableListItem` to reuse the navigation logic [#1482](https://github.com/GetStream/stream-chat-swiftui/pull/1482)
 
+# [4.101.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/4.101.0)
+_June 03, 2026_
+
+### 🐞 Fixed
+- Fix `SystemMessageView` not expanding to full width, causing misaligned text in the message list [#1474](https://github.com/GetStream/stream-chat-swiftui/pull/1474)
+
 # [5.4.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/5.4.0)
 _May 28, 2026_
 
