@@ -11,11 +11,17 @@ import XCTest
 
 class MessageListPage {
     static var cells: XCUIElementQuery {
-        app.otherElements.matching(identifier: "MessageItemView")
+        app.descendants(matching: .any).matching(
+            NSPredicate(format:
+                "(elementType == %d or elementType == %d) and identifier LIKE 'MessageItemView'",
+                XCUIElement.ElementType.button.rawValue,
+                XCUIElement.ElementType.other.rawValue
+            )
+        )
     }
 
     static func messageView(for cell: XCUIElement) -> XCUIElement {
-        cell.otherElements.matching(identifier: "MessageView").firstMatch
+        cell.buttons.matching(identifier: "MessageView").firstMatch
     }
 
     static var messages: XCUIElementQuery {
@@ -119,7 +125,11 @@ class MessageListPage {
         }
 
         static func threadReplyCountButton(in messageCell: XCUIElement) -> XCUIElement {
-            app.buttons.matching(NSPredicate(format: "identifier LIKE 'UserAvatar' or identifier LIKE 'UserAvatarPlaceholder'")).firstMatch
+            app.buttons.matching(
+                NSPredicate(format:
+                    "(identifier LIKE 'UserAvatar' or identifier LIKE 'UserAvatarPlaceholder') and label CONTAINS 'Thread Repl'"
+                )
+            ).firstMatch
         }
 
         static func reactions(in messageCell: XCUIElement) -> XCUIElementQuery {
@@ -131,7 +141,7 @@ class MessageListPage {
         }
 
         static func time(in messageCell: XCUIElement) -> XCUIElement {
-            messageCell.staticTexts["MessageDateView"]
+            messageCell.buttons["MessageDateView"]
         }
 
         static func author(messageCell: XCUIElement) -> XCUIElement {
