@@ -12,7 +12,8 @@ import XCTest
 class MessageListPage {
     static var cells: XCUIElementQuery {
         app.descendants(matching: .any).matching(
-            NSPredicate(format:
+            NSPredicate(
+                format:
                 "(elementType == %d or elementType == %d) and identifier LIKE 'MessageItemView'",
                 XCUIElement.ElementType.button.rawValue,
                 XCUIElement.ElementType.other.rawValue
