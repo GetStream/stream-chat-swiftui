@@ -109,6 +109,8 @@ public struct ReactionsAnimatableView: View {
                 Circle().strokeBorder(Color(colors.buttonSecondaryBorder), lineWidth: 1)
             )
             .padding(tokens.spacingXs)
+            .accessibilityLabel(L10n.Message.Reactions.more)
+            .accessibilityIdentifier("moreReactions")
         }
         .padding(.leading, tokens.spacingXxs)
         .reactionsBubble(for: message, background: colors.backgroundCoreElevation2)
@@ -171,7 +173,12 @@ public struct ReactionAnimatableView: View {
                     animationStates[index] = 1
                 }
             }
-            .accessibilityElement(children: .contain)
+            // VoiceOver announces the whole button as one element: the emoji name,
+            // a selected state and a "tap to remove" hint when the current user has
+            // already added this reaction. The button trait is already implied.
+            .accessibilityLabel(reactionAccessibilityLabel)
+            .accessibilityAddTraits(isUserReaction ? .isSelected : [])
+            .accessibilityHint(isUserReaction ? L10n.Message.Reactions.tapToRemove : "")
             .accessibilityIdentifier("reaction-\(reaction.rawValue)")
         }
     }
@@ -190,6 +197,24 @@ public struct ReactionAnimatableView: View {
 
     private var userReactionIDs: Set<MessageReactionType> {
         Set(message.currentUserReactions.map(\.type))
+    }
+
+    /// Whether the current user has already added this reaction.
+    private var isUserReaction: Bool {
+        userReactionIDs.contains(reaction)
+    }
+
+    /// A spoken label for the reaction, preferring the emoji (VoiceOver reads its
+    /// name, e.g. "thumbs up") and falling back to the raw reaction type.
+    private var reactionAccessibilityLabel: String {
+        if let emoji = images.availableMessagesReactionEmojis[reaction] {
+            return emoji
+        }
+        if let dictionary = images.availableEmojis.first(where: { $0["key"] == reaction.rawValue }),
+           let emoji = dictionary["value"] {
+            return emoji
+        }
+        return reaction.rawValue
     }
 }
 

@@ -153,6 +153,11 @@ public struct ChatChannelView<Factory: ViewFactory>: View, KeyboardReadable {
                     }
                     .opacity(0) // Fixes showing accessibility button shape
                 }
+                // While the reactions overlay is shown it acts as a modal: hide the
+                // chat content behind it so VoiceOver only exposes the overlay's
+                // reactions and message actions. Applied before `.overlay` so the
+                // overlay itself stays accessible.
+                .accessibilityHidden(viewModel.reactionsShown)
                 .overlay(
                     viewModel.currentSnapshot != nil && messageDisplayInfo != nil && viewModel.reactionsShown ?
                         factory.makeReactionsOverlayView(
@@ -182,6 +187,7 @@ public struct ChatChannelView<Factory: ViewFactory>: View, KeyboardReadable {
                         composerView
                             .padding(.bottom, floatingComposerBottomPadding)
                             .opacity(viewModel.reactionsShown ? 0 : 1)
+                            .accessibilityHidden(viewModel.reactionsShown)
                     }
                 ))
             } else {

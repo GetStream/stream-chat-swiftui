@@ -150,9 +150,18 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
         .background(orientationChanged ? nil : Color(colors.backgroundCoreElevation1))
         .onAppear {
             popIn = true
+            // Once the chat behind the overlay is hidden, tell VoiceOver the screen
+            // changed so it moves focus into the overlay (the reactions picker)
+            // instead of staying on a now-hidden message.
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                UIAccessibility.post(notification: .screenChanged, argument: nil)
+            }
         }
         .accessibilityElement(children: .contain)
         .accessibilityIdentifier("ReactionsOverlayView")
+        .accessibilityAction(.escape) {
+            dismissReactionsOverlay { /* No additional handling. */ }
+        }
         .onRotate { _ in
             if isIPad {
                 orientationChanged = true
@@ -192,6 +201,9 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
                     .edgesIgnoringSafeArea(.all)
             }
         }
+        // The blurred snapshot and scrim are purely decorative; keep them out of
+        // the accessibility tree so VoiceOver focuses the overlay's content.
+        .accessibilityHidden(true)
         .transition(.opacity)
         .onTapGesture {
             dismissReactionsOverlay { /* No additional handling. */ }
@@ -275,6 +287,9 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
             onBackgroundTap()
             completion()
+            // The chat is visible again now that the overlay is gone; let VoiceOver
+            // re-scan so focus returns to the message list instead of being orphaned.
+            UIAccessibility.post(notification: .screenChanged, argument: nil)
         }
     }
 

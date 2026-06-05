@@ -38,6 +38,7 @@ public struct MessageActionsView: View {
                                 bundle: bundle
                             )
                         }
+                        .accessibilityLabel(action.title)
                     } else {
                         Button {
                             if action.confirmationPopup != nil {
@@ -54,6 +55,7 @@ public struct MessageActionsView: View {
                                 bundle: bundle
                             )
                         }
+                        .accessibilityLabel(action.title)
                     }
 
                     Divider()

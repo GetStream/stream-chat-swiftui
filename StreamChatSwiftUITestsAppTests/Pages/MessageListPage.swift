@@ -11,11 +11,18 @@ import XCTest
 
 class MessageListPage {
     static var cells: XCUIElementQuery {
-        app.otherElements.matching(identifier: "MessageItemView")
+        app.descendants(matching: .any).matching(
+            NSPredicate(
+                format:
+                "(elementType == %d or elementType == %d) and identifier LIKE 'MessageItemView'",
+                XCUIElement.ElementType.button.rawValue,
+                XCUIElement.ElementType.other.rawValue
+            )
+        )
     }
 
     static func messageView(for cell: XCUIElement) -> XCUIElement {
-        cell.otherElements.matching(identifier: "MessageView").firstMatch
+        cell.buttons.matching(identifier: "MessageView").firstMatch
     }
 
     static var messages: XCUIElementQuery {
@@ -102,16 +109,16 @@ class MessageListPage {
 
     enum Reactions {
         static var reactionsMessageView: XCUIElement { app.otherElements["ReactionsMessageView"] }
-        static var love: XCUIElement { app.otherElements["reaction-love"] }
-        static var lol: XCUIElement { app.otherElements["reaction-haha"] }
-        static var like: XCUIElement { app.otherElements["reaction-like"] }
-        static var sad: XCUIElement { app.otherElements["reaction-sad"] }
-        static var wow: XCUIElement { app.otherElements["reaction-wow"] }
+        static var love: XCUIElement { app.buttons["reaction-love"].firstMatch }
+        static var lol: XCUIElement { app.buttons["reaction-haha"].firstMatch }
+        static var like: XCUIElement { app.buttons["reaction-like"].firstMatch }
+        static var sad: XCUIElement { app.buttons["reaction-sad"].firstMatch }
+        static var wow: XCUIElement { app.buttons["reaction-wow"].firstMatch }
     }
 
     enum Attributes {
         static func messageBubble(in messageCell: XCUIElement) -> XCUIElement {
-            messageCell.otherElements["MessageView"]
+            messageCell.buttons["MessageView"]
         }
         
         static func reactionButton(in messageCell: XCUIElement) -> XCUIElement {
@@ -119,7 +126,11 @@ class MessageListPage {
         }
 
         static func threadReplyCountButton(in messageCell: XCUIElement) -> XCUIElement {
-            app.buttons.matching(NSPredicate(format: "identifier LIKE 'UserAvatar' or identifier LIKE 'UserAvatarPlaceholder'")).firstMatch
+            app.buttons.matching(
+                NSPredicate(format:
+                    "(identifier LIKE 'UserAvatar' or identifier LIKE 'UserAvatarPlaceholder') and label CONTAINS 'Thread Repl'"
+                )
+            ).firstMatch
         }
 
         static func reactions(in messageCell: XCUIElement) -> XCUIElementQuery {
@@ -131,7 +142,7 @@ class MessageListPage {
         }
 
         static func time(in messageCell: XCUIElement) -> XCUIElement {
-            messageCell.staticTexts["MessageDateView"]
+            messageCell.buttons["MessageDateView"]
         }
 
         static func author(messageCell: XCUIElement) -> XCUIElement {
