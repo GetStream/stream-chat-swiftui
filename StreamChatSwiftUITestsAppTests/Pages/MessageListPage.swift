@@ -102,16 +102,16 @@ class MessageListPage {
 
     enum Reactions {
         static var reactionsMessageView: XCUIElement { app.otherElements["ReactionsMessageView"] }
-        static var love: XCUIElement { app.otherElements["reaction-love"] }
-        static var lol: XCUIElement { app.otherElements["reaction-haha"] }
-        static var like: XCUIElement { app.otherElements["reaction-like"] }
-        static var sad: XCUIElement { app.otherElements["reaction-sad"] }
-        static var wow: XCUIElement { app.otherElements["reaction-wow"] }
+        static var love: XCUIElement { app.buttons["reaction-love"].firstMatch }
+        static var lol: XCUIElement { app.buttons["reaction-haha"].firstMatch }
+        static var like: XCUIElement { app.buttons["reaction-like"].firstMatch }
+        static var sad: XCUIElement { app.buttons["reaction-sad"].firstMatch }
+        static var wow: XCUIElement { app.buttons["reaction-wow"].firstMatch }
     }
 
     enum Attributes {
         static func messageBubble(in messageCell: XCUIElement) -> XCUIElement {
-            messageCell.otherElements["MessageView"]
+            messageCell.buttons["MessageView"]
         }
         
         static func reactionButton(in messageCell: XCUIElement) -> XCUIElement {
