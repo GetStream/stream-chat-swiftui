@@ -14,8 +14,10 @@ import StreamChat
 /// otherwise keep changing while the list is on screen.
 ///
 /// To keep it consistent, the selected users are computed once per channel and
-/// reused afterwards. The selection is recomputed when the channel's membership
-/// changes (`memberCount`), so members being added or removed are reflected.
+/// reused afterwards. The selection is recomputed when a member that is visible
+/// in the avatar is added or removed, so membership changes that affect the
+/// avatar are reflected, while it stays stable when the same members are merely
+/// reordered by activity.
 ///
 /// - Note: This does **not** cache avatar images. Images are loaded and cached
 ///   separately by the media loader (keyed by URL). On every access the latest
@@ -39,15 +41,15 @@ final class ChannelPlaceholderAvatarUsersCache {
     /// the channel's last active members and cached. Subsequent calls keep the
     /// same members in the same order – resolving their latest data when still
     /// available – so the avatar does not change when the last active members
-    /// are reordered. The selection is recomputed when the channel's member
-    /// count changes.
+    /// are reordered. The selection is recomputed when a member visible in the
+    /// avatar is added or removed.
     ///
     /// - Parameters:
     ///   - channel: The channel whose placeholder avatar users to resolve.
     ///   - currentUserId: The id of the current user, who is always placed last.
     /// - Returns: The users to display in the placeholder avatar.
     func placeholderUsers(for channel: ChatChannel, currentUserId: UserId?) -> [ChatUser] {
-        if let entry = cache[channel.cid], entry.memberCount == channel.memberCount {
+        if let entry = cache[channel.cid], isValid(entry, for: channel) {
             // Keep the same members in the same order, but resolve their latest
             // data when still available so profile changes are reflected without
             // changing which members appear in the avatar.
@@ -69,6 +71,23 @@ final class ChannelPlaceholderAvatarUsersCache {
     /// Removes all cached selections.
     func clear() {
         cache.removeAllObjects()
+    }
+
+    /// Returns whether the cached selection can still be reused for the channel.
+    ///
+    /// The selection is reused only when every member shown in the avatar is
+    /// still part of the channel, and either the avatar already shows the
+    /// maximum number of members or the channel's member count is unchanged.
+    /// This refreshes the avatar when a member visible in it is added or
+    /// removed – even if the total member count stays the same because a member
+    /// is added and another removed – while keeping it stable when the same
+    /// members are only reordered by activity.
+    private func isValid(_ entry: Entry, for channel: ChatChannel) -> Bool {
+        let currentMemberIds = Set(channel.lastActiveMembers.map(\.id))
+        let allShownMembersStillPresent = entry.users.allSatisfy { currentMemberIds.contains($0.id) }
+        let showsMaximumMembers = entry.users.count >= maxNumberOfUsers
+        let memberCountUnchanged = entry.memberCount == channel.memberCount
+        return allShownMembersStillPresent && (showsMaximumMembers || memberCountUnchanged)
     }
 
     private func computeUsers(for channel: ChatChannel, currentUserId: UserId?) -> [ChatUser] {

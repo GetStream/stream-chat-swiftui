@@ -50,7 +50,7 @@ final class ChannelPlaceholderAvatarUsersCache_Tests: StreamChatTestCase {
         XCTAssertEqual(result.map(\.id), ["a", "b", "current"])
     }
 
-    func test_placeholderUsers_keepsSelectionWhenLastActiveMembersChange() {
+    func test_placeholderUsers_keepsSelectionWhenSameMembersAreReordered() {
         // Given — a channel whose avatar has been computed and cached
         let cache = ChannelPlaceholderAvatarUsersCache()
         let cid = ChannelId.unique
@@ -59,16 +59,36 @@ final class ChannelPlaceholderAvatarUsersCache_Tests: StreamChatTestCase {
             currentUserId: nil
         )
 
-        // When — the same channel later reports a different active members subset
-        // (the member count is unchanged, e.g. activity changed which members are loaded)
+        // When — the same members are later reported in a different order
+        // (e.g. activity changed which members are loaded first)
         let result = cache.placeholderUsers(
-            for: mockChannel(cid: cid, memberIds: ["e", "f", "g", "h"], memberCount: 10),
+            for: mockChannel(cid: cid, memberIds: ["d", "c", "b", "a"], memberCount: 10),
             currentUserId: nil
         )
 
         // Then — the cached selection is kept, so the avatar stays consistent
         XCTAssertEqual(result.map(\.id), initialResult.map(\.id))
         XCTAssertEqual(result.map(\.id), ["a", "b", "c", "d"])
+    }
+
+    func test_placeholderUsers_recomputesWhenVisibleMemberSwapped() {
+        // Given — a cached four-member selection in a larger channel
+        let cache = ChannelPlaceholderAvatarUsersCache()
+        let cid = ChannelId.unique
+        _ = cache.placeholderUsers(
+            for: mockChannel(cid: cid, memberIds: ["a", "b", "c", "d"], memberCount: 10),
+            currentUserId: nil
+        )
+
+        // When — a member visible in the avatar is removed and another added,
+        // keeping the total member count the same
+        let result = cache.placeholderUsers(
+            for: mockChannel(cid: cid, memberIds: ["a", "b", "c", "e"], memberCount: 10),
+            currentUserId: nil
+        )
+
+        // Then — the selection is recomputed because a visible member is gone
+        XCTAssertEqual(result.map(\.id), ["a", "b", "c", "e"])
     }
 
     func test_placeholderUsers_resolvesLatestUserDataForLoadedMembers() {
