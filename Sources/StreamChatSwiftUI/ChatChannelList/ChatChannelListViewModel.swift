@@ -151,6 +151,9 @@ import UIKit
     ) {
         self.searchType = searchType
         self.selectedChannelId = selectedChannelId
+        // Recompute channel avatars on a fresh channel list load. Afterwards
+        // they are cached so they stay consistent while the list is shown.
+        utils.channelAvatarsCache.clear()
         if let channelListController = channelListController {
             controller = channelListController
         } else {

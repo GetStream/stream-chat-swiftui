@@ -68,6 +68,7 @@ import StreamChatCommonUI
     public var originalTranslationsStore = MessageOriginalTranslationsStore()
 
     var messageCachingUtils = MessageCachingUtils()
+    let channelAvatarsCache = ChannelAvatarsCache()
     var messageListDateUtils: MessageListDateUtils
     var channelControllerFactory = ChannelControllerFactory()
     
