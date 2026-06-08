@@ -313,11 +313,11 @@ private extension ChannelAvatar {
 extension ChatChannel {
     /// The users used to render the channel avatar.
     ///
-    /// The result is computed once per channel and cached, so the avatar stays
-    /// consistent even if the channel's last active members are reordered while
-    /// the channel list is shown.
+    /// The selection is computed once per channel and cached, so the avatar
+    /// stays consistent even if the channel's last active members are reordered
+    /// while the channel list is shown.
     @MainActor fileprivate var avatarUsers: [ChatUser] {
-        InjectedValues[\.utils].channelAvatarsCache.avatarUsers(
+        InjectedValues[\.utils].channelPlaceholderAvatarUsersCache.placeholderUsers(
             for: self,
             currentUserId: InjectedValues[\.chatClient].currentUserId
         )

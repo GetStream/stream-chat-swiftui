@@ -153,7 +153,7 @@ import UIKit
         self.selectedChannelId = selectedChannelId
         // Recompute channel avatars on a fresh channel list load. Afterwards
         // they are cached so they stay consistent while the list is shown.
-        utils.channelAvatarsCache.clear()
+        utils.channelPlaceholderAvatarUsersCache.clear()
         if let channelListController = channelListController {
             controller = channelListController
         } else {
