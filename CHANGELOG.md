@@ -3,6 +3,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 # Upcoming
 
+### 🐞 Fixed
+- Keep group channel avatars stable in the channel list instead of changing as members' activity updates [#1492](https://github.com/GetStream/stream-chat-swiftui/pull/1492)
 ### 🔄 Changed
 - Improve VoiceOver support for the message reactions and actions overlay [#1491](https://github.com/GetStream/stream-chat-swiftui/pull/1491)
 ### 🎭 New Localizations
