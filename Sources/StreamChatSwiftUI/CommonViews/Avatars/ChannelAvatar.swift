@@ -311,17 +311,15 @@ private extension ChannelAvatar {
 }
 
 extension ChatChannel {
+    /// The users used to render the channel avatar.
+    ///
+    /// The selection is computed once per channel and cached, so the avatar
+    /// stays consistent even if the channel's last active members are reordered
+    /// while the channel list is shown.
     @MainActor fileprivate var avatarUsers: [ChatUser] {
-        let currentUserId = InjectedValues[\.chatClient].currentUserId
-        return Array(
-            lastActiveMembers
-                .sorted {
-                    // Current user always last, others sorted by creation date
-                    if $0.id == currentUserId { return false }
-                    if $1.id == currentUserId { return true }
-                    return $0.memberCreatedAt < $1.memberCreatedAt
-                }
-                .prefix(4)
+        InjectedValues[\.utils].channelPlaceholderAvatarUsersCache.placeholderUsers(
+            for: self,
+            currentUserId: InjectedValues[\.chatClient].currentUserId
         )
     }
     
