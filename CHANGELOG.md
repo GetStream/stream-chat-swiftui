@@ -3,6 +3,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 # Upcoming
 
+### 🔄 Changed
+
+# [5.5.1](https://github.com/GetStream/stream-chat-swiftui/releases/tag/5.5.1)
+_June 11, 2026_
+
 ### 🐞 Fixed
 - Keep group channel avatars stable in the channel list instead of changing as members' activity updates [#1492](https://github.com/GetStream/stream-chat-swiftui/pull/1492)
 ### 🔄 Changed
