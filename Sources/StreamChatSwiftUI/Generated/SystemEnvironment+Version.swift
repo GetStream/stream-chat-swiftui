@@ -7,5 +7,5 @@ import Foundation
 
 enum SystemEnvironment {
   /// A Stream Chat version.
-  public static let version: String = "5.5.1"
+  public static let version: String = "5.6.0-SNAPSHOT"
 }
