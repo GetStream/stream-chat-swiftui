@@ -30,7 +30,8 @@ final class AppConfiguration {
     /// Builds the demo app's `ComposerConfig` using current app configuration.
     @MainActor static func makeComposerConfig() -> ComposerConfig {
         ComposerConfig(
-            isVoiceRecordingAutoSendEnabled: AppConfiguration.default.isVoiceRecordingAutoSendEnabled
+            isVoiceRecordingAutoSendEnabled: AppConfiguration.default.isVoiceRecordingAutoSendEnabled,
+            mentionSuggestionsConfig: .enhanced
         )
     }
 
