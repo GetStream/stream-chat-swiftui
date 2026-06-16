@@ -533,6 +533,26 @@ internal enum L10n {
         internal static func accessibilityAnnouncement(_ p1: Int) -> String {
           return L10n.tr("Localizable", "composer.suggestions.mentions.accessibility-announcement", p1)
         }
+        internal enum Channel {
+          /// Notify everyone in this channel
+          internal static var description: String { L10n.tr("Localizable", "composer.suggestions.mentions.channel.description") }
+        }
+        internal enum Group {
+          /// %d members
+          internal static func members(_ p1: Int) -> String {
+            return L10n.tr("Localizable", "composer.suggestions.mentions.group.members", p1)
+          }
+        }
+        internal enum Here {
+          /// Notify online members
+          internal static var description: String { L10n.tr("Localizable", "composer.suggestions.mentions.here.description") }
+        }
+        internal enum Role {
+          /// Notify all %@ members
+          internal static func description(_ p1: Any) -> String {
+            return L10n.tr("Localizable", "composer.suggestions.mentions.role.description", String(describing: p1))
+          }
+        }
       }
       internal enum User {
         /// %1$@, user, %2$d of %3$d

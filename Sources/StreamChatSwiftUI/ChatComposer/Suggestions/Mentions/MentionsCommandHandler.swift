@@ -8,6 +8,8 @@ import SwiftUI
 
 /// Handles the mention command and provides suggestions.
 public final class MentionsCommandHandler: CommandHandler {
+    @Injected(\.utils) private var utils
+
     public let id: String
     public var displayInfo: CommandDisplayInfo?
 
@@ -56,12 +58,19 @@ public final class MentionsCommandHandler: CommandHandler {
         command: Binding<ComposerCommand?>,
         extraData: [String: Any]
     ) {
-        guard let chatUser = extraData["chatUser"] as? ChatUser,
-              let typingSuggestionValue = command.wrappedValue?.typingSuggestion else {
+        guard let typingSuggestionValue = command.wrappedValue?.typingSuggestion else {
             return
         }
 
-        let mentionText = chatUser.mentionText
+        let mentionText: String
+        if let suggestion = extraData["mentionSuggestion"] as? MentionSuggestion {
+            mentionText = suggestion.mentionText
+        } else if let chatUser = extraData["chatUser"] as? ChatUser {
+            mentionText = chatUser.mentionText
+        } else {
+            return
+        }
+
         let newText = (text.wrappedValue as NSString).replacingCharacters(
             in: typingSuggestionValue.locationRange,
             with: mentionText
@@ -93,22 +102,119 @@ public final class MentionsCommandHandler: CommandHandler {
         for typingMention: String,
         mentionRange: NSRange
     ) -> Future<SuggestionInfo, Error> {
+        let id = id
+        return Future { [weak self] promise in
+            guard let self else { return }
+            nonisolated(unsafe) let unsafePromise = promise
+            Task { @MainActor in
+                let suggestions = await self.makeSuggestions(for: typingMention)
+                unsafePromise(.success(SuggestionInfo(key: id, value: suggestions)))
+            }
+        }
+    }
+
+    @MainActor
+    private func makeSuggestions(for typingMention: String) async -> [MentionSuggestion] {
         guard let channel = channelController.channel,
               let currentUserId = channelController.client.currentUserId else {
-            return StreamChatError.missingData.asFailedPromise()
+            return []
         }
 
+        let config = utils.composerConfig.mentionSuggestionsConfig
+        let allowedTypes = config.allowedMentionTypes
+        let mentionAllAppUsers = config.mentionAllAppUsers || self.mentionAllAppUsers
+
+        // Broadcasts (`@here`, `@channel`) are shown on a bare `@` and filtered
+        // by prefix as the user keeps typing, matching the JS SDK behaviour.
+        var suggestions = broadcastSuggestions(for: typingMention, allowedTypes: allowedTypes)
+
+        // Roles and groups require a non-empty query to avoid surfacing the
+        // entire list on a bare `@`.
+        async let roles = (allowedTypes.contains(.role) && !typingMention.isEmpty)
+            ? fetchRoles(for: typingMention)
+            : []
+        async let groups = (allowedTypes.contains(.group) && !typingMention.isEmpty)
+            ? fetchGroups(for: typingMention)
+            : []
+        async let users = allowedTypes.contains(.user)
+            ? fetchUsers(
+                for: typingMention,
+                channel: channel,
+                currentUserId: currentUserId,
+                mentionAllAppUsers: mentionAllAppUsers
+            )
+            : []
+
+        suggestions += await roles
+        suggestions += await groups
+        suggestions += await users
+        return suggestions
+    }
+
+    private func broadcastSuggestions(
+        for typingMention: String,
+        allowedTypes: Set<MentionType>
+    ) -> [MentionSuggestion] {
+        let query = typingMention.lowercased()
+        var result: [MentionSuggestion] = []
+        if allowedTypes.contains(.channel), matchesBroadcast("channel", query: query) {
+            result.append(.channel)
+        }
+        if allowedTypes.contains(.here), matchesBroadcast("here", query: query) {
+            result.append(.here)
+        }
+        return result
+    }
+
+    private func matchesBroadcast(_ keyword: String, query: String) -> Bool {
+        query.isEmpty || keyword.hasPrefix(query)
+    }
+
+    @MainActor
+    private func fetchRoles(for typingMention: String) async -> [MentionSuggestion] {
+        await withCheckedContinuation { continuation in
+            nonisolated(unsafe) let cont = continuation
+            channelController.client.searchRoles(
+                query: RoleSearchQuery(query: typingMention)
+            ) { result in
+                let roles = (try? result.get()) ?? []
+                cont.resume(returning: roles.map { MentionSuggestion.role($0) })
+            }
+        }
+    }
+
+    @MainActor
+    private func fetchGroups(for typingMention: String) async -> [MentionSuggestion] {
+        let controller = channelController.client.userGroupListController()
+        return await withCheckedContinuation { continuation in
+            nonisolated(unsafe) let cont = continuation
+            controller.searchUserGroups(text: typingMention) { result in
+                // Keep the ephemeral controller alive until the callback fires.
+                withExtendedLifetime(controller) {}
+                let groups = (try? result.get()) ?? []
+                cont.resume(returning: groups.map { MentionSuggestion.group($0) })
+            }
+        }
+    }
+
+    @MainActor
+    private func fetchUsers(
+        for typingMention: String,
+        channel: ChatChannel,
+        currentUserId: UserId,
+        mentionAllAppUsers: Bool
+    ) async -> [MentionSuggestion] {
+        let users: [ChatUser]
         if mentionAllAppUsers {
-            return searchAllUsers(for: typingMention)
+            users = await searchAllUsers(for: typingMention)
         } else {
-            let users = searchUsers(
+            users = searchUsers(
                 channel.lastActiveWatchers.map(\.self) + channel.lastActiveMembers.map(\.self),
                 by: typingMention,
                 excludingId: currentUserId
             )
-            let suggestionInfo = SuggestionInfo(key: id, value: users)
-            return resolve(with: suggestionInfo)
         }
+        return users.map { MentionSuggestion.user($0) }
     }
 
     /// searchUsers does an autocomplete search on a list of ChatUser and returns users with `id` or `name` containing the search string
@@ -149,19 +255,18 @@ public final class MentionsCommandHandler: CommandHandler {
         )
     }
 
-    private func searchAllUsers(for typingMention: String) -> Future<SuggestionInfo, Error> {
-        Future { [weak self] promise in
-            guard let self else { return }
-            nonisolated(unsafe) let unsafePromise = promise
-            let query = queryForMentionSuggestionsSearch(typingMention: typingMention)
-            userSearchController.search(query: query) { error in
-                if let error {
-                    unsafePromise(.failure(error))
-                    return
+    @MainActor
+    private func searchAllUsers(for typingMention: String) async -> [ChatUser] {
+        let controller = userSearchController
+        let query = queryForMentionSuggestionsSearch(typingMention: typingMention)
+        return await withCheckedContinuation { continuation in
+            nonisolated(unsafe) let cont = continuation
+            controller.search(query: query) { error in
+                if error != nil {
+                    cont.resume(returning: [])
+                } else {
+                    cont.resume(returning: controller.userArray)
                 }
-                let users = self.userSearchController.userArray
-                let suggestionInfo = SuggestionInfo(key: self.id, value: users)
-                unsafePromise(.success(suggestionInfo))
             }
         }
     }

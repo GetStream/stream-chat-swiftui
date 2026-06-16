@@ -42,7 +42,7 @@ import SwiftUI
                 withAnimation(.easeInOut(duration: 0.2)) {
                     suggestions = [String: Any]()
                 }
-                mentionedUsers = Set<ChatUser>()
+                clearMentions()
 
                 if shouldDeleteDraftMessage(oldValue: oldValue) {
                     deleteDraftMessage()
@@ -219,6 +219,18 @@ import SwiftUI
     }
     
     public var mentionedUsers = Set<ChatUser>()
+
+    /// The roles mentioned in the message (e.g. `@admin`).
+    public var mentionedRoles = Set<String>()
+
+    /// The user groups mentioned in the message (e.g. `@Dream Team`).
+    public var mentionedGroups = [UserGroup]()
+
+    /// Whether the message mentions the online members of the channel (`@here`).
+    public var mentionsHere = false
+
+    /// Whether the message mentions everyone in the channel (`@channel`).
+    public var mentionsChannel = false
     
     private var messageText: String {
         if let composerCommand,
@@ -433,6 +445,10 @@ import SwiftUI
         
         clearRemovedMentions()
         let mentionedUserIds = mentionedUsers.map(\.id)
+        let mentionedRoles = Array(mentionedRoles)
+        let mentionedGroupIds = mentionedGroups.map(\.id)
+        let mentionsHere = mentionsHere
+        let mentionsChannel = mentionsChannel
         
         if let editedMessage = self.editedMessage?.wrappedValue {
             edit(
@@ -450,6 +466,10 @@ import SwiftUI
                     text: messageText,
                     attachments: attachments,
                     mentionedUserIds: mentionedUserIds,
+                    mentionedHere: mentionsHere,
+                    mentionedChannel: mentionsChannel,
+                    mentionedGroupIds: mentionedGroupIds,
+                    mentionedRoles: mentionedRoles,
                     showReplyInChannel: showReplyInChannel,
                     isSilent: isSilent,
                     quotedMessageId: quotedMessage?.wrappedValue?.id,
@@ -471,6 +491,10 @@ import SwiftUI
                     isSilent: isSilent,
                     attachments: attachments,
                     mentionedUserIds: mentionedUserIds,
+                    mentionedHere: mentionsHere,
+                    mentionedChannel: mentionsChannel,
+                    mentionedGroupIds: mentionedGroupIds,
+                    mentionedRoles: mentionedRoles,
                     quotedMessageId: quotedMessage?.wrappedValue?.id,
                     skipPush: skipPush,
                     skipEnrichUrl: skipEnrichUrl,
@@ -556,6 +580,9 @@ import SwiftUI
         guard !suggestions.isEmpty else { return false }
 
         if suggestions.keys.contains("mentions") {
+            if let mentions = suggestions["mentions"] as? [MentionSuggestion], !mentions.isEmpty {
+                return true
+            }
             if let users = suggestions["mentions"] as? [ChatUser], !users.isEmpty {
                 return true
             }
@@ -787,18 +814,41 @@ import SwiftUI
         commandId: String?,
         extraData: [String: Any]
     ) {
-        guard commandId == "mentions",
-              let user = extraData["chatUser"] as? ChatUser else {
-            return
+        guard commandId == "mentions" else { return }
+
+        if let suggestion = extraData["mentionSuggestion"] as? MentionSuggestion {
+            switch suggestion {
+            case let .user(user):
+                mentionedUsers.insert(user)
+            case .here:
+                mentionsHere = true
+            case .channel:
+                mentionsChannel = true
+            case let .role(role):
+                mentionedRoles.insert(role.name)
+            case let .group(group):
+                if !mentionedGroups.contains(where: { $0.id == group.id }) {
+                    mentionedGroups.append(group)
+                }
+            }
+        } else if let user = extraData["chatUser"] as? ChatUser {
+            mentionedUsers.insert(user)
         }
-        mentionedUsers.insert(user)
     }
     
     public func clearRemovedMentions() {
-        for user in mentionedUsers {
-            if !text.contains("@\(user.mentionText)") {
-                mentionedUsers.remove(user)
-            }
+        for user in mentionedUsers where !text.contains("@\(user.mentionText)") {
+            mentionedUsers.remove(user)
+        }
+        for role in mentionedRoles where !text.contains("@\(role)") {
+            mentionedRoles.remove(role)
+        }
+        mentionedGroups.removeAll { !text.contains("@\($0.name)") }
+        if mentionsHere, !text.contains("@here") {
+            mentionsHere = false
+        }
+        if mentionsChannel, !text.contains("@channel") {
+            mentionsChannel = false
         }
     }
     
@@ -837,8 +887,16 @@ import SwiftUI
         withAnimation(.easeInOut(duration: 0.2)) {
             composerCommand = nil
         }
-        mentionedUsers = Set<ChatUser>()
+        clearMentions()
         clearText()
+    }
+
+    private func clearMentions() {
+        mentionedUsers = Set<ChatUser>()
+        mentionedRoles = Set<String>()
+        mentionedGroups = [UserGroup]()
+        mentionsHere = false
+        mentionsChannel = false
     }
 
     private func showCommandSnackBar(commandId: String, text: String) {
