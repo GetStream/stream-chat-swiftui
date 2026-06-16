@@ -23,7 +23,16 @@ struct SuggestionsContainerView<Factory: ViewFactory>: View {
 
     var body: some View {
         ZStack {
-            if let suggestedUsers = suggestions["mentions"] as? [ChatUser] {
+            if let mentionSuggestions = suggestions["mentions"] as? [MentionSuggestion] {
+                MentionSuggestionsView(
+                    factory: factory,
+                    suggestions: mentionSuggestions,
+                    suggestionSelected: { suggestion in
+                        handleCommand(["mentionSuggestion": suggestion])
+                    }
+                )
+                .accessibilityIdentifier("MentionSuggestionsView")
+            } else if let suggestedUsers = suggestions["mentions"] as? [ChatUser] {
                 UserSuggestionsView(
                     factory: factory,
                     users: suggestedUsers,
