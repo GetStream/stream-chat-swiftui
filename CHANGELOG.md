@@ -5,11 +5,6 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### ✅ Added
 - Add enhanced mention suggestions for `@here`, `@channel`, roles and groups in the composer [#1497](https://github.com/GetStream/stream-chat-swiftui/pull/1497)
-### 🎭 New Localizations
-- `composer.suggestions.mentions.channel.description` — description for the channel mention suggestion
-- `composer.suggestions.mentions.here.description` — description for the here mention suggestion
-- `composer.suggestions.mentions.role.description` — description for a role mention suggestion
-- `composer.suggestions.mentions.group.members` — member count for a group mention suggestion
 
 # [5.5.1](https://github.com/GetStream/stream-chat-swiftui/releases/tag/5.5.1)
 _June 11, 2026_
