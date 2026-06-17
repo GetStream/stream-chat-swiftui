@@ -341,7 +341,12 @@ import SwiftUI
             return
         }
         let attachments = try? convertAddedAssetsToPayloads()
+        clearRemovedMentions()
         let mentionedUserIds = mentionedUsers.map(\.id)
+        let mentionedRoles = Array(mentionedRoles)
+        let mentionedGroupIds = mentionedGroups.map(\.id)
+        let mentionsHere = mentionsHere
+        let mentionsChannel = mentionsChannel
         let availableCommands = channelController.channel?.config.commands ?? []
         let command = availableCommands.first { composerCommand?.id == "/\($0.name)" }
 
@@ -351,6 +356,10 @@ import SwiftUI
                 isSilent: isSilent,
                 attachments: attachments ?? [],
                 mentionedUserIds: mentionedUserIds,
+                mentionedHere: mentionsHere,
+                mentionedChannel: mentionsChannel,
+                mentionedGroupIds: mentionedGroupIds,
+                mentionedRoles: mentionedRoles,
                 quotedMessageId: quotedMessage?.id,
                 showReplyInChannel: showReplyInChannel,
                 command: command,
@@ -364,6 +373,10 @@ import SwiftUI
             isSilent: isSilent,
             attachments: attachments ?? [],
             mentionedUserIds: mentionedUserIds,
+            mentionedHere: mentionsHere,
+            mentionedChannel: mentionsChannel,
+            mentionedGroupIds: mentionedGroupIds,
+            mentionedRoles: mentionedRoles,
             quotedMessageId: quotedMessage?.id,
             command: command,
             extraData: extraData

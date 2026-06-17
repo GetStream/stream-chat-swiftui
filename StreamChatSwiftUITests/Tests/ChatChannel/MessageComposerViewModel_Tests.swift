@@ -1800,12 +1800,22 @@ import XCTest
         let quotedMessage = ChatMessage.mock(id: .unique, cid: .unique, text: "Quoted message", author: .mock(id: .unique))
         
         // When
-        viewModel.text = "Draft text"
+        viewModel.text = "Draft text @here @channel @admin @Engineering"
+        viewModel.mentionsHere = true
+        viewModel.mentionsChannel = true
+        viewModel.mentionedRoles = ["admin"]
+        viewModel.mentionedGroups = [
+            UserGroup(id: "engineering", name: "Engineering", createdAt: .init(), updatedAt: .init())
+        ]
         viewModel.updateDraftMessage(quotedMessage: quotedMessage)
         
         // Then
-        XCTAssertEqual(channelController.updateDraftMessage_text, "Draft text")
+        XCTAssertEqual(channelController.updateDraftMessage_text, "Draft text @here @channel @admin @Engineering")
         XCTAssertEqual(channelController.updateDraftMessage_callCount, 1)
+        XCTAssertEqual(channelController.updateDraftMessage_mentionedHere, true)
+        XCTAssertEqual(channelController.updateDraftMessage_mentionedChannel, true)
+        XCTAssertEqual(channelController.updateDraftMessage_mentionedGroupIds, ["engineering"])
+        XCTAssertEqual(channelController.updateDraftMessage_mentionedRoles, ["admin"])
     }
     
     func test_messageComposerVM_updateDraftReply() {
@@ -1823,12 +1833,22 @@ import XCTest
         let quotedMessage = ChatMessage.mock(id: .unique, cid: .unique, text: "Quoted message", author: .mock(id: .unique))
         
         // When
-        viewModel.text = "Draft reply"
+        viewModel.text = "Draft reply @here @channel @admin @Engineering"
+        viewModel.mentionsHere = true
+        viewModel.mentionsChannel = true
+        viewModel.mentionedRoles = ["admin"]
+        viewModel.mentionedGroups = [
+            UserGroup(id: "engineering", name: "Engineering", createdAt: .init(), updatedAt: .init())
+        ]
         viewModel.updateDraftMessage(quotedMessage: quotedMessage)
         
         // Then
-        XCTAssertEqual(messageController.updateDraftReply_text, "Draft reply")
+        XCTAssertEqual(messageController.updateDraftReply_text, "Draft reply @here @channel @admin @Engineering")
         XCTAssertEqual(messageController.updateDraftReply_callCount, 1)
+        XCTAssertEqual(messageController.updateDraftReply_mentionedHere, true)
+        XCTAssertEqual(messageController.updateDraftReply_mentionedChannel, true)
+        XCTAssertEqual(messageController.updateDraftReply_mentionedGroupIds, ["engineering"])
+        XCTAssertEqual(messageController.updateDraftReply_mentionedRoles, ["admin"])
     }
     
     func test_messageComposerVM_whenTextErased_shouldDeleteDraftMessage() {

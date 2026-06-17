@@ -62,12 +62,21 @@ public class ChatMessageControllerSUI_Mock: ChatMessageController, @unchecked Se
 
     var updateDraftReply_callCount = 0
     var updateDraftReply_text: String?
+    var updateDraftReply_mentionedUserIds: [UserId]?
+    var updateDraftReply_mentionedHere: Bool?
+    var updateDraftReply_mentionedChannel: Bool?
+    var updateDraftReply_mentionedGroupIds: [String]?
+    var updateDraftReply_mentionedRoles: [String]?
 
     override public func updateDraftReply(
         text: String,
         isSilent: Bool = false,
         attachments: [AnyAttachmentPayload] = [],
         mentionedUserIds: [UserId] = [],
+        mentionedHere: Bool = false,
+        mentionedChannel: Bool = false,
+        mentionedGroupIds: [String] = [],
+        mentionedRoles: [String] = [],
         quotedMessageId: MessageId? = nil,
         showReplyInChannel: Bool = false,
         command: Command? = nil,
@@ -76,6 +85,11 @@ public class ChatMessageControllerSUI_Mock: ChatMessageController, @unchecked Se
     ) {
         updateDraftReply_callCount += 1
         updateDraftReply_text = text
+        updateDraftReply_mentionedUserIds = mentionedUserIds
+        updateDraftReply_mentionedHere = mentionedHere
+        updateDraftReply_mentionedChannel = mentionedChannel
+        updateDraftReply_mentionedGroupIds = mentionedGroupIds
+        updateDraftReply_mentionedRoles = mentionedRoles
     }
 
     var deleteDraftReply_callCount = 0
