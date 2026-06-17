@@ -685,6 +685,182 @@ import XCTest
         XCTAssert(viewModel.mentionedUsers.isEmpty)
     }
 
+    func test_checkForMentionedUsers_withUserSuggestion() {
+        // Given
+        let viewModel = makeComposerViewModel()
+        let user = ChatUser.mock(id: .unique, name: "Martin")
+
+        // When
+        viewModel.checkForMentionedUsers(
+            commandId: "mentions",
+            extraData: ["mentionSuggestion": MentionSuggestion.user(user)]
+        )
+
+        // Then
+        XCTAssertEqual(viewModel.mentionedUsers, [user])
+    }
+
+    func test_checkForMentionedUsers_withHereSuggestion() {
+        // Given
+        let viewModel = makeComposerViewModel()
+
+        // When
+        viewModel.checkForMentionedUsers(
+            commandId: "mentions",
+            extraData: ["mentionSuggestion": MentionSuggestion.here]
+        )
+
+        // Then
+        XCTAssertTrue(viewModel.mentionsHere)
+        XCTAssertFalse(viewModel.mentionsChannel)
+    }
+
+    func test_checkForMentionedUsers_withChannelSuggestion() {
+        // Given
+        let viewModel = makeComposerViewModel()
+
+        // When
+        viewModel.checkForMentionedUsers(
+            commandId: "mentions",
+            extraData: ["mentionSuggestion": MentionSuggestion.channel]
+        )
+
+        // Then
+        XCTAssertTrue(viewModel.mentionsChannel)
+        XCTAssertFalse(viewModel.mentionsHere)
+    }
+
+    func test_checkForMentionedUsers_withRoleSuggestion() {
+        // Given
+        let viewModel = makeComposerViewModel()
+
+        // When
+        viewModel.checkForMentionedUsers(
+            commandId: "mentions",
+            extraData: ["mentionSuggestion": MentionSuggestion.role(Role(name: "admin"))]
+        )
+
+        // Then
+        XCTAssertEqual(viewModel.mentionedRoles, ["admin"])
+    }
+
+    func test_checkForMentionedUsers_withGroupSuggestion() {
+        // Given
+        let viewModel = makeComposerViewModel()
+        let group = makeUserGroup(name: "Dream Team")
+
+        // When
+        viewModel.checkForMentionedUsers(
+            commandId: "mentions",
+            extraData: ["mentionSuggestion": MentionSuggestion.group(group)]
+        )
+
+        // Then
+        XCTAssertEqual(viewModel.mentionedGroups.map(\.id), [group.id])
+    }
+
+    func test_checkForMentionedUsers_withGroupSuggestion_doesNotDuplicate() {
+        // Given
+        let viewModel = makeComposerViewModel()
+        let group = makeUserGroup(name: "Dream Team")
+
+        // When
+        viewModel.checkForMentionedUsers(
+            commandId: "mentions",
+            extraData: ["mentionSuggestion": MentionSuggestion.group(group)]
+        )
+        viewModel.checkForMentionedUsers(
+            commandId: "mentions",
+            extraData: ["mentionSuggestion": MentionSuggestion.group(group)]
+        )
+
+        // Then
+        XCTAssertEqual(viewModel.mentionedGroups.count, 1)
+    }
+
+    func test_checkForMentionedUsers_whenNotMentionsCommand_ignored() {
+        // Given
+        let viewModel = makeComposerViewModel()
+
+        // When
+        viewModel.checkForMentionedUsers(
+            commandId: "giphy",
+            extraData: ["mentionSuggestion": MentionSuggestion.here]
+        )
+
+        // Then
+        XCTAssertFalse(viewModel.mentionsHere)
+        XCTAssertTrue(viewModel.mentionedUsers.isEmpty)
+    }
+
+    func test_clearRemovedMentions_removesMentionsNoLongerInText() {
+        // Given
+        let viewModel = makeComposerViewModel()
+        populateAllMentionTypes(in: viewModel)
+
+        // When
+        viewModel.text = "Hello there"
+        viewModel.clearRemovedMentions()
+
+        // Then
+        XCTAssertTrue(viewModel.mentionedUsers.isEmpty)
+        XCTAssertTrue(viewModel.mentionedRoles.isEmpty)
+        XCTAssertTrue(viewModel.mentionedGroups.isEmpty)
+        XCTAssertFalse(viewModel.mentionsHere)
+        XCTAssertFalse(viewModel.mentionsChannel)
+    }
+
+    func test_clearRemovedMentions_keepsMentionsStillInText() {
+        // Given
+        let viewModel = makeComposerViewModel()
+        populateAllMentionTypes(in: viewModel)
+
+        // When
+        viewModel.text = "Hi @Martin @admin @Dream Team @here @channel"
+        viewModel.clearRemovedMentions()
+
+        // Then
+        XCTAssertEqual(viewModel.mentionedUsers.first?.name, "Martin")
+        XCTAssertEqual(viewModel.mentionedRoles, ["admin"])
+        XCTAssertEqual(viewModel.mentionedGroups.map(\.name), ["Dream Team"])
+        XCTAssertTrue(viewModel.mentionsHere)
+        XCTAssertTrue(viewModel.mentionsChannel)
+    }
+
+    func test_showSuggestionsOverlay_whenMentionsWithMentionSuggestions_returnsTrue() {
+        // Given
+        let channelController = makeChannelController()
+        let viewModel = MessageComposerViewModel(
+            channelController: channelController,
+            messageController: nil
+        )
+
+        // When
+        channelController.channel_mock = .mock(cid: .unique, config: ChannelConfig(commands: []))
+        viewModel.composerCommand = .init(id: "mentions", typingSuggestion: .empty, displayInfo: nil)
+        viewModel.suggestions = ["mentions": [MentionSuggestion.here]]
+
+        // Then
+        XCTAssertTrue(viewModel.showSuggestionsOverlay)
+    }
+
+    func test_showSuggestionsOverlay_whenMentionsWithEmptyMentionSuggestions_returnsFalse() {
+        // Given
+        let channelController = makeChannelController()
+        let viewModel = MessageComposerViewModel(
+            channelController: channelController,
+            messageController: nil
+        )
+
+        // When
+        channelController.channel_mock = .mock(cid: .unique, config: ChannelConfig(commands: []))
+        viewModel.composerCommand = .init(id: "mentions", typingSuggestion: .empty, displayInfo: nil)
+        viewModel.suggestions = ["mentions": [MentionSuggestion]()]
+
+        // Then
+        XCTAssertFalse(viewModel.showSuggestionsOverlay)
+    }
+
     func test_messageComposerVM_canSendPoll() {
         // Given
         let channelController = makeChannelController()
@@ -2200,6 +2376,33 @@ import XCTest
 
     private func makeComposerViewModel() -> MessageComposerViewModel {
         MessageComposerTestUtils.makeComposerViewModel(chatClient: chatClient)
+    }
+
+    private func makeUserGroup(name: String) -> UserGroup {
+        UserGroup(id: .unique, name: name, createdAt: .init(), updatedAt: .init())
+    }
+
+    private func populateAllMentionTypes(in viewModel: MessageComposerViewModel) {
+        viewModel.checkForMentionedUsers(
+            commandId: "mentions",
+            extraData: ["mentionSuggestion": MentionSuggestion.user(.mock(id: .unique, name: "Martin"))]
+        )
+        viewModel.checkForMentionedUsers(
+            commandId: "mentions",
+            extraData: ["mentionSuggestion": MentionSuggestion.role(Role(name: "admin"))]
+        )
+        viewModel.checkForMentionedUsers(
+            commandId: "mentions",
+            extraData: ["mentionSuggestion": MentionSuggestion.group(makeUserGroup(name: "Dream Team"))]
+        )
+        viewModel.checkForMentionedUsers(
+            commandId: "mentions",
+            extraData: ["mentionSuggestion": MentionSuggestion.here]
+        )
+        viewModel.checkForMentionedUsers(
+            commandId: "mentions",
+            extraData: ["mentionSuggestion": MentionSuggestion.channel]
+        )
     }
 
     private func makeGiphyCommand() -> ComposerCommand {

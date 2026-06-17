@@ -229,6 +229,7 @@
 				Tests/ChatChannel/Suggestions/CommandsHandler_Tests.swift,
 				Tests/ChatChannel/Suggestions/CommandSuggestionsView_Tests.swift,
 				Tests/ChatChannel/Suggestions/InstantCommandsHandler_Tests.swift,
+				Tests/ChatChannel/Suggestions/MentionsCommandHandler_Tests.swift,
 				Tests/ChatChannel/Suggestions/MentionSuggestion_Tests.swift,
 				Tests/ChatChannel/Suggestions/MentionSuggestionsView_Tests.swift,
 				Tests/ChatChannel/Suggestions/MuteCommandHandler_Tests.swift,
