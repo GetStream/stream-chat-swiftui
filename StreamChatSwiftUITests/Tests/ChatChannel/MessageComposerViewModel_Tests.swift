@@ -758,6 +758,82 @@ class MessageComposerViewModel_Tests: StreamChatTestCase {
         XCTAssertTrue(viewModel.showCommandsOverlay)
     }
 
+    // MARK: - availablePickerItemsCount
+
+    func test_availablePickerItemsCount_whenUploadAndCommandsAvailable_returnsTwo() {
+        // Given
+        let viewModel = makeComposerViewModel(
+            config: ChannelConfig(commands: [.init()]),
+            ownCapabilities: [.sendMessage, .uploadFile]
+        )
+
+        // When
+        let count = viewModel.availablePickerItemsCount
+
+        // Then
+        XCTAssertEqual(count, 2)
+    }
+
+    func test_availablePickerItemsCount_whenOnlyUploadAvailable_returnsOne() {
+        // Given
+        let viewModel = makeComposerViewModel(
+            config: ChannelConfig(commands: []),
+            ownCapabilities: [.sendMessage, .uploadFile]
+        )
+
+        // When
+        let count = viewModel.availablePickerItemsCount
+
+        // Then
+        XCTAssertEqual(count, 1)
+    }
+
+    func test_availablePickerItemsCount_whenSendMessageDisabled_returnsZero() {
+        // Given
+        let viewModel = makeComposerViewModel(
+            config: ChannelConfig(commands: [.init()]),
+            ownCapabilities: [.uploadFile]
+        )
+
+        // When
+        let count = viewModel.availablePickerItemsCount
+
+        // Then
+        XCTAssertEqual(count, 0)
+    }
+
+    // MARK: - pickerTypeState on text change
+
+    func test_pickerTypeState_whenTypingWithSingleItem_staysExpanded() {
+        // Given
+        let viewModel = makeComposerViewModel(
+            config: ChannelConfig(commands: []),
+            ownCapabilities: [.sendMessage, .uploadFile]
+        )
+        viewModel.pickerTypeState = .expanded(.none)
+
+        // When
+        viewModel.text = "test"
+
+        // Then
+        XCTAssertEqual(viewModel.pickerTypeState, .expanded(.none))
+    }
+
+    func test_pickerTypeState_whenTypingWithMultipleItems_collapses() {
+        // Given
+        let viewModel = makeComposerViewModel(
+            config: ChannelConfig(commands: [.init()]),
+            ownCapabilities: [.sendMessage, .uploadFile]
+        )
+        viewModel.pickerTypeState = .expanded(.none)
+
+        // When
+        viewModel.text = "test"
+
+        // Then
+        XCTAssertEqual(viewModel.pickerTypeState, .collapsed)
+    }
+
     func test_addedAsset_extraData() {
         // Given
         let image = UIImage(systemName: "person")!
@@ -1417,6 +1493,21 @@ class MessageComposerViewModel_Tests: StreamChatTestCase {
 
     private func makeComposerViewModel() -> MessageComposerViewModel {
         MessageComposerTestUtils.makeComposerViewModel(chatClient: chatClient)
+    }
+
+    private func makeComposerViewModel(
+        config: ChannelConfig,
+        ownCapabilities: Set<ChannelCapability>
+    ) -> MessageComposerViewModel {
+        let channelController = makeChannelController()
+        channelController.channel_mock = .mockDMChannel(
+            config: config,
+            ownCapabilities: ownCapabilities
+        )
+        return MessageComposerViewModel(
+            channelController: channelController,
+            messageController: nil
+        )
     }
     
     private func makeChannelController(
