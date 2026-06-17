@@ -56,7 +56,7 @@ import XCTest
             // Then
             let suggestions = suggestionInfo.value as! [MentionSuggestion]
             let users = suggestions.compactMap { suggestion -> ChatUser? in
-                (suggestion.suggestion as? MentionSuggestion.UserSuggestion)?.user
+                (suggestion.kind as? MentionSuggestion.User)?.user
             }
             XCTAssert(users.count == 3)
             expectation.fulfill()

@@ -817,16 +817,16 @@ import SwiftUI
         guard commandId == "mentions" else { return }
 
         if let suggestion = extraData["mentionSuggestion"] as? MentionSuggestion {
-            switch suggestion.suggestion {
-            case let user as MentionSuggestion.UserSuggestion:
+            switch suggestion.kind {
+            case let user as MentionSuggestion.User:
                 mentionedUsers.insert(user.user)
-            case is MentionSuggestion.HereSuggestion:
+            case is MentionSuggestion.Here:
                 mentionsHere = true
-            case is MentionSuggestion.ChannelSuggestion:
+            case is MentionSuggestion.Channel:
                 mentionsChannel = true
-            case let role as MentionSuggestion.RoleSuggestion:
+            case let role as MentionSuggestion.Role:
                 mentionedRoles.insert(role.role.name)
-            case let group as MentionSuggestion.GroupSuggestion:
+            case let group as MentionSuggestion.Group:
                 if !mentionedGroups.contains(where: { $0.id == group.group.id }) {
                     mentionedGroups.append(group.group)
                 }

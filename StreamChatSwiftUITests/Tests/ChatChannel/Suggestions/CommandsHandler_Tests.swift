@@ -210,7 +210,7 @@ import XCTest
     private static func users(from info: SuggestionInfo) -> [ChatUser] {
         let suggestions = info.value as! [MentionSuggestion]
         return suggestions.compactMap { suggestion in
-            (suggestion.suggestion as? MentionSuggestion.UserSuggestion)?.user
+            (suggestion.kind as? MentionSuggestion.User)?.user
         }
     }
 
