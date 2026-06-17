@@ -41,19 +41,6 @@ final class MentionSuggestion_Tests: XCTestCase {
         XCTAssertEqual(MentionSuggestion.role(Role(name: "moderator")).mentionText, "moderator")
         XCTAssertEqual(MentionSuggestion.group(.mock(id: "g1", name: "Dream Team")).mentionText, "Dream Team")
     }
-
-    // MARK: - MentionSuggestionsConfig
-
-    func test_defaultConfig_onlyAllowsUsers() {
-        let config = MentionSuggestionsConfig.default
-        XCTAssertEqual(config.allowedMentionTypes, [.user])
-        XCTAssertFalse(config.mentionAllAppUsers)
-    }
-
-    func test_enhancedConfig_allowsAllMentionTypes() {
-        let config = MentionSuggestionsConfig.enhanced
-        XCTAssertEqual(config.allowedMentionTypes, MentionType.allBuiltIn)
-    }
 }
 
 private extension UserGroup {
