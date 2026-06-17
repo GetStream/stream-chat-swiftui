@@ -17,8 +17,19 @@ public final class MentionsCommandHandler: CommandHandler {
     private let typingSuggester: TypingSuggester
 
     private let channelController: ChatChannelController
-    private let userSearchController: ChatUserSearchController
+    private let userSearch: UserSearch
+    private let roleSearch: RoleSearch
+    private let userGroupSearch: UserGroupSearch
 
+    /// Creates a new mentions command handler.
+    ///
+    /// - Parameters:
+    ///   - channelController: The controller of the channel the suggestions are provided for.
+    ///   - userSearchController: Deprecated and unused. User search is now performed through the
+    ///     ``UserSearch`` state layer. The parameter is kept for source compatibility.
+    ///   - commandSymbol: The symbol that triggers the command (e.g. `@`).
+    ///   - mentionAllAppUsers: Whether user suggestions are searched across all app users.
+    ///   - id: The identifier of the command.
     public init(
         channelController: ChatChannelController,
         userSearchController: ChatUserSearchController? = nil,
@@ -30,11 +41,10 @@ public final class MentionsCommandHandler: CommandHandler {
         self.channelController = channelController
         self.mentionAllAppUsers = mentionAllAppUsers
         typingSuggester = TypingSuggester(options: .init(symbol: commandSymbol))
-        if let userSearchController {
-            self.userSearchController = userSearchController
-        } else {
-            self.userSearchController = channelController.client.userSearchController()
-        }
+        let client = channelController.client
+        userSearch = client.makeUserSearch()
+        roleSearch = client.makeRoleSearch()
+        userGroupSearch = client.makeUserGroupSearch()
     }
 
     public func canHandleCommand(in text: String, caretLocation: Int) -> ComposerCommand? {
@@ -172,29 +182,14 @@ public final class MentionsCommandHandler: CommandHandler {
 
     @MainActor
     private func fetchRoles(for typingMention: String) async -> [MentionSuggestion] {
-        await withCheckedContinuation { continuation in
-            nonisolated(unsafe) let cont = continuation
-            channelController.client.searchRoles(
-                query: RoleSearchQuery(query: typingMention)
-            ) { result in
-                let roles = (try? result.get()) ?? []
-                cont.resume(returning: roles.map { MentionSuggestion.role($0) })
-            }
-        }
+        let roles = (try? await roleSearch.search(text: typingMention)) ?? []
+        return roles.map { MentionSuggestion.role($0) }
     }
 
     @MainActor
     private func fetchGroups(for typingMention: String) async -> [MentionSuggestion] {
-        let controller = channelController.client.userGroupListController()
-        return await withCheckedContinuation { continuation in
-            nonisolated(unsafe) let cont = continuation
-            controller.searchUserGroups(text: typingMention) { result in
-                // Keep the ephemeral controller alive until the callback fires.
-                withExtendedLifetime(controller) {}
-                let groups = (try? result.get()) ?? []
-                cont.resume(returning: groups.map { MentionSuggestion.group($0) })
-            }
-        }
+        let groups = (try? await userGroupSearch.search(text: typingMention)) ?? []
+        return groups.map { MentionSuggestion.group($0) }
     }
 
     @MainActor
@@ -257,18 +252,8 @@ public final class MentionsCommandHandler: CommandHandler {
 
     @MainActor
     private func searchAllUsers(for typingMention: String) async -> [ChatUser] {
-        let controller = userSearchController
         let query = queryForMentionSuggestionsSearch(typingMention: typingMention)
-        return await withCheckedContinuation { continuation in
-            nonisolated(unsafe) let cont = continuation
-            controller.search(query: query) { error in
-                if error != nil {
-                    cont.resume(returning: [])
-                } else {
-                    cont.resume(returning: controller.userArray)
-                }
-            }
-        }
+        return (try? await userSearch.search(query: query)) ?? []
     }
 }
 

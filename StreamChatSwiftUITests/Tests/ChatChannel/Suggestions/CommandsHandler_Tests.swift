@@ -2,6 +2,7 @@
 // Copyright © 2026 Stream.io Inc. All rights reserved.
 //
 
+import Combine
 @testable import StreamChat
 @testable import StreamChatSwiftUI
 @testable import StreamChatTestTools
@@ -50,7 +51,7 @@ import XCTest
         XCTAssert(handler == nil)
     }
 
-    func test_commandsHandler_suggestionsAvailable() {
+    func test_commandsHandler_suggestionsAvailable() async {
         // Given
         let commandsHandler = makeCommandsHandler()
         let searchTerm = "mar"
@@ -59,22 +60,23 @@ import XCTest
         let expectation = expectation(description: "suggestions")
 
         // When
-        _ = commandsHandler.showSuggestions(for: command).sink { _ in
+        let cancellable = commandsHandler.showSuggestions(for: command).sink { _ in
             log.debug("completed suggestsions test")
         } receiveValue: { info in
             // Then
             XCTAssert(info.key == "mentions")
-            let users = info.value as! [ChatUser]
+            let users = Self.users(from: info)
             let first = users[0]
             XCTAssert(first.name!.lowercased().contains(searchTerm))
             XCTAssert(users.count == 2)
             expectation.fulfill()
         }
 
-        waitForExpectations(timeout: 5, handler: nil)
+        await fulfillment(of: [expectation], timeout: 5)
+        cancellable.cancel()
     }
 
-    func test_commandsHandler_noSuggestionsAvailable() {
+    func test_commandsHandler_noSuggestionsAvailable() async {
         // Given
         let commandsHandler = makeCommandsHandler()
         let searchTerm = "str"
@@ -83,20 +85,21 @@ import XCTest
         let expectation = expectation(description: "suggestions")
 
         // When
-        _ = commandsHandler.showSuggestions(for: command).sink { _ in
+        let cancellable = commandsHandler.showSuggestions(for: command).sink { _ in
             log.debug("completed suggestsions test")
         } receiveValue: { info in
             // Then
             XCTAssert(info.key == "mentions")
-            let users = info.value as! [ChatUser]
+            let users = Self.users(from: info)
             XCTAssert(users.isEmpty)
             expectation.fulfill()
         }
 
-        waitForExpectations(timeout: 5, handler: nil)
+        await fulfillment(of: [expectation], timeout: 5)
+        cancellable.cancel()
     }
 
-    func test_commandsHandler_allSuggestionsAvailable() {
+    func test_commandsHandler_allSuggestionsAvailable() async {
         // Given
         let commandsHandler = makeCommandsHandler()
         let searchTerm = ""
@@ -108,17 +111,18 @@ import XCTest
         let expectation = expectation(description: "suggestions")
 
         // When
-        _ = commandsHandler.showSuggestions(for: command).sink { _ in
+        let cancellable = commandsHandler.showSuggestions(for: command).sink { _ in
             log.debug("completed suggestsions test")
         } receiveValue: { info in
             // Then
             XCTAssert(info.key == "mentions")
-            let users = info.value as! [ChatUser]
+            let users = Self.users(from: info)
             XCTAssert(users.count == 3)
             expectation.fulfill()
         }
 
-        waitForExpectations(timeout: 5, handler: nil)
+        await fulfillment(of: [expectation], timeout: 5)
+        cancellable.cancel()
     }
 
     func test_commandsHandler_handleCommandCalled() {
@@ -202,6 +206,14 @@ import XCTest
     }
 
     // MARK: - private
+
+    private static func users(from info: SuggestionInfo) -> [ChatUser] {
+        let suggestions = info.value as! [MentionSuggestion]
+        return suggestions.compactMap { suggestion in
+            if case let .user(user) = suggestion { return user }
+            return nil
+        }
+    }
 
     private func command(
         id: String = "mentions",
