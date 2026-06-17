@@ -116,64 +116,57 @@ public struct MentionSuggestionView<Factory: ViewFactory>: View {
 
     @ViewBuilder
     private var leadingView: some View {
-        switch suggestion {
-        case let .user(user):
+        switch suggestion.suggestion {
+        case let user as MentionSuggestion.UserSuggestion:
             factory.makeUserAvatarView(
                 options: .init(
-                    user: user,
+                    user: user.user,
                     size: AvatarSize.medium,
                     showsIndicator: false
                 )
             )
-        case .here, .channel, .role, .group:
-            if let icon {
-                MentionIconView(icon: icon, iconSize: tokens.iconSizeSm)
-            }
-        }
-    }
-
-    private var icon: UIImage? {
-        switch suggestion {
-        case .here:
-            return images.mentionHere
-        case .channel:
-            return images.mentionChannel
-        case .role:
-            return images.mentionRole
-        case .group:
-            return images.mentionGroup
-        case .user:
-            return nil
+        case is MentionSuggestion.HereSuggestion:
+            MentionIconView(icon: images.mentionHere, iconSize: tokens.iconSizeSm)
+        case is MentionSuggestion.ChannelSuggestion:
+            MentionIconView(icon: images.mentionChannel, iconSize: tokens.iconSizeSm)
+        case is MentionSuggestion.RoleSuggestion:
+            MentionIconView(icon: images.mentionRole, iconSize: tokens.iconSizeSm)
+        case is MentionSuggestion.GroupSuggestion:
+            MentionIconView(icon: images.mentionGroup, iconSize: tokens.iconSizeSm)
+        default:
+            EmptyView()
         }
     }
 
     private var title: String {
-        switch suggestion {
-        case let .user(user):
-            return user.name ?? user.id
-        case .here:
+        switch suggestion.suggestion {
+        case let user as MentionSuggestion.UserSuggestion:
+            return user.user.name ?? user.user.id
+        case is MentionSuggestion.HereSuggestion:
             return "@here"
-        case .channel:
+        case is MentionSuggestion.ChannelSuggestion:
             return "@channel"
-        case let .role(role):
-            return "@\(role.name)"
-        case let .group(group):
-            return "@\(group.name)"
+        case let role as MentionSuggestion.RoleSuggestion:
+            return "@\(role.role.name)"
+        case let group as MentionSuggestion.GroupSuggestion:
+            return "@\(group.group.name)"
+        default:
+            return "@\(suggestion.mentionText)"
         }
     }
 
     private var subtitle: String? {
-        switch suggestion {
-        case .user:
-            return nil
-        case .here:
+        switch suggestion.suggestion {
+        case is MentionSuggestion.HereSuggestion:
             return L10n.Composer.Suggestions.Mentions.Here.description
-        case .channel:
+        case is MentionSuggestion.ChannelSuggestion:
             return L10n.Composer.Suggestions.Mentions.Channel.description
-        case let .role(role):
-            return L10n.Composer.Suggestions.Mentions.Role.description(role.name)
-        case let .group(group):
-            return L10n.Composer.Suggestions.Mentions.Group.members(group.members.count)
+        case let role as MentionSuggestion.RoleSuggestion:
+            return L10n.Composer.Suggestions.Mentions.Role.description(role.role.name)
+        case let group as MentionSuggestion.GroupSuggestion:
+            return L10n.Composer.Suggestions.Mentions.Group.members(group.group.members.count)
+        default:
+            return nil
         }
     }
 }

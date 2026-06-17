@@ -52,7 +52,7 @@ final class MentionSuggestion_Tests: XCTestCase {
 
     func test_enhancedConfig_allowsAllMentionTypes() {
         let config = MentionSuggestionsConfig.enhanced
-        XCTAssertEqual(config.allowedMentionTypes, Set(MentionType.allCases))
+        XCTAssertEqual(config.allowedMentionTypes, MentionType.allBuiltIn)
     }
 }
 
