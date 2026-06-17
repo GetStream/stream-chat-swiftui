@@ -831,17 +831,17 @@ import SwiftUI
 
         if let suggestion = extraData["mentionSuggestion"] as? MentionSuggestion {
             switch suggestion.kind {
-            case let user as MentionSuggestion.User:
-                mentionedUsers.insert(user.user)
+            case let userSuggestion as MentionSuggestion.User:
+                mentionedUsers.insert(userSuggestion.user)
             case is MentionSuggestion.Here:
                 mentionsHere = true
             case is MentionSuggestion.Channel:
                 mentionsChannel = true
-            case let role as MentionSuggestion.Role:
-                mentionedRoles.insert(role.role.name)
-            case let group as MentionSuggestion.Group:
-                if !mentionedGroups.contains(where: { $0.id == group.group.id }) {
-                    mentionedGroups.append(group.group)
+            case let roleSuggestion as MentionSuggestion.Role:
+                mentionedRoles.insert(roleSuggestion.role.name)
+            case let groupSuggestion as MentionSuggestion.Group:
+                if !mentionedGroups.contains(where: { $0.id == groupSuggestion.group.id }) {
+                    mentionedGroups.append(groupSuggestion.group)
                 }
             default:
                 break

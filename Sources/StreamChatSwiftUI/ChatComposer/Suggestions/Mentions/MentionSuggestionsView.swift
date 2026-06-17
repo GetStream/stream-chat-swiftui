@@ -117,10 +117,10 @@ public struct MentionSuggestionView<Factory: ViewFactory>: View {
     @ViewBuilder
     private var leadingView: some View {
         switch suggestion.kind {
-        case let user as MentionSuggestion.User:
+        case let userSuggestion as MentionSuggestion.User:
             factory.makeUserAvatarView(
                 options: .init(
-                    user: user.user,
+                    user: userSuggestion.user,
                     size: AvatarSize.medium,
                     showsIndicator: false
                 )
@@ -140,16 +140,16 @@ public struct MentionSuggestionView<Factory: ViewFactory>: View {
 
     private var title: String {
         switch suggestion.kind {
-        case let user as MentionSuggestion.User:
-            return user.user.name ?? user.user.id
+        case let userSuggestion as MentionSuggestion.User:
+            return userSuggestion.user.name ?? userSuggestion.user.id
         case is MentionSuggestion.Here:
             return "@here"
         case is MentionSuggestion.Channel:
             return "@channel"
-        case let role as MentionSuggestion.Role:
-            return "@\(role.role.name)"
-        case let group as MentionSuggestion.Group:
-            return "@\(group.group.name)"
+        case let roleSuggestion as MentionSuggestion.Role:
+            return "@\(roleSuggestion.role.name)"
+        case let groupSuggestion as MentionSuggestion.Group:
+            return "@\(groupSuggestion.group.name)"
         default:
             return "@\(suggestion.mentionText)"
         }
@@ -161,10 +161,10 @@ public struct MentionSuggestionView<Factory: ViewFactory>: View {
             return L10n.Composer.Suggestions.Mentions.Here.description
         case is MentionSuggestion.Channel:
             return L10n.Composer.Suggestions.Mentions.Channel.description
-        case let role as MentionSuggestion.Role:
-            return L10n.Composer.Suggestions.Mentions.Role.description(role.role.name)
-        case let group as MentionSuggestion.Group:
-            return L10n.Composer.Suggestions.Mentions.Group.members(group.group.members.count)
+        case let roleSuggestion as MentionSuggestion.Role:
+            return L10n.Composer.Suggestions.Mentions.Role.description(roleSuggestion.role.name)
+        case let groupSuggestion as MentionSuggestion.Group:
+            return L10n.Composer.Suggestions.Mentions.Group.members(groupSuggestion.group.members.count)
         default:
             return nil
         }
