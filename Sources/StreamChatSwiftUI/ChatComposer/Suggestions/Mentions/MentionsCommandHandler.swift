@@ -8,43 +8,59 @@ import SwiftUI
 
 /// Handles the mention command and provides suggestions.
 public final class MentionsCommandHandler: CommandHandler {
-    @Injected(\.utils) private var utils
-
     public let id: String
     public var displayInfo: CommandDisplayInfo?
 
-    private let mentionAllAppUsers: Bool
     private let typingSuggester: TypingSuggester
 
     private let channelController: ChatChannelController
-    private let userSearch: UserSearch
-    private let roleSearch: RoleSearch
-    private let userGroupSearch: UserGroupSearch
+    private let provider: MentionSuggestionsProvider
 
     /// Creates a new mentions command handler.
     ///
     /// - Parameters:
     ///   - channelController: The controller of the channel the suggestions are provided for.
     ///   - userSearchController: Deprecated and unused. User search is now performed through the
-    ///     ``UserSearch`` state layer. The parameter is kept for source compatibility.
+    ///     ``MentionSuggestionsProvider``. The parameter is kept for source compatibility.
     ///   - commandSymbol: The symbol that triggers the command (e.g. `@`).
     ///   - mentionAllAppUsers: Whether user suggestions are searched across all app users.
     ///   - id: The identifier of the command.
-    public init(
+    public convenience init(
         channelController: ChatChannelController,
         userSearchController: ChatUserSearchController? = nil,
         commandSymbol: String,
         mentionAllAppUsers: Bool,
         id: String = "mentions"
     ) {
+        self.init(
+            channelController: channelController,
+            commandSymbol: commandSymbol,
+            provider: DefaultMentionSuggestionsProvider(
+                client: channelController.client,
+                mentionAllAppUsers: mentionAllAppUsers
+            ),
+            id: id
+        )
+    }
+
+    /// Creates a new mentions command handler.
+    ///
+    /// - Parameters:
+    ///   - channelController: The controller of the channel the suggestions are provided for.
+    ///   - commandSymbol: The symbol that triggers the command (e.g. `@`).
+    ///   - provider: The provider used to compute the suggestions. When `nil`, the
+    ///     ``DefaultMentionSuggestionsProvider`` is used.
+    ///   - id: The identifier of the command.
+    public init(
+        channelController: ChatChannelController,
+        commandSymbol: String,
+        provider: MentionSuggestionsProvider? = nil,
+        id: String = "mentions"
+    ) {
         self.id = id
         self.channelController = channelController
-        self.mentionAllAppUsers = mentionAllAppUsers
+        self.provider = provider ?? DefaultMentionSuggestionsProvider(client: channelController.client)
         typingSuggester = TypingSuggester(options: .init(symbol: commandSymbol))
-        let client = channelController.client
-        userSearch = client.makeUserSearch()
-        roleSearch = client.makeRoleSearch()
-        userGroupSearch = client.makeUserGroupSearch()
     }
 
     public func canHandleCommand(in text: String, caretLocation: Int) -> ComposerCommand? {
@@ -125,135 +141,11 @@ public final class MentionsCommandHandler: CommandHandler {
 
     @MainActor
     private func makeSuggestions(for typingMention: String) async -> [MentionSuggestion] {
-        guard let channel = channelController.channel,
-              let currentUserId = channelController.client.currentUserId else {
+        guard let channel = channelController.channel else {
             return []
         }
-
-        let config = utils.composerConfig.mentionSuggestionsConfig
-        let allowedTypes = config.allowedMentionTypes
-        let mentionAllAppUsers = config.mentionAllAppUsers || self.mentionAllAppUsers
-
-        // Broadcasts (`@here`, `@channel`) are shown on a bare `@` and filtered
-        // by prefix as the user keeps typing, matching the JS SDK behaviour.
-        var suggestions = broadcastSuggestions(for: typingMention, allowedTypes: allowedTypes)
-
-        // Roles and groups require a non-empty query to avoid surfacing the
-        // entire list on a bare `@`.
-        async let roles = (allowedTypes.contains(.role) && !typingMention.isEmpty)
-            ? fetchRoles(for: typingMention)
-            : []
-        async let groups = (allowedTypes.contains(.group) && !typingMention.isEmpty)
-            ? fetchGroups(for: typingMention)
-            : []
-        async let users = allowedTypes.contains(.user)
-            ? fetchUsers(
-                for: typingMention,
-                channel: channel,
-                currentUserId: currentUserId,
-                mentionAllAppUsers: mentionAllAppUsers
-            )
-            : []
-
-        suggestions += await roles
-        suggestions += await groups
-        suggestions += await users
-        return suggestions
-    }
-
-    private func broadcastSuggestions(
-        for typingMention: String,
-        allowedTypes: Set<MentionType>
-    ) -> [MentionSuggestion] {
-        let query = typingMention.lowercased()
-        var result: [MentionSuggestion] = []
-        if allowedTypes.contains(.channel), matchesBroadcast("channel", query: query) {
-            result.append(.channel)
-        }
-        if allowedTypes.contains(.here), matchesBroadcast("here", query: query) {
-            result.append(.here)
-        }
-        return result
-    }
-
-    private func matchesBroadcast(_ keyword: String, query: String) -> Bool {
-        query.isEmpty || keyword.hasPrefix(query)
-    }
-
-    @MainActor
-    private func fetchRoles(for typingMention: String) async -> [MentionSuggestion] {
-        let roles = (try? await roleSearch.search(text: typingMention)) ?? []
-        return roles.map { MentionSuggestion.role($0) }
-    }
-
-    @MainActor
-    private func fetchGroups(for typingMention: String) async -> [MentionSuggestion] {
-        let groups = (try? await userGroupSearch.search(text: typingMention)) ?? []
-        return groups.map { MentionSuggestion.group($0) }
-    }
-
-    @MainActor
-    private func fetchUsers(
-        for typingMention: String,
-        channel: ChatChannel,
-        currentUserId: UserId,
-        mentionAllAppUsers: Bool
-    ) async -> [MentionSuggestion] {
-        let users: [ChatUser]
-        if mentionAllAppUsers {
-            users = await searchAllUsers(for: typingMention)
-        } else {
-            users = searchUsers(
-                channel.lastActiveWatchers.map(\.self) + channel.lastActiveMembers.map(\.self),
-                by: typingMention,
-                excludingId: currentUserId
-            )
-        }
-        return users.map { MentionSuggestion.user($0) }
-    }
-
-    /// searchUsers does an autocomplete search on a list of ChatUser and returns users with `id` or `name` containing the search string
-    /// results are returned sorted by their edit distance from the searched string
-    /// distance is calculated using the levenshtein algorithm
-    /// both search and name strings are normalized (lowercased and by replacing diacritics)
-    private func searchUsers(_ users: [ChatUser], by searchInput: String, excludingId: String? = nil) -> [ChatUser] {
-        let normalize: (String) -> String = {
-            $0.lowercased().folding(options: .diacriticInsensitive, locale: .current)
-        }
-
-        let searchInput = normalize(searchInput)
-
-        let matchingUsers = users.filter { $0.id != excludingId }
-            .filter { searchInput == "" || $0.id.contains(searchInput) || (normalize($0.name ?? "").contains(searchInput)) }
-
-        let distance: (ChatUser) -> Int = {
-            min($0.id.levenshtein(searchInput), $0.name?.levenshtein(searchInput) ?? 1000)
-        }
-
-        return Array(Set(matchingUsers)).sorted {
-            /// a tie breaker is needed here to avoid results from flickering
-            let dist = distance($0) - distance($1)
-            if dist == 0 {
-                return $0.id < $1.id
-            }
-            return dist < 0
-        }
-    }
-
-    private func queryForMentionSuggestionsSearch(typingMention term: String) -> UserListQuery {
-        UserListQuery(
-            filter: .or([
-                .autocomplete(.name, text: term),
-                .autocomplete(.id, text: term)
-            ]),
-            sort: [.init(key: .name, isAscending: true)]
-        )
-    }
-
-    @MainActor
-    private func searchAllUsers(for typingMention: String) async -> [ChatUser] {
-        let query = queryForMentionSuggestionsSearch(typingMention: typingMention)
-        return (try? await userSearch.search(query: query)) ?? []
+        let request = MentionSuggestionsRequest(text: typingMention, channel: channel)
+        return (try? await provider.mentionSuggestions(for: request)) ?? []
     }
 }
 

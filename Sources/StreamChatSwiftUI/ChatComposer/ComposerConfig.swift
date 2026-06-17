@@ -28,9 +28,6 @@ public final class ComposerConfig {
     /// The default value is 100 MB.
     public var maxAttachmentSize: Int64
 
-    /// Shared configuration for @mention suggestions (provider, roles, search scope).
-    public var mentionSuggestionsConfig: MentionSuggestionsConfig
-
     public init(
         isVoiceRecordingEnabled: Bool = true,
         isVoiceRecordingAutoSendEnabled: Bool = false,
@@ -42,8 +39,7 @@ public final class ComposerConfig {
         maxGalleryAssetsCount: Int? = nil,
         adjustMessageOnSend: @escaping (String) -> (String) = { $0 },
         adjustMessageOnRead: @escaping (String) -> (String) = { $0 },
-        maxAttachmentSize: Int64 = 100 * 1024 * 1024,
-        mentionSuggestionsConfig: MentionSuggestionsConfig = MentionSuggestionsConfig()
+        maxAttachmentSize: Int64 = 100 * 1024 * 1024
     ) {
         self.inputViewMinHeight = inputViewMinHeight
         self.inputViewMaxHeight = inputViewMaxHeight
@@ -56,7 +52,6 @@ public final class ComposerConfig {
         self.isVoiceRecordingEnabled = isVoiceRecordingEnabled
         self.isVoiceRecordingAutoSendEnabled = isVoiceRecordingAutoSendEnabled
         self.maxAttachmentSize = maxAttachmentSize
-        self.mentionSuggestionsConfig = mentionSuggestionsConfig
     }
 }
 

@@ -5,6 +5,7 @@
 import Foundation
 import StreamChat
 import StreamChatSwiftUI
+import SwiftUI
 
 final class AppConfiguration {
     @MainActor static let `default` = AppConfiguration()
@@ -30,8 +31,7 @@ final class AppConfiguration {
     /// Builds the demo app's `ComposerConfig` using current app configuration.
     @MainActor static func makeComposerConfig() -> ComposerConfig {
         ComposerConfig(
-            isVoiceRecordingAutoSendEnabled: AppConfiguration.default.isVoiceRecordingAutoSendEnabled,
-            mentionSuggestionsConfig: .enhanced
+            isVoiceRecordingAutoSendEnabled: AppConfiguration.default.isVoiceRecordingAutoSendEnabled
         )
     }
 
@@ -46,5 +46,42 @@ final class AppConfiguration {
                 message.extraData["ai_generated"]?.boolValue == true
             }
         )
+    }
+
+    /// Builds the demo app's `CommandsConfig` using the enhanced mention suggestions provider.
+    @MainActor static func makeCommandsConfig() -> CommandsConfig {
+        DemoCommandsConfig()
+    }
+}
+
+/// A commands configuration that uses the ``EnhancedMentionSuggestionsProvider`` for mentions.
+final class DemoCommandsConfig: CommandsConfig {
+    let mentionsSymbol: String = "@"
+    let instantCommandsSymbol: String = "/"
+
+    @MainActor func makeCommandsHandler(
+        with channelController: ChatChannelController
+    ) -> CommandsHandler {
+        let mentionsCommandHandler = MentionsCommandHandler(
+            channelController: channelController,
+            commandSymbol: mentionsSymbol,
+            provider: EnhancedMentionSuggestionsProvider(client: channelController.client)
+        )
+
+        var instantCommands = [CommandHandler]()
+        let availableCommands = channelController.channel?.config.commands.map(\.name) ?? []
+
+        if availableCommands.contains("giphy") {
+            instantCommands.append(GiphyCommandHandler(commandSymbol: "/giphy"))
+        }
+        if availableCommands.contains("mute") {
+            instantCommands.append(MuteCommandHandler(channelController: channelController, commandSymbol: "/mute"))
+        }
+        if availableCommands.contains("unmute") {
+            instantCommands.append(UnmuteCommandHandler(channelController: channelController, commandSymbol: "/unmute"))
+        }
+
+        let instantCommandsHandler = InstantCommandsHandler(commands: instantCommands)
+        return CommandsHandler(commands: [mentionsCommandHandler, instantCommandsHandler])
     }
 }
