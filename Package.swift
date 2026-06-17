@@ -3,14 +3,6 @@
 import Foundation
 import PackageDescription
 
-// Use a sibling `stream-chat-swift` checkout when present so unreleased LLC APIs
-// are available during local development. Falls back to the released package
-// (e.g. on CI) when the sibling directory is not available.
-let localLLCPath: String? = {
-    let path = "../stream-chat-swift"
-    return FileManager.default.fileExists(atPath: path + "/Package.swift") ? path : nil
-}()
-
 let package = Package(
     name: "StreamChatSwiftUI",
     defaultLocalization: "en",
@@ -24,9 +16,9 @@ let package = Package(
         )
     ],
     dependencies: [
-        localLLCPath != nil
-            ? .package(name: "stream-chat-swift", path: localLLCPath!)
-            : .package(url: "https://github.com/GetStream/stream-chat-swift.git", from: "5.5.1")
+        // Temporarily points to the enhanced mentions LLC branch until the
+        // corresponding stream-chat-swift changes are released.
+        .package(url: "https://github.com/GetStream/stream-chat-swift.git", branch: "add/enhanced-user-mentions")
     ],
     targets: [
         .target(
