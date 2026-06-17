@@ -51,7 +51,7 @@ public struct AttachmentPickerTypeView: View {
         HStack(spacing: 16) {
             switch pickerTypeState {
             case let .expanded(attachmentPickerType):
-                if composerViewModel.channelController.channel?.canUploadFile == true && composerViewModel.isSendMessageEnabled {
+                if composerViewModel.fileUploadsAvailable && composerViewModel.isSendMessageEnabled {
                     PickerTypeButton(
                         pickerTypeState: $pickerTypeState,
                         pickerType: .media,

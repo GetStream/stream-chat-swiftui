@@ -53,8 +53,10 @@ open class MessageComposerViewModel: ObservableObject {
                 checkTypingSuggestions()
                 if pickerTypeState != .collapsed {
                     if composerCommand == nil && (abs(text.count - oldValue.count) < 10) {
-                        withAnimation {
-                            pickerTypeState = .collapsed
+                        if availablePickerItemsCount > 1 {
+                            withAnimation {
+                                pickerTypeState = .collapsed
+                            }
                         }
                     } else {
                         pickerTypeState = .collapsed
@@ -449,6 +451,26 @@ open class MessageComposerViewModel: ObservableObject {
         channelController.channel?.canSendMessage ?? true
     }
 
+    var fileUploadsAvailable: Bool {
+        channelController.channel?.canUploadFile == true
+    }
+
+    var configuredCommandsAvailable: Bool {
+        channelController.channel?.config.commands.count ?? 0 > 0
+    }
+
+    var availablePickerItemsCount: Int {
+        guard isSendMessageEnabled else { return 0 }
+        var count = 0
+        if fileUploadsAvailable {
+            count += 1
+        }
+        if configuredCommandsAvailable {
+            count += 1
+        }
+        return count
+    }
+
     public var sendButtonEnabled: Bool {
         if let composerCommand = composerCommand,
            let handler = commandsHandler.commandHandler(for: composerCommand) {
@@ -480,7 +502,6 @@ open class MessageComposerViewModel: ObservableObject {
             return true
         }
         let commandAvailable = composerCommand != nil
-        let configuredCommandsAvailable = channelController.channel?.config.commands.count ?? 0 > 0
         return commandAvailable && configuredCommandsAvailable
     }
     
