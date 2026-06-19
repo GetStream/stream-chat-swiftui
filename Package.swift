@@ -16,9 +16,7 @@ let package = Package(
         )
     ],
     dependencies: [
-        // Temporarily points to the enhanced mentions LLC branch until the
-        // corresponding stream-chat-swift changes are released.
-        .package(url: "https://github.com/GetStream/stream-chat-swift.git", branch: "add/enhanced-user-mentions")
+        .package(url: "https://github.com/GetStream/stream-chat-swift.git", branch: "develop")
     ],
     targets: [
         .target(

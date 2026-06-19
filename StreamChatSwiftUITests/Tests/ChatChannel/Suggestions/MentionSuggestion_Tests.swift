@@ -21,25 +21,25 @@ final class MentionSuggestion_Tests: XCTestCase {
         XCTAssertEqual(MentionSuggestion.group(group).id, "group-g1")
     }
 
-    // MARK: - type
+    // MARK: - kind
 
-    func test_type_matchesCase() {
-        XCTAssertEqual(MentionSuggestion.user(.mock(id: "u1")).type, .user)
-        XCTAssertEqual(MentionSuggestion.here.type, .here)
-        XCTAssertEqual(MentionSuggestion.channel.type, .channel)
-        XCTAssertEqual(MentionSuggestion.role(Role(name: "admin")).type, .role)
-        XCTAssertEqual(MentionSuggestion.group(.mock(id: "g1", name: "Group")).type, .group)
+    func test_kind_matchesExpectedType() {
+        XCTAssertTrue(MentionSuggestion.user(.mock(id: "u1")).kind is MentionSuggestion.User)
+        XCTAssertTrue(MentionSuggestion.here.kind is MentionSuggestion.Here)
+        XCTAssertTrue(MentionSuggestion.channel.kind is MentionSuggestion.Channel)
+        XCTAssertTrue(MentionSuggestion.role(Role(name: "admin")).kind is MentionSuggestion.Role)
+        XCTAssertTrue(MentionSuggestion.group(.mock(id: "g1", name: "Group")).kind is MentionSuggestion.Group)
     }
 
     // MARK: - mentionText
 
-    func test_mentionText_returnsTextAfterAtSign() {
+    func test_mentionText_returnsExpectedText() {
         let user = ChatUser.mock(id: "u1", name: "John Appleseed")
-        XCTAssertEqual(MentionSuggestion.user(user).mentionText, user.mentionText)
-        XCTAssertEqual(MentionSuggestion.here.mentionText, "here")
-        XCTAssertEqual(MentionSuggestion.channel.mentionText, "channel")
-        XCTAssertEqual(MentionSuggestion.role(Role(name: "moderator")).mentionText, "moderator")
-        XCTAssertEqual(MentionSuggestion.group(.mock(id: "g1", name: "Dream Team")).mentionText, "Dream Team")
+        XCTAssertEqual(MentionsCommandHandler.mentionText(for: .user(user)), user.mentionText)
+        XCTAssertEqual(MentionsCommandHandler.mentionText(for: .here), "here")
+        XCTAssertEqual(MentionsCommandHandler.mentionText(for: .channel), "channel")
+        XCTAssertEqual(MentionsCommandHandler.mentionText(for: .role(Role(name: "moderator"))), "moderator")
+        XCTAssertEqual(MentionsCommandHandler.mentionText(for: .group(.mock(id: "g1", name: "Dream Team"))), "Dream Team")
     }
 }
 
