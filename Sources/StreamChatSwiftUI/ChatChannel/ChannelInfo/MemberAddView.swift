@@ -38,21 +38,36 @@ public struct MemberAddView<Factory: ViewFactory>: View {
         self.factory = factory
     }
 
+    /// Whether the "Add selected member(s)" button is shown: the user is
+    /// searching and at least one member has been selected.
+    private var showsAddSelectedButton: Bool {
+        !viewModel.searchText.isEmpty && !viewModel.selectedUsers.isEmpty
+    }
+
     public var body: some View {
         NavigationView {
-            ScrollView {
-                LazyVStack(spacing: 0) {
-                    ForEach(viewModel.users) { user in
-                        AddMembersUserRow(
-                            factory: factory,
-                            user: user,
-                            isSelected: viewModel.isSelected(user),
-                            isAlreadyMember: viewModel.isAlreadyMember(user)
-                        ) {
-                            viewModel.toggleUser(user)
-                        }
-                        .onAppear {
-                            viewModel.onUserAppear(user)
+            VStack(spacing: 0) {
+                if showsAddSelectedButton {
+                    AddSelectedMembersButton(
+                        count: viewModel.selectedUsers.count,
+                        action: { onConfirm(viewModel.selectedUsers) }
+                    )
+                }
+
+                ScrollView {
+                    LazyVStack(spacing: 0) {
+                        ForEach(viewModel.users) { user in
+                            AddMembersUserRow(
+                                factory: factory,
+                                user: user,
+                                isSelected: viewModel.isSelected(user),
+                                isAlreadyMember: viewModel.isAlreadyMember(user)
+                            ) {
+                                viewModel.toggleUser(user)
+                            }
+                            .onAppear {
+                                viewModel.onUserAppear(user)
+                            }
                         }
                     }
                 }
@@ -80,6 +95,33 @@ public final class MemberAddOptions: Sendable {
 
     public init(loadedUserIds: [String]) {
         self.loadedUserIds = loadedUserIds
+    }
+}
+
+// MARK: - Add Selected Members Button
+
+/// Full-width button shown below the search field that confirms the current
+/// selection. The title is pluralized based on the number of selected members.
+private struct AddSelectedMembersButton: View {
+    @Injected(\.colors) private var colors
+    @Injected(\.fonts) private var fonts
+    @Injected(\.tokens) private var tokens
+
+    let count: Int
+    let action: () -> Void
+
+    var body: some View {
+        Button(action: action) {
+            Text(L10n.ChatInfo.Members.addSelected(count))
+                .font(fonts.bodyBold)
+                .foregroundColor(Color(colors.buttonPrimaryText))
+                .frame(maxWidth: .infinity)
+                .padding(.vertical, tokens.spacingMd)
+        }
+        .buttonStyle(.plain)
+        .padding(.horizontal, tokens.spacingMd)
+        .padding(.top, tokens.spacingSm)
+        .padding(.bottom, tokens.spacingXs)
     }
 }
 

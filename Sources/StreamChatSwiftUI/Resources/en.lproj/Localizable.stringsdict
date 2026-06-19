@@ -18,6 +18,22 @@
 			<string>%d Members</string>
 		</dict>
 	</dict>
+	<key>chat-info.members.add-selected</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@members@</string>
+		<key>members</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>d</string>
+			<key>one</key>
+			<string>Add selected member</string>
+			<key>other</key>
+			<string>Add selected members</string>
+		</dict>
+	</dict>
 	<key>message.polls.button.view-number-of-comments</key>
 	<dict>
 		<key>NSStringLocalizedFormatKey</key>

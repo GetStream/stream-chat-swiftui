@@ -49,6 +49,47 @@ import XCTest
         AssertSnapshot(view)
     }
 
+    func test_memberAddView_addSelectedButtonSnapshot() {
+        // Given
+        let searchController = ChatUserSearchController_Mock.mock(client: chatClient)
+        let users = ChannelInfoMockUtils.generateMockUsers(count: 10)
+        searchController.users_mock = users
+        let viewModel = MemberAddViewModel(
+            loadedUserIds: [],
+            searchController: searchController
+        )
+        viewModel.searchText = "Test User"
+        viewModel.toggleUser(users[1])
+        viewModel.toggleUser(users[3])
+
+        // When
+        let view = MemberAddView(factory: DefaultTestViewFactory.shared, viewModel: viewModel, onConfirm: { _ in })
+            .applyDefaultSize()
+
+        // Then
+        AssertSnapshot(view)
+    }
+
+    func test_memberAddView_addSelectedButtonSingularSnapshot() {
+        // Given
+        let searchController = ChatUserSearchController_Mock.mock(client: chatClient)
+        let users = ChannelInfoMockUtils.generateMockUsers(count: 10)
+        searchController.users_mock = users
+        let viewModel = MemberAddViewModel(
+            loadedUserIds: [],
+            searchController: searchController
+        )
+        viewModel.searchText = "Test User"
+        viewModel.toggleUser(users[2])
+
+        // When
+        let view = MemberAddView(factory: DefaultTestViewFactory.shared, viewModel: viewModel, onConfirm: { _ in })
+            .applyDefaultSize()
+
+        // Then
+        AssertSnapshot(view)
+    }
+
     func test_memberAddView_alreadyMemberSnapshot() {
         // Given
         let searchController = ChatUserSearchController_Mock.mock(client: chatClient)

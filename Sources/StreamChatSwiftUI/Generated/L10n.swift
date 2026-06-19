@@ -249,6 +249,10 @@ internal enum L10n {
       internal static var add: String { L10n.tr("Localizable", "chat-info.members.add") }
       /// Add Members
       internal static var addMembersTitle: String { L10n.tr("Localizable", "chat-info.members.add-members-title") }
+      /// Plural format key: "%#@members@"
+      internal static func addSelected(_ p1: Int) -> String {
+        return L10n.tr("Localizable", "chat-info.members.add-selected", p1)
+      }
       /// Already a member
       internal static var alreadyMember: String { L10n.tr("Localizable", "chat-info.members.already-member") }
       /// Plural format key: "%#@members@"
