@@ -211,7 +211,12 @@ import XCTest
             // Then
             XCTAssertEqual(info.key, "mentions")
             let suggestions = info.value as? [MentionSuggestion]
-            XCTAssertEqual(suggestions?.map(\.type), [.user, .here, .channel, .role, .group])
+            XCTAssertEqual(suggestions?.count, 5)
+            XCTAssertTrue(suggestions?[0].kind is MentionSuggestion.User)
+            XCTAssertTrue(suggestions?[1].kind is MentionSuggestion.Here)
+            XCTAssertTrue(suggestions?[2].kind is MentionSuggestion.Channel)
+            XCTAssertTrue(suggestions?[3].kind is MentionSuggestion.Role)
+            XCTAssertTrue(suggestions?[4].kind is MentionSuggestion.Group)
             expectation.fulfill()
         }
 

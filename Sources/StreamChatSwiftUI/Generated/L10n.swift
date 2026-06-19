@@ -536,6 +536,8 @@ internal enum L10n {
         internal enum Channel {
           /// Notify everyone in this channel
           internal static var description: String { L10n.tr("Localizable", "composer.suggestions.mentions.channel.description") }
+          /// channel
+          internal static var text: String { L10n.tr("Localizable", "composer.suggestions.mentions.channel.text") }
         }
         internal enum Group {
           /// %d members
@@ -546,6 +548,8 @@ internal enum L10n {
         internal enum Here {
           /// Notify online members
           internal static var description: String { L10n.tr("Localizable", "composer.suggestions.mentions.here.description") }
+          /// here
+          internal static var text: String { L10n.tr("Localizable", "composer.suggestions.mentions.here.text") }
         }
         internal enum Role {
           /// Notify all %@ members

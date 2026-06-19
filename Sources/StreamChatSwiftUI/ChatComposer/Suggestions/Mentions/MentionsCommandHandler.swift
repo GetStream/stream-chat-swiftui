@@ -90,7 +90,7 @@ public final class MentionsCommandHandler: CommandHandler {
 
         let mentionText: String
         if let suggestion = extraData["mentionSuggestion"] as? MentionSuggestion {
-            mentionText = suggestion.mentionText
+            mentionText = self.mentionText(for: suggestion)
         } else if let chatUser = extraData["chatUser"] as? ChatUser {
             mentionText = chatUser.mentionText
         } else {
@@ -120,6 +120,23 @@ public final class MentionsCommandHandler: CommandHandler {
             for: command.typingSuggestion.text,
             mentionRange: command.typingSuggestion.locationRange
         )
+    }
+
+    func mentionText(for suggestion: MentionSuggestion) -> String {
+        switch suggestion.kind {
+        case let userSuggestion as MentionSuggestion.User:
+            return userSuggestion.user.mentionText
+        case is MentionSuggestion.Here:
+            return L10n.Composer.Suggestions.Mentions.Here.text
+        case is MentionSuggestion.Channel:
+            return L10n.Composer.Suggestions.Mentions.Channel.text
+        case let roleSuggestion as MentionSuggestion.Role:
+            return roleSuggestion.role.name
+        case let groupSuggestion as MentionSuggestion.Group:
+            return groupSuggestion.group.name
+        default:
+            return suggestion.id
+        }
     }
 
     // MARK: - private

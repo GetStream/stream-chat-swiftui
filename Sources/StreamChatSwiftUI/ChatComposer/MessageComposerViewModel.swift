@@ -341,7 +341,6 @@ import SwiftUI
             return
         }
         let attachments = try? convertAddedAssetsToPayloads()
-        clearRemovedMentions()
         let mentionedUserIds = mentionedUsers.map(\.id)
         let availableCommands = channelController.channel?.config.commands ?? []
         let command = availableCommands.first { composerCommand?.id == "/\($0.name)" }

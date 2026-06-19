@@ -236,6 +236,8 @@
 "composer.suggestions.mentions.here.description" = "Notify online members";
 "composer.suggestions.mentions.role.description" = "Notify all %@ members";
 "composer.suggestions.mentions.group.members" = "%d members";
+"composer.suggestions.mentions.here.text" = "here";
+"composer.suggestions.mentions.channel.text" = "channel";
 "composer.suggestions.user.accessibility-label" = "%1$@, user, %2$d of %3$d";
 "composer.command.sent.accessibility-announcement" = "%@ command sent";
 "message.sending.attachment-uploading-failed" = "UPLOADING FAILED";

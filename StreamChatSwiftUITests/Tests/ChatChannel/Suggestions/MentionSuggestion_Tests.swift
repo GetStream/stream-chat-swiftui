@@ -4,9 +4,11 @@
 
 @testable import StreamChat
 @testable import StreamChatSwiftUI
+@testable import StreamChatTestTools
 import XCTest
 
-final class MentionSuggestion_Tests: XCTestCase {
+@MainActor
+final class MentionSuggestion_Tests: StreamChatTestCase {
     // MARK: - id
 
     func test_id_isUniquePerSuggestion() {
@@ -34,12 +36,23 @@ final class MentionSuggestion_Tests: XCTestCase {
     // MARK: - mentionText
 
     func test_mentionText_returnsExpectedText() {
+        let handler = makeHandler()
         let user = ChatUser.mock(id: "u1", name: "John Appleseed")
-        XCTAssertEqual(MentionsCommandHandler.mentionText(for: .user(user)), user.mentionText)
-        XCTAssertEqual(MentionsCommandHandler.mentionText(for: .here), "here")
-        XCTAssertEqual(MentionsCommandHandler.mentionText(for: .channel), "channel")
-        XCTAssertEqual(MentionsCommandHandler.mentionText(for: .role(Role(name: "moderator"))), "moderator")
-        XCTAssertEqual(MentionsCommandHandler.mentionText(for: .group(.mock(id: "g1", name: "Dream Team"))), "Dream Team")
+        XCTAssertEqual(handler.mentionText(for: .user(user)), user.mentionText)
+        XCTAssertEqual(handler.mentionText(for: .here), "here")
+        XCTAssertEqual(handler.mentionText(for: .channel), "channel")
+        XCTAssertEqual(handler.mentionText(for: .role(Role(name: "moderator"))), "moderator")
+        XCTAssertEqual(handler.mentionText(for: .group(.mock(id: "g1", name: "Dream Team"))), "Dream Team")
+    }
+
+    // MARK: - private
+
+    private func makeHandler() -> MentionsCommandHandler {
+        let channelController = ChatChannelTestHelpers.makeChannelController(chatClient: chatClient)
+        return MentionsCommandHandler(
+            channelController: channelController,
+            commandSymbol: "@"
+        )
     }
 }
 

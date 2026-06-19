@@ -151,7 +151,7 @@ public struct MentionSuggestionView<Factory: ViewFactory>: View {
         case let groupSuggestion as MentionSuggestion.Group:
             return "@\(groupSuggestion.group.name)"
         default:
-            return "@\(suggestion.mentionText)"
+            return "@\(suggestion.id)"
         }
     }
 
