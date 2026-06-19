@@ -3,6 +3,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 # Upcoming
 
+### 🐞 Fixed
+- Keep the navigation bar and its buttons visible while searching in the add members screen [#1499](https://github.com/GetStream/stream-chat-swiftui/pull/1499)
+
 ### 🔄 Changed
 
 # [5.5.1](https://github.com/GetStream/stream-chat-swiftui/releases/tag/5.5.1)
