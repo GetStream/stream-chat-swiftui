@@ -12,7 +12,15 @@ import SwiftUI
 
     // MARK: - Published State
 
-    @Published var question = ""
+    @Published var question = "" {
+        didSet {
+            let clamped = clamped(question, to: maxQuestionLength)
+            if clamped != question {
+                question = clamped
+            }
+        }
+    }
+
     @Published private(set) var options: [PollOptionEntry] = [PollOptionEntry()]
     @Published private(set) var optionsErrorIndices = Set<Int>()
 
@@ -34,12 +42,20 @@ import SwiftUI
 
     private var cancellables = [AnyCancellable]()
 
+    /// The maximum number of characters accepted in the question text field, or `nil` for no limit.
+    private let maxQuestionLength: Int?
+    /// The maximum number of characters accepted in each option text field, or `nil` for no limit.
+    private let maxOptionLength: Int?
+
     // MARK: - Init
 
     init(chatController: ChatChannelController, messageController: ChatMessageController?) {
         let pollsConfig = InjectedValues[\.utils].pollsConfig
         self.chatController = chatController
         self.messageController = messageController
+
+        maxQuestionLength = pollsConfig.maxQuestionLength
+        maxOptionLength = pollsConfig.maxOptionLength
 
         multipleAnswers = pollsConfig.multipleAnswers.defaultValue
         maxVotesEnabled = pollsConfig.maxVotesPerPerson.defaultValue
@@ -115,6 +131,7 @@ import SwiftUI
 
     func updateOption(id: UUID, value: String) {
         guard let index = options.firstIndex(where: { $0.id == id }) else { return }
+        let value = clamped(value, to: maxOptionLength)
         options[index].text = value
         if index == options.count - 1,
            !value.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
@@ -225,6 +242,13 @@ import SwiftUI
     // MARK: - Private
 
     private let maxVotesRange = 2...10
+
+    /// Truncates `text` to at most `limit` characters. Returns `text` unchanged
+    /// when `limit` is `nil` (no limit configured) or the text is already within it.
+    private func clamped(_ text: String, to limit: Int?) -> String {
+        guard let limit, text.count > limit else { return text }
+        return String(text.prefix(limit))
+    }
 }
 
 struct PollOptionEntry: Identifiable, Equatable, Sendable {

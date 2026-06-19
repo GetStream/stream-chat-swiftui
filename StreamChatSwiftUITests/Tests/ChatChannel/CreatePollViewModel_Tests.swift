@@ -172,6 +172,61 @@ import XCTest
         XCTAssertFalse(viewModel.maxVotesEnabled)
     }
 
+    // MARK: - Text Length Limits
+
+    func test_question_noLimitByDefault_acceptsLongText() {
+        let viewModel = makeViewModel()
+        let longText = String(repeating: "A", count: 500)
+        viewModel.question = longText
+        XCTAssertEqual(viewModel.question, longText)
+    }
+
+    func test_question_truncatedToMaxQuestionLength() {
+        let viewModel = makeViewModel(pollsConfig: .init(maxQuestionLength: 5))
+        viewModel.question = "Hello, World"
+        XCTAssertEqual(viewModel.question, "Hello")
+    }
+
+    func test_question_withinMaxQuestionLength_unchanged() {
+        let viewModel = makeViewModel(pollsConfig: .init(maxQuestionLength: 5))
+        viewModel.question = "Hi"
+        XCTAssertEqual(viewModel.question, "Hi")
+    }
+
+    func test_question_truncationCountsCharactersNotBytes() {
+        let viewModel = makeViewModel(pollsConfig: .init(maxQuestionLength: 3))
+        viewModel.question = "😀😀😀😀😀"
+        XCTAssertEqual(viewModel.question, "😀😀😀")
+    }
+
+    func test_updateOption_noLimitByDefault_acceptsLongText() {
+        let viewModel = makeViewModel()
+        let longText = String(repeating: "A", count: 500)
+        let id = viewModel.options.last!.id
+        viewModel.updateOption(id: id, value: longText)
+        XCTAssertEqual(viewModel.options[0].text, longText)
+    }
+
+    func test_updateOption_truncatedToMaxOptionLength() {
+        let viewModel = makeViewModel(pollsConfig: .init(maxOptionLength: 4))
+        let id = viewModel.options.last!.id
+        viewModel.updateOption(id: id, value: "Option")
+        XCTAssertEqual(viewModel.options[0].text, "Opti")
+    }
+
+    func test_updateOption_withinMaxOptionLength_unchanged() {
+        let viewModel = makeViewModel(pollsConfig: .init(maxOptionLength: 4))
+        let id = viewModel.options.last!.id
+        viewModel.updateOption(id: id, value: "Opt")
+        XCTAssertEqual(viewModel.options[0].text, "Opt")
+    }
+
+    func test_maxQuestionAndOptionLength_defaultToNil() {
+        let config = PollsConfig()
+        XCTAssertNil(config.maxQuestionLength)
+        XCTAssertNil(config.maxOptionLength)
+    }
+
     // MARK: - Initial State
 
     func test_initialState_hasOneEmptyOption() {
