@@ -183,8 +183,15 @@ import XCTest
 
     func test_question_truncatedToMaxQuestionLength() {
         let viewModel = makeViewModel(pollsConfig: .init(maxQuestionLength: 5))
+        let testExpectation = XCTestExpectation(description: "Question should be truncated")
+
         viewModel.question = "Hello, World"
-        XCTAssertEqual(viewModel.question, "Hello")
+
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+            XCTAssertEqual(viewModel.question, "Hello")
+            testExpectation.fulfill()
+        }
+        wait(for: [testExpectation], timeout: defaultTimeout)
     }
 
     func test_question_withinMaxQuestionLength_unchanged() {
@@ -195,8 +202,15 @@ import XCTest
 
     func test_question_truncationCountsCharactersNotBytes() {
         let viewModel = makeViewModel(pollsConfig: .init(maxQuestionLength: 3))
+        let testExpectation = XCTestExpectation(description: "Question should be truncated by characters")
+
         viewModel.question = "😀😀😀😀😀"
-        XCTAssertEqual(viewModel.question, "😀😀😀")
+
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+            XCTAssertEqual(viewModel.question, "😀😀😀")
+            testExpectation.fulfill()
+        }
+        wait(for: [testExpectation], timeout: defaultTimeout)
     }
 
     func test_updateOption_noLimitByDefault_acceptsLongText() {

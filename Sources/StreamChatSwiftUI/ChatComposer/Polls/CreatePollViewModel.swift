@@ -14,9 +14,12 @@ import SwiftUI
 
     @Published var question = "" {
         didSet {
+            guard let maxQuestionLength else { return }
             let clamped = clamped(question, to: maxQuestionLength)
             if clamped != question {
-                question = clamped
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.1, execute: { [weak self] in
+                    self?.question = clamped
+                })
             }
         }
     }
@@ -133,6 +136,11 @@ import SwiftUI
         guard let index = options.firstIndex(where: { $0.id == id }) else { return }
         let value = clamped(value, to: maxOptionLength)
         options[index].text = value
+        if maxOptionLength != nil {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) { [weak self] in
+                self?.options[index].text = value
+            }
+        }
         if index == options.count - 1,
            !value.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
             withAnimation {
