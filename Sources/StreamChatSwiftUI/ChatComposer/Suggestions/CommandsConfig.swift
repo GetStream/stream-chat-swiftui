@@ -22,6 +22,8 @@ public protocol CommandsConfig {
 }
 
 /// Default commands configuration.
+///
+/// Uses the ``DefaultMentionSuggestionsProvider`` which only suggests user mentions.
 public class DefaultCommandsConfig: CommandsConfig {
     public init() {
         // Public init.
@@ -38,7 +40,16 @@ public class DefaultCommandsConfig: CommandsConfig {
             commandSymbol: mentionsSymbol,
             mentionAllAppUsers: false
         )
+        return Self.makeCommandsHandler(
+            mentionsCommandHandler: mentionsCommandHandler,
+            channelController: channelController
+        )
+    }
 
+    @MainActor static func makeCommandsHandler(
+        mentionsCommandHandler: MentionsCommandHandler,
+        channelController: ChatChannelController
+    ) -> CommandsHandler {
         var instantCommands = [CommandHandler]()
 
         let channelConfig = channelController.channel?.config
@@ -69,5 +80,31 @@ public class DefaultCommandsConfig: CommandsConfig {
             commands: instantCommands
         )
         return CommandsHandler(commands: [mentionsCommandHandler, instantCommandsHandler])
+    }
+}
+
+/// Commands configuration that uses the ``EnhancedMentionSuggestionsProvider``.
+///
+/// Suggests `@here`, `@channel`, roles and user groups in addition to user mentions.
+public class EnhancedCommandsConfig: CommandsConfig {
+    public init() {
+        // Public init.
+    }
+
+    public let mentionsSymbol: String = "@"
+    public let instantCommandsSymbol: String = "/"
+
+    public func makeCommandsHandler(
+        with channelController: ChatChannelController
+    ) -> CommandsHandler {
+        let mentionsCommandHandler = MentionsCommandHandler(
+            channelController: channelController,
+            commandSymbol: mentionsSymbol,
+            provider: EnhancedMentionSuggestionsProvider(client: channelController.client)
+        )
+        return DefaultCommandsConfig.makeCommandsHandler(
+            mentionsCommandHandler: mentionsCommandHandler,
+            channelController: channelController
+        )
     }
 }
