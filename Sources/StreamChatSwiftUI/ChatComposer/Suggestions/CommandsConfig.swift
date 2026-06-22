@@ -37,8 +37,7 @@ public class DefaultCommandsConfig: CommandsConfig {
     ) -> CommandsHandler {
         let mentionsCommandHandler = MentionsCommandHandler(
             channelController: channelController,
-            commandSymbol: mentionsSymbol,
-            mentionAllAppUsers: false
+            commandSymbol: mentionsSymbol
         )
         return Self.makeCommandsHandler(
             mentionsCommandHandler: mentionsCommandHandler,

@@ -25,8 +25,7 @@ public class TestCommandsConfig: CommandsConfig {
     ) -> CommandsHandler {
         let mentionsCommand = MentionsCommandHandler(
             channelController: channelController,
-            commandSymbol: mentionsSymbol,
-            mentionAllAppUsers: false
+            commandSymbol: mentionsSymbol
         )
         let giphyCommand = GiphyCommandHandler(commandSymbol: "/giphy")
         let muteCommand = MuteCommandHandler(
