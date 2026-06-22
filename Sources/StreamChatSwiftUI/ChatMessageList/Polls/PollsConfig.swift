@@ -16,7 +16,17 @@ public final class PollsConfig {
     public var addComments: PollsEntryConfig
     /// Configuration for setting the maximum number of votes per person.
     public var maxVotesPerPerson: PollsEntryConfig
-    
+    /// The maximum number of characters allowed in the poll question.
+    ///
+    /// When set, the question text field in the poll creation view stops accepting
+    /// further input once the limit is reached. Defaults to `nil`, meaning no limit.
+    public var maxQuestionLength: Int?
+    /// The maximum number of characters allowed in each poll option.
+    ///
+    /// When set, an option's text field in the poll creation view stops accepting
+    /// further input once the limit is reached. Defaults to `nil`, meaning no limit.
+    public var maxOptionLength: Int?
+
     /// Initializes a new `PollsConfig` with the given configurations.
     ///
     /// - Parameters:
@@ -25,18 +35,24 @@ public final class PollsConfig {
     ///   - suggestAnOption: Configuration for allowing users to suggest options. Defaults to `.default`.
     ///   - addComments: Configuration for adding comments. Defaults to `.default`.
     ///   - maxVotesPerPerson: Configuration for setting the maximum number of votes per person. Defaults to `.default`.
+    ///   - maxQuestionLength: The maximum number of characters allowed in the poll question. Defaults to `nil` (no limit).
+    ///   - maxOptionLength: The maximum number of characters allowed in each poll option. Defaults to `nil` (no limit).
     public init(
         multipleAnswers: PollsEntryConfig = .default,
         anonymousPoll: PollsEntryConfig = .default,
         suggestAnOption: PollsEntryConfig = .default,
         addComments: PollsEntryConfig = .default,
-        maxVotesPerPerson: PollsEntryConfig = .default
+        maxVotesPerPerson: PollsEntryConfig = .default,
+        maxQuestionLength: Int? = nil,
+        maxOptionLength: Int? = nil
     ) {
         self.multipleAnswers = multipleAnswers
         self.anonymousPoll = anonymousPoll
         self.suggestAnOption = suggestAnOption
         self.addComments = addComments
         self.maxVotesPerPerson = maxVotesPerPerson
+        self.maxQuestionLength = maxQuestionLength
+        self.maxOptionLength = maxOptionLength
     }
 }
 

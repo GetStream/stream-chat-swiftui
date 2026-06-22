@@ -76,7 +76,7 @@ public protocol Styles {
     associatedtype SearchableModifierType: ViewModifier
     /// Returns a view modifier that adds search functionality to a view.
     ///
-    /// On iOS 17+, this uses the native `.searchable` API integrated in the navigation bar.
+    /// On iOS 17.1+, this uses the native `.searchable` API integrated in the navigation bar.
     /// On older versions, this falls back to a custom inline ``SearchBar``.
     func makeSearchableModifier(options: SearchableModifierOptions) -> SearchableModifierType
 }
@@ -408,7 +408,7 @@ public final class SearchableModifierOptions {
 }
 
 /// A view modifier that adds search functionality using the native `.searchable` API
-/// on iOS 17+ and falls back to an inline ``SearchBar`` on older versions.
+/// on iOS 17.1+ and falls back to an inline ``SearchBar`` on older versions.
 public struct DefaultSearchableModifier: ViewModifier {
     @Binding var searchText: String
     let prompt: String
@@ -419,13 +419,14 @@ public struct DefaultSearchableModifier: ViewModifier {
     }
 
     public func body(content: Content) -> some View {
-        if #available(iOS 17.0, *) {
+        if #available(iOS 17.1, *) {
             content
                 .searchable(
                     text: $searchText,
                     placement: .navigationBarDrawer(displayMode: .automatic),
                     prompt: Text(prompt)
                 )
+                .searchPresentationToolbarBehavior(.avoidHidingContent)
         } else {
             VStack(spacing: 0) {
                 SearchBar(text: $searchText)

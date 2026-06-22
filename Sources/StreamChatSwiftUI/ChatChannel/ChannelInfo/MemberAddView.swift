@@ -40,27 +40,26 @@ public struct MemberAddView<Factory: ViewFactory>: View {
 
     public var body: some View {
         NavigationView {
-            VStack(spacing: 0) {
-                SearchBar(text: $viewModel.searchText)
-
-                ScrollView {
-                    LazyVStack(spacing: 0) {
-                        ForEach(viewModel.users) { user in
-                            AddMembersUserRow(
-                                factory: factory,
-                                user: user,
-                                isSelected: viewModel.isSelected(user),
-                                isAlreadyMember: viewModel.isAlreadyMember(user)
-                            ) {
-                                viewModel.toggleUser(user)
-                            }
-                            .onAppear {
-                                viewModel.onUserAppear(user)
-                            }
+            ScrollView {
+                LazyVStack(spacing: 0) {
+                    ForEach(viewModel.users) { user in
+                        AddMembersUserRow(
+                            factory: factory,
+                            user: user,
+                            isSelected: viewModel.isSelected(user),
+                            isAlreadyMember: viewModel.isAlreadyMember(user)
+                        ) {
+                            viewModel.toggleUser(user)
+                        }
+                        .onAppear {
+                            viewModel.onUserAppear(user)
                         }
                     }
                 }
             }
+            .modifier(factory.styles.makeSearchableModifier(
+                options: SearchableModifierOptions(searchText: $viewModel.searchText)
+            ))
             .background(Color(colors.backgroundCoreApp).edgesIgnoringSafeArea(.all))
             .modifier(
                 MemberAddToolbarModifier(
