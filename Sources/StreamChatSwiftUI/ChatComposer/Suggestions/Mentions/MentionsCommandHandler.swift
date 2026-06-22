@@ -148,7 +148,10 @@ public final class MentionsCommandHandler: CommandHandler {
     ) -> Future<SuggestionInfo, Error> {
         let id = id
         return Future { [weak self] promise in
-            guard let self else { return }
+            guard let self else {
+                promise(.success(SuggestionInfo(key: id, value: [MentionSuggestion]())))
+                return
+            }
             nonisolated(unsafe) let unsafePromise = promise
             Task { @MainActor in
                 let suggestions = await self.makeSuggestions(for: typingMention)
