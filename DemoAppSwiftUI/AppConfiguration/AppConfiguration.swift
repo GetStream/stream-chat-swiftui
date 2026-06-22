@@ -50,6 +50,6 @@ final class AppConfiguration {
 
     /// Builds the demo app's `CommandsConfig` using the enhanced mention suggestions provider.
     @MainActor static func makeCommandsConfig() -> CommandsConfig {
-        EnhancedCommandsConfig()
+        EnhancedMentionsCommandsConfig()
     }
 }

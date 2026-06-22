@@ -86,7 +86,7 @@ public class DefaultCommandsConfig: CommandsConfig {
 /// Commands configuration that uses the ``EnhancedMentionSuggestionsProvider``.
 ///
 /// Suggests `@here`, `@channel`, roles and user groups in addition to user mentions.
-public class EnhancedCommandsConfig: CommandsConfig {
+public class EnhancedMentionsCommandsConfig: CommandsConfig {
     public init() {
         // Public init.
     }
