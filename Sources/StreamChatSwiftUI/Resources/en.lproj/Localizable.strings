@@ -231,13 +231,16 @@
 
 "composer.suggestions.commands.header" = "Instant Commands";
 "composer.suggestions.commands.accessibility-announcement" = "Instant Commands, %d options";
-"composer.suggestions.mentions.accessibility-announcement" = "User list, %d results";
+"composer.suggestions.mentions.accessibility-announcement" = "Mention suggestions, %d results";
 "composer.suggestions.mentions.channel.description" = "Notify everyone in this channel";
+"composer.suggestions.mentions.channel.title" = "@channel";
 "composer.suggestions.mentions.here.description" = "Notify online members";
-"composer.suggestions.mentions.role.description" = "Notify all %@ members";
-"composer.suggestions.mentions.group.members" = "%d members";
+"composer.suggestions.mentions.here.title" = "@here";
 "composer.suggestions.mentions.here.text" = "here";
 "composer.suggestions.mentions.channel.text" = "channel";
+"composer.suggestions.mentions.role.description" = "Notify all %@ members";
+"composer.suggestions.mentions.group.members" = "%d members";
+"composer.suggestions.mentions.accessibility-label" = "%1$@, %2$d of %3$d";
 "composer.suggestions.user.accessibility-label" = "%1$@, user, %2$d of %3$d";
 "composer.command.sent.accessibility-announcement" = "%@ command sent";
 "message.sending.attachment-uploading-failed" = "UPLOADING FAILED";

@@ -37,8 +37,8 @@ public struct MentionSuggestionsView<Factory: ViewFactory>: View {
                     .accessibilityElement(children: .combine)
                     .accessibilityHint(
                         Text(
-                            L10n.Composer.Suggestions.User.accessibilityLabel(
-                                "",
+                            L10n.Composer.Suggestions.Mentions.accessibilityLabel(
+                                suggestion.accessibilityName,
                                 index + 1,
                                 suggestions.count
                             )
@@ -143,9 +143,9 @@ public struct MentionSuggestionView<Factory: ViewFactory>: View {
         case let userSuggestion as MentionSuggestion.User:
             return userSuggestion.user.name ?? userSuggestion.user.id
         case is MentionSuggestion.Here:
-            return "@here"
+            return L10n.Composer.Suggestions.Mentions.Here.title
         case is MentionSuggestion.Channel:
-            return "@channel"
+            return L10n.Composer.Suggestions.Mentions.Channel.title
         case let roleSuggestion as MentionSuggestion.Role:
             return "@\(roleSuggestion.role.name)"
         case let groupSuggestion as MentionSuggestion.Group:
@@ -167,6 +167,26 @@ public struct MentionSuggestionView<Factory: ViewFactory>: View {
             return L10n.Composer.Suggestions.Mentions.Group.members(groupSuggestion.group.members.count)
         default:
             return nil
+        }
+    }
+}
+
+extension MentionSuggestion {
+    /// A human-readable name for accessibility purposes.
+    var accessibilityName: String {
+        switch kind {
+        case let userSuggestion as User:
+            return userSuggestion.user.name ?? userSuggestion.user.id
+        case is Here:
+            return L10n.Composer.Suggestions.Mentions.Here.title
+        case is Channel:
+            return L10n.Composer.Suggestions.Mentions.Channel.title
+        case let roleSuggestion as Role:
+            return roleSuggestion.role.name
+        case let groupSuggestion as Group:
+            return groupSuggestion.group.name
+        default:
+            return id
         }
     }
 }
