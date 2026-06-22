@@ -25,6 +25,7 @@ public final class MentionsCommandHandler: CommandHandler {
     ///   - commandSymbol: The symbol that triggers the command (e.g. `@`).
     ///   - mentionAllAppUsers: Whether user suggestions are searched across all app users.
     ///   - id: The identifier of the command.
+    @available(*, deprecated, message: "Use init(channelController:commandSymbol:provider:id:) instead. The userSearchController parameter is no longer used.")
     public convenience init(
         channelController: ChatChannelController,
         userSearchController: ChatUserSearchController? = nil,
