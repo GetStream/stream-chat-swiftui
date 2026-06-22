@@ -846,10 +846,10 @@ import SwiftUI
             mentionedRoles.remove(role)
         }
         mentionedGroups.removeAll { !text.contains("@\($0.name)") }
-        if mentionsHere, !text.contains("@here") {
+        if mentionsHere, !text.contains("@\(L10n.Composer.Suggestions.Mentions.Here.text)") {
             mentionsHere = false
         }
-        if mentionsChannel, !text.contains("@channel") {
+        if mentionsChannel, !text.contains("@\(L10n.Composer.Suggestions.Mentions.Channel.text)") {
             mentionsChannel = false
         }
     }
