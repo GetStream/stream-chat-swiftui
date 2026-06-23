@@ -529,9 +529,41 @@ internal enum L10n {
         internal static var header: String { L10n.tr("Localizable", "composer.suggestions.commands.header") }
       }
       internal enum Mentions {
-        /// User list, %d results
+        /// Mention suggestions, %d results
         internal static func accessibilityAnnouncement(_ p1: Int) -> String {
           return L10n.tr("Localizable", "composer.suggestions.mentions.accessibility-announcement", p1)
+        }
+        /// %1$@, %2$d of %3$d
+        internal static func accessibilityLabel(_ p1: Any, _ p2: Int, _ p3: Int) -> String {
+          return L10n.tr("Localizable", "composer.suggestions.mentions.accessibility-label", String(describing: p1), p2, p3)
+        }
+        internal enum Channel {
+          /// Notify everyone in this channel
+          internal static var description: String { L10n.tr("Localizable", "composer.suggestions.mentions.channel.description") }
+          /// channel
+          internal static var text: String { L10n.tr("Localizable", "composer.suggestions.mentions.channel.text") }
+          /// @channel
+          internal static var title: String { L10n.tr("Localizable", "composer.suggestions.mentions.channel.title") }
+        }
+        internal enum Group {
+          /// %d members
+          internal static func members(_ p1: Int) -> String {
+            return L10n.tr("Localizable", "composer.suggestions.mentions.group.members", p1)
+          }
+        }
+        internal enum Here {
+          /// Notify online members
+          internal static var description: String { L10n.tr("Localizable", "composer.suggestions.mentions.here.description") }
+          /// here
+          internal static var text: String { L10n.tr("Localizable", "composer.suggestions.mentions.here.text") }
+          /// @here
+          internal static var title: String { L10n.tr("Localizable", "composer.suggestions.mentions.here.title") }
+        }
+        internal enum Role {
+          /// Notify all %@ members
+          internal static func description(_ p1: Any) -> String {
+            return L10n.tr("Localizable", "composer.suggestions.mentions.role.description", String(describing: p1))
+          }
         }
       }
       internal enum User {

@@ -229,6 +229,9 @@
 				Tests/ChatChannel/Suggestions/CommandsHandler_Tests.swift,
 				Tests/ChatChannel/Suggestions/CommandSuggestionsView_Tests.swift,
 				Tests/ChatChannel/Suggestions/InstantCommandsHandler_Tests.swift,
+				Tests/ChatChannel/Suggestions/MentionsCommandHandler_Tests.swift,
+				Tests/ChatChannel/Suggestions/MentionSuggestion_Tests.swift,
+				Tests/ChatChannel/Suggestions/MentionSuggestionsView_Tests.swift,
 				Tests/ChatChannel/Suggestions/MuteCommandHandler_Tests.swift,
 				Tests/ChatChannel/Suggestions/TestCommandsConfig.swift,
 				Tests/ChatChannel/Suggestions/TypingSuggester_Tests.swift,
@@ -1520,20 +1523,20 @@
 				minimumVersion = 9.0.0;
 			};
 		};
-		84E7F9E02EFAF9BF00BA56A3 /* XCRemoteSwiftPackageReference "stream-chat-swift" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/GetStream/stream-chat-swift.git";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 5.5.1;
-			};
-		};
 		E3A1C01A282BAC66002D1E26 /* XCRemoteSwiftPackageReference "sentry-cocoa" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/getsentry/sentry-cocoa.git";
 			requirement = {
 				kind = upToNextMajorVersion;
 				minimumVersion = 8.30.0;
+			};
+		};
+		84E7F9E02EFAF9BF00BA56A3 /* XCRemoteSwiftPackageReference "stream-chat-swift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/GetStream/stream-chat-swift.git";
+			requirement = {
+				branch = develop;
+				kind = branch;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */

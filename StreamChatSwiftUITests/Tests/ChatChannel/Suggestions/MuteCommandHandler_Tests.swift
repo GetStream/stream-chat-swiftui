@@ -2,6 +2,7 @@
 // Copyright © 2026 Stream.io Inc. All rights reserved.
 //
 
+import Combine
 @testable import StreamChat
 @testable import StreamChatSwiftUI
 import XCTest
@@ -36,7 +37,7 @@ import XCTest
         XCTAssert(canBeExecuted == true)
     }
 
-    func test_muteCommandHandler_showSuggestions() {
+    func test_muteCommandHandler_showSuggestions() async {
         // Given
         let muteCommandHandler = makeMuteCommandHandler()
         let command = ComposerCommand(
@@ -49,16 +50,20 @@ import XCTest
         let expectation = expectation(description: "suggestions")
 
         // When
-        _ = muteCommandHandler.showSuggestions(for: command).sink { _ in
+        let cancellable = muteCommandHandler.showSuggestions(for: command).sink { _ in
             log.debug("finished showing suggestions")
         } receiveValue: { suggestionInfo in
             // Then
-            let users = suggestionInfo.value as! [ChatUser]
+            let suggestions = suggestionInfo.value as! [MentionSuggestion]
+            let users = suggestions.compactMap { suggestion -> ChatUser? in
+                (suggestion.kind as? MentionSuggestion.User)?.user
+            }
             XCTAssert(users.count == 3)
             expectation.fulfill()
         }
 
-        waitForExpectations(timeout: 5, handler: nil)
+        await fulfillment(of: [expectation], timeout: 5)
+        cancellable.cancel()
     }
 
     func test_unmuteCommandHandler_selectingUserToUnmute() {

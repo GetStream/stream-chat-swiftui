@@ -5,6 +5,7 @@
 import Foundation
 import StreamChat
 import StreamChatSwiftUI
+import SwiftUI
 
 final class AppConfiguration {
     @MainActor static let `default` = AppConfiguration()
@@ -45,5 +46,10 @@ final class AppConfiguration {
                 message.extraData["ai_generated"]?.boolValue == true
             }
         )
+    }
+
+    /// Builds the demo app's `CommandsConfig` using the enhanced mention suggestions provider.
+    @MainActor static func makeCommandsConfig() -> CommandsConfig {
+        EnhancedMentionsCommandsConfig()
     }
 }

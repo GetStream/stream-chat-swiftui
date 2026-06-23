@@ -11,28 +11,57 @@ public final class MentionsCommandHandler: CommandHandler {
     public let id: String
     public var displayInfo: CommandDisplayInfo?
 
-    private let mentionAllAppUsers: Bool
     private let typingSuggester: TypingSuggester
 
     private let channelController: ChatChannelController
-    private let userSearchController: ChatUserSearchController
+    private let provider: MentionSuggestionsProvider
 
-    public init(
+    /// Creates a new mentions command handler.
+    ///
+    /// - Parameters:
+    ///   - channelController: The controller of the channel the suggestions are provided for.
+    ///   - userSearchController: Deprecated and unused. User search is now performed through the
+    ///     ``MentionSuggestionsProvider``. The parameter is kept for source compatibility.
+    ///   - commandSymbol: The symbol that triggers the command (e.g. `@`).
+    ///   - mentionAllAppUsers: Whether user suggestions are searched across all app users.
+    ///   - id: The identifier of the command.
+    @available(*, deprecated, message: "Use init(channelController:commandSymbol:provider:id:) instead. The userSearchController parameter is no longer used.")
+    public convenience init(
         channelController: ChatChannelController,
         userSearchController: ChatUserSearchController? = nil,
         commandSymbol: String,
         mentionAllAppUsers: Bool,
         id: String = "mentions"
     ) {
+        self.init(
+            channelController: channelController,
+            commandSymbol: commandSymbol,
+            provider: DefaultMentionSuggestionsProvider(
+                client: channelController.client,
+                mentionAllAppUsers: mentionAllAppUsers
+            ),
+            id: id
+        )
+    }
+
+    /// Creates a new mentions command handler.
+    ///
+    /// - Parameters:
+    ///   - channelController: The controller of the channel the suggestions are provided for.
+    ///   - commandSymbol: The symbol that triggers the command (e.g. `@`).
+    ///   - provider: The provider used to compute the suggestions. When `nil`, the
+    ///     ``DefaultMentionSuggestionsProvider`` is used.
+    ///   - id: The identifier of the command.
+    public init(
+        channelController: ChatChannelController,
+        commandSymbol: String,
+        provider: MentionSuggestionsProvider? = nil,
+        id: String = "mentions"
+    ) {
         self.id = id
         self.channelController = channelController
-        self.mentionAllAppUsers = mentionAllAppUsers
+        self.provider = provider ?? DefaultMentionSuggestionsProvider(client: channelController.client)
         typingSuggester = TypingSuggester(options: .init(symbol: commandSymbol))
-        if let userSearchController {
-            self.userSearchController = userSearchController
-        } else {
-            self.userSearchController = channelController.client.userSearchController()
-        }
     }
 
     public func canHandleCommand(in text: String, caretLocation: Int) -> ComposerCommand? {
@@ -56,12 +85,19 @@ public final class MentionsCommandHandler: CommandHandler {
         command: Binding<ComposerCommand?>,
         extraData: [String: Any]
     ) {
-        guard let chatUser = extraData["chatUser"] as? ChatUser,
-              let typingSuggestionValue = command.wrappedValue?.typingSuggestion else {
+        guard let typingSuggestionValue = command.wrappedValue?.typingSuggestion else {
             return
         }
 
-        let mentionText = chatUser.mentionText
+        let mentionText: String
+        if let suggestion = extraData["mentionSuggestion"] as? MentionSuggestion {
+            mentionText = self.mentionText(for: suggestion)
+        } else if let chatUser = extraData["chatUser"] as? ChatUser {
+            mentionText = chatUser.mentionText
+        } else {
+            return
+        }
+
         let newText = (text.wrappedValue as NSString).replacingCharacters(
             in: typingSuggestionValue.locationRange,
             with: mentionText
@@ -87,83 +123,50 @@ public final class MentionsCommandHandler: CommandHandler {
         )
     }
 
+    func mentionText(for suggestion: MentionSuggestion) -> String {
+        switch suggestion.kind {
+        case let userSuggestion as MentionSuggestion.User:
+            return userSuggestion.user.mentionText
+        case is MentionSuggestion.Here:
+            return L10n.Composer.Suggestions.Mentions.Here.text
+        case is MentionSuggestion.Channel:
+            return L10n.Composer.Suggestions.Mentions.Channel.text
+        case let roleSuggestion as MentionSuggestion.Role:
+            return roleSuggestion.role.name
+        case let groupSuggestion as MentionSuggestion.Group:
+            return groupSuggestion.group.name
+        default:
+            return suggestion.id
+        }
+    }
+
     // MARK: - private
 
     private func showMentionSuggestions(
         for typingMention: String,
         mentionRange: NSRange
     ) -> Future<SuggestionInfo, Error> {
-        guard let channel = channelController.channel,
-              let currentUserId = channelController.client.currentUserId else {
-            return StreamChatError.missingData.asFailedPromise()
-        }
-
-        if mentionAllAppUsers {
-            return searchAllUsers(for: typingMention)
-        } else {
-            let users = searchUsers(
-                channel.lastActiveWatchers.map(\.self) + channel.lastActiveMembers.map(\.self),
-                by: typingMention,
-                excludingId: currentUserId
-            )
-            let suggestionInfo = SuggestionInfo(key: id, value: users)
-            return resolve(with: suggestionInfo)
-        }
-    }
-
-    /// searchUsers does an autocomplete search on a list of ChatUser and returns users with `id` or `name` containing the search string
-    /// results are returned sorted by their edit distance from the searched string
-    /// distance is calculated using the levenshtein algorithm
-    /// both search and name strings are normalized (lowercased and by replacing diacritics)
-    private func searchUsers(_ users: [ChatUser], by searchInput: String, excludingId: String? = nil) -> [ChatUser] {
-        let normalize: (String) -> String = {
-            $0.lowercased().folding(options: .diacriticInsensitive, locale: .current)
-        }
-
-        let searchInput = normalize(searchInput)
-
-        let matchingUsers = users.filter { $0.id != excludingId }
-            .filter { searchInput == "" || $0.id.contains(searchInput) || (normalize($0.name ?? "").contains(searchInput)) }
-
-        let distance: (ChatUser) -> Int = {
-            min($0.id.levenshtein(searchInput), $0.name?.levenshtein(searchInput) ?? 1000)
-        }
-
-        return Array(Set(matchingUsers)).sorted {
-            /// a tie breaker is needed here to avoid results from flickering
-            let dist = distance($0) - distance($1)
-            if dist == 0 {
-                return $0.id < $1.id
+        let id = id
+        return Future { [weak self] promise in
+            guard let self else {
+                promise(.success(SuggestionInfo(key: id, value: [MentionSuggestion]())))
+                return
             }
-            return dist < 0
-        }
-    }
-
-    private func queryForMentionSuggestionsSearch(typingMention term: String) -> UserListQuery {
-        UserListQuery(
-            filter: .or([
-                .autocomplete(.name, text: term),
-                .autocomplete(.id, text: term)
-            ]),
-            sort: [.init(key: .name, isAscending: true)]
-        )
-    }
-
-    private func searchAllUsers(for typingMention: String) -> Future<SuggestionInfo, Error> {
-        Future { [weak self] promise in
-            guard let self else { return }
             nonisolated(unsafe) let unsafePromise = promise
-            let query = queryForMentionSuggestionsSearch(typingMention: typingMention)
-            userSearchController.search(query: query) { error in
-                if let error {
-                    unsafePromise(.failure(error))
-                    return
-                }
-                let users = self.userSearchController.userArray
-                let suggestionInfo = SuggestionInfo(key: self.id, value: users)
-                unsafePromise(.success(suggestionInfo))
+            Task { @MainActor in
+                let suggestions = await self.makeSuggestions(for: typingMention)
+                unsafePromise(.success(SuggestionInfo(key: id, value: suggestions)))
             }
         }
+    }
+
+    @MainActor
+    private func makeSuggestions(for typingMention: String) async -> [MentionSuggestion] {
+        guard let channel = channelController.channel else {
+            return []
+        }
+        let request = MentionSuggestionsRequest(text: typingMention, channel: channel)
+        return (try? await provider.mentionSuggestions(for: request)) ?? []
     }
 }
 
