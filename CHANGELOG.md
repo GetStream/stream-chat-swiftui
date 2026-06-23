@@ -3,6 +3,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 # Upcoming
 
+### 🐞 Fixed
+- Keep the navigation bar and its buttons visible while searching in the add members screen [#1499](https://github.com/GetStream/stream-chat-swiftui/pull/1499)
+
 ### ✅ Added
 - Add support for enhanced mention suggestions [#1497](https://github.com/GetStream/stream-chat-swiftui/pull/1497)
 - Add `PollsConfig.maxQuestionLength` and `PollsConfig.maxOptionLength` to limit the character count of poll questions and options [#1500](https://github.com/GetStream/stream-chat-swiftui/pull/1500)
