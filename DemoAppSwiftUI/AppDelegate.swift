@@ -70,6 +70,7 @@ class AppDelegate: NSObject, UIApplicationDelegate {
         }
         
         let utils = Utils(
+            commandsConfig: AppConfiguration.makeCommandsConfig(),
             messageListConfig: AppConfiguration.makeMessageListConfig(),
             composerConfig: AppConfiguration.makeComposerConfig()
         )

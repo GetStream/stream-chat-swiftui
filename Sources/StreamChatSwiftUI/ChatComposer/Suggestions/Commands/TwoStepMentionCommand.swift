@@ -33,8 +33,7 @@ open class TwoStepMentionCommand: CommandHandler {
         self.mentionSymbol = mentionSymbol
         mentionsCommandHandler = MentionsCommandHandler(
             channelController: channelController,
-            commandSymbol: mentionSymbol,
-            mentionAllAppUsers: false
+            commandSymbol: mentionSymbol
         )
         self.displayInfo = displayInfo
     }

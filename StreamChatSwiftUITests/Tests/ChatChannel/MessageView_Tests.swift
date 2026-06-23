@@ -144,7 +144,69 @@ import XCTest
         // Then
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
-    
+
+    func test_attributedTextContent_highlightsAllMentionTypes() {
+        // Given
+        let message = ChatMessage.mock(
+            id: .unique,
+            cid: .unique,
+            text: "Hey @Martin and @Alexey, @here @channel @admin @Engineering let's chat",
+            author: .mock(id: .unique),
+            mentionedUsers: [
+                .mock(id: "martin", name: "Martin"),
+                .mock(id: "alexey", name: "Alexey")
+            ],
+            mentionedHere: true,
+            mentionedChannel: true,
+            mentionedGroups: [.init(id: "eng", name: "Engineering")],
+            mentionedRoles: ["admin"]
+        )
+
+        // When
+        let attributed = message.attributedTextContent(
+            layoutDirection: .leftToRight,
+            translationLanguage: nil
+        )
+
+        // Then
+        let mentionTexts = attributed.runs.compactMap { run -> String? in
+            guard let link = run.link, link.scheme == "getstream" else { return nil }
+            return String(attributed[run.range].characters)
+        }
+        XCTAssertEqual(
+            Set(mentionTexts),
+            ["@Martin", "@Alexey", "@here", "@channel", "@admin", "@Engineering"]
+        )
+    }
+
+    func test_messageViewTextMentionAllTypes_snapshot() {
+        // Given
+        let textMessage = ChatMessage.mock(
+            id: .unique,
+            cid: .unique,
+            text: "Hey @Martin, @here @channel @admin @Engineering let's chat",
+            author: .mock(id: .unique),
+            mentionedUsers: [.mock(id: "martin", name: "Martin")],
+            mentionedHere: true,
+            mentionedChannel: true,
+            mentionedGroups: [.init(id: "eng", name: "Engineering")],
+            mentionedRoles: ["admin"]
+        )
+
+        // When
+        let view = MessageView(
+            factory: DefaultViewFactory.shared,
+            message: textMessage,
+            contentWidth: defaultScreenSize.width,
+            isFirst: true,
+            scrolledId: .constant(nil)
+        )
+        .frame(width: defaultScreenSize.width, height: 100)
+
+        // Then
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
+    }
+
     func test_messageViewImage_snapshot() {
         // Given
         let imageMessage = ChatMessage.mock(

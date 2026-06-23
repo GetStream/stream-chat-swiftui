@@ -152,14 +152,19 @@ extension ChatMessage {
         // Links and mentions
         if utils.messageListConfig.localLinkDetectionEnabled {
             for user in mentionedUsers {
-                let mention = "@\(user.name ?? user.id)"
-                let ranges = attributedString.ranges(of: mention, options: [.caseInsensitive])
-                for range in ranges {
-                    if let messageId = messageId.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed),
-                       let url = URL(string: "getstream://mention/\(messageId)/\(user.id)") {
-                        attributedString[range].link = url
-                    }
-                }
+                addMentionLink(for: user.name ?? user.id, mentionId: user.id, in: &attributedString)
+            }
+            for role in mentionedRoles {
+                addMentionLink(for: role, mentionId: role, in: &attributedString)
+            }
+            for group in mentionedGroups {
+                addMentionLink(for: group.name, mentionId: group.id, in: &attributedString)
+            }
+            if mentionedHere {
+                addMentionLink(for: "here", mentionId: "here", in: &attributedString)
+            }
+            if mentionedChannel {
+                addMentionLink(for: "channel", mentionId: "channel", in: &attributedString)
             }
             for link in utils.linkDetector.links(in: String(attributedString.characters)) {
                 if let attributedStringRange = Range(link.range, in: attributedString) {
@@ -184,6 +189,29 @@ extension ChatMessage {
         }
 
         return attributedString
+    }
+
+    /// Adds a mention link to all occurrences of `@<mentionText>` in the attributed string.
+    ///
+    /// - Parameters:
+    ///   - mentionText: The text following the `@` symbol (e.g. a user name, role or group).
+    ///   - mentionId: The identifier used to build the mention link.
+    ///   - attributedString: The attributed string to update.
+    @MainActor private func addMentionLink(
+        for mentionText: String,
+        mentionId: String,
+        in attributedString: inout AttributedString
+    ) {
+        let mention = "@\(mentionText)"
+        let ranges = attributedString.ranges(of: mention, options: [.caseInsensitive])
+        guard !ranges.isEmpty,
+              let encodedMessageId = messageId.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed),
+              let encodedMentionId = mentionId.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed),
+              let url = URL(string: "getstream://mention/\(encodedMessageId)/\(encodedMentionId)")
+        else { return }
+        for range in ranges {
+            attributedString[range].link = url
+        }
     }
 }
 

@@ -76,13 +76,3 @@ extension ChatChannel {
         DateUtils.timeAgo
     }
 }
-
-extension ChatUser {
-    var mentionText: String {
-        if let name, !name.isEmpty {
-            name
-        } else {
-            id
-        }
-    }
-}
