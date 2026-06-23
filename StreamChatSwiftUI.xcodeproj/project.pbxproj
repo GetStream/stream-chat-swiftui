@@ -272,6 +272,7 @@
 				Tests/Utils/ReactionsIconProvider_Tests.swift,
 				Tests/Utils/SortReactions_Tests.swift,
 				Tests/Utils/StreamChat_Utils_Tests.swift,
+				Tests/Utils/StreamImageDownloader_Tests.swift,
 				Tests/Utils/StringExtensions_Tests.swift,
 				Tests/Utils/URLUtils_Tests.swift,
 				Tests/Utils/ViewFactory_Tests.swift,

@@ -152,10 +152,30 @@ extension UserAvatar {
         formatter.style = .abbreviated
         return formatter
     }()
-    
+
+    /// Memoizes computed initials by name. `PersonNameComponentsFormatter` is
+    /// locale-aware and comparatively expensive, and the same names recur across
+    /// many avatars while scrolling, so caching avoids repeating the work on the
+    /// main thread for every cell.
+    private static let initialsCache: NSCache<NSString, NSString> = {
+        let cache = NSCache<NSString, NSString>()
+        cache.countLimit = 1000
+        return cache
+    }()
+
     static func initials(from name: String) -> String {
         guard !name.isEmpty else { return "" }
-        guard let components = initialsFormatter.personNameComponents(from: name) else { return "" }
-        return initialsFormatter.string(from: components)
+        let key = name as NSString
+        if let cached = initialsCache.object(forKey: key) {
+            return cached as String
+        }
+        let initials: String
+        if let components = initialsFormatter.personNameComponents(from: name) {
+            initials = initialsFormatter.string(from: components)
+        } else {
+            initials = ""
+        }
+        initialsCache.setObject(initials as NSString, forKey: key)
+        return initials
     }
 }

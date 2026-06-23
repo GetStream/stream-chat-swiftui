@@ -52,4 +52,31 @@ final class UserAvatar_Tests: StreamChatTestCase {
         // Then
         AssertSnapshot(view, size: size)
     }
+
+    // MARK: - Initials
+
+    func test_initials_returnsExpectedInitials() {
+        XCTAssertEqual(UserAvatar.initials(from: "John Doe"), "JD")
+        XCTAssertEqual(UserAvatar.initials(from: "Jane Smith"), "JS")
+    }
+
+    func test_initials_emptyName_returnsEmptyString() {
+        XCTAssertEqual(UserAvatar.initials(from: ""), "")
+    }
+
+    func test_initials_repeatedCalls_returnSameValue() {
+        // The second lookup is served from the cache and must match the first.
+        let first = UserAvatar.initials(from: "Ada Lovelace")
+        let second = UserAvatar.initials(from: "Ada Lovelace")
+        XCTAssertEqual(first, second)
+    }
+
+    func test_initials_caching_doesNotLeakBetweenNames() {
+        // Interleaving distinct names must not return another name's cached value.
+        let firstBefore = UserAvatar.initials(from: "Grace Hopper")
+        let other = UserAvatar.initials(from: "Alan Turing")
+        let firstAfter = UserAvatar.initials(from: "Grace Hopper")
+        XCTAssertEqual(firstBefore, firstAfter)
+        XCTAssertNotEqual(firstBefore, other)
+    }
 }
