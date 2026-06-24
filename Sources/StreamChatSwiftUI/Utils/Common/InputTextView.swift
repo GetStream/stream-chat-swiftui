@@ -28,6 +28,8 @@ class InputTextView: UITextView, AccessibilityView {
     @Injected(\.colors) private var colors
     @Injected(\.utils) private var utils
 
+    private var didRequestInitialVoiceOverFocus = false
+
     /// Label used as placeholder for textView when it's empty.
     open private(set) lazy var placeholderLabel: UILabel = UILabel()
         .withoutAutoresizingMaskConstraints
@@ -87,6 +89,15 @@ class InputTextView: UITextView, AccessibilityView {
         setUpAppearance()
     }
 
+    override open func didMoveToWindow() {
+        super.didMoveToWindow()
+        guard window != nil,
+              !didRequestInitialVoiceOverFocus,
+              UIAccessibility.isVoiceOverRunning else { return }
+        didRequestInitialVoiceOverFocus = true
+        UIAccessibility.post(notification: .screenChanged, argument: self)
+    }
+
     open func setUp() {
         NotificationCenter.default.addObserver(
             self,
@@ -135,6 +146,7 @@ class InputTextView: UITextView, AccessibilityView {
 
     open func setUpLayout() {
         addSubview(placeholderLabel)
+        placeholderLabel.isAccessibilityElement = false
         placeholderLabel.setContentCompressionResistancePriority(.streamLow, for: .horizontal)
         NSLayoutConstraint.activate([
             placeholderLabel.leadingAnchor.pin(equalTo: leadingAnchor, constant: directionalLayoutMargins.leading),
