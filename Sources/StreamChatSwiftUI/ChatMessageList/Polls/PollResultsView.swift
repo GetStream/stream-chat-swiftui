@@ -69,6 +69,7 @@ struct PollResultsView<Factory: ViewFactory>: View {
         .cornerRadius(tokens.radiusLg)
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(PollAccessibility.questionLabel(question: L10n.Message.Polls.question, name: viewModel.poll.name))
+        .accessibilityAddTraits(.isHeader)
     }
 
     private var optionsSection: some View {
@@ -149,6 +150,7 @@ struct PollOptionResultsView<Factory: ViewFactory>: View {
         .padding(.bottom, votes.isEmpty && !allButtonShown ? tokens.spacingMd : 0)
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(optionHeadingAccessibilityLabel)
+        .accessibilityAddTraits(.isHeader)
     }
 
     private var optionHeadingAccessibilityLabel: String {
