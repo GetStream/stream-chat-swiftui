@@ -23,7 +23,6 @@ struct SendInChannelView: View {
                 checkbox
                 Text(L10n.Composer.Checkmark.channelReply)
                     .font(fonts.footnote)
-                    .lineLimit(1)
                     .foregroundColor(sendInChannel ? Color(colors.textPrimary) : Color(colors.textTertiary))
                 Spacer()
             }
