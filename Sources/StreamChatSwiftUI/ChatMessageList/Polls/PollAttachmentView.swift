@@ -55,6 +55,9 @@ public struct PollAttachmentView<Factory: ViewFactory>: View {
                     Spacer()
                 }
             }
+            .accessibilityElement(children: .ignore)
+            .accessibilityLabel(headerAccessibilityLabel)
+            .accessibilityAddTraits(.isHeader)
 
             VStack(spacing: tokens.spacingMd) {
                 ForEach(options.prefix(PollAttachmentViewModel.numberOfVisibleOptionsShown)) { option in
@@ -195,6 +198,10 @@ public struct PollAttachmentView<Factory: ViewFactory>: View {
 
     private var options: [PollOption] {
         poll.options
+    }
+
+    private var headerAccessibilityLabel: String {
+        L10n.Message.Polls.Accessibility.pollHeader(poll.name, subtitleText, options.count)
     }
 
     private var subtitleText: String {

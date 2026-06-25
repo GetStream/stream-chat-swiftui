@@ -782,6 +782,12 @@ internal enum L10n {
       internal static func votesTotal(_ p1: Int) -> String {
         return L10n.tr("Localizable", "message.polls.votes-total", p1)
       }
+      internal enum Accessibility {
+        /// Poll: %1$@. %2$@. %3$d options
+        internal static func pollHeader(_ p1: Any, _ p2: Any, _ p3: Int) -> String {
+          return L10n.tr("Localizable", "message.polls.accessibility.poll-header", String(describing: p1), String(describing: p2), p3)
+        }
+      }
       internal enum Button {
         /// Add a Comment
         internal static var addComment: String { L10n.tr("Localizable", "message.polls.button.addComment") }

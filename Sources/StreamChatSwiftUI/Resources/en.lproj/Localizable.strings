@@ -79,6 +79,7 @@
 "message.reactions.more" = "More reactions";
 "message.reactions.tap-to-remove" = "Tap to remove";
 
+"message.polls.accessibility.poll-header" = "Poll: %1$@. %2$@. %3$d options";
 "message.polls.button.addComment" = "Add a Comment";
 "message.polls.button.updateComment" = "Update Your Comment";
 "message.polls.button.endVote" = "End Poll";
