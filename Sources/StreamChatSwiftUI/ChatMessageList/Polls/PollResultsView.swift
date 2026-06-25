@@ -147,6 +147,22 @@ struct PollOptionResultsView<Factory: ViewFactory>: View {
         .padding(.horizontal, tokens.spacingMd)
         .padding(.top, tokens.spacingMd)
         .padding(.bottom, votes.isEmpty && !allButtonShown ? tokens.spacingMd : 0)
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel(optionHeadingAccessibilityLabel)
+    }
+
+    private var optionHeadingAccessibilityLabel: String {
+        var parts: [String] = []
+        if let optionIndex {
+            parts.append("\(L10n.Message.Polls.option(optionIndex)): \(option.text)")
+        } else {
+            parts.append(option.text)
+        }
+        if hasMostVotes {
+            parts.append(L10n.Message.Polls.Accessibility.leadingOption)
+        }
+        parts.append(voteCountText)
+        return parts.joined(separator: ", ")
     }
 
     private var votesLabel: some View {
@@ -156,6 +172,7 @@ struct PollOptionResultsView<Factory: ViewFactory>: View {
                     .resizable()
                     .aspectRatio(contentMode: .fit)
                     .frame(width: tokens.iconSizeMd, height: tokens.iconSizeMd)
+                    .accessibilityHidden(true)
             }
             Text(voteCountText)
                 .font(fonts.body)
@@ -194,6 +211,7 @@ struct PollOptionResultsView<Factory: ViewFactory>: View {
                         showsIndicator: false
                     )
                 )
+                .accessibilityHidden(true)
             }
             Text(vote.user?.name ?? (vote.user?.id ?? L10n.Message.Polls.unknownVoteAuthor))
                 .font(fonts.body)
@@ -208,6 +226,14 @@ struct PollOptionResultsView<Factory: ViewFactory>: View {
         .padding(.horizontal, tokens.spacingMd)
         .padding(.vertical, tokens.spacingXs)
         .frame(minHeight: 40)
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel(voterRowAccessibilityLabel(for: vote))
+    }
+
+    private func voterRowAccessibilityLabel(for vote: PollVote) -> String {
+        let name = vote.user?.name ?? (vote.user?.id ?? L10n.Message.Polls.unknownVoteAuthor)
+        let date = utils.pollsDateFormatter.formatDay(vote.createdAt)
+        return L10n.Message.Polls.Accessibility.voter(name, date)
     }
 
     // MARK: - View All Button
