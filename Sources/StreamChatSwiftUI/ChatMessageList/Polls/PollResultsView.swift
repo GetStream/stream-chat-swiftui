@@ -68,7 +68,7 @@ struct PollResultsView<Factory: ViewFactory>: View {
         .background(Color(colors.backgroundCoreSurfaceCard))
         .cornerRadius(tokens.radiusLg)
         .accessibilityElement(children: .ignore)
-        .accessibilityLabel("\(L10n.Message.Polls.question). \(viewModel.poll.name)")
+        .accessibilityLabel(PollAccessibility.questionLabel(question: L10n.Message.Polls.question, name: viewModel.poll.name))
     }
 
     private var optionsSection: some View {
@@ -152,17 +152,12 @@ struct PollOptionResultsView<Factory: ViewFactory>: View {
     }
 
     private var optionHeadingAccessibilityLabel: String {
-        var parts: [String] = []
-        if let optionIndex {
-            parts.append("\(L10n.Message.Polls.option(optionIndex)): \(option.text)")
-        } else {
-            parts.append(option.text)
-        }
-        if hasMostVotes {
-            parts.append(L10n.Message.Polls.Accessibility.leadingOption)
-        }
-        parts.append(voteCountText)
-        return parts.joined(separator: ", ")
+        PollAccessibility.resultsOptionHeadingLabel(
+            optionIndex: optionIndex,
+            optionText: option.text,
+            hasMostVotes: hasMostVotes,
+            voteCount: poll.voteCountsByOption?[option.id] ?? 0
+        )
     }
 
     private var votesLabel: some View {
@@ -233,7 +228,7 @@ struct PollOptionResultsView<Factory: ViewFactory>: View {
     private func voterRowAccessibilityLabel(for vote: PollVote) -> String {
         let name = vote.user?.name ?? (vote.user?.id ?? L10n.Message.Polls.unknownVoteAuthor)
         let date = utils.pollsDateFormatter.formatDay(vote.createdAt)
-        return L10n.Message.Polls.Accessibility.voter(name, date)
+        return PollAccessibility.voterLabel(name: name, date: date)
     }
 
     // MARK: - View All Button

@@ -206,7 +206,7 @@ public struct PollAttachmentView<Factory: ViewFactory>: View {
     }
 
     private var headerAccessibilityLabel: String {
-        L10n.Message.Polls.Accessibility.pollHeader(poll.name, subtitleText, options.count)
+        PollAccessibility.headerLabel(name: poll.name, subtitle: subtitleText, optionsCount: options.count)
     }
 
     private var subtitleText: String {
@@ -309,24 +309,13 @@ struct PollOptionView<Factory: ViewFactory>: View {
     }
 
     private var accessibilityLabel: String {
-        let isSelected = viewModel.optionVotedByCurrentUser(option)
-        let stateText = isSelected
-            ? L10n.Message.Polls.Accessibility.selected
-            : L10n.Message.Polls.Accessibility.notSelected
-        let count = viewModel.poll.voteCountsByOption?[option.id] ?? 0
-        let votesText: String
-        if isSelected, count > 1 {
-            votesText = L10n.Message.Polls.Accessibility.votesIncludingYours(count)
-        } else if count == 1 {
-            votesText = L10n.Message.Polls.voteSingular(count)
-        } else {
-            votesText = L10n.Message.Polls.votes(count)
-        }
-        var label = L10n.Message.Polls.Accessibility.option(option.text, stateText, votesText)
-        if let optionIndex, let optionsCount {
-            label += ". " + L10n.Message.Polls.Accessibility.optionPosition(optionIndex, optionsCount)
-        }
-        return label
+        PollAccessibility.optionLabel(
+            text: option.text,
+            isSelected: viewModel.optionVotedByCurrentUser(option),
+            voteCount: viewModel.poll.voteCountsByOption?[option.id] ?? 0,
+            optionIndex: optionIndex,
+            optionsCount: optionsCount
+        )
     }
 
     func togglePollVote() {
@@ -374,5 +363,92 @@ struct PollVotesIndicatorView: View {
 
     var ratio: CGFloat {
         CGFloat(optionVotes) / CGFloat(max(maxVotes, 1))
+    }
+}
+
+/// Builders for the VoiceOver accessibility labels used across the poll views.
+///
+/// The label-construction logic lives here, rather than inline in the views, so
+/// that the branching (selection state, vote-count wording, option position,
+/// leading option) can be unit tested directly without rendering a view.
+enum PollAccessibility {
+    /// Combined label for the poll header.
+    ///
+    /// Example: "Poll: Where to eat?. Select one. 4 options".
+    static func headerLabel(name: String, subtitle: String, optionsCount: Int) -> String {
+        L10n.Message.Polls.Accessibility.pollHeader(name, subtitle, optionsCount)
+    }
+
+    /// Combined label for a single poll option in the message bubble.
+    ///
+    /// Examples:
+    /// - "Pizza, not selected, 0 votes. Option 2 of 4"
+    /// - "Pizza, selected, 1 vote. Option 1 of 4"
+    /// - "Pizza, selected, 3 votes including yours. Option 1 of 4"
+    static func optionLabel(
+        text: String,
+        isSelected: Bool,
+        voteCount: Int,
+        optionIndex: Int?,
+        optionsCount: Int?
+    ) -> String {
+        let stateText = isSelected
+            ? L10n.Message.Polls.Accessibility.selected
+            : L10n.Message.Polls.Accessibility.notSelected
+        let votesText: String
+        if isSelected, voteCount > 1 {
+            votesText = L10n.Message.Polls.Accessibility.votesIncludingYours(voteCount)
+        } else if voteCount == 1 {
+            votesText = L10n.Message.Polls.voteSingular(voteCount)
+        } else {
+            votesText = L10n.Message.Polls.votes(voteCount)
+        }
+        var label = L10n.Message.Polls.Accessibility.option(text, stateText, votesText)
+        if let optionIndex, let optionsCount {
+            label += ". " + L10n.Message.Polls.Accessibility.optionPosition(optionIndex, optionsCount)
+        }
+        return label
+    }
+
+    /// Combined label for the poll results question section.
+    ///
+    /// Example: "Question. Where to eat?".
+    static func questionLabel(question: String, name: String) -> String {
+        "\(question). \(name)"
+    }
+
+    /// Combined label for an option heading on the poll results screen.
+    ///
+    /// Examples:
+    /// - "Option 1: Pizza, Leading option, 3 votes"
+    /// - "Option 2: Sushi, 0 votes"
+    static func resultsOptionHeadingLabel(
+        optionIndex: Int?,
+        optionText: String,
+        hasMostVotes: Bool,
+        voteCount: Int
+    ) -> String {
+        var parts: [String] = []
+        if let optionIndex {
+            parts.append("\(L10n.Message.Polls.option(optionIndex)): \(optionText)")
+        } else {
+            parts.append(optionText)
+        }
+        if hasMostVotes {
+            parts.append(L10n.Message.Polls.Accessibility.leadingOption)
+        }
+        parts.append(
+            voteCount == 1
+                ? L10n.Message.Polls.voteSingular(voteCount)
+                : L10n.Message.Polls.votes(voteCount)
+        )
+        return parts.joined(separator: ", ")
+    }
+
+    /// Combined label for a voter row on the poll results screen.
+    ///
+    /// Example: "Luke Skywalker, voted 09/04/26".
+    static func voterLabel(name: String, date: String) -> String {
+        L10n.Message.Polls.Accessibility.voter(name, date)
     }
 }
