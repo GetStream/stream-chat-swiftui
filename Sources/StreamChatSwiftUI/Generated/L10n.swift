@@ -783,9 +783,25 @@ internal enum L10n {
         return L10n.tr("Localizable", "message.polls.votes-total", p1)
       }
       internal enum Accessibility {
+        /// not selected
+        internal static var notSelected: String { L10n.tr("Localizable", "message.polls.accessibility.not-selected") }
+        /// %1$@, %2$@, %3$@
+        internal static func option(_ p1: Any, _ p2: Any, _ p3: Any) -> String {
+          return L10n.tr("Localizable", "message.polls.accessibility.option", String(describing: p1), String(describing: p2), String(describing: p3))
+        }
+        /// Option %1$d of %2$d
+        internal static func optionPosition(_ p1: Int, _ p2: Int) -> String {
+          return L10n.tr("Localizable", "message.polls.accessibility.option-position", p1, p2)
+        }
         /// Poll: %1$@. %2$@. %3$d options
         internal static func pollHeader(_ p1: Any, _ p2: Any, _ p3: Int) -> String {
           return L10n.tr("Localizable", "message.polls.accessibility.poll-header", String(describing: p1), String(describing: p2), p3)
+        }
+        /// selected
+        internal static var selected: String { L10n.tr("Localizable", "message.polls.accessibility.selected") }
+        /// %d votes including yours
+        internal static func votesIncludingYours(_ p1: Int) -> String {
+          return L10n.tr("Localizable", "message.polls.accessibility.votes-including-yours", p1)
         }
       }
       internal enum Button {

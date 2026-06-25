@@ -80,6 +80,11 @@
 "message.reactions.tap-to-remove" = "Tap to remove";
 
 "message.polls.accessibility.poll-header" = "Poll: %1$@. %2$@. %3$d options";
+"message.polls.accessibility.option" = "%1$@, %2$@, %3$@";
+"message.polls.accessibility.option-position" = "Option %1$d of %2$d";
+"message.polls.accessibility.selected" = "selected";
+"message.polls.accessibility.not-selected" = "not selected";
+"message.polls.accessibility.votes-including-yours" = "%d votes including yours";
 "message.polls.button.addComment" = "Add a Comment";
 "message.polls.button.updateComment" = "Update Your Comment";
 "message.polls.button.endVote" = "End Poll";

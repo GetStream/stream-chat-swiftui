@@ -60,14 +60,19 @@ public struct PollAttachmentView<Factory: ViewFactory>: View {
             .accessibilityAddTraits(.isHeader)
 
             VStack(spacing: tokens.spacingMd) {
-                ForEach(options.prefix(PollAttachmentViewModel.numberOfVisibleOptionsShown)) { option in
+                ForEach(
+                    Array(options.prefix(PollAttachmentViewModel.numberOfVisibleOptionsShown).enumerated()),
+                    id: \.element.id
+                ) { index, option in
                     PollOptionView(
                         viewModel: viewModel,
                         factory: factory,
                         option: option,
                         optionVotes: poll.voteCount(for: option),
                         maxVotes: poll.currentMaximumVoteCount,
-                        message: message
+                        message: message,
+                        optionIndex: index + 1,
+                        optionsCount: options.count
                     )
                     .layoutPriority(1) // do not compress long text
                 }
@@ -233,6 +238,10 @@ struct PollOptionView<Factory: ViewFactory>: View {
     /// If true, forces incoming color style for the radio button border and progress track,
     /// regardless of whether the message was sent by the current user.
     var forceIncomingStyle: Bool = false
+    /// The 1-based position of this option, used for the VoiceOver announcement.
+    var optionIndex: Int?
+    /// The total number of options, used for the VoiceOver announcement.
+    var optionsCount: Int?
 
     var body: some View {
         HStack(alignment: .top, spacing: tokens.spacingSm) {
@@ -290,6 +299,34 @@ struct PollOptionView<Factory: ViewFactory>: View {
         .onTapGesture {
             togglePollVote()
         }
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel(accessibilityLabel)
+        .accessibilityAddTraits(viewModel.poll.isClosed ? [] : .isButton)
+        .accessibilityAction {
+            guard !viewModel.poll.isClosed else { return }
+            togglePollVote()
+        }
+    }
+
+    private var accessibilityLabel: String {
+        let isSelected = viewModel.optionVotedByCurrentUser(option)
+        let stateText = isSelected
+            ? L10n.Message.Polls.Accessibility.selected
+            : L10n.Message.Polls.Accessibility.notSelected
+        let count = viewModel.poll.voteCountsByOption?[option.id] ?? 0
+        let votesText: String
+        if isSelected, count > 1 {
+            votesText = L10n.Message.Polls.Accessibility.votesIncludingYours(count)
+        } else if count == 1 {
+            votesText = L10n.Message.Polls.voteSingular(count)
+        } else {
+            votesText = L10n.Message.Polls.votes(count)
+        }
+        var label = L10n.Message.Polls.Accessibility.option(option.text, stateText, votesText)
+        if let optionIndex, let optionsCount {
+            label += ". " + L10n.Message.Polls.Accessibility.optionPosition(optionIndex, optionsCount)
+        }
+        return label
     }
 
     func togglePollVote() {

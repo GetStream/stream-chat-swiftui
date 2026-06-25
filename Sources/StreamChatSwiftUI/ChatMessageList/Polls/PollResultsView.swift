@@ -67,6 +67,8 @@ struct PollResultsView<Factory: ViewFactory>: View {
         .padding(tokens.spacingMd)
         .background(Color(colors.backgroundCoreSurfaceCard))
         .cornerRadius(tokens.radiusLg)
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel("\(L10n.Message.Polls.question). \(viewModel.poll.name)")
     }
 
     private var optionsSection: some View {
