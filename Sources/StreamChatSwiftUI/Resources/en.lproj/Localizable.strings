@@ -147,6 +147,12 @@
 "message.only-visible-to-you" = "Only visible to you";
 "message.deleted-message-placeholder" = "Message deleted";
 "message.accessibility.system-message" = "System message: %@";
+"message.accessibility.actions" = "Message actions";
+"message.accessibility.you" = "You";
+"message.accessibility.sent-time" = "at %@";
+"message.accessibility.status-sent" = "sent";
+"message.accessibility.status-delivered" = "delivered";
+"message.accessibility.status-read" = "read";
 "message.accessibility.voice-recording" = "Voice message from %1$@, %2$@, at %3$@. Activate to play.";
 "message.accessibility.voice-recording-own" = "Your voice message, %1$@, at %2$@. Activate to play.";
 "message.accessibility.playback-speed" = "Playback speed";
