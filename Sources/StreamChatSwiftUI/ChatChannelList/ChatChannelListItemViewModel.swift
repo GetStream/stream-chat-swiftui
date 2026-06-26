@@ -179,6 +179,78 @@ import SwiftUI
         return utils.messageAttachmentPreviewIconProvider.image(for: previewIcon)
     }
 
+    // MARK: - Accessibility
+
+    /// A combined VoiceOver label that describes the whole channel list item as
+    /// a single element: name, conversation type, member count, unread state and
+    /// a contextual summary of the latest activity (message, draft or deleted).
+    open var accessibilityLabel: String {
+        var sentences: [String] = []
+
+        var header = [channelName]
+        if isDirectMessageChannel {
+            header.append(L10n.Channel.Item.Accessibility.directMessage)
+        } else {
+            header.append(L10n.Channel.Item.Accessibility.groupChat)
+            header.append(memberCountText)
+        }
+        sentences.append(header.joined(separator: ", "))
+
+        if isMuted {
+            sentences.append(L10n.Channel.Item.Accessibility.muted)
+        }
+
+        if hasUnread, unreadCount > 0 {
+            sentences.append(unreadText)
+        }
+
+        sentences.append(contentsOf: previewAccessibilitySentences)
+
+        return sentences.joined(separator: ". ")
+    }
+
+    private var isDirectMessageChannel: Bool {
+        channel.isDirectMessageChannel && channel.memberCount == 2
+    }
+
+    private var memberCountText: String {
+        L10n.Channel.Item.Accessibility.memberCount(channel.memberCount)
+    }
+
+    private var unreadText: String {
+        L10n.Channel.Item.Accessibility.unreadCount(unreadCount)
+    }
+
+    private var previewAccessibilitySentences: [String] {
+        if lastMessageFailedToSend {
+            return [L10n.Channel.Item.messageFailedToSend]
+        }
+        if isDraftMessagesEnabled, let draftText = draftMessageText {
+            var sentences = [L10n.Channel.Item.Accessibility.draft(draftText)]
+            if !timestampText.isEmpty {
+                sentences.append(L10n.Channel.Item.Accessibility.lastMessageTime(timestampText))
+            }
+            return sentences
+        }
+        guard let previewMessage else {
+            return [L10n.Channel.Item.emptyMessages]
+        }
+        if previewMessage.isDeleted {
+            return [L10n.Message.deletedMessagePlaceholder]
+        }
+        let sender = previewMessage.isSentByCurrentUser
+            ? L10n.Channel.Item.Accessibility.you
+            : (previewMessage.author.name ?? previewMessage.author.id)
+        let preview = utils.messagePreviewFormatter.formatContent(for: previewMessage, in: channel)
+        if showReadEvents {
+            let status = readUsers.isEmpty
+                ? L10n.Channel.Item.Accessibility.sent
+                : L10n.Channel.Item.Accessibility.sentAndRead
+            return [L10n.Channel.Item.Accessibility.lastMessageWithStatus(sender, timestampText, status, preview)]
+        }
+        return [L10n.Channel.Item.Accessibility.lastMessage(sender, timestampText, preview)]
+    }
+
     // MARK: - Private
 
     private let providedChannelName: String

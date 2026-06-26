@@ -18,6 +18,17 @@
 "channel.item.muted" = "Channel is muted";
 "channel.item.mute" = "Mute";
 "channel.item.unmute" = "Unmute";
+"channel.item.accessibility.direct-message" = "direct message";
+"channel.item.accessibility.group-chat" = "group chat";
+"channel.item.accessibility.muted" = "Muted";
+"channel.item.accessibility.you" = "you";
+"channel.item.accessibility.sent" = "sent";
+"channel.item.accessibility.sent-and-read" = "sent and read";
+"channel.item.accessibility.last-message" = "Last message from %1$@ at %2$@: %3$@";
+"channel.item.accessibility.last-message-with-status" = "Last message from %1$@ at %2$@, %3$@: %4$@";
+"channel.item.accessibility.last-message-time" = "Last message %@";
+"channel.item.accessibility.draft" = "Draft message: %@";
+"channel.item.accessibility.open-hint" = "Opens the conversation";
 "channel.name.direct-message" = "user";
 "channel.name.group" = "group";
 
