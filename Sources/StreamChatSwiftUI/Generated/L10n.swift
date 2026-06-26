@@ -640,6 +640,20 @@ internal enum L10n {
     internal enum Accessibility {
       /// Message actions
       internal static var actions: String { L10n.tr("Localizable", "message.accessibility.actions") }
+      /// Image from %1$@, sent at %2$@. Activate to open.
+      internal static func image(_ p1: Any, _ p2: Any) -> String {
+        return L10n.tr("Localizable", "message.accessibility.image", String(describing: p1), String(describing: p2))
+      }
+      /// Your image, sent at %1$@. Activate to open.
+      internal static func imageOwn(_ p1: Any) -> String {
+        return L10n.tr("Localizable", "message.accessibility.image-own", String(describing: p1))
+      }
+      /// Your image. Activate to open.
+      internal static var imageOwnWithoutTimestamp: String { L10n.tr("Localizable", "message.accessibility.image-own-without-timestamp") }
+      /// Image from %1$@. Activate to open.
+      internal static func imageWithoutTimestamp(_ p1: Any) -> String {
+        return L10n.tr("Localizable", "message.accessibility.image-without-timestamp", String(describing: p1))
+      }
       /// Playback speed
       internal static var playbackSpeed: String { L10n.tr("Localizable", "message.accessibility.playback-speed") }
       /// at %@
@@ -655,6 +669,36 @@ internal enum L10n {
       /// System message: %@
       internal static func systemMessage(_ p1: Any) -> String {
         return L10n.tr("Localizable", "message.accessibility.system-message", String(describing: p1))
+      }
+      /// Video from %1$@, sent at %2$@. Activate to play.
+      internal static func video(_ p1: Any, _ p2: Any) -> String {
+        return L10n.tr("Localizable", "message.accessibility.video", String(describing: p1), String(describing: p2))
+      }
+      /// Your video, sent at %1$@. Activate to play.
+      internal static func videoOwn(_ p1: Any) -> String {
+        return L10n.tr("Localizable", "message.accessibility.video-own", String(describing: p1))
+      }
+      /// Your video, %1$@, sent at %2$@. Activate to play.
+      internal static func videoOwnWithDuration(_ p1: Any, _ p2: Any) -> String {
+        return L10n.tr("Localizable", "message.accessibility.video-own-with-duration", String(describing: p1), String(describing: p2))
+      }
+      /// Your video, %1$@. Activate to play.
+      internal static func videoOwnWithDurationWithoutTimestamp(_ p1: Any) -> String {
+        return L10n.tr("Localizable", "message.accessibility.video-own-with-duration-without-timestamp", String(describing: p1))
+      }
+      /// Your video. Activate to play.
+      internal static var videoOwnWithoutTimestamp: String { L10n.tr("Localizable", "message.accessibility.video-own-without-timestamp") }
+      /// Video, %1$@, from %2$@, sent at %3$@. Activate to play.
+      internal static func videoWithDuration(_ p1: Any, _ p2: Any, _ p3: Any) -> String {
+        return L10n.tr("Localizable", "message.accessibility.video-with-duration", String(describing: p1), String(describing: p2), String(describing: p3))
+      }
+      /// Video, %1$@, from %2$@. Activate to play.
+      internal static func videoWithDurationWithoutTimestamp(_ p1: Any, _ p2: Any) -> String {
+        return L10n.tr("Localizable", "message.accessibility.video-with-duration-without-timestamp", String(describing: p1), String(describing: p2))
+      }
+      /// Video from %1$@. Activate to play.
+      internal static func videoWithoutTimestamp(_ p1: Any) -> String {
+        return L10n.tr("Localizable", "message.accessibility.video-without-timestamp", String(describing: p1))
       }
       /// Voice message from %1$@, %2$@, at %3$@. Activate to play.
       internal static func voiceRecording(_ p1: Any, _ p2: Any, _ p3: Any) -> String {

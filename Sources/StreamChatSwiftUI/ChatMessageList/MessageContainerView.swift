@@ -52,6 +52,10 @@ struct MessageContainerView<Factory: ViewFactory>: View {
                             .reactionsTopPadding(message) : 0
                     )
                     .accessibilityIdentifier("MessageView")
+                    .environment(
+                        \.messageCompositeAccessibilityLabel,
+                        messageViewModel.captionAccessibilityLabel(showsAllInfo: showsAllInfo)
+                    )
 
                 if messageViewModel.threadRepliesShown {
                     factory.makeMessageRepliesView(
@@ -231,5 +235,21 @@ struct MessageContainerView<Factory: ViewFactory>: View {
 
     private var messageListConfig: MessageListConfig {
         utils.messageListConfig
+    }
+}
+
+/// The composite VoiceOver label (sender, content, time and delivery status)
+/// that a message's content should announce, so that focusing nested content
+/// (such as an attachment caption) reads the same thing as a message without
+/// attachments. `nil` when the surrounding message cell provides no composite
+/// label.
+struct MessageCompositeAccessibilityLabelKey: EnvironmentKey {
+    static let defaultValue: String? = nil
+}
+
+extension EnvironmentValues {
+    var messageCompositeAccessibilityLabel: String? {
+        get { self[MessageCompositeAccessibilityLabelKey.self] }
+        set { self[MessageCompositeAccessibilityLabelKey.self] = newValue }
     }
 }
