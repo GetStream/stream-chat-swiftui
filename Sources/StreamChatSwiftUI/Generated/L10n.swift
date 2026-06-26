@@ -637,6 +637,12 @@ internal enum L10n {
     internal static func translatedTo(_ p1: Any) -> String {
       return L10n.tr("Localizable", "message.translatedTo", String(describing: p1))
     }
+    internal enum Accessibility {
+      /// System message: %@
+      internal static func systemMessage(_ p1: Any) -> String {
+        return L10n.tr("Localizable", "message.accessibility.system-message", String(describing: p1))
+      }
+    }
     internal enum Actions {
       /// Copy Message
       internal static var copy: String { L10n.tr("Localizable", "message.actions.copy") }
