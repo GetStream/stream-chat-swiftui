@@ -104,6 +104,8 @@ public struct ChatChannelListItem<Factory: ViewFactory>: View {
         }
         .foregroundColor(.black)
         .disabled(disabled)
+        .accessibilityLabel(viewModel.accessibilityLabel)
+        .accessibilityHint(Text(L10n.Channel.Item.Accessibility.openHint))
         .id("\(viewModel.channel.id)-base")
     }
 }
