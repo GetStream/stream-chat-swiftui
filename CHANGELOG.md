@@ -5,6 +5,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### 🐞 Fixed
 - Keep the navigation bar and its buttons visible while searching in the add members screen [#1499](https://github.com/GetStream/stream-chat-swiftui/pull/1499)
+- Improve VoiceOver announcements for channel list items [#1504](https://github.com/GetStream/stream-chat-swiftui/pull/1504)
 - Fix VoiceOver focus landing on the back button instead of the composer when entering a channel [#1502](https://github.com/GetStream/stream-chat-swiftui/pull/1502)
 - Fix composer placeholder and "Also send in channel" label truncating at large Dynamic Type sizes [#1502](https://github.com/GetStream/stream-chat-swiftui/pull/1502)
 - Fix snackbar text truncating instead of wrapping at large Dynamic Type sizes [#1502](https://github.com/GetStream/stream-chat-swiftui/pull/1502)
@@ -15,6 +16,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### ⚡️ Performance
 - Improve channel avatar loading performance in the channel list [#1501](https://github.com/GetStream/stream-chat-swiftui/pull/1501)
+
+### 🎭 New Localizations
+- `channel.item.accessibility.*` — VoiceOver labels for channel list items (conversation type, member and unread counts, last message, draft and open hint)
 
 # [5.5.1](https://github.com/GetStream/stream-chat-swiftui/releases/tag/5.5.1)
 _June 11, 2026_
