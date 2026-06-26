@@ -42,6 +42,7 @@ struct MessageContainerView<Factory: ViewFactory>: View {
                             usesInvertedStyle: shownAsPreview
                         )
                     )
+                    .accessibilityElement(children: .contain)
                 }
 
                 messageBubbleContent
