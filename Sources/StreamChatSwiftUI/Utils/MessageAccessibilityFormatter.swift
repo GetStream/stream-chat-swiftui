@@ -49,7 +49,81 @@ import StreamChat
         durationFormatter.string(from: seconds)
     }
 
-    // MARK: - Voice recording label
+    // MARK: - Attachment labels
+
+    /// The VoiceOver label for a video attachment.
+    /// - Parameters:
+    ///   - message: The message the attachment belongs to.
+    ///   - attachmentNumber: The 1-based position of the attachment within the
+    ///     message, announced so users can tell multiple attachments apart.
+    ///   - duration: An already-formatted spoken duration, if available.
+    ///   - includesTimestamp: Whether the sent time should be announced. Pass
+    ///     `false` when the message has a caption that already announces it.
+    open func videoLabel(
+        for message: ChatMessage,
+        attachmentNumber: Int,
+        duration: String?,
+        includesTimestamp: Bool
+    ) -> String {
+        let time = sentTime(for: message)
+        let description: String
+        if message.isSentByCurrentUser {
+            if let duration {
+                description = includesTimestamp
+                    ? L10n.Message.Accessibility.videoOwnWithDuration(duration, time)
+                    : L10n.Message.Accessibility.videoOwnWithDurationWithoutTimestamp(duration)
+            } else {
+                description = includesTimestamp
+                    ? L10n.Message.Accessibility.videoOwn(time)
+                    : L10n.Message.Accessibility.videoOwnWithoutTimestamp
+            }
+        } else {
+            let sender = authorName(for: message)
+            if let duration {
+                description = includesTimestamp
+                    ? L10n.Message.Accessibility.videoWithDuration(duration, sender, time)
+                    : L10n.Message.Accessibility.videoWithDurationWithoutTimestamp(duration, sender)
+            } else {
+                description = includesTimestamp
+                    ? L10n.Message.Accessibility.video(sender, time)
+                    : L10n.Message.Accessibility.videoWithoutTimestamp(sender)
+            }
+        }
+        return prefixingAttachmentNumber(attachmentNumber, to: description)
+    }
+
+    /// The VoiceOver label for an image attachment.
+    /// - Parameters:
+    ///   - message: The message the attachment belongs to.
+    ///   - attachmentNumber: The 1-based position of the attachment within the
+    ///     message, announced so users can tell multiple attachments apart.
+    ///   - includesTimestamp: Whether the sent time should be announced. Pass
+    ///     `false` when the message has a caption that already announces it.
+    open func imageLabel(
+        for message: ChatMessage,
+        attachmentNumber: Int,
+        includesTimestamp: Bool
+    ) -> String {
+        let time = sentTime(for: message)
+        let description: String
+        if message.isSentByCurrentUser {
+            description = includesTimestamp
+                ? L10n.Message.Accessibility.imageOwn(time)
+                : L10n.Message.Accessibility.imageOwnWithoutTimestamp
+        } else {
+            let sender = authorName(for: message)
+            description = includesTimestamp
+                ? L10n.Message.Accessibility.image(sender, time)
+                : L10n.Message.Accessibility.imageWithoutTimestamp(sender)
+        }
+        return prefixingAttachmentNumber(attachmentNumber, to: description)
+    }
+
+    /// Prepends the spoken attachment number to a label, e.g.
+    /// "Attachment 1. Video from …".
+    private func prefixingAttachmentNumber(_ number: Int, to label: String) -> String {
+        "\(L10n.Message.Attachment.accessibilityLabel(number)). \(label)"
+    }
 
     /// The VoiceOver label for a voice recording attachment.
     open func voiceRecordingLabel(for message: ChatMessage, duration: String?) -> String {
