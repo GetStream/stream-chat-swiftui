@@ -25,6 +25,15 @@ import StreamChat
 
     // MARK: - Building blocks
 
+    /// The sender prefix announced for the message: a localized "You" for the
+    /// current user's messages, otherwise the author's display name.
+    open func senderName(for message: ChatMessage) -> String {
+        if message.isSentByCurrentUser {
+            return L10n.Message.Accessibility.you
+        }
+        return authorName(for: message)
+    }
+
     /// The author's display name, falling back to the author id.
     open func authorName(for message: ChatMessage) -> String {
         message.author.name ?? message.author.id

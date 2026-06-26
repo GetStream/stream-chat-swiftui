@@ -678,8 +678,20 @@ internal enum L10n {
       return L10n.tr("Localizable", "message.translatedTo", String(describing: p1))
     }
     internal enum Accessibility {
+      /// Message actions
+      internal static var actions: String { L10n.tr("Localizable", "message.accessibility.actions") }
       /// Playback speed
       internal static var playbackSpeed: String { L10n.tr("Localizable", "message.accessibility.playback-speed") }
+      /// at %@
+      internal static func sentTime(_ p1: Any) -> String {
+        return L10n.tr("Localizable", "message.accessibility.sent-time", String(describing: p1))
+      }
+      /// delivered
+      internal static var statusDelivered: String { L10n.tr("Localizable", "message.accessibility.status-delivered") }
+      /// read
+      internal static var statusRead: String { L10n.tr("Localizable", "message.accessibility.status-read") }
+      /// sent
+      internal static var statusSent: String { L10n.tr("Localizable", "message.accessibility.status-sent") }
       /// System message: %@
       internal static func systemMessage(_ p1: Any) -> String {
         return L10n.tr("Localizable", "message.accessibility.system-message", String(describing: p1))
@@ -692,6 +704,8 @@ internal enum L10n {
       internal static func voiceRecordingOwn(_ p1: Any, _ p2: Any) -> String {
         return L10n.tr("Localizable", "message.accessibility.voice-recording-own", String(describing: p1), String(describing: p2))
       }
+      /// You
+      internal static var you: String { L10n.tr("Localizable", "message.accessibility.you") }
     }
     internal enum Actions {
       /// Copy Message

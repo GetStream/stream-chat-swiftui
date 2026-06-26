@@ -51,7 +51,6 @@ struct MessageContainerView<Factory: ViewFactory>: View {
                         messageViewModel.topReactionsShown && messageViewModel.annotationsShown ? messageListConfig.messageDisplayOptions
                             .reactionsTopPadding(message) : 0
                     )
-                    .accessibilityElement(children: .contain)
                     .accessibilityIdentifier("MessageView")
 
                 if messageViewModel.threadRepliesShown {
@@ -82,8 +81,12 @@ struct MessageContainerView<Factory: ViewFactory>: View {
                     )
                 }
 
+                // The timestamp and read indicator are always hidden from
+                // VoiceOver - they are announced as part of the message bubble's
+                // label instead - so they never become separate focus stops.
                 if showsAllInfo {
                     deliveryStatusView
+                        .accessibilityHidden(true)
                 }
             }
 
@@ -102,52 +105,73 @@ struct MessageContainerView<Factory: ViewFactory>: View {
     // MARK: - Sub-views
 
     @ViewBuilder
-    private var messageBubbleContent: some View {
+    private var messageView: some View {
+        MessageView(
+            factory: factory,
+            message: message,
+            contentWidth: contentWidth,
+            isFirst: showsAllInfo,
+            scrolledId: $scrolledId,
+            translationLanguage: messageViewModel.translationLanguage
+        )
+        .allowsHitTesting(!shownAsPreview)
+    }
+
+    /// The message bubble and its failure overlay, sized to hug the bubble
+    /// content. Reactions are intentionally not included here so they stay a
+    /// separate VoiceOver element next to the (possibly combined) bubble.
+    @ViewBuilder
+    private var bubbleView: some View {
         Group {
             if messageViewModel.usesScrollView {
                 ScrollView {
-                    MessageView(
-                        factory: factory,
-                        message: message,
-                        contentWidth: contentWidth,
-                        isFirst: showsAllInfo,
-                        scrolledId: $scrolledId,
-                        translationLanguage: messageViewModel.translationLanguage
-                    )
-                    .allowsHitTesting(!shownAsPreview)
+                    messageView
                 }
             } else {
-                MessageView(
-                    factory: factory,
-                    message: message,
-                    contentWidth: contentWidth,
-                    isFirst: showsAllInfo,
-                    scrolledId: $scrolledId,
-                    translationLanguage: messageViewModel.translationLanguage
-                )
-                .allowsHitTesting(!shownAsPreview)
+                messageView
             }
         }
         .overlay(
-            messageViewModel.topReactionsShown ?
-                factory.makeMessageReactionView(
-                    options: MessageReactionViewOptions(
-                        message: message,
-                        onTapGesture: {
-                            onGesture(false)
-                        },
-                        onLongPressGesture: {
-                            onGesture(false)
-                        }
-                    )
-                )
-                : nil,
-            alignment: messageViewModel.isRightAligned ? .trailing : .leading
-        )
-        .overlay(
             messageViewModel.failureIndicatorShown ? SendFailureIndicator() : nil
         )
-        .frame(maxWidth: contentWidth, alignment: messageViewModel.isRightAligned ? .trailing : .leading)
+    }
+
+    @ViewBuilder
+    private var reactionsOverlay: some View {
+        if messageViewModel.topReactionsShown {
+            factory.makeMessageReactionView(
+                options: MessageReactionViewOptions(
+                    message: message,
+                    onTapGesture: {
+                        onGesture(false)
+                    },
+                    onLongPressGesture: {
+                        onGesture(false)
+                    }
+                )
+            )
+        }
+    }
+
+    @ViewBuilder
+    private var messageBubbleContent: some View {
+        Group {
+            if messageViewModel.keepsBubbleAccessibilityChildrenFocusable {
+                bubbleView
+                    .accessibilityElement(children: .contain)
+            } else {
+                bubbleView
+                    .accessibilityElement(children: .ignore)
+                    .accessibilityLabel(messageViewModel.accessibilityLabel(showsAllInfo: showsAllInfo))
+            }
+        }
+            // Applied after the accessibility element so reactions remain a separate
+            // focusable element rather than being merged into the bubble.
+            .overlay(
+                reactionsOverlay,
+                alignment: messageViewModel.isRightAligned ? .trailing : .leading
+            )
+            .frame(maxWidth: contentWidth, alignment: messageViewModel.isRightAligned ? .trailing : .leading)
     }
 
     @ViewBuilder
@@ -160,6 +184,7 @@ struct MessageContainerView<Factory: ViewFactory>: View {
             )
         )
         .opacity(isLast || showsAllInfo ? 1 : 0)
+        .accessibilityHidden(true)
     }
 
     @ViewBuilder

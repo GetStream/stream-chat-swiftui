@@ -220,9 +220,11 @@ struct MessageActionsGestureModifier: ViewModifier {
             // VoiceOver delivers its activation gesture (the "double tap") as a
             // single synthesized tap, which matches neither the count-2 tap nor the
             // long press below, so neither fires for VoiceOver users. Expose the
-            // actions overlay as the element's default accessibility action so a
-            // single VoiceOver double tap opens it reliably.
-            let base = content.accessibilityAction {
+            // actions overlay as a *named* accessibility action (reachable through
+            // the VoiceOver actions rotor) rather than the default action: a
+            // default action makes VoiceOver announce the message as a "Button",
+            // which is incorrect for a content element.
+            let base = content.accessibilityAction(named: Text(L10n.Message.Accessibility.actions)) {
                 onActionsTriggered()
             }
             let withTap = base.onTapGesture(count: 2) {
