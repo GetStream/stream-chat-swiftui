@@ -29,12 +29,11 @@ class InputTextView: UITextView, AccessibilityView {
     @Injected(\.utils) private var utils
 
     private var didRequestInitialVoiceOverFocus = false
-    private var lastReportedPlaceholderHeight: CGFloat = 0
+    private var lastReportedFittingHeight: CGFloat = 0
 
-    /// Called when `layoutSubviews` detects the placeholder needs a different
-    /// height than what was last reported. The coordinator sets this so the
-    /// SwiftUI height binding stays in sync once the view has valid bounds.
-    var onPlaceholderHeightChanged: ((_ height: CGFloat) -> Void)?
+    /// Called when the view's fitting height changes (e.g. placeholder wrapping,
+    /// Dynamic Type, or width changes) so the SwiftUI height binding can update.
+    var onFittingSizeChanged: (() -> Void)?
 
     /// Label used as placeholder for textView when it's empty.
     open private(set) lazy var placeholderLabel: UILabel = UILabel()
@@ -187,21 +186,47 @@ class InputTextView: UITextView, AccessibilityView {
 
     @objc open func handleTextChange() {
         placeholderLabel.isHidden = !text.isEmpty
+        notifyFittingSizeChangedIfNeeded()
     }
 
-    /// The height required to display the placeholder without truncation.
-    /// Returns `0` when the text view has content or the placeholder is hidden.
-    var placeholderFittingHeight: CGFloat {
+    /// UITextView has no built-in placeholder, so the default fitting size ignores
+    /// our placeholder label. Include the label's height when the field is empty so
+    /// the placeholder is never truncated at large Dynamic Type sizes.
+    override open func sizeThatFits(_ size: CGSize) -> CGSize {
+        var fittingSize = super.sizeThatFits(size)
+
         guard text.isEmpty,
+              !placeholderLabel.isHidden,
               let placeholderText = placeholderLabel.text,
-              !placeholderText.isEmpty,
-              bounds.width > 0 else { return 0 }
-        let availableWidth = bounds.width - textContainer.lineFragmentPadding * 2
-        guard availableWidth > 0 else { return 0 }
-        let size = placeholderLabel.sizeThatFits(
+              !placeholderText.isEmpty else {
+            return fittingSize
+        }
+
+        let targetWidth = size.width > 0 ? size.width : bounds.width
+        guard targetWidth > 0 else { return fittingSize }
+
+        let availableWidth = targetWidth - textContainer.lineFragmentPadding * 2
+        guard availableWidth > 0 else { return fittingSize }
+
+        let placeholderHeight = placeholderLabel.sizeThatFits(
             CGSize(width: availableWidth, height: .greatestFiniteMagnitude)
-        )
-        return size.height
+        ).height
+        fittingSize.height = max(fittingSize.height, placeholderHeight)
+        return fittingSize
+    }
+
+    override open func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+        guard previousTraitCollection?.preferredContentSizeCategory
+            != traitCollection.preferredContentSizeCategory else { return }
+        notifyFittingSizeChangedIfNeeded()
+    }
+
+    private func notifyFittingSizeChangedIfNeeded() {
+        let neededHeight = sizeThatFits(bounds.size).height
+        guard neededHeight != lastReportedFittingHeight else { return }
+        lastReportedFittingHeight = neededHeight
+        onFittingSizeChanged?()
     }
 
     open func shouldAnimate(_ newText: String) -> Bool {
@@ -218,11 +243,7 @@ class InputTextView: UITextView, AccessibilityView {
             textContainerInset.top = max(0, topInset)
         }
 
-        let neededHeight = placeholderFittingHeight
-        if neededHeight > 0, neededHeight != lastReportedPlaceholderHeight {
-            lastReportedPlaceholderHeight = neededHeight
-            onPlaceholderHeightChanged?(neededHeight)
-        }
+        notifyFittingSizeChangedIfNeeded()
     }
 
     override open func paste(_ sender: Any?) {

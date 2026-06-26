@@ -37,7 +37,7 @@ struct ComposerTextInputView: UIViewRepresentable {
         inputTextView.setContentCompressionResistancePriority(.streamLow, for: .horizontal)
         inputTextView.onImagePasted = onImagePasted
         inputTextView.semanticContentAttribute = layoutDirection == .rightToLeft ? .forceRightToLeft : .forceLeftToRight
-        inputTextView.onPlaceholderHeightChanged = { [weak coordinator = context.coordinator] _ in
+        inputTextView.onFittingSizeChanged = { [weak coordinator = context.coordinator] in
             guard let coordinator, let textView = coordinator.textView else { return }
             coordinator.updateHeight(textView, shouldAnimate: false)
         }
@@ -107,9 +107,6 @@ struct ComposerTextInputView: UIViewRepresentable {
 
         func updateHeight(_ textView: UITextView, shouldAnimate: Bool) {
             var height = textView.sizeThatFits(textView.bounds.size).height
-            if let inputTextView = textView as? InputTextView {
-                height = max(height, inputTextView.placeholderFittingHeight)
-            }
             if height < TextSizeConstants.minThreshold {
                 height = TextSizeConstants.minimumHeight
             }
