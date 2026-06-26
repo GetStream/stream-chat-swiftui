@@ -100,7 +100,7 @@ import StreamChat
 
     /// Whether the message bubble contains elements that should remain separate
     /// VoiceOver stops (attachments, polls, quotes, or failure affordances).
-    open var keepsBubbleAccessibilityChildrenFocusable: Bool {
+    public var keepsBubbleAccessibilityChildrenFocusable: Bool {
         if failureIndicatorShown {
             return true
         }
@@ -197,7 +197,7 @@ import StreamChat
     /// The VoiceOver sender prefix for the message: "You" for the current user's
     /// messages, otherwise the author's display name. Always included so that
     /// continuation messages keep their sender context.
-    open var accessibilitySenderName: String {
+    public var accessibilitySenderName: String {
         utils.messageAccessibilityFormatter.senderName(for: message)
     }
 
@@ -210,7 +210,7 @@ import StreamChat
     ///
     /// - Parameter showsAllInfo: Whether the message is the last in a sequence
     ///   (and therefore shows the delivery status).
-    open func accessibilityLabel(showsAllInfo: Bool) -> String {
+    public func accessibilityLabel(showsAllInfo: Bool) -> String {
         var parts = [
             accessibilitySenderName,
             accessibilityContentText,
@@ -228,7 +228,7 @@ import StreamChat
     ///
     /// Returns `nil` for messages without a caption, so the label is only built
     /// for the messages that actually consume it.
-    open func captionAccessibilityLabel(showsAllInfo: Bool) -> String? {
+    public func captionAccessibilityLabel(showsAllInfo: Bool) -> String? {
         guard hasAttachmentCaption else { return nil }
         return accessibilityLabel(showsAllInfo: showsAllInfo)
     }
