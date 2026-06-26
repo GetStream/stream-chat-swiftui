@@ -142,7 +142,18 @@ import XCTest
         }
 
         // Then
-        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
+        // Pin the snapshot to the default screen size so layout does not try to
+        // measure the unconstrained tall message via sizeThatFits, which can hang on CI.
+        assertSnapshot(
+            matching: view,
+            as: .image(
+                perceptualPrecision: precision,
+                layout: .fixed(
+                    width: defaultScreenSize.width,
+                    height: defaultScreenSize.height
+                )
+            )
+        )
     }
 
     func test_reactionAnimatableView_snapshot() {
