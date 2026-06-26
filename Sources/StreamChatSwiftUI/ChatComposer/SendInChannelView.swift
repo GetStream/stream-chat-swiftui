@@ -19,10 +19,11 @@ struct SendInChannelView: View {
         Button {
             sendInChannel.toggle()
         } label: {
-            HStack(spacing: tokens.spacingXs) {
+            HStack(alignment: .top, spacing: tokens.spacingXs) {
                 checkbox
                 Text(L10n.Composer.Checkmark.channelReply)
                     .font(fonts.footnote)
+                    .fixedSize(horizontal: false, vertical: true)
                     .foregroundColor(sendInChannel ? Color(colors.textPrimary) : Color(colors.textTertiary))
                 Spacer()
             }
