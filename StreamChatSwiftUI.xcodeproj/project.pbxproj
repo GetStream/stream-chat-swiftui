@@ -214,6 +214,7 @@
 				Tests/ChatChannel/MessageView_Tests.swift,
 				Tests/ChatChannel/MessageViewMultiRowReactions_Tests.swift,
 				Tests/ChatChannel/MoreReactionsView_Tests.swift,
+				Tests/ChatChannel/PollAccessibility_Tests.swift,
 				Tests/ChatChannel/PollAllOptionsView_Tests.swift,
 				Tests/ChatChannel/PollAttachmentView_Tests.swift,
 				Tests/ChatChannel/PollAttachmentViewModel_Tests.swift,
@@ -1524,20 +1525,20 @@
 				minimumVersion = 9.0.0;
 			};
 		};
-		E3A1C01A282BAC66002D1E26 /* XCRemoteSwiftPackageReference "sentry-cocoa" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/getsentry/sentry-cocoa.git";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 8.30.0;
-			};
-		};
 		84E7F9E02EFAF9BF00BA56A3 /* XCRemoteSwiftPackageReference "stream-chat-swift" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/GetStream/stream-chat-swift.git";
 			requirement = {
 				branch = develop;
 				kind = branch;
+			};
+		};
+		E3A1C01A282BAC66002D1E26 /* XCRemoteSwiftPackageReference "sentry-cocoa" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/getsentry/sentry-cocoa.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 8.30.0;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
