@@ -27,6 +27,7 @@ import StreamChatCommonUI
     public var messageActionsResolver: MessageActionsResolving
     public var messageAttachmentPreviewIconProvider: MessageAttachmentPreviewIconProvider
     public var messagePreviewFormatter: MessagePreviewFormatter
+    public var messageAccessibilityFormatter: MessageAccessibilityFormatter
     public var commandsConfig: CommandsConfig
     public var channelListConfig: ChannelListConfig
     public var messageListConfig: MessageListConfig
@@ -89,6 +90,7 @@ import StreamChatCommonUI
         messageActionResolver: MessageActionsResolving = MessageActionsResolver(),
         messageAttachmentPreviewIconProvider: MessageAttachmentPreviewIconProvider = DefaultMessageAttachmentPreviewIconProvider(),
         messagePreviewFormatter: MessagePreviewFormatter = MessagePreviewFormatter(),
+        messageAccessibilityFormatter: MessageAccessibilityFormatter = MessageAccessibilityFormatter(),
         commandsConfig: CommandsConfig = DefaultCommandsConfig(),
         channelListConfig: ChannelListConfig = ChannelListConfig(),
         messageListConfig: MessageListConfig = MessageListConfig(),
@@ -118,6 +120,7 @@ import StreamChatCommonUI
         messageActionsResolver = messageActionResolver
         self.messageAttachmentPreviewIconProvider = messageAttachmentPreviewIconProvider
         self.messagePreviewFormatter = messagePreviewFormatter
+        self.messageAccessibilityFormatter = messageAccessibilityFormatter
         self.commandsConfig = commandsConfig
         self.channelListConfig = channelListConfig
         self.messageListConfig = messageListConfig
