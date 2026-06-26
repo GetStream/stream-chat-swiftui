@@ -353,4 +353,268 @@ import XCTest
 
         XCTAssertTrue(viewModel.preview.content is ChannelItemPreview.FailedToSendContent)
     }
+
+    // MARK: - Accessibility
+
+    func test_accessibilityLabel_dmChannel_headerOmitsMemberCount() {
+        let channel = ChatChannel.mockDMChannel(memberCount: 2, latestMessages: [])
+        let viewModel = ChatChannelListItemViewModel(channel: channel, channelName: "Alice")
+
+        let expected = [
+            "Alice, \(L10n.Channel.Item.Accessibility.directMessage)",
+            L10n.Channel.Item.emptyMessages
+        ].joined(separator: ". ")
+        XCTAssertEqual(viewModel.accessibilityLabel, expected)
+    }
+
+    func test_accessibilityLabel_groupChannel_includesGroupChatAndMemberCount() {
+        let channel = ChatChannel.mockNonDMChannel(memberCount: 5, latestMessages: [])
+        let viewModel = ChatChannelListItemViewModel(channel: channel, channelName: "Team")
+
+        let expected = [
+            "Team, \(L10n.Channel.Item.Accessibility.groupChat), \(L10n.Channel.Item.Accessibility.memberCount(5))",
+            L10n.Channel.Item.emptyMessages
+        ].joined(separator: ". ")
+        XCTAssertEqual(viewModel.accessibilityLabel, expected)
+    }
+
+    func test_accessibilityLabel_groupChannel_usesSingularMemberForSingleMember() {
+        let channel = ChatChannel.mockNonDMChannel(memberCount: 1, latestMessages: [])
+        let viewModel = ChatChannelListItemViewModel(channel: channel, channelName: "Team")
+
+        XCTAssertTrue(
+            viewModel.accessibilityLabel.contains(L10n.Channel.Item.Accessibility.memberCount(1))
+        )
+    }
+
+    func test_accessibilityLabel_whenChannelMuted_includesMutedState() {
+        let channel = ChatChannel.mockNonDMChannel(
+            memberCount: 3,
+            latestMessages: [],
+            muteDetails: .init(createdAt: .unique, updatedAt: .unique, expiresAt: nil)
+        )
+        let viewModel = ChatChannelListItemViewModel(channel: channel, channelName: "Team")
+
+        let expected = [
+            "Team, \(L10n.Channel.Item.Accessibility.groupChat), \(L10n.Channel.Item.Accessibility.memberCount(3))",
+            L10n.Channel.Item.Accessibility.muted,
+            L10n.Channel.Item.emptyMessages
+        ].joined(separator: ". ")
+        XCTAssertEqual(viewModel.accessibilityLabel, expected)
+    }
+
+    func test_accessibilityLabel_whenUnread_includesPluralUnreadCount() {
+        let channel = ChatChannel.mockNonDMChannel(
+            unreadCount: .mock(messages: 4),
+            memberCount: 3,
+            latestMessages: []
+        )
+        let viewModel = ChatChannelListItemViewModel(channel: channel, channelName: "Team")
+
+        XCTAssertTrue(
+            viewModel.accessibilityLabel.contains(L10n.Channel.Item.Accessibility.unreadCount(4))
+        )
+    }
+
+    func test_accessibilityLabel_whenSingleUnread_includesSingularUnreadCount() {
+        let channel = ChatChannel.mockNonDMChannel(
+            unreadCount: .mock(messages: 1),
+            memberCount: 3,
+            latestMessages: []
+        )
+        let viewModel = ChatChannelListItemViewModel(channel: channel, channelName: "Team")
+
+        XCTAssertTrue(
+            viewModel.accessibilityLabel.contains(L10n.Channel.Item.Accessibility.unreadCount(1))
+        )
+    }
+
+    func test_accessibilityLabel_whenNoUnread_omitsUnreadSentence() {
+        let channel = ChatChannel.mockNonDMChannel(
+            unreadCount: .noUnread,
+            memberCount: 3,
+            latestMessages: []
+        )
+        let viewModel = ChatChannelListItemViewModel(channel: channel, channelName: "Team")
+
+        XCTAssertFalse(
+            viewModel.accessibilityLabel.contains(L10n.Channel.Item.Accessibility.unreadCount(0))
+        )
+        XCTAssertFalse(viewModel.accessibilityLabel.contains("unread"))
+    }
+
+    func test_accessibilityLabel_lastMessageFromOtherUser() {
+        let message = ChatMessage.mock(
+            id: .unique,
+            cid: .unique,
+            text: "Hello there",
+            author: .mock(id: "yoda", name: "Yoda"),
+            isSentByCurrentUser: false
+        )
+        let channel = ChatChannel.mockNonDMChannel(
+            lastMessageAt: Date(timeIntervalSince1970: 100_000),
+            memberCount: 3,
+            latestMessages: [message]
+        )
+        let viewModel = ChatChannelListItemViewModel(channel: channel, channelName: "Team")
+
+        let expected = [
+            "Team, \(L10n.Channel.Item.Accessibility.groupChat), \(L10n.Channel.Item.Accessibility.memberCount(3))",
+            L10n.Channel.Item.Accessibility.lastMessage("Yoda", viewModel.timestampText, "Hello there")
+        ].joined(separator: ". ")
+        XCTAssertEqual(viewModel.accessibilityLabel, expected)
+    }
+
+    func test_accessibilityLabel_lastMessageFromCurrentUser_usesYouAndNoStatusWhenReadEventsDisabled() {
+        let message = ChatMessage.mock(
+            id: .unique,
+            cid: .unique,
+            text: "On my way",
+            author: .mock(id: Self.currentUserId, name: "Me"),
+            isSentByCurrentUser: true
+        )
+        let channel = ChatChannel.mockNonDMChannel(
+            lastMessageAt: Date(timeIntervalSince1970: 100_000),
+            config: .mock(readEventsEnabled: false),
+            memberCount: 3,
+            latestMessages: [message]
+        )
+        let viewModel = ChatChannelListItemViewModel(channel: channel, channelName: "Team")
+
+        let expected = [
+            "Team, \(L10n.Channel.Item.Accessibility.groupChat), \(L10n.Channel.Item.Accessibility.memberCount(3))",
+            L10n.Channel.Item.Accessibility.lastMessage(
+                L10n.Channel.Item.Accessibility.you,
+                viewModel.timestampText,
+                "On my way"
+            )
+        ].joined(separator: ". ")
+        XCTAssertEqual(viewModel.accessibilityLabel, expected)
+    }
+
+    func test_accessibilityLabel_whenReadEventsEnabledAndNoReaders_includesSentStatus() {
+        let message = ChatMessage.mock(
+            id: .unique,
+            cid: .unique,
+            text: "Ping",
+            author: .mock(id: Self.currentUserId, name: "Me"),
+            createdAt: Date(timeIntervalSince1970: 100),
+            isSentByCurrentUser: true
+        )
+        let channel = ChatChannel.mockNonDMChannel(
+            lastMessageAt: Date(timeIntervalSince1970: 100_000),
+            config: .mock(readEventsEnabled: true),
+            memberCount: 3,
+            latestMessages: [message]
+        )
+        let viewModel = ChatChannelListItemViewModel(channel: channel, channelName: "Team")
+
+        let expected = [
+            "Team, \(L10n.Channel.Item.Accessibility.groupChat), \(L10n.Channel.Item.Accessibility.memberCount(3))",
+            L10n.Channel.Item.Accessibility.lastMessageWithStatus(
+                L10n.Channel.Item.Accessibility.you,
+                viewModel.timestampText,
+                L10n.Channel.Item.Accessibility.sent,
+                "Ping"
+            )
+        ].joined(separator: ". ")
+        XCTAssertEqual(viewModel.accessibilityLabel, expected)
+    }
+
+    func test_accessibilityLabel_whenReadEventsEnabledAndHasReaders_includesSentAndReadStatus() {
+        let messageDate = Date(timeIntervalSince1970: 100)
+        let message = ChatMessage.mock(
+            id: .unique,
+            cid: .unique,
+            text: "Ping",
+            author: .mock(id: Self.currentUserId, name: "Me"),
+            createdAt: messageDate,
+            isSentByCurrentUser: true
+        )
+        let channel = ChatChannel.mockNonDMChannel(
+            lastMessageAt: Date(timeIntervalSince1970: 100_000),
+            config: .mock(readEventsEnabled: true),
+            memberCount: 3,
+            reads: [
+                .init(
+                    lastReadAt: messageDate.addingTimeInterval(10),
+                    lastReadMessageId: message.id,
+                    unreadMessagesCount: 0,
+                    user: .mock(id: "reader", name: "Reader"),
+                    lastDeliveredAt: nil,
+                    lastDeliveredMessageId: nil
+                )
+            ],
+            latestMessages: [message]
+        )
+        let viewModel = ChatChannelListItemViewModel(channel: channel, channelName: "Team")
+
+        XCTAssertTrue(
+            viewModel.accessibilityLabel.contains(L10n.Channel.Item.Accessibility.sentAndRead)
+        )
+    }
+
+    func test_accessibilityLabel_whenPreviewMessageDeleted_usesDeletedPlaceholder() {
+        let message = ChatMessage.mock(
+            id: .unique,
+            cid: .unique,
+            text: "Secret",
+            author: .mock(id: "yoda", name: "Yoda"),
+            createdAt: Date(timeIntervalSince1970: 0),
+            deletedAt: Date(timeIntervalSince1970: 100),
+            isSentByCurrentUser: false
+        )
+        let channel = ChatChannel.mockNonDMChannel(memberCount: 3, latestMessages: [message])
+        let viewModel = ChatChannelListItemViewModel(channel: channel, channelName: "Team")
+
+        let expected = [
+            "Team, \(L10n.Channel.Item.Accessibility.groupChat), \(L10n.Channel.Item.Accessibility.memberCount(3))",
+            L10n.Message.deletedMessagePlaceholder
+        ].joined(separator: ". ")
+        XCTAssertEqual(viewModel.accessibilityLabel, expected)
+    }
+
+    func test_accessibilityLabel_whenDraftPresent_includesDraftAndLastMessageTime() {
+        let draft = DraftMessage.mock(text: "Draft text")
+        let channel = ChatChannel.mockNonDMChannel(
+            lastMessageAt: Date(timeIntervalSince1970: 100_000),
+            memberCount: 3,
+            latestMessages: [],
+            draftMessage: draft
+        )
+        let viewModel = ChatChannelListItemViewModel(channel: channel, channelName: "Team")
+
+        let expected = [
+            "Team, \(L10n.Channel.Item.Accessibility.groupChat), \(L10n.Channel.Item.Accessibility.memberCount(3))",
+            L10n.Channel.Item.Accessibility.draft("Draft text"),
+            L10n.Channel.Item.Accessibility.lastMessageTime(viewModel.timestampText)
+        ].joined(separator: ". ")
+        XCTAssertEqual(viewModel.accessibilityLabel, expected)
+    }
+
+    func test_accessibilityLabel_whenLastMessageFailedToSend_usesFailedToSendText() {
+        let message = ChatMessage.mock(
+            id: .unique,
+            cid: .unique,
+            text: "Oops",
+            author: .mock(id: Self.currentUserId, name: "Me"),
+            localState: .sendingFailed,
+            isSentByCurrentUser: true
+        )
+        let channel = ChatChannel.mockNonDMChannel(memberCount: 3, latestMessages: [message])
+        let viewModel = ChatChannelListItemViewModel(channel: channel, channelName: "Team")
+
+        let expected = [
+            "Team, \(L10n.Channel.Item.Accessibility.groupChat), \(L10n.Channel.Item.Accessibility.memberCount(3))",
+            L10n.Channel.Item.messageFailedToSend
+        ].joined(separator: ". ")
+        XCTAssertEqual(viewModel.accessibilityLabel, expected)
+    }
+
+    func test_accessibilityLabel_whenEmptyChannel_usesEmptyPlaceholder() {
+        let channel = ChatChannel.mockNonDMChannel(memberCount: 3, latestMessages: [])
+        let viewModel = ChatChannelListItemViewModel(channel: channel, channelName: "Team")
+
+        XCTAssertTrue(viewModel.accessibilityLabel.hasSuffix(L10n.Channel.Item.emptyMessages))
+    }
 }
