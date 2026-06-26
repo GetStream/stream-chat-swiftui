@@ -6,6 +6,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ### 🐞 Fixed
 - Keep the navigation bar and its buttons visible while searching in the add members screen [#1499](https://github.com/GetStream/stream-chat-swiftui/pull/1499)
 - Improve VoiceOver support for polls so the header, options, and results announce as coherent elements [#1503](https://github.com/GetStream/stream-chat-swiftui/pull/1503)
+- Improve VoiceOver announcements for channel list items [#1504](https://github.com/GetStream/stream-chat-swiftui/pull/1504)
 
 ### ✅ Added
 - Add support for enhanced mention suggestions [#1497](https://github.com/GetStream/stream-chat-swiftui/pull/1497)
@@ -15,14 +16,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Improve channel avatar loading performance in the channel list [#1501](https://github.com/GetStream/stream-chat-swiftui/pull/1501)
 
 ### 🎭 New Localizations
-- `message.polls.accessibility.poll-header` — VoiceOver label identifying a poll header
-- `message.polls.accessibility.option` — VoiceOver label for a poll option
-- `message.polls.accessibility.option-position` — VoiceOver suffix describing a poll option's position
-- `message.polls.accessibility.selected` — VoiceOver state for a selected poll option
-- `message.polls.accessibility.not-selected` — VoiceOver state for an unselected poll option
-- `message.polls.accessibility.votes-including-yours` — VoiceOver vote count that includes the current user's vote
-- `message.polls.accessibility.leading-option` — VoiceOver label for the leading option in poll results
-- `message.polls.accessibility.voter` — VoiceOver label for a voter row in poll results
+- `message.polls.accessibility.*` — VoiceOver labels for polls
+- `channel.item.accessibility.*` — VoiceOver labels for channel list items
 
 # [5.5.1](https://github.com/GetStream/stream-chat-swiftui/releases/tag/5.5.1)
 _June 11, 2026_
