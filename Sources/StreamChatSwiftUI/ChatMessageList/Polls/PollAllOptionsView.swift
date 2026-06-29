@@ -69,7 +69,7 @@ struct PollAllOptionsView<Factory: ViewFactory>: View {
 
     private var optionsSection: some View {
         VStack(spacing: tokens.spacingMd) {
-            ForEach(viewModel.poll.options) { option in
+            ForEach(Array(viewModel.poll.options.enumerated()), id: \.element.id) { index, option in
                 PollOptionView(
                     viewModel: viewModel,
                     factory: factory,
@@ -77,7 +77,9 @@ struct PollAllOptionsView<Factory: ViewFactory>: View {
                     optionVotes: viewModel.poll.voteCount(for: option),
                     maxVotes: viewModel.poll.currentMaximumVoteCount,
                     message: viewModel.message,
-                    forceIncomingStyle: true
+                    forceIncomingStyle: true,
+                    optionIndex: index + 1,
+                    optionsCount: viewModel.poll.options.count
                 )
             }
         }
