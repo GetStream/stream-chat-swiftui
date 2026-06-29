@@ -303,7 +303,6 @@ struct PollOptionView<Factory: ViewFactory>: View {
         .accessibilityLabel(accessibilityLabel)
         .accessibilityAddTraits(viewModel.poll.isClosed ? [] : .isButton)
         .accessibilityAction {
-            guard !viewModel.poll.isClosed else { return }
             togglePollVote()
         }
     }
@@ -319,6 +318,7 @@ struct PollOptionView<Factory: ViewFactory>: View {
     }
 
     func togglePollVote() {
+        guard !viewModel.poll.isClosed else { return }
         if viewModel.optionVotedByCurrentUser(option) {
             viewModel.removePollVote(for: option)
         } else {
