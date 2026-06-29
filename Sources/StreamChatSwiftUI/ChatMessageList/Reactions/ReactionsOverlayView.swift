@@ -131,12 +131,19 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
             }
         }
         .onPreferenceChange(HeightPreferenceKey.self) { value in
-            if let value, value != screenHeight {
+            if let value, abs(value - screenHeight) > Self.heightChangeTolerance {
                 screenHeight = value
             }
         }
         .onPreferenceChange(OverlayContentHeightKey.self) { value in
-            if value > 0 {
+            // The content height is measured after it is clamped by
+            // `allowedTotalContentHeight`, and it also flips `usesScrollView` at
+            // that same boundary. A message whose content sits right on the
+            // boundary can therefore oscillate by sub-point amounts each layout
+            // pass and never converge (observed as a hang on iOS 26.2). Ignoring
+            // sub-point changes breaks the loop without affecting the layout,
+            // which only needs point accuracy for the scroll-view threshold.
+            if value > 0, abs(value - measuredTotalContentHeight) > Self.heightChangeTolerance {
                 measuredTotalContentHeight = value
             }
         }
@@ -327,6 +334,11 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
     }
 
     // MARK: - Origin Y
+
+    /// Minimum height delta (in points) required to react to a measured height
+    /// change. Prevents a sub-point layout feedback loop around the scroll-view
+    /// threshold from re-triggering layout indefinitely.
+    private static var heightChangeTolerance: CGFloat { 1 }
 
     private var usesScrollView: Bool {
         guard measuredTotalContentHeight > 0 else { return false }
