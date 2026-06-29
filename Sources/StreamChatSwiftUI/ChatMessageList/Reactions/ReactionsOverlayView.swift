@@ -32,6 +32,7 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
     @State private var screenHeight = UIScreen.main.bounds.size.height
     @State private var orientationChanged = false
     @State private var moreReactionsShown = false
+    @State private var naturalContentHeight: CGFloat = 0
     @State private var measuredTotalContentHeight: CGFloat = 0
 
     private let factory: Factory
@@ -118,7 +119,7 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
                     messageActionsView(reader: reader)
                 }
                 .frame(width: overlayContentWidth, alignment: isRightAligned ? .trailing : .leading)
-                .frame(height: measuredTotalContentHeight > 0 ? min(measuredTotalContentHeight, allowedTotalContentHeight) : nil)
+                .frame(height: measuredTotalContentHeight > 0 ? measuredTotalContentHeight : nil)
                 .background(
                     GeometryReader { proxy in
                         Color.clear.preference(
@@ -131,26 +132,27 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
             }
         }
         .onPreferenceChange(HeightPreferenceKey.self) { value in
-            if let value, abs(value - screenHeight) > Self.heightChangeTolerance {
+            if let value, value != screenHeight {
                 screenHeight = value
+                updateContentHeights()
             }
         }
         .onPreferenceChange(OverlayContentHeightKey.self) { value in
-            // The content height is measured after it is clamped by
-            // `allowedTotalContentHeight`, and it also flips `usesScrollView` at
-            // that same boundary. A message whose content sits right on the
-            // boundary can therefore oscillate by sub-point amounts each layout
-            // pass and never converge (observed as a hang on iOS 26.2). Ignoring
-            // sub-point changes breaks the loop without affecting the layout,
-            // which only needs point accuracy for the scroll-view threshold.
-            if value > 0, abs(value - measuredTotalContentHeight) > Self.heightChangeTolerance {
-                measuredTotalContentHeight = value
-            }
+            guard value > 0 else { return }
+            // Keep the tallest observed height. Enabling the scroll view shrinks the
+            // measured height to the clamped value; using that lower measurement to
+            // decide `usesScrollView` toggles scroll off again and re-expands the
+            // content, which never converges on iOS 26.2.
+            let updatedNatural = max(naturalContentHeight, value)
+            guard updatedNatural != naturalContentHeight else { return }
+            naturalContentHeight = updatedNatural
+            updateContentHeights()
         }
         .onChange(of: measuredTotalContentHeight) { _ in
             messageViewModel.usesScrollView = usesScrollView
         }
         .onChange(of: screenHeight) { _ in
+            updateContentHeights()
             messageViewModel.usesScrollView = usesScrollView
         }
         .edgesIgnoringSafeArea(.all)
@@ -172,6 +174,8 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
         .onRotate { _ in
             if isIPad {
                 orientationChanged = true
+                naturalContentHeight = 0
+                measuredTotalContentHeight = 0
             }
         }
         .sheet(isPresented: $moreReactionsShown) {
@@ -335,14 +339,14 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
 
     // MARK: - Origin Y
 
-    /// Minimum height delta required to react to a measured height
-    /// change. Prevents a sub-point layout feedback loop around the scroll-view
-    /// threshold from re-triggering layout indefinitely.
-    private static var heightChangeTolerance: CGFloat { 1 }
+    private func updateContentHeights() {
+        guard naturalContentHeight > 0 else { return }
+        measuredTotalContentHeight = min(naturalContentHeight, allowedTotalContentHeight)
+    }
 
     private var usesScrollView: Bool {
-        guard measuredTotalContentHeight > 0 else { return false }
-        return measuredTotalContentHeight >= allowedTotalContentHeight
+        guard naturalContentHeight > 0 else { return false }
+        return naturalContentHeight >= allowedTotalContentHeight
     }
     
     private var allowedTotalContentHeight: CGFloat { screenHeight - topContentSpacing - bottomContentSpacing }
