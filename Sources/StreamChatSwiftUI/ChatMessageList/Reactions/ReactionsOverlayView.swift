@@ -32,7 +32,6 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
     @State private var screenHeight = UIScreen.main.bounds.size.height
     @State private var orientationChanged = false
     @State private var moreReactionsShown = false
-    @State private var naturalContentHeight: CGFloat = 0
     @State private var measuredTotalContentHeight: CGFloat = 0
 
     private let factory: Factory
@@ -119,7 +118,7 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
                     messageActionsView(reader: reader)
                 }
                 .frame(width: overlayContentWidth, alignment: isRightAligned ? .trailing : .leading)
-                .frame(height: measuredTotalContentHeight > 0 ? measuredTotalContentHeight : nil)
+                .frame(height: measuredTotalContentHeight > 0 ? min(measuredTotalContentHeight, allowedTotalContentHeight) : nil)
                 .background(
                     GeometryReader { proxy in
                         Color.clear.preference(
@@ -134,25 +133,17 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
         .onPreferenceChange(HeightPreferenceKey.self) { value in
             if let value, value != screenHeight {
                 screenHeight = value
-                updateContentHeights()
             }
         }
         .onPreferenceChange(OverlayContentHeightKey.self) { value in
-            guard value > 0 else { return }
-            // Keep the tallest observed height. Enabling the scroll view shrinks the
-            // measured height to the clamped value; using that lower measurement to
-            // decide `usesScrollView` toggles scroll off again and re-expands the
-            // content, which never converges on iOS 26.2.
-            let updatedNatural = max(naturalContentHeight, value)
-            guard updatedNatural != naturalContentHeight else { return }
-            naturalContentHeight = updatedNatural
-            updateContentHeights()
+            if value > 0 {
+                measuredTotalContentHeight = value
+            }
         }
         .onChange(of: measuredTotalContentHeight) { _ in
             messageViewModel.usesScrollView = usesScrollView
         }
         .onChange(of: screenHeight) { _ in
-            updateContentHeights()
             messageViewModel.usesScrollView = usesScrollView
         }
         .edgesIgnoringSafeArea(.all)
@@ -174,8 +165,6 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
         .onRotate { _ in
             if isIPad {
                 orientationChanged = true
-                naturalContentHeight = 0
-                measuredTotalContentHeight = 0
             }
         }
         .sheet(isPresented: $moreReactionsShown) {
@@ -339,14 +328,9 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
 
     // MARK: - Origin Y
 
-    private func updateContentHeights() {
-        guard naturalContentHeight > 0 else { return }
-        measuredTotalContentHeight = min(naturalContentHeight, allowedTotalContentHeight)
-    }
-
     private var usesScrollView: Bool {
-        guard naturalContentHeight > 0 else { return false }
-        return naturalContentHeight >= allowedTotalContentHeight
+        guard measuredTotalContentHeight > 0 else { return false }
+        return measuredTotalContentHeight >= allowedTotalContentHeight
     }
     
     private var allowedTotalContentHeight: CGFloat { screenHeight - topContentSpacing - bottomContentSpacing }
