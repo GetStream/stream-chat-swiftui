@@ -335,7 +335,7 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
 
     // MARK: - Origin Y
 
-    /// Minimum height delta (in points) required to react to a measured height
+    /// Minimum height delta required to react to a measured height
     /// change. Prevents a sub-point layout feedback loop around the scroll-view
     /// threshold from re-triggering layout indefinitely.
     private static var heightChangeTolerance: CGFloat { 1 }
