@@ -200,8 +200,7 @@ public extension MessageAction {
             }
             
             if InjectedValues[\.utils].messageListConfig.userBlockingEnabled {
-                let userController = chatClient.currentUserController()
-                let blockedUserIds = userController.dataStore.currentUser()?.blockedUserIds ?? []
+                let blockedUserIds = chatClient.currentUserController().currentUser?.blockedUserIds ?? []
                 if blockedUserIds.contains(message.author.id) {
                     let unblockAction = unblockUserAction(
                         for: message,
