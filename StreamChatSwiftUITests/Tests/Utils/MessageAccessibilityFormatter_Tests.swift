@@ -65,7 +65,7 @@ import XCTest
         let message = makeMessage(author: .mock(id: "yoda", name: "Yoda"), isSentByCurrentUser: false)
 
         XCTAssertEqual(
-            formatter.voiceRecordingLabel(for: message, duration: "5 seconds"),
+            formatter.voiceRecordingLabel(for: message, metadata: .init(duration: "5 seconds")),
             L10n.Message.Accessibility.voiceRecording("Yoda", "5 seconds", expectedTime(for: message))
         )
     }
@@ -74,7 +74,7 @@ import XCTest
         let message = makeMessage(author: .mock(id: Self.currentUserId, name: "Me"), isSentByCurrentUser: true)
 
         XCTAssertEqual(
-            formatter.voiceRecordingLabel(for: message, duration: "5 seconds"),
+            formatter.voiceRecordingLabel(for: message, metadata: .init(duration: "5 seconds")),
             L10n.Message.Accessibility.voiceRecordingOwn("5 seconds", expectedTime(for: message))
         )
     }
@@ -83,7 +83,7 @@ import XCTest
         let message = makeMessage(author: .mock(id: "yoda", name: "Yoda"), isSentByCurrentUser: false)
 
         XCTAssertEqual(
-            formatter.voiceRecordingLabel(for: message, duration: nil),
+            formatter.voiceRecordingLabel(for: message, metadata: .init()),
             L10n.Message.Accessibility.voiceRecordingWithoutDuration("Yoda", expectedTime(for: message))
         )
     }
@@ -92,7 +92,7 @@ import XCTest
         let message = makeMessage(author: .mock(id: Self.currentUserId, name: "Me"), isSentByCurrentUser: true)
 
         XCTAssertEqual(
-            formatter.voiceRecordingLabel(for: message, duration: nil),
+            formatter.voiceRecordingLabel(for: message, metadata: .init()),
             L10n.Message.Accessibility.voiceRecordingOwnWithoutDuration(expectedTime(for: message))
         )
     }
@@ -103,7 +103,7 @@ import XCTest
         let message = makeMessage(author: .mock(id: "yoda", name: "Yoda"), isSentByCurrentUser: false)
 
         XCTAssertEqual(
-            formatter.imageLabel(for: message, attachmentNumber: 1, includesTimestamp: true),
+            formatter.imageLabel(for: message, metadata: .init(attachmentNumber: 1)),
             attachmentPrefixed(1, L10n.Message.Accessibility.image("Yoda", expectedTime(for: message)))
         )
     }
@@ -112,7 +112,7 @@ import XCTest
         let message = makeMessage(author: .mock(id: Self.currentUserId, name: "Me"), isSentByCurrentUser: true)
 
         XCTAssertEqual(
-            formatter.imageLabel(for: message, attachmentNumber: 2, includesTimestamp: false),
+            formatter.imageLabel(for: message, metadata: .init(attachmentNumber: 2, includesTimestamp: false)),
             attachmentPrefixed(2, L10n.Message.Accessibility.imageOwnWithoutTimestamp)
         )
     }
@@ -123,7 +123,7 @@ import XCTest
         let message = makeMessage(author: .mock(id: "yoda", name: "Yoda"), isSentByCurrentUser: false)
 
         XCTAssertEqual(
-            formatter.videoLabel(for: message, attachmentNumber: 1, duration: "1 minute", includesTimestamp: true),
+            formatter.videoLabel(for: message, metadata: .init(attachmentNumber: 1, duration: "1 minute")),
             attachmentPrefixed(1, L10n.Message.Accessibility.videoWithDuration("1 minute", "Yoda", expectedTime(for: message)))
         )
     }
@@ -132,7 +132,7 @@ import XCTest
         let message = makeMessage(author: .mock(id: Self.currentUserId, name: "Me"), isSentByCurrentUser: true)
 
         XCTAssertEqual(
-            formatter.videoLabel(for: message, attachmentNumber: 1, duration: nil, includesTimestamp: false),
+            formatter.videoLabel(for: message, metadata: .init(attachmentNumber: 1, includesTimestamp: false)),
             attachmentPrefixed(1, L10n.Message.Accessibility.videoOwnWithoutTimestamp)
         )
     }

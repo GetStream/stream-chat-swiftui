@@ -337,15 +337,19 @@ public struct MessageMediaAttachmentsContainerView<Factory: ViewFactory>: View {
         guard item.type == .video else {
             return utils.messageAccessibilityFormatter.imageLabel(
                 for: message,
-                attachmentNumber: index + 1,
-                includesTimestamp: includesTimestamp
+                metadata: ImageAttachmentAccessibilityMetadata(
+                    attachmentNumber: index + 1,
+                    includesTimestamp: includesTimestamp
+                )
             )
         }
         return utils.messageAccessibilityFormatter.videoLabel(
             for: message,
-            attachmentNumber: index + 1,
-            duration: videoDurationText(for: item),
-            includesTimestamp: includesTimestamp
+            metadata: VideoAttachmentAccessibilityMetadata(
+                attachmentNumber: index + 1,
+                duration: videoDurationText(for: item),
+                includesTimestamp: includesTimestamp
+            )
         )
     }
 

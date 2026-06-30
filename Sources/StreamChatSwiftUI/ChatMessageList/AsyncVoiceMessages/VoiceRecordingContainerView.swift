@@ -92,7 +92,9 @@ public struct VoiceRecordingContainerView<Factory: ViewFactory>: View {
     private func voiceMessageAccessibilityLabel(duration: TimeInterval) -> String {
         utils.messageAccessibilityFormatter.voiceRecordingLabel(
             for: message,
-            duration: utils.messageAccessibilityFormatter.duration(from: duration)
+            metadata: VoiceRecordingAccessibilityMetadata(
+                duration: utils.messageAccessibilityFormatter.duration(from: duration)
+            )
         )
     }
 }
