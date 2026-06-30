@@ -159,16 +159,14 @@ struct MessageContainerView<Factory: ViewFactory>: View {
 
     @ViewBuilder
     private var messageBubbleContent: some View {
-        Group {
-            if messageViewModel.keepsBubbleAccessibilityChildrenFocusable {
-                bubbleView
-                    .accessibilityElement(children: .contain)
-            } else {
-                bubbleView
-                    .accessibilityElement(children: .ignore)
-                    .accessibilityLabel(messageViewModel.accessibilityLabel(showsAllInfo: showsAllInfo))
-            }
-        }
+        bubbleView
+            .accessibilityElement(
+                children: messageViewModel.keepsBubbleAccessibilityChildrenFocusable ? .contain : .ignore
+            )
+            .accessibilityLabel(
+                messageViewModel.keepsBubbleAccessibilityChildrenFocusable
+                    ? "" : messageViewModel.accessibilityLabel(showsAllInfo: showsAllInfo)
+            )
             // Applied after the accessibility element so reactions remain a separate
             // focusable element rather than being merged into the bubble.
             .overlay(
