@@ -266,6 +266,7 @@
 				Tests/CommonViews/RadioCheckView_Tests.swift,
 				Tests/CommonViews/SearchBar_Tests.swift,
 				Tests/CommonViews/SnackBarView_Tests.swift,
+				Tests/CommonViews/StreamAsyncImage_Tests.swift,
 				Tests/CommonViews/StreamButton_Tests.swift,
 				Tests/CommonViews/VideoPlayIndicatorView_Tests.swift,
 				Tests/StreamChatTestCase.swift,
