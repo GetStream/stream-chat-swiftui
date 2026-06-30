@@ -67,6 +67,9 @@ struct PollResultsView<Factory: ViewFactory>: View {
         .padding(tokens.spacingMd)
         .background(Color(colors.backgroundCoreSurfaceCard))
         .cornerRadius(tokens.radiusLg)
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel(PollAccessibility.questionLabel(question: L10n.Message.Polls.question, name: viewModel.poll.name))
+        .accessibilityAddTraits(.isHeader)
     }
 
     private var optionsSection: some View {
@@ -145,6 +148,18 @@ struct PollOptionResultsView<Factory: ViewFactory>: View {
         .padding(.horizontal, tokens.spacingMd)
         .padding(.top, tokens.spacingMd)
         .padding(.bottom, votes.isEmpty && !allButtonShown ? tokens.spacingMd : 0)
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel(optionHeadingAccessibilityLabel)
+        .accessibilityAddTraits(.isHeader)
+    }
+
+    private var optionHeadingAccessibilityLabel: String {
+        PollAccessibility.resultsOptionHeadingLabel(
+            optionIndex: optionIndex,
+            optionText: option.text,
+            hasMostVotes: hasMostVotes,
+            voteCount: poll.voteCountsByOption?[option.id] ?? 0
+        )
     }
 
     private var votesLabel: some View {
@@ -154,6 +169,7 @@ struct PollOptionResultsView<Factory: ViewFactory>: View {
                     .resizable()
                     .aspectRatio(contentMode: .fit)
                     .frame(width: tokens.iconSizeMd, height: tokens.iconSizeMd)
+                    .accessibilityHidden(true)
             }
             Text(voteCountText)
                 .font(fonts.body)
@@ -192,6 +208,7 @@ struct PollOptionResultsView<Factory: ViewFactory>: View {
                         showsIndicator: false
                     )
                 )
+                .accessibilityHidden(true)
             }
             Text(vote.user?.name ?? (vote.user?.id ?? L10n.Message.Polls.unknownVoteAuthor))
                 .font(fonts.body)
@@ -206,6 +223,14 @@ struct PollOptionResultsView<Factory: ViewFactory>: View {
         .padding(.horizontal, tokens.spacingMd)
         .padding(.vertical, tokens.spacingXs)
         .frame(minHeight: 40)
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel(voterRowAccessibilityLabel(for: vote))
+    }
+
+    private func voterRowAccessibilityLabel(for vote: PollVote) -> String {
+        let name = vote.user?.name ?? (vote.user?.id ?? L10n.Message.Polls.unknownVoteAuthor)
+        let date = utils.pollsDateFormatter.formatDay(vote.createdAt)
+        return PollAccessibility.voterLabel(name: name, date: date)
     }
 
     // MARK: - View All Button
