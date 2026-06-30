@@ -164,6 +164,46 @@ internal enum L10n {
       internal static var voiceMessage: String { L10n.tr("Localizable", "channel.item.voice-message") }
       /// You
       internal static var you: String { L10n.tr("Localizable", "channel.item.you") }
+      internal enum Accessibility {
+        /// direct message
+        internal static var directMessage: String { L10n.tr("Localizable", "channel.item.accessibility.direct-message") }
+        /// Draft message: %@
+        internal static func draft(_ p1: Any) -> String {
+          return L10n.tr("Localizable", "channel.item.accessibility.draft", String(describing: p1))
+        }
+        /// group chat
+        internal static var groupChat: String { L10n.tr("Localizable", "channel.item.accessibility.group-chat") }
+        /// Last message from %1$@ at %2$@: %3$@
+        internal static func lastMessage(_ p1: Any, _ p2: Any, _ p3: Any) -> String {
+          return L10n.tr("Localizable", "channel.item.accessibility.last-message", String(describing: p1), String(describing: p2), String(describing: p3))
+        }
+        /// Last message %@
+        internal static func lastMessageTime(_ p1: Any) -> String {
+          return L10n.tr("Localizable", "channel.item.accessibility.last-message-time", String(describing: p1))
+        }
+        /// Last message from %1$@ at %2$@, %3$@: %4$@
+        internal static func lastMessageWithStatus(_ p1: Any, _ p2: Any, _ p3: Any, _ p4: Any) -> String {
+          return L10n.tr("Localizable", "channel.item.accessibility.last-message-with-status", String(describing: p1), String(describing: p2), String(describing: p3), String(describing: p4))
+        }
+        /// Plural format key: "%#@members@"
+        internal static func memberCount(_ p1: Int) -> String {
+          return L10n.tr("Localizable", "channel.item.accessibility.member-count", p1)
+        }
+        /// Muted
+        internal static var muted: String { L10n.tr("Localizable", "channel.item.accessibility.muted") }
+        /// Opens the conversation
+        internal static var openHint: String { L10n.tr("Localizable", "channel.item.accessibility.open-hint") }
+        /// sent
+        internal static var sent: String { L10n.tr("Localizable", "channel.item.accessibility.sent") }
+        /// sent and read
+        internal static var sentAndRead: String { L10n.tr("Localizable", "channel.item.accessibility.sent-and-read") }
+        /// Plural format key: "%#@unread@"
+        internal static func unreadCount(_ p1: Int) -> String {
+          return L10n.tr("Localizable", "channel.item.accessibility.unread-count", p1)
+        }
+        /// you
+        internal static var you: String { L10n.tr("Localizable", "channel.item.accessibility.you") }
+      }
     }
     internal enum List {
       internal enum ScrollToBottom {
@@ -855,6 +895,34 @@ internal enum L10n {
       /// %d votes total
       internal static func votesTotal(_ p1: Int) -> String {
         return L10n.tr("Localizable", "message.polls.votes-total", p1)
+      }
+      internal enum Accessibility {
+        /// Leading option
+        internal static var leadingOption: String { L10n.tr("Localizable", "message.polls.accessibility.leading-option") }
+        /// not selected
+        internal static var notSelected: String { L10n.tr("Localizable", "message.polls.accessibility.not-selected") }
+        /// %1$@, %2$@, %3$@
+        internal static func option(_ p1: Any, _ p2: Any, _ p3: Any) -> String {
+          return L10n.tr("Localizable", "message.polls.accessibility.option", String(describing: p1), String(describing: p2), String(describing: p3))
+        }
+        /// Option %1$d of %2$d
+        internal static func optionPosition(_ p1: Int, _ p2: Int) -> String {
+          return L10n.tr("Localizable", "message.polls.accessibility.option-position", p1, p2)
+        }
+        /// Poll: %1$@. %2$@. %3$d options
+        internal static func pollHeader(_ p1: Any, _ p2: Any, _ p3: Int) -> String {
+          return L10n.tr("Localizable", "message.polls.accessibility.poll-header", String(describing: p1), String(describing: p2), p3)
+        }
+        /// selected
+        internal static var selected: String { L10n.tr("Localizable", "message.polls.accessibility.selected") }
+        /// %1$@, voted %2$@
+        internal static func voter(_ p1: Any, _ p2: Any) -> String {
+          return L10n.tr("Localizable", "message.polls.accessibility.voter", String(describing: p1), String(describing: p2))
+        }
+        /// %d votes including yours
+        internal static func votesIncludingYours(_ p1: Int) -> String {
+          return L10n.tr("Localizable", "message.polls.accessibility.votes-including-yours", p1)
+        }
       }
       internal enum Button {
         /// Add a Comment
