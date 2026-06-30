@@ -243,6 +243,13 @@ struct MessageContainerView<Factory: ViewFactory>: View {
 /// (such as an attachment caption) reads the same thing as a message without
 /// attachments. `nil` when the surrounding message cell provides no composite
 /// label.
+///
+/// This value is passed through the SwiftUI `Environment` instead of through
+/// view initializers because it would otherwise need to be threaded through
+/// four layers of public API (`MessageView` → `MessageAttachmentsView` →
+/// `AttachmentTextViewOptions` / factory → `AttachmentTextView`). The
+/// Environment avoids adding parameters to every intermediate type for a
+/// concern that only the leaf view consumes.
 struct MessageCompositeAccessibilityLabelKey: EnvironmentKey {
     static let defaultValue: String? = nil
 }
