@@ -837,25 +837,23 @@ extension UserRobot {
     @discardableResult
     func assertCooldown(shouldBeVisible: Bool, file: StaticString = #filePath, line: UInt = #line) -> Self {
         if shouldBeVisible {
-            MessageListPage.Composer.cooldown.wait()
+            let cooldown = MessageListPage.Composer.cooldown.wait()
+            XCTAssertTrue(cooldown.exists, "Cooldown should be visible", file: file, line: line)
+            XCTAssertTrue(
+                cooldown.label.contains("Slow mode, wait"),
+                "Slow mode cooldown should announce the wait message",
+                file: file,
+                line: line
+            )
         } else {
             MessageListPage.Composer.cooldown.waitForDisappearance()
+            XCTAssertFalse(
+                MessageListPage.Composer.cooldown.exists,
+                "Cooldown should not be visible",
+                file: file,
+                line: line
+            )
         }
-        
-        XCTAssertEqual(
-            MessageListPage.Composer.cooldown.exists,
-            shouldBeVisible,
-            "Cooldown should be visible",
-            file: file,
-            line: line
-        )
-        
-        XCTAssertEqual(
-            MessageListPage.Composer.placeholderHint.contains("Slow mode, wait"),
-            shouldBeVisible,
-            file: file,
-            line: line
-        )
         return self
     }
 

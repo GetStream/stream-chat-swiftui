@@ -102,8 +102,6 @@ class MessageListPage {
         static var commandButton: XCUIElement { app.buttons["PickerTypeButtonCommands"] }
         static var collapsedComposerButton: XCUIElement { app.buttons["PickerTypeButtonCollapsed"] }
         static var cooldown: XCUIElement { app.staticTexts["SlowModeView"] }
-        /// Placeholder text exposed by `InputTextView` through `accessibilityHint`.
-        static var placeholderHint: String { inputField.accessibilityHintValue }
         static var placeholder: XCUIElement { textView.staticTexts.firstMatch }
         static var cutButton: XCUIElement { app.menuItems.matching(NSPredicate(format: "label LIKE 'Cut'")).firstMatch }
         static var selectAllButton: XCUIElement { app.menuItems.matching(NSPredicate(format: "label LIKE 'Select All'")).firstMatch }
