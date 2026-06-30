@@ -851,7 +851,7 @@ extension UserRobot {
         )
         
         XCTAssertEqual(
-            MessageListPage.Composer.placeholder.text.contains("Slow mode, wait"),
+            MessageListPage.Composer.placeholderHint.contains("Slow mode, wait"),
             shouldBeVisible,
             file: file,
             line: line
