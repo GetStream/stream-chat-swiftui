@@ -82,6 +82,19 @@ class StreamChat_Utils_Tests: StreamChatTestCase {
         XCTAssert(loader?.cdnRequester is StreamCDNRequester)
     }
 
+    func test_streamChatUtils_customDiskCacheSize() {
+        // Given
+        let utils = Utils(diskCacheSizeInBytes: 123)
+
+        // Then
+        XCTAssertEqual(utils.diskCache.maxSizeInBytes, 123)
+    }
+
+    func test_messageListConfig_videoAttachmentCacheEnabled() {
+        XCTAssertTrue(MessageListConfig().videoAttachmentCacheEnabled)
+        XCTAssertFalse(MessageListConfig(videoAttachmentCacheEnabled: false).videoAttachmentCacheEnabled)
+    }
+
     func test_streamChatUtils_customCDNRequester_throughMediaLoader() {
         // Given
         let customRequester = CDNRequester_Mock()

@@ -317,7 +317,6 @@ public struct MediaViewerToolbarModifier: ViewModifier {
 
 struct StreamVideoPlayer: View {
     @Injected(\.utils) private var utils
-    @Injected(\.chatClient) private var chatClient
 
     let url: URL
 
@@ -342,31 +341,139 @@ struct StreamVideoPlayer: View {
                 avPlayer?.play()
                 return
             }
-            utils.mediaLoader.loadVideoAsset(
-                at: url
-            ) { result in
-                guard isVisible else { return }
-                switch result {
-                case let .success(videoAsset):
-                    utils.avPlayerProvider.player(from: videoAsset) { result in
-                        guard isVisible else { return }
-                        switch result {
-                        case let .success(player):
-                            self.avPlayer = player
-                            try? AVAudioSession.sharedInstance().setCategory(.playback, options: [])
-                            self.avPlayer?.play()
-                        case let .failure(error):
-                            self.error = error
-                        }
-                    }
-                case let .failure(error):
-                    self.error = error
-                }
-            }
+            loadPlayer()
         }
         .onDisappear {
             isVisible = false
             avPlayer?.pause()
+        }
+    }
+
+    private func loadPlayer() {
+        AVPlayerLoader(
+            url: url,
+            mediaLoader: utils.mediaLoader,
+            avPlayerProvider: utils.avPlayerProvider,
+            cache: utils.diskCache,
+            cacheEnabled: utils.messageListConfig.videoAttachmentCacheEnabled
+        ).load { result in
+            guard isVisible else { return }
+            switch result {
+            case let .success(player):
+                avPlayer = player
+                try? AVAudioSession.sharedInstance().setCategory(.playback, options: [])
+                avPlayer?.play()
+            case let .failure(error):
+                self.error = error
+            }
+        }
+    }
+}
+
+extension StreamVideoPlayer {
+    @MainActor final class AVPlayerLoader {
+        private let url: URL
+        private let mediaLoader: MediaLoader
+        private let avPlayerProvider: AVPlayerProvider
+        private let cache: LRUDiskCache
+        private let cacheEnabled: Bool
+
+        init(
+            url: URL,
+            mediaLoader: MediaLoader,
+            avPlayerProvider: AVPlayerProvider,
+            cache: LRUDiskCache,
+            cacheEnabled: Bool
+        ) {
+            self.url = url
+            self.mediaLoader = mediaLoader
+            self.avPlayerProvider = avPlayerProvider
+            self.cache = cache
+            self.cacheEnabled = cacheEnabled
+        }
+
+        func load(completion: @escaping @MainActor (Result<AVPlayer, Error>) -> Void) {
+            let canCache = cacheEnabled && !url.isFileURL && url.pathExtension.lowercased() != "m3u8"
+            let key = url.path
+            let fileExtension = url.pathExtension.isEmpty ? "mp4" : url.pathExtension
+
+            if canCache, let localURL = cache.cachedFileURL(forKey: key, fileExtension: fileExtension) {
+                loadFromCache(localURL, key: key, fileExtension: fileExtension, completion: completion)
+            } else {
+                loadFromRemote(completion: completion)
+                if canCache {
+                    prefetchToCache(key: key, fileExtension: fileExtension)
+                }
+            }
+        }
+
+        private func loadFromCache(
+            _ localURL: URL,
+            key: String,
+            fileExtension: String,
+            completion: @escaping @MainActor (Result<AVPlayer, Error>) -> Void
+        ) {
+            let asset = AVURLAsset(url: localURL)
+            asset.loadValuesAsynchronously(forKeys: ["playable"]) {
+                let isPlayable = asset.statusOfValue(forKey: "playable", error: nil) == .loaded && asset.isPlayable
+                Task { @MainActor in
+                    if isPlayable {
+                        self.loadPlayer(from: MediaLoaderVideoAsset(asset: AVURLAsset(url: localURL)), completion: completion)
+                    } else {
+                        log.debug("Cached video is not playable; evicting and streaming from remote")
+                        self.cache.remove(forKey: key, fileExtension: fileExtension)
+                        self.loadFromRemote(completion: completion)
+                    }
+                }
+            }
+        }
+
+        private func loadFromRemote(completion: @escaping @MainActor (Result<AVPlayer, Error>) -> Void) {
+            mediaLoader.loadVideoAsset(at: url) { result in
+                switch result {
+                case let .success(videoAsset):
+                    self.loadPlayer(from: videoAsset, completion: completion)
+                case let .failure(error):
+                    completion(.failure(error))
+                }
+            }
+        }
+
+        private func loadPlayer(
+            from videoAsset: MediaLoaderVideoAsset,
+            completion: @escaping @MainActor (Result<AVPlayer, Error>) -> Void
+        ) {
+            avPlayerProvider.player(from: videoAsset) { result in
+                Task { @MainActor in
+                    completion(result)
+                }
+            }
+        }
+
+        private func prefetchToCache(key: String, fileExtension: String) {
+            mediaLoader.loadFileRequest(for: url) { result in
+                switch result {
+                case let .success(fileRequest):
+                    let cache = self.cache
+                    URLSession.shared.downloadTask(with: fileRequest.urlRequest) { tempURL, response, error in
+                        if let error {
+                            log.debug("Video cache prefetch download failed: \(error)")
+                            return
+                        }
+                        guard let tempURL,
+                              let http = response as? HTTPURLResponse,
+                              (200..<300).contains(http.statusCode) else {
+                            log.debug("Video cache prefetch received a non-success response")
+                            return
+                        }
+                        if cache.store(fileAt: tempURL, forKey: key, fileExtension: fileExtension) == nil {
+                            log.debug("Video cache prefetch could not store the downloaded file")
+                        }
+                    }.resume()
+                case let .failure(error):
+                    log.debug("Video cache prefetch file request failed: \(error)")
+                }
+            }
         }
     }
 }

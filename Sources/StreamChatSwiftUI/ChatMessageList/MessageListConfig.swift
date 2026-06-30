@@ -33,6 +33,7 @@ import SwiftUI
         localLinkDetectionEnabled: Bool = true,
         isMessageEditedLabelEnabled: Bool = true,
         markdownSupportEnabled: Bool = false,
+        videoAttachmentCacheEnabled: Bool = true,
         userBlockingEnabled: Bool = true,
         bouncedMessagesAlertActionsEnabled: Bool = true,
         skipEditedMessageLabel: @escaping (ChatMessage) -> Bool = { _ in false },
@@ -67,6 +68,7 @@ import SwiftUI
         self.localLinkDetectionEnabled = localLinkDetectionEnabled
         self.isMessageEditedLabelEnabled = isMessageEditedLabelEnabled
         self.markdownSupportEnabled = markdownSupportEnabled
+        self.videoAttachmentCacheEnabled = videoAttachmentCacheEnabled
         self.userBlockingEnabled = userBlockingEnabled
         self.bouncedMessagesAlertActionsEnabled = bouncedMessagesAlertActionsEnabled
         self.skipEditedMessageLabel = skipEditedMessageLabel
@@ -101,6 +103,10 @@ import SwiftUI
     public let localLinkDetectionEnabled: Bool
     public let isMessageEditedLabelEnabled: Bool
     public let markdownSupportEnabled: Bool
+    /// A boolean value indicating if video attachments should be cached on disk.
+    ///
+    /// It is enabled by default.
+    public let videoAttachmentCacheEnabled: Bool
     public let userBlockingEnabled: Bool
 
     /// A boolean to enable hiding the commands overlay when tapping the message list.

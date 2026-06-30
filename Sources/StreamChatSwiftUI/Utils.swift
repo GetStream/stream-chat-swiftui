@@ -69,6 +69,7 @@ import StreamChatCommonUI
 
     var messageCachingUtils = MessageCachingUtils()
     let channelPlaceholderAvatarUsersCache = ChannelPlaceholderAvatarUsersCache()
+    let diskCache: LRUDiskCache
     var messageListDateUtils: MessageListDateUtils
     var channelControllerFactory = ChannelControllerFactory()
     
@@ -85,6 +86,7 @@ import StreamChatCommonUI
         messageDateSeparatorFormatter: MessageDateSeparatorFormatter = DefaultMessageDateSeparatorFormatter(),
         mediaLoader: MediaLoader = StreamMediaLoader(downloader: StreamImageDownloader()),
         avPlayerProvider: AVPlayerProvider = DefaultAVPlayerProvider(),
+        diskCacheSizeInBytes: Int = 150 * 1024 * 1024,
         messageTypeResolver: MessageTypeResolving = MessageTypeResolver(),
         messageActionResolver: MessageActionsResolving = MessageActionsResolver(),
         messageAttachmentPreviewIconProvider: MessageAttachmentPreviewIconProvider = DefaultMessageAttachmentPreviewIconProvider(),
@@ -113,6 +115,10 @@ import StreamChatCommonUI
         self.mediaLoader = mediaLoader
         self.channelNameFormatter = channelNameFormatter
         self.avPlayerProvider = avPlayerProvider
+        diskCache = LRUDiskCache(
+            name: "com.getstream.StreamChatSwiftUI.diskCache",
+            maxSizeInBytes: diskCacheSizeInBytes
+        )
         self.chatUserNamer = chatUserNamer
         self.messageTypeResolver = messageTypeResolver
         messageActionsResolver = messageActionResolver
