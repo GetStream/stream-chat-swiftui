@@ -177,7 +177,9 @@
 "message.accessibility.status-delivered" = "delivered";
 "message.accessibility.status-read" = "read";
 "message.accessibility.voice-recording" = "Voice message from %1$@, %2$@, at %3$@. Activate to play.";
+"message.accessibility.voice-recording-without-duration" = "Voice message from %1$@, at %2$@. Activate to play.";
 "message.accessibility.voice-recording-own" = "Your voice message, %1$@, at %2$@. Activate to play.";
+"message.accessibility.voice-recording-own-without-duration" = "Your voice message, at %1$@. Activate to play.";
 "message.accessibility.playback-speed" = "Playback speed";
 "message.accessibility.video" = "Video from %1$@, sent at %2$@. Activate to play.";
 "message.accessibility.video-with-duration" = "Video, %1$@, from %2$@, sent at %3$@. Activate to play.";

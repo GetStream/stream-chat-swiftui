@@ -748,6 +748,14 @@ internal enum L10n {
       internal static func voiceRecordingOwn(_ p1: Any, _ p2: Any) -> String {
         return L10n.tr("Localizable", "message.accessibility.voice-recording-own", String(describing: p1), String(describing: p2))
       }
+      /// Your voice message, at %1$@. Activate to play.
+      internal static func voiceRecordingOwnWithoutDuration(_ p1: Any) -> String {
+        return L10n.tr("Localizable", "message.accessibility.voice-recording-own-without-duration", String(describing: p1))
+      }
+      /// Voice message from %1$@, at %2$@. Activate to play.
+      internal static func voiceRecordingWithoutDuration(_ p1: Any, _ p2: Any) -> String {
+        return L10n.tr("Localizable", "message.accessibility.voice-recording-without-duration", String(describing: p1), String(describing: p2))
+      }
       /// You
       internal static var you: String { L10n.tr("Localizable", "message.accessibility.you") }
     }

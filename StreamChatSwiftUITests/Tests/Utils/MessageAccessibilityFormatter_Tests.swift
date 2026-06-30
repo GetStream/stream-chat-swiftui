@@ -79,12 +79,21 @@ import XCTest
         )
     }
 
-    func test_voiceRecordingLabel_whenDurationMissing_usesEmptyDuration() {
+    func test_voiceRecordingLabel_whenDurationMissing_omitsDuration() {
         let message = makeMessage(author: .mock(id: "yoda", name: "Yoda"), isSentByCurrentUser: false)
 
         XCTAssertEqual(
             formatter.voiceRecordingLabel(for: message, duration: nil),
-            L10n.Message.Accessibility.voiceRecording("Yoda", "", expectedTime(for: message))
+            L10n.Message.Accessibility.voiceRecordingWithoutDuration("Yoda", expectedTime(for: message))
+        )
+    }
+
+    func test_voiceRecordingLabel_ownRecording_whenDurationMissing_omitsDuration() {
+        let message = makeMessage(author: .mock(id: Self.currentUserId, name: "Me"), isSentByCurrentUser: true)
+
+        XCTAssertEqual(
+            formatter.voiceRecordingLabel(for: message, duration: nil),
+            L10n.Message.Accessibility.voiceRecordingOwnWithoutDuration(expectedTime(for: message))
         )
     }
 

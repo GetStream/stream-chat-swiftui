@@ -128,10 +128,14 @@ import StreamChat
     /// The VoiceOver label for a voice recording attachment.
     open func voiceRecordingLabel(for message: ChatMessage, duration: String?) -> String {
         let time = sentTime(for: message)
-        let durationText = duration ?? ""
-        if message.isSentByCurrentUser {
-            return L10n.Message.Accessibility.voiceRecordingOwn(durationText, time)
+        guard let duration else {
+            return message.isSentByCurrentUser
+                ? L10n.Message.Accessibility.voiceRecordingOwnWithoutDuration(time)
+                : L10n.Message.Accessibility.voiceRecordingWithoutDuration(authorName(for: message), time)
         }
-        return L10n.Message.Accessibility.voiceRecording(authorName(for: message), durationText, time)
+        if message.isSentByCurrentUser {
+            return L10n.Message.Accessibility.voiceRecordingOwn(duration, time)
+        }
+        return L10n.Message.Accessibility.voiceRecording(authorName(for: message), duration, time)
     }
 }
