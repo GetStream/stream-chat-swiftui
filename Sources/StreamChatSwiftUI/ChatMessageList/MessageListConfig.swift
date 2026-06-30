@@ -33,7 +33,7 @@ import SwiftUI
         localLinkDetectionEnabled: Bool = true,
         isMessageEditedLabelEnabled: Bool = true,
         markdownSupportEnabled: Bool = false,
-        videoAttachmentCacheEnabled: Bool = true,
+        videoAttachmentCacheEnabled: Bool = false,
         userBlockingEnabled: Bool = true,
         bouncedMessagesAlertActionsEnabled: Bool = true,
         skipEditedMessageLabel: @escaping (ChatMessage) -> Bool = { _ in false },
@@ -105,7 +105,7 @@ import SwiftUI
     public let markdownSupportEnabled: Bool
     /// A boolean value indicating if video attachments should be cached on disk.
     ///
-    /// It is enabled by default.
+    /// It is disabled by default.
     public let videoAttachmentCacheEnabled: Bool
     public let userBlockingEnabled: Bool
 

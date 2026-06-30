@@ -372,24 +372,29 @@ struct StreamVideoPlayer: View {
 
 extension StreamVideoPlayer {
     @MainActor final class AVPlayerLoader {
+        typealias PlayabilityValidator = @MainActor (URL, @escaping @Sendable (Bool) -> Void) -> Void
+
         private let url: URL
         private let mediaLoader: MediaLoader
         private let avPlayerProvider: AVPlayerProvider
         private let cache: LRUDiskCache
         private let cacheEnabled: Bool
+        private let isPlayable: PlayabilityValidator
 
         init(
             url: URL,
             mediaLoader: MediaLoader,
             avPlayerProvider: AVPlayerProvider,
             cache: LRUDiskCache,
-            cacheEnabled: Bool
+            cacheEnabled: Bool,
+            isPlayable: @escaping PlayabilityValidator = AVPlayerLoader.isPlayable
         ) {
             self.url = url
             self.mediaLoader = mediaLoader
             self.avPlayerProvider = avPlayerProvider
             self.cache = cache
             self.cacheEnabled = cacheEnabled
+            self.isPlayable = isPlayable
         }
 
         func load(completion: @escaping @MainActor (Result<AVPlayer, Error>) -> Void) {
@@ -413,9 +418,7 @@ extension StreamVideoPlayer {
             fileExtension: String,
             completion: @escaping @MainActor (Result<AVPlayer, Error>) -> Void
         ) {
-            let asset = AVURLAsset(url: localURL)
-            asset.loadValuesAsynchronously(forKeys: ["playable"]) {
-                let isPlayable = asset.statusOfValue(forKey: "playable", error: nil) == .loaded && asset.isPlayable
+            isPlayable(localURL) { isPlayable in
                 Task { @MainActor in
                     if isPlayable {
                         self.loadPlayer(from: MediaLoaderVideoAsset(asset: AVURLAsset(url: localURL)), completion: completion)
@@ -425,6 +428,13 @@ extension StreamVideoPlayer {
                         self.loadFromRemote(completion: completion)
                     }
                 }
+            }
+        }
+
+        private static func isPlayable(_ url: URL, completion: @escaping @Sendable (Bool) -> Void) {
+            let asset = AVURLAsset(url: url)
+            asset.loadValuesAsynchronously(forKeys: ["playable"]) {
+                completion(asset.statusOfValue(forKey: "playable", error: nil) == .loaded && asset.isPlayable)
             }
         }
 

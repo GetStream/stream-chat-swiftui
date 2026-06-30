@@ -91,8 +91,8 @@ class StreamChat_Utils_Tests: StreamChatTestCase {
     }
 
     func test_messageListConfig_videoAttachmentCacheEnabled() {
-        XCTAssertTrue(MessageListConfig().videoAttachmentCacheEnabled)
-        XCTAssertFalse(MessageListConfig(videoAttachmentCacheEnabled: false).videoAttachmentCacheEnabled)
+        XCTAssertFalse(MessageListConfig().videoAttachmentCacheEnabled)
+        XCTAssertTrue(MessageListConfig(videoAttachmentCacheEnabled: true).videoAttachmentCacheEnabled)
     }
 
     func test_streamChatUtils_customCDNRequester_throughMediaLoader() {
