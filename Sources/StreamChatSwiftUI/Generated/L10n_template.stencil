@@ -78,7 +78,6 @@ extension {{enumName}} {
 private final class BundleToken {
   static let bundle: Bundle = .streamChatUI
 }
-
 {% endif %}
 {% else %}
 // No string found
