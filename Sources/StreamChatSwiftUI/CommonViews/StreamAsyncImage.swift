@@ -101,10 +101,12 @@ public struct StreamAsyncImage<Content: View>: View {
     }
 
     public var body: some View {
-        content(resolvedPhase)
-            .compatibility.task(id: taskIdentity) { @MainActor in
-                await loadImage()
-            }
+        ZStack {
+            content(resolvedPhase)
+        }
+        .compatibility.task(id: taskIdentity) { @MainActor in
+            await loadImage()
+        }
     }
 
     // MARK: - Phase Resolution
