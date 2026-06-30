@@ -25,6 +25,7 @@ public struct SlowModeView: View {
             .background(Color(colors.backgroundUtilityDisabled))
             .foregroundColor(Color(colors.textDisabled))
             .clipShape(Capsule())
+            .accessibilityLabel(L10n.Composer.Placeholder.slowMode(cooldownDuration))
             .accessibilityIdentifier("SlowModeView")
     }
 }

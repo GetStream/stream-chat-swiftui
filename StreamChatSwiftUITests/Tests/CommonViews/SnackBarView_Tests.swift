@@ -29,4 +29,11 @@ final class SnackBarView_Tests: StreamChatTestCase {
 
         AssertSnapshot(view, variants: [.defaultLight])
     }
+
+    func test_snackBarView_extraExtraExtraLarge() {
+        let view = SnackBarView(text: "Hold to record. Release to save.")
+            .frame(width: 375)
+
+        AssertSnapshot(view, variants: [.extraExtraExtraLargeLight])
+    }
 }

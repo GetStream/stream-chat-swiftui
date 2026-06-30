@@ -30,7 +30,7 @@ public struct SnackBarView: View {
         HStack(spacing: tokens.spacingXs) {
             Text(text)
                 .font(fonts.subheadline)
-                .lineLimit(1)
+                .fixedSize(horizontal: false, vertical: true)
         }
         .padding(.horizontal, tokens.spacingMd)
         .padding(.vertical, tokens.spacingSm)
