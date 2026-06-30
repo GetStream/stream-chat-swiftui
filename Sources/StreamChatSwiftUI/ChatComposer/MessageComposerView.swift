@@ -478,7 +478,7 @@ public struct ComposerInputView<Factory: ViewFactory>: View, KeyboardReadable {
             return minHeight
         }
 
-        if textHeight > maxHeight {
+        if !text.isEmpty, textHeight > maxHeight {
             return maxHeight
         }
 
