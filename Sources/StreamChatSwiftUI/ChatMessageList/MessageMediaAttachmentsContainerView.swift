@@ -297,9 +297,17 @@ public struct MessageMediaAttachmentsContainerView<Factory: ViewFactory>: View {
         .overlay(mediaAccessibilityElement(for: item, index: index))
     }
 
-    /// A stable accessibility element for a media cell, independent of the
-    /// asynchronously loaded thumbnail so VoiceOver does not re-announce the cell
-    /// when the preview finishes loading.
+    /// A transparent overlay that acts as the sole accessibility element for a
+    /// media cell.
+    ///
+    /// This uses the "stable overlay" technique: the real thumbnail is hidden
+    /// from VoiceOver (`.accessibilityHidden(true)`) and a `Color.clear` overlay
+    /// provides the label and activation action. This decouples the accessibility
+    /// identity from the view tree that changes when the thumbnail loads
+    /// asynchronously (placeholder → image), preventing VoiceOver from
+    /// re-announcing the cell after the preview resolves. The same pattern is
+    /// used in UIKit by assigning custom `accessibilityElements` on a container
+    /// view that outlives its subview churn.
     private func mediaAccessibilityElement(for item: MediaAttachment, index: Int) -> some View {
         Color.clear
             .allowsHitTesting(false)
