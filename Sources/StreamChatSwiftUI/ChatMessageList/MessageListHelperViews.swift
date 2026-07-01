@@ -106,7 +106,10 @@ public struct MessageReadIndicatorView: View {
     @Injected(\.images) private var images
     @Injected(\.fonts) private var fonts
     @Injected(\.colors) private var colors
-    
+
+    /// Scales the checkmark alongside the adjacent text when Dynamic Type changes.
+    @ScaledMetric(relativeTo: .subheadline) private var iconScale: CGFloat = 1
+
     var readUsers: [ChatUser]
     var showDelivered: Bool
     var localState: LocalMessageState?
@@ -132,7 +135,7 @@ public struct MessageReadIndicatorView: View {
             )
             .customizable()
             .foregroundColor(usesInvertedStyle ? colors.textOnAccent.toColor : (shouldShowReads ? Color(colors.accentPrimary) : colors.chatTextTimestamp.toColor))
-            .frame(height: 16)
+            .frame(height: 16 * iconScale)
             .opacity(localState == .sendingFailed || localState == .syncingFailed ? 0.0 : 1)
             .accessibilityLabel(
                 Text(
