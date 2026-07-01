@@ -663,6 +663,23 @@ import XCTest
         AssertSnapshot(view)
     }
 
+    func test_cameraAccessDeniedPromptView_accessibilityExtraExtraExtraLarge() {
+        // Given
+        let view = CameraAccessDeniedPromptView()
+            .frame(width: composerWidth, height: 300)
+
+        // Then
+        let traits = UITraitCollection(traitsFrom: [
+            UITraitCollection(displayScale: 1),
+            UITraitCollection(preferredContentSizeCategory: .accessibilityExtraExtraExtraLarge),
+            UITraitCollection(userInterfaceStyle: .light)
+        ])
+        assertSnapshot(
+            matching: view,
+            as: .image(perceptualPrecision: precision, layout: .sizeThatFits, traits: traits)
+        )
+    }
+
     // MARK: - Frozen Channel Tests
 
     func test_messageComposerView_frozenChannel() {

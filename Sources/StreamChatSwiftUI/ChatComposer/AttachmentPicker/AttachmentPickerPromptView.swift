@@ -28,35 +28,60 @@ public struct AttachmentPickerPromptView: View {
     }
 
     public var body: some View {
-        VStack(spacing: tokens.spacingMd) {
-            VStack(spacing: tokens.spacingSm) {
-                image
-                    .customizable()
-                    .frame(width: 32, height: 32)
-                    .foregroundColor(Color(colors.textTertiary))
-
-                Text(text)
-                    .font(fonts.body)
-                    .multilineTextAlignment(.center)
-                    .foregroundColor(Color(colors.textTertiary))
-                    .frame(width: 200)
-            }
-
-            StreamTextButton(
-                role: .secondary,
-                style: .outline,
-                size: .medium,
-                action: onTap
-            ) {
-                Text(buttonText)
-                    .font(fonts.bodyBold)
-            }
+        GeometryReader { proxy in
+            scrollView(minHeight: proxy.size.height)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .padding(.horizontal, tokens.spacing2xl)
-        .padding(.bottom, 60)
         .background(Color(colors.backgroundCoreElevation1))
         .accessibilityElement(children: .contain)
         .accessibilityIdentifier("AttachmentPickerPromptView")
+    }
+
+    @ViewBuilder
+    private func scrollView(minHeight: CGFloat) -> some View {
+        // The prompt is hosted in a fixed-height area (roughly the keyboard
+        // height) that never grows with Dynamic Type, so at larger sizes the
+        // content needs to scroll rather than clip or overflow the panel.
+        // `minHeight` keeps it vertically centered when everything fits.
+        let scrollView = ScrollView {
+            VStack(spacing: tokens.spacingMd) {
+                VStack(spacing: tokens.spacingSm) {
+                    image
+                        .customizable()
+                        .frame(width: 32, height: 32)
+                        .foregroundColor(Color(colors.textTertiary))
+
+                    Text(text)
+                        .font(fonts.body)
+                        .multilineTextAlignment(.center)
+                        .foregroundColor(Color(colors.textTertiary))
+                        .fixedSize(horizontal: false, vertical: true)
+                        .frame(maxWidth: 300)
+                }
+
+                StreamTextButton(
+                    role: .secondary,
+                    style: .outline,
+                    size: .medium,
+                    action: onTap
+                ) {
+                    Text(buttonText)
+                        .font(fonts.bodyBold)
+                }
+            }
+            .frame(maxWidth: .infinity)
+            .padding(.horizontal, tokens.spacing2xl)
+            .padding(.bottom, 60)
+            .frame(minHeight: minHeight)
+        }
+
+        // Only allow scrolling/bounce once the content actually overflows
+        // the available height, instead of always being interactively
+        // scrollable even when everything already fits on screen.
+        if #available(iOS 16.4, *) {
+            scrollView.scrollBounceBehavior(.basedOnSize)
+        } else {
+            scrollView
+        }
     }
 }
