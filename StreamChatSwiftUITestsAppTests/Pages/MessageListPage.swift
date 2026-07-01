@@ -22,7 +22,7 @@ class MessageListPage {
     }
 
     static func messageView(for cell: XCUIElement) -> XCUIElement {
-        cell.buttons.matching(identifier: "MessageView").firstMatch
+        cell.otherElements.matching(identifier: "MessageView").firstMatch
     }
 
     static var messages: XCUIElementQuery {
@@ -118,7 +118,7 @@ class MessageListPage {
 
     enum Attributes {
         static func messageBubble(in messageCell: XCUIElement) -> XCUIElement {
-            messageCell.buttons["MessageView"]
+            messageCell.otherElements["MessageView"]
         }
         
         static func reactionButton(in messageCell: XCUIElement) -> XCUIElement {
@@ -142,7 +142,7 @@ class MessageListPage {
         }
 
         static func time(in messageCell: XCUIElement) -> XCUIElement {
-            messageCell.buttons["MessageDateView"]
+            messageCell.staticTexts["MessageDateView"]
         }
 
         static func author(messageCell: XCUIElement) -> XCUIElement {

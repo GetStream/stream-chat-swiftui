@@ -7,6 +7,7 @@ import SwiftUI
 
 public struct AttachmentTextView<Factory: ViewFactory>: View {
     @Injected(\.tokens) private var tokens
+    @Environment(\.messageCompositeAccessibilityLabel) private var captionAccessibilityLabel
 
     var factory: Factory
     var message: ChatMessage
@@ -34,6 +35,7 @@ public struct AttachmentTextView<Factory: ViewFactory>: View {
         .fixedSize(horizontal: false, vertical: true)
         .frame(maxWidth: maxTextWidth, alignment: .leading)
         .accessibilityIdentifier("MessageTextView")
+        .modifier(CaptionAccessibilityLabelModifier(label: captionAccessibilityLabel))
     }
 
     /// Limit text width for messages with portrait image attachment.
@@ -47,5 +49,24 @@ public struct AttachmentTextView<Factory: ViewFactory>: View {
             maxItemWidth: availableWidth
         )
         return size.width
+    }
+}
+
+/// Overrides the caption's VoiceOver label with the message's composite label
+/// (sender, content, time and delivery status) when one is provided by the
+/// surrounding message cell, so that focusing the caption of an attachment
+/// message reads the same thing as a message without attachments.
+private struct CaptionAccessibilityLabelModifier: ViewModifier {
+    let label: String?
+
+    @ViewBuilder
+    func body(content: Content) -> some View {
+        if let label, !label.isEmpty {
+            content
+                .accessibilityElement(children: .ignore)
+                .accessibilityLabel(label)
+        } else {
+            content
+        }
     }
 }

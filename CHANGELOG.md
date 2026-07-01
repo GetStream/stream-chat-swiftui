@@ -3,16 +3,6 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 # Upcoming
 
-### 🐞 Fixed
-- Keep the navigation bar and its buttons visible while searching in the add members screen [#1499](https://github.com/GetStream/stream-chat-swiftui/pull/1499)
-- Improve VoiceOver support for polls so the header, options, and results announce as coherent elements [#1503](https://github.com/GetStream/stream-chat-swiftui/pull/1503)
-- Improve VoiceOver announcements for channel list items [#1504](https://github.com/GetStream/stream-chat-swiftui/pull/1504)
-- Fix VoiceOver focus landing on the back button instead of the composer when entering a channel [#1502](https://github.com/GetStream/stream-chat-swiftui/pull/1502)
-- Fix composer placeholder and "Also send in channel" label truncating at large Dynamic Type sizes [#1502](https://github.com/GetStream/stream-chat-swiftui/pull/1502)
-- Fix snackbar text truncating instead of wrapping at large Dynamic Type sizes [#1502](https://github.com/GetStream/stream-chat-swiftui/pull/1502)
-- Avoid a deadlock when building message actions in the reactions overlay that could freeze the UI for very long messages [#1506](https://github.com/GetStream/stream-chat-swiftui/pull/1506)
-- Fix link attachment previews not showing their image [#1510](https://github.com/GetStream/stream-chat-swiftui/pull/1510)
-
 ### ✅ Added
 - Add support for enhanced mention suggestions [#1497](https://github.com/GetStream/stream-chat-swiftui/pull/1497)
 - Add `PollsConfig.maxQuestionLength` and `PollsConfig.maxOptionLength` to limit the character count of poll questions and options [#1500](https://github.com/GetStream/stream-chat-swiftui/pull/1500)
@@ -21,7 +11,29 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ### ⚡️ Performance
 - Improve channel avatar loading performance in the channel list [#1501](https://github.com/GetStream/stream-chat-swiftui/pull/1501)
 
+### 🐞 Fixed
+- Keep the navigation bar and its buttons visible while searching in the add members screen [#1499](https://github.com/GetStream/stream-chat-swiftui/pull/1499)
+- Announce each message as a single VoiceOver element [#1505](https://github.com/GetStream/stream-chat-swiftui/pull/1505)
+- Announce media and voice attachments correctly to VoiceOver [#1505](https://github.com/GetStream/stream-chat-swiftui/pull/1505)
+- Announce deleted and system messages as clear single VoiceOver elements [#1505](https://github.com/GetStream/stream-chat-swiftui/pull/1505)
+- Hide decorative separators in the translated message indicator from VoiceOver [#1505](https://github.com/GetStream/stream-chat-swiftui/pull/1505)
+- Improve VoiceOver support for polls so the header, options, and results announce as coherent elements [#1503](https://github.com/GetStream/stream-chat-swiftui/pull/1503)
+- Improve VoiceOver announcements for channel list items [#1504](https://github.com/GetStream/stream-chat-swiftui/pull/1504)
+- Fix VoiceOver focus landing on the back button instead of the composer when entering a channel [#1502](https://github.com/GetStream/stream-chat-swiftui/pull/1502)
+- Fix composer placeholder and "Also send in channel" label truncating at large Dynamic Type sizes [#1502](https://github.com/GetStream/stream-chat-swiftui/pull/1502)
+- Fix snackbar text truncating instead of wrapping at large Dynamic Type sizes [#1502](https://github.com/GetStream/stream-chat-swiftui/pull/1502)
+- Avoid a deadlock when building message actions in the reactions overlay that could freeze the UI for very long messages [#1506](https://github.com/GetStream/stream-chat-swiftui/pull/1506)
+- Fix link attachment previews not showing their image [#1510](https://github.com/GetStream/stream-chat-swiftui/pull/1510)
+
 ### 🎭 New Localizations
+- `message.accessibility.system-message` — prefix announced for system messages
+- `message.accessibility.you` — sender prefix for the current user's messages
+- `message.accessibility.sent-time` — spoken sent time ("at {time}")
+- `message.accessibility.status-sent`, `message.accessibility.status-delivered`, `message.accessibility.status-read` — delivery status announced on the last message in a sequence
+- `message.accessibility.voice-recording`, `message.accessibility.voice-recording-own` — voice message labels
+- `message.accessibility.image*`, `message.accessibility.video*` — image and video attachment labels (with/without timestamp and duration)
+- `message.accessibility.actions` — VoiceOver label for the message actions
+- `message.accessibility.playback-speed` — VoiceOver label for the voice message playback speed control
 - `message.polls.accessibility.*` — VoiceOver labels for polls
 - `channel.item.accessibility.*` — VoiceOver labels for channel list items
 

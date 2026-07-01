@@ -18,8 +18,10 @@ is_localhost = !is_ci
 mock_server_driver_port = 4568
 swift_environment_path = File.absolute_path('../Sources/StreamChatSwiftUI/Generated/SystemEnvironment+Version.swift')
 @force_check = false
+@impact = nil
 
 before_all do |lane|
+  @impact = impact_analysis
   if is_ci
     setup_ci
     setup_git_config
@@ -189,7 +191,7 @@ end
 
 desc 'Runs tests in Debug config'
 lane :test_ui do |options|
-  next unless is_check_required(sources: sources_matrix[:ui], force_check: @force_check)
+  next unless is_check_required(sources: @impact[:ui][:sources], force_check: @force_check, required_checks: @impact[:ui][:checks])
 
   record_mode = options[:record].to_s == 'true'
   remove_snapshots if record_mode
@@ -276,7 +278,7 @@ end
 
 desc 'Runs e2e ui tests using mock server in Debug config'
 lane :test_e2e_mock do |options|
-  next unless is_check_required(sources: sources_matrix[:e2e], force_check: @force_check)
+  next unless is_check_required(sources: @impact[:e2e][:sources], force_check: @force_check, required_checks: @impact[:e2e][:checks])
 
   start_mock_server
 
@@ -339,7 +341,7 @@ end
 
 desc 'Builds Demo app'
 lane :build_demo do |options|
-  next unless is_check_required(sources: sources_matrix[:sample_apps], force_check: @force_check)
+  next unless is_check_required(sources: @impact[:sample_apps][:sources], force_check: @force_check, required_checks: @impact[:sample_apps][:checks])
 
   scan(
     project: xcode_project,
@@ -358,7 +360,7 @@ end
 
 desc 'Run fastlane linting'
 lane :rubocop do
-  next unless is_check_required(sources: sources_matrix[:ruby], force_check: @force_check)
+  next unless is_check_required(sources: @impact[:ruby][:sources], force_check: @force_check, required_checks: @impact[:ruby][:checks])
 
   sh('bundle exec rubocop')
 end
@@ -424,15 +426,36 @@ lane :remove_snapshots do |options|
   end
 end
 
-lane :sources_matrix do
+lane :impact_analysis do
   {
-    e2e: ['Sources', 'StreamChatSwiftUITestsAppTests', 'StreamChatSwiftUITestsApp', '.github/workflows/smoke-checks.yml', xcode_project],
-    ui: ['Sources', 'StreamChatSwiftUITests', '.github/workflows/smoke-checks.yml', xcode_project],
-    sample_apps: ['Sources', 'DemoAppSwiftUI', '.github/workflows/smoke-checks.yml', xcode_project],
-    ruby: ['fastlane', 'Gemfile', 'Gemfile.lock', '.github/workflows/smoke-checks.yml'],
-    size: ['Sources', '.github/workflows/smoke-checks.yml', xcode_project],
-    sonar: ['Sources', '.github/workflows/smoke-checks.yml'],
-    public_interface: ['Sources', '.github/workflows/smoke-checks.yml']
+    e2e: {
+      sources: ['Sources', 'StreamChatSwiftUITestsAppTests', 'StreamChatSwiftUITestsApp', '.github/workflows/smoke-checks.yml', xcode_project],
+      checks: ['Test E2E UI (Debug) (0)', 'Test E2E UI (Debug) (1)']
+    },
+    ui: {
+      sources: ['Sources', 'StreamChatSwiftUITests', '.github/workflows/smoke-checks.yml', xcode_project],
+      checks: ['Test SwiftUI (Debug)', 'Build SDKs (Old Xcode)']
+    },
+    sample_apps: {
+      sources: ['Sources', 'DemoAppSwiftUI', '.github/workflows/smoke-checks.yml', xcode_project],
+      checks: ['Build Demo App']
+    },
+    ruby: {
+      sources: ['fastlane', 'Gemfile', 'Gemfile.lock', '.github/workflows/smoke-checks.yml'],
+      checks: ['Automated Code Review']
+    },
+    size: {
+      sources: ['Sources', '.github/workflows/smoke-checks.yml', xcode_project],
+      checks: ['Metrics']
+    },
+    sonar: {
+      sources: ['Sources', '.github/workflows/smoke-checks.yml'],
+      checks: ['Test SwiftUI (Debug)']
+    },
+    public_interface: {
+      sources: ['Sources', '.github/workflows/smoke-checks.yml'],
+      checks: ['Automated Code Review']
+    }
   }
 end
 
@@ -447,7 +470,7 @@ lane :copyright do
 end
 
 lane :validate_public_interface do
-  next unless is_check_required(sources: sources_matrix[:public_interface], force_check: @force_check)
+  next unless is_check_required(sources: @impact[:public_interface][:sources], force_check: @force_check, required_checks: @impact[:public_interface][:checks])
 
   # Get branch names
   original_branch = current_branch
@@ -489,7 +512,7 @@ lane :validate_public_interface do
 end
 
 lane :show_frameworks_sizes do |options|
-  next unless is_check_required(sources: sources_matrix[:size], force_check: @force_check)
+  next unless is_check_required(sources: @impact[:size][:sources], force_check: @force_check, required_checks: @impact[:size][:checks])
 
   sizes = options[:sizes] || frameworks_sizes
   show_sdk_size(branch_sizes: sizes, github_repo: github_repo)
@@ -529,7 +552,7 @@ private_lane :frameworks_sizes do
 end
 
 lane :size_analyze do
-  next unless is_check_required(sources: sources_matrix[:size], force_check: @force_check)
+  next unless is_check_required(sources: @impact[:size][:sources], force_check: @force_check, required_checks: @impact[:size][:checks])
 
   gym(
     scheme: 'DemoAppSwiftUI',

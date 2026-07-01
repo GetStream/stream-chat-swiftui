@@ -20,6 +20,7 @@ public struct DeletedMessageView: View {
                 .resizable()
                 .scaledToFit()
                 .frame(width: tokens.iconSizeSm, height: tokens.iconSizeSm)
+                .accessibilityHidden(true)
             Text(L10n.Message.deletedMessagePlaceholder)
                 .font(fonts.body)
         }
