@@ -64,6 +64,7 @@ public struct MessageMediaAttachmentsContainerView<Factory: ViewFactory>: View {
     @Injected(\.colors) private var colors
     @Injected(\.fonts) private var fonts
     @Injected(\.tokens) private var tokens
+    @Injected(\.utils) private var utils
 
     let factory: Factory
     let message: ChatMessage
@@ -284,16 +285,78 @@ public struct MessageMediaAttachmentsContainerView<Factory: ViewFactory>: View {
         )
         .contentShape(Rectangle())
         .onTapGesture {
-            if message.localState == nil {
-                if selectedIndex == index {
-                    galleryShown = true
-                } else {
-                    selectedIndex = index
-                }
-            }
+            openMedia(at: index)
         }
-        .accessibilityLabel(L10n.Message.Attachment.accessibilityLabel(index + 1))
-        .accessibilityAddTraits(item.type == .video ? .startsMediaSession : .isImage)
+        // The thumbnail loads asynchronously - video previews in particular swap
+        // their view tree once the preview resolves (placeholder/spinner ->
+        // image + play indicator). If the accessibility element lived on this
+        // churning subtree, VoiceOver would rebuild and re-announce it after the
+        // preview loaded. Hide the visuals from accessibility and expose a single
+        // stable element that owns the label and activation instead.
+        .accessibilityHidden(true)
+        .overlay(mediaAccessibilityElement(for: item, index: index))
+    }
+
+    /// A transparent overlay that acts as the sole accessibility element for a
+    /// media cell.
+    ///
+    /// This uses the "stable overlay" technique: the real thumbnail is hidden
+    /// from VoiceOver (`.accessibilityHidden(true)`) and a `Color.clear` overlay
+    /// provides the label and activation action. This decouples the accessibility
+    /// identity from the view tree that changes when the thumbnail loads
+    /// asynchronously (placeholder → image), preventing VoiceOver from
+    /// re-announcing the cell after the preview resolves. The same pattern is
+    /// used in UIKit by assigning custom `accessibilityElements` on a container
+    /// view that outlives its subview churn.
+    private func mediaAccessibilityElement(for item: MediaAttachment, index: Int) -> some View {
+        Color.clear
+            .allowsHitTesting(false)
+            .accessibilityElement()
+            .accessibilityLabel(mediaAccessibilityLabel(for: item, index: index))
+            .accessibilityAddTraits(item.type == .video ? [.isButton, .startsMediaSession] : .isImage)
+            .accessibilityAction {
+                openMedia(at: index)
+            }
+    }
+
+    private func openMedia(at index: Int) {
+        guard message.localState == nil else { return }
+        if selectedIndex == index {
+            galleryShown = true
+        } else {
+            selectedIndex = index
+        }
+    }
+
+    // MARK: - Accessibility
+
+    func mediaAccessibilityLabel(for item: MediaAttachment, index: Int) -> String {
+        // When the message has a caption, the caption announces the timestamp,
+        // so omit it from the attachment label to avoid repeating it.
+        let includesTimestamp = message.text.isEmpty
+        guard item.type == .video else {
+            return utils.messageAccessibilityFormatter.imageLabel(
+                for: message,
+                metadata: ImageAttachmentAccessibilityMetadata(
+                    attachmentNumber: index + 1,
+                    includesTimestamp: includesTimestamp
+                )
+            )
+        }
+        return utils.messageAccessibilityFormatter.videoLabel(
+            for: message,
+            metadata: VideoAttachmentAccessibilityMetadata(
+                attachmentNumber: index + 1,
+                duration: videoDurationText(for: item),
+                includesTimestamp: includesTimestamp
+            )
+        )
+    }
+
+    func videoDurationText(for item: MediaAttachment) -> String? {
+        guard let extraData = item.videoAttachment?.payload.extraData,
+              case let .number(duration) = extraData["duration"] else { return nil }
+        return utils.messageAccessibilityFormatter.duration(from: duration)
     }
 
     // MARK: - Data
