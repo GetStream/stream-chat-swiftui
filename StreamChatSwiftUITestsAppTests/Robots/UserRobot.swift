@@ -355,7 +355,7 @@ extension UserRobot {
     @discardableResult
     func swipeMessage(at index: Int = 0) -> Self {
         let cell = messageCell(withIndex: index).waitForHitPoint()
-        MessageListPage.messageView(for: cell).staticTexts.firstMatch.swipeRight()
+        MessageListPage.messageView(for: cell).swipeRight()
         return self
     }
 
