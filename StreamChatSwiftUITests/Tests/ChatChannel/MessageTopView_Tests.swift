@@ -136,6 +136,38 @@ import XCTest
         AssertSnapshot(view, size: size)
     }
 
+    func test_translatedAnnotation_accessibilityExtraExtraExtraLarge() {
+        streamChat = StreamChat(chatClient: chatClient, utils: Utils(
+            messageListConfig: .init(messageDisplayOptions: MessageDisplayOptions(showOriginalTranslatedButton: true))
+        ))
+
+        let channel = ChatChannel.mock(
+            cid: .unique,
+            membership: .mock(id: .unique, language: .spanish)
+        )
+
+        let message = ChatMessage.mock(
+            id: .unique,
+            cid: channel.cid,
+            text: "Hello",
+            author: .mock(id: .unique),
+            translations: [.spanish: "Hola"]
+        )
+
+        let size = CGSize(width: 375, height: 200)
+        let view = makeAnnotationsView(message: message, channel: channel, size: size)
+
+        let traits = UITraitCollection(traitsFrom: [
+            UITraitCollection(displayScale: 1),
+            UITraitCollection(preferredContentSizeCategory: .accessibilityExtraExtraExtraLarge),
+            UITraitCollection(userInterfaceStyle: .light)
+        ])
+        assertSnapshot(
+            matching: view,
+            as: .image(perceptualPrecision: precision, traits: traits)
+        )
+    }
+
     // MARK: - All annotations (not in thread)
 
     func test_allAnnotations_snapshot() {

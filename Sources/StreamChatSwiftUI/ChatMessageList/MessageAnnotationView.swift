@@ -13,6 +13,8 @@ public struct MessageAnnotationView: View {
     @Injected(\.fonts) private var fonts
     @Injected(\.tokens) private var tokens
 
+    @Environment(\.sizeCategory) private var sizeCategory
+
     let icon: UIImage
     let title: String?
     let subtitle: String?
@@ -68,12 +70,25 @@ public struct MessageAnnotationView: View {
                         .font(fonts.footnote)
                 }
                 Button(action: buttonAction) {
-                    Text(buttonTitle)
-                        .font(fonts.footnote)
-                        .foregroundColor(usesInvertedStyle ? resolvedTextColor : Color(colors.accentPrimary))
+                    buttonText(buttonTitle)
                 }
             }
         }
         .foregroundColor(resolvedTextColor)
+    }
+
+    @ViewBuilder
+    private func buttonText(_ buttonTitle: String) -> some View {
+        let text = Text(buttonTitle)
+            .font(fonts.footnote)
+            .foregroundColor(usesInvertedStyle ? resolvedTextColor : Color(colors.accentPrimary))
+        // When the row wraps at accessibility text sizes the button title must stay
+        // leading-aligned instead of centering. The modifier is only applied then, so the
+        // single-line rendering used at smaller sizes is left untouched.
+        if sizeCategory.isAccessibilityCategory {
+            text.multilineTextAlignment(.leading)
+        } else {
+            text
+        }
     }
 }
