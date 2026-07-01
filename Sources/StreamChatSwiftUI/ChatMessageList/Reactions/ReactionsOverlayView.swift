@@ -110,7 +110,11 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
                         )
                     )
                     .frame(width: messageDisplayInfo.frame.width)
-                    .frame(maxHeight: messageDisplayInfo.frame.height)
+                    // Let the preview take its natural height (including the timestamp/avatar)
+                    // rather than capping it to the captured frame. Capping would either clip
+                    // that content or, without clipping, let it bleed over the reactions picker
+                    // above; any genuine overflow is instead absorbed by the overlay's scroll.
+                    .fixedSize(horizontal: false, vertical: true)
                     .scaleEffect(popIn || willPopOut ? 1 : 0.95)
                     .animation(willPopOut ? .easeInOut : popInAnimation, value: popIn)
                     .onTapGesture {
