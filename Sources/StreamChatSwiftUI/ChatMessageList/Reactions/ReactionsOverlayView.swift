@@ -33,6 +33,7 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
     @State private var orientationChanged = false
     @State private var moreReactionsShown = false
     @State private var measuredTotalContentHeight: CGFloat = 0
+    @State private var measuredActionsContentWidth: CGFloat = 0
 
     private let factory: Factory
     private let channel: ChatChannel
@@ -117,7 +118,7 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
                     }
                     messageActionsView(reader: reader)
                 }
-                .frame(width: overlayContentWidth, alignment: isRightAligned ? .trailing : .leading)
+                .frame(width: overlayContentWidth(reader: reader), alignment: isRightAligned ? .trailing : .leading)
                 .frame(height: measuredTotalContentHeight > 0 ? min(measuredTotalContentHeight, allowedTotalContentHeight) : nil)
                 .background(
                     GeometryReader { proxy in
@@ -138,6 +139,11 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
         .onPreferenceChange(OverlayContentHeightKey.self) { value in
             if value > 0 {
                 measuredTotalContentHeight = value
+            }
+        }
+        .onPreferenceChange(ActionsContentWidthKey.self) { value in
+            if value > 0 {
+                measuredActionsContentWidth = value
             }
         }
         .onChange(of: measuredTotalContentHeight) { _ in
@@ -251,30 +257,56 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
     @ViewBuilder
     private func messageActionsView(reader: GeometryProxy) -> some View {
         if messageDisplayInfo.showsMessageActions {
+            let available = availableActionsWidth(reader: reader)
+            // At large Dynamic Type sizes the actions menu's natural width can exceed the
+            // screen. Only then do we constrain it to the available width (letting the row
+            // titles truncate), so the common case keeps its natural, unchanged sizing.
+            let needsConstrain = measuredActionsContentWidth > 0 && measuredActionsContentWidth > available
             HStack(spacing: 0) {
                 if isRightAligned { Spacer() }
-                factory.makeMessageActionsView(
-                    options: MessageActionsViewOptions(
-                        message: messageDisplayInfo.message,
-                        channel: channel,
-                        onFinish: { actionInfo in
-                            onActionExecuted(actionInfo)
-                        },
-                        onError: { _ in
-                            viewModel.errorShown = true
-                        }
-                    )
-                )
-                .frame(minWidth: 250, alignment: isRightAligned ? .trailing : .leading)
-                .fixedSize(horizontal: true, vertical: false)
-                .opacity(willPopOut ? 0 : 1)
-                .scaleEffect(popIn ? 1 : (willPopOut ? 0.4 : 0))
-                .animation(willPopOut ? .easeInOut : popInAnimation, value: popIn)
+                factory.makeMessageActionsView(options: actionsViewOptions)
+                    .frame(minWidth: 250, alignment: isRightAligned ? .trailing : .leading)
+                    .frame(maxWidth: needsConstrain ? available : nil)
+                    .fixedSize(horizontal: !needsConstrain, vertical: false)
+                    // Natural width is measured off an always-fixed-size hidden copy so the
+                    // measurement stays stable even while the visible menu is being constrained.
+                    .background(actionsNaturalWidthReader)
+                    .opacity(willPopOut ? 0 : 1)
+                    .scaleEffect(popIn ? 1 : (willPopOut ? 0.4 : 0))
+                    .animation(willPopOut ? .easeInOut : popInAnimation, value: popIn)
                 if !isRightAligned { Spacer() }
             }
             .padding(.leading, !isRightAligned ? messageBubbleLeadingX : 0)
             .padding(.trailing, isRightAligned ? messageHorizontalPadding : 0)
         }
+    }
+
+    private var actionsViewOptions: MessageActionsViewOptions {
+        MessageActionsViewOptions(
+            message: messageDisplayInfo.message,
+            channel: channel,
+            onFinish: { actionInfo in
+                onActionExecuted(actionInfo)
+            },
+            onError: { _ in
+                viewModel.errorShown = true
+            }
+        )
+    }
+
+    /// A hidden, always-natural-width copy of the actions menu used solely to measure its
+    /// intrinsic width. Kept out of the accessibility tree and non-interactive.
+    private var actionsNaturalWidthReader: some View {
+        factory.makeMessageActionsView(options: actionsViewOptions)
+            .frame(minWidth: 250)
+            .fixedSize(horizontal: true, vertical: false)
+            .background(
+                GeometryReader { proxy in
+                    Color.clear.preference(key: ActionsContentWidthKey.self, value: proxy.size.width)
+                }
+            )
+            .hidden()
+            .allowsHitTesting(false)
     }
 
     // MARK: - Dismiss
@@ -316,8 +348,26 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
         return messageHorizontalPadding
     }
 
-    private var overlayContentWidth: CGFloat {
-        messageDisplayInfo.frame.width
+    /// The width available for the actions menu after accounting for the horizontal insets
+    /// applied to it, so it never has to draw past the edges of the screen.
+    private func availableActionsWidth(reader: GeometryProxy) -> CGFloat {
+        let leadingInset = isRightAligned ? messageHorizontalPadding : messageBubbleLeadingX
+        return max(0, reader.size.width - leadingInset - messageHorizontalPadding)
+    }
+
+    /// Width of the content column (reactions, message, actions).
+    ///
+    /// Normally this matches the captured message width, which keeps the layout identical to
+    /// before. Only when the actions menu's natural width would overflow the screen does the
+    /// column widen so that the horizontal offset clamp keeps the (now constrained) menu on
+    /// screen instead of letting it spill past the edges.
+    private func overlayContentWidth(reader: GeometryProxy) -> CGFloat {
+        let available = availableActionsWidth(reader: reader)
+        guard measuredActionsContentWidth > available, available > 0 else {
+            return messageDisplayInfo.frame.width
+        }
+        let leadingInset = isRightAligned ? messageHorizontalPadding : messageBubbleLeadingX
+        return min(max(messageDisplayInfo.frame.width, leadingInset + available), reader.size.width)
     }
 
     // MARK: - Animation
@@ -351,7 +401,7 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
     private func contentOffsetX(reader: GeometryProxy) -> CGFloat {
         let overlayFrame = reader.frame(in: .global)
         let originalMessageOriginX = messageDisplayInfo.frame.minX - overlayFrame.minX
-        let maxAllowedOffset = max(0, reader.size.width - overlayContentWidth)
+        let maxAllowedOffset = max(0, reader.size.width - overlayContentWidth(reader: reader))
         return min(max(0, originalMessageOriginX), maxAllowedOffset)
     }
 
@@ -377,6 +427,13 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
 // MARK: - Preference Keys
 
 private struct OverlayContentHeightKey: PreferenceKey {
+    static let defaultValue: CGFloat = 0
+    static func reduce(value: inout CGFloat, nextValue: () -> CGFloat) {
+        value = max(value, nextValue())
+    }
+}
+
+private struct ActionsContentWidthKey: PreferenceKey {
     static let defaultValue: CGFloat = 0
     static func reduce(value: inout CGFloat, nextValue: () -> CGFloat) {
         value = max(value, nextValue())
