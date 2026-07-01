@@ -38,7 +38,7 @@ final class StreamVideoPlayer_AVPlayerLoader_Tests: XCTestCase {
         let mediaLoader = MediaLoaderSpy(videoAssetResult: .success(MediaLoaderVideoAsset(asset: AVURLAsset(url: url))))
         let player = AVPlayer()
         let provider = AVPlayerProviderSpy(result: .success(player))
-        let loader = makeLoader(url: url, mediaLoader: mediaLoader, avPlayerProvider: provider, cacheEnabled: false)
+        let loader = makeLoader(url: url, mediaLoader: mediaLoader, avPlayerProvider: provider, policy: .disabled)
 
         let result = await load(loader)
 
@@ -58,7 +58,7 @@ final class StreamVideoPlayer_AVPlayerLoader_Tests: XCTestCase {
         for url in urls {
             let mediaLoader = MediaLoaderSpy(videoAssetResult: .success(MediaLoaderVideoAsset(asset: AVURLAsset(url: url))))
             let provider = AVPlayerProviderSpy(result: .success(AVPlayer()))
-            let loader = makeLoader(url: url, mediaLoader: mediaLoader, avPlayerProvider: provider, cacheEnabled: true)
+            let loader = makeLoader(url: url, mediaLoader: mediaLoader, avPlayerProvider: provider)
 
             _ = await load(loader)
 
@@ -116,7 +116,7 @@ final class StreamVideoPlayer_AVPlayerLoader_Tests: XCTestCase {
         let expectedError = LoaderTestError()
         let mediaLoader = MediaLoaderSpy(videoAssetResult: .success(MediaLoaderVideoAsset(asset: AVURLAsset(url: url))))
         let provider = AVPlayerProviderSpy(result: .failure(expectedError))
-        let loader = makeLoader(url: url, mediaLoader: mediaLoader, avPlayerProvider: provider, cacheEnabled: false)
+        let loader = makeLoader(url: url, mediaLoader: mediaLoader, avPlayerProvider: provider, policy: .disabled)
 
         let result = await load(loader)
 
@@ -135,7 +135,7 @@ final class StreamVideoPlayer_AVPlayerLoader_Tests: XCTestCase {
         mediaLoader: MediaLoaderSpy = MediaLoaderSpy(),
         avPlayerProvider: AVPlayerProviderSpy = AVPlayerProviderSpy(),
         cache: LRUDiskCache? = nil,
-        cacheEnabled: Bool = true,
+        policy: VideoAttachmentCachingPolicy = VideoAttachmentCachingPolicy(maxCacheSize: 1_000_000),
         isPlayable: @escaping @Sendable (URL) async -> Bool = { _ in true }
     ) -> StreamVideoPlayer.AVPlayerLoader {
         StreamVideoPlayer.AVPlayerLoader(
@@ -143,7 +143,7 @@ final class StreamVideoPlayer_AVPlayerLoader_Tests: XCTestCase {
             mediaLoader: mediaLoader,
             avPlayerProvider: avPlayerProvider,
             cache: cache ?? makeCache(),
-            cacheEnabled: cacheEnabled,
+            policy: policy,
             isPlayable: isPlayable
         )
     }

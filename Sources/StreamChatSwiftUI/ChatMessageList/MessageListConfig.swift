@@ -5,6 +5,7 @@
 import CoreGraphics
 import StreamChat
 import SwiftUI
+import UniformTypeIdentifiers
 
 /// Configuration for the message list.
 @MainActor public final class MessageListConfig {
@@ -33,7 +34,6 @@ import SwiftUI
         localLinkDetectionEnabled: Bool = true,
         isMessageEditedLabelEnabled: Bool = true,
         markdownSupportEnabled: Bool = false,
-        videoAttachmentCacheEnabled: Bool = false,
         userBlockingEnabled: Bool = true,
         bouncedMessagesAlertActionsEnabled: Bool = true,
         skipEditedMessageLabel: @escaping (ChatMessage) -> Bool = { _ in false },
@@ -41,6 +41,7 @@ import SwiftUI
         hidesCommandsOverlayOnMessageListTap: Bool = true,
         hidesAttachmentsPickersOnMessageListTap: Bool = true,
         attachmentPreviewWidth: CGFloat = 256,
+        videoAttachmentCachingPolicy: VideoAttachmentCachingPolicy = .disabled,
         navigationBarDisplayMode: NavigationBarItem.TitleDisplayMode = .inline,
         supportedMessageActions: @escaping @MainActor (SupportedMessageActionsOptions) -> [MessageAction] = MessageAction.defaultActions(for:)
     ) {
@@ -68,7 +69,6 @@ import SwiftUI
         self.localLinkDetectionEnabled = localLinkDetectionEnabled
         self.isMessageEditedLabelEnabled = isMessageEditedLabelEnabled
         self.markdownSupportEnabled = markdownSupportEnabled
-        self.videoAttachmentCacheEnabled = videoAttachmentCacheEnabled
         self.userBlockingEnabled = userBlockingEnabled
         self.bouncedMessagesAlertActionsEnabled = bouncedMessagesAlertActionsEnabled
         self.skipEditedMessageLabel = skipEditedMessageLabel
@@ -76,6 +76,7 @@ import SwiftUI
         self.hidesCommandsOverlayOnMessageListTap = hidesCommandsOverlayOnMessageListTap
         self.hidesAttachmentsPickersOnMessageListTap = hidesAttachmentsPickersOnMessageListTap
         self.attachmentPreviewWidth = attachmentPreviewWidth
+        self.videoAttachmentCachingPolicy = videoAttachmentCachingPolicy
         self.navigationBarDisplayMode = navigationBarDisplayMode
         self.supportedMessageActions = supportedMessageActions
     }
@@ -103,10 +104,10 @@ import SwiftUI
     public let localLinkDetectionEnabled: Bool
     public let isMessageEditedLabelEnabled: Bool
     public let markdownSupportEnabled: Bool
-    /// A boolean value indicating if video attachments should be cached on disk.
+    /// The policy describing how video attachments are cached on disk.
     ///
-    /// It is disabled by default.
-    public let videoAttachmentCacheEnabled: Bool
+    /// Caching is disabled by default.
+    public let videoAttachmentCachingPolicy: VideoAttachmentCachingPolicy
     public let userBlockingEnabled: Bool
 
     /// A boolean to enable hiding the commands overlay when tapping the message list.
@@ -146,6 +147,30 @@ import SwiftUI
     /// - Parameter options: the options for getting supported message actions.
     /// - Returns: list of `MessageAction` items.
     public var supportedMessageActions: @MainActor (SupportedMessageActionsOptions) -> [MessageAction]
+}
+
+/// A policy describing how video attachments are cached on disk.
+public struct VideoAttachmentCachingPolicy: Sendable, Equatable {
+    /// The maximum total size of the video attachment disk cache, in bytes.
+    ///
+    /// Must be `>= 0`. Caching is disabled when this is `0`.
+    public var maxCacheSize: Int64
+
+    /// The content types eligible for caching.
+    ///
+    /// Defaults to `[.movie]`, which caches standard video files (mp4, mov, …) while
+    /// excluding HLS playlists (`.m3u8`).
+    public var allowedContentTypes: Set<UTType>
+
+    public init(maxCacheSize: Int64, allowedContentTypes: Set<UTType> = [.movie]) {
+        self.maxCacheSize = maxCacheSize
+        self.allowedContentTypes = allowedContentTypes
+    }
+}
+
+public extension VideoAttachmentCachingPolicy {
+    /// Video attachment caching is disabled. This is the default.
+    static let disabled = VideoAttachmentCachingPolicy(maxCacheSize: 0)
 }
 
 /// Contains information about the message paddings.

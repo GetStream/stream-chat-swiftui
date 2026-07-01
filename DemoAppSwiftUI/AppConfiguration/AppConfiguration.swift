@@ -44,7 +44,8 @@ final class AppConfiguration {
             ),
             skipEditedMessageLabel: { message in
                 message.extraData["ai_generated"]?.boolValue == true
-            }
+            },
+            videoAttachmentCachingPolicy: VideoAttachmentCachingPolicy(maxCacheSize: 100 * 1024 * 1024)
         )
     }
 

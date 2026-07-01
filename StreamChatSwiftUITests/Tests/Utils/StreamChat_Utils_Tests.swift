@@ -84,15 +84,17 @@ class StreamChat_Utils_Tests: StreamChatTestCase {
 
     func test_streamChatUtils_customDiskCacheSize() {
         // Given
-        let utils = Utils(diskCacheSizeInBytes: 123)
+        let config = MessageListConfig(videoAttachmentCachingPolicy: VideoAttachmentCachingPolicy(maxCacheSize: 123))
+        let utils = Utils(messageListConfig: config)
 
         // Then
         XCTAssertEqual(utils.diskCache.maxSizeInBytes, 123)
     }
 
-    func test_messageListConfig_videoAttachmentCacheEnabled() {
-        XCTAssertFalse(MessageListConfig().videoAttachmentCacheEnabled)
-        XCTAssertTrue(MessageListConfig(videoAttachmentCacheEnabled: true).videoAttachmentCacheEnabled)
+    func test_messageListConfig_videoAttachmentCachingPolicy() {
+        XCTAssertEqual(MessageListConfig().videoAttachmentCachingPolicy, .disabled)
+        let policy = VideoAttachmentCachingPolicy(maxCacheSize: 100)
+        XCTAssertEqual(MessageListConfig(videoAttachmentCachingPolicy: policy).videoAttachmentCachingPolicy, policy)
     }
 
     func test_streamChatUtils_customCDNRequester_throughMediaLoader() {

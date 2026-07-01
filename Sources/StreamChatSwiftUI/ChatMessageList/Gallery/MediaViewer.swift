@@ -6,6 +6,7 @@ import AVKit
 import StreamChat
 import StreamChatCommonUI
 import SwiftUI
+import UniformTypeIdentifiers
 
 /// View used for displaying image attachments in a gallery.
 public struct MediaViewer<Factory: ViewFactory>: View {
@@ -355,7 +356,7 @@ struct StreamVideoPlayer: View {
             mediaLoader: utils.mediaLoader,
             avPlayerProvider: utils.avPlayerProvider,
             cache: utils.diskCache,
-            cacheEnabled: utils.messageListConfig.videoAttachmentCacheEnabled
+            policy: utils.messageListConfig.videoAttachmentCachingPolicy
         )
         Task { @MainActor in
             let result = await loader.load()
@@ -378,7 +379,7 @@ extension StreamVideoPlayer {
         private let mediaLoader: MediaLoader
         private let avPlayerProvider: AVPlayerProvider
         private let cache: LRUDiskCache
-        private let cacheEnabled: Bool
+        private let policy: VideoAttachmentCachingPolicy
         private let isPlayable: @Sendable (URL) async -> Bool
 
         init(
@@ -386,19 +387,19 @@ extension StreamVideoPlayer {
             mediaLoader: MediaLoader,
             avPlayerProvider: AVPlayerProvider,
             cache: LRUDiskCache,
-            cacheEnabled: Bool,
+            policy: VideoAttachmentCachingPolicy,
             isPlayable: @escaping @Sendable (URL) async -> Bool = AVPlayerLoader.isPlayable
         ) {
             self.url = url
             self.mediaLoader = mediaLoader
             self.avPlayerProvider = avPlayerProvider
             self.cache = cache
-            self.cacheEnabled = cacheEnabled
+            self.policy = policy
             self.isPlayable = isPlayable
         }
 
         func load() async -> Result<AVPlayer, Error> {
-            let canCache = cacheEnabled && !url.isFileURL && url.pathExtension.lowercased() != "m3u8" // HLS
+            let canCache = policy.maxCacheSize > 0 && !url.isFileURL && isContentTypeAllowed(url)
             let key = url.path
             let fileExtension = url.pathExtension.isEmpty ? "mp4" : url.pathExtension
 
@@ -415,6 +416,11 @@ extension StreamVideoPlayer {
                 prefetchToCache(key: key, fileExtension: fileExtension)
             }
             return await loadFromRemote()
+        }
+
+        private func isContentTypeAllowed(_ url: URL) -> Bool {
+            guard let type = UTType(filenameExtension: url.pathExtension.lowercased()) else { return false }
+            return policy.allowedContentTypes.contains { type.conforms(to: $0) }
         }
 
         private nonisolated static func isPlayable(_ url: URL) async -> Bool {
