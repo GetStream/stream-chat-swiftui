@@ -58,8 +58,17 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
         messageListConfig.messageDisplayOptions.lastInGroupHeaderSize
     }
 
+    // The configured size is a fixed reservation used to lay out the divider
+    // without measuring its real (lazily-rendered) content, but the divider's
+    // footnote text grows with Dynamic Type. Scaling this metric against the
+    // same `.footnote` text style keeps the reservation (and the divider's
+    // `maxHeight`, which shares this value) in step with the text, instead of
+    // the divider clipping and losing its surrounding spacing at larger sizes.
+    // `max` only ever grows the configured value, never shrinks it.
+    @ScaledMetric(relativeTo: .footnote) private var scaledMessagesSeparatorSize: CGFloat = 50
+
     private var newMessagesSeparatorSize: CGFloat {
-        messageListConfig.messageDisplayOptions.newMessagesSeparatorSize
+        max(messageListConfig.messageDisplayOptions.newMessagesSeparatorSize, scaledMessagesSeparatorSize)
     }
 
     private let bottomId = "BottomID"
