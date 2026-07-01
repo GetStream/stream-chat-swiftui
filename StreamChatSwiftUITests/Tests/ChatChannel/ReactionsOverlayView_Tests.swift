@@ -208,6 +208,31 @@ import XCTest
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
 
+    func test_reactionsAnimatableView_accessibilityExtraExtraExtraLarge() {
+        // Given
+        let message = ChatMessage.mock(text: "Test message")
+        let reactions: [MessageReactionType] = [.init(rawValue: "love"), .init(rawValue: "like")]
+
+        // When
+        let view = ReactionsAnimatableView(
+            message: message,
+            reactions: reactions,
+            onReactionTap: { _ in },
+            onMoreReactionsTap: {}
+        )
+
+        // Then
+        let traits = UITraitCollection(traitsFrom: [
+            UITraitCollection(displayScale: 1),
+            UITraitCollection(preferredContentSizeCategory: .accessibilityExtraExtraExtraLarge),
+            UITraitCollection(userInterfaceStyle: .light)
+        ])
+        assertSnapshot(
+            matching: view,
+            as: .image(perceptualPrecision: precision, layout: .sizeThatFits, traits: traits)
+        )
+    }
+
     func test_reactionsOverlayView_translated() {
         // Given
         let testMessage = ChatMessage.mock(
