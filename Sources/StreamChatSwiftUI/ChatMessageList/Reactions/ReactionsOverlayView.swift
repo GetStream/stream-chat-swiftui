@@ -130,18 +130,21 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
 
                 // When the whole content (reactions + message + actions) is taller than the
                 // screen — which can happen at large Dynamic Type sizes — it becomes scrollable
-                // instead of being squeezed into an overlapping, unreadable stack.
-                Group {
-                    if contentExceedsScreen {
-                        ScrollView(showsIndicators: false) {
-                            content
-                        }
-                        .frame(height: allowedTotalContentHeight)
-                    } else {
+                // instead of being squeezed into an overlapping, unreadable stack. The scroll
+                // view spans the full height so the content can scroll under the status bar and
+                // home indicator, matching the UIKit message actions popup.
+                if contentExceedsScreen {
+                    ScrollView(showsIndicators: false) {
                         content
+                            .padding(.top, topContentSpacing)
+                            .padding(.bottom, bottomContentSpacing)
                     }
+                    .frame(width: overlayContentWidth(reader: reader), height: screenHeight)
+                    .offset(x: contentOffsetX(reader: reader))
+                } else {
+                    content
+                        .offset(x: contentOffsetX(reader: reader), y: contentOffsetY)
                 }
-                .offset(x: contentOffsetX(reader: reader), y: contentOffsetY)
             }
         }
         .onPreferenceChange(HeightPreferenceKey.self) { value in
