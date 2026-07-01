@@ -51,7 +51,6 @@ struct MessageContainerView<Factory: ViewFactory>: View {
                         messageViewModel.topReactionsShown && messageViewModel.annotationsShown ? messageListConfig.messageDisplayOptions
                             .reactionsTopPadding(message) : 0
                     )
-                    .accessibilityIdentifier("MessageView")
                     .environment(
                         \.messageCompositeAccessibilityLabel,
                         messageViewModel.captionAccessibilityLabel(showsAllInfo: showsAllInfo)
@@ -167,6 +166,10 @@ struct MessageContainerView<Factory: ViewFactory>: View {
                 messageViewModel.keepsBubbleAccessibilityChildrenFocusable
                     ? "" : messageViewModel.accessibilityLabel(showsAllInfo: showsAllInfo)
             )
+            // The identifier is applied to the bubble element itself (before the
+            // reactions overlay) so the overlay keeps its own accessibility
+            // identity instead of inheriting "MessageView".
+            .accessibilityIdentifier("MessageView")
             // Applied after the accessibility element so reactions remain a separate
             // focusable element rather than being merged into the bubble.
             .overlay(

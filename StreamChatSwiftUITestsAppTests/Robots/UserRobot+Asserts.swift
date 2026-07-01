@@ -988,7 +988,9 @@ extension UserRobot {
         line: UInt = #line
     ) -> Self {
         let cell = messageCell(withIndex: messageCellIndex, file: file, line: line).wait()
-        let expectedText = "Sorry, command \(invalidCommand) doesn't exist. Try posting your message without the starting /"
+        // System messages expose a VoiceOver label that prefixes the raw text
+        // with "System message: ", so the label queried by XCUITest includes it.
+        let expectedText = "System message: Sorry, command \(invalidCommand) doesn't exist. Try posting your message without the starting /"
         let actualText = attributes.systemMessage(in: cell).waitForText(expectedText).text
         XCTAssertEqual(actualText, expectedText, file: file, line: line)
         return self
