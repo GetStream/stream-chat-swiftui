@@ -69,7 +69,7 @@ import StreamChatCommonUI
 
     var messageCachingUtils = MessageCachingUtils()
     let channelPlaceholderAvatarUsersCache = ChannelPlaceholderAvatarUsersCache()
-    let diskCache: LRUDiskCache
+    let videoAttachmentDiskCache: LRUDiskCache
     var messageListDateUtils: MessageListDateUtils
     var channelControllerFactory = ChannelControllerFactory()
     
@@ -114,8 +114,8 @@ import StreamChatCommonUI
         self.mediaLoader = mediaLoader
         self.channelNameFormatter = channelNameFormatter
         self.avPlayerProvider = avPlayerProvider
-        diskCache = LRUDiskCache(
-            name: "com.getstream.StreamChatSwiftUI.diskCache",
+        videoAttachmentDiskCache = LRUDiskCache(
+            name: "com.getstream.StreamChatSwiftUI.videoAttachmentDiskCache",
             maxSizeInBytes: Int(messageListConfig.videoAttachmentCachingPolicy.maxCacheSize)
         )
         self.chatUserNamer = chatUserNamer

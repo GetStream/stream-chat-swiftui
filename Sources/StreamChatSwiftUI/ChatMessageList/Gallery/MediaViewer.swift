@@ -355,7 +355,7 @@ struct StreamVideoPlayer: View {
             url: url,
             mediaLoader: utils.mediaLoader,
             avPlayerProvider: utils.avPlayerProvider,
-            cache: utils.diskCache,
+            cache: utils.videoAttachmentDiskCache,
             policy: utils.messageListConfig.videoAttachmentCachingPolicy
         )
         Task { @MainActor in

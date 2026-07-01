@@ -88,7 +88,7 @@ class StreamChat_Utils_Tests: StreamChatTestCase {
         let utils = Utils(messageListConfig: config)
 
         // Then
-        XCTAssertEqual(utils.diskCache.maxSizeInBytes, 123)
+        XCTAssertEqual(utils.videoAttachmentDiskCache.maxSizeInBytes, 123)
     }
 
     func test_messageListConfig_videoAttachmentCachingPolicy() {
