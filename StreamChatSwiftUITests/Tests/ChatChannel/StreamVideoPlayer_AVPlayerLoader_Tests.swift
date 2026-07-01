@@ -89,8 +89,9 @@ final class StreamVideoPlayer_AVPlayerLoader_Tests: XCTestCase {
     func test_load_whenCachedFileIsNotPlayable_evictsCacheAndStreamsRemote() async throws {
         let url = URL(string: "https://example.com/video.mp4")!
         let cache = makeCache()
-        _ = cache.store(fileAt: try makeTempFile(byteCount: 100), forKey: url.path, fileExtension: "mp4")
-        XCTAssertNotNil(cache.cachedFileURL(forKey: url.path, fileExtension: "mp4"))
+        _ = await cache.store(fileAt: try makeTempFile(byteCount: 100), forKey: url.path, fileExtension: "mp4")
+        let storedURL = await cache.cachedFileURL(forKey: url.path, fileExtension: "mp4")
+        XCTAssertNotNil(storedURL)
         let mediaLoader = MediaLoaderSpy(videoAssetResult: .success(MediaLoaderVideoAsset(asset: AVURLAsset(url: url))))
         let provider = AVPlayerProviderSpy(result: .success(AVPlayer()))
         let loader = makeLoader(
@@ -98,12 +99,13 @@ final class StreamVideoPlayer_AVPlayerLoader_Tests: XCTestCase {
             mediaLoader: mediaLoader,
             avPlayerProvider: provider,
             cache: cache,
-            isPlayable: { _, completion in completion(false) }
+            isPlayable: { _ in false }
         )
 
         _ = await load(loader)
 
-        XCTAssertNil(cache.cachedFileURL(forKey: url.path, fileExtension: "mp4"))
+        let evictedURL = await cache.cachedFileURL(forKey: url.path, fileExtension: "mp4")
+        XCTAssertNil(evictedURL)
         XCTAssertEqual(mediaLoader.loadedVideoAssetURLs, [url])
         XCTAssertEqual(provider.receivedAssets.count, 1)
     }
@@ -134,7 +136,7 @@ final class StreamVideoPlayer_AVPlayerLoader_Tests: XCTestCase {
         avPlayerProvider: AVPlayerProviderSpy = AVPlayerProviderSpy(),
         cache: LRUDiskCache? = nil,
         cacheEnabled: Bool = true,
-        isPlayable: @escaping StreamVideoPlayer.AVPlayerLoader.PlayabilityValidator = { _, completion in completion(true) }
+        isPlayable: @escaping @Sendable (URL) async -> Bool = { _ in true }
     ) -> StreamVideoPlayer.AVPlayerLoader {
         StreamVideoPlayer.AVPlayerLoader(
             url: url,
@@ -148,11 +150,7 @@ final class StreamVideoPlayer_AVPlayerLoader_Tests: XCTestCase {
 
     @MainActor
     private func load(_ loader: StreamVideoPlayer.AVPlayerLoader) async -> Result<AVPlayer, Error> {
-        await withCheckedContinuation { continuation in
-            loader.load { result in
-                continuation.resume(returning: result)
-            }
-        }
+        await loader.load()
     }
 
     private func makeCache() -> LRUDiskCache {

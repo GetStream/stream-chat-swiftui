@@ -38,99 +38,127 @@ final class LRUDiskCache_Tests: XCTestCase {
         return url
     }
 
-    func test_store_thenCachedFileURL_returnsStoredFileWithContents() throws {
+    func test_store_thenCachedFileURL_returnsStoredFileWithContents() async throws {
         let cache = LRUDiskCache(directory: directory, maxSizeInBytes: 1_000_000)
         let temp = try makeTempFile(byteCount: 100)
 
-        let storedURL = cache.store(fileAt: temp, forKey: "/path/video.mp4", fileExtension: "mp4")
-        let cachedURL = cache.cachedFileURL(forKey: "/path/video.mp4", fileExtension: "mp4")
+        let storedURL = await cache.store(fileAt: temp, forKey: "/path/video.mp4", fileExtension: "mp4")
+        let cachedURL = await cache.cachedFileURL(forKey: "/path/video.mp4", fileExtension: "mp4")
 
         XCTAssertNotNil(storedURL)
         XCTAssertEqual(cachedURL, storedURL)
         XCTAssertEqual(try Data(contentsOf: try XCTUnwrap(cachedURL)).count, 100)
     }
 
-    func test_cachedFileURL_whenNotStored_returnsNil() {
+    func test_cachedFileURL_whenNotStored_returnsNil() async {
         let cache = LRUDiskCache(directory: directory, maxSizeInBytes: 1_000_000)
-        XCTAssertNil(cache.cachedFileURL(forKey: "/missing.mp4", fileExtension: "mp4"))
+        let cachedURL = await cache.cachedFileURL(forKey: "/missing.mp4", fileExtension: "mp4")
+        XCTAssertNil(cachedURL)
     }
 
-    func test_store_whenFileExceedsMaxSize_cachesFile() throws {
+    func test_store_whenFileExceedsMaxSize_cachesFile() async throws {
         let cache = LRUDiskCache(directory: directory, maxSizeInBytes: 50)
         let temp = try makeTempFile(byteCount: 100)
 
-        let storedURL = cache.store(fileAt: temp, forKey: "/big.mp4", fileExtension: "mp4")
-        let cachedURL = cache.cachedFileURL(forKey: "/big.mp4", fileExtension: "mp4")
+        let storedURL = await cache.store(fileAt: temp, forKey: "/big.mp4", fileExtension: "mp4")
+        let cachedURL = await cache.cachedFileURL(forKey: "/big.mp4", fileExtension: "mp4")
 
         XCTAssertNotNil(storedURL)
         XCTAssertEqual(cachedURL, storedURL)
         XCTAssertEqual(try Data(contentsOf: try XCTUnwrap(cachedURL)).count, 100)
     }
 
-    func test_store_whenOverMaxFileIsLeastRecentlyUsed_evictsOnNextStore() throws {
+    func test_store_whenOverMaxFileIsLeastRecentlyUsed_evictsOnNextStore() async throws {
         let cache = LRUDiskCache(directory: directory, maxSizeInBytes: 50)
-        _ = cache.store(fileAt: try makeTempFile(byteCount: 100), forKey: "big", fileExtension: nil)
-        _ = cache.store(fileAt: try makeTempFile(byteCount: 25), forKey: "small", fileExtension: nil)
+        _ = await cache.store(fileAt: try makeTempFile(byteCount: 100), forKey: "big", fileExtension: nil)
+        _ = await cache.store(fileAt: try makeTempFile(byteCount: 25), forKey: "small", fileExtension: nil)
 
-        XCTAssertNil(cache.cachedFileURL(forKey: "big", fileExtension: nil))
-        XCTAssertNotNil(cache.cachedFileURL(forKey: "small", fileExtension: nil))
+        let big = await cache.cachedFileURL(forKey: "big", fileExtension: nil)
+        let small = await cache.cachedFileURL(forKey: "small", fileExtension: nil)
+        XCTAssertNil(big)
+        XCTAssertNotNil(small)
     }
 
-    func test_store_whenOverCapacity_evictsLeastRecentlyUsed() throws {
+    func test_store_whenOverCapacity_evictsLeastRecentlyUsed() async throws {
         let cache = LRUDiskCache(directory: directory, maxSizeInBytes: 250)
-        _ = cache.store(fileAt: try makeTempFile(byteCount: 100), forKey: "a", fileExtension: nil) // order 0
-        _ = cache.store(fileAt: try makeTempFile(byteCount: 100), forKey: "b", fileExtension: nil) // order 1
-        _ = cache.cachedFileURL(forKey: "a", fileExtension: nil) // touch a -> newer than b
-        _ = cache.store(fileAt: try makeTempFile(byteCount: 100), forKey: "c", fileExtension: nil) // 300 > 250 -> evict LRU (b)
+        _ = await cache.store(fileAt: try makeTempFile(byteCount: 100), forKey: "a", fileExtension: nil) // order 0
+        _ = await cache.store(fileAt: try makeTempFile(byteCount: 100), forKey: "b", fileExtension: nil) // order 1
+        _ = await cache.cachedFileURL(forKey: "a", fileExtension: nil) // touch a -> newer than b
+        _ = await cache.store(fileAt: try makeTempFile(byteCount: 100), forKey: "c", fileExtension: nil) // 300 > 250 -> evict LRU (b)
 
-        XCTAssertNotNil(cache.cachedFileURL(forKey: "a", fileExtension: nil), "recently used -> survives")
-        XCTAssertNil(cache.cachedFileURL(forKey: "b", fileExtension: nil), "least recently used -> evicted")
-        XCTAssertNotNil(cache.cachedFileURL(forKey: "c", fileExtension: nil), "just stored -> survives")
+        let a = await cache.cachedFileURL(forKey: "a", fileExtension: nil)
+        let b = await cache.cachedFileURL(forKey: "b", fileExtension: nil)
+        let c = await cache.cachedFileURL(forKey: "c", fileExtension: nil)
+        XCTAssertNotNil(a, "recently used -> survives")
+        XCTAssertNil(b, "least recently used -> evicted")
+        XCTAssertNotNil(c, "just stored -> survives")
     }
 
-    func test_store_overwritingExistingKey_replacesContents() throws {
+    func test_store_overwritingExistingKey_replacesContents() async throws {
         let cache = LRUDiskCache(directory: directory, maxSizeInBytes: 1_000_000)
-        _ = cache.store(fileAt: try makeTempFile(byteCount: 100), forKey: "/v.mp4", fileExtension: "mp4")
-        _ = cache.store(fileAt: try makeTempFile(byteCount: 175), forKey: "/v.mp4", fileExtension: "mp4")
+        _ = await cache.store(fileAt: try makeTempFile(byteCount: 100), forKey: "/v.mp4", fileExtension: "mp4")
+        _ = await cache.store(fileAt: try makeTempFile(byteCount: 175), forKey: "/v.mp4", fileExtension: "mp4")
 
-        let cachedURL = cache.cachedFileURL(forKey: "/v.mp4", fileExtension: "mp4")
+        let cachedURL = await cache.cachedFileURL(forKey: "/v.mp4", fileExtension: "mp4")
         XCTAssertEqual(try Data(contentsOf: try XCTUnwrap(cachedURL)).count, 175)
     }
 
-    func test_remove_deletesCachedEntry() throws {
+    func test_remove_deletesCachedEntry() async throws {
         let cache = LRUDiskCache(directory: directory, maxSizeInBytes: 1_000_000)
-        _ = cache.store(fileAt: try makeTempFile(byteCount: 100), forKey: "/v.mp4", fileExtension: "mp4")
+        _ = await cache.store(fileAt: try makeTempFile(byteCount: 100), forKey: "/v.mp4", fileExtension: "mp4")
 
-        cache.remove(forKey: "/v.mp4", fileExtension: "mp4")
+        await cache.remove(forKey: "/v.mp4", fileExtension: "mp4")
 
-        XCTAssertNil(cache.cachedFileURL(forKey: "/v.mp4", fileExtension: "mp4"))
+        let cachedURL = await cache.cachedFileURL(forKey: "/v.mp4", fileExtension: "mp4")
+        XCTAssertNil(cachedURL)
     }
 
-    func test_remove_afterRemoval_canStoreSameKeyAgain() throws {
+    func test_remove_afterRemoval_canStoreSameKeyAgain() async throws {
         let cache = LRUDiskCache(directory: directory, maxSizeInBytes: 1_000_000)
-        _ = cache.store(fileAt: try makeTempFile(byteCount: 100), forKey: "/v.mp4", fileExtension: "mp4")
-        cache.remove(forKey: "/v.mp4", fileExtension: "mp4")
+        _ = await cache.store(fileAt: try makeTempFile(byteCount: 100), forKey: "/v.mp4", fileExtension: "mp4")
+        await cache.remove(forKey: "/v.mp4", fileExtension: "mp4")
 
-        let storedURL = cache.store(fileAt: try makeTempFile(byteCount: 120), forKey: "/v.mp4", fileExtension: "mp4")
+        let storedURL = await cache.store(fileAt: try makeTempFile(byteCount: 120), forKey: "/v.mp4", fileExtension: "mp4")
 
         XCTAssertNotNil(storedURL)
-        XCTAssertEqual(try Data(contentsOf: try XCTUnwrap(cache.cachedFileURL(forKey: "/v.mp4", fileExtension: "mp4"))).count, 120)
+        let cachedURL = await cache.cachedFileURL(forKey: "/v.mp4", fileExtension: "mp4")
+        XCTAssertEqual(try Data(contentsOf: try XCTUnwrap(cachedURL)).count, 120)
     }
 
-    func test_newInstance_seesFilesStoredByPreviousInstance() throws {
+    func test_newInstance_seesFilesStoredByPreviousInstance() async throws {
         let cache1 = LRUDiskCache(directory: directory, maxSizeInBytes: 1_000_000)
-        _ = cache1.store(fileAt: try makeTempFile(byteCount: 100), forKey: "/v.mp4", fileExtension: "mp4")
+        _ = await cache1.store(fileAt: try makeTempFile(byteCount: 100), forKey: "/v.mp4", fileExtension: "mp4")
 
         let cache2 = LRUDiskCache(directory: directory, maxSizeInBytes: 1_000_000)
-        XCTAssertNotNil(cache2.cachedFileURL(forKey: "/v.mp4", fileExtension: "mp4"))
+        let cachedURL = await cache2.cachedFileURL(forKey: "/v.mp4", fileExtension: "mp4")
+        XCTAssertNotNil(cachedURL)
     }
 
-    func test_removeAll_clearsCache() throws {
+    func test_cachedFileURL_bumpsModificationDate_soRecencySurvivesReload() async throws {
+        let cache = LRUDiskCache(directory: directory, maxSizeInBytes: 250)
+        _ = await cache.store(fileAt: try makeTempFile(byteCount: 100), forKey: "a", fileExtension: nil)
+        _ = await cache.store(fileAt: try makeTempFile(byteCount: 100), forKey: "b", fileExtension: nil)
+        _ = await cache.cachedFileURL(forKey: "a", fileExtension: nil) // touch a -> newer modification date than b
+
+        // A fresh instance rebuilds its index from on-disk modification dates.
+        let reloaded = LRUDiskCache(directory: directory, maxSizeInBytes: 250)
+        _ = await reloaded.store(fileAt: try makeTempFile(byteCount: 100), forKey: "c", fileExtension: nil) // 300 > 250 -> evict LRU
+
+        let a = await reloaded.cachedFileURL(forKey: "a", fileExtension: nil)
+        let b = await reloaded.cachedFileURL(forKey: "b", fileExtension: nil)
+        let c = await reloaded.cachedFileURL(forKey: "c", fileExtension: nil)
+        XCTAssertNotNil(a, "touched before reload -> survives")
+        XCTAssertNil(b, "least recently used -> evicted after reload")
+        XCTAssertNotNil(c, "just stored -> survives")
+    }
+
+    func test_removeAll_clearsCache() async throws {
         let cache = LRUDiskCache(directory: directory, maxSizeInBytes: 1_000_000)
-        _ = cache.store(fileAt: try makeTempFile(byteCount: 100), forKey: "/v.mp4", fileExtension: "mp4")
+        _ = await cache.store(fileAt: try makeTempFile(byteCount: 100), forKey: "/v.mp4", fileExtension: "mp4")
 
-        cache.removeAll()
+        await cache.removeAll()
 
-        XCTAssertNil(cache.cachedFileURL(forKey: "/v.mp4", fileExtension: "mp4"))
+        let cachedURL = await cache.cachedFileURL(forKey: "/v.mp4", fileExtension: "mp4")
+        XCTAssertNil(cachedURL)
     }
 }

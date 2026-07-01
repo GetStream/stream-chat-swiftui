@@ -6,9 +6,9 @@ import CryptoKit
 import Foundation
 import StreamChat
 
-/// A thread-safe, size-bounded disk cache with least-recently-used (LRU) eviction. All blocking
-/// file I/O runs outside the lock, which guards only the in-memory index.
-final class LRUDiskCache: Sendable {
+/// A thread-safe, size-bounded disk cache with least-recently-used (LRU) eviction.
+/// All file I/O and in-memory index access are serialized on a private queue.
+final class LRUDiskCache: @unchecked Sendable {
     private struct Entry {
         var size: Int
         var lastUsedAt: Date
@@ -17,7 +17,8 @@ final class LRUDiskCache: Sendable {
     let maxSizeInBytes: Int
     let directory: URL
 
-    private let entries = AllocatedUnfairLock<[String: Entry]?>(nil)
+    private var entries: [String: Entry]?
+    private let queue = DispatchQueue(label: "io.getstream.StreamChatSwiftUI.LRUDiskCache", qos: .utility)
 
     init(directory: URL, maxSizeInBytes: Int) {
         self.directory = directory
@@ -33,101 +34,132 @@ final class LRUDiskCache: Sendable {
         )
     }
 
-    func cachedFileURL(forKey key: String, fileExtension: String?) -> URL? {
-        loadCacheIfNeeded()
-        let name = Self.storageName(forKey: key, fileExtension: fileExtension)
-        let url = directory.appendingPathComponent(name)
-
-        let isIndexed = entries.withLock { $0?[name] != nil }
-        guard isIndexed else { return nil }
-
-        guard FileManager.default.fileExists(atPath: url.path) else {
-            entries.withLock { $0?.removeValue(forKey: name) }
-            return nil
+    func cachedFileURL(forKey key: String, fileExtension: String?) async -> URL? {
+        await withCheckedContinuation { continuation in
+            cachedFileURL(forKey: key, fileExtension: fileExtension) { continuation.resume(returning: $0) }
         }
+    }
 
-        entries.withLock { entries in
-            guard var entry = entries?[name] else { return }
-            entry.lastUsedAt = Date()
-            entries?[name] = entry
+    func cachedFileURL(forKey key: String, fileExtension: String?, completion: @escaping @Sendable (URL?) -> Void) {
+        queue.async {
+            self.loadCacheIfNeeded()
+            let name = Self.storageName(forKey: key, fileExtension: fileExtension)
+            let url = self.directory.appendingPathComponent(name)
+
+            guard self.entries?[name] != nil else {
+                completion(nil)
+                return
+            }
+            guard FileManager.default.fileExists(atPath: url.path) else {
+                self.entries?.removeValue(forKey: name)
+                completion(nil)
+                return
+            }
+            let now = Date()
+            if var entry = self.entries?[name] {
+                entry.lastUsedAt = now
+                self.entries?[name] = entry
+            }
+            try? FileManager.default.setAttributes([.modificationDate: now], ofItemAtPath: url.path)
+            completion(url)
         }
-        return url
     }
 
     @discardableResult
-    func store(fileAt tempURL: URL, forKey key: String, fileExtension: String?) -> URL? {
-        let size = (try? tempURL.resourceValues(forKeys: [.fileSizeKey]).fileSize) ?? 0
-        guard size > 0 else { return nil }
-
-        loadCacheIfNeeded()
-        let name = Self.storageName(forKey: key, fileExtension: fileExtension)
-        let destination = directory.appendingPathComponent(name)
-
-        do {
-            try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
-            if FileManager.default.fileExists(atPath: destination.path) {
-                _ = try FileManager.default.replaceItemAt(destination, withItemAt: tempURL)
-            } else {
-                try FileManager.default.moveItem(at: tempURL, to: destination)
-            }
-        } catch {
-            log.error("Failed to store file in disk cache: \(error)")
-            return nil
+    func store(fileAt tempURL: URL, forKey key: String, fileExtension: String?) async -> URL? {
+        await withCheckedContinuation { continuation in
+            store(fileAt: tempURL, forKey: key, fileExtension: fileExtension) { continuation.resume(returning: $0) }
         }
+    }
 
-        let namesToEvict: [String] = entries.withLock { entries in
-            entries?[name] = Entry(size: size, lastUsedAt: Date())
-            var cacheSize = entries?.values.reduce(0, { $0 + $1.size }) ?? 0
-            var entryCount = entries?.count ?? 0
-            let evicted = (entries ?? [:])
+    func store(fileAt tempURL: URL, forKey key: String, fileExtension: String?, completion: @escaping @Sendable (URL?) -> Void) {
+        queue.async {
+            let size = (try? tempURL.resourceValues(forKeys: [.fileSizeKey]).fileSize) ?? 0
+            guard size > 0 else {
+                completion(nil)
+                return
+            }
+
+            self.loadCacheIfNeeded()
+            let name = Self.storageName(forKey: key, fileExtension: fileExtension)
+            let destination = self.directory.appendingPathComponent(name)
+
+            do {
+                try FileManager.default.createDirectory(at: self.directory, withIntermediateDirectories: true)
+                if FileManager.default.fileExists(atPath: destination.path) {
+                    _ = try FileManager.default.replaceItemAt(destination, withItemAt: tempURL)
+                } else {
+                    try FileManager.default.moveItem(at: tempURL, to: destination)
+                }
+            } catch {
+                log.error("Failed to store file in disk cache: \(error)")
+                completion(nil)
+                return
+            }
+
+            self.entries?[name] = Entry(size: size, lastUsedAt: Date())
+            var cacheSize = self.entries?.values.reduce(0, { $0 + $1.size }) ?? 0
+            var entryCount = self.entries?.count ?? 0
+            let namesToEvict = (self.entries ?? [:])
                 .sorted(by: { $0.value.lastUsedAt < $1.value.lastUsedAt })
                 .prefix { entry in
-                    guard cacheSize > maxSizeInBytes, entryCount > 1 else { return false }
+                    guard cacheSize > self.maxSizeInBytes, entryCount > 1 else { return false }
                     cacheSize -= entry.value.size
                     entryCount -= 1
                     return true
                 }
                 .map { $0.key }
-            evicted.forEach { entries?.removeValue(forKey: $0) }
-            return evicted
-        }
+            namesToEvict.forEach { self.entries?.removeValue(forKey: $0) }
 
-        for evicted in namesToEvict {
-            try? FileManager.default.removeItem(at: directory.appendingPathComponent(evicted))
+            for evicted in namesToEvict {
+                try? FileManager.default.removeItem(at: self.directory.appendingPathComponent(evicted))
+            }
+            completion(destination)
         }
-        return destination
     }
 
-    func remove(forKey key: String, fileExtension: String?) {
-        let name = Self.storageName(forKey: key, fileExtension: fileExtension)
-        entries.withLock { $0?.removeValue(forKey: name) }
-        try? FileManager.default.removeItem(at: directory.appendingPathComponent(name))
+    func remove(forKey key: String, fileExtension: String?) async {
+        await withCheckedContinuation { continuation in
+            remove(forKey: key, fileExtension: fileExtension) { continuation.resume() }
+        }
     }
 
-    func removeAll() {
-        entries.withLock { $0 = [:] }
-        try? FileManager.default.removeItem(at: directory)
+    func remove(forKey key: String, fileExtension: String?, completion: @escaping @Sendable () -> Void) {
+        queue.async {
+            let name = Self.storageName(forKey: key, fileExtension: fileExtension)
+            self.entries?.removeValue(forKey: name)
+            try? FileManager.default.removeItem(at: self.directory.appendingPathComponent(name))
+            completion()
+        }
+    }
+
+    func removeAll() async {
+        await withCheckedContinuation { continuation in
+            removeAll { continuation.resume() }
+        }
+    }
+
+    func removeAll(completion: @escaping @Sendable () -> Void) {
+        queue.async {
+            self.entries = [:]
+            try? FileManager.default.removeItem(at: self.directory)
+            completion()
+        }
     }
 
     private func loadCacheIfNeeded() {
-        if entries.withLock({ $0 != nil }) { return }
+        guard entries == nil else { return }
         let scanned = (try? FileManager.default.contentsOfDirectory(
             at: directory,
-            includingPropertiesForKeys: [.fileSizeKey],
+            includingPropertiesForKeys: [.fileSizeKey, .contentModificationDateKey],
             options: [.skipsHiddenFiles]
         ))?
-            .compactMap { url -> (name: String, size: Int)? in
-                let values = try? url.resourceValues(forKeys: [.fileSizeKey])
+            .compactMap { url -> (name: String, entry: Entry)? in
+                let values = try? url.resourceValues(forKeys: [.fileSizeKey, .contentModificationDateKey])
                 guard let size = values?.fileSize else { return nil }
-                return (url.lastPathComponent, size)
+                return (url.lastPathComponent, Entry(size: size, lastUsedAt: values?.contentModificationDate ?? Date()))
             }
-
-        entries.withLock { entries in
-            guard entries == nil else { return }
-            entries = Dictionary(
-                uniqueKeysWithValues: (scanned ?? []).map { ($0.name, Entry(size: $0.size, lastUsedAt: Date())) }
-            )
-        }
+        entries = Dictionary(uniqueKeysWithValues: scanned ?? [])
     }
 
     private static func storageName(forKey key: String, fileExtension: String?) -> String {

@@ -350,13 +350,15 @@ struct StreamVideoPlayer: View {
     }
 
     private func loadPlayer() {
-        AVPlayerLoader(
+        let loader = AVPlayerLoader(
             url: url,
             mediaLoader: utils.mediaLoader,
             avPlayerProvider: utils.avPlayerProvider,
             cache: utils.diskCache,
             cacheEnabled: utils.messageListConfig.videoAttachmentCacheEnabled
-        ).load { result in
+        )
+        Task { @MainActor in
+            let result = await loader.load()
             guard isVisible else { return }
             switch result {
             case let .success(player):
@@ -372,14 +374,12 @@ struct StreamVideoPlayer: View {
 
 extension StreamVideoPlayer {
     @MainActor final class AVPlayerLoader {
-        typealias PlayabilityValidator = @MainActor (URL, @escaping @Sendable (Bool) -> Void) -> Void
-
         private let url: URL
         private let mediaLoader: MediaLoader
         private let avPlayerProvider: AVPlayerProvider
         private let cache: LRUDiskCache
         private let cacheEnabled: Bool
-        private let isPlayable: PlayabilityValidator
+        private let isPlayable: @Sendable (URL) async -> Bool
 
         init(
             url: URL,
@@ -387,7 +387,7 @@ extension StreamVideoPlayer {
             avPlayerProvider: AVPlayerProvider,
             cache: LRUDiskCache,
             cacheEnabled: Bool,
-            isPlayable: @escaping PlayabilityValidator = AVPlayerLoader.isPlayable
+            isPlayable: @escaping @Sendable (URL) async -> Bool = AVPlayerLoader.isPlayable
         ) {
             self.url = url
             self.mediaLoader = mediaLoader
@@ -397,66 +397,49 @@ extension StreamVideoPlayer {
             self.isPlayable = isPlayable
         }
 
-        func load(completion: @escaping @MainActor (Result<AVPlayer, Error>) -> Void) {
-            let canCache = cacheEnabled && !url.isFileURL && url.pathExtension.lowercased() != "m3u8"
+        func load() async -> Result<AVPlayer, Error> {
+            let canCache = cacheEnabled && !url.isFileURL && url.pathExtension.lowercased() != "m3u8" // HLS
             let key = url.path
             let fileExtension = url.pathExtension.isEmpty ? "mp4" : url.pathExtension
 
-            if canCache, let localURL = cache.cachedFileURL(forKey: key, fileExtension: fileExtension) {
-                loadFromCache(localURL, key: key, fileExtension: fileExtension, completion: completion)
-            } else {
-                loadFromRemote(completion: completion)
-                if canCache {
-                    prefetchToCache(key: key, fileExtension: fileExtension)
+            if canCache, let localURL = await cache.cachedFileURL(forKey: key, fileExtension: fileExtension) {
+                if await isPlayable(localURL) {
+                    return await loadPlayer(from: MediaLoaderVideoAsset(asset: AVURLAsset(url: localURL)))
+                }
+                log.debug("Cached video is not playable; evicting and streaming from remote")
+                await cache.remove(forKey: key, fileExtension: fileExtension)
+                return await loadFromRemote()
+            }
+
+            if canCache {
+                prefetchToCache(key: key, fileExtension: fileExtension)
+            }
+            return await loadFromRemote()
+        }
+
+        private nonisolated static func isPlayable(_ url: URL) async -> Bool {
+            await withCheckedContinuation { continuation in
+                let asset = AVURLAsset(url: url)
+                asset.loadValuesAsynchronously(forKeys: ["playable"]) {
+                    continuation.resume(
+                        returning: asset.statusOfValue(forKey: "playable", error: nil) == .loaded && asset.isPlayable
+                    )
                 }
             }
         }
 
-        private func loadFromCache(
-            _ localURL: URL,
-            key: String,
-            fileExtension: String,
-            completion: @escaping @MainActor (Result<AVPlayer, Error>) -> Void
-        ) {
-            isPlayable(localURL) { isPlayable in
-                Task { @MainActor in
-                    if isPlayable {
-                        self.loadPlayer(from: MediaLoaderVideoAsset(asset: AVURLAsset(url: localURL)), completion: completion)
-                    } else {
-                        log.debug("Cached video is not playable; evicting and streaming from remote")
-                        self.cache.remove(forKey: key, fileExtension: fileExtension)
-                        self.loadFromRemote(completion: completion)
-                    }
-                }
+        private func loadFromRemote() async -> Result<AVPlayer, Error> {
+            do {
+                let videoAsset = try await mediaLoader.loadVideoAsset(at: url)
+                return await loadPlayer(from: videoAsset)
+            } catch {
+                return .failure(error)
             }
         }
 
-        private static func isPlayable(_ url: URL, completion: @escaping @Sendable (Bool) -> Void) {
-            let asset = AVURLAsset(url: url)
-            asset.loadValuesAsynchronously(forKeys: ["playable"]) {
-                completion(asset.statusOfValue(forKey: "playable", error: nil) == .loaded && asset.isPlayable)
-            }
-        }
-
-        private func loadFromRemote(completion: @escaping @MainActor (Result<AVPlayer, Error>) -> Void) {
-            mediaLoader.loadVideoAsset(at: url) { result in
-                switch result {
-                case let .success(videoAsset):
-                    self.loadPlayer(from: videoAsset, completion: completion)
-                case let .failure(error):
-                    completion(.failure(error))
-                }
-            }
-        }
-
-        private func loadPlayer(
-            from videoAsset: MediaLoaderVideoAsset,
-            completion: @escaping @MainActor (Result<AVPlayer, Error>) -> Void
-        ) {
-            avPlayerProvider.player(from: videoAsset) { result in
-                Task { @MainActor in
-                    completion(result)
-                }
+        private func loadPlayer(from videoAsset: MediaLoaderVideoAsset) async -> Result<AVPlayer, Error> {
+            await withCheckedContinuation { continuation in
+                avPlayerProvider.player(from: videoAsset) { continuation.resume(returning: $0) }
             }
         }
 
@@ -476,8 +459,18 @@ extension StreamVideoPlayer {
                             log.debug("Video cache prefetch received a non-success response")
                             return
                         }
-                        if cache.store(fileAt: tempURL, forKey: key, fileExtension: fileExtension) == nil {
-                            log.debug("Video cache prefetch could not store the downloaded file")
+                        let stableURL = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+                        do {
+                            try FileManager.default.moveItem(at: tempURL, to: stableURL)
+                        } catch {
+                            log.debug("Video cache prefetch could not move the downloaded file: \(error)")
+                            return
+                        }
+                        Task {
+                            if await cache.store(fileAt: stableURL, forKey: key, fileExtension: fileExtension) == nil {
+                                log.debug("Video cache prefetch could not store the downloaded file")
+                                try? FileManager.default.removeItem(at: stableURL)
+                            }
                         }
                     }.resume()
                 case let .failure(error):
