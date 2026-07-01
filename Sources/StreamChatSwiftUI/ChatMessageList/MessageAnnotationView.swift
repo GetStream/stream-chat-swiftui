@@ -100,6 +100,21 @@ public struct MessageAnnotationView: View {
             .compactMap { $0 }
             .joined(separator: ", ")
     }
+
+    @ViewBuilder
+    private func buttonText(_ buttonTitle: String) -> some View {
+        let text = Text(buttonTitle)
+            .font(fonts.footnote)
+            .foregroundColor(usesInvertedStyle ? resolvedTextColor : Color(colors.accentPrimary))
+        // When the row wraps at accessibility text sizes the button title must stay
+        // leading-aligned instead of centering. The modifier is only applied then, so the
+        // single-line rendering used at smaller sizes is left untouched.
+        if sizeCategory.isAccessibilityCategory {
+            text.multilineTextAlignment(.leading)
+        } else {
+            text
+        }
+    }
 }
 
 /// Collapses a non-interactive annotation row into a single VoiceOver element
@@ -117,21 +132,6 @@ private struct CombinedAnnotationAccessibility: ViewModifier {
                 .accessibilityLabel(label)
         } else {
             content
-        }
-    }
-
-    @ViewBuilder
-    private func buttonText(_ buttonTitle: String) -> some View {
-        let text = Text(buttonTitle)
-            .font(fonts.footnote)
-            .foregroundColor(usesInvertedStyle ? resolvedTextColor : Color(colors.accentPrimary))
-        // When the row wraps at accessibility text sizes the button title must stay
-        // leading-aligned instead of centering. The modifier is only applied then, so the
-        // single-line rendering used at smaller sizes is left untouched.
-        if sizeCategory.isAccessibilityCategory {
-            text.multilineTextAlignment(.leading)
-        } else {
-            text
         }
     }
 }
