@@ -23,6 +23,7 @@ public struct SystemMessageView: View {
             .padding(.vertical, tokens.spacingXs)
             .padding(.horizontal, tokens.spacingSm)
             .accessibilityIdentifier("SystemMessageView")
+            .accessibilityLabel(L10n.Message.Accessibility.systemMessage(message))
             .background(Color(colors.backgroundCoreSurfaceSubtle))
             .cornerRadius(tokens.radiusXl)
             .overlay(

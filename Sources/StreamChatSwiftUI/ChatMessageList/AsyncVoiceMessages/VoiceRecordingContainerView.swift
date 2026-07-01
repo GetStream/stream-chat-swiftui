@@ -49,7 +49,10 @@ public struct VoiceRecordingContainerView<Factory: ViewFactory>: View {
                         duration: attachment.payload.duration ?? 0,
                         waveform: attachment.payload.waveformData ?? []
                     ),
-                    isSentByCurrentUser: message.isSentByCurrentUser
+                    isSentByCurrentUser: message.isSentByCurrentUser,
+                    accessibilityLabel: voiceMessageAccessibilityLabel(
+                        duration: attachment.payload.duration ?? 0
+                    )
                 )
                 .modifier(
                     factory.styles.makeMessageAttachmentItemViewModifier(
@@ -85,6 +88,15 @@ public struct VoiceRecordingContainerView<Factory: ViewFactory>: View {
             player.subscribe(handler)
         }
     }
+
+    private func voiceMessageAccessibilityLabel(duration: TimeInterval) -> String {
+        utils.messageAccessibilityFormatter.voiceRecordingLabel(
+            for: message,
+            metadata: VoiceRecordingAccessibilityMetadata(
+                duration: utils.messageAccessibilityFormatter.duration(from: duration)
+            )
+        )
+    }
 }
 
 struct VoiceRecordingView: View {
@@ -98,6 +110,7 @@ struct VoiceRecordingView: View {
 
     let addedVoiceRecording: AddedVoiceRecording
     var isSentByCurrentUser: Bool = false
+    var accessibilityLabel: String = ""
 
     private var isActive: Bool { handler.isActive(for: addedVoiceRecording.url) }
 
@@ -111,8 +124,17 @@ struct VoiceRecordingView: View {
 
     var body: some View {
         HStack(spacing: tokens.spacingXs) {
-            playButton
-            durationAndWaveform
+            HStack(spacing: tokens.spacingXs) {
+                playButton
+                durationAndWaveform
+            }
+            .accessibilityElement(children: .ignore)
+            .accessibilityLabel(accessibilityLabel)
+            .accessibilityAddTraits([.isButton, .startsMediaSession])
+            .accessibilityAction {
+                handler.togglePlayback(for: addedVoiceRecording.url)
+            }
+
             PlaybackSpeedToggle(handler: handler, borderColor: controlBorderColor)
         }
         .onReceive(handler.$context) { value in
@@ -199,6 +221,8 @@ struct PlaybackSpeedToggle: View {
                 )
         }
         .frame(width: 40, height: 48)
+        .accessibilityLabel(Text(L10n.Message.Accessibility.playbackSpeed))
+        .accessibilityValue(Text(handler.rateTitle))
     }
 }
 
