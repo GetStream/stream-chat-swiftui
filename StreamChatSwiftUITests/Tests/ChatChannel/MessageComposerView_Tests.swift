@@ -594,6 +594,38 @@ import XCTest
         AssertSnapshot(view, size: size)
     }
 
+    func test_messageComposerView_sendInChannel_extraExtraExtraLarge() {
+        // Given
+        let size = CGSize(width: composerWidth, height: 200)
+        let factory = DefaultViewFactory.shared
+        let channelController = ChatChannelTestHelpers.makeChannelController(chatClient: chatClient)
+        let messageController = ChatMessageControllerSUI_Mock.mock(
+            chatClient: chatClient,
+            cid: .unique,
+            messageId: .unique
+        )
+        let viewModel = MessageComposerViewModel(
+            channelController: channelController,
+            messageController: messageController
+        )
+        viewModel.showReplyInChannel = true
+
+        // When
+        let view = MessageComposerView(
+            viewFactory: factory,
+            viewModel: viewModel,
+            channelController: channelController,
+            messageController: messageController,
+            quotedMessage: .constant(nil),
+            editedMessage: .constant(nil),
+            willSendMessage: {}
+        )
+        .frame(width: size.width, height: size.height)
+
+        // Then
+        AssertSnapshot(view, variants: [.extraExtraExtraLargeLight], size: size)
+    }
+
     // MARK: - Attachment Picker Prompt Views
 
     func test_photoLibraryAccessPromptView_snapshot() {
@@ -655,6 +687,60 @@ import XCTest
 
         // Then
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
+    }
+
+    func test_messageComposerView_frozenChannel_extraExtraExtraLarge() {
+        // Given
+        let factory = DefaultViewFactory.shared
+        let mockChannelController = ChatChannelTestHelpers.makeChannelController(chatClient: chatClient)
+        mockChannelController.channel_mock = .mockDMChannel(ownCapabilities: [.uploadFile, .readEvents])
+        let viewModel = MessageComposerViewModel(channelController: mockChannelController, messageController: nil)
+
+        // When
+        let view = MessageComposerView(
+            viewFactory: factory,
+            viewModel: viewModel,
+            channelController: mockChannelController,
+            messageController: nil,
+            quotedMessage: .constant(nil),
+            editedMessage: .constant(nil),
+            willSendMessage: {}
+        )
+        .frame(width: composerWidth, height: 200)
+
+        // Then
+        AssertSnapshot(view, variants: [.extraExtraExtraLargeLight])
+    }
+
+    func test_messageComposerView_frozenChannel_accessibilityExtraExtraExtraLarge() {
+        // Given
+        let factory = DefaultViewFactory.shared
+        let mockChannelController = ChatChannelTestHelpers.makeChannelController(chatClient: chatClient)
+        mockChannelController.channel_mock = .mockDMChannel(ownCapabilities: [.uploadFile, .readEvents])
+        let viewModel = MessageComposerViewModel(channelController: mockChannelController, messageController: nil)
+
+        // When
+        let view = MessageComposerView(
+            viewFactory: factory,
+            viewModel: viewModel,
+            channelController: mockChannelController,
+            messageController: nil,
+            quotedMessage: .constant(nil),
+            editedMessage: .constant(nil),
+            willSendMessage: {}
+        )
+        .frame(width: composerWidth, height: 450)
+
+        // Then
+        let traits = UITraitCollection(traitsFrom: [
+            UITraitCollection(displayScale: 1),
+            UITraitCollection(preferredContentSizeCategory: .accessibilityExtraExtraExtraLarge),
+            UITraitCollection(userInterfaceStyle: .light)
+        ])
+        assertSnapshot(
+            matching: view,
+            as: .image(perceptualPrecision: precision, layout: .sizeThatFits, traits: traits)
+        )
     }
 
     func test_composerInputView_frozenChannel() {

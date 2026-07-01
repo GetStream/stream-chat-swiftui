@@ -83,6 +83,42 @@ final class InputTextView_Tests: StreamChatTestCase {
         XCTAssertEqual(textView.placeholderLabel.textAlignment, .left)
     }
 
+    // MARK: - Placeholder Sizing
+
+    func test_sizeThatFits_whenEmpty_includesMultilinePlaceholderHeight() {
+        // A long placeholder at a constrained width must wrap, and the text view's
+        // fitting height must grow to fit it so it is never truncated.
+        let textView = makeTextView(
+            placeholder: "You can't send messages in this channel",
+            text: ""
+        )
+        textView.placeholderLabel.font = .systemFont(ofSize: 40)
+        textView.handleTextChange()
+
+        let narrow = CGSize(width: 120, height: CGFloat.greatestFiniteMagnitude)
+        let placeholderHeight = textView.placeholderLabel.sizeThatFits(narrow).height
+        let fittingHeight = textView.sizeThatFits(narrow).height
+
+        XCTAssertGreaterThanOrEqual(fittingHeight, placeholderHeight)
+        XCTAssertGreaterThan(placeholderHeight, 40, "Placeholder should wrap to multiple lines")
+    }
+
+    func test_sizeThatFits_whenNotEmpty_ignoresPlaceholder() {
+        // Once there is text, the placeholder is hidden and must not influence sizing.
+        let textView = makeTextView(placeholder: "A very long placeholder text here", text: "Hi")
+        textView.handleTextChange()
+
+        let size = CGSize(width: 120, height: CGFloat.greatestFiniteMagnitude)
+        let baseline = UITextView()
+        baseline.text = "Hi"
+
+        XCTAssertEqual(
+            textView.sizeThatFits(size).height,
+            baseline.sizeThatFits(size).height,
+            accuracy: 1
+        )
+    }
+
     // MARK: - Helpers
 
     private func makeTextView(placeholder: String, text: String) -> InputTextView {
