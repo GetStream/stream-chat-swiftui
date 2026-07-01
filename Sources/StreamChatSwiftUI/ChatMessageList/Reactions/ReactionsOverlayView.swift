@@ -91,7 +91,7 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
                         dismissReactionsOverlay { /* No additional handling. */ }
                     }
 
-                VStack(alignment: isRightAligned ? .trailing : .leading, spacing: tokens.spacingXs) {
+                let content = VStack(alignment: isRightAligned ? .trailing : .leading, spacing: tokens.spacingXs) {
                     reactionsPickerView(reader: reader)
                     factory.makeMessageItemView(
                         options: MessageItemViewOptions(
@@ -119,7 +119,6 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
                     messageActionsView(reader: reader)
                 }
                 .frame(width: overlayContentWidth(reader: reader), alignment: isRightAligned ? .trailing : .leading)
-                .frame(height: measuredTotalContentHeight > 0 ? min(measuredTotalContentHeight, allowedTotalContentHeight) : nil)
                 .background(
                     GeometryReader { proxy in
                         Color.clear.preference(
@@ -128,6 +127,20 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
                         )
                     }
                 )
+
+                // When the whole content (reactions + message + actions) is taller than the
+                // screen — which can happen at large Dynamic Type sizes — it becomes scrollable
+                // instead of being squeezed into an overlapping, unreadable stack.
+                Group {
+                    if contentExceedsScreen {
+                        ScrollView(showsIndicators: false) {
+                            content
+                        }
+                        .frame(height: allowedTotalContentHeight)
+                    } else {
+                        content
+                    }
+                }
                 .offset(x: contentOffsetX(reader: reader), y: contentOffsetY)
             }
         }
@@ -145,12 +158,6 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
             if value > 0 {
                 measuredActionsContentWidth = value
             }
-        }
-        .onChange(of: measuredTotalContentHeight) { _ in
-            messageViewModel.usesScrollView = usesScrollView
-        }
-        .onChange(of: screenHeight) { _ in
-            messageViewModel.usesScrollView = usesScrollView
         }
         .edgesIgnoringSafeArea(.all)
         .background(orientationChanged ? nil : Color(colors.backgroundCoreElevation1))
@@ -378,9 +385,8 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
 
     // MARK: - Origin Y
 
-    private var usesScrollView: Bool {
-        guard measuredTotalContentHeight > 0 else { return false }
-        return measuredTotalContentHeight >= allowedTotalContentHeight
+    private var contentExceedsScreen: Bool {
+        measuredTotalContentHeight > 0 && measuredTotalContentHeight > allowedTotalContentHeight
     }
     
     private var allowedTotalContentHeight: CGFloat { screenHeight - topContentSpacing - bottomContentSpacing }
