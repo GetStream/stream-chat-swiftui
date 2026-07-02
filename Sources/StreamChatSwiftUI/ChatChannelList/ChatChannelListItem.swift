@@ -115,7 +115,6 @@ public struct ChatChannelListItem<Factory: ViewFactory>: View {
 /// Renders the channel name and, when `showInlineMutedIcon` is `true`,
 /// an inline muted icon after the name.
 public struct ChannelItemTitleView: View {
-    /// Scales the inline muted icon alongside the channel name when Dynamic Type changes.
     @ScaledMetric(relativeTo: .headline) private var iconScale: CGFloat = 1
 
     /// The channel display name.
@@ -149,7 +148,6 @@ public struct ChannelItemMutedIcon: View {
     @Injected(\.images) private var images
     @Injected(\.tokens) private var tokens
 
-    /// Scales the muted icon alongside the adjacent text when Dynamic Type changes.
     @ScaledMetric(relativeTo: .subheadline) private var iconScale: CGFloat = 1
 
     public init() {}

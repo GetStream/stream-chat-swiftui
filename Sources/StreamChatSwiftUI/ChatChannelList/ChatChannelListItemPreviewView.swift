@@ -73,8 +73,6 @@ public struct ChannelItemFailedToSendView: View {
     @Injected(\.colors) private var colors
     @Injected(\.images) private var images
     @Injected(\.tokens) private var tokens
-
-    /// Scales the icon alongside the adjacent text when Dynamic Type changes.
     @ScaledMetric(relativeTo: .subheadline) private var iconScale: CGFloat = 1
 
     public init() {}
@@ -124,8 +122,6 @@ public struct ChannelItemDeletedPreviewView: View {
     @Injected(\.fonts) private var fonts
     @Injected(\.colors) private var colors
     @Injected(\.tokens) private var tokens
-
-    /// Scales the icon alongside the adjacent text when Dynamic Type changes.
     @ScaledMetric(relativeTo: .subheadline) private var iconScale: CGFloat = 1
 
     /// Whether the deleted preview message was sent by the current user.
@@ -193,8 +189,6 @@ public struct ChannelItemMessagePreviewView: View {
 /// that display an attachment glyph before the text.
 public struct ChannelItemAttachmentIcon: View {
     @Injected(\.tokens) private var tokens
-
-    /// Scales the icon alongside the adjacent text when Dynamic Type changes.
     @ScaledMetric(relativeTo: .subheadline) private var iconScale: CGFloat = 1
 
     /// The image to render as the attachment icon. Renders nothing when `nil`.

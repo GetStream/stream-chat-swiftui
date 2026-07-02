@@ -107,7 +107,6 @@ public struct MessageReadIndicatorView: View {
     @Injected(\.fonts) private var fonts
     @Injected(\.colors) private var colors
 
-    /// Scales the checkmark alongside the adjacent text when Dynamic Type changes.
     @ScaledMetric(relativeTo: .subheadline) private var iconScale: CGFloat = 1
 
     var readUsers: [ChatUser]
