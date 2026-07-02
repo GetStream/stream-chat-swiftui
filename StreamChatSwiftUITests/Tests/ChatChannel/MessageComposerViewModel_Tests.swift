@@ -3,6 +3,7 @@
 //
 
 import AVFoundation
+import Combine
 @testable import StreamChat
 @testable import StreamChatSwiftUI
 @testable import StreamChatTestTools
@@ -1403,6 +1404,7 @@ import XCTest
         try makeImageData().write(to: url)
 
         viewModel.addFileURLs([url])
+        waitForComposerAssets(viewModel, count: 1)
 
         // Rendered inline in the composer as a media asset (not a file chip).
         XCTAssertEqual(viewModel.composerAssets.count, 1)
@@ -1423,6 +1425,7 @@ import XCTest
         defer { try? FileManager.default.removeItem(at: url) }
 
         viewModel.addFileURLs([url])
+        waitForComposerAssets(viewModel, count: 1)
 
         XCTAssertEqual(viewModel.composerAssets.count, 1)
         guard case let .addedAsset(asset) = try XCTUnwrap(viewModel.composerAssets.first) else {
@@ -1442,6 +1445,7 @@ import XCTest
         try Data("mock pdf".utf8).write(to: url)
 
         viewModel.addFileURLs([url])
+        waitForComposerAssets(viewModel, count: 1)
 
         XCTAssertEqual(viewModel.composerAssets.count, 1)
         guard case .addedFile = try XCTUnwrap(viewModel.composerAssets.first) else {
@@ -2531,6 +2535,21 @@ import XCTest
             UIColor.red.setFill()
             context.fill(CGRect(x: 0, y: 0, width: 10, height: 10))
         }.pngData()!
+    }
+
+    /// `addFileURLs` builds media assets off the main actor, so the append is asynchronous.
+    private func waitForComposerAssets(
+        _ viewModel: MessageComposerViewModel,
+        count: Int,
+        timeout: TimeInterval = 5
+    ) {
+        let expectation = XCTestExpectation(description: "composerAssets reaches \(count)")
+        var cancellable: AnyCancellable?
+        cancellable = viewModel.$composerAssets.sink { assets in
+            if assets.count == count { expectation.fulfill() }
+        }
+        wait(for: [expectation], timeout: timeout)
+        cancellable?.cancel()
     }
 
     /// Writes a real (decodable) one-frame video to a temporary `.mp4` so that a thumbnail

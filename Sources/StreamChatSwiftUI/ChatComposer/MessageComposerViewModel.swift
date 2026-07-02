@@ -297,12 +297,14 @@ import SwiftUI
     /// so they render inline in the composer and are sent as their proper type instead of
     /// as a generic file. Other files are added as regular file attachments.
     public func addFileURLs(_ urls: [URL]) {
-        for url in urls {
-            guard canAddAttachment(with: url) else { continue }
-            if let mediaAsset = mediaAsset(fromPickedFileURL: url) {
-                composerAssets.append(.addedAsset(mediaAsset))
-            } else {
-                composerAssets.append(.addedFile(url))
+        Task { [weak self] in
+            for url in urls {
+                guard let self, self.canAddAttachment(with: url) else { continue }
+                // Building a media asset copies the file and extracts a thumbnail, which
+                // can be slow for large files, so it runs off the main actor. Only the
+                // append to `composerAssets` happens back on the main actor.
+                let mediaAsset = await Self.mediaAsset(fromPickedFileURL: url)
+                self.composerAssets.append(mediaAsset.map { .addedAsset($0) } ?? .addedFile(url))
             }
         }
     }
@@ -310,7 +312,9 @@ import SwiftUI
     /// Builds a media asset from a file picked in the Files/iCloud picker when it is an
     /// image or a video. Returns `nil` for other files (and when the media can't be read),
     /// in which case the caller adds it as a regular file attachment.
-    private func mediaAsset(fromPickedFileURL url: URL) -> AddedAsset? {
+    ///
+    /// `nonisolated` so the blocking file copy and thumbnail extraction run off the main actor.
+    private nonisolated static func mediaAsset(fromPickedFileURL url: URL) async -> AddedAsset? {
         let attachmentType = AttachmentType(fileExtension: url.pathExtension)
         guard attachmentType == .image || attachmentType == .video else { return nil }
 
@@ -363,7 +367,7 @@ import SwiftUI
         }
     }
 
-    private func copyToTemporaryFile(from url: URL) throws -> URL {
+    private nonisolated static func copyToTemporaryFile(from url: URL) throws -> URL {
         let temporaryURL = FileManager.default.temporaryDirectory
             .appendingPathComponent(UUID().uuidString)
             .appendingPathExtension(url.pathExtension)
