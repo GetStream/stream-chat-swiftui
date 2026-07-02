@@ -26,6 +26,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Fix text truncating and spacing collapsing at large Dynamic Type sizes across the channel list, message list, and composer pickers [#1512](https://github.com/GetStream/stream-chat-swiftui/pull/1512)
 - Fix the reactions overlay message preview and action items overflowing the screen at large Dynamic Type sizes [#1512](https://github.com/GetStream/stream-chat-swiftui/pull/1512)
 - Scale channel list and message list icons with Dynamic Type [#1512](https://github.com/GetStream/stream-chat-swiftui/pull/1512)
+- Fix the composer's quoted and edited message previews overlapping other content at large Dynamic Type sizes [#1512](https://github.com/GetStream/stream-chat-swiftui/pull/1512)
 
 ### 🔄 Changed
 - The reactions overlay now scrolls as a whole instead of only its message preview when the content is taller than the screen [#1512](https://github.com/GetStream/stream-chat-swiftui/pull/1512)

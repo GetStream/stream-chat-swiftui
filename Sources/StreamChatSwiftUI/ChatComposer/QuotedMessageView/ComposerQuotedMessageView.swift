@@ -14,6 +14,10 @@ public struct ComposerQuotedMessageView<Factory: ViewFactory>: View {
     @Injected(\.colors) private var colors
     @Injected(\.tokens) private var tokens
 
+    /// The baseline height of the quoted message bubble. The bubble grows beyond
+    /// this when the quoted content needs more space (e.g. at large text sizes).
+    static var minimumHeight: CGFloat { 56 }
+
     private let factory: Factory
     private let quotedMessage: ChatMessage
     private let onDismiss: () -> Void
@@ -53,7 +57,8 @@ public struct ComposerQuotedMessageView<Factory: ViewFactory>: View {
                     : colors.chatBackgroundIncoming
             )
         ))
-        .frame(height: 56)
+        .fixedSize(horizontal: false, vertical: true)
+        .frame(minHeight: Self.minimumHeight)
         .dismissButtonOverlayModifier(onDismiss: onDismiss)
         .padding(.top, tokens.spacingSm)
         .padding(.trailing, tokens.spacingSm)
