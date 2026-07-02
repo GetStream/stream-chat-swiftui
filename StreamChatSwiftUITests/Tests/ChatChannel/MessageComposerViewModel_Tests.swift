@@ -914,6 +914,20 @@ class MessageComposerViewModel_Tests: StreamChatTestCase {
         XCTAssertNotNil(payloads.first?.payload as? VideoAttachmentPayload)
     }
 
+    func test_addedFileURLs_rotatedVideoURL_reportsDisplayDimensions() throws {
+        let viewModel = makeComposerViewModel()
+        // 16x32 encoded, rotated 90° → displayed as 32x16.
+        let url = try makeVideoFileURL(width: 16, height: 32, transform: CGAffineTransform(rotationAngle: .pi / 2))
+        defer { try? FileManager.default.removeItem(at: url) }
+
+        viewModel.addedFileURLs = [url]
+
+        let asset = try XCTUnwrap(viewModel.addedAssets.first)
+        // Dimensions reflect the preferred transform (swapped), matching the thumbnail.
+        XCTAssertEqual(asset.originalWidth, 32)
+        XCTAssertEqual(asset.originalHeight, 16)
+    }
+
     func test_addedFileURLs_documentURL_addsFileAttachment() throws {
         let viewModel = makeComposerViewModel()
         let url = URL.newTemporaryFileURL().appendingPathExtension("pdf")
@@ -1592,18 +1606,22 @@ class MessageComposerViewModel_Tests: StreamChatTestCase {
 
     /// Writes a real (decodable) one-frame video to a temporary `.mp4` so that a thumbnail
     /// can be generated, exercising the picked-video path end to end.
-    private func makeVideoFileURL() throws -> URL {
+    private func makeVideoFileURL(
+        width: Int = 16,
+        height: Int = 16,
+        transform: CGAffineTransform = .identity
+    ) throws -> URL {
         let url = URL.newTemporaryFileURL().appendingPathExtension("mp4")
-        let size = 16
         let writer = try AVAssetWriter(outputURL: url, fileType: .mp4)
         let input = AVAssetWriterInput(
             mediaType: .video,
             outputSettings: [
                 AVVideoCodecKey: AVVideoCodecType.h264,
-                AVVideoWidthKey: size,
-                AVVideoHeightKey: size
+                AVVideoWidthKey: width,
+                AVVideoHeightKey: height
             ]
         )
+        input.transform = transform
         let adaptor = AVAssetWriterInputPixelBufferAdaptor(
             assetWriterInput: input,
             sourcePixelBufferAttributes: nil
@@ -1613,7 +1631,7 @@ class MessageComposerViewModel_Tests: StreamChatTestCase {
         writer.startSession(atSourceTime: .zero)
 
         var pixelBuffer: CVPixelBuffer?
-        CVPixelBufferCreate(kCFAllocatorDefault, size, size, kCVPixelFormatType_32ARGB, nil, &pixelBuffer)
+        CVPixelBufferCreate(kCFAllocatorDefault, width, height, kCVPixelFormatType_32ARGB, nil, &pixelBuffer)
         adaptor.append(try XCTUnwrap(pixelBuffer), withPresentationTime: .zero)
         input.markAsFinished()
 
