@@ -23,6 +23,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Fix snackbar text truncating instead of wrapping at large Dynamic Type sizes [#1502](https://github.com/GetStream/stream-chat-swiftui/pull/1502)
 - Avoid a deadlock when building message actions in the reactions overlay that could freeze the UI for very long messages [#1506](https://github.com/GetStream/stream-chat-swiftui/pull/1506)
 - Fix link attachment previews not showing their image [#1510](https://github.com/GetStream/stream-chat-swiftui/pull/1510)
+- Send images and videos picked from the Files/iCloud picker as their proper type so they render inline instead of as downloadable files [#1515](https://github.com/GetStream/stream-chat-swiftui/pull/1515)
 
 ### 🎭 New Localizations
 - `message.accessibility.system-message` — prefix announced for system messages

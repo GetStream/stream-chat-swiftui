@@ -1154,7 +1154,16 @@ final class FileAddedAsset {
             if let filePayload = file.payload {
                 return AnyAttachmentPayload(payload: filePayload)
             }
-            return try AnyAttachmentPayload(localFileURL: file.url, attachmentType: .file)
+            // Resolve the attachment type from the file's extension so that images and
+            // videos picked from the Files/iCloud picker are sent as their proper type
+            // (and render inline) instead of always being sent as a generic file.
+            var attachmentType = AttachmentType(fileExtension: file.url.pathExtension)
+            // Audio files are treated as regular files, since the composer only
+            // supports audio through voice recordings.
+            if attachmentType == .audio {
+                attachmentType = .file
+            }
+            return try AnyAttachmentPayload(localFileURL: file.url, attachmentType: attachmentType)
         }
         attachments += try voiceAssets.map { recording in
             _ = recording.url.startAccessingSecurityScopedResource()

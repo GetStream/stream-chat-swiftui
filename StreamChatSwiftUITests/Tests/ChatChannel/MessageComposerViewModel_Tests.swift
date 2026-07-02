@@ -1395,6 +1395,46 @@ import XCTest
         XCTAssertEqual(imagePayload.originalHeight, 200)
     }
 
+    func test_convertAddedAssetsToPayloads_fileURLImage_isSentAsImageAttachment() throws {
+        let viewModel = makeComposerViewModel()
+        let image = UIImage(systemName: "person")!
+        let url = URL.newTemporaryFileURL().appendingPathExtension("png")
+        defer { try? FileManager.default.removeItem(at: url) }
+        try image.pngData()?.write(to: url)
+        viewModel.addFileURLs([url])
+
+        let payloads = try viewModel.convertAddedAssetsToPayloads()
+        XCTAssertEqual(payloads.count, 1)
+        XCTAssertEqual(payloads.first?.type, .image)
+        XCTAssertNotNil(payloads.first?.payload as? ImageAttachmentPayload)
+    }
+
+    func test_convertAddedAssetsToPayloads_fileURLVideo_isSentAsVideoAttachment() throws {
+        let viewModel = makeComposerViewModel()
+        let url = URL.newTemporaryFileURL().appendingPathExtension("mp4")
+        defer { try? FileManager.default.removeItem(at: url) }
+        try Data("mock video".utf8).write(to: url)
+        viewModel.addFileURLs([url])
+
+        let payloads = try viewModel.convertAddedAssetsToPayloads()
+        XCTAssertEqual(payloads.count, 1)
+        XCTAssertEqual(payloads.first?.type, .video)
+        XCTAssertNotNil(payloads.first?.payload as? VideoAttachmentPayload)
+    }
+
+    func test_convertAddedAssetsToPayloads_fileURLDocument_isSentAsFileAttachment() throws {
+        let viewModel = makeComposerViewModel()
+        let url = URL.newTemporaryFileURL().appendingPathExtension("pdf")
+        defer { try? FileManager.default.removeItem(at: url) }
+        try Data("mock pdf".utf8).write(to: url)
+        viewModel.addFileURLs([url])
+
+        let payloads = try viewModel.convertAddedAssetsToPayloads()
+        XCTAssertEqual(payloads.count, 1)
+        XCTAssertEqual(payloads.first?.type, .file)
+        XCTAssertNotNil(payloads.first?.payload as? FileAttachmentPayload)
+    }
+
     func test_imagePickerCoordinator_imageSelection_setsOriginalWidthAndHeightOnAsset() throws {
         var captured: AddedAsset?
         let view = AttachmentImagePickerView(sourceType: .photoLibrary, onAssetPicked: { captured = $0 })
