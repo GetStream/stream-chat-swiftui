@@ -87,15 +87,12 @@ private struct AttachmentCommandRow: View {
 
     var body: some View {
         Group {
-            // The name+format columns need more horizontal room than is
-            // available at accessibility sizes, so the format hint moves
-            // below the name instead of being squeezed onto the same line.
+            // At accessibility sizes the icon is dropped (it stays tiny while
+            // the text grows and just wastes horizontal room), and the format
+            // hint moves below the name instead of being squeezed beside it.
             if sizeCategory.isAccessibilityCategory {
                 VStack(alignment: .leading, spacing: tokens.spacingXxs) {
-                    HStack(spacing: tokens.spacingSm) {
-                        icon
-                        nameText
-                    }
+                    nameText
                     // The format hint has the full row width to itself here,
                     // so it can wrap instead of needing to truncate.
                     formatText(lineLimit: 2)
