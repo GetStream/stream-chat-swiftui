@@ -352,14 +352,21 @@ import SwiftUI
                 return nil
             }
             let duration = CMTimeGetSeconds(asset.duration)
-            let naturalSize = asset.tracks(withMediaType: .video).first?.naturalSize ?? .zero
+            // Apply the track's preferred transform so portrait videos report the
+            // displayed dimensions, consistent with the (transformed) thumbnail, instead
+            // of the raw natural size which can have width/height swapped.
+            var displaySize = CGSize.zero
+            if let track = asset.tracks(withMediaType: .video).first {
+                let transformed = track.naturalSize.applying(track.preferredTransform)
+                displaySize = CGSize(width: abs(transformed.width), height: abs(transformed.height))
+            }
             return AddedAsset(
                 image: UIImage(cgImage: cgImage),
                 id: UUID().uuidString,
                 url: localURL,
                 type: .video,
-                originalWidth: Double(naturalSize.width),
-                originalHeight: Double(naturalSize.height),
+                originalWidth: Double(displaySize.width),
+                originalHeight: Double(displaySize.height),
                 duration: duration.isFinite ? duration : nil
             )
         default:
