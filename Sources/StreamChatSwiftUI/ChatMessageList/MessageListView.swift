@@ -58,8 +58,23 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
         messageListConfig.messageDisplayOptions.lastInGroupHeaderSize
     }
 
+    // The configured size is a fixed reservation used to lay out the divider
+    // without measuring its real (lazily-rendered) content, but the divider's
+    // footnote text grows with Dynamic Type. Scaling this metric against the
+    // same `.footnote` text style keeps the reservation (and the divider's
+    // `maxHeight`, which shares this value) in step with the text, instead of
+    // the divider clipping and losing its surrounding spacing at larger sizes.
+    // `max` only ever grows the configured value, never shrinks it.
+    @ScaledMetric(relativeTo: .footnote) private var scaledMessagesSeparatorSize: CGFloat = 50
+
     private var newMessagesSeparatorSize: CGFloat {
-        messageListConfig.messageDisplayOptions.newMessagesSeparatorSize
+        max(messageListConfig.messageDisplayOptions.newMessagesSeparatorSize, scaledMessagesSeparatorSize)
+    }
+
+    @ScaledMetric(relativeTo: .footnote) private var scaledDateLabelSize: CGFloat = 40
+
+    private var dateLabelSize: CGFloat {
+        max(messageListConfig.messageDisplayOptions.dateLabelSize, scaledDateLabelSize)
     }
 
     private let bottomId = "BottomID"
@@ -234,7 +249,7 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
                                     VStack(spacing: 0) {
                                         messageDate != nil ?
                                             factory.makeMessageListDateIndicator(options: MessageListDateIndicatorViewOptions(date: messageDate!))
-                                            .frame(maxHeight: messageListConfig.messageDisplayOptions.dateLabelSize)
+                                            .frame(maxHeight: dateLabelSize)
                                             : nil
 
                                         showUnreadSeparator ?
@@ -441,7 +456,7 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
         showUnreadSeparator: Bool,
         showThreadRepliesSeparator: Bool = false
     ) -> CGFloat {
-        var offset = messageListConfig.messageDisplayOptions.dateLabelSize
+        var offset = dateLabelSize
         offset += additionalTopPadding(
             showsLastInGroupInfo: showsLastInGroupInfo,
             showUnreadSeparator: showUnreadSeparator,

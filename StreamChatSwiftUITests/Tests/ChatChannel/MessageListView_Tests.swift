@@ -413,6 +413,113 @@ import XCTest
         AssertSnapshot(view)
     }
 
+    func test_messageListView_threadRepliesSeparator_accessibilityExtraExtraExtraLarge() {
+        // Given
+        let channel = ChatChannel.mockDMChannel()
+        let parentId: MessageId = "parent-id"
+        let parentMessage = ChatMessage.mock(
+            id: parentId,
+            cid: channel.cid,
+            text: "Which item has priority?",
+            author: .mock(id: "user1", name: "Wesley"),
+            replyCount: 2
+        )
+        let reply1 = ChatMessage.mock(
+            id: "reply1",
+            cid: channel.cid,
+            text: "I think the first one is the most important.",
+            author: .mock(id: "user2", name: "Emma"),
+            parentMessageId: parentId
+        )
+        let reply2 = ChatMessage.mock(
+            id: "reply2",
+            cid: channel.cid,
+            text: "Agreed, let's prioritize that.",
+            author: .mock(id: "user1", name: "Wesley"),
+            parentMessageId: parentId,
+            isSentByCurrentUser: true
+        )
+        let messages: [ChatMessage] = [reply2, reply1, parentMessage]
+        let view = MessageListView(
+            factory: DefaultViewFactory.shared,
+            channel: channel,
+            messages: messages,
+            messagesGroupingInfo: [:],
+            scrolledId: .constant(nil),
+            showScrollToLatestButton: .constant(false),
+            quotedMessage: .constant(nil),
+            currentDateString: nil,
+            listId: "listId",
+            isMessageThread: true,
+            shouldShowTypingIndicator: false,
+            onMessageAppear: { _, _ in },
+            onScrollToBottom: {},
+            onLongPress: { _ in }
+        )
+        .frame(width: defaultScreenSize.width, height: 1000)
+
+        // Then
+        let traits = UITraitCollection(traitsFrom: [
+            UITraitCollection(displayScale: 1),
+            UITraitCollection(preferredContentSizeCategory: .accessibilityExtraExtraExtraLarge),
+            UITraitCollection(userInterfaceStyle: .light)
+        ])
+        assertSnapshot(
+            matching: view,
+            as: .image(perceptualPrecision: precision, traits: traits)
+        )
+    }
+
+    func test_messageListView_dateSeparator_accessibilityExtraExtraExtraLarge() {
+        // Given
+        let channel = ChatChannel.mockDMChannel()
+        let day1 = Date(timeIntervalSince1970: 1_688_256_000) // 2023-07-02
+        let day2 = day1.addingTimeInterval(60 * 60 * 24) // 2023-07-03
+        let older = ChatMessage.mock(
+            id: "older",
+            cid: channel.cid,
+            text: "Are we still on for the venue visit?",
+            author: .mock(id: "user2", name: "Emma"),
+            createdAt: day1
+        )
+        let newer = ChatMessage.mock(
+            id: "newer",
+            cid: channel.cid,
+            text: "Yes, see you there!",
+            author: .mock(id: "user1", name: "Wesley"),
+            createdAt: day2,
+            isSentByCurrentUser: true
+        )
+        let messages: [ChatMessage] = [newer, older]
+        let view = MessageListView(
+            factory: DefaultViewFactory.shared,
+            channel: channel,
+            messages: messages,
+            messagesGroupingInfo: [:],
+            scrolledId: .constant(nil),
+            showScrollToLatestButton: .constant(false),
+            quotedMessage: .constant(nil),
+            currentDateString: nil,
+            listId: "listId",
+            shouldShowTypingIndicator: false,
+            onMessageAppear: { _, _ in },
+            onScrollToBottom: {},
+            onLongPress: { _ in }
+        )
+        .frame(width: defaultScreenSize.width, height: 1000)
+
+        // Then
+        let traits = UITraitCollection(traitsFrom: [
+            UITraitCollection(displayScale: 1),
+            UITraitCollection(preferredContentSizeCategory: .accessibilityExtraExtraExtraLarge),
+            UITraitCollection(userInterfaceStyle: .light)
+        ])
+        assertSnapshot(
+            matching: view,
+            as: .image(perceptualPrecision: precision, traits: traits)
+        )
+    }
+
     func test_messageListView_threadRepliesSeparator_hiddenWhenNotAllLoaded() {
         // Given
         let channel = ChatChannel.mockDMChannel()

@@ -11,16 +11,22 @@ public struct DeletedMessageView: View {
     @Injected(\.colors) private var colors
     @Injected(\.tokens) private var tokens
 
+    @Environment(\.sizeCategory) private var sizeCategory
+
     var message: ChatMessage
     var isFirst: Bool
 
     public var body: some View {
         HStack(spacing: tokens.spacingXxs) {
-            Image(systemName: "nosign")
-                .resizable()
-                .scaledToFit()
-                .frame(width: tokens.iconSizeSm, height: tokens.iconSizeSm)
-                .accessibilityHidden(true)
+            // The tiny icon doesn't scale with the text, so at accessibility
+            // sizes it looks out of place and wastes horizontal room.
+            if !sizeCategory.isAccessibilityCategory {
+                Image(systemName: "nosign")
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: tokens.iconSizeSm, height: tokens.iconSizeSm)
+                    .accessibilityHidden(true)
+            }
             Text(L10n.Message.deletedMessagePlaceholder)
                 .font(fonts.body)
         }

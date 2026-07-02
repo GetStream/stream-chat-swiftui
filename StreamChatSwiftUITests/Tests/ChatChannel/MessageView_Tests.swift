@@ -1348,6 +1348,24 @@ import XCTest
         // Then
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
+
+    func test_deletedMessageView_accessibilityExtraExtraExtraLarge() {
+        // Given
+        let message = ChatMessage.mock(
+            id: .unique,
+            cid: .unique,
+            text: "Deleted message",
+            author: .mock(id: .unique)
+        )
+
+        // When
+        let view = DeletedMessageView(message: message, isFirst: true)
+            .environment(\.sizeCategory, .accessibilityExtraExtraExtraLarge)
+            .applyDefaultSize()
+
+        // Then
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
+    }
     
     func test_deletedMessageViewContainer_snapshot() {
         // Given

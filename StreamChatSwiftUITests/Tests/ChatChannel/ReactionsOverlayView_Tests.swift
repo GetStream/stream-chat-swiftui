@@ -156,6 +156,89 @@ import XCTest
         )
     }
 
+    func test_reactionsOverlayView_accessibilityExtraExtraExtraLarge() {
+        // Given an incoming message rendered at the maximum accessibility text size, to verify
+        // the whole overlay (reactions, message and actions) stays within the screen bounds.
+        let messageDisplayInfo = MessageDisplayInfo(
+            message: .mock(id: .unique, cid: .unique, text: "Hey", author: .mock(id: .unique)),
+            frame: CGRect(x: 0, y: 200, width: defaultScreenSize.width, height: 90),
+            contentWidth: 120,
+            isFirst: true
+        )
+        let view = OverlayHostView {
+            ReactionsOverlayView(
+                factory: DefaultViewFactory.shared,
+                channel: .mockDMChannel(),
+                currentSnapshot: self.overlayImage,
+                messageDisplayInfo: messageDisplayInfo,
+                onBackgroundTap: {},
+                onActionExecuted: { _ in }
+            )
+        }
+
+        // Then
+        let traits = UITraitCollection(traitsFrom: [
+            UITraitCollection(displayScale: 1),
+            UITraitCollection(preferredContentSizeCategory: .accessibilityExtraExtraExtraLarge),
+            UITraitCollection(userInterfaceStyle: .light)
+        ])
+        assertSnapshot(
+            matching: view,
+            as: .image(
+                perceptualPrecision: precision,
+                layout: .fixed(width: defaultScreenSize.width, height: defaultScreenSize.height),
+                traits: traits
+            )
+        )
+    }
+
+    func test_reactionsOverlayView_actionsMenu_accessibilityExtraExtraExtraLarge() {
+        // Given an outgoing (right-aligned) message with a narrow captured frame, so the
+        // actions menu naturally sizes wider than the message bubble at large text sizes.
+        let currentUserId = StreamChatTestCase.currentUserId
+        let testMessage = ChatMessage.mock(
+            id: "test",
+            cid: .unique,
+            text: "test",
+            author: .mock(id: currentUserId, name: "martin"),
+            isSentByCurrentUser: true
+        )
+        let messageDisplayInfo = MessageDisplayInfo(
+            message: testMessage,
+            frame: CGRect(x: defaultScreenSize.width - 150, y: 200, width: 150, height: 70),
+            contentWidth: 120,
+            isFirst: true
+        )
+        let channel = ChatChannel.mockDMChannel(
+            ownCapabilities: [.sendMessage, .uploadFile, .pinMessage, .updateOwnMessage, .deleteOwnMessage, .readEvents]
+        )
+        let view = OverlayHostView {
+            ReactionsOverlayView(
+                factory: DefaultViewFactory.shared,
+                channel: channel,
+                currentSnapshot: self.overlayImage,
+                messageDisplayInfo: messageDisplayInfo,
+                onBackgroundTap: {},
+                onActionExecuted: { _ in }
+            )
+        }
+
+        // Then
+        let traits = UITraitCollection(traitsFrom: [
+            UITraitCollection(displayScale: 1),
+            UITraitCollection(preferredContentSizeCategory: .accessibilityExtraExtraExtraLarge),
+            UITraitCollection(userInterfaceStyle: .light)
+        ])
+        assertSnapshot(
+            matching: view,
+            as: .image(
+                perceptualPrecision: precision,
+                layout: .fixed(width: defaultScreenSize.width, height: defaultScreenSize.height),
+                traits: traits
+            )
+        )
+    }
+
     func test_reactionAnimatableView_snapshot() {
         // Given
         let message = ChatMessage.mock(text: "Test message")
@@ -206,6 +289,31 @@ import XCTest
 
         // Then
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
+    }
+
+    func test_reactionsAnimatableView_accessibilityExtraExtraExtraLarge() {
+        // Given
+        let message = ChatMessage.mock(text: "Test message")
+        let reactions: [MessageReactionType] = [.init(rawValue: "love"), .init(rawValue: "like")]
+
+        // When
+        let view = ReactionsAnimatableView(
+            message: message,
+            reactions: reactions,
+            onReactionTap: { _ in },
+            onMoreReactionsTap: {}
+        )
+
+        // Then
+        let traits = UITraitCollection(traitsFrom: [
+            UITraitCollection(displayScale: 1),
+            UITraitCollection(preferredContentSizeCategory: .accessibilityExtraExtraExtraLarge),
+            UITraitCollection(userInterfaceStyle: .light)
+        ])
+        assertSnapshot(
+            matching: view,
+            as: .image(perceptualPrecision: precision, layout: .sizeThatFits, traits: traits)
+        )
     }
 
     func test_reactionsOverlayView_translated() {
