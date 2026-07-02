@@ -78,10 +78,6 @@ public struct AttachmentPickerPromptView: View {
         // Only allow scrolling/bounce once the content actually overflows
         // the available height, instead of always being interactively
         // scrollable even when everything already fits on screen.
-        if #available(iOS 16.4, *) {
-            scrollView.scrollBounceBehavior(.basedOnSize)
-        } else {
-            scrollView
-        }
+        scrollView.compatibility.scrollBounceBehaviorBasedOnSize()
     }
 }
