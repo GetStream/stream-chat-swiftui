@@ -33,7 +33,6 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ### 🔄 Changed
 - The reactions overlay now scrolls as a whole instead of only its message preview when the content is taller than the screen [#1512](https://github.com/GetStream/stream-chat-swiftui/pull/1512)
 - Deprecate `MessageViewModel.usesScrollView`, which no longer has any effect [#1512](https://github.com/GetStream/stream-chat-swiftui/pull/1512)
->>>>>>> develop
 
 ### 🎭 New Localizations
 - `message.accessibility.system-message` — prefix announced for system messages
