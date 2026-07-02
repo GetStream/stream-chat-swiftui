@@ -71,6 +71,12 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
         max(messageListConfig.messageDisplayOptions.newMessagesSeparatorSize, scaledMessagesSeparatorSize)
     }
 
+    @ScaledMetric(relativeTo: .footnote) private var scaledDateLabelSize: CGFloat = 40
+
+    private var dateLabelSize: CGFloat {
+        max(messageListConfig.messageDisplayOptions.dateLabelSize, scaledDateLabelSize)
+    }
+
     private let bottomId = "BottomID"
     private let scrollAreaId = "scrollArea"
 
@@ -243,7 +249,7 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
                                     VStack(spacing: 0) {
                                         messageDate != nil ?
                                             factory.makeMessageListDateIndicator(options: MessageListDateIndicatorViewOptions(date: messageDate!))
-                                            .frame(maxHeight: messageListConfig.messageDisplayOptions.dateLabelSize)
+                                            .frame(maxHeight: dateLabelSize)
                                             : nil
 
                                         showUnreadSeparator ?
@@ -450,7 +456,7 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
         showUnreadSeparator: Bool,
         showThreadRepliesSeparator: Bool = false
     ) -> CGFloat {
-        var offset = messageListConfig.messageDisplayOptions.dateLabelSize
+        var offset = dateLabelSize
         offset += additionalTopPadding(
             showsLastInGroupInfo: showsLastInGroupInfo,
             showUnreadSeparator: showUnreadSeparator,
