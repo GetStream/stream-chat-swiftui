@@ -8,6 +8,10 @@ import SwiftUI
 /// A container view for displaying quoted messages in the message list.
 /// This view handles the tap gesture to scroll to the original message.
 public struct ChatQuotedMessageView<Factory: ViewFactory>: View {
+    /// The baseline height of the quoted message bubble. The bubble grows beyond
+    /// this when the quoted content needs more space (e.g. at large text sizes).
+    static var minimumHeight: CGFloat { 56 }
+
     private let factory: Factory
     private let quotedMessage: ChatMessage
     private let parentMessage: ChatMessage
@@ -49,7 +53,14 @@ public struct ChatQuotedMessageView<Factory: ViewFactory>: View {
                 )
             )
         )
-        .frame(width: availableWidth, height: 56)
+        // Size the bubble to its content height (with a baseline minimum) instead
+        // of a fixed height, so it grows to fit the quoted content at larger
+        // Dynamic Type sizes without clipping. `fixedSize` lets the bubble hug the
+        // text while keeping the quote indicator stretched to the full height and
+        // preserving the internal padding.
+        .fixedSize(horizontal: false, vertical: true)
+        .frame(width: availableWidth)
+        .frame(minHeight: Self.minimumHeight)
         .onTapGesture {
             scrolledId = quotedMessage.messageId
         }

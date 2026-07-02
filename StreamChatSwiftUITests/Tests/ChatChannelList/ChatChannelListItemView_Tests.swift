@@ -473,6 +473,42 @@ import XCTest
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
 
+    func test_channelListItem_iconsScaleWithDynamicType() throws {
+        let date = Date(timeIntervalSince1970: 100)
+
+        // Given: a message with an attachment preview, read indicator and a muted channel,
+        // so the attachment icon, read checkmark and muted icon are all present.
+        let message = try mockImageMessage(text: "Image", isSentByCurrentUser: true)
+        let channel = ChatChannel.mock(
+            cid: .unique,
+            config: .mock(readEventsEnabled: true),
+            reads: [
+                .init(
+                    lastReadAt: date.addingTimeInterval(10),
+                    lastReadMessageId: message.id,
+                    unreadMessagesCount: 0,
+                    user: .unique,
+                    lastDeliveredAt: date,
+                    lastDeliveredMessageId: message.id
+                )
+            ],
+            latestMessages: [message],
+            muteDetails: .init(createdAt: .unique, updatedAt: .unique, expiresAt: nil)
+        )
+
+        // When
+        let view = ChatChannelListItem(
+            channel: channel,
+            channelName: "Test",
+            onItemTap: { _ in }
+        )
+        .frame(width: defaultScreenSize.width)
+        .environment(\.sizeCategory, .extraLarge)
+
+        // Then
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
+    }
+
     func test_channelListItem_messageFailedToSend() throws {
         // Given
         let message = ChatMessage.mock(

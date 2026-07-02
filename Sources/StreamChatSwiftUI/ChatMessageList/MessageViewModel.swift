@@ -12,6 +12,7 @@ import StreamChat
 
     @Published public internal(set) var message: ChatMessage
     @Published public internal(set) var channel: ChatChannel
+    @available(*, deprecated, message: "No longer used. The reactions overlay now scrolls its whole content when it exceeds the screen, so the message no longer needs its own scroll view.")
     @Published public var usesScrollView: Bool = false
     public let isInThread: Bool
     private var cancellables = Set<AnyCancellable>()

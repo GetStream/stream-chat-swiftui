@@ -10,6 +10,8 @@ public struct ActionItemView: View {
     @Injected(\.images) private var images
     @Injected(\.fonts) private var fonts
 
+    @Environment(\.sizeCategory) private var sizeCategory
+
     var title: String
     var iconName: String
     var isDestructive: Bool
@@ -18,22 +20,40 @@ public struct ActionItemView: View {
 
     public var body: some View {
         HStack(spacing: 16) {
-            Image(uiImage: image)
-                .customizable()
-                .frame(width: 20, height: 18)
-                .foregroundColor(
-                    isDestructive ? Color(colors.accentError) : Color(colors.textTertiary)
-                )
+            if sizeCategory.isAccessibilityCategory {
+                // At accessibility text sizes the icon is dropped (like the system context
+                // menu) and the title fills the row, staying leading-aligned even when it
+                // wraps to a second line.
+                titleView
+                    .multilineTextAlignment(.leading)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+            } else {
+                Image(uiImage: image)
+                    .customizable()
+                    .frame(width: 20, height: 18)
+                    .foregroundColor(
+                        isDestructive ? Color(colors.accentError) : Color(colors.textTertiary)
+                    )
 
-            Text(title)
-                .font(boldTitle ? fonts.bodyBold : fonts.body)
-                .foregroundColor(
-                    isDestructive ? Color(colors.accentError) : Color(colors.textPrimary)
-                )
+                titleView
 
-            Spacer()
+                Spacer()
+            }
         }
-        .frame(height: 40)
+        // The row grows to fit the title (up to two lines) instead of clipping it to a
+        // fixed height, with extra vertical breathing room at accessibility text sizes.
+        .frame(minHeight: 40)
+        .padding(.vertical, sizeCategory.isAccessibilityCategory ? 6 : 0)
+    }
+
+    private var titleView: some View {
+        Text(title)
+            .font(boldTitle ? fonts.bodyBold : fonts.body)
+            .foregroundColor(
+                isDestructive ? Color(colors.accentError) : Color(colors.textPrimary)
+            )
+            .lineLimit(2)
+            .fixedSize(horizontal: false, vertical: true)
     }
 
     private var image: UIImage {

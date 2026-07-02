@@ -125,18 +125,10 @@ struct MessageContainerView<Factory: ViewFactory>: View {
     /// separate VoiceOver element next to the (possibly combined) bubble.
     @ViewBuilder
     private var bubbleView: some View {
-        Group {
-            if messageViewModel.usesScrollView {
-                ScrollView {
-                    messageView
-                }
-            } else {
-                messageView
-            }
-        }
-        .overlay(
-            messageViewModel.failureIndicatorShown ? SendFailureIndicator() : nil
-        )
+        messageView
+            .overlay(
+                messageViewModel.failureIndicatorShown ? SendFailureIndicator() : nil
+            )
     }
 
     @ViewBuilder
