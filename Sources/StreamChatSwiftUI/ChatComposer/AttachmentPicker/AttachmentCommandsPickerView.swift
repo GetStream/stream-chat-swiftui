@@ -116,7 +116,6 @@ private struct AttachmentCommandRow: View {
         }
         .padding(.horizontal, tokens.spacingSm)
         .padding(.vertical, tokens.spacingXs)
-        .padding(.horizontal, tokens.spacingXxs)
     }
 
     private var icon: some View {
