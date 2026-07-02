@@ -878,6 +878,46 @@ class MessageComposerViewModel_Tests: StreamChatTestCase {
         XCTAssertEqual(payload.originalHeight, 600)
     }
 
+    func test_convertAddedAssetsToPayloads_fileURLImage_isSentAsImageAttachment() throws {
+        let viewModel = makeComposerViewModel()
+        let image = UIImage(systemName: "person")!
+        let url = URL.newTemporaryFileURL().appendingPathExtension("png")
+        defer { try? FileManager.default.removeItem(at: url) }
+        try image.pngData()?.write(to: url)
+        viewModel.addedFileURLs = [url]
+
+        let payloads = try viewModel.convertAddedAssetsToPayloads()
+        XCTAssertEqual(payloads.count, 1)
+        XCTAssertEqual(payloads.first?.type, .image)
+        XCTAssertNotNil(payloads.first?.payload as? ImageAttachmentPayload)
+    }
+
+    func test_convertAddedAssetsToPayloads_fileURLVideo_isSentAsVideoAttachment() throws {
+        let viewModel = makeComposerViewModel()
+        let url = URL.newTemporaryFileURL().appendingPathExtension("mp4")
+        defer { try? FileManager.default.removeItem(at: url) }
+        try Data("mock video".utf8).write(to: url)
+        viewModel.addedFileURLs = [url]
+
+        let payloads = try viewModel.convertAddedAssetsToPayloads()
+        XCTAssertEqual(payloads.count, 1)
+        XCTAssertEqual(payloads.first?.type, .video)
+        XCTAssertNotNil(payloads.first?.payload as? VideoAttachmentPayload)
+    }
+
+    func test_convertAddedAssetsToPayloads_fileURLDocument_isSentAsFileAttachment() throws {
+        let viewModel = makeComposerViewModel()
+        let url = URL.newTemporaryFileURL().appendingPathExtension("pdf")
+        defer { try? FileManager.default.removeItem(at: url) }
+        try Data("mock pdf".utf8).write(to: url)
+        viewModel.addedFileURLs = [url]
+
+        let payloads = try viewModel.convertAddedAssetsToPayloads()
+        XCTAssertEqual(payloads.count, 1)
+        XCTAssertEqual(payloads.first?.type, .file)
+        XCTAssertNotNil(payloads.first?.payload as? FileAttachmentPayload)
+    }
+
     func test_addedAsset_toAttachmentPayload_includesWidthHeightDurationForVideo() throws {
         let thumbnail = UIImage(systemName: "video")!
         let url = URL.newTemporaryFileURL().appendingPathExtension("mp4")
