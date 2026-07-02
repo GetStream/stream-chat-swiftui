@@ -58,12 +58,16 @@ public struct MessageAnnotationView: View {
 
     private var annotationRow: some View {
         HStack(spacing: tokens.spacingXxs) {
-            Image(uiImage: icon)
-                .renderingMode(.template)
-                .scaledToFit()
-                .frame(width: tokens.iconSizeSm, height: tokens.iconSizeSm)
-                .padding(.horizontal, tokens.spacingXxxs)
-                .accessibilityHidden(true)
+            // The icon doesn't scale with the text, so at accessibility sizes it
+            // looks out of place and eats horizontal room the wrapped title needs.
+            if !sizeCategory.isAccessibilityCategory {
+                Image(uiImage: icon)
+                    .renderingMode(.template)
+                    .scaledToFit()
+                    .frame(width: tokens.iconSizeSm, height: tokens.iconSizeSm)
+                    .padding(.horizontal, tokens.spacingXxxs)
+                    .accessibilityHidden(true)
+            }
             if let title {
                 Text(title)
                     .font(fonts.footnote.weight(.semibold))
