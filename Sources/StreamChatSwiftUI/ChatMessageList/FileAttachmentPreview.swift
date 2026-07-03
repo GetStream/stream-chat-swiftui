@@ -20,7 +20,8 @@ public struct FileAttachmentPreview: View {
     @State private var isLoading = false
     @State private var webViewTitle: String?
     @State private var error: Error?
-    
+    @State private var sharedFile: ShareSheet.SharedFile?
+
     var title: String? {
         attachment.title
     }
@@ -67,6 +68,9 @@ public struct FileAttachmentPreview: View {
                     }
                 }
             }
+            .sheet(item: $sharedFile) { sharedFile in
+                ShareSheet(files: [sharedFile])
+            }
             .navigationBarTitleDisplayMode(.inline)
             .toolbarThemed {
                 ToolbarItem(placement: .principal) {
@@ -86,7 +90,9 @@ public struct FileAttachmentPreview: View {
                 }
                 
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    DownloadShareAttachmentView(attachment: attachment)
+                    DownloadShareAttachmentView(attachment: attachment) { fileURL in
+                        sharedFile = ShareSheet.SharedFile(url: fileURL)
+                    }
                 }
             }
         }
