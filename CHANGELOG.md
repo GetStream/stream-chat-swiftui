@@ -20,6 +20,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Fix snackbar text truncating instead of wrapping at large Dynamic Type sizes [#1502](https://github.com/GetStream/stream-chat-swiftui/pull/1502)
 - Avoid a deadlock when building message actions in the reactions overlay that could freeze the UI for very long messages [#1506](https://github.com/GetStream/stream-chat-swiftui/pull/1506)
 - Fix link attachment previews not showing their image [#1510](https://github.com/GetStream/stream-chat-swiftui/pull/1510)
+- Fix downloading files in the `FileAttachmentPreview` [#1519](https://github.com/GetStream/stream-chat-swiftui/pull/1519)
+- Show the locally downloaded file in the `FileAttachmentPreview` instead of downloading it again [#1519](https://github.com/GetStream/stream-chat-swiftui/pull/1519)
 - Fix text truncating and spacing collapsing at large Dynamic Type sizes across the channel list, message list, and composer pickers [#1512](https://github.com/GetStream/stream-chat-swiftui/pull/1512)
 - Fix the reactions overlay message preview and action items overflowing the screen at large Dynamic Type sizes [#1512](https://github.com/GetStream/stream-chat-swiftui/pull/1512)
 - Scale channel list and message list icons with Dynamic Type [#1512](https://github.com/GetStream/stream-chat-swiftui/pull/1512)
