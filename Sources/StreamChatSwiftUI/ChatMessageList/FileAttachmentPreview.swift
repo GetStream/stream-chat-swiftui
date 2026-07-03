@@ -27,7 +27,12 @@ public struct FileAttachmentPreview: View {
     }
     
     var url: URL {
-        attachment.assetURL
+        if attachment.downloadingState?.state == .downloaded,
+           let url = attachment.downloadingState?.localFileURL,
+           FileManager.default.fileExists(atPath: url.path) {
+            return url
+        }
+        return attachment.assetURL
     }
     
     var navigationTitle: String {
@@ -59,6 +64,10 @@ public struct FileAttachmentPreview: View {
                 }
             }
             .onAppear {
+                if url.isFileURL {
+                    fileRequest = URLRequest(url: url)
+                    return
+                }
                 utils.mediaLoader.loadFileRequest(for: url) { result in
                     switch result {
                     case let .success(result):
