@@ -94,10 +94,10 @@ import XCTest
         
         // When
         viewModel.addFileURLs([mockURL])
-        let buttonEnabled = viewModel.hasContent
-        
+        waitForComposerAssets(viewModel, count: 1)
+
         // Then
-        XCTAssert(buttonEnabled == true)
+        XCTAssert(viewModel.hasContent == true)
         XCTAssertEqual(viewModel.composerAssets.count, 1)
     }
 
@@ -163,6 +163,7 @@ import XCTest
         // Given
         let viewModel = makeComposerViewModel()
         viewModel.addFileURLs([mockURL])
+        waitForComposerAssets(viewModel, count: 1)
         XCTAssertEqual(viewModel.composerAssets.count, 1)
 
         // When
@@ -579,8 +580,9 @@ import XCTest
         viewModel.imageTapped(newAsset) // This one will not be added, default limit is 10.
         let newURL = generateURL()
         viewModel.addFileURLs([newURL])
-        
+
         // Then
+        waitForComposerAssets(viewModel, count: 10)
         let total = viewModel.composerAssets.count
         XCTAssertEqual(total, 10)
         for url in urls {

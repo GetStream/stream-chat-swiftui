@@ -304,6 +304,10 @@ import SwiftUI
                 // can be slow for large files, so it runs off the main actor. Only the
                 // append to `composerAssets` happens back on the main actor.
                 let mediaAsset = await Self.mediaAsset(fromPickedFileURL: url)
+                // Re-check the count after the (suspending) build so concurrent adds
+                // can't push past the attachment limit; this and the append are atomic
+                // on the main actor.
+                guard self.canAddAdditionalAttachments else { continue }
                 self.composerAssets.append(mediaAsset.map { .addedAsset($0) } ?? .addedFile(url))
             }
         }
