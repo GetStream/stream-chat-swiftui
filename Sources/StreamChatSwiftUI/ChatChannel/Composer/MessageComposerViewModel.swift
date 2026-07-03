@@ -2,7 +2,6 @@
 // Copyright © 2026 Stream.io Inc. All rights reserved.
 //
 
-import AVFoundation
 import Combine
 import Photos
 import StreamChat
@@ -89,10 +88,6 @@ open class MessageComposerViewModel: ObservableObject {
                 || !checkAttachmentSize(with: addedFileURLs.last) {
                 addedFileURLs.removeLast()
             }
-            // Move images and videos picked from the Files/iCloud picker into media
-            // assets, so they render inline in the composer and are sent as their proper
-            // type instead of as a generic file.
-            routePickedMediaFilesToAssets(newlyAdded: addedFileURLs.filter { !oldValue.contains($0) })
             checkPickerSelectionState()
 
             if shouldDeleteDraftMessage(oldValue: oldValue) {
@@ -570,90 +565,7 @@ open class MessageComposerViewModel: ObservableObject {
         )
         addedAssets.append(addedImage)
     }
-
-    /// Moves the given picked file URLs that are images or videos out of `addedFileURLs`
-    /// and into `addedAssets` as media, so they render inline and are sent as their
-    /// proper type. Other files are left untouched as regular file attachments.
-    private func routePickedMediaFilesToAssets(newlyAdded urls: [URL]) {
-        let mediaAssets = urls.compactMap { mediaAsset(fromPickedFileURL: $0) }
-        guard !mediaAssets.isEmpty else { return }
-        let mediaURLs = Set(urls.filter { AttachmentType(fileExtension: $0.pathExtension) == .image
-                || AttachmentType(fileExtension: $0.pathExtension) == .video
-        })
-        addedFileURLs.removeAll { mediaURLs.contains($0) }
-        addedAssets.append(contentsOf: mediaAssets)
-    }
-
-    /// Builds a media asset from a file picked in the Files/iCloud picker when it is an
-    /// image or a video. Returns `nil` for other files (and when the media can't be read).
-    private func mediaAsset(fromPickedFileURL url: URL) -> AddedAsset? {
-        let attachmentType = AttachmentType(fileExtension: url.pathExtension)
-        guard attachmentType == .image || attachmentType == .video else { return nil }
-
-        // Copy into an app-owned temporary file so the asset behaves like the other media
-        // sources (camera/photos/paste) and no longer depends on the security-scoped
-        // picker URL when it is uploaded.
-        let didStartAccessing = url.startAccessingSecurityScopedResource()
-        defer { if didStartAccessing { url.stopAccessingSecurityScopedResource() } }
-        guard let localURL = try? copyToTemporaryFile(from: url) else { return nil }
-
-        switch attachmentType {
-        case .image:
-            guard let data = try? Data(contentsOf: localURL), let image = UIImage(data: data) else {
-                try? FileManager.default.removeItem(at: localURL)
-                return nil
-            }
-            let scale = image.scale
-            return AddedAsset(
-                image: image,
-                id: UUID().uuidString,
-                url: localURL,
-                type: .image,
-                originalWidth: Double(image.size.width * scale),
-                originalHeight: Double(image.size.height * scale)
-            )
-        case .video:
-            let asset = AVURLAsset(url: localURL, options: nil)
-            let imageGenerator = AVAssetImageGenerator(asset: asset)
-            imageGenerator.appliesPreferredTrackTransform = true
-            guard let cgImage = try? imageGenerator.copyCGImage(
-                at: CMTimeMake(value: 0, timescale: 1),
-                actualTime: nil
-            ) else {
-                try? FileManager.default.removeItem(at: localURL)
-                return nil
-            }
-            let duration = CMTimeGetSeconds(asset.duration)
-            // Apply the track's preferred transform so portrait videos report the
-            // displayed dimensions, consistent with the (transformed) thumbnail, instead
-            // of the raw natural size which can have width/height swapped.
-            var displaySize = CGSize.zero
-            if let track = asset.tracks(withMediaType: .video).first {
-                let transformed = track.naturalSize.applying(track.preferredTransform)
-                displaySize = CGSize(width: abs(transformed.width), height: abs(transformed.height))
-            }
-            return AddedAsset(
-                image: UIImage(cgImage: cgImage),
-                id: UUID().uuidString,
-                url: localURL,
-                type: .video,
-                originalWidth: Double(displaySize.width),
-                originalHeight: Double(displaySize.height),
-                duration: duration.isFinite ? duration : nil
-            )
-        default:
-            return nil
-        }
-    }
-
-    private func copyToTemporaryFile(from url: URL) throws -> URL {
-        let temporaryURL = FileManager.default.temporaryDirectory
-            .appendingPathComponent(UUID().uuidString)
-            .appendingPathExtension(url.pathExtension)
-        try FileManager.default.copyItem(at: url, to: temporaryURL)
-        return temporaryURL
-    }
-
+    
     public func removeAttachment(with id: String) {
         if id.isURL, let url = URL(string: id) {
             var urls = [URL]()
@@ -1083,7 +995,16 @@ class MessageAttachmentsConverter {
             if let filePayload = file.payload {
                 return AnyAttachmentPayload(payload: filePayload)
             }
-            return try AnyAttachmentPayload(localFileURL: file.url, attachmentType: .file)
+            // Resolve the attachment type from the file's extension so that images and
+            // videos picked from the Files/iCloud picker are sent as their proper type
+            // (and render inline) instead of always being sent as a generic file.
+            var attachmentType = AttachmentType(fileExtension: file.url.pathExtension)
+            // Audio files are treated as regular files, since the composer only
+            // supports audio through voice recordings.
+            if attachmentType == .audio {
+                attachmentType = .file
+            }
+            return try AnyAttachmentPayload(localFileURL: file.url, attachmentType: attachmentType)
         }
         attachments += try voiceAssets.map { recording in
             _ = recording.url.startAccessingSecurityScopedResource()
