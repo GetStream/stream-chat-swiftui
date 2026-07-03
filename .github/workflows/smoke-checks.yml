@@ -2,10 +2,6 @@ name: Smoke Checks
 
 on:
   pull_request:
-    paths-ignore:
-      - 'README.md'
-      - 'CHANGELOG.md'
-      - '**/*.png'
 
   workflow_dispatch:
     inputs:
