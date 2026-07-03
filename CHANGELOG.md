@@ -3,6 +3,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 # Upcoming
 
+### 🔄 Changed
+
+# [4.101.2](https://github.com/GetStream/stream-chat-swiftui/releases/tag/4.101.2)
+_July 03, 2026_
+
 ### 🐞 Fixed
 - Fix the composer attachment picker collapsing the paperclip icon into an arrow while typing when only a single picker item is available [#1496](https://github.com/GetStream/stream-chat-swiftui/pull/1496)
 
