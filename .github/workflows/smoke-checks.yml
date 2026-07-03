@@ -2,7 +2,7 @@ name: Smoke Checks
 
 on:
   pull_request:
-  
+
   workflow_dispatch:
     inputs:
       record_snapshots:
