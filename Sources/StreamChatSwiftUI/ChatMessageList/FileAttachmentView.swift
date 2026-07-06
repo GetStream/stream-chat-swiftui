@@ -229,48 +229,50 @@ public struct FileAttachmentDisplayView: View {
 struct DownloadShareAttachmentView<Payload: DownloadableAttachmentPayload>: View {
     @Injected(\.colors) var colors
     @Injected(\.images) var images
-    @Injected(\.chatClient) var chatClient
 
-    @State private var shareSheetShown = false
-    @State private var downloadButtonShown: Bool
-    @State private var shareButtonShown: Bool
+    @StateObject private var viewModel: ViewModel
+    private let onShare: (URL) -> Void
 
-    var attachment: ChatMessageAttachment<Payload>
-
-    init(attachment: ChatMessageAttachment<Payload>) {
-        self.attachment = attachment
-        let downloadButtonShown: Bool = (attachment.uploadingState == nil || attachment.uploadingState?.state == .uploaded) && attachment.downloadingState == nil
-        _downloadButtonShown = .init(initialValue: downloadButtonShown)
-        _shareButtonShown = .init(initialValue: attachment.downloadingState?.state == .downloaded)
+    init(attachment: ChatMessageAttachment<Payload>, onShare: @escaping (URL) -> Void) {
+        _viewModel = StateObject(wrappedValue: ViewModel(attachment: attachment))
+        self.onShare = onShare
     }
 
     var body: some View {
         Group {
-            if downloadButtonShown {
-                downloadButton
-            } else if shareButtonShown {
+            if viewModel.localFileURL != nil {
                 shareButton
+            } else if viewModel.downloadButtonShown {
+                downloadButton
             }
         }
-        .sheet(isPresented: $shareSheetShown) {
-            if let shareURL = attachment.downloadingState?.localFileURL {
-                ShareSheet(activityItems: [shareURL])
-            }
+        .onAppear {
+            viewModel.onAppear()
         }
     }
 
     private var downloadButton: some View {
-        Button(action: { downloadAttachment() }) {
-            Image(uiImage: images.download)
-                .renderingMode(.template)
-                .foregroundColor(Color(colors.textPrimary))
-                .frame(width: 24, height: 24)
+        Button(action: { viewModel.downloadAttachment() }) {
+            if viewModel.isDownloading {
+                LoadingSpinnerView(size: LoadingSpinnerSize.medium, progress: viewModel.downloadProgress)
+            } else {
+                Image(uiImage: images.download)
+                    .renderingMode(.template)
+                    .foregroundColor(Color(colors.textPrimary))
+                    .frame(width: 24, height: 24)
+            }
         }
+        .disabled(viewModel.isDownloading)
         .accessibilityLabel("Download")
+        .accessibilityValue(viewModel.downloadProgress.map { "\(Int($0 * 100))%" } ?? "")
     }
 
     private var shareButton: some View {
-        Button(action: { shareSheetShown = true }) {
+        Button(action: {
+            if let localFileURL = viewModel.localFileURL {
+                onShare(localFileURL)
+            }
+        }) {
             Image(uiImage: images.share)
                 .renderingMode(.template)
                 .foregroundColor(Color(colors.textPrimary))
@@ -278,36 +280,133 @@ struct DownloadShareAttachmentView<Payload: DownloadableAttachmentPayload>: View
         }
         .accessibilityLabel("Share")
     }
+}
 
-    private func downloadAttachment() {
-        let messageId = attachment.id.messageId
-        let cid = attachment.id.cid
-        let messageController = chatClient.messageController(cid: cid, messageId: messageId)
-        let mediaLoader = InjectedValues[\.utils].mediaLoader
-        mediaLoader.loadFileRequest(for: attachment.remoteURL) { result in
-            switch result {
-            case let .success(fileRequest):
-                messageController.downloadAttachment(attachment, request: fileRequest.urlRequest) { result in
-                    if case let .failure(error) = result {
-                        log.error("Error downloading attachment: \(error.localizedDescription)")
-                    } else {
-                        downloadButtonShown = false
-                        shareButtonShown = true
-                    }
-                }
-            case let .failure(error):
-                log.error("Error resolving CDN URL: \(error.localizedDescription)")
+extension DownloadShareAttachmentView {
+    @MainActor final class ViewModel: ObservableObject, ChatMessageControllerDelegate {
+        @Injected(\.chatClient) private var chatClient
+
+        let attachment: ChatMessageAttachment<Payload>
+        let downloadButtonShown: Bool
+
+        @Published private(set) var downloadingState: AttachmentDownloadingState?
+        @Published private(set) var isDownloadRequested = false
+
+        private var messageController: ChatMessageController?
+
+        init(attachment: ChatMessageAttachment<Payload>) {
+            self.attachment = attachment
+            downloadButtonShown = attachment.uploadingState == nil || attachment.uploadingState?.state == .uploaded
+            downloadingState = attachment.downloadingState
+        }
+
+        var isDownloading: Bool {
+            if isDownloadRequested {
+                return true
             }
+            if case .downloading = downloadingState?.state {
+                return true
+            }
+            return false
+        }
+
+        var downloadProgress: Double? {
+            guard case let .downloading(progress)? = downloadingState?.state else { return nil }
+            return progress
+        }
+
+        var localFileURL: URL? {
+            guard downloadingState?.state == .downloaded else { return nil }
+            guard let url = downloadingState?.localFileURL, FileManager.default.fileExists(atPath: url.path) else { return nil }
+            return url
+        }
+
+        func onAppear() {
+            guard isDownloading, messageController == nil else { return }
+            startObservingDownload(
+                with: chatClient.messageController(
+                    cid: attachment.id.cid,
+                    messageId: attachment.id.messageId
+                )
+            )
+        }
+
+        func downloadAttachment() {
+            isDownloadRequested = true
+            let controller = chatClient.messageController(
+                cid: attachment.id.cid,
+                messageId: attachment.id.messageId
+            )
+            startObservingDownload(with: controller)
+            let mediaLoader = InjectedValues[\.utils].mediaLoader
+            mediaLoader.loadFileRequest(for: attachment.remoteURL) { [weak self] result in
+                guard let self else { return }
+                switch result {
+                case let .success(fileRequest):
+                    controller.downloadAttachment(self.attachment, request: fileRequest.urlRequest) { [weak self] result in
+                        switch result {
+                        case let .success(downloadedAttachment):
+                            self?.finishDownload(with: downloadedAttachment.downloadingState)
+                        case let .failure(error):
+                            self?.finishDownload(with: nil)
+                            log.error("Error downloading attachment: \(error.localizedDescription)")
+                        }
+                    }
+                case let .failure(error):
+                    self.finishDownload(with: nil)
+                    log.error("Error resolving CDN URL: \(error.localizedDescription)")
+                }
+            }
+        }
+
+        func messageController(_ controller: ChatMessageController, didChangeMessage change: EntityChange<ChatMessage>) {
+            let downloadingState = controller.message?.attachment(with: attachment.id)?.downloadingState
+            switch downloadingState?.state {
+            case .downloading:
+                self.downloadingState = downloadingState
+            case .downloaded, .downloadingFailed:
+                finishDownload(with: downloadingState)
+            case nil:
+                break
+            }
+        }
+
+        private func startObservingDownload(with controller: ChatMessageController) {
+            messageController = controller
+            controller.delegate = self
+        }
+
+        private func finishDownload(with downloadingState: AttachmentDownloadingState?) {
+            self.downloadingState = downloadingState
+            isDownloadRequested = false
+            messageController = nil
         }
     }
 }
 
 struct ShareSheet: UIViewControllerRepresentable {
-    let activityItems: [Any]
+    let files: [SharedFile]
     
     func makeUIViewController(context: Context) -> UIActivityViewController {
-        UIActivityViewController(activityItems: activityItems, applicationActivities: nil)
+        UIActivityViewController(activityItems: files.map(\.url), applicationActivities: nil)
     }
     
     func updateUIViewController(_ uiViewController: UIActivityViewController, context: Context) {}
+}
+
+extension ShareSheet {
+    final class SharedFile: Identifiable {
+        let url: URL
+        
+        init(url: URL) {
+            self.url = url
+            _ = url.startAccessingSecurityScopedResource()
+        }
+        
+        deinit {
+            url.stopAccessingSecurityScopedResource()
+        }
+        
+        var id: URL { url }
+    }
 }

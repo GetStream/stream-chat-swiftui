@@ -26,7 +26,11 @@ struct WebView: UIViewRepresentable {
         webView.navigationDelegate = context.coordinator
         webView.allowsBackForwardNavigationGestures = true
         webView.scrollView.isScrollEnabled = true
-        webView.load(request)
+        if let url = request.url, url.isFileURL {
+            webView.loadFileURL(url, allowingReadAccessTo: url)
+        } else {
+            webView.load(request)
+        }
         return webView.withAccessibilityIdentifier(identifier: "WKWebView")
     }
 

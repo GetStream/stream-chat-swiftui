@@ -3,13 +3,15 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 # Upcoming
 
+### 🔄 Changed
+
+# [5.6.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/5.6.0)
+_July 03, 2026_
+
 ### ✅ Added
 - Add support for enhanced mention suggestions [#1497](https://github.com/GetStream/stream-chat-swiftui/pull/1497)
 - Add `PollsConfig.maxQuestionLength` and `PollsConfig.maxOptionLength` to limit the character count of poll questions and options [#1500](https://github.com/GetStream/stream-chat-swiftui/pull/1500)
 - Add disk cache for video attachments (`MessageListConfig.videoAttachmentCachingPolicy`) [#1508](https://github.com/GetStream/stream-chat-swiftui/pull/1508)
-
-### ⚡️ Performance
-- Improve channel avatar loading performance in the channel list [#1501](https://github.com/GetStream/stream-chat-swiftui/pull/1501)
 
 ### 🐞 Fixed
 - Keep the navigation bar and its buttons visible while searching in the add members screen [#1499](https://github.com/GetStream/stream-chat-swiftui/pull/1499)
@@ -24,6 +26,17 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Fix snackbar text truncating instead of wrapping at large Dynamic Type sizes [#1502](https://github.com/GetStream/stream-chat-swiftui/pull/1502)
 - Avoid a deadlock when building message actions in the reactions overlay that could freeze the UI for very long messages [#1506](https://github.com/GetStream/stream-chat-swiftui/pull/1506)
 - Fix link attachment previews not showing their image [#1510](https://github.com/GetStream/stream-chat-swiftui/pull/1510)
+- Fix downloading files in the `FileAttachmentPreview` [#1519](https://github.com/GetStream/stream-chat-swiftui/pull/1519)
+- Show the locally downloaded file in the `FileAttachmentPreview` instead of downloading it again [#1519](https://github.com/GetStream/stream-chat-swiftui/pull/1519)
+- Fix text truncating and spacing collapsing at large Dynamic Type sizes across the channel list, message list, and composer pickers [#1512](https://github.com/GetStream/stream-chat-swiftui/pull/1512)
+- Fix the reactions overlay message preview and action items overflowing the screen at large Dynamic Type sizes [#1512](https://github.com/GetStream/stream-chat-swiftui/pull/1512)
+- Scale channel list and message list icons with Dynamic Type [#1512](https://github.com/GetStream/stream-chat-swiftui/pull/1512)
+- Fix the composer's quoted and edited message previews overlapping other content at large Dynamic Type sizes [#1512](https://github.com/GetStream/stream-chat-swiftui/pull/1512)
+- Fix the message list date separator overlapping messages at large Dynamic Type sizes [#1512](https://github.com/GetStream/stream-chat-swiftui/pull/1512)
+
+### 🔄 Changed
+- The reactions overlay now scrolls as a whole instead of only its message preview when the content is taller than the screen [#1512](https://github.com/GetStream/stream-chat-swiftui/pull/1512)
+- Deprecate `MessageViewModel.usesScrollView`, which no longer has any effect [#1512](https://github.com/GetStream/stream-chat-swiftui/pull/1512)
 
 ### 🎭 New Localizations
 - `message.accessibility.system-message` — prefix announced for system messages

@@ -13,6 +13,8 @@ public struct MessageAnnotationView: View {
     @Injected(\.fonts) private var fonts
     @Injected(\.tokens) private var tokens
 
+    @Environment(\.sizeCategory) private var sizeCategory
+
     let icon: UIImage
     let title: String?
     let subtitle: String?
@@ -56,12 +58,16 @@ public struct MessageAnnotationView: View {
 
     private var annotationRow: some View {
         HStack(spacing: tokens.spacingXxs) {
-            Image(uiImage: icon)
-                .renderingMode(.template)
-                .scaledToFit()
-                .frame(width: tokens.iconSizeSm, height: tokens.iconSizeSm)
-                .padding(.horizontal, tokens.spacingXxxs)
-                .accessibilityHidden(true)
+            // The icon doesn't scale with the text, so at accessibility sizes it
+            // looks out of place and eats horizontal room the wrapped title needs.
+            if !sizeCategory.isAccessibilityCategory {
+                Image(uiImage: icon)
+                    .renderingMode(.template)
+                    .scaledToFit()
+                    .frame(width: tokens.iconSizeSm, height: tokens.iconSizeSm)
+                    .padding(.horizontal, tokens.spacingXxxs)
+                    .accessibilityHidden(true)
+            }
             if let title {
                 Text(title)
                     .font(fonts.footnote.weight(.semibold))
@@ -84,9 +90,7 @@ public struct MessageAnnotationView: View {
                         .accessibilityHidden(true)
                 }
                 Button(action: buttonAction) {
-                    Text(buttonTitle)
-                        .font(fonts.footnote)
-                        .foregroundColor(usesInvertedStyle ? resolvedTextColor : Color(colors.accentPrimary))
+                    buttonText(buttonTitle)
                 }
                 .accessibilityLabel(accessibilityLabel)
             }
@@ -99,6 +103,21 @@ public struct MessageAnnotationView: View {
         [title, subtitle, buttonTitle]
             .compactMap { $0 }
             .joined(separator: ", ")
+    }
+
+    @ViewBuilder
+    private func buttonText(_ buttonTitle: String) -> some View {
+        let text = Text(buttonTitle)
+            .font(fonts.footnote)
+            .foregroundColor(usesInvertedStyle ? resolvedTextColor : Color(colors.accentPrimary))
+        // When the row wraps at accessibility text sizes the button title must stay
+        // leading-aligned instead of centering. The modifier is only applied then, so the
+        // single-line rendering used at smaller sizes is left untouched.
+        if sizeCategory.isAccessibilityCategory {
+            text.multilineTextAlignment(.leading)
+        } else {
+            text
+        }
     }
 }
 

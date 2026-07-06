@@ -73,6 +73,7 @@ public struct ChannelItemFailedToSendView: View {
     @Injected(\.colors) private var colors
     @Injected(\.images) private var images
     @Injected(\.tokens) private var tokens
+    @ScaledMetric(relativeTo: .subheadline) private var iconScale: CGFloat = 1
 
     public init() {}
 
@@ -80,7 +81,7 @@ public struct ChannelItemFailedToSendView: View {
         HStack(spacing: tokens.spacingXxs) {
             Image(uiImage: images.messageListErrorIndicator)
                 .customizable()
-                .frame(width: tokens.iconSizeSm, height: tokens.iconSizeSm)
+                .frame(width: tokens.iconSizeSm * iconScale, height: tokens.iconSizeSm * iconScale)
                 .foregroundColor(Color(colors.badgeBackgroundError))
                 .accessibilityHidden(true)
             Text(L10n.Channel.Item.messageFailedToSend)
@@ -121,6 +122,7 @@ public struct ChannelItemDeletedPreviewView: View {
     @Injected(\.fonts) private var fonts
     @Injected(\.colors) private var colors
     @Injected(\.tokens) private var tokens
+    @ScaledMetric(relativeTo: .subheadline) private var iconScale: CGFloat = 1
 
     /// Whether the deleted preview message was sent by the current user.
     public let isPreviewMessageSentByCurrentUser: Bool
@@ -138,7 +140,7 @@ public struct ChannelItemDeletedPreviewView: View {
             Image(systemName: "nosign")
                 .resizable()
                 .scaledToFit()
-                .frame(width: tokens.iconSizeSm, height: tokens.iconSizeSm)
+                .frame(width: tokens.iconSizeSm * iconScale, height: tokens.iconSizeSm * iconScale)
                 .accessibilityHidden(true)
             Text(L10n.Message.deletedMessagePlaceholder)
         }
@@ -187,6 +189,7 @@ public struct ChannelItemMessagePreviewView: View {
 /// that display an attachment glyph before the text.
 public struct ChannelItemAttachmentIcon: View {
     @Injected(\.tokens) private var tokens
+    @ScaledMetric(relativeTo: .subheadline) private var iconScale: CGFloat = 1
 
     /// The image to render as the attachment icon. Renders nothing when `nil`.
     public let image: UIImage?
@@ -200,7 +203,7 @@ public struct ChannelItemAttachmentIcon: View {
         if let image {
             Image(uiImage: image)
                 .customizable()
-                .frame(width: tokens.iconSizeSm, height: tokens.iconSizeSm)
+                .frame(width: tokens.iconSizeSm * iconScale, height: tokens.iconSizeSm * iconScale)
                 .accessibilityHidden(true)
         }
     }

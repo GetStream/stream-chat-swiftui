@@ -10,6 +10,10 @@ public struct EditedMessageView<Factory: ViewFactory>: View {
     @Injected(\.colors) private var colors
     @Injected(\.tokens) private var tokens
 
+    /// The baseline height of the edited message bubble. The bubble grows beyond
+    /// this when the referenced content needs more space (e.g. at large text sizes).
+    static var minimumHeight: CGFloat { 56 }
+
     private let factory: Factory
     private let viewModel: EditedMessageViewModel
     private let onDismiss: () -> Void
@@ -35,8 +39,9 @@ public struct EditedMessageView<Factory: ViewFactory>: View {
             .modifier(ReferenceMessageViewBackgroundModifier(
                 backgroundColor: colors.chatBackgroundOutgoing.toColor
             ))
+            .fixedSize(horizontal: false, vertical: true)
+            .frame(minHeight: Self.minimumHeight)
             .modifier(DismissButtonOverlayModifier(onDismiss: onDismiss))
-            .frame(height: 56)
             .padding(.top, tokens.spacingSm)
             .padding(.trailing, tokens.spacingSm)
             .padding(.leading, tokens.spacingSm)
