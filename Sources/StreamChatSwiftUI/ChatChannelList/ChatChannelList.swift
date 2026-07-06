@@ -90,7 +90,6 @@ public struct ChannelList<Factory: ViewFactory>: View {
 
 /// LazyVStack displaying list of channels.
 public struct ChannelsLazyVStack<Factory: ViewFactory>: View {
-    @Injected(\.chatClient) private var chatClient
     @Injected(\.colors) private var colors
     @Injected(\.utils) private var utils
 
@@ -130,37 +129,25 @@ public struct ChannelsLazyVStack<Factory: ViewFactory>: View {
     }
 
     public var body: some View {
-        // `ChatChannel` is a large value type, so we iterate the array directly
-        // via `ForEach` (which holds the collection by reference and only
-        // materializes visible rows) instead of building an enumerated copy of
-        // every channel. The index needed for pagination is resolved through a
-        // lightweight id→index lookup that avoids both per-row linear scans and
-        // full channel copies.
         let indexLookup = channelIndexLookup
         let lastIndex = channels.count - 1
         return LazyVStack(spacing: 0) {
             ForEach(channels) { channel in
                 let channelId = channel.id
-                factory.makeChannelListItem(
-                    options: ChannelListItemOptions(
-                        channel: channel,
-                        channelName: name(for: channel),
-                        disabled: swipedChannelId == channelId,
-                        selectedChannel: $selectedChannel,
-                        swipedChannelId: $swipedChannelId,
-                        channelDestination: channelDestination,
-                        onItemTap: onItemTap,
-                        trailingSwipeRightButtonTapped: trailingSwipeRightButtonTapped,
-                        trailingSwipeLeftButtonTapped: trailingSwipeLeftButtonTapped,
-                        leadingSwipeButtonTapped: leadingSwipeButtonTapped
-                    )
+                ChannelListRowContainer(
+                    factory: factory,
+                    channel: channel,
+                    disabled: swipedChannelId == channelId,
+                    isSelected: selectedChannel?.channel.id == channelId,
+                    selectedChannel: $selectedChannel,
+                    swipedChannelId: $swipedChannelId,
+                    channelDestination: channelDestination,
+                    onItemTap: onItemTap,
+                    trailingSwipeRightButtonTapped: trailingSwipeRightButtonTapped,
+                    trailingSwipeLeftButtonTapped: trailingSwipeLeftButtonTapped,
+                    leadingSwipeButtonTapped: leadingSwipeButtonTapped
                 )
-                .background(factory.makeChannelListItemBackground(
-                    options: ChannelListItemBackgroundOptions(
-                        channel: channel,
-                        isSelected: selectedChannel?.channel.id == channelId
-                    )
-                ))
+                .equatable()
                 .onAppear {
                     if let index = indexLookup[channelId] {
                         onItemAppear(index)
@@ -191,8 +178,99 @@ public struct ChannelsLazyVStack<Factory: ViewFactory>: View {
         }
         return lookup
     }
+}
 
-    private func name(for channel: ChatChannel) -> String {
+/// Reference-counted wrapper so that copying a `ChannelListRowContainer`
+/// bumps a single refcount instead of the 30+ refcounts inside `ChatChannel`.
+final class ChannelBox: @unchecked Sendable {
+    let channel: ChatChannel
+    init(_ channel: ChatChannel) { self.channel = channel }
+}
+
+/// Renders a single channel list row and skips re-evaluating it when neither
+/// the channel content nor the row's selection/swipe state changed.
+///
+/// The channel comparison relies on `ChatChannel`'s `Equatable` implementation,
+/// mirroring the update semantics the UIKit SDK uses when diffing channel list
+/// cells. Without this gating, every published change in the channel list view
+/// model re-evaluates all materialized rows, which degrades scrolling and
+/// navigation performance as more pages are loaded.
+///
+/// `ChatChannel` is stored via `ChannelBox` to keep struct copies O(1).
+struct ChannelListRowContainer<Factory: ViewFactory>: View, Equatable {
+    @Injected(\.chatClient) private var chatClient
+    @Injected(\.utils) private var utils
+
+    let factory: Factory
+    private let channelBox: ChannelBox
+    let disabled: Bool
+    let isSelected: Bool
+    @Binding var selectedChannel: ChannelSelectionInfo?
+    @Binding var swipedChannelId: String?
+    let channelDestination: (@MainActor (ChannelSelectionInfo) -> Factory.ChannelDestination)?
+    let onItemTap: @MainActor (ChatChannel) -> Void
+    let trailingSwipeRightButtonTapped: @MainActor (ChatChannel) -> Void
+    let trailingSwipeLeftButtonTapped: @MainActor (ChatChannel) -> Void
+    let leadingSwipeButtonTapped: @MainActor (ChatChannel) -> Void
+
+    var channel: ChatChannel { channelBox.channel }
+
+    init(
+        factory: Factory,
+        channel: ChatChannel,
+        disabled: Bool,
+        isSelected: Bool,
+        selectedChannel: Binding<ChannelSelectionInfo?>,
+        swipedChannelId: Binding<String?>,
+        channelDestination: (@MainActor (ChannelSelectionInfo) -> Factory.ChannelDestination)?,
+        onItemTap: @escaping @MainActor (ChatChannel) -> Void,
+        trailingSwipeRightButtonTapped: @escaping @MainActor (ChatChannel) -> Void,
+        trailingSwipeLeftButtonTapped: @escaping @MainActor (ChatChannel) -> Void,
+        leadingSwipeButtonTapped: @escaping @MainActor (ChatChannel) -> Void
+    ) {
+        self.factory = factory
+        channelBox = ChannelBox(channel)
+        self.disabled = disabled
+        self.isSelected = isSelected
+        _selectedChannel = selectedChannel
+        _swipedChannelId = swipedChannelId
+        self.channelDestination = channelDestination
+        self.onItemTap = onItemTap
+        self.trailingSwipeRightButtonTapped = trailingSwipeRightButtonTapped
+        self.trailingSwipeLeftButtonTapped = trailingSwipeLeftButtonTapped
+        self.leadingSwipeButtonTapped = leadingSwipeButtonTapped
+    }
+
+    var body: some View {
+        factory.makeChannelListItem(
+            options: ChannelListItemOptions(
+                channel: channel,
+                channelName: channelName,
+                disabled: disabled,
+                selectedChannel: $selectedChannel,
+                swipedChannelId: $swipedChannelId,
+                channelDestination: channelDestination,
+                onItemTap: onItemTap,
+                trailingSwipeRightButtonTapped: trailingSwipeRightButtonTapped,
+                trailingSwipeLeftButtonTapped: trailingSwipeLeftButtonTapped,
+                leadingSwipeButtonTapped: leadingSwipeButtonTapped
+            )
+        )
+        .background(factory.makeChannelListItemBackground(
+            options: ChannelListItemBackgroundOptions(
+                channel: channel,
+                isSelected: isSelected
+            )
+        ))
+    }
+
+    nonisolated static func == (lhs: Self, rhs: Self) -> Bool {
+        lhs.disabled == rhs.disabled
+            && lhs.isSelected == rhs.isSelected
+            && lhs.channelBox.channel == rhs.channelBox.channel
+    }
+
+    private var channelName: String {
         utils.channelNameFormatter.format(
             channel: channel,
             forCurrentUserId: chatClient.currentUserId

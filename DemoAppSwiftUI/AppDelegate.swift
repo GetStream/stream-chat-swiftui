@@ -16,6 +16,11 @@ class AppDelegate: NSObject, UIApplicationDelegate {
         config.isLocalStorageEnabled = true
         config.applicationGroupIdentifier = applicationGroupIdentifier
 
+        // Trim the amount of nested data materialized per channel to keep the
+        // channel list's DTO-to-model conversion cheap on the background thread.
+        config.localCaching.chatChannel.lastActiveWatchersLimit = 5
+        config.localCaching.chatChannel.lastActiveMembersLimit = 10
+
         let client = ChatClient(config: config)
         return client
     }()
