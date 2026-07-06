@@ -10,6 +10,13 @@ import SwiftUI
 /// It contains the default presentation logic for the channel list item data.
 /// Subclass and override the `open` properties to customize what the channel
 /// list item displays.
+///
+/// Derived values that are expensive to compute (message preview formatting,
+/// timestamps, the accessibility label) are computed once per instance and
+/// cached. This is safe because the view model wraps an immutable channel
+/// snapshot; a new instance is created whenever the channel data changes.
+/// Overriding an `open` property in a subclass bypasses the corresponding
+/// cache entirely.
 @MainActor open class ChatChannelListItemViewModel {
     @Injected(\.utils) private var utils
     @Injected(\.chatClient) private var chatClient
@@ -34,10 +41,7 @@ import SwiftUI
 
     /// The formatted timestamp of the last message in the channel.
     open var timestampText: String {
-        if let lastMessageAt = channel.lastMessageAt {
-            return utils.messageTimestampFormatter.format(lastMessageAt)
-        }
-        return ""
+        cachedTimestampText
     }
 
     /// The number of unread messages in the channel.
@@ -82,10 +86,7 @@ import SwiftUI
 
     /// The users that have read the preview message.
     public var readUsers: [ChatUser] {
-        channel.readUsers(
-            currentUserId: chatClient.currentUserId,
-            message: previewMessage
-        )
+        cachedReadUsers
     }
 
     /// A boolean value indicating whether the read indicator should
@@ -108,25 +109,7 @@ import SwiftUI
     /// precedence: failed-to-send, typing, draft, deleted, then a regular
     /// message.
     public var preview: ChannelItemPreview {
-        if lastMessageFailedToSend {
-            return .failedToSend(.init())
-        }
-        if shouldShowTypingIndicator {
-            return .typing(.init(channel: channel))
-        }
-        if isDraftMessagesEnabled, let draftText = draftMessageText {
-            return .draft(.init(text: draftText))
-        }
-        if isPreviewMessageDeleted {
-            return .deleted(.init(isSentByCurrentUser: isPreviewMessageSentByCurrentUser))
-        }
-        return .message(
-            .init(
-                text: messagePreviewText,
-                authorName: messagePreviewAuthorName,
-                attachmentIcon: previewAttachmentIconImage
-            )
-        )
+        cachedPreview
     }
 
     /// The text shown in the regular message preview variant.
@@ -139,19 +122,14 @@ import SwiftUI
     /// the formatter is allowed to include its own author prefix where it
     /// makes sense, or falls back to the empty channel placeholder.
     open var messagePreviewText: String {
-        guard let previewMessage else { return L10n.Channel.Item.emptyMessages }
-        if messagePreviewAuthorName != nil {
-            return utils.messagePreviewFormatter.formatContent(for: previewMessage, in: channel)
-        }
-        return utils.messagePreviewFormatter.format(previewMessage, in: channel)
+        cachedMessagePreviewText
     }
 
     /// The formatted text of the pending draft message in the channel, or
     /// `nil` when no draft exists. Used by ``preview`` to render the `.draft`
     /// variant.
     open var draftMessageText: String? {
-        guard let draftMessage = channel.draftMessage else { return nil }
-        return utils.messagePreviewFormatter.formatContent(for: ChatMessage(draftMessage), in: channel)
+        cachedDraftMessageText
     }
 
     /// The author prefix shown before the message preview text. Returns
@@ -173,10 +151,7 @@ import SwiftUI
     /// The leading attachment glyph for the latest message's first
     /// attachment, or `nil` when the message has no attachments to preview.
     open var previewAttachmentIconImage: UIImage? {
-        guard let message = previewMessage else { return nil }
-        let resolver = MessageAttachmentPreviewResolver(message: message)
-        guard let previewIcon = resolver.previewIcon else { return nil }
-        return utils.messageAttachmentPreviewIconProvider.image(for: previewIcon)
+        cachedPreviewAttachmentIconImage
     }
 
     // MARK: - Accessibility
@@ -185,28 +160,7 @@ import SwiftUI
     /// a single element: name, conversation type, member count, unread state and
     /// a contextual summary of the latest activity (message, draft or deleted).
     open var accessibilityLabel: String {
-        var sentences: [String] = []
-
-        var header = [channelName]
-        if isDirectMessageChannel {
-            header.append(L10n.Channel.Item.Accessibility.directMessage)
-        } else {
-            header.append(L10n.Channel.Item.Accessibility.groupChat)
-            header.append(memberCountText)
-        }
-        sentences.append(header.joined(separator: ", "))
-
-        if isMuted {
-            sentences.append(L10n.Channel.Item.Accessibility.muted)
-        }
-
-        if hasUnread, unreadCount > 0 {
-            sentences.append(unreadText)
-        }
-
-        sentences.append(contentsOf: previewAccessibilitySentences)
-
-        return sentences.joined(separator: ". ")
+        cachedAccessibilityLabel
     }
 
     private var isDirectMessageChannel: Bool {
@@ -241,7 +195,7 @@ import SwiftUI
         let sender = previewMessage.isSentByCurrentUser
             ? L10n.Channel.Item.Accessibility.you
             : (previewMessage.author.name ?? previewMessage.author.id)
-        let preview = utils.messagePreviewFormatter.formatContent(for: previewMessage, in: channel)
+        let preview = cachedFormattedPreviewMessageContent ?? ""
         if showReadEvents {
             let status = readUsers.isEmpty
                 ? L10n.Channel.Item.Accessibility.sent
@@ -279,9 +233,101 @@ import SwiftUI
         utils.channelListConfig.channelItemMutedStyle
     }
 
-    private var previewMessage: ChatMessage? {
-        channel.latestMessages.first(where: { $0.type != .ephemeral })
+    private lazy var previewMessage: ChatMessage? = channel.latestMessages
+        .first(where: { $0.type != .ephemeral })
+
+    // MARK: - Cached derived values
+
+    //
+    // Rendering a single row reads several of the properties above, and many of
+    // them depend on the same expensive building blocks (the preview message
+    // lookup, the preview formatter, the timestamp formatter, localized string
+    // lookups). Since the channel snapshot is immutable, each value is computed
+    // at most once per instance. The lazy initializers call the `open`
+    // properties where relevant, so subclass overrides are still honored.
+
+    private lazy var cachedTimestampText: String = {
+        guard let lastMessageAt = channel.lastMessageAt else { return "" }
+        return utils.messageTimestampFormatter.format(lastMessageAt)
+    }()
+
+    private lazy var cachedReadUsers: [ChatUser] = channel.readUsers(
+        currentUserId: chatClient.currentUserId,
+        message: previewMessage
+    )
+
+    private lazy var cachedPreview: ChannelItemPreview = {
+        if lastMessageFailedToSend {
+            return .failedToSend(.init())
+        }
+        if shouldShowTypingIndicator {
+            return .typing(.init(channel: channel))
+        }
+        if isDraftMessagesEnabled, let draftText = draftMessageText {
+            return .draft(.init(text: draftText))
+        }
+        if isPreviewMessageDeleted {
+            return .deleted(.init(isSentByCurrentUser: isPreviewMessageSentByCurrentUser))
+        }
+        return .message(
+            .init(
+                text: messagePreviewText,
+                authorName: messagePreviewAuthorName,
+                attachmentIcon: previewAttachmentIconImage
+            )
+        )
+    }()
+
+    private lazy var cachedMessagePreviewText: String = {
+        guard let previewMessage else { return L10n.Channel.Item.emptyMessages }
+        if messagePreviewAuthorName != nil, let content = cachedFormattedPreviewMessageContent {
+            return content
+        }
+        return utils.messagePreviewFormatter.format(previewMessage, in: channel)
+    }()
+
+    private lazy var cachedDraftMessageText: String? = {
+        guard let draftMessage = channel.draftMessage else { return nil }
+        return utils.messagePreviewFormatter.formatContent(for: ChatMessage(draftMessage), in: channel)
+    }()
+
+    private lazy var cachedPreviewAttachmentIconImage: UIImage? = {
+        guard let message = previewMessage else { return nil }
+        let resolver = MessageAttachmentPreviewResolver(message: message)
+        guard let previewIcon = resolver.previewIcon else { return nil }
+        return utils.messageAttachmentPreviewIconProvider.image(for: previewIcon)
+    }()
+
+    /// The formatted content of the preview message, shared between the visible
+    /// message preview and the accessibility label so the formatter runs once.
+    private lazy var cachedFormattedPreviewMessageContent: String? = previewMessage.map { message in
+        utils.messagePreviewFormatter.formatContent(for: message, in: channel)
     }
+
+    private lazy var cachedAccessibilityLabel: String = {
+        var sentences: [String] = []
+
+        var header = [channelName]
+        if isDirectMessageChannel {
+            header.append(L10n.Channel.Item.Accessibility.directMessage)
+        } else {
+            header.append(L10n.Channel.Item.Accessibility.groupChat)
+            header.append(memberCountText)
+        }
+        sentences.append(header.joined(separator: ", "))
+
+        if isMuted {
+            sentences.append(L10n.Channel.Item.Accessibility.muted)
+        }
+
+        if hasUnread, unreadCount > 0 {
+            sentences.append(unreadText)
+        }
+
+        sentences.append(contentsOf: previewAccessibilitySentences)
+
+        return sentences.joined(separator: ". ")
+    }()
 
     private var lastMessageFailedToSend: Bool {
         previewMessage?.localState == .sendingFailed
