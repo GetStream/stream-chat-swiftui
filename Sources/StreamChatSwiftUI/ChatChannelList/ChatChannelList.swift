@@ -130,13 +130,22 @@ public struct ChannelsLazyVStack<Factory: ViewFactory>: View {
     }
 
     public var body: some View {
-        LazyVStack(spacing: 0) {
+        // `ChatChannel` is a large value type, so we iterate the array directly
+        // via `ForEach` (which holds the collection by reference and only
+        // materializes visible rows) instead of building an enumerated copy of
+        // every channel. The index needed for pagination is resolved through a
+        // lightweight id→index lookup that avoids both per-row linear scans and
+        // full channel copies.
+        let indexLookup = channelIndexLookup
+        let lastIndex = channels.count - 1
+        return LazyVStack(spacing: 0) {
             ForEach(channels) { channel in
+                let channelId = channel.id
                 factory.makeChannelListItem(
                     options: ChannelListItemOptions(
                         channel: channel,
                         channelName: name(for: channel),
-                        disabled: swipedChannelId == channel.id,
+                        disabled: swipedChannelId == channelId,
                         selectedChannel: $selectedChannel,
                         swipedChannelId: $swipedChannelId,
                         channelDestination: channelDestination,
@@ -149,18 +158,16 @@ public struct ChannelsLazyVStack<Factory: ViewFactory>: View {
                 .background(factory.makeChannelListItemBackground(
                     options: ChannelListItemBackgroundOptions(
                         channel: channel,
-                        isSelected: selectedChannel?.channel.id == channel.id
+                        isSelected: selectedChannel?.channel.id == channelId
                     )
                 ))
                 .onAppear {
-                    if let index = channels.firstIndex(where: { chatChannel in
-                        chatChannel.id == channel.id
-                    }) {
+                    if let index = indexLookup[channelId] {
                         onItemAppear(index)
                     }
                 }
 
-                let isLastItem = channels.last?.cid == channel.cid
+                let isLastItem = indexLookup[channelId] == lastIndex
                 let shouldRenderLastItemDivider = utils.channelListConfig.showChannelListDividerOnLastItem
                 if !isLastItem || (isLastItem && shouldRenderLastItemDivider) {
                     factory.makeChannelListDividerItem(options: ChannelListDividerItemOptions())
@@ -171,7 +178,20 @@ public struct ChannelsLazyVStack<Factory: ViewFactory>: View {
         }
         .modifier(factory.styles.makeChannelListModifier(options: ChannelListModifierOptions()))
     }
-    
+
+    /// A map from channel id to its index in ``channels``.
+    ///
+    /// Built once per body evaluation so a row's `onAppear` can resolve its
+    /// index in O(1) without either scanning the array (O(n) per row) or
+    /// copying the heavy `ChatChannel` values into an enumerated array.
+    private var channelIndexLookup: [String: Int] {
+        var lookup = [String: Int](minimumCapacity: channels.count)
+        for index in channels.indices {
+            lookup[channels[index].id] = index
+        }
+        return lookup
+    }
+
     private func name(for channel: ChatChannel) -> String {
         utils.channelNameFormatter.format(
             channel: channel,
