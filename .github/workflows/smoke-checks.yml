@@ -62,6 +62,9 @@ jobs:
   automated-code-review:
     name: Automated Code Review
     runs-on: macos-14
+    permissions:
+      contents: read
+      pull-requests: write
     needs: guard
     if: ${{ github.event.inputs.record_snapshots != 'true' }}
     env:
