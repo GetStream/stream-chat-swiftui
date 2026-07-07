@@ -205,22 +205,6 @@ import SwiftUI
         return [L10n.Channel.Item.Accessibility.lastMessage(sender, timestampText, preview)]
     }
 
-    // MARK: - Equatable
-
-    /// Determines whether two view model instances represent the same rendered content.
-    ///
-    /// Used via the `Equatable` conformance so SwiftUI (through `.equatable()`) can skip
-    /// re-rendering a channel list item when nothing relevant to its content has changed,
-    /// which meaningfully improves scroll performance for large channel lists.
-    ///
-    /// The default implementation compares the channel and the display name, which is what
-    /// the default rendering depends on. If your subclass overrides properties that derive
-    /// from additional state, override this method to also compare that state, otherwise
-    /// changes to it may not trigger a re-render.
-    open func isEqual(to other: ChatChannelListItemViewModel) -> Bool {
-        channel == other.channel && channelName == other.channelName
-    }
-
     // MARK: - Private
 
     private let providedChannelName: String
@@ -349,11 +333,5 @@ import SwiftUI
 
     private var isPreviewMessageSentByCurrentUser: Bool {
         previewMessage?.isSentByCurrentUser == true
-    }
-}
-
-extension ChatChannelListItemViewModel: @MainActor Equatable {
-    public static func == (lhs: ChatChannelListItemViewModel, rhs: ChatChannelListItemViewModel) -> Bool {
-        lhs.isEqual(to: rhs)
     }
 }

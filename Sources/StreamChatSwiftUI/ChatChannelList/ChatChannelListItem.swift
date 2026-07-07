@@ -110,16 +110,6 @@ public struct ChatChannelListItem<Factory: ViewFactory>: View {
     }
 }
 
-/// The `onItemTap` closure is intentionally excluded from the comparison: it is recreated on
-/// every render but is behaviorally stable (it always forwards to the same selection logic), so
-/// including it would defeat the purpose of this conformance, which is letting `.equatable()`
-/// skip re-rendering a row when nothing visible about it has changed.
-extension ChatChannelListItem: @MainActor Equatable {
-    public static func == (lhs: ChatChannelListItem<Factory>, rhs: ChatChannelListItem<Factory>) -> Bool {
-        lhs.viewModel == rhs.viewModel && lhs.isSelected == rhs.isSelected && lhs.disabled == rhs.disabled
-    }
-}
-
 /// The title view used in the channel list item.
 ///
 /// Renders the channel name and, when `showInlineMutedIcon` is `true`,

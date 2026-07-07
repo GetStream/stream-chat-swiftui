@@ -63,11 +63,7 @@ extension ViewFactory {
                 isSelected: options.selectedChannel.wrappedValue?.channel.cid == options.channel.cid,
                 disabled: options.disabled,
                 onItemTap: options.onItemTap
-            )
-            // Lets SwiftUI skip re-rendering the row's content when the channel,
-            // display name, selection and disabled state haven't changed, which
-            // avoids unnecessary work while scrolling large channel lists.
-            .equatable(),
+            ),
             channelDestination: options.channelDestination,
             selectedChannel: options.selectedChannel,
             handleTabBarVisibility: utils.messageListConfig.handleTabBarVisibility
