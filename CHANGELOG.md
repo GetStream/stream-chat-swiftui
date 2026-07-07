@@ -50,6 +50,12 @@ _July 03, 2026_
 - `message.polls.accessibility.*` — VoiceOver labels for polls
 - `channel.item.accessibility.*` — VoiceOver labels for channel list items
 
+# [4.101.2](https://github.com/GetStream/stream-chat-swiftui/releases/tag/4.101.2)
+_July 03, 2026_
+
+### 🐞 Fixed
+- Fix the composer attachment picker collapsing the paperclip icon into an arrow while typing when only a single picker item is available [#1496](https://github.com/GetStream/stream-chat-swiftui/pull/1496)
+
 # [5.5.1](https://github.com/GetStream/stream-chat-swiftui/releases/tag/5.5.1)
 _June 11, 2026_
 
