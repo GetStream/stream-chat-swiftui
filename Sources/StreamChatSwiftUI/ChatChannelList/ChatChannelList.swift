@@ -180,13 +180,6 @@ public struct ChannelsLazyVStack<Factory: ViewFactory>: View {
     }
 }
 
-/// Reference-counted wrapper so that copying a `ChannelListRowContainer`
-/// bumps a single refcount instead of the 30+ refcounts inside `ChatChannel`.
-final class ChannelBox: @unchecked Sendable {
-    let channel: ChatChannel
-    init(_ channel: ChatChannel) { self.channel = channel }
-}
-
 /// Renders a single channel list row and skips re-evaluating it when neither
 /// the channel content nor the row's selection/swipe state changed.
 ///
@@ -195,14 +188,12 @@ final class ChannelBox: @unchecked Sendable {
 /// cells. Without this gating, every published change in the channel list view
 /// model re-evaluates all materialized rows, which degrades scrolling and
 /// navigation performance as more pages are loaded.
-///
-/// `ChatChannel` is stored via `ChannelBox` to keep struct copies O(1).
 struct ChannelListRowContainer<Factory: ViewFactory>: View, Equatable {
     @Injected(\.chatClient) private var chatClient
     @Injected(\.utils) private var utils
 
     let factory: Factory
-    private let channelBox: ChannelBox
+    let channel: ChatChannel
     let disabled: Bool
     let isSelected: Bool
     @Binding var selectedChannel: ChannelSelectionInfo?
@@ -212,8 +203,6 @@ struct ChannelListRowContainer<Factory: ViewFactory>: View, Equatable {
     let trailingSwipeRightButtonTapped: @MainActor (ChatChannel) -> Void
     let trailingSwipeLeftButtonTapped: @MainActor (ChatChannel) -> Void
     let leadingSwipeButtonTapped: @MainActor (ChatChannel) -> Void
-
-    var channel: ChatChannel { channelBox.channel }
 
     init(
         factory: Factory,
@@ -229,7 +218,7 @@ struct ChannelListRowContainer<Factory: ViewFactory>: View, Equatable {
         leadingSwipeButtonTapped: @escaping @MainActor (ChatChannel) -> Void
     ) {
         self.factory = factory
-        channelBox = ChannelBox(channel)
+        self.channel = channel
         self.disabled = disabled
         self.isSelected = isSelected
         _selectedChannel = selectedChannel
@@ -267,7 +256,7 @@ struct ChannelListRowContainer<Factory: ViewFactory>: View, Equatable {
     nonisolated static func == (lhs: Self, rhs: Self) -> Bool {
         lhs.disabled == rhs.disabled
             && lhs.isSelected == rhs.isSelected
-            && lhs.channelBox.channel == rhs.channelBox.channel
+            && lhs.channel == rhs.channel
     }
 
     private var channelName: String {
