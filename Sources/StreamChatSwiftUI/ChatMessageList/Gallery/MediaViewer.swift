@@ -359,14 +359,13 @@ struct StreamVideoPlayer: View {
             policy: utils.messageListConfig.videoAttachmentCachingPolicy
         )
         Task { @MainActor in
-            let result = await loader.load()
-            guard isVisible else { return }
-            switch result {
-            case let .success(player):
+            do {
+                let player = try await loader.load()
+                guard isVisible else { return }
                 avPlayer = player
                 try? AVAudioSession.sharedInstance().setCategory(.playback, options: [])
                 avPlayer?.play()
-            case let .failure(error):
+            } catch {
                 self.error = error
             }
         }
@@ -398,24 +397,24 @@ extension StreamVideoPlayer {
             self.isPlayable = isPlayable
         }
 
-        func load() async -> Result<AVPlayer, Error> {
+        func load() async throws -> AVPlayer {
             let canCache = policy.maxCacheSize > 0 && !url.isFileURL && isContentTypeAllowed(url)
             let key = url.path
             let fileExtension = url.pathExtension.isEmpty ? "mp4" : url.pathExtension
 
             if canCache, let localURL = await cache.cachedFileURL(forKey: key, fileExtension: fileExtension) {
                 if await isPlayable(localURL) {
-                    return await loadPlayer(from: MediaLoaderVideoAsset(asset: AVURLAsset(url: localURL)))
+                    return try await loadPlayer(from: MediaLoaderVideoAsset(asset: AVURLAsset(url: localURL)))
                 }
                 log.debug("Cached video is not playable; evicting and streaming from remote")
                 await cache.remove(forKey: key, fileExtension: fileExtension)
-                return await loadFromRemote()
+                return try await loadFromRemote()
             }
 
             if canCache {
                 prefetchToCache(key: key, fileExtension: fileExtension)
             }
-            return await loadFromRemote()
+            return try await loadFromRemote()
         }
 
         private func isContentTypeAllowed(_ url: URL) -> Bool {
@@ -434,18 +433,21 @@ extension StreamVideoPlayer {
             }
         }
 
-        private func loadFromRemote() async -> Result<AVPlayer, Error> {
-            do {
-                let videoAsset = try await mediaLoader.loadVideoAsset(at: url)
-                return await loadPlayer(from: videoAsset)
-            } catch {
-                return .failure(error)
-            }
+        private func loadFromRemote() async throws -> AVPlayer {
+            let videoAsset = try await mediaLoader.loadVideoAsset(at: url)
+            return try await loadPlayer(from: videoAsset)
         }
 
-        private func loadPlayer(from videoAsset: MediaLoaderVideoAsset) async -> Result<AVPlayer, Error> {
-            await withCheckedContinuation { continuation in
-                avPlayerProvider.player(from: videoAsset) { continuation.resume(returning: $0) }
+        private func loadPlayer(from videoAsset: MediaLoaderVideoAsset) async throws -> AVPlayer {
+            try await withCheckedThrowingContinuation { continuation in
+                avPlayerProvider.player(from: videoAsset) { result in
+                    switch result {
+                    case .success(let success):
+                        continuation.resume(returning: success)
+                    case .failure(let failure):
+                        continuation.resume(throwing: failure)
+                    }
+                }
             }
         }
 

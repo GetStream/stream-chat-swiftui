@@ -40,9 +40,9 @@ final class StreamVideoPlayer_AVPlayerLoader_Tests: XCTestCase {
         let provider = AVPlayerProviderSpy(result: .success(player))
         let loader = makeLoader(url: url, mediaLoader: mediaLoader, avPlayerProvider: provider, policy: .disabled)
 
-        let result = await load(loader)
+        let result = try await load(loader)
 
-        XCTAssertTrue(try XCTUnwrap(result.get()) === player)
+        XCTAssertTrue(result === player)
         XCTAssertEqual(mediaLoader.loadedVideoAssetURLs, [url])
         XCTAssertEqual(mediaLoader.loadedFileRequestURLs, [])
         XCTAssertEqual(provider.receivedAssets.count, 1)
@@ -60,7 +60,7 @@ final class StreamVideoPlayer_AVPlayerLoader_Tests: XCTestCase {
             let provider = AVPlayerProviderSpy(result: .success(AVPlayer()))
             let loader = makeLoader(url: url, mediaLoader: mediaLoader, avPlayerProvider: provider)
 
-            _ = await load(loader)
+            _ = try await load(loader)
 
             XCTAssertEqual(mediaLoader.loadedVideoAssetURLs, [url])
             XCTAssertEqual(mediaLoader.loadedFileRequestURLs, [])
@@ -78,7 +78,7 @@ final class StreamVideoPlayer_AVPlayerLoader_Tests: XCTestCase {
         let provider = AVPlayerProviderSpy(result: .success(AVPlayer()))
         let loader = makeLoader(url: url, mediaLoader: mediaLoader, avPlayerProvider: provider)
 
-        _ = await load(loader)
+        _ = try await load(loader)
 
         XCTAssertEqual(mediaLoader.loadedVideoAssetURLs, [url])
         XCTAssertEqual(mediaLoader.loadedFileRequestURLs, [url])
@@ -102,7 +102,7 @@ final class StreamVideoPlayer_AVPlayerLoader_Tests: XCTestCase {
             isPlayable: { _ in false }
         )
 
-        _ = await load(loader)
+        _ = try await load(loader)
 
         let evictedURL = await cache.cachedFileURL(forKey: url.path, fileExtension: "mp4")
         XCTAssertNil(evictedURL)
@@ -118,10 +118,8 @@ final class StreamVideoPlayer_AVPlayerLoader_Tests: XCTestCase {
         let provider = AVPlayerProviderSpy(result: .failure(expectedError))
         let loader = makeLoader(url: url, mediaLoader: mediaLoader, avPlayerProvider: provider, policy: .disabled)
 
-        let result = await load(loader)
-
         do {
-            _ = try result.get()
+            _ = try await load(loader)
             XCTFail("Expected player provider to fail")
         } catch {
             XCTAssertTrue(error is LoaderTestError)
@@ -148,9 +146,8 @@ final class StreamVideoPlayer_AVPlayerLoader_Tests: XCTestCase {
         )
     }
 
-    @MainActor
-    private func load(_ loader: StreamVideoPlayer.AVPlayerLoader) async -> Result<AVPlayer, Error> {
-        await loader.load()
+    @MainActor private func load(_ loader: StreamVideoPlayer.AVPlayerLoader) async throws -> AVPlayer {
+        try await loader.load()
     }
 
     private func makeCache() -> LRUDiskCache {
