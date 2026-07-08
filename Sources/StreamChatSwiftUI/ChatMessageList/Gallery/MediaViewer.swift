@@ -347,6 +347,8 @@ struct StreamVideoPlayer: View {
         .onDisappear {
             isVisible = false
             avPlayer?.pause()
+            avPlayer?.currentItem?.asset.cancelLoading()
+            avPlayer = nil
         }
     }
 
@@ -377,7 +379,7 @@ extension StreamVideoPlayer {
         private let url: URL
         private let mediaLoader: MediaLoader
         private let avPlayerProvider: AVPlayerProvider
-        private let cache: LRUDiskCache
+        private let cache: StreamVideoCache
         private let policy: VideoAttachmentCachingPolicy
         private let isPlayable: @Sendable (URL) async -> Bool
 
@@ -385,7 +387,7 @@ extension StreamVideoPlayer {
             url: URL,
             mediaLoader: MediaLoader,
             avPlayerProvider: AVPlayerProvider,
-            cache: LRUDiskCache,
+            cache: StreamVideoCache,
             policy: VideoAttachmentCachingPolicy,
             isPlayable: @escaping @Sendable (URL) async -> Bool = AVPlayerLoader.isPlayable
         ) {
@@ -402,19 +404,33 @@ extension StreamVideoPlayer {
             let key = url.path
             let fileExtension = url.pathExtension.isEmpty ? "mp4" : url.pathExtension
 
-            if canCache, let localURL = await cache.cachedFileURL(forKey: key, fileExtension: fileExtension) {
+            guard canCache else {
+                return try await loadFromRemote()
+            }
+
+            if let localURL = await cache.completedFileURL(forKey: key, fileExtension: fileExtension) {
                 if await isPlayable(localURL) {
                     return try await loadPlayer(from: MediaLoaderVideoAsset(asset: AVURLAsset(url: localURL)))
                 }
                 log.debug("Cached video is not playable; evicting and streaming from remote")
                 await cache.remove(forKey: key, fileExtension: fileExtension)
+            }
+
+            let fileRequest: MediaLoaderFileRequest
+            do {
+                fileRequest = try await mediaLoader.loadFileRequest(for: url)
+            } catch {
+                log.debug("Video cache file request failed; streaming without caching: \(error)")
                 return try await loadFromRemote()
             }
 
-            if canCache {
-                prefetchToCache(key: key, fileExtension: fileExtension)
-            }
-            return try await loadFromRemote()
+            let asset = StreamVideoAsset(
+                originalURL: url,
+                origin: fileRequest.urlRequest,
+                fileExtension: fileExtension,
+                cache: cache
+            )
+            return try await loadPlayer(from: MediaLoaderVideoAsset(asset: asset))
         }
 
         private func isContentTypeAllowed(_ url: URL) -> Bool {
@@ -440,49 +456,8 @@ extension StreamVideoPlayer {
 
         private func loadPlayer(from videoAsset: MediaLoaderVideoAsset) async throws -> AVPlayer {
             try await withCheckedThrowingContinuation { continuation in
-                avPlayerProvider.player(from: videoAsset) { result in
-                    switch result {
-                    case .success(let success):
-                        continuation.resume(returning: success)
-                    case .failure(let failure):
-                        continuation.resume(throwing: failure)
-                    }
-                }
-            }
-        }
-
-        private func prefetchToCache(key: String, fileExtension: String) {
-            mediaLoader.loadFileRequest(for: url) { result in
-                switch result {
-                case let .success(fileRequest):
-                    let cache = self.cache
-                    URLSession.shared.downloadTask(with: fileRequest.urlRequest) { tempURL, response, error in
-                        if let error {
-                            log.debug("Video cache prefetch download failed: \(error)")
-                            return
-                        }
-                        guard let tempURL,
-                              let http = response as? HTTPURLResponse,
-                              (200..<300).contains(http.statusCode) else {
-                            log.debug("Video cache prefetch received a non-success response")
-                            return
-                        }
-                        let stableURL = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
-                        do {
-                            try FileManager.default.moveItem(at: tempURL, to: stableURL)
-                        } catch {
-                            log.debug("Video cache prefetch could not move the downloaded file: \(error)")
-                            return
-                        }
-                        Task {
-                            if await cache.store(fileAt: stableURL, forKey: key, fileExtension: fileExtension) == nil {
-                                log.debug("Video cache prefetch could not store the downloaded file")
-                                try? FileManager.default.removeItem(at: stableURL)
-                            }
-                        }
-                    }.resume()
-                case let .failure(error):
-                    log.debug("Video cache prefetch file request failed: \(error)")
+                avPlayerProvider.player(from: videoAsset) {
+                    continuation.resume(with: $0)
                 }
             }
         }

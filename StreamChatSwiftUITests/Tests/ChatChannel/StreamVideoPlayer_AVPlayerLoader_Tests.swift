@@ -33,7 +33,7 @@ final class StreamVideoPlayer_AVPlayerLoader_Tests: XCTestCase {
     }
 
     @MainActor
-    func test_load_whenCacheDisabled_streamsRemoteAndSkipsPrefetch() async throws {
+    func test_load_whenCacheDisabled_streamsRemoteAndSkipsFileRequest() async throws {
         let url = URL(string: "https://example.com/video.mp4")!
         let mediaLoader = MediaLoaderSpy(videoAssetResult: .success(MediaLoaderVideoAsset(asset: AVURLAsset(url: url))))
         let player = AVPlayer()
@@ -49,7 +49,7 @@ final class StreamVideoPlayer_AVPlayerLoader_Tests: XCTestCase {
     }
 
     @MainActor
-    func test_load_whenURLIsNotCacheable_streamsRemoteAndSkipsPrefetch() async throws {
+    func test_load_whenURLIsNotCacheable_streamsRemoteAndSkipsFileRequest() async throws {
         let urls = [
             URL(fileURLWithPath: "/tmp/local-upload.mov"),
             URL(string: "https://example.com/video.m3u8")!
@@ -69,7 +69,47 @@ final class StreamVideoPlayer_AVPlayerLoader_Tests: XCTestCase {
     }
 
     @MainActor
-    func test_load_whenCacheMiss_streamsRemoteAndRequestsPrefetch() async throws {
+    func test_load_whenCachedFileIsPlayable_playsLocalFileAndSkipsRemoteLoading() async throws {
+        let url = URL(string: "https://example.com/video.mp4")!
+        let cache = makeCache()
+        let localURL = try await storeCachedFile(in: cache, for: url)
+        let mediaLoader = MediaLoaderSpy()
+        let provider = AVPlayerProviderSpy(result: .success(AVPlayer()))
+        let loader = makeLoader(
+            url: url,
+            mediaLoader: mediaLoader,
+            avPlayerProvider: provider,
+            cache: cache
+        )
+
+        _ = try await load(loader)
+
+        XCTAssertEqual(mediaLoader.loadedVideoAssetURLs, [])
+        XCTAssertEqual(mediaLoader.loadedFileRequestURLs, [])
+        XCTAssertEqual(provider.receivedAssets.count, 1)
+        XCTAssertEqual((provider.receivedAssets.first?.asset as? AVURLAsset)?.url, localURL)
+    }
+
+    @MainActor
+    func test_load_whenCacheMiss_streamsThroughCachingAssetAndSkipsRemoteVideoAsset() async throws {
+        let url = URL(string: "https://example.com/video.mp4")!
+        let mediaLoader = MediaLoaderSpy(
+            videoAssetResult: .success(MediaLoaderVideoAsset(asset: AVURLAsset(url: url))),
+            fileRequestResult: .success(MediaLoaderFileRequest(urlRequest: URLRequest(url: url)))
+        )
+        let provider = AVPlayerProviderSpy(result: .success(AVPlayer()))
+        let loader = makeLoader(url: url, mediaLoader: mediaLoader, avPlayerProvider: provider)
+
+        _ = try await load(loader)
+
+        XCTAssertEqual(mediaLoader.loadedVideoAssetURLs, [])
+        XCTAssertEqual(mediaLoader.loadedFileRequestURLs, [url])
+        XCTAssertEqual(provider.receivedAssets.count, 1)
+        XCTAssertEqual((provider.receivedAssets.first?.asset as? AVURLAsset)?.url.scheme, StreamVideoAsset.scheme)
+    }
+
+    @MainActor
+    func test_load_whenFileRequestFails_streamsRemoteWithoutCaching() async throws {
         let url = URL(string: "https://example.com/video.mp4")!
         let mediaLoader = MediaLoaderSpy(
             videoAssetResult: .success(MediaLoaderVideoAsset(asset: AVURLAsset(url: url))),
@@ -83,16 +123,43 @@ final class StreamVideoPlayer_AVPlayerLoader_Tests: XCTestCase {
         XCTAssertEqual(mediaLoader.loadedVideoAssetURLs, [url])
         XCTAssertEqual(mediaLoader.loadedFileRequestURLs, [url])
         XCTAssertEqual(provider.receivedAssets.count, 1)
+        XCTAssertEqual((provider.receivedAssets.first?.asset as? AVURLAsset)?.url, url)
     }
 
     @MainActor
-    func test_load_whenCachedFileIsNotPlayable_evictsCacheAndStreamsRemote() async throws {
+    func test_load_whenCachingAssetPlayerProviderFails_doesNotRetryRemotePlayback() async throws {
+        let url = URL(string: "https://example.com/video.mp4")!
+        let expectedError = LoaderTestError()
+        let mediaLoader = MediaLoaderSpy(
+            videoAssetResult: .success(MediaLoaderVideoAsset(asset: AVURLAsset(url: url))),
+            fileRequestResult: .success(MediaLoaderFileRequest(urlRequest: URLRequest(url: url)))
+        )
+        let provider = AVPlayerProviderSpy(result: .failure(expectedError))
+        let loader = makeLoader(url: url, mediaLoader: mediaLoader, avPlayerProvider: provider)
+
+        do {
+            _ = try await load(loader)
+            XCTFail("Expected player provider to fail")
+        } catch {
+            XCTAssertTrue(error is LoaderTestError)
+        }
+        XCTAssertEqual(mediaLoader.loadedVideoAssetURLs, [])
+        XCTAssertEqual(mediaLoader.loadedFileRequestURLs, [url])
+        XCTAssertEqual(provider.receivedAssets.count, 1)
+        XCTAssertEqual((provider.receivedAssets.first?.asset as? AVURLAsset)?.url.scheme, StreamVideoAsset.scheme)
+    }
+
+    @MainActor
+    func test_load_whenCachedFileIsNotPlayable_evictsCacheAndStreamsThroughCachingAsset() async throws {
         let url = URL(string: "https://example.com/video.mp4")!
         let cache = makeCache()
-        _ = await cache.store(fileAt: try makeTempFile(byteCount: 100), forKey: url.path, fileExtension: "mp4")
-        let storedURL = await cache.cachedFileURL(forKey: url.path, fileExtension: "mp4")
+        _ = try await storeCachedFile(in: cache, for: url)
+        let storedURL = await cache.completedFileURL(forKey: url.path, fileExtension: "mp4")
         XCTAssertNotNil(storedURL)
-        let mediaLoader = MediaLoaderSpy(videoAssetResult: .success(MediaLoaderVideoAsset(asset: AVURLAsset(url: url))))
+        let mediaLoader = MediaLoaderSpy(
+            videoAssetResult: .success(MediaLoaderVideoAsset(asset: AVURLAsset(url: url))),
+            fileRequestResult: .success(MediaLoaderFileRequest(urlRequest: URLRequest(url: url)))
+        )
         let provider = AVPlayerProviderSpy(result: .success(AVPlayer()))
         let loader = makeLoader(
             url: url,
@@ -104,10 +171,12 @@ final class StreamVideoPlayer_AVPlayerLoader_Tests: XCTestCase {
 
         _ = try await load(loader)
 
-        let evictedURL = await cache.cachedFileURL(forKey: url.path, fileExtension: "mp4")
+        let evictedURL = await cache.completedFileURL(forKey: url.path, fileExtension: "mp4")
         XCTAssertNil(evictedURL)
-        XCTAssertEqual(mediaLoader.loadedVideoAssetURLs, [url])
+        XCTAssertEqual(mediaLoader.loadedVideoAssetURLs, [])
+        XCTAssertEqual(mediaLoader.loadedFileRequestURLs, [url])
         XCTAssertEqual(provider.receivedAssets.count, 1)
+        XCTAssertEqual((provider.receivedAssets.first?.asset as? AVURLAsset)?.url.scheme, StreamVideoAsset.scheme)
     }
 
     @MainActor
@@ -132,7 +201,7 @@ final class StreamVideoPlayer_AVPlayerLoader_Tests: XCTestCase {
         url: URL,
         mediaLoader: MediaLoaderSpy = MediaLoaderSpy(),
         avPlayerProvider: AVPlayerProviderSpy = AVPlayerProviderSpy(),
-        cache: LRUDiskCache? = nil,
+        cache: StreamVideoCache? = nil,
         policy: VideoAttachmentCachingPolicy = VideoAttachmentCachingPolicy(maxCacheSize: 1_000_000),
         isPlayable: @escaping @Sendable (URL) async -> Bool = { _ in true }
     ) -> StreamVideoPlayer.AVPlayerLoader {
@@ -150,8 +219,17 @@ final class StreamVideoPlayer_AVPlayerLoader_Tests: XCTestCase {
         try await loader.load()
     }
 
-    private func makeCache() -> LRUDiskCache {
-        LRUDiskCache(directory: cacheDirectory, maxSizeInBytes: 1_000_000)
+    private func makeCache() -> StreamVideoCache {
+        StreamVideoCache(directory: cacheDirectory, maxSizeInBytes: 1_000_000)
+    }
+
+    private func storeCachedFile(in cache: StreamVideoCache, for url: URL) async throws -> URL {
+        let storedURL = await cache.storeCompletedFile(
+            at: try makeTempFile(byteCount: 100),
+            forKey: url.path,
+            fileExtension: "mp4"
+        )
+        return try XCTUnwrap(storedURL)
     }
 
     private func makeTempFile(byteCount: Int) throws -> URL {
