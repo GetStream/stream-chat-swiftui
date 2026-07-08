@@ -3,6 +3,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 # Upcoming
 
+### ⚡️ Performance
+- Fix the channel list rebuilding on every scroll tick after returning from a channel [#1525](https://github.com/GetStream/stream-chat-swiftui/pull/1525)
+
 ### 🔄 Changed
 
 # [5.6.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/5.6.0)
