@@ -291,82 +291,63 @@ import SwiftUI
         utils.audioPlayer.subscribe(self)
     }
 
-    /// Appends the picked files to the composer, adding images and videos as inline media.
+    /// Appends the file to the attachments in the composer input view.
+    ///
+    /// Images and videos are added as media assets (with an inline thumbnail), the same
+    /// way the camera and Photos pickers add them, so they render inline in the composer.
+    /// Other files (and media that can't be read) are added as regular file attachments.
     public func addFileURLs(_ urls: [URL]) {
-        Task { [weak self] in
-            for url in urls {
-                guard let self, self.canAddAttachment(with: url) else { continue }
-                let mediaAsset = await Self.mediaAsset(fromPickedFileURL: url)
-                // Re-check after the suspending build so concurrent adds can't exceed the limit.
-                guard self.canAddAdditionalAttachments else { continue }
-                self.composerAssets.append(mediaAsset.map { .addedAsset($0) } ?? .addedFile(url))
-            }
+        for url in urls {
+            guard canAddAttachment(with: url) else { continue }
+            composerAssets.append(Self.composerAsset(fromPickedFileURL: url))
         }
     }
 
-    // `nonisolated` so the file copy and thumbnail extraction run off the main actor.
-    private nonisolated static func mediaAsset(fromPickedFileURL url: URL) async -> AddedAsset? {
-        let attachmentType = AttachmentType(fileExtension: url.pathExtension)
-        guard attachmentType == .image || attachmentType == .video else { return nil }
+    /// Builds a media asset for an image or video picked from the Files/iCloud picker,
+    /// mirroring `ImagePickerCoordinator`'s handling of camera-captured photos/videos.
+    /// Falls back to a generic file attachment for other files, or if the media can't be
+    /// read (e.g. a corrupted or not-yet-downloaded iCloud file); `MessageAttachmentsConverter`
+    /// still resolves the correct attachment type from the file extension when sending it.
+    private static func composerAsset(fromPickedFileURL url: URL) -> ComposerAsset {
+        _ = url.startAccessingSecurityScopedResource()
 
-        // Copy to an app-owned file so upload no longer depends on the security-scoped URL.
-        let didStartAccessing = url.startAccessingSecurityScopedResource()
-        defer { if didStartAccessing { url.stopAccessingSecurityScopedResource() } }
-        guard let localURL = try? copyToTemporaryFile(from: url) else { return nil }
-
-        switch attachmentType {
+        switch AttachmentType(fileExtension: url.pathExtension) {
         case .image:
-            guard let data = try? Data(contentsOf: localURL), let image = UIImage(data: data) else {
-                try? FileManager.default.removeItem(at: localURL)
-                return nil
+            if let data = try? Data(contentsOf: url), let image = UIImage(data: data) {
+                let scale = image.scale
+                return .addedAsset(AddedAsset(
+                    image: image,
+                    id: UUID().uuidString,
+                    url: url,
+                    type: .image,
+                    originalWidth: Double(image.size.width * scale),
+                    originalHeight: Double(image.size.height * scale)
+                ))
             }
-            let scale = image.scale
-            return AddedAsset(
-                image: image,
-                id: UUID().uuidString,
-                url: localURL,
-                type: .image,
-                originalWidth: Double(image.size.width * scale),
-                originalHeight: Double(image.size.height * scale)
-            )
         case .video:
-            let asset = AVURLAsset(url: localURL, options: nil)
+            let asset = AVURLAsset(url: url, options: nil)
             let imageGenerator = AVAssetImageGenerator(asset: asset)
             imageGenerator.appliesPreferredTrackTransform = true
-            guard let cgImage = try? imageGenerator.copyCGImage(
+            if let cgImage = try? imageGenerator.copyCGImage(
                 at: CMTimeMake(value: 0, timescale: 1),
                 actualTime: nil
-            ) else {
-                try? FileManager.default.removeItem(at: localURL)
-                return nil
+            ) {
+                let duration = CMTimeGetSeconds(asset.duration)
+                let naturalSize = asset.tracks(withMediaType: .video).first?.naturalSize ?? .zero
+                return .addedAsset(AddedAsset(
+                    image: UIImage(cgImage: cgImage),
+                    id: UUID().uuidString,
+                    url: url,
+                    type: .video,
+                    originalWidth: Double(naturalSize.width),
+                    originalHeight: Double(naturalSize.height),
+                    duration: duration.isFinite ? duration : nil
+                ))
             }
-            let duration = CMTimeGetSeconds(asset.duration)
-            // Preferred transform, so portrait videos report displayed (not raw, swapped) size.
-            var displaySize = CGSize.zero
-            if let track = asset.tracks(withMediaType: .video).first {
-                let transformed = track.naturalSize.applying(track.preferredTransform)
-                displaySize = CGSize(width: abs(transformed.width), height: abs(transformed.height))
-            }
-            return AddedAsset(
-                image: UIImage(cgImage: cgImage),
-                id: UUID().uuidString,
-                url: localURL,
-                type: .video,
-                originalWidth: Double(displaySize.width),
-                originalHeight: Double(displaySize.height),
-                duration: duration.isFinite ? duration : nil
-            )
         default:
-            return nil
+            break
         }
-    }
-
-    private nonisolated static func copyToTemporaryFile(from url: URL) throws -> URL {
-        let temporaryURL = FileManager.default.temporaryDirectory
-            .appendingPathComponent(UUID().uuidString)
-            .appendingPathExtension(url.pathExtension)
-        try FileManager.default.copyItem(at: url, to: temporaryURL)
-        return temporaryURL
+        return .addedFile(url)
     }
 
     /// Populates the composer with the edited message.
@@ -1225,7 +1206,17 @@ final class FileAddedAsset {
             if let filePayload = file.payload {
                 return AnyAttachmentPayload(payload: filePayload)
             }
-            return try AnyAttachmentPayload(localFileURL: file.url, attachmentType: .file)
+            // Resolve the attachment type from the file's extension so that images and
+            // videos picked from the Files/iCloud picker are sent as their proper type
+            // (and render inline) instead of always being sent as a generic file. This
+            // mirrors the UIKit SDK's `ComposerVC.documentPicker(_:didPickDocumentsAt:)`.
+            var attachmentType = AttachmentType(fileExtension: file.url.pathExtension)
+            // Audio files are treated as regular files, since the composer only
+            // supports audio through voice recordings.
+            if attachmentType == .audio {
+                attachmentType = .file
+            }
+            return try AnyAttachmentPayload(localFileURL: file.url, attachmentType: attachmentType)
         }
         attachments += try voiceAssets.map { recording in
             _ = recording.url.startAccessingSecurityScopedResource()

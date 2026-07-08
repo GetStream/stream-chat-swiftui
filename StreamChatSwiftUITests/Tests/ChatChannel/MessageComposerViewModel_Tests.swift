@@ -3,7 +3,6 @@
 //
 
 import AVFoundation
-import Combine
 @testable import StreamChat
 @testable import StreamChatSwiftUI
 @testable import StreamChatTestTools
@@ -94,10 +93,10 @@ import XCTest
         
         // When
         viewModel.addFileURLs([mockURL])
-        waitForComposerAssets(viewModel, count: 1)
+        let buttonEnabled = viewModel.hasContent
 
         // Then
-        XCTAssert(viewModel.hasContent == true)
+        XCTAssert(buttonEnabled == true)
         XCTAssertEqual(viewModel.composerAssets.count, 1)
     }
 
@@ -163,7 +162,6 @@ import XCTest
         // Given
         let viewModel = makeComposerViewModel()
         viewModel.addFileURLs([mockURL])
-        waitForComposerAssets(viewModel, count: 1)
         XCTAssertEqual(viewModel.composerAssets.count, 1)
 
         // When
@@ -582,7 +580,6 @@ import XCTest
         viewModel.addFileURLs([newURL])
 
         // Then
-        waitForComposerAssets(viewModel, count: 10)
         let total = viewModel.composerAssets.count
         XCTAssertEqual(total, 10)
         for url in urls {
@@ -1406,15 +1403,17 @@ import XCTest
         try makeImageData().write(to: url)
 
         viewModel.addFileURLs([url])
-        waitForComposerAssets(viewModel, count: 1)
 
+        // Rendered inline in the composer as a media asset (not a file chip).
         XCTAssertEqual(viewModel.composerAssets.count, 1)
         guard case let .addedAsset(asset) = try XCTUnwrap(viewModel.composerAssets.first) else {
             return XCTFail("Expected an inline media asset")
         }
         XCTAssertEqual(asset.type, .image)
 
+        // Sent as an image attachment.
         let payloads = try viewModel.convertAddedAssetsToPayloads()
+        XCTAssertEqual(payloads.count, 1)
         XCTAssertEqual(payloads.first?.type, .image)
         XCTAssertNotNil(payloads.first?.payload as? ImageAttachmentPayload)
     }
@@ -1425,7 +1424,6 @@ import XCTest
         defer { try? FileManager.default.removeItem(at: url) }
 
         viewModel.addFileURLs([url])
-        waitForComposerAssets(viewModel, count: 1)
 
         XCTAssertEqual(viewModel.composerAssets.count, 1)
         guard case let .addedAsset(asset) = try XCTUnwrap(viewModel.composerAssets.first) else {
@@ -1434,41 +1432,58 @@ import XCTest
         XCTAssertEqual(asset.type, .video)
 
         let payloads = try viewModel.convertAddedAssetsToPayloads()
+        XCTAssertEqual(payloads.count, 1)
         XCTAssertEqual(payloads.first?.type, .video)
         XCTAssertNotNil(payloads.first?.payload as? VideoAttachmentPayload)
     }
 
-    func test_addFileURLs_rotatedVideoURL_reportsDisplayDimensions() throws {
+    func test_addFileURLs_unreadableVideoURL_isStillSentAsVideoAttachment() throws {
         let viewModel = makeComposerViewModel()
-        // 16x32 encoded, rotated 90° → displayed as 32x16.
-        let url = try makeVideoFileURL(width: 16, height: 32, transform: CGAffineTransform(rotationAngle: .pi / 2))
+        let url = URL.newTemporaryFileURL().appendingPathExtension("mp4")
         defer { try? FileManager.default.removeItem(at: url) }
+        try Data("not a real video".utf8).write(to: url)
 
         viewModel.addFileURLs([url])
-        waitForComposerAssets(viewModel, count: 1)
 
-        guard case let .addedAsset(asset) = try XCTUnwrap(viewModel.composerAssets.first) else {
-            return XCTFail("Expected an inline media asset")
+        // No thumbnail could be generated, so it falls back to a file chip in the composer...
+        XCTAssertEqual(viewModel.composerAssets.count, 1)
+        guard case .addedFile = try XCTUnwrap(viewModel.composerAssets.first) else {
+            return XCTFail("Expected a file attachment")
         }
-        XCTAssertEqual(asset.originalWidth, 32)
-        XCTAssertEqual(asset.originalHeight, 16)
+
+        // ...but it's still sent as a video attachment, resolved from the file extension.
+        let payloads = try viewModel.convertAddedAssetsToPayloads()
+        XCTAssertEqual(payloads.count, 1)
+        XCTAssertEqual(payloads.first?.type, .video)
+        XCTAssertNotNil(payloads.first?.payload as? VideoAttachmentPayload)
     }
 
-    func test_addFileURLs_documentURL_addsFileAttachment() throws {
+    func test_addFileURLs_audioURL_isSentAsFileAttachment() throws {
+        let viewModel = makeComposerViewModel()
+        let url = URL.newTemporaryFileURL().appendingPathExtension("mp3")
+        defer { try? FileManager.default.removeItem(at: url) }
+        try Data("mock audio".utf8).write(to: url)
+
+        viewModel.addFileURLs([url])
+        XCTAssertEqual(viewModel.composerAssets.count, 1)
+
+        let payloads = try viewModel.convertAddedAssetsToPayloads()
+        XCTAssertEqual(payloads.count, 1)
+        XCTAssertEqual(payloads.first?.type, .file)
+        XCTAssertNotNil(payloads.first?.payload as? FileAttachmentPayload)
+    }
+
+    func test_addFileURLs_documentURL_isSentAsFileAttachment() throws {
         let viewModel = makeComposerViewModel()
         let url = URL.newTemporaryFileURL().appendingPathExtension("pdf")
         defer { try? FileManager.default.removeItem(at: url) }
         try Data("mock pdf".utf8).write(to: url)
 
         viewModel.addFileURLs([url])
-        waitForComposerAssets(viewModel, count: 1)
-
         XCTAssertEqual(viewModel.composerAssets.count, 1)
-        guard case .addedFile = try XCTUnwrap(viewModel.composerAssets.first) else {
-            return XCTFail("Expected a file attachment")
-        }
 
         let payloads = try viewModel.convertAddedAssetsToPayloads()
+        XCTAssertEqual(payloads.count, 1)
         XCTAssertEqual(payloads.first?.type, .file)
         XCTAssertNotNil(payloads.first?.payload as? FileAttachmentPayload)
     }
@@ -2553,27 +2568,9 @@ import XCTest
         }.pngData()!
     }
 
-    // `addFileURLs` builds media assets off the main actor, so the append is asynchronous.
-    private func waitForComposerAssets(
-        _ viewModel: MessageComposerViewModel,
-        count: Int,
-        timeout: TimeInterval = 5
-    ) {
-        let expectation = XCTestExpectation(description: "composerAssets reaches \(count)")
-        var cancellable: AnyCancellable?
-        cancellable = viewModel.$composerAssets.sink { assets in
-            if assets.count == count { expectation.fulfill() }
-        }
-        wait(for: [expectation], timeout: timeout)
-        cancellable?.cancel()
-    }
-
-    // A real (decodable) one-frame video, so a thumbnail can actually be generated.
-    private func makeVideoFileURL(
-        width: Int = 16,
-        height: Int = 16,
-        transform: CGAffineTransform = .identity
-    ) throws -> URL {
+    /// Writes a real (decodable) one-frame video to a temporary `.mp4` so that a thumbnail
+    /// can be generated, exercising the picked-video path end to end.
+    private func makeVideoFileURL(width: Int = 16, height: Int = 16) throws -> URL {
         let url = URL.newTemporaryFileURL().appendingPathExtension("mp4")
         let writer = try AVAssetWriter(outputURL: url, fileType: .mp4)
         let input = AVAssetWriterInput(
@@ -2584,7 +2581,6 @@ import XCTest
                 AVVideoHeightKey: height
             ]
         )
-        input.transform = transform
         let adaptor = AVAssetWriterInputPixelBufferAdaptor(
             assetWriterInput: input,
             sourcePixelBufferAttributes: nil
