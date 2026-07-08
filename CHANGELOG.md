@@ -32,7 +32,7 @@ _July 03, 2026_
 - Scale channel list and message list icons with Dynamic Type [#1512](https://github.com/GetStream/stream-chat-swiftui/pull/1512)
 - Fix the composer's quoted and edited message previews overlapping other content at large Dynamic Type sizes [#1512](https://github.com/GetStream/stream-chat-swiftui/pull/1512)
 - Fix the message list date separator overlapping messages at large Dynamic Type sizes [#1512](https://github.com/GetStream/stream-chat-swiftui/pull/1512)
-- Send images and videos picked from the Files/iCloud picker as their proper type so they render inline instead of as downloadable files [#1515](https://github.com/GetStream/stream-chat-swiftui/pull/1515)
+- Send images and videos picked from the file picker as their original type instead of always file type [#1515](https://github.com/GetStream/stream-chat-swiftui/pull/1515)
 
 ### 🔄 Changed
 - The reactions overlay now scrolls as a whole instead of only its message preview when the content is taller than the screen [#1512](https://github.com/GetStream/stream-chat-swiftui/pull/1512)
