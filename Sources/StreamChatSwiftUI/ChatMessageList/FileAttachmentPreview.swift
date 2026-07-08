@@ -20,13 +20,19 @@ public struct FileAttachmentPreview: View {
     @State private var isLoading = false
     @State private var webViewTitle: String?
     @State private var error: Error?
-    
+    @State private var sharedFile: ShareSheet.SharedFile?
+
     var title: String? {
         attachment.title
     }
     
     var url: URL {
-        attachment.assetURL
+        if attachment.downloadingState?.state == .downloaded,
+           let url = attachment.downloadingState?.localFileURL,
+           FileManager.default.fileExists(atPath: url.path) {
+            return url
+        }
+        return attachment.assetURL
     }
     
     var navigationTitle: String {
@@ -58,6 +64,10 @@ public struct FileAttachmentPreview: View {
                 }
             }
             .onAppear {
+                if url.isFileURL {
+                    fileRequest = URLRequest(url: url)
+                    return
+                }
                 utils.mediaLoader.loadFileRequest(for: url) { result in
                     switch result {
                     case let .success(result):
@@ -66,6 +76,9 @@ public struct FileAttachmentPreview: View {
                         self.error = error
                     }
                 }
+            }
+            .sheet(item: $sharedFile) { sharedFile in
+                ShareSheet(files: [sharedFile])
             }
             .navigationBarTitleDisplayMode(.inline)
             .toolbarThemed {
@@ -86,7 +99,9 @@ public struct FileAttachmentPreview: View {
                 }
                 
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    DownloadShareAttachmentView(attachment: attachment)
+                    DownloadShareAttachmentView(attachment: attachment) { fileURL in
+                        sharedFile = ShareSheet.SharedFile(url: fileURL)
+                    }
                 }
             }
         }

@@ -188,6 +188,7 @@
 				Tests/ChatChannel/CreatePollView_Tests.swift,
 				Tests/ChatChannel/CreatePollViewModel_Tests.swift,
 				Tests/ChatChannel/EditedMessageView_Tests.swift,
+				Tests/ChatChannel/FileAttachmentPreview_Tests.swift,
 				Tests/ChatChannel/FileAttachmentView_Tests.swift,
 				Tests/ChatChannel/GiphyAttachmentView_Tests.swift,
 				Tests/ChatChannel/InputTextView_Tests.swift,
@@ -1533,8 +1534,8 @@
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/GetStream/stream-chat-swift.git";
 			requirement = {
-				branch = develop;
-				kind = branch;
+				kind = upToNextMajorVersion;
+				minimumVersion = 5.6.0;
 			};
 		};
 		E3A1C01A282BAC66002D1E26 /* XCRemoteSwiftPackageReference "sentry-cocoa" */ = {

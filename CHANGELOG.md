@@ -3,12 +3,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 # Upcoming
 
+### 🔄 Changed
+
+# [5.6.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/5.6.0)
+_July 03, 2026_
+
 ### ✅ Added
 - Add support for enhanced mention suggestions [#1497](https://github.com/GetStream/stream-chat-swiftui/pull/1497)
 - Add `PollsConfig.maxQuestionLength` and `PollsConfig.maxOptionLength` to limit the character count of poll questions and options [#1500](https://github.com/GetStream/stream-chat-swiftui/pull/1500)
-
-### ⚡️ Performance
-- Improve channel avatar loading performance in the channel list [#1501](https://github.com/GetStream/stream-chat-swiftui/pull/1501)
 
 ### 🐞 Fixed
 - Keep the navigation bar and its buttons visible while searching in the add members screen [#1499](https://github.com/GetStream/stream-chat-swiftui/pull/1499)
@@ -23,6 +25,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Fix snackbar text truncating instead of wrapping at large Dynamic Type sizes [#1502](https://github.com/GetStream/stream-chat-swiftui/pull/1502)
 - Avoid a deadlock when building message actions in the reactions overlay that could freeze the UI for very long messages [#1506](https://github.com/GetStream/stream-chat-swiftui/pull/1506)
 - Fix link attachment previews not showing their image [#1510](https://github.com/GetStream/stream-chat-swiftui/pull/1510)
+- Fix downloading files in the `FileAttachmentPreview` [#1519](https://github.com/GetStream/stream-chat-swiftui/pull/1519)
+- Show the locally downloaded file in the `FileAttachmentPreview` instead of downloading it again [#1519](https://github.com/GetStream/stream-chat-swiftui/pull/1519)
 - Fix text truncating and spacing collapsing at large Dynamic Type sizes across the channel list, message list, and composer pickers [#1512](https://github.com/GetStream/stream-chat-swiftui/pull/1512)
 - Fix the reactions overlay message preview and action items overflowing the screen at large Dynamic Type sizes [#1512](https://github.com/GetStream/stream-chat-swiftui/pull/1512)
 - Scale channel list and message list icons with Dynamic Type [#1512](https://github.com/GetStream/stream-chat-swiftui/pull/1512)
@@ -45,6 +49,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - `message.accessibility.playback-speed` — VoiceOver label for the voice message playback speed control
 - `message.polls.accessibility.*` — VoiceOver labels for polls
 - `channel.item.accessibility.*` — VoiceOver labels for channel list items
+
+# [4.101.2](https://github.com/GetStream/stream-chat-swiftui/releases/tag/4.101.2)
+_July 03, 2026_
+
+### 🐞 Fixed
+- Fix the composer attachment picker collapsing the paperclip icon into an arrow while typing when only a single picker item is available [#1496](https://github.com/GetStream/stream-chat-swiftui/pull/1496)
 
 # [5.5.1](https://github.com/GetStream/stream-chat-swiftui/releases/tag/5.5.1)
 _June 11, 2026_
