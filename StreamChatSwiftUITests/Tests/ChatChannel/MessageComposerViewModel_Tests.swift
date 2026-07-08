@@ -1108,6 +1108,7 @@ class MessageComposerViewModel_Tests: StreamChatTestCase {
         XCTAssertEqual(viewModel.addedAssets.count, 1)
         XCTAssertTrue(viewModel.addedFileURLs.isEmpty)
         XCTAssertEqual(viewModel.addedAssets.first?.type, .video)
+        XCTAssertNotNil(viewModel.addedAssets.first?.extraData["duration"]?.stringValue)
 
         let payloads = try viewModel.convertAddedAssetsToPayloads()
         XCTAssertEqual(payloads.count, 1)

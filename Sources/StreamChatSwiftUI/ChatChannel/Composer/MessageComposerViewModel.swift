@@ -664,16 +664,18 @@ open class MessageComposerViewModel: ObservableObject {
                 at: CMTimeMake(value: 0, timescale: 1),
                 actualTime: nil
             ) else { return nil }
-            let duration = CMTimeGetSeconds(asset.duration)
+            let durationSeconds = CMTimeGetSeconds(asset.duration)
+            let duration: TimeInterval? = durationSeconds.isFinite && !durationSeconds.isNaN ? durationSeconds : nil
             let naturalSize = asset.tracks(withMediaType: .video).first?.naturalSize ?? .zero
             return AddedAsset(
                 image: UIImage(cgImage: cgImage),
                 id: UUID().uuidString,
                 url: url,
                 type: .video,
+                extraData: duration.map { ["duration": .string($0.composerVideoDurationString)] } ?? [:],
                 originalWidth: Double(naturalSize.width),
                 originalHeight: Double(naturalSize.height),
-                duration: duration.isFinite ? duration : nil
+                duration: duration
             )
         default:
             return nil
