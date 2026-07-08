@@ -296,7 +296,8 @@ import SwiftUI
         Task { [weak self] in
             for url in urls {
                 guard let self, self.canAddAttachment(with: url) else { continue }
-                let mediaAsset = await Self.mediaAsset(fromPickedFileURL: url)
+                // Detached, so the copy + thumbnail extraction run off the main actor.
+                let mediaAsset = await Task.detached { Self.mediaAsset(fromPickedFileURL: url) }.value
                 // Re-check after the suspending build so concurrent adds can't exceed the limit.
                 guard self.canAddAdditionalAttachments else { continue }
                 self.composerAssets.append(mediaAsset.map { .addedAsset($0) } ?? .addedFile(url))
@@ -304,8 +305,7 @@ import SwiftUI
         }
     }
 
-    // `nonisolated` so the file copy and thumbnail extraction run off the main actor.
-    private nonisolated static func mediaAsset(fromPickedFileURL url: URL) async -> AddedAsset? {
+    private nonisolated static func mediaAsset(fromPickedFileURL url: URL) -> AddedAsset? {
         let attachmentType = AttachmentType(fileExtension: url.pathExtension)
         guard attachmentType == .image || attachmentType == .video else { return nil }
 
