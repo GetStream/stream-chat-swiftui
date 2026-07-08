@@ -21,6 +21,10 @@ env:
   GITHUB_EVENT_BEFORE: ${{ github.event.before }}
   GITHUB_EVENT_AFTER: ${{ github.event.after }}
 
+permissions:
+  contents: read
+  pull-requests: read
+
 jobs:
   sdk_size:
     name: Metrics
