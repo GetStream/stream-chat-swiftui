@@ -291,40 +291,25 @@ import SwiftUI
         utils.audioPlayer.subscribe(self)
     }
 
-    /// Appends the file to the attachments in the composer input view.
-    ///
-    /// Images and videos picked from the Files/iCloud picker are added as media assets,
-    /// so they render inline in the composer and are sent as their proper type instead of
-    /// as a generic file. Other files are added as regular file attachments.
+    /// Appends the picked files to the composer, adding images and videos as inline media.
     public func addFileURLs(_ urls: [URL]) {
         Task { [weak self] in
             for url in urls {
                 guard let self, self.canAddAttachment(with: url) else { continue }
-                // Building a media asset copies the file and extracts a thumbnail, which
-                // can be slow for large files, so it runs off the main actor. Only the
-                // append to `composerAssets` happens back on the main actor.
                 let mediaAsset = await Self.mediaAsset(fromPickedFileURL: url)
-                // Re-check the count after the (suspending) build so concurrent adds
-                // can't push past the attachment limit; this and the append are atomic
-                // on the main actor.
+                // Re-check after the suspending build so concurrent adds can't exceed the limit.
                 guard self.canAddAdditionalAttachments else { continue }
                 self.composerAssets.append(mediaAsset.map { .addedAsset($0) } ?? .addedFile(url))
             }
         }
     }
 
-    /// Builds a media asset from a file picked in the Files/iCloud picker when it is an
-    /// image or a video. Returns `nil` for other files (and when the media can't be read),
-    /// in which case the caller adds it as a regular file attachment.
-    ///
-    /// `nonisolated` so the blocking file copy and thumbnail extraction run off the main actor.
+    // `nonisolated` so the file copy and thumbnail extraction run off the main actor.
     private nonisolated static func mediaAsset(fromPickedFileURL url: URL) async -> AddedAsset? {
         let attachmentType = AttachmentType(fileExtension: url.pathExtension)
         guard attachmentType == .image || attachmentType == .video else { return nil }
 
-        // Copy into an app-owned temporary file so the asset behaves like the other media
-        // sources (camera/photos/paste) and no longer depends on the security-scoped
-        // picker URL when it is uploaded.
+        // Copy to an app-owned file so upload no longer depends on the security-scoped URL.
         let didStartAccessing = url.startAccessingSecurityScopedResource()
         defer { if didStartAccessing { url.stopAccessingSecurityScopedResource() } }
         guard let localURL = try? copyToTemporaryFile(from: url) else { return nil }
@@ -356,9 +341,7 @@ import SwiftUI
                 return nil
             }
             let duration = CMTimeGetSeconds(asset.duration)
-            // Apply the track's preferred transform so portrait videos report the
-            // displayed dimensions, consistent with the (transformed) thumbnail, instead
-            // of the raw natural size which can have width/height swapped.
+            // Preferred transform, so portrait videos report displayed (not raw, swapped) size.
             var displaySize = CGSize.zero
             if let track = asset.tracks(withMediaType: .video).first {
                 let transformed = track.naturalSize.applying(track.preferredTransform)

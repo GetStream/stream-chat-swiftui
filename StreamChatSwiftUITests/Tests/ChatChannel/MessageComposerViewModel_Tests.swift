@@ -1408,14 +1408,12 @@ import XCTest
         viewModel.addFileURLs([url])
         waitForComposerAssets(viewModel, count: 1)
 
-        // Rendered inline in the composer as a media asset (not a file chip).
         XCTAssertEqual(viewModel.composerAssets.count, 1)
         guard case let .addedAsset(asset) = try XCTUnwrap(viewModel.composerAssets.first) else {
             return XCTFail("Expected an inline media asset")
         }
         XCTAssertEqual(asset.type, .image)
 
-        // Sent as an image attachment.
         let payloads = try viewModel.convertAddedAssetsToPayloads()
         XCTAssertEqual(payloads.first?.type, .image)
         XCTAssertNotNil(payloads.first?.payload as? ImageAttachmentPayload)
@@ -1452,7 +1450,6 @@ import XCTest
         guard case let .addedAsset(asset) = try XCTUnwrap(viewModel.composerAssets.first) else {
             return XCTFail("Expected an inline media asset")
         }
-        // Dimensions reflect the preferred transform (swapped), matching the thumbnail.
         XCTAssertEqual(asset.originalWidth, 32)
         XCTAssertEqual(asset.originalHeight, 16)
     }
@@ -2556,7 +2553,7 @@ import XCTest
         }.pngData()!
     }
 
-    /// `addFileURLs` builds media assets off the main actor, so the append is asynchronous.
+    // `addFileURLs` builds media assets off the main actor, so the append is asynchronous.
     private func waitForComposerAssets(
         _ viewModel: MessageComposerViewModel,
         count: Int,
@@ -2571,8 +2568,7 @@ import XCTest
         cancellable?.cancel()
     }
 
-    /// Writes a real (decodable) one-frame video to a temporary `.mp4` so that a thumbnail
-    /// can be generated, exercising the picked-video path end to end.
+    // A real (decodable) one-frame video, so a thumbnail can actually be generated.
     private func makeVideoFileURL(
         width: Int = 16,
         height: Int = 16,
