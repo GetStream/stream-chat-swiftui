@@ -1206,10 +1206,6 @@ final class FileAddedAsset {
             if let filePayload = file.payload {
                 return AnyAttachmentPayload(payload: filePayload)
             }
-            // Resolve the attachment type from the file's extension so that images and
-            // videos picked from the Files/iCloud picker are sent as their proper type
-            // (and render inline) instead of always being sent as a generic file. This
-            // mirrors the UIKit SDK's `ComposerVC.documentPicker(_:didPickDocumentsAt:)`.
             var attachmentType = AttachmentType(fileExtension: file.url.pathExtension)
             // Audio files are treated as regular files, since the composer only
             // supports audio through voice recordings.
