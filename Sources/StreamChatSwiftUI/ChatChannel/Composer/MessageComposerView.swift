@@ -149,7 +149,7 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
                 attachmentPickerState: $viewModel.pickerState,
                 filePickerShown: $viewModel.filePickerShown,
                 cameraPickerShown: $viewModel.cameraPickerShown,
-                addedFileURLs: $viewModel.addedFileURLs,
+                addedFileURLs: viewModel.pickedFileURLsBinding,
                 onPickerStateChange: viewModel.change(pickerState:),
                 photoLibraryAssets: viewModel.imageAssets,
                 onAssetTap: viewModel.imageTapped(_:),
