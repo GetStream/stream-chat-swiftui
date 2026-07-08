@@ -305,9 +305,6 @@ import SwiftUI
 
     /// Builds a media asset for an image or video picked from the Files/iCloud picker,
     /// mirroring `ImagePickerCoordinator`'s handling of camera-captured photos/videos.
-    /// Falls back to a generic file attachment for other files, or if the media can't be
-    /// read (e.g. a corrupted or not-yet-downloaded iCloud file); `MessageAttachmentsConverter`
-    /// still resolves the correct attachment type from the file extension when sending it.
     private static func composerAsset(fromPickedFileURL url: URL) -> ComposerAsset {
         _ = url.startAccessingSecurityScopedResource()
 
