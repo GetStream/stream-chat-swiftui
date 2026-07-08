@@ -314,51 +314,48 @@ import SwiftUI
         defer { if didStartAccessing { url.stopAccessingSecurityScopedResource() } }
         guard let localURL = try? copyToTemporaryFile(from: url) else { return nil }
 
-        switch attachmentType {
-        case .image:
-            guard let data = try? Data(contentsOf: localURL), let image = UIImage(data: data) else {
-                try? FileManager.default.removeItem(at: localURL)
-                return nil
-            }
-            let scale = image.scale
-            return AddedAsset(
-                image: image,
-                id: UUID().uuidString,
-                url: localURL,
-                type: .image,
-                originalWidth: Double(image.size.width * scale),
-                originalHeight: Double(image.size.height * scale)
-            )
-        case .video:
-            let asset = AVURLAsset(url: localURL, options: nil)
-            let imageGenerator = AVAssetImageGenerator(asset: asset)
-            imageGenerator.appliesPreferredTrackTransform = true
-            guard let cgImage = try? imageGenerator.copyCGImage(
-                at: CMTimeMake(value: 0, timescale: 1),
-                actualTime: nil
-            ) else {
-                try? FileManager.default.removeItem(at: localURL)
-                return nil
-            }
-            let duration = CMTimeGetSeconds(asset.duration)
-            // Preferred transform, so portrait videos report displayed (not raw, swapped) size.
-            var displaySize = CGSize.zero
-            if let track = asset.tracks(withMediaType: .video).first {
-                let transformed = track.naturalSize.applying(track.preferredTransform)
-                displaySize = CGSize(width: abs(transformed.width), height: abs(transformed.height))
-            }
-            return AddedAsset(
-                image: UIImage(cgImage: cgImage),
-                id: UUID().uuidString,
-                url: localURL,
-                type: .video,
-                originalWidth: Double(displaySize.width),
-                originalHeight: Double(displaySize.height),
-                duration: duration.isFinite ? duration : nil
-            )
-        default:
-            return nil
+        let asset = attachmentType == .video ? videoAsset(from: localURL) : imageAsset(from: localURL)
+        if asset == nil { try? FileManager.default.removeItem(at: localURL) }
+        return asset
+    }
+
+    private nonisolated static func imageAsset(from localURL: URL) -> AddedAsset? {
+        guard let data = try? Data(contentsOf: localURL), let image = UIImage(data: data) else { return nil }
+        let scale = image.scale
+        return AddedAsset(
+            image: image,
+            id: UUID().uuidString,
+            url: localURL,
+            type: .image,
+            originalWidth: Double(image.size.width * scale),
+            originalHeight: Double(image.size.height * scale)
+        )
+    }
+
+    private nonisolated static func videoAsset(from localURL: URL) -> AddedAsset? {
+        let asset = AVURLAsset(url: localURL, options: nil)
+        let imageGenerator = AVAssetImageGenerator(asset: asset)
+        imageGenerator.appliesPreferredTrackTransform = true
+        guard let cgImage = try? imageGenerator.copyCGImage(
+            at: CMTimeMake(value: 0, timescale: 1),
+            actualTime: nil
+        ) else { return nil }
+        let duration = CMTimeGetSeconds(asset.duration)
+        // Preferred transform, so portrait videos report displayed (not raw, swapped) size.
+        var displaySize = CGSize.zero
+        if let track = asset.tracks(withMediaType: .video).first {
+            let transformed = track.naturalSize.applying(track.preferredTransform)
+            displaySize = CGSize(width: abs(transformed.width), height: abs(transformed.height))
         }
+        return AddedAsset(
+            image: UIImage(cgImage: cgImage),
+            id: UUID().uuidString,
+            url: localURL,
+            type: .video,
+            originalWidth: Double(displaySize.width),
+            originalHeight: Double(displaySize.height),
+            duration: duration.isFinite ? duration : nil
+        )
     }
 
     private nonisolated static func copyToTemporaryFile(from url: URL) throws -> URL {
