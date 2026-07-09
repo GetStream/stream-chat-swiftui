@@ -5,6 +5,7 @@
 @testable import StreamChat
 @testable import StreamChatSwiftUI
 @testable import StreamChatTestTools
+import SwiftUI
 import XCTest
 
 @MainActor
@@ -52,8 +53,11 @@ final class ChatChannelList_Tests: StreamChatTestCase {
         )
 
         // Evaluating `body` exercises the shared channel list container used by
-        // both the compatibility wrapper and the default channel list UI.
+        // the compatibility wrapper and the default LazyVStack path.
         _ = view.body
-        XCTAssertEqual(channels.count, 3)
+
+        // Hosting the view verifies the LazyVStack rendering path does not crash.
+        let hostingController = UIHostingController(rootView: view)
+        XCTAssertNotNil(hostingController.view)
     }
 }
