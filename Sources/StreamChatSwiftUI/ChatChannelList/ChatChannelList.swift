@@ -131,9 +131,16 @@ public struct ChannelsLazyVStack<Factory: ViewFactory>: View {
 
     public var body: some View {
         let channelIndexLookup = makeChannelIndexLookup()
+        let shouldRenderLastItemDivider = utils.channelListConfig.showChannelListDividerOnLastItem
 
         return LazyVStack(spacing: 0) {
             ForEach(channels) { channel in
+                let isLastItem = channel.cid == channels.last?.cid
+                let showsDivider = !isLastItem || (isLastItem && shouldRenderLastItemDivider)
+
+                // Render the divider as a bottom overlay on the row instead of a
+                // sibling node, so the list doesn't have to place a separate view
+                // per row on every layout pass.
                 factory.makeChannelListItem(
                     options: ChannelListItemOptions(
                         channel: channel,
@@ -154,16 +161,18 @@ public struct ChannelsLazyVStack<Factory: ViewFactory>: View {
                         isSelected: selectedChannel?.channel.id == channel.id
                     )
                 ))
+                .overlay(
+                    Group {
+                        if showsDivider {
+                            factory.makeChannelListDividerItem(options: ChannelListDividerItemOptions())
+                        }
+                    },
+                    alignment: .bottom
+                )
                 .onAppear {
                     if let index = channelIndexLookup[channel.id] {
                         onItemAppear(index)
                     }
-                }
-
-                let isLastItem = channels.last?.cid == channel.cid
-                let shouldRenderLastItemDivider = utils.channelListConfig.showChannelListDividerOnLastItem
-                if !isLastItem || (isLastItem && shouldRenderLastItemDivider) {
-                    factory.makeChannelListDividerItem(options: ChannelListDividerItemOptions())
                 }
             }
 
