@@ -6,6 +6,7 @@ import Foundation
 @testable import StreamChat
 import StreamChatCommonUI
 @testable import StreamChatSwiftUI
+import UniformTypeIdentifiers
 import XCTest
 
 class StreamChat_Utils_Tests: StreamChatTestCase {
@@ -92,9 +93,14 @@ class StreamChat_Utils_Tests: StreamChatTestCase {
     }
 
     func test_messageListConfig_videoAttachmentCachingPolicy() {
-        XCTAssertEqual(MessageListConfig().videoAttachmentCachingPolicy, .disabled)
+        let defaultPolicy = MessageListConfig().videoAttachmentCachingPolicy
+        XCTAssertEqual(defaultPolicy.maxCacheSize, 0)
+        XCTAssertEqual(defaultPolicy.allowedContentTypes, [.movie])
+
         let policy = VideoAttachmentCachingPolicy(maxCacheSize: 100)
-        XCTAssertEqual(MessageListConfig(videoAttachmentCachingPolicy: policy).videoAttachmentCachingPolicy, policy)
+        let configuredPolicy = MessageListConfig(videoAttachmentCachingPolicy: policy).videoAttachmentCachingPolicy
+        XCTAssertEqual(configuredPolicy.maxCacheSize, 100)
+        XCTAssertEqual(configuredPolicy.allowedContentTypes, [.movie])
     }
 
     func test_streamChatUtils_customCDNRequester_throughMediaLoader() {

@@ -150,18 +150,22 @@ import UniformTypeIdentifiers
 }
 
 /// A policy describing how video attachments are cached on disk.
-public struct VideoAttachmentCachingPolicy: Sendable, Equatable {
+public final class VideoAttachmentCachingPolicy: Sendable {
     /// The maximum total size of the video attachment disk cache, in bytes.
     ///
-    /// Must be `>= 0`. Caching is disabled when this is `0`.
-    public var maxCacheSize: Int64
+    /// Caching is disabled when this is `<= 0`.
+    public let maxCacheSize: Int64
 
     /// The content types eligible for caching.
     ///
     /// Defaults to `[.movie]`, which caches standard video files (mp4, mov, …) while
     /// excluding HLS playlists (`.m3u8`).
-    public var allowedContentTypes: Set<UTType>
+    public let allowedContentTypes: Set<UTType>
 
+    /// Creates a video attachment caching policy.
+    /// - Parameters:
+    ///   - maxCacheSize: The maximum total size of the disk cache, in bytes. Caching is disabled when `<= 0`.
+    ///   - allowedContentTypes: The content types eligible for caching. Defaults to `[.movie]`.
     public init(maxCacheSize: Int64, allowedContentTypes: Set<UTType> = [.movie]) {
         self.maxCacheSize = maxCacheSize
         self.allowedContentTypes = allowedContentTypes

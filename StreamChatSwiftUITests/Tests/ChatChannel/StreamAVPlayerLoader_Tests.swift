@@ -8,7 +8,7 @@ import StreamChatCommonUI
 @testable import StreamChatSwiftUI
 import XCTest
 
-final class StreamVideoPlayer_AVPlayerLoader_Tests: XCTestCase {
+final class StreamAVPlayerLoader_Tests: XCTestCase {
     private var root: URL!
     private var cacheDirectory: URL!
     private var tempDirectory: URL!
@@ -17,7 +17,7 @@ final class StreamVideoPlayer_AVPlayerLoader_Tests: XCTestCase {
     override func setUpWithError() throws {
         try super.setUpWithError()
         root = fileManager.temporaryDirectory
-            .appendingPathComponent("StreamVideoPlayer_AVPlayerLoader_Tests", isDirectory: true)
+            .appendingPathComponent("StreamAVPlayerLoader_Tests", isDirectory: true)
             .appendingPathComponent(UUID().uuidString, isDirectory: true)
         cacheDirectory = root.appendingPathComponent("cache", isDirectory: true)
         tempDirectory = root.appendingPathComponent("temps", isDirectory: true)
@@ -204,8 +204,8 @@ final class StreamVideoPlayer_AVPlayerLoader_Tests: XCTestCase {
         cache: StreamVideoCache? = nil,
         policy: VideoAttachmentCachingPolicy = VideoAttachmentCachingPolicy(maxCacheSize: 1_000_000),
         isPlayable: @escaping @Sendable (URL) async -> Bool = { _ in true }
-    ) -> StreamVideoPlayer.AVPlayerLoader {
-        StreamVideoPlayer.AVPlayerLoader(
+    ) -> StreamAVPlayerLoader {
+        StreamAVPlayerLoader(
             url: url,
             mediaLoader: mediaLoader,
             avPlayerProvider: avPlayerProvider,
@@ -215,7 +215,7 @@ final class StreamVideoPlayer_AVPlayerLoader_Tests: XCTestCase {
         )
     }
 
-    @MainActor private func load(_ loader: StreamVideoPlayer.AVPlayerLoader) async throws -> AVPlayer {
+    @MainActor private func load(_ loader: StreamAVPlayerLoader) async throws -> AVPlayer {
         try await loader.load()
     }
 
