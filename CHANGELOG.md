@@ -6,7 +6,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ### ⚡️ Performance
 - Fix the channel list rebuilding on every scroll tick after returning from a channel [#1525](https://github.com/GetStream/stream-chat-swiftui/pull/1525)
 - Improve channel list scrolling performance with native `List` virtualization on iOS 15+ and diffed channel updates [#1529](https://github.com/GetStream/stream-chat-swiftui/pull/1529)
-- Reduce SDK size by 2 MB [#1529](https://github.com/GetStream/stream-chat-swiftui/pull/1529)
+- Reduce SDK size by 2.5 MB [#1529](https://github.com/GetStream/stream-chat-swiftui/pull/1529)
 
 ### 🔄 Changed
 
