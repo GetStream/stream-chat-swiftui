@@ -55,27 +55,14 @@ public struct ChannelList<Factory: ViewFactory>: View {
     public var body: some View {
         Group {
             if scrollable {
-                if #available(iOS 15.0, *) {
-                    ScrollViewReader { scrollView in
-                        channelsList
-                            .onChange(of: scrolledChannelId) { newValue in
-                                if let newValue {
-                                    withAnimation {
-                                        scrollView.scrollTo(newValue, anchor: .bottom)
-                                    }
-                                }
-                            }
+                ScrollViewReader { scrollView in
+                    ScrollView {
+                        channelsVStack
                     }
-                } else {
-                    ScrollViewReader { scrollView in
-                        ScrollView {
-                            channelsVStack
-                        }
-                        .onChange(of: scrolledChannelId) { newValue in
-                            if let newValue {
-                                withAnimation {
-                                    scrollView.scrollTo(newValue, anchor: .bottom)
-                                }
+                    .onChange(of: scrolledChannelId) { newValue in
+                        if let newValue {
+                            withAnimation {
+                                scrollView.scrollTo(newValue, anchor: .bottom)
                             }
                         }
                     }
@@ -86,16 +73,7 @@ public struct ChannelList<Factory: ViewFactory>: View {
         }
     }
 
-    @available(iOS 15.0, *)
-    private var channelsList: some View {
-        channelListItems(style: .nativeList)
-    }
-
     private var channelsVStack: some View {
-        channelListItems(style: .lazyVStack)
-    }
-
-    private func channelListItems(style: ChannelListContainerStyle) -> some View {
         ChannelListItemsContainer(
             factory: factory,
             channels: channels,
@@ -108,8 +86,7 @@ public struct ChannelList<Factory: ViewFactory>: View {
             trailingSwipeLeftButtonTapped: trailingSwipeLeftButtonTapped,
             leadingSwipeButtonTapped: leadingSwipeButtonTapped,
             currentUserId: chatClient.currentUserId,
-            showChannelListDividerOnLastItem: utils.channelListConfig.showChannelListDividerOnLastItem,
-            style: style
+            showChannelListDividerOnLastItem: utils.channelListConfig.showChannelListDividerOnLastItem
         )
     }
 }
@@ -150,11 +127,6 @@ public struct ChannelsLazyVStack<Factory: ViewFactory>: View {
     }
 }
 
-private enum ChannelListContainerStyle {
-    case lazyVStack
-    case nativeList
-}
-
 private struct ChannelListItemsContainer<Factory: ViewFactory>: View {
     @Injected(\.utils) private var utils
 
@@ -170,32 +142,15 @@ private struct ChannelListItemsContainer<Factory: ViewFactory>: View {
     let leadingSwipeButtonTapped: @MainActor (ChatChannel) -> Void
     let currentUserId: UserId?
     let showChannelListDividerOnLastItem: Bool
-    let style: ChannelListContainerStyle
 
     var body: some View {
         let channelIndexLookup = channelListIndexLookup(for: channels)
 
-        Group {
-            switch style {
-            case .lazyVStack:
-                LazyVStack(spacing: 0) {
-                    channelListContent(channelIndexLookup: channelIndexLookup)
-                }
-            case .nativeList:
-                List {
-                    channelListContent(channelIndexLookup: channelIndexLookup)
-                }
-                .listStyle(.plain)
-                .modifier(HideListScrollContentBackgroundModifier())
-            }
+        LazyVStack(spacing: 0) {
+            channelRows(channelIndexLookup: channelIndexLookup)
+            channelListFooter
         }
         .modifier(factory.styles.makeChannelListModifier(options: ChannelListModifierOptions()))
-    }
-
-    @ViewBuilder
-    private func channelListContent(channelIndexLookup: [String: Int]) -> some View {
-        channelRows(channelIndexLookup: channelIndexLookup)
-        channelListFooter
     }
 
     @ViewBuilder
@@ -227,14 +182,12 @@ private struct ChannelListItemsContainer<Factory: ViewFactory>: View {
                     onItemAppear(index)
                 }
             }
-            .modifier(ChannelListRowStyleModifier(style: style))
         }
     }
 
     @ViewBuilder
     private var channelListFooter: some View {
         factory.makeChannelListFooterView(options: ChannelListFooterViewOptions())
-            .modifier(ChannelListRowStyleModifier(style: style))
     }
 }
 
@@ -282,37 +235,6 @@ private struct ChannelListItemRow<Factory: ViewFactory>: View {
             },
             alignment: .bottom
         )
-    }
-}
-
-private struct HideListScrollContentBackgroundModifier: ViewModifier {
-    func body(content: Content) -> some View {
-        if #available(iOS 16.0, *) {
-            content.scrollContentBackground(.hidden)
-        } else {
-            content
-        }
-    }
-}
-
-private struct ChannelListRowStyleModifier: ViewModifier {
-    let style: ChannelListContainerStyle
-
-    @ViewBuilder
-    func body(content: Content) -> some View {
-        switch style {
-        case .lazyVStack:
-            content
-        case .nativeList:
-            if #available(iOS 15.0, *) {
-                content
-                    .listRowInsets(EdgeInsets())
-                    .listRowSeparator(.hidden)
-                    .listRowBackground(Color.clear)
-            } else {
-                content
-            }
-        }
     }
 }
 
