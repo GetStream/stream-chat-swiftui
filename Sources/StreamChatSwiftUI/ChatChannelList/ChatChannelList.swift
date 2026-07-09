@@ -171,7 +171,7 @@ public struct ChannelsLazyVStack<Factory: ViewFactory>: View {
         }
         .modifier(factory.styles.makeChannelListModifier(options: ChannelListModifierOptions()))
     }
-    
+
     private func name(for channel: ChatChannel) -> String {
         utils.channelNameFormatter.format(
             channel: channel,
