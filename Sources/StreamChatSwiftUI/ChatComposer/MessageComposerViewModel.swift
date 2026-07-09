@@ -306,7 +306,12 @@ import SwiftUI
     /// Builds a media asset for an image or video picked from the Files/iCloud picker,
     /// mirroring `ImagePickerCoordinator`'s handling of camera-captured photos/videos.
     private static func composerAsset(fromPickedFileURL url: URL) -> ComposerAsset {
-        _ = url.startAccessingSecurityScopedResource()
+        let didStartAccessing = url.startAccessingSecurityScopedResource()
+        defer {
+            if didStartAccessing {
+                url.stopAccessingSecurityScopedResource()
+            }
+        }
 
         switch AttachmentType(fileExtension: url.pathExtension) {
         case .image:
@@ -1107,9 +1112,14 @@ import SwiftUI
     
     private func checkAttachmentSize(with url: URL?) -> Bool {
         guard let url else { return true }
-        
-        _ = url.startAccessingSecurityScopedResource()
-        
+
+        let didStartAccessing = url.startAccessingSecurityScopedResource()
+        defer {
+            if didStartAccessing {
+                url.stopAccessingSecurityScopedResource()
+            }
+        }
+
         do {
             let fileSize = try AttachmentFile(url: url).size
             let canAdd = fileSize <= chatClient.maxAttachmentSize(for: url, fallbackSize: utils.composerConfig.maxAttachmentSize)
@@ -1199,7 +1209,12 @@ final class FileAddedAsset {
 
         var attachments = try mediaAssets.map { try $0.toAttachmentPayload() }
         attachments += try fileAssets.map { file in
-            _ = file.url.startAccessingSecurityScopedResource()
+            let didStartAccessing = file.url.startAccessingSecurityScopedResource()
+            defer {
+                if didStartAccessing {
+                    file.url.stopAccessingSecurityScopedResource()
+                }
+            }
             if let filePayload = file.payload {
                 return AnyAttachmentPayload(payload: filePayload)
             }
@@ -1212,7 +1227,12 @@ final class FileAddedAsset {
             return try AnyAttachmentPayload(localFileURL: file.url, attachmentType: attachmentType)
         }
         attachments += try voiceAssets.map { recording in
-            _ = recording.url.startAccessingSecurityScopedResource()
+            let didStartAccessing = recording.url.startAccessingSecurityScopedResource()
+            defer {
+                if didStartAccessing {
+                    recording.url.stopAccessingSecurityScopedResource()
+                }
+            }
             var localMetadata = AnyAttachmentLocalMetadata()
             localMetadata.duration = recording.duration
             localMetadata.waveformData = recording.waveform

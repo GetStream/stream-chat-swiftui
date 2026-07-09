@@ -63,9 +63,13 @@ struct ComposerFileAttachmentView: View {
 
 private extension URL {
     var sizeString: String {
-        _ = startAccessingSecurityScopedResource()
+        let didStartAccessing = startAccessingSecurityScopedResource()
+        defer {
+            if didStartAccessing {
+                stopAccessingSecurityScopedResource()
+            }
+        }
         if let file = try? AttachmentFile(url: self) {
-            stopAccessingSecurityScopedResource()
             return file.sizeString
         }
         return ""
