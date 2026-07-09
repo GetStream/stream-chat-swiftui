@@ -49,10 +49,10 @@ final class StreamVideoAsset_Tests: XCTestCase {
     func test_successfulResponseAndData_fillsContentInfo_respondsWithBytes_andStores() async throws {
         let body = Data(repeating: 0xab, count: 4096)
         makeDelegate()
-        let info = FakeContentInformationRequest()
-        let infoRequest = FakeLoadingRequest(contentInformationRequest: info)
-        let data = FakeDataRequest()
-        let dataRequest = FakeLoadingRequest(dataRequest: data)
+        let info = MockContentInformationRequest()
+        let infoRequest = MockLoadingRequest(contentInformationRequest: info)
+        let data = MockDataRequest()
+        let dataRequest = MockLoadingRequest(dataRequest: data)
 
         handle(infoRequest)
         deliverResponse(status: 200, headers: ["Content-Length": "\(body.count)", "Content-Type": "video/mp4"])
@@ -73,8 +73,8 @@ final class StreamVideoAsset_Tests: XCTestCase {
 
     func test_response206WithContentRange_parsesTotalLength() async throws {
         makeDelegate()
-        let info = FakeContentInformationRequest()
-        let request = FakeLoadingRequest(contentInformationRequest: info)
+        let info = MockContentInformationRequest()
+        let request = MockLoadingRequest(contentInformationRequest: info)
 
         handle(request)
         deliverResponse(status: 206, headers: ["Content-Range": "bytes 0-2047/2048", "Content-Type": "video/mp4"])
@@ -85,8 +85,8 @@ final class StreamVideoAsset_Tests: XCTestCase {
 
     func test_responseWithoutContentType_usesFallbackFromExtension() async throws {
         makeDelegate()
-        let info = FakeContentInformationRequest()
-        let request = FakeLoadingRequest(contentInformationRequest: info)
+        let info = MockContentInformationRequest()
+        let request = MockLoadingRequest(contentInformationRequest: info)
 
         handle(request)
         deliverResponse(status: 200, headers: ["Content-Length": "2048"])
@@ -96,7 +96,7 @@ final class StreamVideoAsset_Tests: XCTestCase {
 
     func test_responseWithoutContentLength_redirectsRequestsToOrigin() async throws {
         makeDelegate()
-        let request = FakeLoadingRequest(contentInformationRequest: FakeContentInformationRequest())
+        let request = MockLoadingRequest(contentInformationRequest: MockContentInformationRequest())
 
         handle(request)
         deliverResponse(status: 200, headers: ["Content-Type": "video/mp4"])
@@ -110,7 +110,7 @@ final class StreamVideoAsset_Tests: XCTestCase {
 
     func test_non2xxResponse_finishesRequestsWithError() async throws {
         makeDelegate()
-        let request = FakeLoadingRequest(contentInformationRequest: FakeContentInformationRequest())
+        let request = MockLoadingRequest(contentInformationRequest: MockContentInformationRequest())
 
         handle(request)
         deliverResponse(status: 404, headers: [:])
@@ -126,7 +126,7 @@ final class StreamVideoAsset_Tests: XCTestCase {
         makeDelegate()
         delegate.invalidate()
         delegate.queue.sync {}
-        let request = FakeLoadingRequest(contentInformationRequest: FakeContentInformationRequest())
+        let request = MockLoadingRequest(contentInformationRequest: MockContentInformationRequest())
 
         handle(request)
 
@@ -136,7 +136,7 @@ final class StreamVideoAsset_Tests: XCTestCase {
 
     func test_cancel_removesPendingRequest() async throws {
         makeDelegate()
-        let request = FakeLoadingRequest(contentInformationRequest: FakeContentInformationRequest())
+        let request = MockLoadingRequest(contentInformationRequest: MockContentInformationRequest())
 
         handle(request)
         delegate.queue.sync { delegate.cancel(request) }
@@ -151,7 +151,7 @@ final class StreamVideoAsset_Tests: XCTestCase {
         let cache = StreamVideoCache(directory: cacheDirectory, maxSizeInBytes: 10_000_000)
         self.cache = cache
         let configuration = URLSessionConfiguration.ephemeral
-        configuration.protocolClasses = [SilentURLProtocol.self]
+        configuration.protocolClasses = [MockURLProtocol.self]
         delegate = StreamVideoResourceLoaderDelegate(
             originalURL: Self.originalURL,
             origin: URLRequest(url: Self.originalURL),
@@ -193,7 +193,7 @@ final class StreamVideoAsset_Tests: XCTestCase {
     }
 }
 
-private final class FakeLoadingRequest: StreamVideoLoadingRequest {
+private final class MockLoadingRequest: StreamVideoLoadingRequest {
     let streamContentInformationRequest: StreamVideoContentInformationRequest?
     let streamDataRequest: StreamVideoDataRequest?
     var redirect: URLRequest?
@@ -202,8 +202,8 @@ private final class FakeLoadingRequest: StreamVideoLoadingRequest {
     private(set) var finishError: Error?
 
     init(
-        contentInformationRequest: FakeContentInformationRequest? = nil,
-        dataRequest: FakeDataRequest? = nil
+        contentInformationRequest: MockContentInformationRequest? = nil,
+        dataRequest: MockDataRequest? = nil
     ) {
         streamContentInformationRequest = contentInformationRequest
         streamDataRequest = dataRequest
@@ -219,13 +219,13 @@ private final class FakeLoadingRequest: StreamVideoLoadingRequest {
     }
 }
 
-private final class FakeContentInformationRequest: StreamVideoContentInformationRequest {
+private final class MockContentInformationRequest: StreamVideoContentInformationRequest {
     var contentLength: Int64 = 0
     var contentType: String?
     var isByteRangeAccessSupported = false
 }
 
-private final class FakeDataRequest: StreamVideoDataRequest {
+private final class MockDataRequest: StreamVideoDataRequest {
     let requestedOffset: Int64
     private(set) var currentOffset: Int64
     let requestedLength: Int
@@ -245,7 +245,7 @@ private final class FakeDataRequest: StreamVideoDataRequest {
     }
 }
 
-private final class SilentURLProtocol: URLProtocol {
+private final class MockURLProtocol: URLProtocol {
     override class func canInit(with request: URLRequest) -> Bool { true }
     override class func canonicalRequest(for request: URLRequest) -> URLRequest { request }
     override func startLoading() {}
