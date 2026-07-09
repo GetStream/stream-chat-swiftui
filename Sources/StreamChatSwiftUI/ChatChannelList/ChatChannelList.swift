@@ -120,7 +120,6 @@ public struct ChannelList<Factory: ViewFactory>: View {
 /// LazyVStack displaying list of channels.
 public struct ChannelsLazyVStack<Factory: ViewFactory>: View {
     @Injected(\.chatClient) private var chatClient
-    @Injected(\.colors) private var colors
     @Injected(\.utils) private var utils
 
     private var factory: Factory
@@ -159,74 +158,21 @@ public struct ChannelsLazyVStack<Factory: ViewFactory>: View {
     }
 
     public var body: some View {
-        let channelIndexLookup = makeChannelIndexLookup()
-        let shouldRenderLastItemDivider = utils.channelListConfig.showChannelListDividerOnLastItem
-
-        return LazyVStack(spacing: 0) {
-            ForEach(channels) { channel in
-                let isLastItem = channel.cid == channels.last?.cid
-                let showsDivider = !isLastItem || (isLastItem && shouldRenderLastItemDivider)
-
-                // Render the divider as a bottom overlay on the row instead of a
-                // sibling node, so the list doesn't have to place a separate view
-                // per row on every layout pass.
-                factory.makeChannelListItem(
-                    options: ChannelListItemOptions(
-                        channel: channel,
-                        channelName: name(for: channel),
-                        disabled: swipedChannelId == channel.id,
-                        selectedChannel: $selectedChannel,
-                        swipedChannelId: $swipedChannelId,
-                        channelDestination: channelDestination,
-                        onItemTap: onItemTap,
-                        trailingSwipeRightButtonTapped: trailingSwipeRightButtonTapped,
-                        trailingSwipeLeftButtonTapped: trailingSwipeLeftButtonTapped,
-                        leadingSwipeButtonTapped: leadingSwipeButtonTapped
-                    )
-                )
-                .background(factory.makeChannelListItemBackground(
-                    options: ChannelListItemBackgroundOptions(
-                        channel: channel,
-                        isSelected: selectedChannel?.channel.id == channel.id
-                    )
-                ))
-                .overlay(
-                    Group {
-                        if showsDivider {
-                            factory.makeChannelListDividerItem(options: ChannelListDividerItemOptions())
-                        }
-                    },
-                    alignment: .bottom
-                )
-                .onAppear {
-                    if let index = channelIndexLookup[channel.id] {
-                        onItemAppear(index)
-                    }
-                }
-            }
-
-            factory.makeChannelListFooterView(options: ChannelListFooterViewOptions())
-        }
-        .modifier(factory.styles.makeChannelListModifier(options: ChannelListModifierOptions()))
-    }
-
-    private func name(for channel: ChatChannel) -> String {
-        utils.channelNameFormatter.format(
-            channel: channel,
-            forCurrentUserId: chatClient.currentUserId
-        ) ?? ""
-    }
-
-    /// Builds a channel id to index map once per body evaluation so a row's
-    /// index can be resolved in O(1) on appearance instead of scanning the
-    /// whole array with `firstIndex(where:)`.
-    private func makeChannelIndexLookup() -> [String: Int] {
-        var lookup = [String: Int]()
-        lookup.reserveCapacity(channels.count)
-        for (index, channel) in channels.enumerated() where lookup[channel.id] == nil {
-            lookup[channel.id] = index
-        }
-        return lookup
+        ChannelListItemsContainer(
+            factory: factory,
+            channels: channels,
+            selectedChannel: $selectedChannel,
+            swipedChannelId: $swipedChannelId,
+            onItemTap: onItemTap,
+            onItemAppear: onItemAppear,
+            channelDestination: channelDestination,
+            trailingSwipeRightButtonTapped: trailingSwipeRightButtonTapped,
+            trailingSwipeLeftButtonTapped: trailingSwipeLeftButtonTapped,
+            leadingSwipeButtonTapped: leadingSwipeButtonTapped,
+            currentUserId: chatClient.currentUserId,
+            showChannelListDividerOnLastItem: utils.channelListConfig.showChannelListDividerOnLastItem,
+            style: .lazyVStack
+        )
     }
 }
 
@@ -241,7 +187,6 @@ public struct ChannelsLazyVStack<Factory: ViewFactory>: View {
 @available(iOS 15.0, *)
 public struct ChannelsList<Factory: ViewFactory>: View {
     @Injected(\.chatClient) private var chatClient
-    @Injected(\.colors) private var colors
     @Injected(\.utils) private var utils
 
     private var factory: Factory
@@ -280,77 +225,183 @@ public struct ChannelsList<Factory: ViewFactory>: View {
     }
 
     public var body: some View {
-        let channelIndexLookup = makeChannelIndexLookup()
-        let shouldRenderLastItemDivider = utils.channelListConfig.showChannelListDividerOnLastItem
+        ChannelListItemsContainer(
+            factory: factory,
+            channels: channels,
+            selectedChannel: $selectedChannel,
+            swipedChannelId: $swipedChannelId,
+            onItemTap: onItemTap,
+            onItemAppear: onItemAppear,
+            channelDestination: channelDestination,
+            trailingSwipeRightButtonTapped: trailingSwipeRightButtonTapped,
+            trailingSwipeLeftButtonTapped: trailingSwipeLeftButtonTapped,
+            leadingSwipeButtonTapped: leadingSwipeButtonTapped,
+            currentUserId: chatClient.currentUserId,
+            showChannelListDividerOnLastItem: utils.channelListConfig.showChannelListDividerOnLastItem,
+            style: .nativeList
+        )
+    }
+}
 
-        return List {
-            ForEach(channels) { channel in
-                let isLastItem = channel.cid == channels.last?.cid
-                let showsDivider = !isLastItem || (isLastItem && shouldRenderLastItemDivider)
+private enum ChannelListContainerStyle {
+    case lazyVStack
+    case nativeList
+}
 
-                factory.makeChannelListItem(
-                    options: ChannelListItemOptions(
-                        channel: channel,
-                        channelName: name(for: channel),
-                        disabled: swipedChannelId == channel.id,
-                        selectedChannel: $selectedChannel,
-                        swipedChannelId: $swipedChannelId,
-                        channelDestination: channelDestination,
-                        onItemTap: onItemTap,
-                        trailingSwipeRightButtonTapped: trailingSwipeRightButtonTapped,
-                        trailingSwipeLeftButtonTapped: trailingSwipeLeftButtonTapped,
-                        leadingSwipeButtonTapped: leadingSwipeButtonTapped
-                    )
-                )
-                .background(factory.makeChannelListItemBackground(
-                    options: ChannelListItemBackgroundOptions(
-                        channel: channel,
-                        isSelected: selectedChannel?.channel.id == channel.id
-                    )
-                ))
-                .overlay(
-                    Group {
-                        if showsDivider {
-                            factory.makeChannelListDividerItem(options: ChannelListDividerItemOptions())
-                        }
-                    },
-                    alignment: .bottom
-                )
-                .onAppear {
-                    if let index = channelIndexLookup[channel.id] {
-                        onItemAppear(index)
-                    }
+private struct ChannelListItemsContainer<Factory: ViewFactory>: View {
+    @Injected(\.utils) private var utils
+
+    let factory: Factory
+    let channels: [ChatChannel]
+    @Binding var selectedChannel: ChannelSelectionInfo?
+    @Binding var swipedChannelId: String?
+    let onItemTap: @MainActor (ChatChannel) -> Void
+    let onItemAppear: @MainActor (Int) -> Void
+    let channelDestination: (@MainActor (ChannelSelectionInfo) -> Factory.ChannelDestination)?
+    let trailingSwipeRightButtonTapped: @MainActor (ChatChannel) -> Void
+    let trailingSwipeLeftButtonTapped: @MainActor (ChatChannel) -> Void
+    let leadingSwipeButtonTapped: @MainActor (ChatChannel) -> Void
+    let currentUserId: UserId?
+    let showChannelListDividerOnLastItem: Bool
+    let style: ChannelListContainerStyle
+
+    var body: some View {
+        let channelIndexLookup = channelListIndexLookup(for: channels)
+
+        Group {
+            switch style {
+            case .lazyVStack:
+                LazyVStack(spacing: 0) {
+                    channelRows(channelIndexLookup: channelIndexLookup)
+                    channelListFooter
                 }
-                .listRowInsets(EdgeInsets())
-                .listRowSeparator(.hidden)
-                .listRowBackground(Color.clear)
+            case .nativeList:
+                List {
+                    channelRows(channelIndexLookup: channelIndexLookup)
+                    channelListFooter
+                }
+                .listStyle(.plain)
             }
-
-            factory.makeChannelListFooterView(options: ChannelListFooterViewOptions())
-                .listRowInsets(EdgeInsets())
-                .listRowSeparator(.hidden)
-                .listRowBackground(Color.clear)
         }
-        .listStyle(.plain)
         .modifier(factory.styles.makeChannelListModifier(options: ChannelListModifierOptions()))
     }
 
-    private func name(for channel: ChatChannel) -> String {
-        utils.channelNameFormatter.format(
-            channel: channel,
-            forCurrentUserId: chatClient.currentUserId
-        ) ?? ""
+    @ViewBuilder
+    private func channelRows(channelIndexLookup: [String: Int]) -> some View {
+        ForEach(channels) { channel in
+            let isLastItem = channel.cid == channels.last?.cid
+            let showsDivider = !isLastItem || (isLastItem && showChannelListDividerOnLastItem)
+
+            ChannelListItemRow(
+                factory: factory,
+                channel: channel,
+                channelName: utils.channelNameFormatter.format(
+                    channel: channel,
+                    forCurrentUserId: currentUserId
+                ) ?? "",
+                showsDivider: showsDivider,
+                isSelected: selectedChannel?.channel.id == channel.id,
+                isDisabled: swipedChannelId == channel.id,
+                selectedChannel: $selectedChannel,
+                swipedChannelId: $swipedChannelId,
+                channelDestination: channelDestination,
+                onItemTap: onItemTap,
+                trailingSwipeRightButtonTapped: trailingSwipeRightButtonTapped,
+                trailingSwipeLeftButtonTapped: trailingSwipeLeftButtonTapped,
+                leadingSwipeButtonTapped: leadingSwipeButtonTapped
+            )
+            .onAppear {
+                if let index = channelIndexLookup[channel.id] {
+                    onItemAppear(index)
+                }
+            }
+            .modifier(ChannelListRowStyleModifier(style: style))
+        }
     }
 
-    /// Builds a channel id to index map once per body evaluation so a row's
-    /// index can be resolved in O(1) on appearance instead of scanning the
-    /// whole array with `firstIndex(where:)`.
-    private func makeChannelIndexLookup() -> [String: Int] {
-        var lookup = [String: Int]()
-        lookup.reserveCapacity(channels.count)
-        for (index, channel) in channels.enumerated() where lookup[channel.id] == nil {
-            lookup[channel.id] = index
-        }
-        return lookup
+    @ViewBuilder
+    private var channelListFooter: some View {
+        factory.makeChannelListFooterView(options: ChannelListFooterViewOptions())
+            .modifier(ChannelListRowStyleModifier(style: style))
     }
+}
+
+private struct ChannelListItemRow<Factory: ViewFactory>: View {
+    let factory: Factory
+    let channel: ChatChannel
+    let channelName: String
+    let showsDivider: Bool
+    let isSelected: Bool
+    let isDisabled: Bool
+    @Binding var selectedChannel: ChannelSelectionInfo?
+    @Binding var swipedChannelId: String?
+    let channelDestination: (@MainActor (ChannelSelectionInfo) -> Factory.ChannelDestination)?
+    let onItemTap: @MainActor (ChatChannel) -> Void
+    let trailingSwipeRightButtonTapped: @MainActor (ChatChannel) -> Void
+    let trailingSwipeLeftButtonTapped: @MainActor (ChatChannel) -> Void
+    let leadingSwipeButtonTapped: @MainActor (ChatChannel) -> Void
+
+    var body: some View {
+        factory.makeChannelListItem(
+            options: ChannelListItemOptions(
+                channel: channel,
+                channelName: channelName,
+                disabled: isDisabled,
+                selectedChannel: $selectedChannel,
+                swipedChannelId: $swipedChannelId,
+                channelDestination: channelDestination,
+                onItemTap: onItemTap,
+                trailingSwipeRightButtonTapped: trailingSwipeRightButtonTapped,
+                trailingSwipeLeftButtonTapped: trailingSwipeLeftButtonTapped,
+                leadingSwipeButtonTapped: leadingSwipeButtonTapped
+            )
+        )
+        .background(factory.makeChannelListItemBackground(
+            options: ChannelListItemBackgroundOptions(
+                channel: channel,
+                isSelected: isSelected
+            )
+        ))
+        .overlay(
+            Group {
+                if showsDivider {
+                    factory.makeChannelListDividerItem(options: ChannelListDividerItemOptions())
+                }
+            },
+            alignment: .bottom
+        )
+    }
+}
+
+private struct ChannelListRowStyleModifier: ViewModifier {
+    let style: ChannelListContainerStyle
+
+    @ViewBuilder
+    func body(content: Content) -> some View {
+        switch style {
+        case .lazyVStack:
+            content
+        case .nativeList:
+            if #available(iOS 15.0, *) {
+                content
+                    .listRowInsets(EdgeInsets())
+                    .listRowSeparator(.hidden)
+                    .listRowBackground(Color.clear)
+            } else {
+                content
+            }
+        }
+    }
+}
+
+/// Builds a channel id to index map once per body evaluation so a row's
+/// index can be resolved in O(1) on appearance instead of scanning the
+/// whole array with `firstIndex(where:)`.
+func channelListIndexLookup(for channels: [ChatChannel]) -> [String: Int] {
+    var lookup = [String: Int]()
+    lookup.reserveCapacity(channels.count)
+    for (index, channel) in channels.enumerated() where lookup[channel.id] == nil {
+        lookup[channel.id] = index
+    }
+    return lookup
 }

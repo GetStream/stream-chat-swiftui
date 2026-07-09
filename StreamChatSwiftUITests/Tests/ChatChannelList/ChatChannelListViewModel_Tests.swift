@@ -68,6 +68,44 @@ import XCTest
     func test_channelListVM_onChannelAppear_loadNextChannelsNotCalled() {
         // Given
         var channels = [ChatChannel]()
+        for index in 0..<20 {
+            channels.append(ChatChannel.mock(cid: ChannelId(type: .messaging, id: "\(index)")))
+        }
+        let channelListController = makeChannelListController(channels: channels)
+        let viewModel = ChatChannelListViewModel(
+            channelListController: channelListController,
+            selectedChannelId: nil
+        )
+
+        // When
+        viewModel.checkForChannels(index: 11)
+
+        // Then
+        XCTAssert(channelListController.loadNextChannelsIsCalled == false)
+    }
+
+    func test_channelListVM_onChannelAppear_loadNextChannelsCalledNearEnd() {
+        // Given
+        var channels = [ChatChannel]()
+        for index in 0..<20 {
+            channels.append(ChatChannel.mock(cid: ChannelId(type: .messaging, id: "\(index)")))
+        }
+        let channelListController = makeChannelListController(channels: channels)
+        let viewModel = ChatChannelListViewModel(
+            channelListController: channelListController,
+            selectedChannelId: nil
+        )
+
+        // When
+        viewModel.checkForChannels(index: 12)
+
+        // Then
+        XCTAssert(channelListController.loadNextChannelsIsCalled == true)
+    }
+
+    func test_channelListVM_onChannelAppear_loadNextChannelsNotCalledWhenFarFromEnd() {
+        // Given
+        var channels = [ChatChannel]()
         for _ in 0..<20 {
             channels.append(ChatChannel.mockDMChannel())
         }

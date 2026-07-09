@@ -247,6 +247,7 @@
 				Tests/ChatChannelList/ChatChannelListItemView_Tests.swift,
 				Tests/ChatChannelList/ChatChannelListItemViewModel_Tests.swift,
 				Tests/ChatChannelList/ChatChannelListTestHelpers.swift,
+				Tests/ChatChannelList/ChatChannelList_Tests.swift,
 				Tests/ChatChannelList/ChatChannelListView_Tests.swift,
 				Tests/ChatChannelList/ChatChannelListViewModel_Tests.swift,
 				Tests/ChatChannelList/EmptyChannelsView_Tests.swift,
