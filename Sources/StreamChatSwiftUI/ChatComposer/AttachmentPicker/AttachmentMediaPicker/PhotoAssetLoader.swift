@@ -55,16 +55,9 @@ import SwiftUI
     }
 
     func assetExceedsAllowedSize(url: URL?) -> Bool {
-        guard let assetURL = url else { return false }
-
-        let didStartAccessing = assetURL.startAccessingSecurityScopedResource()
-        defer {
-            if didStartAccessing {
-                assetURL.stopAccessingSecurityScopedResource()
-            }
-        }
-
-        if let file = try? AttachmentFile(url: assetURL),
+        _ = url?.startAccessingSecurityScopedResource()
+        if let assetURL = url,
+           let file = try? AttachmentFile(url: assetURL),
            file.size >= chatClient.maxAttachmentSize(for: assetURL, fallbackSize: utils.composerConfig.maxAttachmentSize) {
             return true
         } else {
