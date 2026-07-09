@@ -22,6 +22,7 @@ env:
   GITHUB_EVENT_AFTER: ${{ github.event.after }}
 
 permissions:
+  actions: write
   contents: read
   pull-requests: read
 
