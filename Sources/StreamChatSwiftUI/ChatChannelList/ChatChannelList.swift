@@ -130,7 +130,9 @@ public struct ChannelsLazyVStack<Factory: ViewFactory>: View {
     }
 
     public var body: some View {
-        LazyVStack(spacing: 0) {
+        let channelIndexLookup = makeChannelIndexLookup()
+
+        return LazyVStack(spacing: 0) {
             ForEach(channels) { channel in
                 factory.makeChannelListItem(
                     options: ChannelListItemOptions(
@@ -153,9 +155,7 @@ public struct ChannelsLazyVStack<Factory: ViewFactory>: View {
                     )
                 ))
                 .onAppear {
-                    if let index = channels.firstIndex(where: { chatChannel in
-                        chatChannel.id == channel.id
-                    }) {
+                    if let index = channelIndexLookup[channel.id] {
                         onItemAppear(index)
                     }
                 }
@@ -177,5 +177,17 @@ public struct ChannelsLazyVStack<Factory: ViewFactory>: View {
             channel: channel,
             forCurrentUserId: chatClient.currentUserId
         ) ?? ""
+    }
+
+    /// Builds a channel id to index map once per body evaluation so a row's
+    /// index can be resolved in O(1) on appearance instead of scanning the
+    /// whole array with `firstIndex(where:)`.
+    private func makeChannelIndexLookup() -> [String: Int] {
+        var lookup = [String: Int]()
+        lookup.reserveCapacity(channels.count)
+        for (index, channel) in channels.enumerated() where lookup[channel.id] == nil {
+            lookup[channel.id] = index
+        }
+        return lookup
     }
 }
