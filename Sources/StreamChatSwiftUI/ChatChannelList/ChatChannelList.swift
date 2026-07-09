@@ -186,6 +186,7 @@ private struct ChannelListItemsContainer<Factory: ViewFactory>: View {
                     channelListContent(channelIndexLookup: channelIndexLookup)
                 }
                 .listStyle(.plain)
+                .modifier(HideListScrollContentBackgroundModifier())
             }
         }
         .modifier(factory.styles.makeChannelListModifier(options: ChannelListModifierOptions()))
@@ -281,6 +282,16 @@ private struct ChannelListItemRow<Factory: ViewFactory>: View {
             },
             alignment: .bottom
         )
+    }
+}
+
+private struct HideListScrollContentBackgroundModifier: ViewModifier {
+    func body(content: Content) -> some View {
+        if #available(iOS 16.0, *) {
+            content.scrollContentBackground(.hidden)
+        } else {
+            content
+        }
     }
 }
 
