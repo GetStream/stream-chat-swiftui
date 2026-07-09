@@ -567,7 +567,13 @@ import UIKit
     }
 
     private func updateChannels() {
-        channels = controller?.channels ?? [ChatChannel]()
+        let newChannels = controller?.channels ?? [ChatChannel]()
+        // Apply the diff between the current and new channels so unchanged
+        // elements keep their identity and position. This lets `ForEach`
+        // reconcile only the rows that actually moved, were inserted, or were
+        // removed instead of rebuilding every row on each update.
+        let difference = newChannels.difference(from: channels)
+        channels = channels.applying(difference) ?? newChannels
     }
 
     private func handleChannelAppearance() {
