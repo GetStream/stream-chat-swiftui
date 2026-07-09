@@ -90,11 +90,11 @@ public class PhotoAssetLoader: NSObject, ObservableObject {
     }
 }
 
-public extension PHAsset {
-    /// Return a formatted duration string of an asset.
-    var durationString: String {
-        let minutes = Int(duration / 60)
-        let seconds = Int(duration.truncatingRemainder(dividingBy: 60))
+extension TimeInterval {
+    /// Formatted duration string for composer video previews (e.g. "01:23").
+    var composerVideoDurationString: String {
+        let minutes = Int(self / 60)
+        let seconds = Int(truncatingRemainder(dividingBy: 60))
         var minutesString = "\(minutes)"
         var secondsString = "\(seconds)"
         if minutes < 10 {
@@ -105,6 +105,13 @@ public extension PHAsset {
         }
 
         return "\(minutesString):\(secondsString)"
+    }
+}
+
+public extension PHAsset {
+    /// Return a formatted duration string of an asset.
+    var durationString: String {
+        duration.composerVideoDurationString
     }
 }
 

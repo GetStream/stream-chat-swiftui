@@ -2,6 +2,7 @@
 // Copyright © 2026 Stream.io Inc. All rights reserved.
 //
 
+import AVFoundation
 import Combine
 import Photos
 import StreamChat
@@ -602,6 +603,84 @@ open class MessageComposerViewModel: ObservableObject {
         }
         pickerState = .photos
     }
+
+    /// Binding that routes newly picked files through `addFileURLs(_:)`, so that images and
+    /// videos are added as inline media assets rather than always ending up in
+    /// `addedFileURLs`. Pass this (instead of a plain binding to `addedFileURLs`) to the file
+    /// picker so only new picks are classified, leaving removals and draft/edit restores
+    /// (which mutate `addedFileURLs` directly) unaffected.
+    public var pickedFileURLsBinding: Binding<[URL]> {
+        Binding(
+            get: { self.addedFileURLs },
+            set: { newValue in
+                let newlyAdded = newValue.filter { !self.addedFileURLs.contains($0) }
+                self.addFileURLs(newlyAdded)
+            }
+        )
+    }
+
+    /// Appends newly picked files to the composer.
+    ///
+    /// Images and videos are added as media assets (with an inline thumbnail), the same
+    /// way the camera and Photos pickers add them, so they render inline in the composer.
+    /// Other files (and media that can't be read) are added as regular file attachments.
+    public func addFileURLs(_ urls: [URL]) {
+        for url in urls {
+            guard canAddAttachment(with: url) else { continue }
+            if let mediaAsset = Self.mediaAsset(fromPickedFileURL: url) {
+                addedAssets.append(mediaAsset)
+            } else {
+                addedFileURLs.append(url)
+            }
+        }
+    }
+
+    /// Builds a media asset for an image or video picked from the Files/iCloud picker,
+    /// mirroring how camera/Photos picks are already added as inline media. Returns `nil`
+    /// for other files, or if the media can't be read (e.g. a corrupted or not-yet-downloaded
+    /// iCloud file), in which case the caller falls back to a generic file attachment;
+    /// `MessageAttachmentsConverter` still resolves the correct attachment type from the file
+    /// extension when sending it.
+    private static func mediaAsset(fromPickedFileURL url: URL) -> AddedAsset? {
+        _ = url.startAccessingSecurityScopedResource()
+
+        switch AttachmentType(fileExtension: url.pathExtension) {
+        case .image:
+            guard let data = try? Data(contentsOf: url), let image = UIImage(data: data) else { return nil }
+            let scale = image.scale
+            return AddedAsset(
+                image: image,
+                id: UUID().uuidString,
+                url: url,
+                type: .image,
+                originalWidth: Double(image.size.width * scale),
+                originalHeight: Double(image.size.height * scale)
+            )
+        case .video:
+            let asset = AVURLAsset(url: url, options: nil)
+            let imageGenerator = AVAssetImageGenerator(asset: asset)
+            imageGenerator.appliesPreferredTrackTransform = true
+            guard let cgImage = try? imageGenerator.copyCGImage(
+                at: CMTimeMake(value: 0, timescale: 1),
+                actualTime: nil
+            ) else { return nil }
+            let durationSeconds = CMTimeGetSeconds(asset.duration)
+            let duration: TimeInterval? = durationSeconds.isFinite && !durationSeconds.isNaN ? durationSeconds : nil
+            let naturalSize = asset.tracks(withMediaType: .video).first?.naturalSize ?? .zero
+            return AddedAsset(
+                image: UIImage(cgImage: cgImage),
+                id: UUID().uuidString,
+                url: url,
+                type: .video,
+                extraData: duration.map { ["duration": .string($0.composerVideoDurationString)] } ?? [:],
+                originalWidth: Double(naturalSize.width),
+                originalHeight: Double(naturalSize.height),
+                duration: duration
+            )
+        default:
+            return nil
+        }
+    }
     
     public func isImageSelected(with id: String) -> Bool {
         for image in addedAssets {
@@ -995,7 +1074,16 @@ class MessageAttachmentsConverter {
             if let filePayload = file.payload {
                 return AnyAttachmentPayload(payload: filePayload)
             }
-            return try AnyAttachmentPayload(localFileURL: file.url, attachmentType: .file)
+            // Resolve the attachment type from the file's extension as a fallback, so that
+            // images/videos that couldn't be read as inline media (e.g. an undownloaded
+            // iCloud file) are still sent as their proper type instead of a generic file.
+            var attachmentType = AttachmentType(fileExtension: file.url.pathExtension)
+            // Audio files are treated as regular files, since the composer only
+            // supports audio through voice recordings.
+            if attachmentType == .audio {
+                attachmentType = .file
+            }
+            return try AnyAttachmentPayload(localFileURL: file.url, attachmentType: attachmentType)
         }
         attachments += try voiceAssets.map { recording in
             _ = recording.url.startAccessingSecurityScopedResource()

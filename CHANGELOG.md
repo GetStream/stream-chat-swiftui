@@ -10,6 +10,7 @@ _July 03, 2026_
 
 ### 🐞 Fixed
 - Fix the composer attachment picker collapsing the paperclip icon into an arrow while typing when only a single picker item is available [#1496](https://github.com/GetStream/stream-chat-swiftui/pull/1496)
+- Send images and videos picked from the Files/iCloud picker as their proper type so they render inline instead of as downloadable files [#1516](https://github.com/GetStream/stream-chat-swiftui/pull/1516) [#1527](https://github.com/GetStream/stream-chat-swiftui/pull/1527)
 
 ### 🔄 Changed
 
