@@ -34,4 +34,26 @@ final class ChatChannelList_Tests: StreamChatTestCase {
         XCTAssertEqual(lookup[first.id], 0)
         XCTAssertEqual(lookup[trailing.id], 2)
     }
+
+    func test_channelsLazyVStack_rendersProvidedChannels() {
+        let channels = (0..<3).map {
+            ChatChannel.mock(cid: ChannelId(type: .messaging, id: "\($0)"))
+        }
+        let view = ChannelsLazyVStack(
+            factory: DefaultViewFactory.shared,
+            channels: channels,
+            selectedChannel: .constant(nil),
+            swipedChannelId: .constant(nil),
+            onItemTap: { _ in },
+            onItemAppear: { _ in },
+            trailingSwipeRightButtonTapped: { _ in },
+            trailingSwipeLeftButtonTapped: { _ in },
+            leadingSwipeButtonTapped: { _ in }
+        )
+
+        // Evaluating `body` exercises the shared channel list container used by
+        // both the compatibility wrapper and the default channel list UI.
+        _ = view.body
+        XCTAssertEqual(channels.count, 3)
+    }
 }

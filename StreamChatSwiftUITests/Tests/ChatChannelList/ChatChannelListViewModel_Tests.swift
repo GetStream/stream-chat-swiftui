@@ -680,6 +680,50 @@ import XCTest
         cancellable.cancel()
     }
 
+    func test_channelListVM_clearSearch_restoresMainChannelList() {
+        // Given
+        let channel = ChatChannel.mockDMChannel()
+        let channelListController = makeChannelListController(channels: [channel])
+        let viewModel = ChatChannelListViewModel(
+            channelListController: channelListController,
+            selectedChannelId: nil,
+            searchType: .messages
+        )
+        viewModel.searchText = "query"
+        XCTAssertTrue(viewModel.isSearching)
+
+        // When
+        viewModel.searchText = ""
+
+        // Then
+        XCTAssertFalse(viewModel.isSearching)
+        XCTAssertEqual(viewModel.channels.count, 1)
+        XCTAssertEqual(viewModel.channels.first?.id, channel.id)
+    }
+
+    func test_channelListVM_removedChannel_updatesChannelCount() {
+        // Given
+        let first = ChatChannel.mock(cid: ChannelId(type: .messaging, id: "0"))
+        let second = ChatChannel.mock(cid: ChannelId(type: .messaging, id: "1"))
+        let channelListController = makeChannelListController(channels: [first, second])
+        let viewModel = ChatChannelListViewModel(
+            channelListController: channelListController,
+            selectedChannelId: nil
+        )
+
+        // When
+        channelListController.simulate(
+            channels: [first],
+            changes: [
+                .remove(second, index: .init(row: 1, section: 0))
+            ]
+        )
+
+        // Then
+        XCTAssertEqual(viewModel.channels.count, 1)
+        XCTAssertEqual(viewModel.channels.first?.id, first.id)
+    }
+
     // MARK: - private
 
     private func makeChannelListController(
