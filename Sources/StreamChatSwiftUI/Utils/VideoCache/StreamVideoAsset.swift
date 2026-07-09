@@ -12,12 +12,19 @@ final class StreamVideoAsset: AVURLAsset, @unchecked Sendable {
 
     private let loaderDelegate: StreamVideoResourceLoaderDelegate
 
-    init(originalURL: URL, origin: URLRequest, fileExtension: String?, cache: StreamVideoCache) {
+    init(
+        originalURL: URL,
+        origin: URLRequest,
+        fileExtension: String?,
+        cache: StreamVideoCache,
+        sessionConfiguration: URLSessionConfiguration = .default
+    ) {
         let loaderDelegate = StreamVideoResourceLoaderDelegate(
             originalURL: originalURL,
             origin: origin,
             fileExtension: fileExtension,
-            cache: cache
+            cache: cache,
+            sessionConfiguration: sessionConfiguration
         )
         self.loaderDelegate = loaderDelegate
         super.init(url: Self.customSchemeURL(from: originalURL), options: nil)
@@ -41,15 +48,16 @@ final class StreamVideoAsset: AVURLAsset, @unchecked Sendable {
     }
 }
 
-private final class StreamVideoResourceLoaderDelegate: NSObject, AVAssetResourceLoaderDelegate, URLSessionDataDelegate, @unchecked Sendable {
+final class StreamVideoResourceLoaderDelegate: NSObject, AVAssetResourceLoaderDelegate, URLSessionDataDelegate, @unchecked Sendable {
     let queue = DispatchQueue(label: "io.getstream.StreamChatSwiftUI.StreamVideoResourceLoaderDelegate")
 
     private let originalURL: URL
     private let origin: URLRequest
     private let fileExtension: String?
     private let cache: StreamVideoCache
+    private let sessionConfiguration: URLSessionConfiguration
 
-    private var loadingRequests: [AVAssetResourceLoadingRequest] = []
+    private var loadingRequests: [any StreamVideoLoadingRequest] = []
     private var task: URLSessionDataTask?
     private var tempURL: URL?
     private var readURL: URL?
@@ -65,7 +73,7 @@ private final class StreamVideoResourceLoaderDelegate: NSObject, AVAssetResource
     private var session: URLSession?
 
     private func makeSession() -> URLSession {
-        let configuration = URLSessionConfiguration.default
+        let configuration = sessionConfiguration
         configuration.urlCache = nil
         configuration.requestCachePolicy = .reloadIgnoringLocalCacheData
         let delegateQueue = OperationQueue()
@@ -73,11 +81,18 @@ private final class StreamVideoResourceLoaderDelegate: NSObject, AVAssetResource
         return URLSession(configuration: configuration, delegate: self, delegateQueue: delegateQueue)
     }
 
-    init(originalURL: URL, origin: URLRequest, fileExtension: String?, cache: StreamVideoCache) {
+    init(
+        originalURL: URL,
+        origin: URLRequest,
+        fileExtension: String?,
+        cache: StreamVideoCache,
+        sessionConfiguration: URLSessionConfiguration
+    ) {
         self.originalURL = originalURL
         self.origin = origin
         self.fileExtension = fileExtension
         self.cache = cache
+        self.sessionConfiguration = sessionConfiguration
     }
 
     deinit {
@@ -93,22 +108,30 @@ private final class StreamVideoResourceLoaderDelegate: NSObject, AVAssetResource
         _ resourceLoader: AVAssetResourceLoader,
         shouldWaitForLoadingOfRequestedResource loadingRequest: AVAssetResourceLoadingRequest
     ) -> Bool {
+        handle(loadingRequest)
+        return true
+    }
+
+    func handle(_ loadingRequest: any StreamVideoLoadingRequest) {
         guard !isInvalidated else {
             loadingRequest.finishLoading(with: URLError(.cancelled))
-            return true
+            return
         }
         loadingRequests.append(loadingRequest)
         if !redirectsToOrigin {
             startIfNeeded()
         }
         processRequests()
-        return true
     }
 
     func resourceLoader(
         _ resourceLoader: AVAssetResourceLoader,
         didCancel loadingRequest: AVAssetResourceLoadingRequest
     ) {
+        cancel(loadingRequest)
+    }
+
+    func cancel(_ loadingRequest: any StreamVideoLoadingRequest) {
         loadingRequests.removeAll { $0 === loadingRequest }
     }
 
@@ -210,7 +233,7 @@ private final class StreamVideoResourceLoaderDelegate: NSObject, AVAssetResource
             redirectRequestsToOrigin()
             return
         }
-        var completed: [AVAssetResourceLoadingRequest] = []
+        var completed: [any StreamVideoLoadingRequest] = []
         for request in loadingRequests {
             fillContentInformation(for: request)
             if respond(to: request) {
@@ -230,16 +253,16 @@ private final class StreamVideoResourceLoaderDelegate: NSObject, AVAssetResource
         finishSession()
     }
 
-    private func fillContentInformation(for request: AVAssetResourceLoadingRequest) {
-        guard let infoRequest = request.contentInformationRequest, let contentLength else { return }
+    private func fillContentInformation(for request: any StreamVideoLoadingRequest) {
+        guard let infoRequest = request.streamContentInformationRequest, let contentLength else { return }
         infoRequest.contentLength = contentLength
         infoRequest.contentType = contentType
         infoRequest.isByteRangeAccessSupported = false
     }
 
-    private func respond(to request: AVAssetResourceLoadingRequest) -> Bool {
-        guard let dataRequest = request.dataRequest else {
-            return request.contentInformationRequest != nil && contentLength != nil
+    private func respond(to request: any StreamVideoLoadingRequest) -> Bool {
+        guard let dataRequest = request.streamDataRequest else {
+            return request.streamContentInformationRequest != nil && contentLength != nil
         }
         guard let readURL else { return false }
 
@@ -359,6 +382,38 @@ private final class StreamVideoResourceLoaderDelegate: NSObject, AVAssetResource
         let mimeType = header.components(separatedBy: ";").first?.trimmingCharacters(in: .whitespaces) ?? header
         return UTType(mimeType: mimeType)?.identifier
     }
+}
+
+protocol StreamVideoLoadingRequest: AnyObject {
+    var streamContentInformationRequest: StreamVideoContentInformationRequest? { get }
+    var streamDataRequest: StreamVideoDataRequest? { get }
+    var redirect: URLRequest? { get set }
+    var response: URLResponse? { get set }
+    func finishLoading()
+    func finishLoading(with error: Error?)
+}
+
+protocol StreamVideoContentInformationRequest: AnyObject {
+    var contentLength: Int64 { get set }
+    var contentType: String? { get set }
+    var isByteRangeAccessSupported: Bool { get set }
+}
+
+protocol StreamVideoDataRequest: AnyObject {
+    var requestedOffset: Int64 { get }
+    var currentOffset: Int64 { get }
+    var requestedLength: Int { get }
+    var requestsAllDataToEndOfResource: Bool { get }
+    func respond(with data: Data)
+}
+
+extension AVAssetResourceLoadingContentInformationRequest: StreamVideoContentInformationRequest {}
+
+extension AVAssetResourceLoadingDataRequest: StreamVideoDataRequest {}
+
+extension AVAssetResourceLoadingRequest: StreamVideoLoadingRequest {
+    var streamContentInformationRequest: StreamVideoContentInformationRequest? { contentInformationRequest }
+    var streamDataRequest: StreamVideoDataRequest? { dataRequest }
 }
 
 private enum StreamVideoResourceLoaderError: Error {
