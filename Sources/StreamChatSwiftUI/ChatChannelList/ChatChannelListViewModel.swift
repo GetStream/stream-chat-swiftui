@@ -188,7 +188,7 @@ import UIKit
 
         if !loadingNextChannels {
             loadingNextChannels = true
-            controller?.loadNextChannels(limit: 30) { [weak self] _ in
+            controller?.loadNextChannels { [weak self] _ in
                 guard let self = self else { return }
                 self.loadingNextChannels = false
             }
