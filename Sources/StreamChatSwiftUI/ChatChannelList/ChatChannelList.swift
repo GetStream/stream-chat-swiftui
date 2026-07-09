@@ -8,8 +8,9 @@ import SwiftUI
 /// Stateless component for the channel list.
 /// If used directly, you should provide the channel list.
 public struct ChannelList<Factory: ViewFactory>: View {
-    @Injected(\.colors) private var colors
-    
+    @Injected(\.chatClient) private var chatClient
+    @Injected(\.utils) private var utils
+
     private var factory: Factory
     var channels: [ChatChannel]
     @Binding var selectedChannel: ChannelSelectionInfo?
@@ -87,22 +88,15 @@ public struct ChannelList<Factory: ViewFactory>: View {
 
     @available(iOS 15.0, *)
     private var channelsList: some View {
-        ChannelsList(
-            factory: factory,
-            channels: channels,
-            selectedChannel: $selectedChannel,
-            swipedChannelId: $swipedChannelId,
-            onItemTap: onItemTap,
-            onItemAppear: onItemAppear,
-            channelDestination: channelDestination,
-            trailingSwipeRightButtonTapped: trailingSwipeRightButtonTapped,
-            trailingSwipeLeftButtonTapped: trailingSwipeLeftButtonTapped,
-            leadingSwipeButtonTapped: leadingSwipeButtonTapped
-        )
+        channelListItems(style: .nativeList)
     }
 
     private var channelsVStack: some View {
-        ChannelsLazyVStack(
+        channelListItems(style: .lazyVStack)
+    }
+
+    private func channelListItems(style: ChannelListContainerStyle) -> some View {
+        ChannelListItemsContainer(
             factory: factory,
             channels: channels,
             selectedChannel: $selectedChannel,
@@ -112,26 +106,17 @@ public struct ChannelList<Factory: ViewFactory>: View {
             channelDestination: channelDestination,
             trailingSwipeRightButtonTapped: trailingSwipeRightButtonTapped,
             trailingSwipeLeftButtonTapped: trailingSwipeLeftButtonTapped,
-            leadingSwipeButtonTapped: leadingSwipeButtonTapped
+            leadingSwipeButtonTapped: leadingSwipeButtonTapped,
+            currentUserId: chatClient.currentUserId,
+            showChannelListDividerOnLastItem: utils.channelListConfig.showChannelListDividerOnLastItem,
+            style: style
         )
     }
 }
 
 /// LazyVStack displaying list of channels.
 public struct ChannelsLazyVStack<Factory: ViewFactory>: View {
-    @Injected(\.chatClient) private var chatClient
-    @Injected(\.utils) private var utils
-
-    private var factory: Factory
-    var channels: [ChatChannel]
-    @Binding var selectedChannel: ChannelSelectionInfo?
-    @Binding var swipedChannelId: String?
-    private var onItemTap: @MainActor (ChatChannel) -> Void
-    private var onItemAppear: @MainActor (Int) -> Void
-    private var channelDestination: (@MainActor (ChannelSelectionInfo) -> Factory.ChannelDestination)?
-    private var trailingSwipeRightButtonTapped: @MainActor (ChatChannel) -> Void
-    private var trailingSwipeLeftButtonTapped: @MainActor (ChatChannel) -> Void
-    private var leadingSwipeButtonTapped: @MainActor (ChatChannel) -> Void
+    private var content: ChannelList<Factory>
 
     public init(
         factory: Factory,
@@ -145,101 +130,23 @@ public struct ChannelsLazyVStack<Factory: ViewFactory>: View {
         trailingSwipeLeftButtonTapped: @escaping @MainActor (ChatChannel) -> Void,
         leadingSwipeButtonTapped: @escaping @MainActor (ChatChannel) -> Void
     ) {
-        self.factory = factory
-        self.channels = channels
-        self.onItemTap = onItemTap
-        self.onItemAppear = onItemAppear
-        self.channelDestination = channelDestination
-        self.trailingSwipeRightButtonTapped = trailingSwipeRightButtonTapped
-        self.trailingSwipeLeftButtonTapped = trailingSwipeLeftButtonTapped
-        self.leadingSwipeButtonTapped = leadingSwipeButtonTapped
-        _selectedChannel = selectedChannel
-        _swipedChannelId = swipedChannelId
-    }
-
-    public var body: some View {
-        ChannelListItemsContainer(
+        content = ChannelList(
             factory: factory,
             channels: channels,
-            selectedChannel: $selectedChannel,
-            swipedChannelId: $swipedChannelId,
+            selectedChannel: selectedChannel,
+            swipedChannelId: swipedChannelId,
+            scrollable: false,
             onItemTap: onItemTap,
             onItemAppear: onItemAppear,
             channelDestination: channelDestination,
             trailingSwipeRightButtonTapped: trailingSwipeRightButtonTapped,
             trailingSwipeLeftButtonTapped: trailingSwipeLeftButtonTapped,
-            leadingSwipeButtonTapped: leadingSwipeButtonTapped,
-            currentUserId: chatClient.currentUserId,
-            showChannelListDividerOnLastItem: utils.channelListConfig.showChannelListDividerOnLastItem,
-            style: .lazyVStack
+            leadingSwipeButtonTapped: leadingSwipeButtonTapped
         )
-    }
-}
-
-/// Native `List`-backed channel list.
-///
-/// `List` is backed by `UITableView`/`UICollectionView` and truly virtualizes
-/// its rows: unlike `ScrollView { LazyVStack { ForEach } }`, it does not need to
-/// walk the whole view list to compute scroll placement on every layout pass, so
-/// its cost stays flat as the channel count grows via pagination. The row visuals
-/// (background, divider, disabled state) are kept identical to
-/// ``ChannelsLazyVStack``; only the scrolling container changes.
-@available(iOS 15.0, *)
-public struct ChannelsList<Factory: ViewFactory>: View {
-    @Injected(\.chatClient) private var chatClient
-    @Injected(\.utils) private var utils
-
-    private var factory: Factory
-    var channels: [ChatChannel]
-    @Binding var selectedChannel: ChannelSelectionInfo?
-    @Binding var swipedChannelId: String?
-    private var onItemTap: @MainActor (ChatChannel) -> Void
-    private var onItemAppear: @MainActor (Int) -> Void
-    private var channelDestination: (@MainActor (ChannelSelectionInfo) -> Factory.ChannelDestination)?
-    private var trailingSwipeRightButtonTapped: @MainActor (ChatChannel) -> Void
-    private var trailingSwipeLeftButtonTapped: @MainActor (ChatChannel) -> Void
-    private var leadingSwipeButtonTapped: @MainActor (ChatChannel) -> Void
-
-    public init(
-        factory: Factory,
-        channels: [ChatChannel],
-        selectedChannel: Binding<ChannelSelectionInfo?>,
-        swipedChannelId: Binding<String?>,
-        onItemTap: @escaping @MainActor (ChatChannel) -> Void,
-        onItemAppear: @escaping @MainActor (Int) -> Void,
-        channelDestination: (@MainActor (ChannelSelectionInfo) -> Factory.ChannelDestination)? = nil,
-        trailingSwipeRightButtonTapped: @escaping @MainActor (ChatChannel) -> Void,
-        trailingSwipeLeftButtonTapped: @escaping @MainActor (ChatChannel) -> Void,
-        leadingSwipeButtonTapped: @escaping @MainActor (ChatChannel) -> Void
-    ) {
-        self.factory = factory
-        self.channels = channels
-        self.onItemTap = onItemTap
-        self.onItemAppear = onItemAppear
-        self.channelDestination = channelDestination
-        self.trailingSwipeRightButtonTapped = trailingSwipeRightButtonTapped
-        self.trailingSwipeLeftButtonTapped = trailingSwipeLeftButtonTapped
-        self.leadingSwipeButtonTapped = leadingSwipeButtonTapped
-        _selectedChannel = selectedChannel
-        _swipedChannelId = swipedChannelId
     }
 
     public var body: some View {
-        ChannelListItemsContainer(
-            factory: factory,
-            channels: channels,
-            selectedChannel: $selectedChannel,
-            swipedChannelId: $swipedChannelId,
-            onItemTap: onItemTap,
-            onItemAppear: onItemAppear,
-            channelDestination: channelDestination,
-            trailingSwipeRightButtonTapped: trailingSwipeRightButtonTapped,
-            trailingSwipeLeftButtonTapped: trailingSwipeLeftButtonTapped,
-            leadingSwipeButtonTapped: leadingSwipeButtonTapped,
-            currentUserId: chatClient.currentUserId,
-            showChannelListDividerOnLastItem: utils.channelListConfig.showChannelListDividerOnLastItem,
-            style: .nativeList
-        )
+        content
     }
 }
 
@@ -272,18 +179,22 @@ private struct ChannelListItemsContainer<Factory: ViewFactory>: View {
             switch style {
             case .lazyVStack:
                 LazyVStack(spacing: 0) {
-                    channelRows(channelIndexLookup: channelIndexLookup)
-                    channelListFooter
+                    channelListContent(channelIndexLookup: channelIndexLookup)
                 }
             case .nativeList:
                 List {
-                    channelRows(channelIndexLookup: channelIndexLookup)
-                    channelListFooter
+                    channelListContent(channelIndexLookup: channelIndexLookup)
                 }
                 .listStyle(.plain)
             }
         }
         .modifier(factory.styles.makeChannelListModifier(options: ChannelListModifierOptions()))
+    }
+
+    @ViewBuilder
+    private func channelListContent(channelIndexLookup: [String: Int]) -> some View {
+        channelRows(channelIndexLookup: channelIndexLookup)
+        channelListFooter
     }
 
     @ViewBuilder
