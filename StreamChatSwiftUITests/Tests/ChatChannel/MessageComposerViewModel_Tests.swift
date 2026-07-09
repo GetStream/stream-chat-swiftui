@@ -2,6 +2,7 @@
 // Copyright © 2026 Stream.io Inc. All rights reserved.
 //
 
+import AVFoundation
 @testable import StreamChat
 @testable import StreamChatSwiftUI
 @testable import StreamChatTestTools
@@ -93,7 +94,7 @@ import XCTest
         // When
         viewModel.addFileURLs([mockURL])
         let buttonEnabled = viewModel.hasContent
-        
+
         // Then
         XCTAssert(buttonEnabled == true)
         XCTAssertEqual(viewModel.composerAssets.count, 1)
@@ -577,7 +578,7 @@ import XCTest
         viewModel.imageTapped(newAsset) // This one will not be added, default limit is 10.
         let newURL = generateURL()
         viewModel.addFileURLs([newURL])
-        
+
         // Then
         let total = viewModel.composerAssets.count
         XCTAssertEqual(total, 10)
@@ -1393,6 +1394,98 @@ import XCTest
         let imagePayload = try XCTUnwrap(payloads.first?.payload as? ImageAttachmentPayload)
         XCTAssertEqual(imagePayload.originalWidth, 300)
         XCTAssertEqual(imagePayload.originalHeight, 200)
+    }
+
+    func test_addFileURLs_imageURL_addsInlineMediaAssetSentAsImage() throws {
+        let viewModel = makeComposerViewModel()
+        let url = URL.newTemporaryFileURL().appendingPathExtension("png")
+        defer { try? FileManager.default.removeItem(at: url) }
+        try makeImageData().write(to: url)
+
+        viewModel.addFileURLs([url])
+
+        // Rendered inline in the composer as a media asset (not a file chip).
+        XCTAssertEqual(viewModel.composerAssets.count, 1)
+        guard case let .addedAsset(asset) = try XCTUnwrap(viewModel.composerAssets.first) else {
+            return XCTFail("Expected an inline media asset")
+        }
+        XCTAssertEqual(asset.type, .image)
+
+        // Sent as an image attachment.
+        let payloads = try viewModel.convertAddedAssetsToPayloads()
+        XCTAssertEqual(payloads.count, 1)
+        XCTAssertEqual(payloads.first?.type, .image)
+        XCTAssertNotNil(payloads.first?.payload as? ImageAttachmentPayload)
+    }
+
+    func test_addFileURLs_videoURL_addsInlineMediaAssetSentAsVideo() throws {
+        let viewModel = makeComposerViewModel()
+        let url = try makeVideoFileURL()
+        defer { try? FileManager.default.removeItem(at: url) }
+
+        viewModel.addFileURLs([url])
+
+        XCTAssertEqual(viewModel.composerAssets.count, 1)
+        guard case let .addedAsset(asset) = try XCTUnwrap(viewModel.composerAssets.first) else {
+            return XCTFail("Expected an inline media asset")
+        }
+        XCTAssertEqual(asset.type, .video)
+
+        let payloads = try viewModel.convertAddedAssetsToPayloads()
+        XCTAssertEqual(payloads.count, 1)
+        XCTAssertEqual(payloads.first?.type, .video)
+        XCTAssertNotNil(payloads.first?.payload as? VideoAttachmentPayload)
+    }
+
+    func test_addFileURLs_unreadableVideoURL_isStillSentAsVideoAttachment() throws {
+        let viewModel = makeComposerViewModel()
+        let url = URL.newTemporaryFileURL().appendingPathExtension("mp4")
+        defer { try? FileManager.default.removeItem(at: url) }
+        try Data("not a real video".utf8).write(to: url)
+
+        viewModel.addFileURLs([url])
+
+        // No thumbnail could be generated, so it falls back to a file chip in the composer...
+        XCTAssertEqual(viewModel.composerAssets.count, 1)
+        guard case .addedFile = try XCTUnwrap(viewModel.composerAssets.first) else {
+            return XCTFail("Expected a file attachment")
+        }
+
+        // ...but it's still sent as a video attachment, resolved from the file extension.
+        let payloads = try viewModel.convertAddedAssetsToPayloads()
+        XCTAssertEqual(payloads.count, 1)
+        XCTAssertEqual(payloads.first?.type, .video)
+        XCTAssertNotNil(payloads.first?.payload as? VideoAttachmentPayload)
+    }
+
+    func test_addFileURLs_audioURL_isSentAsFileAttachment() throws {
+        let viewModel = makeComposerViewModel()
+        let url = URL.newTemporaryFileURL().appendingPathExtension("mp3")
+        defer { try? FileManager.default.removeItem(at: url) }
+        try Data("mock audio".utf8).write(to: url)
+
+        viewModel.addFileURLs([url])
+        XCTAssertEqual(viewModel.composerAssets.count, 1)
+
+        let payloads = try viewModel.convertAddedAssetsToPayloads()
+        XCTAssertEqual(payloads.count, 1)
+        XCTAssertEqual(payloads.first?.type, .file)
+        XCTAssertNotNil(payloads.first?.payload as? FileAttachmentPayload)
+    }
+
+    func test_addFileURLs_documentURL_isSentAsFileAttachment() throws {
+        let viewModel = makeComposerViewModel()
+        let url = URL.newTemporaryFileURL().appendingPathExtension("pdf")
+        defer { try? FileManager.default.removeItem(at: url) }
+        try Data("mock pdf".utf8).write(to: url)
+
+        viewModel.addFileURLs([url])
+        XCTAssertEqual(viewModel.composerAssets.count, 1)
+
+        let payloads = try viewModel.convertAddedAssetsToPayloads()
+        XCTAssertEqual(payloads.count, 1)
+        XCTAssertEqual(payloads.first?.type, .file)
+        XCTAssertNotNil(payloads.first?.payload as? FileAttachmentPayload)
     }
 
     func test_imagePickerCoordinator_imageSelection_setsOriginalWidthAndHeightOnAsset() throws {
@@ -2466,6 +2559,45 @@ import XCTest
     private func writeMockData(for url: URL) {
         let data = UIImage(systemName: "checkmark")?.pngData()
         try? data?.write(to: url)
+    }
+
+    private func makeImageData() -> Data {
+        UIGraphicsImageRenderer(size: CGSize(width: 10, height: 10)).image { context in
+            UIColor.red.setFill()
+            context.fill(CGRect(x: 0, y: 0, width: 10, height: 10))
+        }.pngData()!
+    }
+
+    /// Writes a real (decodable) one-frame video to a temporary `.mp4` so that a thumbnail
+    /// can be generated, exercising the picked-video path end to end.
+    private func makeVideoFileURL(width: Int = 16, height: Int = 16) throws -> URL {
+        let url = URL.newTemporaryFileURL().appendingPathExtension("mp4")
+        let writer = try AVAssetWriter(outputURL: url, fileType: .mp4)
+        let input = AVAssetWriterInput(
+            mediaType: .video,
+            outputSettings: [
+                AVVideoCodecKey: AVVideoCodecType.h264,
+                AVVideoWidthKey: width,
+                AVVideoHeightKey: height
+            ]
+        )
+        let adaptor = AVAssetWriterInputPixelBufferAdaptor(
+            assetWriterInput: input,
+            sourcePixelBufferAttributes: nil
+        )
+        writer.add(input)
+        writer.startWriting()
+        writer.startSession(atSourceTime: .zero)
+
+        var pixelBuffer: CVPixelBuffer?
+        CVPixelBufferCreate(kCFAllocatorDefault, width, height, kCVPixelFormatType_32ARGB, nil, &pixelBuffer)
+        adaptor.append(try XCTUnwrap(pixelBuffer), withPresentationTime: .zero)
+        input.markAsFinished()
+
+        let expectation = XCTestExpectation(description: "Finish writing video")
+        writer.finishWriting { expectation.fulfill() }
+        wait(for: [expectation], timeout: 5.0)
+        return url
     }
 }
 

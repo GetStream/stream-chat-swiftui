@@ -2,6 +2,7 @@
 // Copyright © 2026 Stream.io Inc. All rights reserved.
 //
 
+import AVFoundation
 import Combine
 import Photos
 import StreamChat
@@ -291,11 +292,59 @@ import SwiftUI
     }
 
     /// Appends the file to the attachments in the composer input view.
+    ///
+    /// Images and videos are added as media assets (with an inline thumbnail), the same
+    /// way the camera and Photos pickers add them, so they render inline in the composer.
+    /// Other files (and media that can't be read) are added as regular file attachments.
     public func addFileURLs(_ urls: [URL]) {
         for url in urls {
             guard canAddAttachment(with: url) else { continue }
-            composerAssets.append(.addedFile(url))
+            composerAssets.append(Self.composerAsset(fromPickedFileURL: url))
         }
+    }
+
+    /// Builds a media asset for an image or video picked from the Files/iCloud picker,
+    /// mirroring `ImagePickerCoordinator`'s handling of camera-captured photos/videos.
+    private static func composerAsset(fromPickedFileURL url: URL) -> ComposerAsset {
+        _ = url.startAccessingSecurityScopedResource()
+
+        switch AttachmentType(fileExtension: url.pathExtension) {
+        case .image:
+            if let data = try? Data(contentsOf: url), let image = UIImage(data: data) {
+                let scale = image.scale
+                return .addedAsset(AddedAsset(
+                    image: image,
+                    id: UUID().uuidString,
+                    url: url,
+                    type: .image,
+                    originalWidth: Double(image.size.width * scale),
+                    originalHeight: Double(image.size.height * scale)
+                ))
+            }
+        case .video:
+            let asset = AVURLAsset(url: url, options: nil)
+            let imageGenerator = AVAssetImageGenerator(asset: asset)
+            imageGenerator.appliesPreferredTrackTransform = true
+            if let cgImage = try? imageGenerator.copyCGImage(
+                at: CMTimeMake(value: 0, timescale: 1),
+                actualTime: nil
+            ) {
+                let duration = CMTimeGetSeconds(asset.duration)
+                let naturalSize = asset.tracks(withMediaType: .video).first?.naturalSize ?? .zero
+                return .addedAsset(AddedAsset(
+                    image: UIImage(cgImage: cgImage),
+                    id: UUID().uuidString,
+                    url: url,
+                    type: .video,
+                    originalWidth: Double(naturalSize.width),
+                    originalHeight: Double(naturalSize.height),
+                    duration: duration.isFinite ? duration : nil
+                ))
+            }
+        default:
+            break
+        }
+        return .addedFile(url)
     }
 
     /// Populates the composer with the edited message.
@@ -1154,7 +1203,13 @@ final class FileAddedAsset {
             if let filePayload = file.payload {
                 return AnyAttachmentPayload(payload: filePayload)
             }
-            return try AnyAttachmentPayload(localFileURL: file.url, attachmentType: .file)
+            var attachmentType = AttachmentType(fileExtension: file.url.pathExtension)
+            // Audio files are treated as regular files, since the composer only
+            // supports audio through voice recordings.
+            if attachmentType == .audio {
+                attachmentType = .file
+            }
+            return try AnyAttachmentPayload(localFileURL: file.url, attachmentType: attachmentType)
         }
         attachments += try voiceAssets.map { recording in
             _ = recording.url.startAccessingSecurityScopedResource()
