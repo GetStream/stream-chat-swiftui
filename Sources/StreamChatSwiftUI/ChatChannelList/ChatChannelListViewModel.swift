@@ -58,6 +58,7 @@ import UIKit
             if selectedChannel != nil && newValue == nil {
                 // pop happened, apply the queued changes.
                 if skippedChannelUpdates {
+                    skippedChannelUpdates = false
                     updateChannels()
                 }
             }
@@ -571,6 +572,7 @@ import UIKit
 
     private func handleChannelAppearance() {
         if skippedChannelUpdates {
+            skippedChannelUpdates = false
             updateChannels()
         }
     }

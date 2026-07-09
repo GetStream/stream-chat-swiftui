@@ -563,6 +563,85 @@ import XCTest
         XCTAssertEqual(viewModel.channels.count, 2)
     }
 
+    func test_channelListOptimizedUpdates_whenSelectionCleared_resetsSkippedFlagAndDoesNotReapplyOnFurtherAppearances() {
+        // Given
+        let config = MessageListConfig(updateChannelsFromMessageList: false, iPadSplitViewEnabled: false)
+        streamChat = StreamChat(chatClient: chatClient, utils: Utils(messageListConfig: config))
+        let existingChannel = ChatChannel.mockDMChannel()
+        let channelListController = makeChannelListController(channels: [existingChannel])
+        let viewModel = ChatChannelListViewModel(
+            channelListController: channelListController,
+            selectedChannelId: nil
+        )
+        viewModel.selectedChannel = .init(channel: existingChannel, message: nil)
+        let insertedChannel = ChatChannel.mockDMChannel()
+        channelListController.simulate(
+            channels: [insertedChannel, existingChannel],
+            changes: [.insert(insertedChannel, index: IndexPath(item: 0, section: 0))]
+        )
+        XCTAssertEqual(viewModel.channels.count, 1, "Precondition failed: the update should be skipped while a channel is selected")
+
+        var emissionCount = 0
+        let cancellable = viewModel.$channels.dropFirst().sink { _ in emissionCount += 1 }
+
+        // When: selection is popped, the queued update is applied.
+        viewModel.selectedChannel = nil
+
+        // Then
+        XCTAssertEqual(viewModel.channels.count, 2)
+        XCTAssertEqual(emissionCount, 1, "The queued update should only be applied once")
+
+        // When: more rows appear afterwards, simulating the user scrolling the list.
+        viewModel.checkForChannels(index: 0)
+        viewModel.checkForChannels(index: 1)
+        viewModel.checkForChannels(index: 1)
+
+        // Then: the skipped-updates flag should have been reset, so scrolling shouldn't
+        // keep reassigning (and republishing) `channels` on every row appearance.
+        XCTAssertEqual(emissionCount, 1, "channels should not be reassigned again once the queued update was applied")
+
+        cancellable.cancel()
+    }
+
+    func test_channelListOptimizedUpdates_whenChannelAppears_resetsSkippedFlagAndDoesNotReapplyOnFurtherAppearances() {
+        // Given
+        let config = MessageListConfig(updateChannelsFromMessageList: false, iPadSplitViewEnabled: false)
+        streamChat = StreamChat(chatClient: chatClient, utils: Utils(messageListConfig: config))
+        let existingChannel = ChatChannel.mockDMChannel()
+        let channelListController = makeChannelListController(channels: [existingChannel])
+        let viewModel = ChatChannelListViewModel(
+            channelListController: channelListController,
+            selectedChannelId: nil
+        )
+        viewModel.selectedChannel = .init(channel: existingChannel, message: nil)
+        let insertedChannel = ChatChannel.mockDMChannel()
+        channelListController.simulate(
+            channels: [insertedChannel, existingChannel],
+            changes: [.insert(insertedChannel, index: IndexPath(item: 0, section: 0))]
+        )
+        XCTAssertEqual(viewModel.channels.count, 1, "Precondition failed: the update should be skipped while a channel is selected")
+
+        var emissionCount = 0
+        let cancellable = viewModel.$channels.dropFirst().sink { _ in emissionCount += 1 }
+
+        // When: a row appears (e.g. `onAppear`, without the selection ever being cleared).
+        viewModel.checkForChannels(index: 0)
+
+        // Then: the queued update is applied exactly once.
+        XCTAssertEqual(viewModel.channels.count, 2)
+        XCTAssertEqual(emissionCount, 1)
+
+        // When: more rows appear afterwards, simulating the user scrolling the list.
+        viewModel.checkForChannels(index: 1)
+        viewModel.checkForChannels(index: 1)
+
+        // Then: the skipped-updates flag should have been reset, so further appearances
+        // shouldn't keep reassigning (and republishing) `channels`.
+        XCTAssertEqual(emissionCount, 1, "channels should not be reassigned again once the queued update was applied")
+
+        cancellable.cancel()
+    }
+
     // MARK: - private
 
     private func makeChannelListController(
