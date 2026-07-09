@@ -642,12 +642,7 @@ open class MessageComposerViewModel: ObservableObject {
     /// `MessageAttachmentsConverter` still resolves the correct attachment type from the file
     /// extension when sending it.
     private static func mediaAsset(fromPickedFileURL url: URL) -> AddedAsset? {
-        let didStartAccessing = url.startAccessingSecurityScopedResource()
-        defer {
-            if didStartAccessing {
-                url.stopAccessingSecurityScopedResource()
-            }
-        }
+        _ = url.startAccessingSecurityScopedResource()
 
         switch AttachmentType(fileExtension: url.pathExtension) {
         case .image:
@@ -991,14 +986,9 @@ open class MessageComposerViewModel: ObservableObject {
     
     private func checkAttachmentSize(with url: URL?) -> Bool {
         guard let url = url else { return true }
-
-        let didStartAccessing = url.startAccessingSecurityScopedResource()
-        defer {
-            if didStartAccessing {
-                url.stopAccessingSecurityScopedResource()
-            }
-        }
-
+        
+        _ = url.startAccessingSecurityScopedResource()
+        
         do {
             let fileSize = try AttachmentFile(url: url).size
             let canAdd = fileSize < chatClient.maxAttachmentSize(for: url)
@@ -1080,12 +1070,7 @@ class MessageAttachmentsConverter {
 
         var attachments = try mediaAssets.map { try $0.toAttachmentPayload() }
         attachments += try fileAssets.map { file in
-            let didStartAccessing = file.url.startAccessingSecurityScopedResource()
-            defer {
-                if didStartAccessing {
-                    file.url.stopAccessingSecurityScopedResource()
-                }
-            }
+            _ = file.url.startAccessingSecurityScopedResource()
             if let filePayload = file.payload {
                 return AnyAttachmentPayload(payload: filePayload)
             }
@@ -1101,12 +1086,7 @@ class MessageAttachmentsConverter {
             return try AnyAttachmentPayload(localFileURL: file.url, attachmentType: attachmentType)
         }
         attachments += try voiceAssets.map { recording in
-            let didStartAccessing = recording.url.startAccessingSecurityScopedResource()
-            defer {
-                if didStartAccessing {
-                    recording.url.stopAccessingSecurityScopedResource()
-                }
-            }
+            _ = recording.url.startAccessingSecurityScopedResource()
             var localMetadata = AnyAttachmentLocalMetadata()
             localMetadata.duration = recording.duration
             localMetadata.waveformData = recording.waveform

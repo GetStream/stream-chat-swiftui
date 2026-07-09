@@ -44,13 +44,9 @@ public struct AddedFileAttachmentsView: View {
 
 extension URL {
     var sizeString: String {
-        let didStartAccessing = startAccessingSecurityScopedResource()
-        defer {
-            if didStartAccessing {
-                stopAccessingSecurityScopedResource()
-            }
-        }
+        _ = startAccessingSecurityScopedResource()
         if let file = try? AttachmentFile(url: self) {
+            stopAccessingSecurityScopedResource()
             return file.sizeString
         }
 
