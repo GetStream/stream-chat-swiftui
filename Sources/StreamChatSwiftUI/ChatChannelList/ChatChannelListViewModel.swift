@@ -182,7 +182,7 @@ import UIKit
     public func checkForChannels(index: Int) {
         handleChannelAppearance()
 
-        if index < (controller?.channels.count ?? 0) - 8 {
+        if index < (controller?.channels.count ?? 0) - 15 {
             return
         }
 
