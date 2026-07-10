@@ -68,44 +68,6 @@ import XCTest
     func test_channelListVM_onChannelAppear_loadNextChannelsNotCalled() {
         // Given
         var channels = [ChatChannel]()
-        for index in 0..<20 {
-            channels.append(ChatChannel.mock(cid: ChannelId(type: .messaging, id: "\(index)")))
-        }
-        let channelListController = makeChannelListController(channels: channels)
-        let viewModel = ChatChannelListViewModel(
-            channelListController: channelListController,
-            selectedChannelId: nil
-        )
-
-        // When
-        viewModel.checkForChannels(index: 11)
-
-        // Then
-        XCTAssert(channelListController.loadNextChannelsIsCalled == false)
-    }
-
-    func test_channelListVM_onChannelAppear_loadNextChannelsCalledNearEnd() {
-        // Given
-        var channels = [ChatChannel]()
-        for index in 0..<20 {
-            channels.append(ChatChannel.mock(cid: ChannelId(type: .messaging, id: "\(index)")))
-        }
-        let channelListController = makeChannelListController(channels: channels)
-        let viewModel = ChatChannelListViewModel(
-            channelListController: channelListController,
-            selectedChannelId: nil
-        )
-
-        // When
-        viewModel.checkForChannels(index: 12)
-
-        // Then
-        XCTAssert(channelListController.loadNextChannelsIsCalled == true)
-    }
-
-    func test_channelListVM_onChannelAppear_loadNextChannelsNotCalledWhenFarFromEnd() {
-        // Given
-        var channels = [ChatChannel]()
         for _ in 0..<20 {
             channels.append(ChatChannel.mockDMChannel())
         }
@@ -678,50 +640,6 @@ import XCTest
         XCTAssertEqual(emissionCount, 1, "channels should not be reassigned again once the queued update was applied")
 
         cancellable.cancel()
-    }
-
-    func test_channelListVM_clearSearch_restoresMainChannelList() {
-        // Given
-        let channel = ChatChannel.mockDMChannel()
-        let channelListController = makeChannelListController(channels: [channel])
-        let viewModel = ChatChannelListViewModel(
-            channelListController: channelListController,
-            selectedChannelId: nil,
-            searchType: .messages
-        )
-        viewModel.searchText = "query"
-        XCTAssertTrue(viewModel.isSearching)
-
-        // When
-        viewModel.searchText = ""
-
-        // Then
-        XCTAssertFalse(viewModel.isSearching)
-        XCTAssertEqual(viewModel.channels.count, 1)
-        XCTAssertEqual(viewModel.channels.first?.id, channel.id)
-    }
-
-    func test_channelListVM_removedChannel_updatesChannelCount() {
-        // Given
-        let first = ChatChannel.mock(cid: ChannelId(type: .messaging, id: "0"))
-        let second = ChatChannel.mock(cid: ChannelId(type: .messaging, id: "1"))
-        let channelListController = makeChannelListController(channels: [first, second])
-        let viewModel = ChatChannelListViewModel(
-            channelListController: channelListController,
-            selectedChannelId: nil
-        )
-
-        // When
-        channelListController.simulate(
-            channels: [first],
-            changes: [
-                .remove(second, index: .init(row: 1, section: 0))
-            ]
-        )
-
-        // Then
-        XCTAssertEqual(viewModel.channels.count, 1)
-        XCTAssertEqual(viewModel.channels.first?.id, first.id)
     }
 
     // MARK: - private

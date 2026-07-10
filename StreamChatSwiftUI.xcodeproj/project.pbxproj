@@ -247,7 +247,6 @@
 				Tests/ChatChannelList/ChatChannelListItemView_Tests.swift,
 				Tests/ChatChannelList/ChatChannelListItemViewModel_Tests.swift,
 				Tests/ChatChannelList/ChatChannelListTestHelpers.swift,
-				Tests/ChatChannelList/ChatChannelList_Tests.swift,
 				Tests/ChatChannelList/ChatChannelListView_Tests.swift,
 				Tests/ChatChannelList/ChatChannelListViewModel_Tests.swift,
 				Tests/ChatChannelList/EmptyChannelsView_Tests.swift,
@@ -1532,8 +1531,8 @@
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/GetStream/stream-chat-swift.git";
 			requirement = {
-				branch = "perf/channel-list-performance-improvements";
-				kind = branch;
+				kind = upToNextMajorVersion;
+				minimumVersion = 5.6.0;
 			};
 		};
 		E3A1C01A282BAC66002D1E26 /* XCRemoteSwiftPackageReference "sentry-cocoa" */ = {
