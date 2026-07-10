@@ -41,7 +41,7 @@ import UniformTypeIdentifiers
         hidesCommandsOverlayOnMessageListTap: Bool = true,
         hidesAttachmentsPickersOnMessageListTap: Bool = true,
         attachmentPreviewWidth: CGFloat = 256,
-        videoAttachmentCachingPolicy: VideoAttachmentCachingPolicy = .disabled,
+        videoAttachmentCachingPolicy: VideoAttachmentCachingPolicy? = nil,
         navigationBarDisplayMode: NavigationBarItem.TitleDisplayMode = .inline,
         supportedMessageActions: @escaping @MainActor (SupportedMessageActionsOptions) -> [MessageAction] = MessageAction.defaultActions(for:)
     ) {
@@ -106,8 +106,8 @@ import UniformTypeIdentifiers
     public let markdownSupportEnabled: Bool
     /// The policy describing how video attachments are cached on disk.
     ///
-    /// Caching is disabled by default.
-    public let videoAttachmentCachingPolicy: VideoAttachmentCachingPolicy
+    /// When `nil`, video attachment caching is disabled. This is the default.
+    public let videoAttachmentCachingPolicy: VideoAttachmentCachingPolicy?
     public let userBlockingEnabled: Bool
 
     /// A boolean to enable hiding the commands overlay when tapping the message list.
@@ -152,9 +152,7 @@ import UniformTypeIdentifiers
 /// A policy describing how video attachments are cached on disk.
 public final class VideoAttachmentCachingPolicy: Sendable {
     /// The maximum total size of the video attachment disk cache, in bytes.
-    ///
-    /// Caching is disabled when this is `<= 0`.
-    public let maxCacheSize: Int64
+    public let maxCacheSize: Int
 
     /// The content types eligible for caching.
     ///
@@ -166,15 +164,10 @@ public final class VideoAttachmentCachingPolicy: Sendable {
     /// - Parameters:
     ///   - maxCacheSize: The maximum total size of the disk cache, in bytes. Caching is disabled when `<= 0`.
     ///   - allowedContentTypes: The content types eligible for caching. Defaults to `[.movie]`.
-    public init(maxCacheSize: Int64, allowedContentTypes: Set<UTType> = [.movie]) {
+    public init(maxCacheSize: Int, allowedContentTypes: Set<UTType> = [.movie]) {
         self.maxCacheSize = maxCacheSize
         self.allowedContentTypes = allowedContentTypes
     }
-}
-
-public extension VideoAttachmentCachingPolicy {
-    /// Video attachment caching is disabled. This is the default.
-    static let disabled = VideoAttachmentCachingPolicy(maxCacheSize: 0)
 }
 
 /// Contains information about the message paddings.

@@ -11,16 +11,16 @@ import UniformTypeIdentifiers
     private let url: URL
     private let mediaLoader: MediaLoader
     private let avPlayerProvider: AVPlayerProvider
-    private let cache: StreamVideoCache
-    private let policy: VideoAttachmentCachingPolicy
+    private let cache: StreamVideoCache?
+    private let policy: VideoAttachmentCachingPolicy?
     private let isPlayable: @Sendable (URL) async -> Bool
 
     init(
         url: URL,
         mediaLoader: MediaLoader,
         avPlayerProvider: AVPlayerProvider,
-        cache: StreamVideoCache,
-        policy: VideoAttachmentCachingPolicy,
+        cache: StreamVideoCache?,
+        policy: VideoAttachmentCachingPolicy?,
         isPlayable: @escaping @Sendable (URL) async -> Bool = StreamAVPlayerLoader.isPlayable
     ) {
         self.url = url
@@ -32,13 +32,13 @@ import UniformTypeIdentifiers
     }
 
     func load() async throws -> AVPlayer {
-        let canCache = policy.maxCacheSize > 0 && !url.isFileURL && isContentTypeAllowed(url)
-        let key = url.path
-        let fileExtension = url.pathExtension.isEmpty ? "mp4" : url.pathExtension
-
-        guard canCache else {
+        guard let cache, let policy, policy.maxCacheSize > 0,
+              !url.isFileURL, isContentTypeAllowed(url, policy: policy) else {
             return try await loadFromRemote()
         }
+
+        let key = url.path
+        let fileExtension = url.pathExtension.isEmpty ? "mp4" : url.pathExtension
 
         if let localURL = await cache.completedFileURL(forKey: key, fileExtension: fileExtension) {
             if await isPlayable(localURL) {
@@ -65,7 +65,7 @@ import UniformTypeIdentifiers
         return try await loadPlayer(from: MediaLoaderVideoAsset(asset: asset))
     }
 
-    private func isContentTypeAllowed(_ url: URL) -> Bool {
+    private func isContentTypeAllowed(_ url: URL, policy: VideoAttachmentCachingPolicy) -> Bool {
         guard let type = UTType(filenameExtension: url.pathExtension.lowercased()) else { return false }
         return policy.allowedContentTypes.contains { type.conforms(to: $0) }
     }

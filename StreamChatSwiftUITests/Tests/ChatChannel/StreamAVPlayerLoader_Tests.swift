@@ -38,7 +38,7 @@ final class StreamAVPlayerLoader_Tests: XCTestCase {
         let mediaLoader = MediaLoaderSpy(videoAssetResult: .success(MediaLoaderVideoAsset(asset: AVURLAsset(url: url))))
         let player = AVPlayer()
         let provider = AVPlayerProviderSpy(result: .success(player))
-        let loader = makeLoader(url: url, mediaLoader: mediaLoader, avPlayerProvider: provider, policy: .disabled)
+        let loader = makeLoader(url: url, mediaLoader: mediaLoader, avPlayerProvider: provider, policy: nil)
 
         let result = try await load(loader)
 
@@ -185,7 +185,7 @@ final class StreamAVPlayerLoader_Tests: XCTestCase {
         let expectedError = LoaderTestError()
         let mediaLoader = MediaLoaderSpy(videoAssetResult: .success(MediaLoaderVideoAsset(asset: AVURLAsset(url: url))))
         let provider = AVPlayerProviderSpy(result: .failure(expectedError))
-        let loader = makeLoader(url: url, mediaLoader: mediaLoader, avPlayerProvider: provider, policy: .disabled)
+        let loader = makeLoader(url: url, mediaLoader: mediaLoader, avPlayerProvider: provider, policy: nil)
 
         do {
             _ = try await load(loader)
@@ -202,7 +202,7 @@ final class StreamAVPlayerLoader_Tests: XCTestCase {
         mediaLoader: MediaLoaderSpy = MediaLoaderSpy(),
         avPlayerProvider: AVPlayerProviderSpy = AVPlayerProviderSpy(),
         cache: StreamVideoCache? = nil,
-        policy: VideoAttachmentCachingPolicy = VideoAttachmentCachingPolicy(maxCacheSize: 1_000_000),
+        policy: VideoAttachmentCachingPolicy? = VideoAttachmentCachingPolicy(maxCacheSize: 1_000_000),
         isPlayable: @escaping @Sendable (URL) async -> Bool = { _ in true }
     ) -> StreamAVPlayerLoader {
         StreamAVPlayerLoader(
