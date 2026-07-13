@@ -230,8 +230,6 @@
 				Tests/ChatChannel/ReactionsDetailViewModel_Tests.swift,
 				Tests/ChatChannel/ReactionsOverlayView_Tests.swift,
 				Tests/ChatChannel/ReactionsView_Tests.swift,
-				Tests/ChatChannel/StreamAVPlayerLoader_Tests.swift,
-				Tests/ChatChannel/StreamVideoAsset_Tests.swift,
 				Tests/ChatChannel/Suggestions/CommandsHandler_Tests.swift,
 				Tests/ChatChannel/Suggestions/CommandSuggestionsView_Tests.swift,
 				Tests/ChatChannel/Suggestions/InstantCommandsHandler_Tests.swift,
@@ -284,7 +282,6 @@
 				Tests/Utils/SortReactions_Tests.swift,
 				Tests/Utils/StreamChat_Utils_Tests.swift,
 				Tests/Utils/StreamImageDownloader_Tests.swift,
-				Tests/Utils/StreamVideoCache_Tests.swift,
 				Tests/Utils/StringExtensions_Tests.swift,
 				Tests/Utils/URLUtils_Tests.swift,
 				Tests/Utils/ViewFactory_Tests.swift,
@@ -1537,8 +1534,8 @@
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/GetStream/stream-chat-swift.git";
 			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 5.6.0;
+				kind = branch;
+				branch = "feature/cachingavplayer";
 			};
 		};
 		E3A1C01A282BAC66002D1E26 /* XCRemoteSwiftPackageReference "sentry-cocoa" */ = {

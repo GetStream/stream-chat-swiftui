@@ -5,7 +5,6 @@
 import CoreGraphics
 import StreamChat
 import SwiftUI
-import UniformTypeIdentifiers
 
 /// Configuration for the message list.
 @MainActor public final class MessageListConfig {
@@ -147,27 +146,6 @@ import UniformTypeIdentifiers
     /// - Parameter options: the options for getting supported message actions.
     /// - Returns: list of `MessageAction` items.
     public var supportedMessageActions: @MainActor (SupportedMessageActionsOptions) -> [MessageAction]
-}
-
-/// A policy describing how video attachments are cached on disk.
-public final class VideoAttachmentCachingPolicy: Sendable {
-    /// The maximum total size of the video attachment disk cache, in bytes.
-    public let maxCacheSize: Int
-
-    /// The content types eligible for caching.
-    ///
-    /// Defaults to `[.movie]`, which caches standard video files (mp4, mov, …) while
-    /// excluding HLS playlists (`.m3u8`).
-    public let allowedContentTypes: Set<UTType>
-
-    /// Creates a video attachment caching policy.
-    /// - Parameters:
-    ///   - maxCacheSize: The maximum total size of the disk cache, in bytes. Caching is disabled when `<= 0`.
-    ///   - allowedContentTypes: The content types eligible for caching. Defaults to `[.movie]`.
-    public init(maxCacheSize: Int, allowedContentTypes: Set<UTType> = [.movie]) {
-        self.maxCacheSize = maxCacheSize
-        self.allowedContentTypes = allowedContentTypes
-    }
 }
 
 /// Contains information about the message paddings.
