@@ -1883,6 +1883,39 @@ import XCTest
         XCTAssertEqual(viewModel.text, "text")
     }
 
+    func test_messageComposerVM_fillDraftMessage_doesNotSendKeystrokeEvent() {
+        // Given
+        let draftMessage = DraftMessage.mock(text: "Draft text")
+        let channelController = makeChannelController()
+        channelController.channel_mock = .mock(cid: channelController.cid!, draftMessage: draftMessage)
+        let viewModel = makeComposerDraftsViewModel(
+            channelController: channelController,
+            messageController: nil
+        )
+
+        // When
+        viewModel.fillDraftMessage()
+
+        // Then
+        XCTAssertEqual(viewModel.text, "Draft text")
+        XCTAssertEqual(channelController.sendKeystrokeEvent_callCount, 0)
+    }
+
+    func test_messageComposerVM_whenUserTypes_sendsKeystrokeEvent() {
+        // Given
+        let channelController = makeChannelController()
+        let viewModel = makeComposerDraftsViewModel(
+            channelController: channelController,
+            messageController: nil
+        )
+
+        // When
+        viewModel.text = "Hello"
+
+        // Then
+        XCTAssertEqual(channelController.sendKeystrokeEvent_callCount, 1)
+    }
+
     func test_messageComposerVM_updateDraftMessage() {
         // Given
         let channelController = makeChannelController()
