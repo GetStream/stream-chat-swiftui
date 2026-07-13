@@ -352,16 +352,16 @@ struct StreamVideoPlayer: View {
         }
     }
 
-    @MainActor private func loadPlayer() {
-        let loader = StreamAVPlayerLoader(
-            url: url,
-            mediaLoader: utils.mediaLoader,
-            avPlayerProvider: utils.avPlayerProvider,
-            cache: utils.videoAttachmentDiskCache,
-            policy: utils.messageListConfig.videoAttachmentCachingPolicy
-        )
+    private func loadPlayer() {
         Task { @MainActor in
             do {
+                let loader = StreamAVPlayerLoader(
+                    url: url,
+                    mediaLoader: utils.mediaLoader,
+                    avPlayerProvider: utils.avPlayerProvider,
+                    cache: utils.videoAttachmentDiskCache,
+                    policy: utils.messageListConfig.videoAttachmentCachingPolicy
+                )
                 let player = try await loader.load()
                 guard isVisible else { return }
                 avPlayer = player
