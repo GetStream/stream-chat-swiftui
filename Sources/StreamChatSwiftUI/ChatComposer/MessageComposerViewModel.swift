@@ -204,9 +204,6 @@ import SwiftUI
     
     private var timer: Timer?
 
-    /// `true` while ``fillDraftMessage()`` is populating the composer from an
-    /// existing draft, so the resulting `text`/asset assignments don't trigger
-    /// typing events as if the user had typed them.
     private var isPopulatingDraft = false
 
     private var isSlowModeDisabled: Bool {
@@ -403,9 +400,6 @@ import SwiftUI
         let availableCommands = channelController.channel?.config.commands ?? []
         let command = availableCommands.first { composerCommand?.id == "/\($0.name)" }
 
-        // Skips the resave (new local id + network request) when the composer
-        // still matches the existing draft, e.g. the channel was opened and
-        // closed again without any edits.
         guard isDraftUpdateNeeded(
             quotedMessageId: quotedMessage?.id,
             isSilent: isSilent,
