@@ -34,7 +34,7 @@ final class MentionSuggestionsView_Tests: StreamChatTestCase {
         [
             .here,
             .channel,
-            .role(Role(name: "admin")),
+            .role(Role(createdAt: .unique, custom: false, name: "admin", scopes: [], updatedAt: .unique)),
             .group(.mock(id: "g1", name: "Dream Team", memberCount: 4)),
             .user(.mock(id: "u1", name: "Elena Barros"))
         ]

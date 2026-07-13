@@ -737,7 +737,7 @@ import XCTest
         // When
         viewModel.checkForMentionedUsers(
             commandId: "mentions",
-            extraData: ["mentionSuggestion": MentionSuggestion.role(Role(name: "admin"))]
+            extraData: ["mentionSuggestion": MentionSuggestion.role(Role(createdAt: .unique, custom: false, name: "admin", scopes: [], updatedAt: .unique))]
         )
 
         // Then
@@ -2389,7 +2389,7 @@ import XCTest
         )
         viewModel.checkForMentionedUsers(
             commandId: "mentions",
-            extraData: ["mentionSuggestion": MentionSuggestion.role(Role(name: "admin"))]
+            extraData: ["mentionSuggestion": MentionSuggestion.role(Role(createdAt: .unique, custom: false, name: "admin", scopes: [], updatedAt: .unique))]
         )
         viewModel.checkForMentionedUsers(
             commandId: "mentions",

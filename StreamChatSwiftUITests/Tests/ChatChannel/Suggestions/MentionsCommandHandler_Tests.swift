@@ -117,7 +117,7 @@ import XCTest
         let text = Box("@mo")
         let caret = Box(3)
         let command = Box<ComposerCommand?>(mentionsCommand(text: "mo", range: NSRange(location: 1, length: 2)))
-        let suggestion = MentionSuggestion.role(Role(name: "moderator"))
+        let suggestion = MentionSuggestion.role(Role(createdAt: .unique, custom: false, name: "moderator", scopes: [], updatedAt: .unique))
 
         // When
         handler.handleCommand(
@@ -199,7 +199,7 @@ import XCTest
             .user(.mock(id: .unique, name: "Martin")),
             .here,
             .channel,
-            .role(Role(name: "admin")),
+            .role(Role(createdAt: .unique, custom: false, name: "admin", scopes: [], updatedAt: .unique)),
             .group(makeGroup(name: "Dream Team"))
         ])
         let handler = makeHandler(provider: provider)
