@@ -399,10 +399,23 @@ import SwiftUI
         guard utils.messageListConfig.draftMessagesEnabled && hasContent else {
             return
         }
-        let attachments = try? convertAddedAssetsToPayloads()
         let mentionedUserIds = mentionedUsers.map(\.id)
         let availableCommands = channelController.channel?.config.commands ?? []
         let command = availableCommands.first { composerCommand?.id == "/\($0.name)" }
+
+        // Skips the resave (new local id + network request) when the composer
+        // still matches the existing draft, e.g. the channel was opened and
+        // closed again without any edits.
+        guard isDraftUpdateNeeded(
+            quotedMessageId: quotedMessage?.id,
+            isSilent: isSilent,
+            mentionedUserIds: mentionedUserIds,
+            command: command?.name
+        ) else {
+            return
+        }
+
+        let attachments = try? convertAddedAssetsToPayloads()
 
         if let messageController {
             messageController.updateDraftReply(
@@ -427,6 +440,28 @@ import SwiftUI
             command: command,
             extraData: extraData
         )
+    }
+
+    /// Compares the composer's current content against the existing draft
+    /// (if any) to determine whether it actually needs to be saved again.
+    private func isDraftUpdateNeeded(
+        quotedMessageId: MessageId?,
+        isSilent: Bool,
+        mentionedUserIds: [UserId],
+        command: String?
+    ) -> Bool {
+        guard let draftMessage else {
+            return true
+        }
+        if messageText != draftMessage.text { return true }
+        if isSilent != draftMessage.isSilent { return true }
+        if showReplyInChannel != draftMessage.showReplyInChannel { return true }
+        if quotedMessageId != draftMessage.quotedMessage?.id { return true }
+        if command != draftMessage.command { return true }
+        if Set(mentionedUserIds) != Set(draftMessage.mentionedUsers.map(\.id)) { return true }
+        let currentAttachmentsCount = composerAssets.count + addedCustomAttachments.count + addedVoiceRecordings.count
+        if currentAttachmentsCount != draftMessage.attachments.count { return true }
+        return false
     }
 
     /// Deletes the draft message locally and on the server if it exists.
