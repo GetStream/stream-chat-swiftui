@@ -209,7 +209,6 @@ lane :test_ui do |options|
     result_bundle: true,
     devices: options[:device],
     build_for_testing: options[:build_for_testing],
-    disable_xcpretty: options[:build_for_testing].to_s == 'true',
     skip_build: options[:skip_build],
     number_of_retries: options[:record].to_s.empty? ? 1 : nil,
     fail_build: !record_mode
