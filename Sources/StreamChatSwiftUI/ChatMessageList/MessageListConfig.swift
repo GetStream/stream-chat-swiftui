@@ -42,7 +42,7 @@ import SwiftUI
         attachmentPreviewWidth: CGFloat = 256,
         videoAttachmentCachingPolicy: VideoAttachmentCachingPolicy? = nil,
         navigationBarDisplayMode: NavigationBarItem.TitleDisplayMode = .inline,
-        supportedMessageActions: @escaping @MainActor (SupportedMessageActionsOptions) -> [MessageAction] = MessageAction.defaultActions(for:)
+        supportedMessageActions: @escaping @MainActor (SupportedMessageActionsOptions) -> [MessageAction] = { MessageAction.defaultActions(for: $0) }
     ) {
         self.messageListType = messageListType
         self.typingIndicatorPlacement = typingIndicatorPlacement
