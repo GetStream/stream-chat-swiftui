@@ -1531,7 +1531,7 @@
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/GetStream/stream-chat-swift.git";
 			requirement = {
-				branch = "perf/channel-list-performance-improvements";
+				branch = develop;
 				kind = branch;
 			};
 		};
