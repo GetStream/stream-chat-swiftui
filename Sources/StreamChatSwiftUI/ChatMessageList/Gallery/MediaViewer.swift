@@ -352,7 +352,7 @@ struct StreamVideoPlayer: View {
         }
     }
 
-    private func loadPlayer() {
+    @MainActor private func loadPlayer() {
         let loader = StreamAVPlayerLoader(
             url: url,
             mediaLoader: utils.mediaLoader,
