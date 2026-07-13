@@ -32,7 +32,9 @@ import SwiftUI
         didSet {
             if text != "" {
                 checkTypingSuggestions()
-                channelController.sendKeystrokeEvent()
+                if !isPopulatingDraft {
+                    channelController.sendKeystrokeEvent()
+                }
             } else {
                 if composerCommand?.displayInfo?.isInstant == false {
                     withAnimation(.easeInOut(duration: 0.2)) {
@@ -201,6 +203,12 @@ import SwiftUI
     )
     
     private var timer: Timer?
+
+    /// `true` while ``fillDraftMessage()`` is populating the composer from an
+    /// existing draft, so the resulting `text`/asset assignments don't trigger
+    /// typing events as if the user had typed them.
+    private var isPopulatingDraft = false
+
     private var isSlowModeDisabled: Bool {
         channelController.channel?.ownCapabilities.contains("skip-slow-mode") == true
     }
@@ -369,6 +377,7 @@ import SwiftUI
             return
         }
 
+        isPopulatingDraft = true
         let message = ChatMessage(draft)
         text = message.text
         mentionedUsers = message.mentionedUsers
@@ -377,6 +386,7 @@ import SwiftUI
         selectedRangeLocation = message.text.count
         attachmentsConverter.attachmentsToAssets(message.allAttachments) { [weak self] assets in
             self?.updateComposerAssets(assets)
+            self?.isPopulatingDraft = false
         }
     }
 
