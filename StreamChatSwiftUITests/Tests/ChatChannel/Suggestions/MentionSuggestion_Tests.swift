@@ -13,7 +13,7 @@ final class MentionSuggestion_Tests: StreamChatTestCase {
 
     func test_id_isUniquePerSuggestion() {
         let user = ChatUser.mock(id: "u1", name: "John")
-        let role = Role(name: "admin")
+        let role = Role.mock(name: "admin")
         let group = UserGroup.mock(id: "g1", name: "Dream Team")
 
         XCTAssertEqual(MentionSuggestion.user(user).id, "user-u1")
@@ -29,7 +29,7 @@ final class MentionSuggestion_Tests: StreamChatTestCase {
         XCTAssertTrue(MentionSuggestion.user(.mock(id: "u1")).kind is MentionSuggestion.User)
         XCTAssertTrue(MentionSuggestion.here.kind is MentionSuggestion.Here)
         XCTAssertTrue(MentionSuggestion.channel.kind is MentionSuggestion.Channel)
-        XCTAssertTrue(MentionSuggestion.role(Role(name: "admin")).kind is MentionSuggestion.Role)
+        XCTAssertTrue(MentionSuggestion.role(Role.mock(name: "admin")).kind is MentionSuggestion.Role)
         XCTAssertTrue(MentionSuggestion.group(.mock(id: "g1", name: "Group")).kind is MentionSuggestion.Group)
     }
 
@@ -41,7 +41,7 @@ final class MentionSuggestion_Tests: StreamChatTestCase {
         XCTAssertEqual(handler.mentionText(for: .user(user)), user.mentionText)
         XCTAssertEqual(handler.mentionText(for: .here), "here")
         XCTAssertEqual(handler.mentionText(for: .channel), "channel")
-        XCTAssertEqual(handler.mentionText(for: .role(Role(name: "moderator"))), "moderator")
+        XCTAssertEqual(handler.mentionText(for: .role(Role.mock(name: "moderator"))), "moderator")
         XCTAssertEqual(handler.mentionText(for: .group(.mock(id: "g1", name: "Dream Team"))), "Dream Team")
     }
 

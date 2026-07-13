@@ -738,7 +738,7 @@ import XCTest
         // When
         viewModel.checkForMentionedUsers(
             commandId: "mentions",
-            extraData: ["mentionSuggestion": MentionSuggestion.role(Role(name: "admin"))]
+            extraData: ["mentionSuggestion": MentionSuggestion.role(Role.mock(name: "admin"))]
         )
 
         // Then
@@ -2591,7 +2591,7 @@ import XCTest
         )
         viewModel.checkForMentionedUsers(
             commandId: "mentions",
-            extraData: ["mentionSuggestion": MentionSuggestion.role(Role(name: "admin"))]
+            extraData: ["mentionSuggestion": MentionSuggestion.role(Role.mock(name: "admin"))]
         )
         viewModel.checkForMentionedUsers(
             commandId: "mentions",
