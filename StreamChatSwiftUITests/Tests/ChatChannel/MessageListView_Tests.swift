@@ -205,6 +205,42 @@ import XCTest
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
 
+    func test_messageListView_shouldMessagesStartAtTheTop_fewMessagesWithBottomInset() {
+        // Given
+        let messageListConfig = MessageListConfig(shouldMessagesStartAtTheTop: true)
+        let utils = Utils(dateFormatter: EmptyDateFormatter(), messageListConfig: messageListConfig)
+        streamChat = StreamChat(chatClient: chatClient, utils: utils)
+
+        let channel = ChatChannel.mockDMChannel()
+        let author = ChatUser.mock(id: "martin", name: "Martin")
+        let messages: [ChatMessage] = (0..<3).map { index in
+            .mock(id: "msg\(index)", cid: channel.cid, text: "Message number \(index)", author: author)
+        }
+        let view = MessageListView(
+            factory: DefaultViewFactory.shared,
+            channel: channel,
+            messages: messages,
+            messagesGroupingInfo: [:],
+            scrolledId: .constant(nil),
+            showScrollToLatestButton: .constant(false),
+            quotedMessage: .constant(nil),
+            currentDateString: nil,
+            listId: "listId",
+            isMessageThread: false,
+            shouldShowTypingIndicator: false,
+            bottomInset: 120,
+            onMessageAppear: { _, _ in },
+            onScrollToBottom: {},
+            onLongPress: { _ in }
+        )
+        .applyDefaultSize()
+
+        // Then
+        // The floating composer inset should never appear as a gap between the
+        // messages; they should stay adjacent at the top of the list.
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
+    }
+
     func test_messageListView_shouldMessagesStartAtTheTop_manyMessages() {
         // Given
         let messageListConfig = MessageListConfig(shouldMessagesStartAtTheTop: true)

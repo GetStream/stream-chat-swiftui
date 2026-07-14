@@ -280,8 +280,7 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
                                     onMessageAppear(index, scrollDirection)
                                 }
                             }
-                            .padding(.top, message == messages.first && topAlignedMinHeight != nil ? bottomInset : 0)
-                            .padding(.bottom, message == messages.first && topAlignedMinHeight == nil ? bottomInset : 0)
+                            .padding(.bottom, message == messages.first ? bottomInset : 0)
                             .padding(
                                 .top,
                                 messageDate != nil ?
