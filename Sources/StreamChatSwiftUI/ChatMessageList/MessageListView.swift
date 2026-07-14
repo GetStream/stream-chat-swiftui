@@ -78,8 +78,8 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
         max(messageListConfig.messageDisplayOptions.dateLabelSize, scaledDateLabelSize)
     }
 
-    private let bottomId = "BottomID"
-    private let topId = "TopID"
+    private let bottomAnchor = "BottomID"
+    private let topAnchor = "TopID"
     private let scrollAreaId = "scrollArea"
 
     public init(
@@ -208,10 +208,7 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
                     .frame(height: topAlignedMinHeight != nil ? 0 : nil)
 
                     LazyVStack(spacing: 0) {
-                        Color.clear
-                            .frame(height: 0)
-                            .id(topId)
-                            .accessibilityHidden(true)
+                        topAnchorView
 
                         if shouldShowTypingIndicator {
                             factory.makeInlineTypingIndicatorView(
@@ -256,17 +253,18 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
                             .padding(.bottom, message == messages.first ? bottomInset : 0)
                             .padding(
                                 .top,
-                                messageDate != nil ?
-                                    offsetForDateIndicator(
-                                        showsLastInGroupInfo: showsLastInGroupInfo,
-                                        showUnreadSeparator: showUnreadSeparator,
-                                        showThreadRepliesSeparator: showThreadRepliesSeparator
-                                    ) :
-                                    additionalTopPadding(
-                                        showsLastInGroupInfo: showsLastInGroupInfo,
-                                        showUnreadSeparator: showUnreadSeparator,
-                                        showThreadRepliesSeparator: showThreadRepliesSeparator
-                                    )
+                                (message == messages.last && topAlignedMinHeight != nil ? tokens.spacingXxs : 0)
+                                    + (messageDate != nil ?
+                                        offsetForDateIndicator(
+                                            showsLastInGroupInfo: showsLastInGroupInfo,
+                                            showUnreadSeparator: showUnreadSeparator,
+                                            showThreadRepliesSeparator: showThreadRepliesSeparator
+                                        ) :
+                                        additionalTopPadding(
+                                            showsLastInGroupInfo: showsLastInGroupInfo,
+                                            showUnreadSeparator: showUnreadSeparator,
+                                            showThreadRepliesSeparator: showThreadRepliesSeparator
+                                        ))
                             )
                             .overlay(
                                 (messageDate != nil || showsLastInGroupInfo || showUnreadSeparator || showThreadRepliesSeparator) ?
@@ -322,9 +320,7 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
                     .overlay(
                         VStack {
                             // Workaround to make scrolling to bottom more precise
-                            Color.clear
-                                .frame(height: 0)
-                                .id(bottomId)
+                            bottomAnchorView
 
                             Spacer()
                         }
@@ -399,13 +395,13 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
                             var transaction = Transaction()
                             transaction.disablesAnimations = true
                             withTransaction(transaction) {
-                                scrollView.scrollTo(topId, anchor: .top)
+                                scrollView.scrollTo(topAnchor, anchor: .top)
                             }
                             return
                         }
                         withAnimation {
                             if messages.first?.id == scrolledId {
-                                scrollView.scrollTo(bottomId, anchor: .bottom)
+                                scrollView.scrollTo(bottomAnchor, anchor: .bottom)
                             } else {
                                 scrollView.scrollTo(scrolledId, anchor: messageListConfig.scrollingAnchor)
                             }
@@ -595,6 +591,23 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
             return nil
         }
         return containerHeight
+    }
+
+    // Marks the start of the actual message content, as opposed to
+    // `bottomAnchorView` which stays pinned to the top of the (possibly
+    // enlarged by `TopAlignedFillModifier`) frame. Moves together with the
+    // messages when they are bottom aligned within it.
+    private var topAnchorView: some View {
+        Color.clear
+            .frame(height: 0)
+            .id(topAnchor)
+            .accessibilityHidden(true)
+    }
+
+    private var bottomAnchorView: some View {
+        Color.clear
+            .frame(height: 0)
+            .id(bottomAnchor)
     }
 }
 
