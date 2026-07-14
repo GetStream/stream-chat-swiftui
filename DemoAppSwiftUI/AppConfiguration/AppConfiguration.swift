@@ -22,6 +22,8 @@ final class AppConfiguration {
     var appStyle: AppStyle = .regular
     /// When enabled, releasing a hold-to-record gesture sends the voice message instantly.
     var isVoiceRecordingAutoSendEnabled = false
+    /// When enabled, messages start at the top of the list when there are few messages.
+    var shouldMessagesStartAtTheTop = false
 
     enum AppStyle: String, CaseIterable {
         case regular
@@ -45,7 +47,8 @@ final class AppConfiguration {
             skipEditedMessageLabel: { message in
                 message.extraData["ai_generated"]?.boolValue == true
             },
-            videoAttachmentCachingPolicy: VideoAttachmentCachingPolicy(maxCacheSize: 100 * 1024 * 1024)
+            videoAttachmentCachingPolicy: VideoAttachmentCachingPolicy(maxCacheSize: 100 * 1024 * 1024),
+            shouldMessagesStartAtTheTop: AppConfiguration.default.shouldMessagesStartAtTheTop
         )
     }
 
