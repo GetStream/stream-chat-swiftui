@@ -78,8 +78,8 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
         max(messageListConfig.messageDisplayOptions.dateLabelSize, scaledDateLabelSize)
     }
 
-    private let bottomAnchor = "BottomID"
-    private let topAnchor = "TopID"
+    private let bottomAnchorId = "BottomID"
+    private let topAnchorId = "TopID"
     private let scrollAreaId = "scrollArea"
 
     public init(
@@ -395,13 +395,13 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
                             var transaction = Transaction()
                             transaction.disablesAnimations = true
                             withTransaction(transaction) {
-                                scrollView.scrollTo(topAnchor, anchor: .top)
+                                scrollView.scrollTo(topAnchorId, anchor: .top)
                             }
                             return
                         }
                         withAnimation {
                             if messages.first?.id == scrolledId {
-                                scrollView.scrollTo(bottomAnchor, anchor: .bottom)
+                                scrollView.scrollTo(bottomAnchorId, anchor: .bottom)
                             } else {
                                 scrollView.scrollTo(scrolledId, anchor: messageListConfig.scrollingAnchor)
                             }
@@ -593,21 +593,17 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
         return containerHeight
     }
 
-    // Marks the start of the actual message content, as opposed to
-    // `bottomAnchorView` which stays pinned to the top of the (possibly
-    // enlarged by `TopAlignedFillModifier`) frame. Moves together with the
-    // messages when they are bottom aligned within it.
     private var topAnchorView: some View {
         Color.clear
             .frame(height: 0)
-            .id(topAnchor)
+            .id(topAnchorId)
             .accessibilityHidden(true)
     }
 
     private var bottomAnchorView: some View {
         Color.clear
             .frame(height: 0)
-            .id(bottomAnchor)
+            .id(bottomAnchorId)
     }
 }
 
