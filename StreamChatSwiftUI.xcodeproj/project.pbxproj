@@ -128,6 +128,7 @@
 				Infrastructure/Mocks/MockNetworkURLProtocol.swift,
 				Infrastructure/Mocks/Poll_Mock.swift,
 				Infrastructure/Mocks/RequestRecorderURLProtocol.swift,
+				Infrastructure/Mocks/Role_Mock.swift,
 				Infrastructure/Mocks/TestRequest.swift,
 				Infrastructure/Mocks/VirtualTimer.swift,
 				Infrastructure/Mocks/WebSocketEngineMock.swift,

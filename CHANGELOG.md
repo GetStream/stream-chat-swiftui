@@ -7,6 +7,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Add disk cache for video attachments (`MessageListConfig.videoAttachmentCachingPolicy`) [#1508](https://github.com/GetStream/stream-chat-swiftui/pull/1508)
 ### ⚡️ Performance
 - Fix the channel list rebuilding on every scroll tick after returning from a channel [#1525](https://github.com/GetStream/stream-chat-swiftui/pull/1525)
+- Render channel list dividers as row overlays instead of sibling views [#1529](https://github.com/GetStream/stream-chat-swiftui/pull/1529)
+- Reduce SDK size by 2.5 MB [#1529](https://github.com/GetStream/stream-chat-swiftui/pull/1529)
 
 # [5.6.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/5.6.0)
 _July 03, 2026_

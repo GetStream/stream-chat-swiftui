@@ -738,7 +738,7 @@ import XCTest
         // When
         viewModel.checkForMentionedUsers(
             commandId: "mentions",
-            extraData: ["mentionSuggestion": MentionSuggestion.role(Role(createdAt: .unique, custom: false, name: "admin", scopes: [], updatedAt: .unique))]
+            extraData: ["mentionSuggestion": MentionSuggestion.role(Role.mock(name: "admin"))]
         )
 
         // Then
@@ -1883,6 +1883,39 @@ import XCTest
         XCTAssertEqual(viewModel.text, "text")
     }
 
+    func test_messageComposerVM_fillDraftMessage_doesNotSendKeystrokeEvent() {
+        // Given
+        let draftMessage = DraftMessage.mock(text: "Draft text")
+        let channelController = makeChannelController()
+        channelController.channel_mock = .mock(cid: channelController.cid!, draftMessage: draftMessage)
+        let viewModel = makeComposerDraftsViewModel(
+            channelController: channelController,
+            messageController: nil
+        )
+
+        // When
+        viewModel.fillDraftMessage()
+
+        // Then
+        XCTAssertEqual(viewModel.text, "Draft text")
+        XCTAssertEqual(channelController.sendKeystrokeEvent_callCount, 0)
+    }
+
+    func test_messageComposerVM_whenUserTypes_sendsKeystrokeEvent() {
+        // Given
+        let channelController = makeChannelController()
+        let viewModel = makeComposerDraftsViewModel(
+            channelController: channelController,
+            messageController: nil
+        )
+
+        // When
+        viewModel.text = "Hello"
+
+        // Then
+        XCTAssertEqual(channelController.sendKeystrokeEvent_callCount, 1)
+    }
+
     func test_messageComposerVM_updateDraftMessage() {
         // Given
         let channelController = makeChannelController()
@@ -1922,6 +1955,82 @@ import XCTest
         // Then
         XCTAssertEqual(messageController.updateDraftReply_text, "Draft reply")
         XCTAssertEqual(messageController.updateDraftReply_callCount, 1)
+    }
+
+    func test_messageComposerVM_updateDraftMessage_whenUnchanged_doesNotResave() {
+        // Given
+        let draftMessage = DraftMessage.mock(text: "Draft text")
+        let channelController = makeChannelController()
+        channelController.channel_mock = .mock(cid: channelController.cid!, draftMessage: draftMessage)
+        let viewModel = makeComposerDraftsViewModel(
+            channelController: channelController,
+            messageController: nil
+        )
+        viewModel.fillDraftMessage()
+
+        // When
+        viewModel.updateDraftMessage(quotedMessage: nil)
+
+        // Then
+        XCTAssertEqual(channelController.updateDraftMessage_callCount, 0)
+    }
+
+    func test_messageComposerVM_updateDraftMessage_whenTextChanged_resaves() {
+        // Given
+        let draftMessage = DraftMessage.mock(text: "Draft text")
+        let channelController = makeChannelController()
+        channelController.channel_mock = .mock(cid: channelController.cid!, draftMessage: draftMessage)
+        let viewModel = makeComposerDraftsViewModel(
+            channelController: channelController,
+            messageController: nil
+        )
+        viewModel.fillDraftMessage()
+        viewModel.text = "Edited draft text"
+
+        // When
+        viewModel.updateDraftMessage(quotedMessage: nil)
+
+        // Then
+        XCTAssertEqual(channelController.updateDraftMessage_callCount, 1)
+        XCTAssertEqual(channelController.updateDraftMessage_text, "Edited draft text")
+    }
+
+    func test_messageComposerVM_updateDraftMessage_whenOnlyAttachmentsChanged_resaves() {
+        // Given
+        let draftMessage = DraftMessage.mock(text: "Draft text")
+        let channelController = makeChannelController()
+        channelController.channel_mock = .mock(cid: channelController.cid!, draftMessage: draftMessage)
+        let viewModel = makeComposerDraftsViewModel(
+            channelController: channelController,
+            messageController: nil
+        )
+        viewModel.fillDraftMessage()
+        viewModel.composerAssets = [.addedFile(mockURL)]
+
+        // When
+        viewModel.updateDraftMessage(quotedMessage: nil)
+
+        // Then
+        XCTAssertEqual(channelController.updateDraftMessage_callCount, 1)
+    }
+
+    func test_messageComposerVM_updateDraftMessage_whenQuotedMessageChanged_resaves() {
+        // Given
+        let draftMessage = DraftMessage.mock(text: "Draft text")
+        let channelController = makeChannelController()
+        channelController.channel_mock = .mock(cid: channelController.cid!, draftMessage: draftMessage)
+        let viewModel = makeComposerDraftsViewModel(
+            channelController: channelController,
+            messageController: nil
+        )
+        viewModel.fillDraftMessage()
+        let quotedMessage = ChatMessage.mock(id: .unique, cid: .unique, text: "Quoted message", author: .mock(id: .unique))
+
+        // When
+        viewModel.updateDraftMessage(quotedMessage: quotedMessage)
+
+        // Then
+        XCTAssertEqual(channelController.updateDraftMessage_callCount, 1)
     }
     
     func test_messageComposerVM_whenTextErased_shouldDeleteDraftMessage() {
@@ -2482,7 +2591,7 @@ import XCTest
         )
         viewModel.checkForMentionedUsers(
             commandId: "mentions",
-            extraData: ["mentionSuggestion": MentionSuggestion.role(Role(createdAt: .unique, custom: false, name: "admin", scopes: [], updatedAt: .unique))]
+            extraData: ["mentionSuggestion": MentionSuggestion.role(Role.mock(name: "admin"))]
         )
         viewModel.checkForMentionedUsers(
             commandId: "mentions",

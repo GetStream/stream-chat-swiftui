@@ -32,7 +32,9 @@ import SwiftUI
         didSet {
             if text != "" {
                 checkTypingSuggestions()
-                channelController.sendKeystrokeEvent()
+                if !isPopulatingDraft {
+                    channelController.sendKeystrokeEvent()
+                }
             } else {
                 if composerCommand?.displayInfo?.isInstant == false {
                     withAnimation(.easeInOut(duration: 0.2)) {
@@ -201,6 +203,9 @@ import SwiftUI
     )
     
     private var timer: Timer?
+
+    private var isPopulatingDraft = false
+
     private var isSlowModeDisabled: Bool {
         channelController.channel?.ownCapabilities.contains("skip-slow-mode") == true
     }
@@ -369,6 +374,7 @@ import SwiftUI
             return
         }
 
+        isPopulatingDraft = true
         let message = ChatMessage(draft)
         text = message.text
         mentionedUsers = message.mentionedUsers
@@ -377,6 +383,7 @@ import SwiftUI
         selectedRangeLocation = message.text.count
         attachmentsConverter.attachmentsToAssets(message.allAttachments) { [weak self] assets in
             self?.updateComposerAssets(assets)
+            self?.isPopulatingDraft = false
         }
     }
 
@@ -389,10 +396,20 @@ import SwiftUI
         guard utils.messageListConfig.draftMessagesEnabled && hasContent else {
             return
         }
-        let attachments = try? convertAddedAssetsToPayloads()
         let mentionedUserIds = mentionedUsers.map(\.id)
         let availableCommands = channelController.channel?.config.commands ?? []
         let command = availableCommands.first { composerCommand?.id == "/\($0.name)" }
+
+        guard isDraftUpdateNeeded(
+            quotedMessageId: quotedMessage?.id,
+            isSilent: isSilent,
+            mentionedUserIds: mentionedUserIds,
+            command: command?.name
+        ) else {
+            return
+        }
+
+        let attachments = try? convertAddedAssetsToPayloads()
 
         if let messageController {
             messageController.updateDraftReply(
@@ -417,6 +434,28 @@ import SwiftUI
             command: command,
             extraData: extraData
         )
+    }
+
+    /// Compares the composer's current content against the existing draft
+    /// (if any) to determine whether it actually needs to be saved again.
+    private func isDraftUpdateNeeded(
+        quotedMessageId: MessageId?,
+        isSilent: Bool,
+        mentionedUserIds: [UserId],
+        command: String?
+    ) -> Bool {
+        guard let draftMessage else {
+            return true
+        }
+        if messageText != draftMessage.text { return true }
+        if isSilent != draftMessage.isSilent { return true }
+        if showReplyInChannel != draftMessage.showReplyInChannel { return true }
+        if quotedMessageId != draftMessage.quotedMessage?.id { return true }
+        if command != draftMessage.command { return true }
+        if Set(mentionedUserIds) != Set(draftMessage.mentionedUsers.map(\.id)) { return true }
+        let currentAttachmentsCount = composerAssets.count + addedCustomAttachments.count + addedVoiceRecordings.count
+        if currentAttachmentsCount != draftMessage.attachments.count { return true }
+        return false
     }
 
     /// Deletes the draft message locally and on the server if it exists.

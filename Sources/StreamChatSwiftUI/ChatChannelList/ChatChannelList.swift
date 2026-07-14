@@ -130,8 +130,13 @@ public struct ChannelsLazyVStack<Factory: ViewFactory>: View {
     }
 
     public var body: some View {
+        let shouldRenderLastItemDivider = utils.channelListConfig.showChannelListDividerOnLastItem
+
         LazyVStack(spacing: 0) {
             ForEach(channels) { channel in
+                let isLastItem = channel.cid == channels.last?.cid
+                let showsDivider = !isLastItem || (isLastItem && shouldRenderLastItemDivider)
+
                 factory.makeChannelListItem(
                     options: ChannelListItemOptions(
                         channel: channel,
@@ -152,18 +157,20 @@ public struct ChannelsLazyVStack<Factory: ViewFactory>: View {
                         isSelected: selectedChannel?.channel.id == channel.id
                     )
                 ))
+                .overlay(
+                    Group {
+                        if showsDivider {
+                            factory.makeChannelListDividerItem(options: ChannelListDividerItemOptions())
+                        }
+                    },
+                    alignment: .bottom
+                )
                 .onAppear {
                     if let index = channels.firstIndex(where: { chatChannel in
                         chatChannel.id == channel.id
                     }) {
                         onItemAppear(index)
                     }
-                }
-
-                let isLastItem = channels.last?.cid == channel.cid
-                let shouldRenderLastItemDivider = utils.channelListConfig.showChannelListDividerOnLastItem
-                if !isLastItem || (isLastItem && shouldRenderLastItemDivider) {
-                    factory.makeChannelListDividerItem(options: ChannelListDividerItemOptions())
                 }
             }
 
