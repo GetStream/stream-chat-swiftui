@@ -6,6 +6,7 @@ import AVKit
 import StreamChat
 import StreamChatCommonUI
 import SwiftUI
+import UniformTypeIdentifiers
 
 /// View used for displaying image attachments in a gallery.
 public struct MediaViewer<Factory: ViewFactory>: View {
@@ -317,7 +318,6 @@ public struct MediaViewerToolbarModifier: ViewModifier {
 
 struct StreamVideoPlayer: View {
     @Injected(\.utils) private var utils
-    @Injected(\.chatClient) private var chatClient
 
     let url: URL
 
@@ -342,31 +342,34 @@ struct StreamVideoPlayer: View {
                 avPlayer?.play()
                 return
             }
-            utils.mediaLoader.loadVideoAsset(
-                at: url
-            ) { result in
-                guard isVisible else { return }
-                switch result {
-                case let .success(videoAsset):
-                    utils.avPlayerProvider.player(from: videoAsset) { result in
-                        guard isVisible else { return }
-                        switch result {
-                        case let .success(player):
-                            self.avPlayer = player
-                            try? AVAudioSession.sharedInstance().setCategory(.playback, options: [])
-                            self.avPlayer?.play()
-                        case let .failure(error):
-                            self.error = error
-                        }
-                    }
-                case let .failure(error):
-                    self.error = error
-                }
-            }
+            loadPlayer()
         }
         .onDisappear {
             isVisible = false
             avPlayer?.pause()
+            avPlayer?.currentItem?.asset.cancelLoading()
+            avPlayer = nil
+        }
+    }
+
+    private func loadPlayer() {
+        Task { @MainActor in
+            do {
+                let loader = StreamAVPlayerLoader(
+                    url: url,
+                    mediaLoader: utils.mediaLoader,
+                    avPlayerProvider: utils.avPlayerProvider,
+                    cache: utils.videoAttachmentDiskCache,
+                    policy: utils.messageListConfig.videoAttachmentCachingPolicy
+                )
+                let player = try await loader.load()
+                guard isVisible else { return }
+                avPlayer = player
+                try? AVAudioSession.sharedInstance().setCategory(.playback, options: [])
+                avPlayer?.play()
+            } catch {
+                self.error = error
+            }
         }
     }
 }

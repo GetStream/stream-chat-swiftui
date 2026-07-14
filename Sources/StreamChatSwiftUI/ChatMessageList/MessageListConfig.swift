@@ -40,8 +40,9 @@ import SwiftUI
         hidesCommandsOverlayOnMessageListTap: Bool = true,
         hidesAttachmentsPickersOnMessageListTap: Bool = true,
         attachmentPreviewWidth: CGFloat = 256,
+        videoAttachmentCachingPolicy: VideoAttachmentCachingPolicy? = nil,
         navigationBarDisplayMode: NavigationBarItem.TitleDisplayMode = .inline,
-        supportedMessageActions: @escaping @MainActor (SupportedMessageActionsOptions) -> [MessageAction] = MessageAction.defaultActions(for:)
+        supportedMessageActions: @escaping @MainActor (SupportedMessageActionsOptions) -> [MessageAction] = { MessageAction.defaultActions(for: $0) }
     ) {
         self.messageListType = messageListType
         self.typingIndicatorPlacement = typingIndicatorPlacement
@@ -74,6 +75,7 @@ import SwiftUI
         self.hidesCommandsOverlayOnMessageListTap = hidesCommandsOverlayOnMessageListTap
         self.hidesAttachmentsPickersOnMessageListTap = hidesAttachmentsPickersOnMessageListTap
         self.attachmentPreviewWidth = attachmentPreviewWidth
+        self.videoAttachmentCachingPolicy = videoAttachmentCachingPolicy
         self.navigationBarDisplayMode = navigationBarDisplayMode
         self.supportedMessageActions = supportedMessageActions
     }
@@ -101,6 +103,10 @@ import SwiftUI
     public let localLinkDetectionEnabled: Bool
     public let isMessageEditedLabelEnabled: Bool
     public let markdownSupportEnabled: Bool
+    /// The policy describing how video attachments are cached on disk.
+    ///
+    /// When `nil`, video attachment caching is disabled. This is the default.
+    public let videoAttachmentCachingPolicy: VideoAttachmentCachingPolicy?
     public let userBlockingEnabled: Bool
 
     /// A boolean to enable hiding the commands overlay when tapping the message list.
