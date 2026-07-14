@@ -103,11 +103,6 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
               let contentHeight = messageListContentHeight else {
             return nil
         }
-        // `messageListContentHeight` includes the `bottomInset` padding reserved
-        // for the floating composer (e.g. while the attachment picker or
-        // keyboard is shown), which is not real message content. Excluding it
-        // keeps this regime keyed purely off the messages' own height, so
-        // opening/closing the attachment picker or keyboard never flips it off.
         if contentHeight - bottomInset > containerHeight {
             return nil
         }
@@ -212,13 +207,6 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
 
     public var body: some View {
         if messageListConfig.shouldMessagesStartAtTheTop {
-            // The available height is read synchronously from the same layout
-            // pass and fed straight into `TopAlignedFillModifier`, so the
-            // top-aligned frame can never lag behind the real viewport size.
-            // Measuring it via a preference + state instead lags a frame and, on
-            // first open, could leave the list resting on a stale, too-small
-            // frame — visible as a gap above the first message until an
-            // unrelated layout event (keyboard, attachment picker) fixed it up.
             GeometryReader { proxy in
                 messageListContent(containerHeight: proxy.size.height)
             }
@@ -247,10 +235,6 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
                     .frame(height: topAlignedMinHeight != nil ? 0 : nil)
 
                     LazyVStack(spacing: 0) {
-                        // Marks the start of the actual message content, as opposed to
-                        // `bottomId` which stays pinned to the top of the (possibly
-                        // enlarged by `TopAlignedFillModifier`) frame. Moves together
-                        // with the messages when they are bottom aligned within it.
                         Color.clear
                             .frame(height: 0)
                             .id(topId)
@@ -296,20 +280,6 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
                                     onMessageAppear(index, scrollDirection)
                                 }
                             }
-                            // `bottomInset` reserves room for the floating composer. This
-                            // list is rendered upside-down and flipped, so padding placed
-                            // on the *bottom* edge of the newest message ends up, after
-                            // the flip, as a gap *above* it (between it and the
-                            // second-newest message) rather than below it. That is
-                            // invisible in the normal scrollable regime (it just becomes
-                            // part of the off-screen slack), but in the top aligned
-                            // regime everything is on screen, so opening/closing the
-                            // attachment picker or keyboard would visibly insert/remove a
-                            // gap between the two newest messages and shift the newest one,
-                            // instead of only resizing the trailing space before the
-                            // composer. Padding the *top* edge instead flips which side of
-                            // the message the gap lands on after the mirror, keeping every
-                            // message fixed on screen regardless of `bottomInset`.
                             .padding(.top, message == messages.first && topAlignedMinHeight != nil ? bottomInset : 0)
                             .padding(.bottom, message == messages.first && topAlignedMinHeight == nil ? bottomInset : 0)
                             .padding(
@@ -368,27 +338,11 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
                             )
                             .flippedUpsideDown()
                             .animation(nil, value: messageDate != nil)
-                            // With `shouldMessagesStartAtTheTop`, rows must not use the
-                            // default `.opacity` insertion/removal transition: in the
-                            // top-aligned regime an inserted row and the shrinking
-                            // bottom spacer would animate as two separate changes,
-                            // producing a per-row opacity "smear". Selecting the
-                            // transition by *value* (rather than branching with
-                            // `if`/`else`, and rather than keying off the frequently
-                            // toggling `topAlignedMinHeight`) keeps the row's underlying
-                            // view identity stable, since the config never changes
-                            // mid-animation, while leaving the default behavior
-                            // untouched when the feature is disabled.
                             .transition(messageListConfig.shouldMessagesStartAtTheTop ? .identity : .opacity)
                         }
                         .id(listId)
                     }
                     .modifier(MessageListContentHeightTrackingModifier(enabled: messageListConfig.shouldMessagesStartAtTheTop))
-                    // Applied unconditionally (not gated on the top-aligned
-                    // regime): `minHeight` is a layout no-op once the content is
-                    // taller than the container, and applying it from the very
-                    // first frame means short content is laid out top-aligned
-                    // before `messageListContentHeight` has ever been measured.
                     .modifier(TopAlignedFillModifier(minHeight: containerHeight))
                     .delayedRendering()
                     .modifier(factory.styles.makeMessageListModifier(options: MessageListModifierOptions()))
@@ -470,12 +424,6 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
                             return
                         }
                         if topAlignedMinHeight != nil {
-                            // Messages fit within the list, so there's nothing to
-                            // scroll. Snap to `topId`, which tracks the real start of
-                            // the message content (unlike `bottomId`, which stays
-                            // pinned to the top of the enlarged frame's empty space),
-                            // without animating, so the list stays pinned and never
-                            // scrolls the messages under the navigation bar.
                             var transaction = Transaction()
                             transaction.disablesAnimations = true
                             withTransaction(transaction) {
@@ -494,12 +442,6 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
                 }
                 .accessibilityIdentifier("MessageListScrollView")
                 .transaction { transaction in
-                    // While the messages are top aligned they fit within the list, so
-                    // there is nothing to scroll. Suppress animations for the whole
-                    // scroll view on content updates (e.g. sending a message), since
-                    // animating the row insertion and the top-aligning frame resize as
-                    // two separate animations makes existing messages look like they
-                    // are shifting instead of a new message simply appearing.
                     if topAlignedMinHeight != nil {
                         transaction.disablesAnimations = true
                         transaction.animation = nil
