@@ -82,33 +82,6 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
     private let topId = "TopID"
     private let scrollAreaId = "scrollArea"
 
-    // When `shouldMessagesStartAtTheTop` is enabled and the messages are shorter
-    // than the visible list, the message stack is given a minimum height equal to
-    // the visible list height and its content is bottom aligned (which, after the
-    // list's upside-down flip, places the messages at the top). This acts as an
-    // implicit bottom spacer that fills the remaining space until the messages
-    // reach the full height of the view, and can never overflow: adding a message
-    // while the content is shorter than the list simply shrinks the empty space,
-    // without shifting the existing messages or spilling under the navigation bar.
-    //
-    // Returns the container height only while this top-aligned regime is active:
-    // `messageListContentHeight` (the stack's own, unclamped natural height) is
-    // only used to decide whether the regime is currently active, so it never
-    // feeds back into its own measurement. Once real content grows past the list
-    // height, this returns `nil` again and the list behaves like a normal,
-    // scrollable inverted list (including regular scroll/insertion animations).
-    private func resolveTopAlignedMinHeight(containerHeight: CGFloat?) -> CGFloat? {
-        guard messageListConfig.shouldMessagesStartAtTheTop,
-              let containerHeight,
-              let contentHeight = messageListContentHeight else {
-            return nil
-        }
-        if contentHeight - bottomInset > containerHeight {
-            return nil
-        }
-        return containerHeight
-    }
-
     public init(
         factory: Factory,
         channel: ChatChannel,
@@ -595,6 +568,33 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
         } else {
             onLongPress(messageDisplayInfo)
         }
+    }
+
+    // When `shouldMessagesStartAtTheTop` is enabled and the messages are shorter
+    // than the visible list, the message stack is given a minimum height equal to
+    // the visible list height and its content is bottom aligned (which, after the
+    // list's upside-down flip, places the messages at the top). This acts as an
+    // implicit bottom spacer that fills the remaining space until the messages
+    // reach the full height of the view, and can never overflow: adding a message
+    // while the content is shorter than the list simply shrinks the empty space,
+    // without shifting the existing messages or spilling under the navigation bar.
+    //
+    // Returns the container height only while this top-aligned regime is active:
+    // `messageListContentHeight` (the stack's own, unclamped natural height) is
+    // only used to decide whether the regime is currently active, so it never
+    // feeds back into its own measurement. Once real content grows past the list
+    // height, this returns `nil` again and the list behaves like a normal,
+    // scrollable inverted list (including regular scroll/insertion animations).
+    private func resolveTopAlignedMinHeight(containerHeight: CGFloat?) -> CGFloat? {
+        guard messageListConfig.shouldMessagesStartAtTheTop,
+              let containerHeight,
+              let contentHeight = messageListContentHeight else {
+            return nil
+        }
+        if contentHeight - bottomInset > containerHeight {
+            return nil
+        }
+        return containerHeight
     }
 }
 
