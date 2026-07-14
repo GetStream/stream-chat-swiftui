@@ -308,7 +308,7 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
                             )
                             .flippedUpsideDown()
                             .animation(nil, value: messageDate != nil)
-                            .transition(messageListConfig.shouldMessagesStartAtTheTop ? .identity : .opacity)
+                            .transition(topAlignedMinHeight != nil ? .identity : .opacity)
                         }
                         .id(listId)
                     }
