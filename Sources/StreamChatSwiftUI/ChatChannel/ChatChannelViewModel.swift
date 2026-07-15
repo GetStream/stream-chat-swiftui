@@ -879,8 +879,7 @@ import SwiftUI
             if messageController == nil {
                 utils.channelControllerFactory.clearCurrentController()
                 cleanupAudioPlayer()
-                let downloader = (utils.mediaLoader as? StreamMediaLoader)?.downloader as? StreamImageDownloader
-                downloader?.trimMemoryCache(toCost: utils.messageListConfig.cacheSizeOnChatDismiss)
+                utils.mediaLoader.trimImageMemoryCache(toCost: utils.messageListConfig.cacheSizeOnChatDismiss)
             }
         }
     }
