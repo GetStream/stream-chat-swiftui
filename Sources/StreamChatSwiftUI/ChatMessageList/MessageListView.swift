@@ -253,18 +253,13 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
                             .padding(.bottom, message == messages.first ? bottomInset : 0)
                             .padding(
                                 .top,
-                                (message == messages.last && messageListConfig.shouldMessagesStartAtTheTop ? tokens.spacingXxs : 0)
-                                    + (messageDate != nil ?
-                                        offsetForDateIndicator(
-                                            showsLastInGroupInfo: showsLastInGroupInfo,
-                                            showUnreadSeparator: showUnreadSeparator,
-                                            showThreadRepliesSeparator: showThreadRepliesSeparator
-                                        ) :
-                                        additionalTopPadding(
-                                            showsLastInGroupInfo: showsLastInGroupInfo,
-                                            showUnreadSeparator: showUnreadSeparator,
-                                            showThreadRepliesSeparator: showThreadRepliesSeparator
-                                        ))
+                                topPadding(
+                                    for: message,
+                                    hasMessageDate: messageDate != nil,
+                                    showsLastInGroupInfo: showsLastInGroupInfo,
+                                    showUnreadSeparator: showUnreadSeparator,
+                                    showThreadRepliesSeparator: showThreadRepliesSeparator
+                                )
                             )
                             .overlay(
                                 (messageDate != nil || showsLastInGroupInfo || showUnreadSeparator || showThreadRepliesSeparator) ?
@@ -478,6 +473,36 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
             && !unreadMessagesBannerShown
             && !isMessageThread
             && !unreadButtonDismissed
+    }
+
+    /// The top padding for a message row, combining the space reserved for the
+    /// date/separator overlay with the extra spacing above the very first
+    /// (oldest) message when messages start at the top of the list.
+    private func topPadding(
+        for message: ChatMessage,
+        hasMessageDate: Bool,
+        showsLastInGroupInfo: Bool,
+        showUnreadSeparator: Bool,
+        showThreadRepliesSeparator: Bool
+    ) -> CGFloat {
+        let overlayPadding = hasMessageDate
+            ? offsetForDateIndicator(
+                showsLastInGroupInfo: showsLastInGroupInfo,
+                showUnreadSeparator: showUnreadSeparator,
+                showThreadRepliesSeparator: showThreadRepliesSeparator
+            )
+            : additionalTopPadding(
+                showsLastInGroupInfo: showsLastInGroupInfo,
+                showUnreadSeparator: showUnreadSeparator,
+                showThreadRepliesSeparator: showThreadRepliesSeparator
+            )
+
+        let isOldestMessage = message == messages.last
+        let topOfListPadding = isOldestMessage && messageListConfig.shouldMessagesStartAtTheTop
+            ? tokens.spacingXxs
+            : 0
+
+        return overlayPadding + topOfListPadding
     }
 
     private func additionalTopPadding(
