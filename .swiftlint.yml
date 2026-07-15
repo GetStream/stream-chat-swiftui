@@ -4,7 +4,6 @@ included:
 excluded:
   - Sources/StreamChatSwiftUI/Generated
   - Sources/StreamChatSwiftUI/StreamSwiftyGif
-  - Sources/StreamChatSwiftUI/StreamNuke
   - vendor/bundle
 
 only_rules:
