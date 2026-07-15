@@ -395,7 +395,7 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
                             var transaction = Transaction()
                             transaction.disablesAnimations = true
                             withTransaction(transaction) {
-                                scrollView.scrollTo(topAnchorId, anchor: .top)
+                                scrollView.scrollTo(bottomAnchorId, anchor: .bottom)
                             }
                             return
                         }
