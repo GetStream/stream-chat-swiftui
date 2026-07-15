@@ -253,7 +253,7 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
                             .padding(.bottom, message == messages.first ? bottomInset : 0)
                             .padding(
                                 .top,
-                                (message == messages.last && topAlignedMinHeight != nil ? tokens.spacingXxs : 0)
+                                (message == messages.last && messageListConfig.shouldMessagesStartAtTheTop ? tokens.spacingXxs : 0)
                                     + (messageDate != nil ?
                                         offsetForDateIndicator(
                                             showsLastInGroupInfo: showsLastInGroupInfo,
