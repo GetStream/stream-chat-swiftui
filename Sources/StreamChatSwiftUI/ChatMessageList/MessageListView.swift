@@ -39,6 +39,10 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
     @State private var unreadMessagesBannerShown = false
     @State private var unreadButtonDismissed = false
     @State private var messageListContentHeight: CGFloat?
+    /// One-way latch: once content has overflowed into regular scrolling,
+    /// keep insert animations / indicators in the overflow regime. Driving
+    /// those from the live fits flag oscillates at the boundary and freezes.
+    @State private var hasLeftTopAlignedRegime = false
 
     private var messageRenderingUtil = MessageRenderingUtil.shared
     private var skipRenderingMessageIds = [String]()
@@ -189,7 +193,9 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
     }
 
     private func messageListContent(containerHeight: CGFloat?) -> some View {
-        let topAlignedMinHeight = resolveTopAlignedMinHeight(containerHeight: containerHeight)
+        // Live fits flag — used only for skip-scrollTo and to latch overflow.
+        // Must never drive a frame, transition, or scroll-indicator flip.
+        let isTopAligned = resolveTopAlignedMinHeight(containerHeight: containerHeight) != nil
         return ZStack {
             ScrollViewReader { scrollView in
                 ScrollView {
@@ -200,12 +206,10 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
                         Color.clear.preference(key: ScrollViewOffsetPreferenceKey.self, value: offset)
                         Color.clear.preference(key: WidthPreferenceKey.self, value: width)
                     }
-                    // A GeometryReader has a 10-point ideal height inside a
-                    // vertical ScrollView. The top-aligned stack already fills
-                    // the container, so that height would create phantom
-                    // overflow and allow the messages to scroll under the
-                    // navigation bar.
-                    .frame(height: topAlignedMinHeight != nil ? 0 : nil)
+                    // Always zero while the feature is on — never gate on fits.
+                    // Flipping 0↔nil from the regime resized content mid-frame
+                    // and locked the layout into a preference update loop.
+                    .frame(height: messageListConfig.shouldMessagesStartAtTheTop ? 0 : nil)
 
                     LazyVStack(spacing: 0) {
                         topAnchorView
@@ -302,7 +306,11 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
                             )
                             .flippedUpsideDown()
                             .animation(nil, value: messageDate != nil)
-                            .transition(topAlignedMinHeight != nil ? .identity : .opacity)
+                            .transition(
+                                messageListConfig.shouldMessagesStartAtTheTop && !hasLeftTopAlignedRegime
+                                    ? .identity
+                                    : .opacity
+                            )
                         }
                         .id(listId)
 
@@ -344,8 +352,13 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
                     }
                 }
                 .onPreferenceChange(MessageListContentHeightPreferenceKey.self) { value in
-                    if let value, value != messageListContentHeight {
-                        messageListContentHeight = value
+                    // Defer so a fits flip cannot recreate this layout in the
+                    // same frame ("Bound preference tried to update multiple
+                    // times per frame").
+                    DispatchQueue.main.async {
+                        if let value, value != messageListContentHeight {
+                            messageListContentHeight = value
+                        }
                     }
                 }
                 .onPreferenceChange(ScrollViewOffsetPreferenceKey.self) { value in
@@ -362,9 +375,9 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
                             }
                             utils.messageCachingUtils.scrollOffset = offsetValue
                         }
-                        // While the messages are top aligned they fit within the list
-                        // in full, so there is nothing further to reveal by scrolling.
-                        let scrollButtonShown = offsetValue < -20 && topAlignedMinHeight == nil
+                        // Only after the list has overflowed; while top-aligned
+                        // there is nothing further to reveal by scrolling.
+                        let scrollButtonShown = offsetValue < -20 && hasLeftTopAlignedRegime
                         if scrollButtonShown != showScrollToLatestButton {
                             if scrollButtonShown {
                                 withAnimation(.easeOut(duration: 0.18)) {
@@ -385,26 +398,46 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
                         }
                     }
                 }
+                .modifier(
+                    TopAlignedScrollBounceModifier(
+                        enabled: messageListConfig.shouldMessagesStartAtTheTop
+                    )
+                )
                 .flippedUpsideDown()
                 .frame(maxWidth: .infinity)
                 .clipped()
-                .modifier(TopAlignedScrollIndicatorsModifier(hidden: topAlignedMinHeight != nil))
+                .modifier(
+                    TopAlignedScrollIndicatorsModifier(
+                        hidden: messageListConfig.shouldMessagesStartAtTheTop && !hasLeftTopAlignedRegime
+                    )
+                )
                 .onChange(of: scrolledId) { scrolledId in
                     if let scrolledId {
                         let shouldJump = onJumpToMessage?(scrolledId) ?? false
                         if !shouldJump {
                             return
                         }
-                        if topAlignedMinHeight != nil {
+                        let isNewestMessage = scrolledId == messages.first?.messageId
+                            || scrolledId == messages.first?.id
+                        // Fill already positions short content; auto-scrollTo
+                        // newest fights that and causes a visible jump.
+                        if isTopAligned, isNewestMessage {
+                            return
+                        }
+                        if isTopAligned {
                             var transaction = Transaction()
                             transaction.disablesAnimations = true
                             withTransaction(transaction) {
-                                scrollView.scrollTo(bottomAnchorId, anchor: .bottom)
+                                if isNewestMessage {
+                                    scrollView.scrollTo(bottomAnchorId, anchor: .bottom)
+                                } else {
+                                    scrollView.scrollTo(scrolledId, anchor: messageListConfig.scrollingAnchor)
+                                }
                             }
                             return
                         }
                         withAnimation {
-                            if messages.first?.id == scrolledId {
+                            if isNewestMessage {
                                 scrollView.scrollTo(bottomAnchorId, anchor: .bottom)
                             } else {
                                 scrollView.scrollTo(scrolledId, anchor: messageListConfig.scrollingAnchor)
@@ -414,14 +447,22 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
                 }
                 .accessibilityIdentifier("MessageListScrollView")
                 .transaction { transaction in
-                    if topAlignedMinHeight != nil {
+                    if messageListConfig.shouldMessagesStartAtTheTop, !hasLeftTopAlignedRegime {
                         transaction.disablesAnimations = true
                         transaction.animation = nil
                     }
                 }
+                .onChange(of: isTopAligned) { topAligned in
+                    if !topAligned {
+                        hasLeftTopAlignedRegime = true
+                    }
+                }
+                .onChange(of: listId) { _ in
+                    hasLeftTopAlignedRegime = false
+                }
             }
 
-            if showScrollToLatestButton && topAlignedMinHeight == nil {
+            if showScrollToLatestButton && hasLeftTopAlignedRegime {
                 factory.makeScrollToBottomButton(
                     options: ScrollToBottomButtonOptions(
                         unreadCount: channel.unreadCount.messages,
@@ -590,21 +631,11 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
         }
     }
 
-    // When `shouldMessagesStartAtTheTop` is enabled and the messages are shorter
-    // than the visible list, the message stack is given a minimum height equal to
-    // the visible list height and its content is bottom aligned (which, after the
-    // list's upside-down flip, places the messages at the top). This acts as an
-    // implicit bottom spacer that fills the remaining space until the messages
-    // reach the full height of the view, and can never overflow: adding a message
-    // while the content is shorter than the list simply shrinks the empty space,
-    // without shifting the existing messages or spilling under the navigation bar.
-    //
-    // Returns the container height only while this top-aligned regime is active:
-    // `messageListContentHeight` (the stack's own, unclamped natural height) is
-    // only used to decide whether the regime is currently active, so it never
-    // feeds back into its own measurement. Once real content grows past the list
-    // height, this returns `nil` again and the list behaves like a normal,
-    // scrollable inverted list (including regular scroll/insertion animations).
+    // When `shouldMessagesStartAtTheTop` is enabled, `TopAlignedFillModifier`
+    // always applies `minHeight: containerHeight` (self-regulating). This helper
+    // only reports whether natural content currently fits — for skip-scrollTo
+    // and to latch overflow animations. It must never drive a frame size
+    // (that feedback loop freezes the app near the fits/overflow boundary).
     private func resolveTopAlignedMinHeight(containerHeight: CGFloat?) -> CGFloat? {
         guard messageListConfig.shouldMessagesStartAtTheTop,
               let containerHeight,
@@ -698,6 +729,24 @@ struct TopAlignedScrollIndicatorsModifier: ViewModifier {
     func body(content: Content) -> some View {
         if #available(iOS 16, *) {
             content.scrollIndicators(hidden ? .hidden : .automatic)
+        } else {
+            content
+        }
+    }
+}
+
+/// Disables rubber-banding while scroll content fits the viewport, so a
+/// top-aligned (flipped) list cannot be pulled under the navigation bar.
+struct TopAlignedScrollBounceModifier: ViewModifier {
+    var enabled: Bool
+
+    func body(content: Content) -> some View {
+        if enabled {
+            if #available(iOS 16.4, *) {
+                content.scrollBounceBehavior(.basedOnSize)
+            } else {
+                content
+            }
         } else {
             content
         }
