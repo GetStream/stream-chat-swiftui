@@ -254,7 +254,6 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
                             .padding(
                                 .top,
                                 topPadding(
-                                    for: message,
                                     hasMessageDate: messageDate != nil,
                                     showsLastInGroupInfo: showsLastInGroupInfo,
                                     showUnreadSeparator: showUnreadSeparator,
@@ -306,6 +305,15 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
                             .transition(topAlignedMinHeight != nil ? .identity : .opacity)
                         }
                         .id(listId)
+
+                        // Trailing spacer in the flipped stack becomes leading
+                        // space under the navigation bar, keeping the time bubble
+                        // from sitting flush against it.
+                        if messageListConfig.shouldMessagesStartAtTheTop {
+                            Color.clear
+                                .frame(height: tokens.spacingSm)
+                                .accessibilityHidden(true)
+                        }
                     }
                     .modifier(MessageListContentHeightTrackingModifier(enabled: messageListConfig.shouldMessagesStartAtTheTop))
                     .modifier(TopAlignedFillModifier(minHeight: containerHeight))
@@ -476,17 +484,14 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
             && !unreadButtonDismissed
     }
 
-    /// The top padding for a message row, combining the space reserved for the
-    /// date/separator overlay with the extra spacing above the very first
-    /// (oldest) message when messages start at the top of the list.
+    /// The top padding reserved for the date/separator overlay above a message row.
     private func topPadding(
-        for message: ChatMessage,
         hasMessageDate: Bool,
         showsLastInGroupInfo: Bool,
         showUnreadSeparator: Bool,
         showThreadRepliesSeparator: Bool
     ) -> CGFloat {
-        let overlayPadding = hasMessageDate
+        hasMessageDate
             ? offsetForDateIndicator(
                 showsLastInGroupInfo: showsLastInGroupInfo,
                 showUnreadSeparator: showUnreadSeparator,
@@ -497,13 +502,6 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
                 showUnreadSeparator: showUnreadSeparator,
                 showThreadRepliesSeparator: showThreadRepliesSeparator
             )
-
-        let isOldestMessage = message == messages.last
-        let topOfListPadding = isOldestMessage && messageListConfig.shouldMessagesStartAtTheTop
-            ? tokens.spacingXxs
-            : 0
-
-        return overlayPadding + topOfListPadding
     }
 
     private func additionalTopPadding(
