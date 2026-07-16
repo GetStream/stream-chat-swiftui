@@ -4,6 +4,9 @@
 
 import StreamChat
 import SwiftUI
+#if !os(macOS)
+import UIKit
+#endif
 
 public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
     @Injected(\.utils) private var utils
@@ -38,10 +41,13 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
     @State private var scrollDirection = ScrollDirection.up
     @State private var unreadMessagesBannerShown = false
     @State private var unreadButtonDismissed = false
-    @State private var messageListContentHeight: CGFloat?
+    /// Whether the top-align clamp currently treats content as fitting the list.
+    /// Used to skip auto-`scrollTo` newest (never drives layout).
+    /// Defaults to `true` so we do not race a jump before the clamp binds.
+    @State private var isMessageListTopAligned = true
     /// One-way latch: once content has overflowed into regular scrolling,
-    /// keep insert animations / indicators in the overflow regime. Driving
-    /// those from the live fits flag oscillates at the boundary and freezes.
+    /// keep insert animations enabled. Driving `.transition` / `.transaction`
+    /// from the live fits flag caused a freeze when it oscillated at the boundary.
     @State private var hasLeftTopAlignedRegime = false
 
     private var messageRenderingUtil = MessageRenderingUtil.shared
@@ -193,10 +199,7 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
     }
 
     private func messageListContent(containerHeight: CGFloat?) -> some View {
-        // Live fits flag — used only for skip-scrollTo and to latch overflow.
-        // Must never drive a frame, transition, or scroll-indicator flip.
-        let isTopAligned = resolveTopAlignedMinHeight(containerHeight: containerHeight) != nil
-        return ZStack {
+        ZStack {
             ScrollViewReader { scrollView in
                 ScrollView {
                     GeometryReader { proxy in
@@ -206,9 +209,11 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
                         Color.clear.preference(key: ScrollViewOffsetPreferenceKey.self, value: offset)
                         Color.clear.preference(key: WidthPreferenceKey.self, value: width)
                     }
-                    // Always zero while the feature is on — never gate on fits.
-                    // Flipping 0↔nil from the regime resized content mid-frame
-                    // and locked the layout into a preference update loop.
+                    // A GeometryReader has a 10-point ideal height inside a
+                    // vertical ScrollView. Always zero it while the feature is
+                    // on so it cannot create phantom top overflow. Do not gate
+                    // this on a fits/overflow regime — that feedback freezes
+                    // the app.
                     .frame(height: messageListConfig.shouldMessagesStartAtTheTop ? 0 : nil)
 
                     LazyVStack(spacing: 0) {
@@ -306,6 +311,9 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
                             )
                             .flippedUpsideDown()
                             .animation(nil, value: messageDate != nil)
+                            // Identity only before the list has ever overflowed.
+                            // After that, keep opacity — do not flip back when
+                            // fits oscillates near the boundary (that froze the app).
                             .transition(
                                 messageListConfig.shouldMessagesStartAtTheTop && !hasLeftTopAlignedRegime
                                     ? .identity
@@ -323,8 +331,22 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
                                 .accessibilityHidden(true)
                         }
                     }
-                    .modifier(MessageListContentHeightTrackingModifier(enabled: messageListConfig.shouldMessagesStartAtTheTop))
                     .modifier(TopAlignedFillModifier(minHeight: containerHeight))
+                    .modifier(
+                        TopAlignedScrollClampBridgeModifier(
+                            enabled: messageListConfig.shouldMessagesStartAtTheTop,
+                            contentFits: $isMessageListTopAligned
+                        )
+                    )
+                    .onChange(of: isMessageListTopAligned) { fits in
+                        // Latch only; never clear from fits bouncing true again.
+                        if !fits {
+                            hasLeftTopAlignedRegime = true
+                        }
+                    }
+                    .onChange(of: listId) { _ in
+                        hasLeftTopAlignedRegime = false
+                    }
                     .delayedRendering()
                     .modifier(factory.styles.makeMessageListModifier(options: MessageListModifierOptions()))
                     .modifier(ScrollTargetLayoutModifier(enabled: loadingNextMessages))
@@ -351,16 +373,6 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
                         width = value
                     }
                 }
-                .onPreferenceChange(MessageListContentHeightPreferenceKey.self) { value in
-                    // Defer so a fits flip cannot recreate this layout in the
-                    // same frame ("Bound preference tried to update multiple
-                    // times per frame").
-                    DispatchQueue.main.async {
-                        if let value, value != messageListContentHeight {
-                            messageListContentHeight = value
-                        }
-                    }
-                }
                 .onPreferenceChange(ScrollViewOffsetPreferenceKey.self) { value in
                     DispatchQueue.main.async {
                         let offsetValue = value ?? 0
@@ -375,9 +387,7 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
                             }
                             utils.messageCachingUtils.scrollOffset = offsetValue
                         }
-                        // Only after the list has overflowed; while top-aligned
-                        // there is nothing further to reveal by scrolling.
-                        let scrollButtonShown = offsetValue < -20 && hasLeftTopAlignedRegime
+                        let scrollButtonShown = offsetValue < -20
                         if scrollButtonShown != showScrollToLatestButton {
                             if scrollButtonShown {
                                 withAnimation(.easeOut(duration: 0.18)) {
@@ -406,25 +416,23 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
                 .flippedUpsideDown()
                 .frame(maxWidth: .infinity)
                 .clipped()
-                .modifier(
-                    TopAlignedScrollIndicatorsModifier(
-                        hidden: messageListConfig.shouldMessagesStartAtTheTop && !hasLeftTopAlignedRegime
-                    )
-                )
                 .onChange(of: scrolledId) { scrolledId in
                     if let scrolledId {
                         let shouldJump = onJumpToMessage?(scrolledId) ?? false
                         if !shouldJump {
                             return
                         }
+                        // While top-aligned, the clamp already pins to the visual
+                        // top. Auto-scrolling to newest (visual bottom) fights that
+                        // pin and causes a visible jump on every insert/update.
                         let isNewestMessage = scrolledId == messages.first?.messageId
                             || scrolledId == messages.first?.id
-                        // Fill already positions short content; auto-scrollTo
-                        // newest fights that and causes a visible jump.
-                        if isTopAligned, isNewestMessage {
+                        if messageListConfig.shouldMessagesStartAtTheTop,
+                           isMessageListTopAligned,
+                           isNewestMessage {
                             return
                         }
-                        if isTopAligned {
+                        if messageListConfig.shouldMessagesStartAtTheTop, isMessageListTopAligned {
                             var transaction = Transaction()
                             transaction.disablesAnimations = true
                             withTransaction(transaction) {
@@ -447,22 +455,17 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
                 }
                 .accessibilityIdentifier("MessageListScrollView")
                 .transaction { transaction in
+                    // Disable list animations only before the list has overflowed.
+                    // The live fits flag must not drive this — oscillation at the
+                    // boundary recreated the freeze loop.
                     if messageListConfig.shouldMessagesStartAtTheTop, !hasLeftTopAlignedRegime {
                         transaction.disablesAnimations = true
                         transaction.animation = nil
                     }
                 }
-                .onChange(of: isTopAligned) { topAligned in
-                    if !topAligned {
-                        hasLeftTopAlignedRegime = true
-                    }
-                }
-                .onChange(of: listId) { _ in
-                    hasLeftTopAlignedRegime = false
-                }
             }
 
-            if showScrollToLatestButton && hasLeftTopAlignedRegime {
+            if showScrollToLatestButton {
                 factory.makeScrollToBottomButton(
                     options: ScrollToBottomButtonOptions(
                         unreadCount: channel.unreadCount.messages,
@@ -631,23 +634,6 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
         }
     }
 
-    // When `shouldMessagesStartAtTheTop` is enabled, `TopAlignedFillModifier`
-    // always applies `minHeight: containerHeight` (self-regulating). This helper
-    // only reports whether natural content currently fits — for skip-scrollTo
-    // and to latch overflow animations. It must never drive a frame size
-    // (that feedback loop freezes the app near the fits/overflow boundary).
-    private func resolveTopAlignedMinHeight(containerHeight: CGFloat?) -> CGFloat? {
-        guard messageListConfig.shouldMessagesStartAtTheTop,
-              let containerHeight,
-              let contentHeight = messageListContentHeight else {
-            return nil
-        }
-        if contentHeight - bottomInset > containerHeight {
-            return nil
-        }
-        return containerHeight
-    }
-
     private var topAnchorView: some View {
         Color.clear
             .frame(height: 0)
@@ -700,50 +686,16 @@ struct ScrollTargetLayoutModifier: ViewModifier {
     }
 }
 
-/// Measures the message stack's own natural (unclamped) height, before
-/// `TopAlignedFillModifier` can enlarge it, publishing it via
-/// `MessageListContentHeightPreferenceKey`. Only tracked when `enabled`, so
-/// consumers who don't use `shouldMessagesStartAtTheTop` pay no extra cost.
-struct MessageListContentHeightTrackingModifier: ViewModifier {
-    var enabled: Bool
-
-    @ViewBuilder
-    func body(content: Content) -> some View {
-        if enabled {
-            content.background(
-                GeometryReader { proxy in
-                    Color.clear.preference(key: MessageListContentHeightPreferenceKey.self, value: proxy.size.height)
-                }
-            )
-        } else {
-            content
-        }
-    }
-}
-
-/// Hides the scroll indicator while the message list is top-aligned, matching
-/// UIKit's `showsVerticalScrollIndicator = false` when messages fit on screen.
-struct TopAlignedScrollIndicatorsModifier: ViewModifier {
-    var hidden: Bool
-
-    func body(content: Content) -> some View {
-        if #available(iOS 16, *) {
-            content.scrollIndicators(hidden ? .hidden : .automatic)
-        } else {
-            content
-        }
-    }
-}
-
-/// Disables rubber-banding while scroll content fits the viewport, so a
-/// top-aligned (flipped) list cannot be pulled under the navigation bar.
+/// Keeps the top-aligned (flipped) list always scrollable/bouncy, even when its
+/// content fits the viewport, so short message lists can still be dragged. The
+/// UIKit bridge pins that short content back to the visual top on release.
 struct TopAlignedScrollBounceModifier: ViewModifier {
     var enabled: Bool
 
     func body(content: Content) -> some View {
         if enabled {
             if #available(iOS 16.4, *) {
-                content.scrollBounceBehavior(.basedOnSize)
+                content.scrollBounceBehavior(.always)
             } else {
                 content
             }
@@ -753,14 +705,247 @@ struct TopAlignedScrollBounceModifier: ViewModifier {
     }
 }
 
+/// UIKit bridge that pins short (fitting) content to the visual top while
+/// keeping the list always scrollable — it never disables scrolling or
+/// bouncing. Reports `contentFits` for scroll-gating only (skip auto-`scrollTo`
+/// newest) — never for frames or scroll indicators in SwiftUI.
+struct TopAlignedScrollClampBridgeModifier: ViewModifier {
+    var enabled: Bool
+    @Binding var contentFits: Bool
+
+    func body(content: Content) -> some View {
+        #if !os(macOS)
+        if enabled {
+            content.background(
+                TopAlignedScrollClampBridge(contentFits: $contentFits)
+                    .frame(width: 0, height: 0)
+                    .accessibilityHidden(true)
+            )
+        } else {
+            content
+                .onAppear {
+                    if contentFits {
+                        contentFits = false
+                    }
+                }
+        }
+        #else
+        content
+        #endif
+    }
+}
+
+#if !os(macOS)
+private struct TopAlignedScrollClampBridge: UIViewRepresentable {
+    @Binding var contentFits: Bool
+
+    func makeUIView(context: Context) -> TopAlignedScrollClampView {
+        let view = TopAlignedScrollClampView()
+        view.onContentFitsChange = { [contentFits = $contentFits] fits in
+            DispatchQueue.main.async {
+                if contentFits.wrappedValue != fits {
+                    contentFits.wrappedValue = fits
+                }
+            }
+        }
+        return view
+    }
+
+    func updateUIView(_ uiView: TopAlignedScrollClampView, context: Context) {
+        uiView.onContentFitsChange = { [contentFits = $contentFits] fits in
+            DispatchQueue.main.async {
+                if contentFits.wrappedValue != fits {
+                    contentFits.wrappedValue = fits
+                }
+            }
+        }
+        // Apply scroll flags only — never settle here. SwiftUI calls updateUIView
+        // on every body refresh (including mid-scroll preference updates), and
+        // settling from that fights the gesture and looks like a jump.
+        uiView.applyScrollFlagsIfNeeded()
+    }
+}
+
+private final class TopAlignedScrollClampView: UIView {
+    /// Hysteresis so the fits flag does not flip at the exact boundary.
+    private static let fitSlop: CGFloat = 1
+    private static let overflowSlop: CGFloat = 24
+    private static let settleDuration: TimeInterval = 0.25
+
+    var onContentFitsChange: ((Bool) -> Void)?
+
+    private var contentFits = true
+    private var contentSizeObservation: NSKeyValueObservation?
+    private var boundsObservation: NSKeyValueObservation?
+    private weak var observedScrollView: UIScrollView?
+    private var isUpdating = false
+    private var isSettling = false
+    private var isUserPanning = false
+    private var panTargetInstalled = false
+
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        isUserInteractionEnabled = false
+        backgroundColor = .clear
+    }
+
+    @available(*, unavailable)
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
+    override func didMoveToSuperview() {
+        super.didMoveToSuperview()
+        applyScrollFlagsIfNeeded()
+    }
+
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        applyScrollFlagsIfNeeded()
+    }
+
+    /// Refreshes the fits flag and guarantees the list stays scrollable. Never
+    /// moves the offset.
+    func applyScrollFlagsIfNeeded() {
+        guard !isUpdating else { return }
+        isUpdating = true
+        defer { isUpdating = false }
+
+        bindScrollViewIfNeeded()
+        guard let scrollView = observedScrollView ?? findScrollView() else { return }
+        guard scrollView.bounds.height > 0 else { return }
+
+        let overflow = scrollView.contentSize.height - scrollView.bounds.height
+        let previousFits = contentFits
+        if contentFits {
+            if overflow > Self.overflowSlop {
+                contentFits = false
+            }
+        } else if overflow <= Self.fitSlop {
+            contentFits = true
+        }
+        if previousFits != contentFits {
+            onContentFitsChange?(contentFits)
+        }
+
+        // Keep the list always scrollable. Never disable scrolling or bouncing,
+        // even while the content fits: the fill + settle keeps short content
+        // pinned to the visual top, but the user can still freely drag and
+        // bounce the list at all times. Re-applied every pass because SwiftUI
+        // may reset these flags on its own updates.
+        if !scrollView.isScrollEnabled {
+            scrollView.isScrollEnabled = true
+        }
+        if !scrollView.bounces {
+            scrollView.bounces = true
+        }
+        if !scrollView.alwaysBounceVertical {
+            scrollView.alwaysBounceVertical = true
+        }
+    }
+
+    /// Animates back to the visual-top pin after the user finishes a gesture,
+    /// or when layout changes while content fits.
+    func settleIfNeeded() {
+        applyScrollFlagsIfNeeded()
+        guard contentFits else {
+            isSettling = false
+            return
+        }
+        guard !isUserPanning, !isSettling else { return }
+        guard let scrollView = observedScrollView else { return }
+
+        // The stack is bottom-aligned inside the minHeight fill. After the
+        // upside-down flip, that end is the visual top. Pin to the max offset
+        // (not 0) — offset 0 shows the empty fill and reads as the visual bottom.
+        let maxOffsetY = max(0, scrollView.contentSize.height - scrollView.bounds.height)
+        if abs(scrollView.contentOffset.y - maxOffsetY) <= 0.5 {
+            isSettling = false
+            return
+        }
+
+        isSettling = true
+        let target = CGPoint(x: scrollView.contentOffset.x, y: maxOffsetY)
+        UIView.animate(
+            withDuration: Self.settleDuration,
+            delay: 0,
+            options: [.curveEaseOut, .beginFromCurrentState, .allowUserInteraction]
+        ) {
+            scrollView.contentOffset = target
+        } completion: { [weak self] _ in
+            self?.isSettling = false
+        }
+    }
+
+    @objc private func handlePan(_ gesture: UIPanGestureRecognizer) {
+        switch gesture.state {
+        case .began, .changed:
+            isUserPanning = true
+        case .ended, .cancelled, .failed:
+            isUserPanning = false
+            // Settle only after the gesture ends — never while the finger moves.
+            // SwiftUI's UIScrollView often does not report isDragging reliably,
+            // so contentOffset KVO + isDragging checks used to fight the scroll.
+            settleIfNeeded()
+        default:
+            break
+        }
+    }
+
+    private func bindScrollViewIfNeeded() {
+        guard let scrollView = findScrollView() else { return }
+        guard observedScrollView !== scrollView else { return }
+        observedScrollView = scrollView
+
+        contentSizeObservation = scrollView.observe(\.contentSize, options: [.new]) { [weak self] _, _ in
+            // Layout change while fitting: re-pin after content size settles.
+            self?.settleIfNeeded()
+        }
+        boundsObservation = scrollView.observe(\.bounds, options: [.old, .new]) { [weak self] _, change in
+            // `bounds.origin` tracks contentOffset during scroll — ignore it.
+            // Only re-pin when the scroll view's size actually changes.
+            guard let old = change.oldValue, let new = change.newValue,
+                  old.size != new.size else { return }
+            self?.settleIfNeeded()
+        }
+
+        // Prefer the pan gesture over contentOffset / isDragging KVO. Offset KVO
+        // fires continuously during a drag and (with unreliable isDragging on
+        // SwiftUI scroll views) was re-settling mid-scroll — the jump when
+        // dragging toward the visual top on the inverted list.
+        if !panTargetInstalled {
+            scrollView.panGestureRecognizer.addTarget(self, action: #selector(handlePan(_:)))
+            panTargetInstalled = true
+        }
+
+        onContentFitsChange?(contentFits)
+        // Initial pin once bound.
+        DispatchQueue.main.async { [weak self] in
+            self?.settleIfNeeded()
+        }
+    }
+
+    private func findScrollView() -> UIScrollView? {
+        var ancestor = superview
+        while let current = ancestor {
+            if let scrollView = current as? UIScrollView {
+                return scrollView
+            }
+            ancestor = current.superview
+        }
+        return nil
+    }
+}
+#endif
+
 /// Gives the message stack a minimum height (the visible list height) and bottom
 /// aligns it, so that with `shouldMessagesStartAtTheTop` the messages fill from the
 /// top and the remaining space becomes an implicit bottom spacer. A `nil`
 /// `minHeight` leaves the layout untouched, so other consumers pay no extra cost.
 ///
 /// Deliberately avoids branching (`if let minHeight { ... } else { ... }`):
-/// `minHeight` can flip to/from `nil` while an animation is in flight (e.g. while
-/// the keyboard is showing/hiding), and branching would change this view's
+/// `minHeight` can change while an animation is in flight (e.g. while the
+/// keyboard is showing/hiding), and branching would change this view's
 /// underlying identity at that point, causing SwiftUI to cross-fade between the
 /// two branches instead of just smoothly animating the frame's size. `.frame`
 /// already treats a `nil` `minHeight` as a no-op, so passing it straight through
