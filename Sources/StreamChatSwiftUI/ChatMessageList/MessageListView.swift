@@ -380,6 +380,7 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
                 .flippedUpsideDown()
                 .frame(maxWidth: .infinity)
                 .clipped()
+                .modifier(TopAlignedScrollIndicatorsModifier(hidden: topAlignedMinHeight != nil))
                 .onChange(of: scrolledId) { scrolledId in
                     if let scrolledId {
                         let shouldJump = onJumpToMessage?(scrolledId) ?? false
@@ -685,6 +686,20 @@ struct MessageListContentHeightTrackingModifier: ViewModifier {
                     Color.clear.preference(key: MessageListContentHeightPreferenceKey.self, value: proxy.size.height)
                 }
             )
+        } else {
+            content
+        }
+    }
+}
+
+/// Hides the scroll indicator while the message list is top-aligned, matching
+/// UIKit's `showsVerticalScrollIndicator = false` when messages fit on screen.
+struct TopAlignedScrollIndicatorsModifier: ViewModifier {
+    var hidden: Bool
+
+    func body(content: Content) -> some View {
+        if #available(iOS 16, *) {
+            content.scrollIndicators(hidden ? .hidden : .automatic)
         } else {
             content
         }
