@@ -50,6 +50,18 @@ struct FloatingComposerHeightPreferenceKey: PreferenceKey {
     }
 }
 
+/// Reports the message stack's natural (unclamped) content height, used only to
+/// detect whether it is currently shorter than the list. Unlike the container
+/// height, which is fed into a `minHeight` frame, this value is not used to
+/// size anything, so there is no feedback loop.
+struct MessageListContentHeightPreferenceKey: PreferenceKey {
+    static let defaultValue: CGFloat? = nil
+
+    static func reduce(value: inout CGFloat?, nextValue: () -> CGFloat?) {
+        value = nextValue() ?? value
+    }
+}
+
 /// View container that allows injecting another view in its bottom right corner.
 public struct BottomRightView<Content: View>: View {
     var content: () -> Content
