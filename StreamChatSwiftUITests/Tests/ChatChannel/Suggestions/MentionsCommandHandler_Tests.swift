@@ -312,7 +312,7 @@ import XCTest
     }
 
     private func makeGroup(name: String) -> UserGroup {
-        UserGroup(createdAt: .init(), id: .unique, name: name, updatedAt: .init())
+        UserGroup(id: .unique, name: name, createdAt: .init(), updatedAt: .init())
     }
 }
 

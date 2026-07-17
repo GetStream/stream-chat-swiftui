@@ -59,12 +59,12 @@ final class MentionSuggestion_Tests: StreamChatTestCase {
 private extension UserGroup {
     static func mock(id: String, name: String, memberCount: Int = 0) -> UserGroup {
         UserGroup(
-            createdAt: .init(),
             id: id,
-            members: (0..<memberCount).map {
-                UserGroupMember(createdAt: .init(), groupId: id, isAdmin: false, userId: "member-\($0)")
-            },
             name: name,
+            members: (0..<memberCount).map {
+                UserGroupMember(groupId: id, userId: "member-\($0)", isAdmin: false, createdAt: .init())
+            },
+            createdAt: .init(),
             updatedAt: .init()
         )
     }

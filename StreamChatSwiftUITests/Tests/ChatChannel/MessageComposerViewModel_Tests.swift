@@ -2581,7 +2581,7 @@ import XCTest
     }
 
     private func makeUserGroup(name: String) -> UserGroup {
-        UserGroup(createdAt: .init(), id: .unique, name: name, updatedAt: .init())
+        UserGroup(id: .unique, name: name, createdAt: .init(), updatedAt: .init())
     }
 
     private func populateAllMentionTypes(in viewModel: MessageComposerViewModel) {
