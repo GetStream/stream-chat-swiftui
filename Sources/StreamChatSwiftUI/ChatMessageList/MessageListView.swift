@@ -307,7 +307,7 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
                                 .accessibilityHidden(true)
                         }
                     }
-                    .modifier(TopAlignedFillModifier(minHeight: containerHeight))
+                    .modifier(TopAlignedFillModifier(minHeight: topAlignedFillHeight(containerHeight: containerHeight)))
                     .delayedRendering()
                     .modifier(factory.styles.makeMessageListModifier(options: MessageListModifierOptions()))
                     .modifier(ScrollTargetLayoutModifier(enabled: loadingNextMessages))
@@ -320,6 +320,11 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
                         }
                     )
                 }
+                .modifier(
+                    TopAlignedScrollAnchorModifier(
+                        enabled: messageListConfig.shouldMessagesStartAtTheTop
+                    )
+                )
                 .modifier(ScrollPositionModifier(scrollPosition: loadingNextMessages ? $scrollPosition : .constant(nil)))
                 .background(
                     factory.makeMessageListBackground(
@@ -451,6 +456,21 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
             && !unreadMessagesBannerShown
             && !isMessageThread
             && !unreadButtonDismissed
+    }
+
+    /// The minimum height for the top-aligned message stack.
+    ///
+    /// On iOS 18+ the top alignment is handled natively by
+    /// `defaultScrollAnchor(.bottom, for: .alignment)`, so no fill is needed (a
+    /// fill would make a fitting list taller than the viewport and therefore
+    /// scrollable). On older systems we fall back to filling the stack to the
+    /// container height.
+    private func topAlignedFillHeight(containerHeight: CGFloat?) -> CGFloat? {
+        guard messageListConfig.shouldMessagesStartAtTheTop else { return nil }
+        if #available(iOS 18.0, *) {
+            return nil
+        }
+        return containerHeight
     }
 
     /// The top padding reserved for the date/separator overlay above a message row.
@@ -621,6 +641,38 @@ struct TopAlignedFillModifier: ViewModifier {
 
     func body(content: Content) -> some View {
         content.frame(minHeight: minHeight, alignment: .bottom)
+    }
+}
+
+/// Configures the inverted message list to render from the top only when the
+/// messages are shorter than the list, using native scroll anchors.
+///
+/// - `.alignment = .bottom`: content smaller than the list is pinned to the
+///   (unflipped) bottom, which after the flip is the visual top. Because the
+///   content keeps its natural size (no fill), a fitting list is genuinely not
+///   scrollable — it can't be dragged or bounced, so it never snaps back.
+/// - `.initialOffset = .top` and `.sizeChanges = .top`: a scrollable list opens
+///   at the newest message (visual bottom) and re-anchors to the newest when the
+///   list resizes (e.g. the keyboard or attachment picker appears), i.e. it
+///   behaves like a regular `.top`-anchored inverted list.
+///
+/// Available on iOS 18+; on older systems ``TopAlignedFillModifier`` is used.
+struct TopAlignedScrollAnchorModifier: ViewModifier {
+    var enabled: Bool
+
+    func body(content: Content) -> some View {
+        if enabled {
+            if #available(iOS 18.0, *) {
+                content
+                    .defaultScrollAnchor(.top, for: .initialOffset)
+                    .defaultScrollAnchor(.top, for: .sizeChanges)
+                    .defaultScrollAnchor(.bottom, for: .alignment)
+            } else {
+                content
+            }
+        } else {
+            content
+        }
     }
 }
 

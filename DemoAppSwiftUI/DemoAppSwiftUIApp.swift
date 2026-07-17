@@ -38,6 +38,8 @@ struct DemoAppSwiftUIApp: App {
                     threadListView()
                         .tabItem { Label("Threads", systemImage: "text.bubble") }
                         .badge(appState.unreadCount.threads)
+                    TopAlignedProtoPicker(channelListController: channelListController)
+                        .tabItem { Label("Proto", systemImage: "flask") }
                 }
                 .id(appState.contentIdentifier)
             }
@@ -170,5 +172,49 @@ extension AppState {
                 ])
             )
         }
+    }
+}
+
+// MARK: - TEMPORARY prototype: non-inverted top-aligned message list
+
+/// Lets you pick a channel to open in the non-inverted prototype below.
+struct TopAlignedProtoPicker: View {
+    var channelListController: ChatChannelListController?
+
+    private var channels: [ChatChannel] {
+        guard let channelListController else { return [] }
+        return Array(channelListController.channels)
+    }
+
+    var body: some View {
+        NavigationView {
+            List(channels, id: \.cid) { channel in
+                NavigationLink {
+                    TopAlignedProtoView(cid: channel.cid)
+                } label: {
+                    VStack(alignment: .leading) {
+                        Text(channel.name ?? channel.cid.rawValue)
+                        Text(channel.latestMessages.first?.text ?? "")
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+                            .lineLimit(1)
+                    }
+                }
+            }
+            .navigationTitle("Proto — pick a channel")
+        }
+    }
+}
+
+/// Milestone 2 harness: renders the real `TopAlignedChatChannelView` (non-inverted
+/// list + composer + navigation header) so the composer / keyboard adjustment can
+/// be tested before wiring into `ChatChannelView`.
+struct TopAlignedProtoView: View {
+    let cid: ChannelId
+
+    var body: some View {
+        TopAlignedChatChannelView(
+            channelController: InjectedValues[\.chatClient].channelController(for: cid)
+        )
     }
 }

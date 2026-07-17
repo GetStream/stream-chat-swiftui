@@ -23,7 +23,7 @@ final class AppConfiguration {
     /// When enabled, releasing a hold-to-record gesture sends the voice message instantly.
     var isVoiceRecordingAutoSendEnabled = false
     /// When enabled, messages start at the top of the list when there are few messages.
-    var shouldMessagesStartAtTheTop = false
+    var shouldMessagesStartAtTheTop = true
 
     enum AppStyle: String, CaseIterable {
         case regular
