@@ -295,6 +295,11 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
                             )
                             .flippedUpsideDown()
                             .animation(nil, value: messageDate != nil)
+                            .modifier(
+                                TopAlignedInsertionFadeModifier(
+                                    isEnabled: messageListConfig.shouldMessagesStartAtTheTop
+                                )
+                            )
                         }
                         .id(listId)
 
@@ -601,6 +606,33 @@ struct ScrollTargetLayoutModifier: ViewModifier {
         #else
         return content
         #endif
+    }
+}
+
+/// Fades in message rows that are inserted in real time while messages start at
+/// the top. Insertions are applied there without a layout animation (see
+/// `ChatChannelViewModel.shouldAnimate(changes:)`) so the rest of the list stays
+/// still; this modifier animates only the new row's opacity. Driven by row state
+/// rather than a transition, because a transition only animates with an animated
+/// transaction — and an animated transaction would also animate the layout.
+struct TopAlignedInsertionFadeModifier: ViewModifier {
+    var isEnabled: Bool
+
+    @State private var hasAppeared = false
+
+    func body(content: Content) -> some View {
+        content
+            .opacity(isEnabled && !hasAppeared ? 0 : 1)
+            .onAppear {
+                guard isEnabled, !hasAppeared else { return }
+                // Deferred so the row first commits fully transparent; flipping
+                // the state within the initial commit coalesces and never animates.
+                DispatchQueue.main.async {
+                    withAnimation(.easeOut(duration: 0.25)) {
+                        hasAppeared = true
+                    }
+                }
+            }
     }
 }
 
