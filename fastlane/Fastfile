@@ -373,7 +373,7 @@ end
 def check_foundation_import
   files_missing_imports = []
   Dir.glob("Sources/**/*.swift").each do |file|
-    next if file =~ /StreamSwiftyGif/
+    next if file.include?('StreamSwiftyGif')
 
     files_missing_imports << file unless File.read(file).match?(/import (Foundation|UIKit|SwiftUI|Combine|StreamChat)/)
   end
