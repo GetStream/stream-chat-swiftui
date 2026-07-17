@@ -10,5 +10,6 @@ runs:
       id: spm-cache
       with:
         path: spm_cache
-        key: ${{ env.IMAGE }}-spm-${{ hashFiles('**/Package.resolved') }}
-        restore-keys: ${{ env.IMAGE }}-spm-
+        # Package.resolved is gitignored, so key off Package.swift. Avoid broad
+        # restore-keys that reuse stale branch checkouts of stream-chat-swift.
+        key: ${{ env.IMAGE }}-spm-${{ hashFiles('Package.swift') }}
