@@ -22,10 +22,77 @@ final class AppConfiguration {
     var appStyle: AppStyle = .regular
     /// When enabled, releasing a hold-to-record gesture sends the voice message instantly.
     var isVoiceRecordingAutoSendEnabled = false
+    /// Base directory used for Stream Chat attachment downloads.
+    ///
+    /// Applied when creating `ChatClient`, so changes take effect on the next app launch.
+    var attachmentDownloadsDirectory: AttachmentDownloadsDirectory = .stored {
+        didSet { AttachmentDownloadsDirectory.stored = attachmentDownloadsDirectory }
+    }
 
     enum AppStyle: String, CaseIterable {
         case regular
         case liquidGlass
+    }
+
+    /// Common sandbox locations for storing downloaded attachments.
+    enum AttachmentDownloadsDirectory: String, CaseIterable, Identifiable {
+        case documents
+        case applicationSupport
+        case caches
+
+        private static let userDefaultsKey = "demo.attachmentDownloadsDirectory"
+
+        var id: String { rawValue }
+
+        var title: String {
+            switch self {
+            case .documents:
+                return "Documents"
+            case .applicationSupport:
+                return "Application Support"
+            case .caches:
+                return "Caches"
+            }
+        }
+
+        var subtitle: String {
+            switch self {
+            case .documents:
+                return "User-visible, included in backups"
+            case .applicationSupport:
+                return "Hidden, included in backups"
+            case .caches:
+                return "Hidden, excluded from backups"
+            }
+        }
+
+        /// Persisted selection used when building `ChatClientConfig`.
+        static var stored: AttachmentDownloadsDirectory {
+            get {
+                guard let rawValue = UserDefaults.standard.string(forKey: userDefaultsKey),
+                      let value = Self(rawValue: rawValue) else {
+                    return .documents
+                }
+                return value
+            }
+            set {
+                UserDefaults.standard.set(newValue.rawValue, forKey: userDefaultsKey)
+            }
+        }
+
+        var folderURL: URL? {
+            let fileManager = FileManager.default
+            switch self {
+            case .documents:
+                return fileManager.urls(for: .documentDirectory, in: .userDomainMask).first
+            case .applicationSupport:
+                return fileManager.urls(for: .applicationSupportDirectory, in: .userDomainMask).first?
+                    .appendingPathComponent("io.getstream.StreamChat", isDirectory: true)
+            case .caches:
+                return fileManager.urls(for: .cachesDirectory, in: .userDomainMask).first?
+                    .appendingPathComponent("io.getstream.StreamChat", isDirectory: true)
+            }
+        }
     }
 
     /// Builds the demo app's `ComposerConfig` using current app configuration.

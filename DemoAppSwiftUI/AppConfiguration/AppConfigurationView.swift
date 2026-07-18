@@ -12,6 +12,7 @@ struct AppConfigurationView: View {
     @State private var reactionsPlacement = AppConfiguration.default.reactionsPlacement
     @State private var appStyle = AppConfiguration.default.appStyle
     @State private var voiceRecordingAutoSend = AppConfiguration.default.isVoiceRecordingAutoSendEnabled
+    @State private var attachmentDownloadsDirectory = AppConfiguration.default.attachmentDownloadsDirectory
 
     var body: some View {
         NavigationView {
@@ -41,6 +42,20 @@ struct AppConfigurationView: View {
                 Section("Voice Recording") {
                     Toggle("Auto-send on release", isOn: $voiceRecordingAutoSend)
                 }
+                Section {
+                    Picker("Directory", selection: $attachmentDownloadsDirectory) {
+                        ForEach(AppConfiguration.AttachmentDownloadsDirectory.allCases) { directory in
+                            Text(directory.title).tag(directory)
+                        }
+                    }
+                    Text(attachmentDownloadsDirectory.subtitle)
+                        .font(.footnote)
+                        .foregroundStyle(.secondary)
+                } header: {
+                    Text("Attachment Downloads")
+                } footer: {
+                    Text("Takes effect on the next app launch. Downloaded files are stored in a StreamAttachmentDownloads subfolder.")
+                }
             }
             .navigationBarTitleDisplayMode(.inline)
             .navigationTitle("App Configuration")
@@ -60,6 +75,9 @@ struct AppConfigurationView: View {
         .onChange(of: voiceRecordingAutoSend) { newValue in
             AppConfiguration.default.isVoiceRecordingAutoSendEnabled = newValue
             InjectedValues[\.utils].composerConfig = AppConfiguration.makeComposerConfig()
+        }
+        .onChange(of: attachmentDownloadsDirectory) { newValue in
+            AppConfiguration.default.attachmentDownloadsDirectory = newValue
         }
     }
 }
