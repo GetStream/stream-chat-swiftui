@@ -158,7 +158,7 @@ import XCTest
             ],
             mentionedHere: true,
             mentionedChannel: true,
-            mentionedGroups: [.init(id: "eng", name: "Engineering")],
+            mentionedGroups: [.init(createdAt: .init(), id: "eng", name: "Engineering", updatedAt: .init())],
             mentionedRoles: ["admin"]
         )
 
@@ -189,7 +189,7 @@ import XCTest
             mentionedUsers: [.mock(id: "martin", name: "Martin")],
             mentionedHere: true,
             mentionedChannel: true,
-            mentionedGroups: [.init(id: "eng", name: "Engineering")],
+            mentionedGroups: [.init(createdAt: .init(), id: "eng", name: "Engineering", updatedAt: .init())],
             mentionedRoles: ["admin"]
         )
 
