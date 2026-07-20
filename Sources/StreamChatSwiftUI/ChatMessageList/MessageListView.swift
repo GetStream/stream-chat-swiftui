@@ -79,6 +79,7 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
 
     private let bottomId = "BottomID"
     private let scrollAreaId = "scrollArea"
+    private let scrollOffsetReaderHeight: CGFloat = 10
 
     public init(
         factory: Factory,
@@ -178,214 +179,215 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
 
     public var body: some View {
         ZStack {
-            ScrollViewReader { scrollView in
-                ScrollView {
-                    GeometryReader { proxy in
-                        let frame = proxy.frame(in: .named(scrollAreaId))
-                        let offset = frame.minY
-                        let width = frame.width
-                        Color.clear.preference(key: ScrollViewOffsetPreferenceKey.self, value: offset)
-                        Color.clear.preference(key: WidthPreferenceKey.self, value: width)
-                    }
-
-                    LazyVStack(spacing: 0) {
-                        if shouldShowTypingIndicator {
-                            factory.makeInlineTypingIndicatorView(
-                                options: TypingIndicatorViewOptions(
-                                    channel: channel,
-                                    currentUserId: chatClient.currentUserId
-                                )
-                            )
-                            .flippedUpsideDown()
-                        }
-
-                        ForEach(messages, id: \.messageId) { message in
-                            var index: Int? = messageListDateUtils.indexForMessageDate(message: message, in: messages)
-                            let messageDate: Date? = messageListDateUtils.showMessageDate(for: index, in: messages)
-                            let messageIsFirstUnread = firstUnreadMessageId?.contains(message.id) == true
-                            let showUnreadSeparator = messageListConfig.showNewMessagesSeparator &&
-                                messageIsFirstUnread &&
-                                !isMessageThread
-                            let showsLastInGroupInfo = showsLastInGroupInfo(for: message, channel: channel)
-                            let showThreadRepliesSeparator = isThreadRepliesSeparatorShown(for: message)
-                            factory.makeMessageItemView(
-                                options: MessageItemViewOptions(
-                                    channel: channel,
-                                    message: message,
-                                    width: width,
-                                    showsAllInfo: showsAllData(for: message),
-                                    isInThread: isMessageThread,
-                                    scrolledId: $scrolledId,
-                                    quotedMessage: $quotedMessage,
-                                    onLongPress: handleLongPress(messageDisplayInfo:),
-                                    isLast: !showsLastInGroupInfo && message == messages.last
-                                )
-                            )
-                            .onAppear {
-                                if index == nil {
-                                    index = messageListDateUtils.index(for: message, in: messages)
-                                }
-                                if let index {
-                                    onMessageAppear(index, scrollDirection)
-                                }
+            GeometryReader { viewport in
+                ScrollViewReader { scrollView in
+                    ScrollView {
+                        VStack(spacing: nil) {
+                            GeometryReader { proxy in
+                                let frame = proxy.frame(in: .named(scrollAreaId))
+                                let offset = frame.minY
+                                let width = frame.width
+                                Color.clear.preference(key: ScrollViewOffsetPreferenceKey.self, value: offset)
+                                Color.clear.preference(key: WidthPreferenceKey.self, value: width)
                             }
-                            .padding(.bottom, message == messages.first ? bottomInset : 0)
-                            .padding(
-                                .top,
-                                messageDate != nil ?
-                                    offsetForDateIndicator(
-                                        showsLastInGroupInfo: showsLastInGroupInfo,
-                                        showUnreadSeparator: showUnreadSeparator,
-                                        showThreadRepliesSeparator: showThreadRepliesSeparator
-                                    ) :
-                                    additionalTopPadding(
-                                        showsLastInGroupInfo: showsLastInGroupInfo,
-                                        showUnreadSeparator: showUnreadSeparator,
-                                        showThreadRepliesSeparator: showThreadRepliesSeparator
+                            .frame(height: scrollOffsetReaderHeight)
+
+                            LazyVStack(spacing: 0) {
+                                if shouldShowTypingIndicator {
+                                    factory.makeInlineTypingIndicatorView(
+                                        options: TypingIndicatorViewOptions(
+                                            channel: channel,
+                                            currentUserId: chatClient.currentUserId
+                                        )
                                     )
-                            )
-                            .overlay(
-                                (messageDate != nil || showsLastInGroupInfo || showUnreadSeparator || showThreadRepliesSeparator) ?
-                                    VStack(spacing: 0) {
-                                        messageDate != nil ?
-                                            factory.makeMessageListDateIndicator(options: MessageListDateIndicatorViewOptions(date: messageDate!))
-                                            .frame(maxHeight: dateLabelSize)
-                                            : nil
+                                    .flippedUpsideDown()
+                                }
 
-                                        showUnreadSeparator ?
-                                            factory.makeNewMessagesDividerView(
-                                                options: NewMessagesDividerViewOptions(
-                                                    newMessagesStartId: $firstUnreadMessageId,
-                                                    count: newMessagesCount(for: index, message: message)
-                                                )
-                                            )
-                                            .onAppear {
-                                                unreadMessagesBannerShown = true
-                                            }
-                                            .onDisappear {
-                                                unreadMessagesBannerShown = false
-                                            }
-                                            : nil
-
-                                        showThreadRepliesSeparator ?
-                                            factory.makeThreadRepliesDividerView(
-                                                options: ThreadRepliesDividerViewOptions(
-                                                    replyCount: messages.last?.replyCount ?? (messages.count - 1)
-                                                )
-                                            )
-                                            .frame(maxHeight: newMessagesSeparatorSize)
-                                            : nil
-
-                                        showsLastInGroupInfo ?
-                                            factory.makeLastInGroupHeaderView(options: LastInGroupHeaderViewOptions(message: message))
-                                            .frame(maxHeight: lastInGroupHeaderSize)
-                                            : nil
+                                ForEach(messages, id: \.messageId) { message in
+                                    var index: Int? = messageListDateUtils.indexForMessageDate(message: message, in: messages)
+                                    let messageDate: Date? = messageListDateUtils.showMessageDate(for: index, in: messages)
+                                    let messageIsFirstUnread = firstUnreadMessageId?.contains(message.id) == true
+                                    let showUnreadSeparator = messageListConfig.showNewMessagesSeparator &&
+                                        messageIsFirstUnread &&
+                                        !isMessageThread
+                                    let showsLastInGroupInfo = showsLastInGroupInfo(for: message, channel: channel)
+                                    let showThreadRepliesSeparator = isThreadRepliesSeparatorShown(for: message)
+                                    factory.makeMessageItemView(
+                                        options: MessageItemViewOptions(
+                                            channel: channel,
+                                            message: message,
+                                            width: width,
+                                            showsAllInfo: showsAllData(for: message),
+                                            isInThread: isMessageThread,
+                                            scrolledId: $scrolledId,
+                                            quotedMessage: $quotedMessage,
+                                            onLongPress: handleLongPress(messageDisplayInfo:),
+                                            isLast: !showsLastInGroupInfo && message == messages.last
+                                        )
+                                    )
+                                    .onAppear {
+                                        if index == nil {
+                                            index = messageListDateUtils.index(for: message, in: messages)
+                                        }
+                                        if let index {
+                                            onMessageAppear(index, scrollDirection)
+                                        }
                                     }
-                                    : nil,
-                                alignment: .top
-                            )
-                            .flippedUpsideDown()
-                            .animation(nil, value: messageDate != nil)
-                        }
-                        .id(listId)
-                    }
-                    .delayedRendering()
-                    .modifier(factory.styles.makeMessageListModifier(options: MessageListModifierOptions()))
-                    .modifier(ScrollTargetLayoutModifier(enabled: loadingNextMessages))
-                    .modifier(
-                        LegacyTopAlignedMessageListScrollViewModifier(
-                            isEnabled: messageListConfig.shouldMessagesStartAtTheTop
-                        )
-                    )
-                    .overlay(
-                        VStack {
-                            // Workaround to make scrolling to bottom more precise
-                            Color.clear
-                                .frame(height: 0)
-                                .id(bottomId)
+                                    .padding(.bottom, message == messages.first ? bottomInset : 0)
+                                    .padding(
+                                        .top,
+                                        messageDate != nil ?
+                                            offsetForDateIndicator(
+                                                showsLastInGroupInfo: showsLastInGroupInfo,
+                                                showUnreadSeparator: showUnreadSeparator,
+                                                showThreadRepliesSeparator: showThreadRepliesSeparator
+                                            ) :
+                                            additionalTopPadding(
+                                                showsLastInGroupInfo: showsLastInGroupInfo,
+                                                showUnreadSeparator: showUnreadSeparator,
+                                                showThreadRepliesSeparator: showThreadRepliesSeparator
+                                            )
+                                    )
+                                    .overlay(
+                                        (messageDate != nil || showsLastInGroupInfo || showUnreadSeparator || showThreadRepliesSeparator) ?
+                                            VStack(spacing: 0) {
+                                                messageDate != nil ?
+                                                    factory.makeMessageListDateIndicator(options: MessageListDateIndicatorViewOptions(date: messageDate!))
+                                                    .frame(maxHeight: dateLabelSize)
+                                                    : nil
 
-                            Spacer()
+                                                showUnreadSeparator ?
+                                                    factory.makeNewMessagesDividerView(
+                                                        options: NewMessagesDividerViewOptions(
+                                                            newMessagesStartId: $firstUnreadMessageId,
+                                                            count: newMessagesCount(for: index, message: message)
+                                                        )
+                                                    )
+                                                    .onAppear {
+                                                        unreadMessagesBannerShown = true
+                                                    }
+                                                    .onDisappear {
+                                                        unreadMessagesBannerShown = false
+                                                    }
+                                                    : nil
+
+                                                showThreadRepliesSeparator ?
+                                                    factory.makeThreadRepliesDividerView(
+                                                        options: ThreadRepliesDividerViewOptions(
+                                                            replyCount: messages.last?.replyCount ?? (messages.count - 1)
+                                                        )
+                                                    )
+                                                    .frame(maxHeight: newMessagesSeparatorSize)
+                                                    : nil
+
+                                                showsLastInGroupInfo ?
+                                                    factory.makeLastInGroupHeaderView(options: LastInGroupHeaderViewOptions(message: message))
+                                                    .frame(maxHeight: lastInGroupHeaderSize)
+                                                    : nil
+                                            }
+                                            : nil,
+                                        alignment: .top
+                                    )
+                                    .flippedUpsideDown()
+                                    .animation(nil, value: messageDate != nil)
+                                }
+                                .id(listId)
+                            }
+                            .delayedRendering()
+                            .modifier(factory.styles.makeMessageListModifier(options: MessageListModifierOptions()))
+                            .modifier(ScrollTargetLayoutModifier(enabled: loadingNextMessages))
+                            .overlay(
+                                VStack {
+                                    // Workaround to make scrolling to bottom more precise
+                                    Color.clear
+                                        .frame(height: 0)
+                                        .id(bottomId)
+
+                                    Spacer()
+                                }
+                            )
                         }
-                    )
-                }
-                .modifier(
-                    TopAlignedMessageListScrollViewModifier(
-                        isEnabled: messageListConfig.shouldMessagesStartAtTheTop
-                    )
-                )
-                .modifier(ScrollPositionModifier(scrollPosition: loadingNextMessages ? $scrollPosition : .constant(nil)))
-                .background(
-                    factory.makeMessageListBackground(
-                        options: MessageListBackgroundOptions(
-                            isInThread: isMessageThread
+                        .modifier(
+                            TopAlignedMessageListContentModifier(
+                                isEnabled: messageListConfig.shouldMessagesStartAtTheTop,
+                                minimumHeight: viewport.size.height
+                            )
+                        )
+                    }
+                    .modifier(ScrollPositionModifier(scrollPosition: loadingNextMessages ? $scrollPosition : .constant(nil)))
+                    .background(
+                        factory.makeMessageListBackground(
+                            options: MessageListBackgroundOptions(
+                                isInThread: isMessageThread
+                            )
                         )
                     )
-                )
-                .coordinateSpace(name: scrollAreaId)
-                .onPreferenceChange(WidthPreferenceKey.self) { value in
-                    if let value, value != width {
-                        width = value
-                    }
-                }
-                .onPreferenceChange(ScrollViewOffsetPreferenceKey.self) { value in
-                    DispatchQueue.main.async {
-                        let offsetValue = value ?? 0
-                        let diff = offsetValue - utils.messageCachingUtils.scrollOffset
-                        if abs(diff) > 15 {
-                            if diff > 0 {
-                                if scrollDirection == .up {
-                                    scrollDirection = .down
-                                }
-                            } else if diff < 0 && scrollDirection == .down {
-                                scrollDirection = .up
-                            }
-                            utils.messageCachingUtils.scrollOffset = offsetValue
-                        }
-                        let scrollButtonShown = offsetValue < -20
-                        if scrollButtonShown != showScrollToLatestButton {
-                            if scrollButtonShown {
-                                withAnimation(.easeOut(duration: 0.18)) {
-                                    showScrollToLatestButton = true
-                                }
-                            } else {
-                                withAnimation(.easeIn(duration: 0.12)) {
-                                    showScrollToLatestButton = false
-                                }
-                            }
-                        }
-                        if messageListConfig.resignsFirstResponderOnScrollDown && keyboardShown && diff < -20 {
-                            keyboardShown = false
-                            resignFirstResponder()
-                        }
-                        if offsetValue > 5 {
-                            onMessageAppear(0, .down)
+                    .coordinateSpace(name: scrollAreaId)
+                    .onPreferenceChange(WidthPreferenceKey.self) { value in
+                        if let value, value != width {
+                            width = value
                         }
                     }
-                }
-                .flippedUpsideDown()
-                .frame(maxWidth: .infinity)
-                .clipped()
-                .onChange(of: scrolledId) { scrolledId in
-                    if let scrolledId {
-                        let shouldJump = onJumpToMessage?(scrolledId) ?? false
-                        if !shouldJump {
-                            return
-                        }
-                        if keepsLatestMessageAnchoredOnContentChanges,
-                           messages.first?.id == scrolledId,
-                           !showScrollToLatestButton {
-                            return
-                        }
-                        withAnimation {
-                            if messages.first?.id == scrolledId {
-                                scrollView.scrollTo(bottomId, anchor: .bottom)
-                            } else {
-                                scrollView.scrollTo(scrolledId, anchor: messageListConfig.scrollingAnchor)
+                    .onPreferenceChange(ScrollViewOffsetPreferenceKey.self) { value in
+                        DispatchQueue.main.async {
+                            let offsetValue = value ?? 0
+                            let diff = offsetValue - utils.messageCachingUtils.scrollOffset
+                            if abs(diff) > 15 {
+                                if diff > 0 {
+                                    if scrollDirection == .up {
+                                        scrollDirection = .down
+                                    }
+                                } else if diff < 0 && scrollDirection == .down {
+                                    scrollDirection = .up
+                                }
+                                utils.messageCachingUtils.scrollOffset = offsetValue
+                            }
+                            let scrollButtonShown = offsetValue < -20
+                            if scrollButtonShown != showScrollToLatestButton {
+                                if scrollButtonShown {
+                                    withAnimation(.easeOut(duration: 0.18)) {
+                                        showScrollToLatestButton = true
+                                    }
+                                } else {
+                                    withAnimation(.easeIn(duration: 0.12)) {
+                                        showScrollToLatestButton = false
+                                    }
+                                }
+                            }
+                            if messageListConfig.resignsFirstResponderOnScrollDown && keyboardShown && diff < -20 {
+                                keyboardShown = false
+                                resignFirstResponder()
+                            }
+                            if offsetValue > 5 {
+                                onMessageAppear(0, .down)
                             }
                         }
                     }
+                    .flippedUpsideDown()
+                    .frame(maxWidth: .infinity)
+                    .clipped()
+                    .onChange(of: scrolledId) { scrolledId in
+                        if let scrolledId {
+                            let shouldJump = onJumpToMessage?(scrolledId) ?? false
+                            if !shouldJump {
+                                return
+                            }
+                            if keepsLatestMessageAnchoredOnContentChanges,
+                               messages.first?.id == scrolledId,
+                               !showScrollToLatestButton {
+                                return
+                            }
+                            withAnimation {
+                                if messages.first?.id == scrolledId {
+                                    scrollView.scrollTo(bottomId, anchor: .bottom)
+                                } else {
+                                    scrollView.scrollTo(scrolledId, anchor: messageListConfig.scrollingAnchor)
+                                }
+                            }
+                        }
+                    }
+                    .accessibilityIdentifier("MessageListScrollView")
                 }
-                .accessibilityIdentifier("MessageListScrollView")
             }
 
             if showScrollToLatestButton {

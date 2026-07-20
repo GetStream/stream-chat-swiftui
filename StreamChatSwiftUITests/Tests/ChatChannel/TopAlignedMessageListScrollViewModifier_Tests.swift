@@ -2,11 +2,22 @@
 // Copyright © 2026 Stream.io Inc. All rights reserved.
 //
 
+@testable import StreamChat
 @testable import StreamChatSwiftUI
 import SwiftUI
 import XCTest
 
 @MainActor final class TopAlignedMessageListScrollViewModifier_Tests: StreamChatTestCase {
+    override func setUp() {
+        super.setUp()
+        DelayedRenderingViewModifier.isEnabled = false
+    }
+
+    override func tearDown() {
+        DelayedRenderingViewModifier.isEnabled = true
+        super.tearDown()
+    }
+
     func test_messageListConfig_startsMessagesAtTopByDefault() {
         XCTAssertTrue(MessageListConfig().shouldMessagesStartAtTheTop)
     }
@@ -130,6 +141,97 @@ import XCTest
         XCTAssertEqual(latestFrame.maxY, 190, accuracy: 10)
     }
 
+    func test_messageListView_shortListIsTopAlignedWithoutOffset() async throws {
+        let channel = ChatChannel.mockDMChannel()
+        let messages = (0..<2).map { index in
+            ChatMessage.mock(
+                id: "message-\(index)",
+                cid: channel.cid,
+                text: "Message \(index)",
+                author: .mock(id: "author"),
+                createdAt: Date().addingTimeInterval(TimeInterval(-index))
+            )
+        }
+        let messageListConfig = MessageListConfig(
+            groupMessages: false,
+            messageDisplayOptions: .init(showMessageDate: false, showAuthorName: false),
+            dateIndicatorPlacement: .overlay,
+            shouldMessagesStartAtTheTop: true
+        )
+        streamChat = StreamChat(chatClient: chatClient, utils: Utils(messageListConfig: messageListConfig))
+        let recorder = TopAlignedListFrameRecorder()
+        let view = MessageListView(
+            factory: TopAlignedMessageListFactory(),
+            channel: channel,
+            messages: messages,
+            messagesGroupingInfo: [:],
+            scrolledId: .constant(nil),
+            showScrollToLatestButton: .constant(false),
+            quotedMessage: .constant(nil),
+            listId: "ShortMessageListTest",
+            onMessageAppear: { _, _ in },
+            onScrollToBottom: {},
+            onLongPress: { _ in }
+        )
+        .frame(width: 200, height: 200)
+        .coordinateSpace(name: "TopAlignedList")
+        .onPreferenceChange(TopAlignedListFramesPreferenceKey.self) { frames in
+            recorder.record(frames)
+        }
+
+        showView(view)
+        try await settle(for: 0.5)
+
+        let frames = try XCTUnwrap(recorder.latestFrames)
+        XCTAssertEqual(try XCTUnwrap(frames[1]?.minY), 0, accuracy: 1)
+        XCTAssertEqual(try XCTUnwrap(frames[0]?.maxY), 80, accuracy: 1)
+    }
+
+    func test_messageListView_scrollableListInitiallyShowsLatestMessageAtBottom() async throws {
+        let channel = ChatChannel.mockDMChannel()
+        let messages = (0..<100).map { index in
+            ChatMessage.mock(
+                id: "message-\(index)",
+                cid: channel.cid,
+                text: "Message \(index)",
+                author: .mock(id: "author"),
+                createdAt: Date().addingTimeInterval(TimeInterval(-index))
+            )
+        }
+        let messageListConfig = MessageListConfig(
+            groupMessages: false,
+            messageDisplayOptions: .init(showMessageDate: false, showAuthorName: false),
+            dateIndicatorPlacement: .overlay,
+            shouldMessagesStartAtTheTop: true
+        )
+        streamChat = StreamChat(chatClient: chatClient, utils: Utils(messageListConfig: messageListConfig))
+        let recorder = TopAlignedListFrameRecorder()
+        let view = MessageListView(
+            factory: TopAlignedMessageListFactory(),
+            channel: channel,
+            messages: messages,
+            messagesGroupingInfo: [:],
+            scrolledId: .constant(nil),
+            showScrollToLatestButton: .constant(false),
+            quotedMessage: .constant(nil),
+            listId: "MessageListEntryTest",
+            onMessageAppear: { _, _ in },
+            onScrollToBottom: {},
+            onLongPress: { _ in }
+        )
+        .frame(width: 200, height: 200)
+        .coordinateSpace(name: "TopAlignedList")
+        .onPreferenceChange(TopAlignedListFramesPreferenceKey.self) { frames in
+            recorder.record(frames)
+        }
+
+        showView(view)
+        try await settle(for: 0.5)
+
+        let latestFrame = try XCTUnwrap(recorder.latestFrames?[0])
+        XCTAssertGreaterThan(latestFrame.minY, 140)
+    }
+
     func test_scrollableList_keepsLatestMessageAtBottomWhenRowsFinishLayingOut() async throws {
         let model = TopAlignedListModel(itemCount: 100, rowHeight: 20)
         let recorder = TopAlignedListFrameRecorder()
@@ -188,40 +290,44 @@ private struct TopAlignedListHarness: View {
     let isEnabled: Bool
 
     var body: some View {
-        ScrollViewReader { scrollView in
-            ScrollView {
-                Color.clear.frame(height: 10)
+        GeometryReader { viewport in
+            ScrollViewReader { scrollView in
+                ScrollView {
+                    VStack(spacing: nil) {
+                        Color.clear.frame(height: 10)
 
-                LazyVStack(spacing: 0) {
-                    ForEach(model.items, id: \.self) { id in
-                        Color.clear
-                            .frame(height: model.rowHeight)
-                            .background(
-                                GeometryReader { proxy in
-                                    Color.clear.preference(
-                                        key: TopAlignedListFramesPreferenceKey.self,
-                                        value: [id: proxy.frame(in: .named("TopAlignedList"))]
+                        LazyVStack(spacing: 0) {
+                            ForEach(model.items, id: \.self) { id in
+                                Color.clear
+                                    .frame(height: model.rowHeight)
+                                    .background(
+                                        GeometryReader { proxy in
+                                            Color.clear.preference(
+                                                key: TopAlignedListFramesPreferenceKey.self,
+                                                value: [id: proxy.frame(in: .named("TopAlignedList"))]
+                                            )
+                                        }
                                     )
-                                }
-                            )
-                            .flippedUpsideDown()
+                                    .flippedUpsideDown()
+                            }
+                        }
+                        .overlay(alignment: .top) {
+                            Color.clear
+                                .frame(height: 0)
+                                .id("TopAlignedListBottom")
+                        }
                     }
-                }
-                .modifier(
-                    LegacyTopAlignedMessageListScrollViewModifier(
-                        isEnabled: isEnabled
+                    .modifier(
+                        TopAlignedMessageListContentModifier(
+                            isEnabled: isEnabled,
+                            minimumHeight: viewport.size.height
+                        )
                     )
-                )
-                .overlay(alignment: .top) {
-                    Color.clear
-                        .frame(height: 0)
-                        .id("TopAlignedListBottom")
                 }
-            }
-            .modifier(TopAlignedMessageListScrollViewModifier(isEnabled: isEnabled))
-            .onChange(of: model.scrollToLatestRequest) { _ in
-                withAnimation(.linear(duration: 0.3)) {
-                    scrollView.scrollTo("TopAlignedListBottom", anchor: .bottom)
+                .onChange(of: model.scrollToLatestRequest) { _ in
+                    withAnimation(.linear(duration: 0.3)) {
+                        scrollView.scrollTo("TopAlignedListBottom", anchor: .bottom)
+                    }
                 }
             }
         }
@@ -239,5 +345,33 @@ private struct TopAlignedListFramesPreferenceKey: PreferenceKey {
 
     static func reduce(value: inout [Int: CGRect], nextValue: () -> [Int: CGRect]) {
         value.merge(nextValue(), uniquingKeysWith: { _, next in next })
+    }
+}
+
+@MainActor private final class TopAlignedMessageListFactory: ViewFactory {
+    @Injected(\.chatClient) var chatClient
+    var styles = DefaultTestStyles()
+
+    func makeMessageItemView(options: MessageItemViewOptions) -> some View {
+        TopAlignedMessageListRow(messageId: options.message.id)
+    }
+}
+
+private struct TopAlignedMessageListRow: View {
+    let messageId: String
+
+    var body: some View {
+        Color.clear
+            .frame(height: 40)
+            .background(
+                GeometryReader { proxy in
+                    if let id = Int(messageId.replacingOccurrences(of: "message-", with: "")) {
+                        Color.clear.preference(
+                            key: TopAlignedListFramesPreferenceKey.self,
+                            value: [id: proxy.frame(in: .named("TopAlignedList"))]
+                        )
+                    }
+                }
+            )
     }
 }
