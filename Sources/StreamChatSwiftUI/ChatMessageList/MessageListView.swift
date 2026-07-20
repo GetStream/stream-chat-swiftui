@@ -190,135 +190,141 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
         ZStack {
             ScrollViewReader { scrollView in
                 ScrollView {
-                    GeometryReader { proxy in
-                        let frame = proxy.frame(in: .named(scrollAreaId))
-                        let offset = frame.minY
-                        let width = frame.width
-                        Color.clear.preference(key: ScrollViewOffsetPreferenceKey.self, value: offset)
-                        Color.clear.preference(key: WidthPreferenceKey.self, value: width)
-                    }
-                    // A GeometryReader has a 10-point ideal height inside a
-                    // vertical ScrollView. Zero it while the feature is on so it
-                    // cannot add phantom overflow above the top-aligned content.
-                    .frame(height: messageListConfig.shouldMessagesStartAtTheTop ? 0 : nil)
-
-                    LazyVStack(spacing: 0) {
-                        if shouldShowTypingIndicator {
-                            factory.makeInlineTypingIndicatorView(
-                                options: TypingIndicatorViewOptions(
-                                    channel: channel,
-                                    currentUserId: chatClient.currentUserId
-                                )
-                            )
-                            .flippedUpsideDown()
+                    // The explicit spacing matters: the implicit stack between
+                    // the ScrollView's children has a default ~8pt spacing that
+                    // would otherwise create a phantom scrollable range when the
+                    // content exactly fits the viewport (top-aligned mode).
+                    VStack(spacing: messageListConfig.shouldMessagesStartAtTheTop ? 0 : nil) {
+                        GeometryReader { proxy in
+                            let frame = proxy.frame(in: .named(scrollAreaId))
+                            let offset = frame.minY
+                            let width = frame.width
+                            Color.clear.preference(key: ScrollViewOffsetPreferenceKey.self, value: offset)
+                            Color.clear.preference(key: WidthPreferenceKey.self, value: width)
                         }
+                        // A GeometryReader has a 10-point ideal height inside a
+                        // vertical ScrollView. Zero it while the feature is on so it
+                        // cannot add phantom overflow above the top-aligned content.
+                        .frame(height: messageListConfig.shouldMessagesStartAtTheTop ? 0 : nil)
 
-                        ForEach(messages, id: \.messageId) { message in
-                            var index: Int? = messageListDateUtils.indexForMessageDate(message: message, in: messages)
-                            let messageDate: Date? = messageListDateUtils.showMessageDate(for: index, in: messages)
-                            let messageIsFirstUnread = firstUnreadMessageId?.contains(message.id) == true
-                            let showUnreadSeparator = messageListConfig.showNewMessagesSeparator &&
-                                messageIsFirstUnread &&
-                                !isMessageThread
-                            let showsLastInGroupInfo = showsLastInGroupInfo(for: message, channel: channel)
-                            let showThreadRepliesSeparator = isThreadRepliesSeparatorShown(for: message)
-                            factory.makeMessageItemView(
-                                options: MessageItemViewOptions(
-                                    channel: channel,
-                                    message: message,
-                                    width: width,
-                                    showsAllInfo: showsAllData(for: message),
-                                    isInThread: isMessageThread,
-                                    scrolledId: $scrolledId,
-                                    quotedMessage: $quotedMessage,
-                                    onLongPress: handleLongPress(messageDisplayInfo:),
-                                    isLast: !showsLastInGroupInfo && message == messages.last
+                        messagesStack {
+                            if shouldShowTypingIndicator {
+                                factory.makeInlineTypingIndicatorView(
+                                    options: TypingIndicatorViewOptions(
+                                        channel: channel,
+                                        currentUserId: chatClient.currentUserId
+                                    )
                                 )
-                            )
-                            .onAppear {
-                                if index == nil {
-                                    index = messageListDateUtils.index(for: message, in: messages)
-                                }
-                                if let index {
-                                    onMessageAppear(index, scrollDirection)
-                                }
+                                .flippedUpsideDown()
                             }
-                            .padding(.bottom, message == messages.first ? bottomInset : 0)
-                            .padding(
-                                .top,
-                                topPadding(
-                                    hasMessageDate: messageDate != nil,
-                                    showsLastInGroupInfo: showsLastInGroupInfo,
-                                    showUnreadSeparator: showUnreadSeparator,
-                                    showThreadRepliesSeparator: showThreadRepliesSeparator
+
+                            ForEach(messages, id: \.messageId) { message in
+                                var index: Int? = messageListDateUtils.indexForMessageDate(message: message, in: messages)
+                                let messageDate: Date? = messageListDateUtils.showMessageDate(for: index, in: messages)
+                                let messageIsFirstUnread = firstUnreadMessageId?.contains(message.id) == true
+                                let showUnreadSeparator = messageListConfig.showNewMessagesSeparator &&
+                                    messageIsFirstUnread &&
+                                    !isMessageThread
+                                let showsLastInGroupInfo = showsLastInGroupInfo(for: message, channel: channel)
+                                let showThreadRepliesSeparator = isThreadRepliesSeparatorShown(for: message)
+                                factory.makeMessageItemView(
+                                    options: MessageItemViewOptions(
+                                        channel: channel,
+                                        message: message,
+                                        width: width,
+                                        showsAllInfo: showsAllData(for: message),
+                                        isInThread: isMessageThread,
+                                        scrolledId: $scrolledId,
+                                        quotedMessage: $quotedMessage,
+                                        onLongPress: handleLongPress(messageDisplayInfo:),
+                                        isLast: !showsLastInGroupInfo && message == messages.last
+                                    )
                                 )
-                            )
-                            .overlay(
-                                (messageDate != nil || showsLastInGroupInfo || showUnreadSeparator || showThreadRepliesSeparator) ?
-                                    VStack(spacing: 0) {
-                                        messageDate != nil ?
-                                            factory.makeMessageListDateIndicator(options: MessageListDateIndicatorViewOptions(date: messageDate!))
-                                            .frame(maxHeight: dateLabelSize)
-                                            : nil
-
-                                        showUnreadSeparator ?
-                                            factory.makeNewMessagesDividerView(
-                                                options: NewMessagesDividerViewOptions(
-                                                    newMessagesStartId: $firstUnreadMessageId,
-                                                    count: newMessagesCount(for: index, message: message)
-                                                )
-                                            )
-                                            .onAppear {
-                                                unreadMessagesBannerShown = true
-                                            }
-                                            .onDisappear {
-                                                unreadMessagesBannerShown = false
-                                            }
-                                            : nil
-
-                                        showThreadRepliesSeparator ?
-                                            factory.makeThreadRepliesDividerView(
-                                                options: ThreadRepliesDividerViewOptions(
-                                                    replyCount: messages.last?.replyCount ?? (messages.count - 1)
-                                                )
-                                            )
-                                            .frame(maxHeight: newMessagesSeparatorSize)
-                                            : nil
-
-                                        showsLastInGroupInfo ?
-                                            factory.makeLastInGroupHeaderView(options: LastInGroupHeaderViewOptions(message: message))
-                                            .frame(maxHeight: lastInGroupHeaderSize)
-                                            : nil
+                                .onAppear {
+                                    if index == nil {
+                                        index = messageListDateUtils.index(for: message, in: messages)
                                     }
-                                    : nil,
-                                alignment: .top
-                            )
-                            .flippedUpsideDown()
-                            .animation(nil, value: messageDate != nil)
-                        }
-                        .id(listId)
+                                    if let index {
+                                        onMessageAppear(index, scrollDirection)
+                                    }
+                                }
+                                .padding(.bottom, message == messages.first ? bottomInset : 0)
+                                .padding(
+                                    .top,
+                                    topPadding(
+                                        hasMessageDate: messageDate != nil,
+                                        showsLastInGroupInfo: showsLastInGroupInfo,
+                                        showUnreadSeparator: showUnreadSeparator,
+                                        showThreadRepliesSeparator: showThreadRepliesSeparator
+                                    )
+                                )
+                                .overlay(
+                                    (messageDate != nil || showsLastInGroupInfo || showUnreadSeparator || showThreadRepliesSeparator) ?
+                                        VStack(spacing: 0) {
+                                            messageDate != nil ?
+                                                factory.makeMessageListDateIndicator(options: MessageListDateIndicatorViewOptions(date: messageDate!))
+                                                .frame(maxHeight: dateLabelSize)
+                                                : nil
 
-                        // Trailing spacer in the flipped stack becomes leading
-                        // space under the navigation bar, keeping the time bubble
-                        // from sitting flush against it.
-                        if messageListConfig.shouldMessagesStartAtTheTop {
-                            Color.clear
-                                .frame(height: tokens.spacingSm)
-                                .accessibilityHidden(true)
+                                            showUnreadSeparator ?
+                                                factory.makeNewMessagesDividerView(
+                                                    options: NewMessagesDividerViewOptions(
+                                                        newMessagesStartId: $firstUnreadMessageId,
+                                                        count: newMessagesCount(for: index, message: message)
+                                                    )
+                                                )
+                                                .onAppear {
+                                                    unreadMessagesBannerShown = true
+                                                }
+                                                .onDisappear {
+                                                    unreadMessagesBannerShown = false
+                                                }
+                                                : nil
+
+                                            showThreadRepliesSeparator ?
+                                                factory.makeThreadRepliesDividerView(
+                                                    options: ThreadRepliesDividerViewOptions(
+                                                        replyCount: messages.last?.replyCount ?? (messages.count - 1)
+                                                    )
+                                                )
+                                                .frame(maxHeight: newMessagesSeparatorSize)
+                                                : nil
+
+                                            showsLastInGroupInfo ?
+                                                factory.makeLastInGroupHeaderView(options: LastInGroupHeaderViewOptions(message: message))
+                                                .frame(maxHeight: lastInGroupHeaderSize)
+                                                : nil
+                                        }
+                                        : nil,
+                                    alignment: .top
+                                )
+                                .flippedUpsideDown()
+                                .animation(nil, value: messageDate != nil)
+                            }
+                            .id(listId)
+
+                            // Trailing spacer in the flipped stack becomes leading
+                            // space under the navigation bar, keeping the time bubble
+                            // from sitting flush against it.
+                            if messageListConfig.shouldMessagesStartAtTheTop {
+                                Color.clear
+                                    .frame(height: tokens.spacingSm)
+                                    .accessibilityHidden(true)
+                            }
                         }
+                        .modifier(TopAlignedFillModifier(minHeight: containerHeight))
+                        .delayedRendering()
+                        .modifier(factory.styles.makeMessageListModifier(options: MessageListModifierOptions()))
+                        .modifier(ScrollTargetLayoutModifier(enabled: loadingNextMessages))
+                        .overlay(
+                            VStack {
+                                // Workaround to make scrolling to bottom more precise
+                                bottomAnchorView
+
+                                Spacer()
+                            }
+                        )
                     }
-                    .modifier(TopAlignedFillModifier(minHeight: containerHeight))
-                    .delayedRendering()
-                    .modifier(factory.styles.makeMessageListModifier(options: MessageListModifierOptions()))
-                    .modifier(ScrollTargetLayoutModifier(enabled: loadingNextMessages))
-                    .overlay(
-                        VStack {
-                            // Workaround to make scrolling to bottom more precise
-                            bottomAnchorView
-
-                            Spacer()
-                        }
-                    )
                 }
                 .modifier(ScrollPositionModifier(scrollPosition: loadingNextMessages ? $scrollPosition : .constant(nil)))
                 .background(
@@ -563,6 +569,24 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
         Color.clear
             .frame(height: 0)
             .id(bottomAnchorId)
+    }
+
+    /// A lazy stack re-evaluates its realized rows whenever a row crosses the
+    /// viewport edge. While the top-aligned list is rubber-banding past the top,
+    /// that re-evaluation invalidates the layout mid-gesture and clamps the drag
+    /// (scroll jumps). With this few messages the history is short enough that
+    /// top alignment can matter and an eager stack costs nothing, keeping the
+    /// layout stable. Larger histories are always taller than the viewport, so
+    /// they render lazily.
+    private var eagerStackMessageCountLimit: Int { 20 }
+
+    @ViewBuilder
+    private func messagesStack<Content: View>(@ViewBuilder content: () -> Content) -> some View {
+        if messageListConfig.shouldMessagesStartAtTheTop && messages.count < eagerStackMessageCountLimit {
+            VStack(spacing: 0, content: content)
+        } else {
+            LazyVStack(spacing: 0, content: content)
+        }
     }
 }
 
