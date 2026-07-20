@@ -42,7 +42,8 @@ import SwiftUI
         attachmentPreviewWidth: CGFloat = 256,
         videoAttachmentCachingPolicy: VideoAttachmentCachingPolicy? = nil,
         navigationBarDisplayMode: NavigationBarItem.TitleDisplayMode = .inline,
-        supportedMessageActions: @escaping @MainActor (SupportedMessageActionsOptions) -> [MessageAction] = { MessageAction.defaultActions(for: $0) }
+        supportedMessageActions: @escaping @MainActor (SupportedMessageActionsOptions) -> [MessageAction] = { MessageAction.defaultActions(for: $0) },
+        shouldMessagesStartAtTheTop: Bool = true
     ) {
         self.messageListType = messageListType
         self.typingIndicatorPlacement = typingIndicatorPlacement
@@ -78,6 +79,7 @@ import SwiftUI
         self.videoAttachmentCachingPolicy = videoAttachmentCachingPolicy
         self.navigationBarDisplayMode = navigationBarDisplayMode
         self.supportedMessageActions = supportedMessageActions
+        self.shouldMessagesStartAtTheTop = shouldMessagesStartAtTheTop
     }
 
     public let messageListType: MessageListType
@@ -146,6 +148,9 @@ import SwiftUI
     /// - Parameter options: the options for getting supported message actions.
     /// - Returns: list of `MessageAction` items.
     public var supportedMessageActions: @MainActor (SupportedMessageActionsOptions) -> [MessageAction]
+
+    /// Whether short message lists begin at the top instead of the bottom. Defaults to `true`.
+    public let shouldMessagesStartAtTheTop: Bool
 }
 
 /// Contains information about the message paddings.

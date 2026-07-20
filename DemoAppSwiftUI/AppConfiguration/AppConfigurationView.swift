@@ -12,6 +12,7 @@ struct AppConfigurationView: View {
     @State private var reactionsPlacement = AppConfiguration.default.reactionsPlacement
     @State private var appStyle = AppConfiguration.default.appStyle
     @State private var voiceRecordingAutoSend = AppConfiguration.default.isVoiceRecordingAutoSendEnabled
+    @State private var messagesStartAtTheTop = AppConfiguration.default.shouldMessagesStartAtTheTop
 
     var body: some View {
         NavigationView {
@@ -41,6 +42,9 @@ struct AppConfigurationView: View {
                 Section("Voice Recording") {
                     Toggle("Auto-send on release", isOn: $voiceRecordingAutoSend)
                 }
+                Section("Message List") {
+                    Toggle("Messages Start at the Top", isOn: $messagesStartAtTheTop)
+                }
             }
             .navigationBarTitleDisplayMode(.inline)
             .navigationTitle("App Configuration")
@@ -60,6 +64,10 @@ struct AppConfigurationView: View {
         .onChange(of: voiceRecordingAutoSend) { newValue in
             AppConfiguration.default.isVoiceRecordingAutoSendEnabled = newValue
             InjectedValues[\.utils].composerConfig = AppConfiguration.makeComposerConfig()
+        }
+        .onChange(of: messagesStartAtTheTop) { newValue in
+            AppConfiguration.default.shouldMessagesStartAtTheTop = newValue
+            InjectedValues[\.utils].messageListConfig = AppConfiguration.makeMessageListConfig()
         }
     }
 }

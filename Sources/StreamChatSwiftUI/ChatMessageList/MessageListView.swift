@@ -292,6 +292,11 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
                     .delayedRendering()
                     .modifier(factory.styles.makeMessageListModifier(options: MessageListModifierOptions()))
                     .modifier(ScrollTargetLayoutModifier(enabled: loadingNextMessages))
+                    .modifier(
+                        LegacyTopAlignedMessageListScrollViewModifier(
+                            isEnabled: messageListConfig.shouldMessagesStartAtTheTop
+                        )
+                    )
                     .overlay(
                         VStack {
                             // Workaround to make scrolling to bottom more precise
@@ -303,6 +308,11 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
                         }
                     )
                 }
+                .modifier(
+                    TopAlignedMessageListScrollViewModifier(
+                        isEnabled: messageListConfig.shouldMessagesStartAtTheTop
+                    )
+                )
                 .modifier(ScrollPositionModifier(scrollPosition: loadingNextMessages ? $scrollPosition : .constant(nil)))
                 .background(
                     factory.makeMessageListBackground(
@@ -359,6 +369,11 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
                     if let scrolledId {
                         let shouldJump = onJumpToMessage?(scrolledId) ?? false
                         if !shouldJump {
+                            return
+                        }
+                        if keepsLatestMessageAnchoredOnContentChanges,
+                           messages.first?.id == scrolledId,
+                           !showScrollToLatestButton {
                             return
                         }
                         withAnimation {
@@ -434,6 +449,20 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
             && !unreadMessagesBannerShown
             && !isMessageThread
             && !unreadButtonDismissed
+    }
+
+    private var keepsLatestMessageAnchoredOnContentChanges: Bool {
+        guard messageListConfig.shouldMessagesStartAtTheTop else { return false }
+        #if os(iOS)
+        return true
+        #elseif os(macOS)
+        if #available(macOS 15, *) {
+            return true
+        }
+        return false
+        #else
+        return false
+        #endif
     }
 
     private func additionalTopPadding(
