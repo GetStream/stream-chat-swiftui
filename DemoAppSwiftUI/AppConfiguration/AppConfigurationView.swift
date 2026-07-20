@@ -45,6 +45,7 @@ struct AppConfigurationView: View {
                 }
                 Section("Message List") {
                     Toggle("Messages Start at the Top", isOn: $messagesStartAtTheTop)
+                }
                 Section {
                     Picker("Directory", selection: $attachmentDownloadsDirectory) {
                         ForEach(AppConfiguration.AttachmentDownloadsDirectory.allCases) { directory in
@@ -63,7 +64,9 @@ struct AppConfigurationView: View {
             .navigationBarTitleDisplayMode(.inline)
             .navigationTitle("App Configuration")
         }
-        .onChange(of: channelPinningEnabled, perform: { AppConfiguration.default.isChannelPinningFeatureEnabled = $0 })
+        .onChange(of: channelPinningEnabled) {
+            AppConfiguration.default.isChannelPinningFeatureEnabled = $0
+        }
         .onChange(of: reactionsStyle) { newStyle in
             AppConfiguration.default.reactionsStyle = newStyle
             InjectedValues[\.utils].messageListConfig = AppConfiguration.makeMessageListConfig()
@@ -82,6 +85,7 @@ struct AppConfigurationView: View {
         .onChange(of: messagesStartAtTheTop) { newValue in
             AppConfiguration.default.shouldMessagesStartAtTheTop = newValue
             InjectedValues[\.utils].messageListConfig = AppConfiguration.makeMessageListConfig()
+        }
         .onChange(of: attachmentDownloadsDirectory) { newValue in
             AppConfiguration.default.attachmentDownloadsDirectory = newValue
         }
