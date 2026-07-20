@@ -571,13 +571,15 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
             .id(bottomAnchorId)
     }
 
-    /// A lazy stack re-evaluates its realized rows whenever a row crosses the
-    /// viewport edge. While the top-aligned list is rubber-banding past the top,
-    /// that re-evaluation invalidates the layout mid-gesture and clamps the drag
-    /// (scroll jumps). With this few messages the history is short enough that
-    /// top alignment can matter and an eager stack costs nothing, keeping the
-    /// layout stable. Larger histories are always taller than the viewport, so
-    /// they render lazily.
+    /// A lazy stack's layout is viewport-driven, and rubber-banding the
+    /// top-aligned list past the top puts it in an edge case where it
+    /// invalidates the layout mid-gesture, clamping the drag (scroll jumps).
+    /// This was isolated empirically: the jump reproduces with two or more
+    /// messages in a lazy stack even with all scroll callbacks disabled, and
+    /// never with an eager one. With this few messages the history is short
+    /// enough that top alignment can matter and an eager stack costs nothing,
+    /// keeping the layout stable. Larger histories are always taller than the
+    /// viewport, so they render lazily.
     private var eagerStackMessageCountLimit: Int { 20 }
 
     @ViewBuilder
