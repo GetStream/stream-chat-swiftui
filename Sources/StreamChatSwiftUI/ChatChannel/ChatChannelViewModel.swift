@@ -510,12 +510,7 @@ import SwiftUI
             scrolledId = firstUnreadMessageId
         }
         
-        // When messages start at the top, a flipped list pinned to the newest
-        // message keeps it visible without an explicit scroll. Skipping the
-        // scroll also avoids resetting the scroll position mid-drag when
-        // an unrelated update (e.g. read state) arrives.
-        let keepsPinnedToNewestMessage = !utils.messageListConfig.shouldMessagesStartAtTheTop
-        if !showScrollToLatestButton && scrolledId == nil && !loadingNextMessages && keepsPinnedToNewestMessage {
+        if !showScrollToLatestButton && scrolledId == nil && !loadingNextMessages {
             updateScrolledIdToNewestMessage()
         } else if changes.first?.isInsertion == true && currentUserSentNewMessage {
             updateScrolledIdToNewestMessage()
