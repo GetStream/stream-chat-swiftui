@@ -15,6 +15,10 @@ class AppDelegate: NSObject, UIApplicationDelegate {
         var config = ChatClientConfig(apiKey: .init(apiKeyString))
         config.isLocalStorageEnabled = true
         config.applicationGroupIdentifier = applicationGroupIdentifier
+        if let downloadsFolderURL = AppConfiguration.AttachmentDownloadsDirectory.stored.folderURL {
+            try? FileManager.default.createDirectory(at: downloadsFolderURL, withIntermediateDirectories: true)
+            config.localAttachmentDownloadsFolderURL = downloadsFolderURL
+        }
 
         let client = ChatClient(config: config)
         return client
