@@ -330,7 +330,8 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
                 .onPreferenceChange(ScrollViewOffsetPreferenceKey.self) { value in
                     DispatchQueue.main.async {
                         let offsetValue = value ?? 0
-                        let diff = offsetValue - utils.messageCachingUtils.scrollOffset
+                        let previousOffsetValue = utils.messageCachingUtils.scrollOffset
+                        let diff = offsetValue - previousOffsetValue
                         if abs(diff) > 15 {
                             if diff > 0 {
                                 if scrollDirection == .up {
@@ -353,7 +354,16 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
                                 }
                             }
                         }
-                        if messageListConfig.resignsFirstResponderOnScrollDown && keyboardShown && diff < -20 {
+                        // When messages start at the top and don't fill the viewport,
+                        // the offset marker sits below the empty gap, so an insertion
+                        // shrinks the gap and reads as a scroll-down gesture. A positive
+                        // offset on either side of the change can only come from that
+                        // gap (or rubber-banding), never from the user scrolling through
+                        // messages, so it must not dismiss the keyboard.
+                        let isLayoutDrivenOffsetChange = messageListConfig.shouldMessagesStartAtTheTop
+                            && (offsetValue > 0.5 || previousOffsetValue > 0.5)
+                        if messageListConfig.resignsFirstResponderOnScrollDown && keyboardShown && diff < -20
+                            && !isLayoutDrivenOffsetChange {
                             keyboardShown = false
                             resignFirstResponder()
                         }

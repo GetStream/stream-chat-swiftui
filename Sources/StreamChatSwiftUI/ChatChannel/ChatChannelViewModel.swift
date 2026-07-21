@@ -812,6 +812,9 @@ import SwiftUI
             switch change {
             case .insert,
                  .remove:
+                if utils.messageListConfig.shouldMessagesStartAtTheTop {
+                    continue
+                }
                 return true
             case let .update(message, index: index):
                 guard index.row >= messages.startIndex, index.row < messages.endIndex else { continue }

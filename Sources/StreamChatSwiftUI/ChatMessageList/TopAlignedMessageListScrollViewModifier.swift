@@ -7,16 +7,37 @@ import SwiftUI
 struct TopAlignedMessageListScrollViewModifier: ViewModifier {
     var isEnabled: Bool
 
-    @ViewBuilder
     func body(content: Content) -> some View {
         if #available(iOS 18, macOS 15, *) {
-            content
-                .defaultScrollAnchor(isEnabled ? .top : nil, for: .initialOffset)
-                .defaultScrollAnchor(isEnabled ? .top : nil, for: .sizeChanges)
-                .defaultScrollAnchor(isEnabled ? .bottom : nil, for: .alignment)
+            content.modifier(ModernTopAlignedMessageListScrollViewModifier(isEnabled: isEnabled))
         } else {
             content
         }
+    }
+}
+
+@available(iOS 18, macOS 15, *)
+private struct ModernTopAlignedMessageListScrollViewModifier: ViewModifier {
+    var isEnabled: Bool
+
+    @State private var contentFits = true
+    @State private var scrollPosition = ScrollPosition()
+
+    func body(content: Content) -> some View {
+        content
+            .defaultScrollAnchor(isEnabled ? .top : nil, for: .initialOffset)
+            .defaultScrollAnchor(isEnabled ? .top : nil, for: .sizeChanges)
+            .defaultScrollAnchor(isEnabled && contentFits ? .bottom : nil, for: .alignment)
+            .scrollPosition($scrollPosition)
+            .onScrollGeometryChange(for: Bool.self) { geometry in
+                geometry.contentSize.height <= geometry.containerSize.height
+            } action: { wasFitting, fits in
+                guard isEnabled, wasFitting != fits else { return }
+                contentFits = fits
+                if !fits {
+                    scrollPosition.scrollTo(edge: .top)
+                }
+            }
     }
 }
 

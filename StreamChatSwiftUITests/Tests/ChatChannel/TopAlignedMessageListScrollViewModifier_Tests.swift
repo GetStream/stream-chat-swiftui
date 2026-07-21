@@ -130,6 +130,34 @@ import XCTest
         XCTAssertEqual(latestFrame.maxY, 190, accuracy: 10)
     }
 
+    func test_listGrowingFromEmptyToScrollable_showsLatestMessageAtBottom() async throws {
+        let model = TopAlignedListModel(itemCount: 0)
+        let recorder = TopAlignedListFrameRecorder()
+
+        showView(TopAlignedListHarness(model: model, recorder: recorder, isEnabled: true))
+        try await settle()
+        model.items = Array(0..<60)
+        try await settle(for: 0.5)
+
+        let latestFrame = try XCTUnwrap(recorder.latestFrames?[0])
+        XCTAssertGreaterThan(latestFrame.minY, 140)
+        XCTAssertEqual(latestFrame.maxY, 190, accuracy: 10)
+    }
+
+    func test_listGrowingFromShortToScrollable_showsLatestMessageAtBottom() async throws {
+        let model = TopAlignedListModel(itemCount: 2)
+        let recorder = TopAlignedListFrameRecorder()
+
+        showView(TopAlignedListHarness(model: model, recorder: recorder, isEnabled: true))
+        try await settle()
+        model.items = Array(0..<60)
+        try await settle(for: 0.5)
+
+        let latestFrame = try XCTUnwrap(recorder.latestFrames?[0])
+        XCTAssertGreaterThan(latestFrame.minY, 140)
+        XCTAssertEqual(latestFrame.maxY, 190, accuracy: 10)
+    }
+
     func test_scrollableList_keepsLatestMessageAtBottomWhenRowsFinishLayingOut() async throws {
         let model = TopAlignedListModel(itemCount: 100, rowHeight: 20)
         let recorder = TopAlignedListFrameRecorder()
