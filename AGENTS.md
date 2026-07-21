@@ -186,6 +186,38 @@ Testing policy
 - Prefer using `AssertSnapshot` from StreamChatTestHelpers instead of using the SnapshotTesting framework directly.
 - Avoid using `AssertAsync` from StreamChatTestHelpers, instead use `XCTestExpectation` directly whenever possible.
 
+### E2E tests & runtime UI debugging (mock server)
+
+**Use sparingly.** E2E tests take a long time to run (~30–90s per test including the build; the full suite far longer). Only reach for them for complex investigations that need a real running app — e.g. scroll behavior, keyboard interactions, layout races, animation glitches — or when explicitly asked to use them. For everything else, prefer unit/snapshot tests or the demo app.
+
+Setup
+
+- E2E tests live in `StreamChatSwiftUITestsAppTests` and run against the `StreamChatSwiftUITestsApp` harness with a local mock server (no real backend).
+- Tests subclass `StreamTestCase`, which expects the mock server driver on port 4568. Start it with `bundle exec fastlane start_mock_server` (clones `GetStream/stream-chat-test-mock-server` and runs its `driver.rb`); stop it with `bundle exec fastlane stop_mock_server`.
+- If every test fails immediately in setup with an HTTP status assertion (e.g. `("200") is not equal to ("0")` / "Failed connecting to mock server"), the driver is not running — restart it before digging further.
+
+Running a single test:
+
+```
+xcodebuild -project StreamChatSwiftUI.xcodeproj \
+  -scheme StreamChatSwiftUITestsApp \
+  -destination 'platform=iOS Simulator,id=<booted-udid>' \
+  -only-testing:StreamChatSwiftUITestsAppTests/<TestClass>/<testMethod> test
+```
+
+Writing a temporary repro test
+
+- Add a file under `StreamChatSwiftUITestsAppTests/Tests/`, subclass `StreamTestCase`, and drive the app with the existing robots and page objects: `backendRobot.generateChannels(channelsCount:messagesCount:)`, `userRobot.login().waitForChannelListToLoad().openChannel()`, `MessageListPage.Composer.inputField`, etc.
+- To exercise a non-default `MessageListConfig` or `Utils` option, append a launch argument in the test's `setUpWithError` (before calling `super`) and read `ProcessInfo.processInfo.arguments` in `StreamChatSwiftUITestsApp/StartPage.swift`.
+- Delete the repro test and revert any `StartPage.swift` changes before committing.
+
+Observing what happens at runtime
+
+- Screenshots: `XCUIScreen.main.screenshot().pngRepresentation` written from the test to a `/tmp` path is the most reliable visual check (the runner executes on the host, so `/tmp` is directly readable). `xcrun simctl io booted recordVideo` frequently fails with "Resource busy" — prefer screenshot bursts at key moments.
+- App-side telemetry: `print`/`NSLog` from the app process does not appear in `xcodebuild` output (only the test runner's logs do), and unified-log queries are unreliable. Instead, have the instrumentation append lines to a file in `NSTemporaryDirectory()` and pull it after the run via `xcrun simctl get_app_container <udid> io.getstream.iOS.StreamChatSwiftUITestsApp data` (file is under `<container>/tmp/`). Note `xcodebuild` may boot a different simulator between runs; when in doubt locate the file with `find ~/Library/Developer/CoreSimulator/Devices/*/data/Containers/Data/Application -maxdepth 3 -name <file> -mmin -5`.
+- Scroll-view telemetry: for scroll/offset bugs, a temporary `UIViewRepresentable` that walks up `superview` to find the enclosing `UIScrollView` and logs `contentOffset`/`contentSize`/insets on a `CADisplayLink` (added to the run loop in `.common` mode) gives frame-accurate traces. It must be placed **inside** the `ScrollView` content (e.g. as a `.background` of the stack), not on the `ScrollView` itself, or it will never find the scroll view. Combine with event markers logged from the code paths under suspicion to correlate causes with offset changes.
+- Remove every piece of temporary instrumentation from SDK sources before committing.
+
 ### Branching & changelog
 
 - The default integration branch is `develop`. Feature branches are merged into `develop`.
