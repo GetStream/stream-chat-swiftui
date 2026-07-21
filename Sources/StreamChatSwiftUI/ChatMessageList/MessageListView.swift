@@ -354,7 +354,12 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
                             }
                             utils.messageCachingUtils.scrollOffset = offsetValue
                         }
+                        // With top-aligned short lists, rubber-banding produces
+                        // the same negative offset as scrolling into history.
+                        // Gate on message count so the button only appears when
+                        // there is actually enough content to scroll.
                         let scrollButtonShown = offsetValue < -20
+                            && (!messageListConfig.shouldMessagesStartAtTheTop || messages.count > 10)
                         if scrollButtonShown != showScrollToLatestButton {
                             if scrollButtonShown {
                                 withAnimation(.easeOut(duration: 0.18)) {
