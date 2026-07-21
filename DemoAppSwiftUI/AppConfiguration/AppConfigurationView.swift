@@ -12,6 +12,7 @@ struct AppConfigurationView: View {
     @State private var reactionsPlacement = AppConfiguration.default.reactionsPlacement
     @State private var appStyle = AppConfiguration.default.appStyle
     @State private var voiceRecordingAutoSend = AppConfiguration.default.isVoiceRecordingAutoSendEnabled
+    @State private var messagesStartAtTheTop = AppConfiguration.default.shouldMessagesStartAtTheTop
     @State private var attachmentDownloadsDirectory = AppConfiguration.default.attachmentDownloadsDirectory
 
     var body: some View {
@@ -42,6 +43,9 @@ struct AppConfigurationView: View {
                 Section("Voice Recording") {
                     Toggle("Auto-send on release", isOn: $voiceRecordingAutoSend)
                 }
+                Section("Message List") {
+                    Toggle("Messages Start at the Top", isOn: $messagesStartAtTheTop)
+                }
                 Section {
                     Picker("Directory", selection: $attachmentDownloadsDirectory) {
                         ForEach(AppConfiguration.AttachmentDownloadsDirectory.allCases) { directory in
@@ -60,7 +64,9 @@ struct AppConfigurationView: View {
             .navigationBarTitleDisplayMode(.inline)
             .navigationTitle("App Configuration")
         }
-        .onChange(of: channelPinningEnabled, perform: { AppConfiguration.default.isChannelPinningFeatureEnabled = $0 })
+        .onChange(of: channelPinningEnabled) {
+            AppConfiguration.default.isChannelPinningFeatureEnabled = $0
+        }
         .onChange(of: reactionsStyle) { newStyle in
             AppConfiguration.default.reactionsStyle = newStyle
             InjectedValues[\.utils].messageListConfig = AppConfiguration.makeMessageListConfig()
@@ -75,6 +81,10 @@ struct AppConfigurationView: View {
         .onChange(of: voiceRecordingAutoSend) { newValue in
             AppConfiguration.default.isVoiceRecordingAutoSendEnabled = newValue
             InjectedValues[\.utils].composerConfig = AppConfiguration.makeComposerConfig()
+        }
+        .onChange(of: messagesStartAtTheTop) { newValue in
+            AppConfiguration.default.shouldMessagesStartAtTheTop = newValue
+            InjectedValues[\.utils].messageListConfig = AppConfiguration.makeMessageListConfig()
         }
         .onChange(of: attachmentDownloadsDirectory) { newValue in
             AppConfiguration.default.attachmentDownloadsDirectory = newValue

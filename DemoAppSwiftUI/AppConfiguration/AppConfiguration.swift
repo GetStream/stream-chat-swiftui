@@ -22,6 +22,8 @@ final class AppConfiguration {
     var appStyle: AppStyle = .regular
     /// When enabled, releasing a hold-to-record gesture sends the voice message instantly.
     var isVoiceRecordingAutoSendEnabled = false
+    /// When enabled, messages start at the top of the list when there are few messages.
+    var shouldMessagesStartAtTheTop = false
     /// Base directory used for Stream Chat attachment downloads.
     ///
     /// Applied when creating `ChatClient`, so changes take effect on the next app launch.
@@ -112,7 +114,8 @@ final class AppConfiguration {
             skipEditedMessageLabel: { message in
                 message.extraData["ai_generated"]?.boolValue == true
             },
-            videoAttachmentCachingPolicy: VideoAttachmentCachingPolicy(maxCacheSize: 100 * 1024 * 1024)
+            videoAttachmentCachingPolicy: VideoAttachmentCachingPolicy(maxCacheSize: 100 * 1024 * 1024),
+            shouldMessagesStartAtTheTop: AppConfiguration.default.shouldMessagesStartAtTheTop
         )
     }
 
