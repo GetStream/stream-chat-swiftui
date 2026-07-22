@@ -24,9 +24,8 @@ Agents should optimize for clean code, follow Apple's SwiftUI guidelines and Swi
 
 - **StreamChat** and **StreamChatCommonUI** from [`stream-chat-swift`](https://github.com/GetStream/stream-chat-swift) (≥ 5.0.0-beta)
 - **Vendored libraries** (do not edit directly):
-  - `Sources/StreamChatSwiftUI/StreamNuke/` — vendored Nuke image loading
   - `Sources/StreamChatSwiftUI/StreamSwiftyGif/` — vendored SwiftyGif
-  - Update these via `make update_nuke version=X.Y.Z` / `make update_swiftygif version=X.Y.Z`
+  - Update these via `make update_swiftygif version=X.Y.Z`
 
 ### Project layout (high level)
 
@@ -41,7 +40,6 @@ Sources/
     CommonViews/             # Shared/reusable SwiftUI views
     Generated/               # Auto-generated (L10n.swift, version) — do not edit manually
     Resources/               # Localization files (en.lproj, etc.)
-    StreamNuke/              # Vendored — do not edit
     StreamSwiftyGif/         # Vendored — do not edit
     Utils/                   # Utilities, common helpers
     ViewFactory/             # ViewFactory protocol & default implementation
