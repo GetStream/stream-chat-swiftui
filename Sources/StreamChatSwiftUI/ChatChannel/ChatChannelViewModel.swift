@@ -811,6 +811,12 @@ import SwiftUI
             switch change {
             case .insert,
                  .remove:
+                // When messages render from the top, insertions/removals must not
+                // animate: the implicit bottom spacer would resize and the whole
+                // stack would appear to shift instead of the row simply appearing.
+                if utils.messageListConfig.shouldMessagesStartAtTheTop {
+                    continue
+                }
                 return true
             case let .update(message, index: index):
                 guard index.row >= messages.startIndex, index.row < messages.endIndex else { continue }

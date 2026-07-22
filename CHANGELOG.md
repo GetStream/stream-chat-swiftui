@@ -5,8 +5,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### ✅ Added
 - Add disk cache for video attachments (`MessageListConfig.videoAttachmentCachingPolicy`) [#1508](https://github.com/GetStream/stream-chat-swiftui/pull/1508)
+- Add `MessageListConfig.shouldMessagesStartAtTheTop` to render messages starting from the top of the list when there are few messages [#1530](https://github.com/GetStream/stream-chat-swiftui/pull/1530)
+
 ### 🔄 Changed
 - Replace vendored Nuke image loading with `StreamImageDownloader` from StreamChatCommonUI [#1531](https://github.com/GetStream/stream-chat-swiftui/pull/1531)
+
 ### ⚡️ Performance
 - Fix the channel list rebuilding on every scroll tick after returning from a channel [#1525](https://github.com/GetStream/stream-chat-swiftui/pull/1525)
 - Render channel list dividers as row overlays instead of sibling views [#1529](https://github.com/GetStream/stream-chat-swiftui/pull/1529)
