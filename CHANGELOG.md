@@ -3,6 +3,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 # Upcoming
 
+### 🔄 Changed
+
+# [5.7.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/5.7.0)
+_July 22, 2026_
+
 ### ✅ Added
 - Add disk cache for video attachments (`MessageListConfig.videoAttachmentCachingPolicy`) [#1508](https://github.com/GetStream/stream-chat-swiftui/pull/1508)
 - Add `MessageListConfig.shouldMessagesStartAtTheTop` to render messages starting from the top of the list when there are few messages [#1530](https://github.com/GetStream/stream-chat-swiftui/pull/1530)
