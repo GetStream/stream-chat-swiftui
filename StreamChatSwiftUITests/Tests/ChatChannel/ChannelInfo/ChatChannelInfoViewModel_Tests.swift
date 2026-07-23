@@ -348,6 +348,8 @@ import XCTest
         let controller = viewModel.directMessageChannelController(for: participant)
 
         // Then
+        XCTAssertNotNil(controller)
+        XCTAssertNotNil(controller?.channelQuery.channelPayload)
         XCTAssertNil(controller?.channelQuery.channelPayload?.team)
     }
 
