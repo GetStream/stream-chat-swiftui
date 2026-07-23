@@ -388,11 +388,7 @@ import SwiftUI
             confirmationPopup: nil,
             isDestructive: false
         )
-        if let currentUserId = chatClient.currentUserId,
-           let channelController = try? chatClient.channelController(
-               createDirectMessageChannelWith: [currentUserId, participant.id],
-               extraData: [:]
-           ) {
+        if let channelController = directMessageChannelController(for: participant) {
             directMessageAction.navigationDestination = AnyView(
                 ChatChannelView(channelController: channelController)
             )
@@ -437,7 +433,16 @@ import SwiftUI
         
         return actions
     }
-    
+
+    func directMessageChannelController(for participant: ParticipantInfo) -> ChatChannelController? {
+        guard let currentUserId = chatClient.currentUserId else { return nil }
+        return try? chatClient.channelController(
+            createDirectMessageChannelWith: [currentUserId, participant.id],
+            team: channel.team,
+            extraData: [:]
+        )
+    }
+
     public func muteAction(
         participant: ParticipantInfo,
         onDismiss: @escaping () -> Void,

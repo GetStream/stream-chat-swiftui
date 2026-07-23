@@ -3,6 +3,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 # Upcoming
 
+### 🐞 Fixed
+- Pass the channel's team when starting a direct message with a member [#1541](https://github.com/GetStream/stream-chat-swiftui/pull/1541)
+
 ### 🔄 Changed
 
 # [5.7.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/5.7.0)
