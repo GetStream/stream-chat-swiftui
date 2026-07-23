@@ -3,6 +3,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 # Upcoming
 
+### 🔄 Changed
+
+# [4.102.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/4.102.0)
+_July 23, 2026_
+
 ### 🐞 Fixed
 
 - Send images and videos picked from the Files/iCloud picker as their proper type so they render inline instead of as downloadable files [#1516](https://github.com/GetStream/stream-chat-swiftui/pull/1516)
