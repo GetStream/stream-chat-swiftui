@@ -179,6 +179,46 @@ import XCTest
         )
     }
 
+    func test_attributedTextContent_whenMarkdownLinkDisplayTextLooksLikeAURL_usesTheHrefFromMarkdown() {
+        // Given
+        let realURL = URL(string: "https://real-link.com")!
+        let message = ChatMessage.mock(
+            id: .unique,
+            cid: .unique,
+            text: "[https://text-link.com](https://real-link.com)",
+            author: .mock(id: .unique)
+        )
+
+        // When
+        let attributed = message.attributedTextContent(
+            layoutDirection: .leftToRight,
+            translationLanguage: nil
+        )
+
+        // Then
+        XCTAssertEqual(firstLink(in: attributed), realURL)
+    }
+
+    func test_attributedTextContent_whenPlainTextURLHasNoMarkdownLink_stillDetectsIt() {
+        // Given
+        let detectedURL = URL(string: "https://getstream.io")!
+        let message = ChatMessage.mock(
+            id: .unique,
+            cid: .unique,
+            text: "visit https://getstream.io now",
+            author: .mock(id: .unique)
+        )
+
+        // When
+        let attributed = message.attributedTextContent(
+            layoutDirection: .leftToRight,
+            translationLanguage: nil
+        )
+
+        // Then
+        XCTAssertEqual(firstLink(in: attributed), detectedURL)
+    }
+
     func test_messageViewTextMentionAllTypes_snapshot() {
         // Given
         let textMessage = ChatMessage.mock(
@@ -1947,6 +1987,13 @@ import XCTest
         case .file, .voice:
             return CGSize(width: defaultScreenSize.width, height: hasCaption ? 220 : 180)
         }
+    }
+
+    private func firstLink(in attributedString: AttributedString) -> URL? {
+        for (value, _) in attributedString.runs[\.link] where value != nil {
+            return value
+        }
+        return nil
     }
 }
 
