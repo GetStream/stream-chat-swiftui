@@ -315,6 +315,42 @@ import XCTest
         XCTAssertFalse(actions.contains { $0.title == L10n.Alert.Actions.cancel })
     }
 
+    func test_chatChannelInfoVM_directMessageChannelController_passesTeam() {
+        // Given
+        let channel = mockGroup(with: 5, team: "red")
+        let viewModel = ChatChannelInfoViewModel(channel: channel)
+        let participant = ParticipantInfo(
+            chatUser: ChatUser.mock(id: .unique),
+            displayName: "Test User",
+            onlineInfoText: "online",
+            isDeactivated: false
+        )
+
+        // When
+        let controller = viewModel.directMessageChannelController(for: participant)
+
+        // Then
+        XCTAssertEqual(controller?.channelQuery.channelPayload?.team, "red")
+    }
+
+    func test_chatChannelInfoVM_directMessageChannelController_withoutTeam() {
+        // Given
+        let channel = mockGroup(with: 5)
+        let viewModel = ChatChannelInfoViewModel(channel: channel)
+        let participant = ParticipantInfo(
+            chatUser: ChatUser.mock(id: .unique),
+            displayName: "Test User",
+            onlineInfoText: "online",
+            isDeactivated: false
+        )
+
+        // When
+        let controller = viewModel.directMessageChannelController(for: participant)
+
+        // Then
+        XCTAssertNil(controller?.channelQuery.channelPayload?.team)
+    }
+
     func test_chatChannelInfoVM_participantActions_withMutesDisabled() {
         // Given
         let channel = mockGroup(with: 5, updateCapabilities: true, mutesEnabled: false)
@@ -1073,7 +1109,8 @@ import XCTest
     private func mockGroup(
         with memberCount: Int,
         updateCapabilities: Bool = true,
-        mutesEnabled: Bool = true
+        mutesEnabled: Bool = true,
+        team: TeamId? = nil
     ) -> ChatChannel {
         let cid: ChannelId = .unique
         let activeMembers = ChannelInfoMockUtils.setupMockMembers(
@@ -1087,14 +1124,15 @@ import XCTest
             capabilities.insert(.leaveChannel)
             capabilities.insert(.updateChannelMembers)
         }
-        
+
         let channelConfig = ChannelConfig(mutesEnabled: mutesEnabled)
-        
+
         let channel = ChatChannel.mock(
             cid: cid,
             config: channelConfig,
             ownCapabilities: capabilities,
             lastActiveMembers: activeMembers,
+            team: team,
             memberCount: activeMembers.count
         )
         return channel
