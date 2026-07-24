@@ -1758,9 +1758,9 @@ private extension MessageComposerView_Tests {
         let loader = PhotoAssetLoader()
         let imageSize = CGSize(width: 200, height: 200)
         for (index, asset) in mockAssets.enumerated() {
-            loader.loadedImages[asset.localIdentifier] = UIImage.make(
-                color: itemColors[index],
-                size: imageSize
+            loader.cache(
+                UIImage.make(color: itemColors[index], size: imageSize),
+                for: asset
             )
         }
         return (fetchResult, loader)

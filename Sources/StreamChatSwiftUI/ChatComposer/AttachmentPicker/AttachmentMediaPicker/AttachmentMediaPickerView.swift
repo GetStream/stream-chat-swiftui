@@ -15,7 +15,9 @@ public struct AttachmentMediaPickerView: View {
     @Injected(\.tokens) private var tokens
     
     @StateObject var assetLoader: PhotoAssetLoader
-    
+
+    @State private var gridId = UUID()
+
     var photoLibraryAssets: PHFetchResult<PHAsset>?
     var onImageTap: (AddedAsset) -> Void
     var imageSelected: (String) -> Bool
@@ -64,33 +66,33 @@ public struct AttachmentMediaPickerView: View {
     // MARK: - Private
 
     private func assetGridContent(collection: PHFetchResultCollection) -> some View {
-        ScrollViewReader { proxy in
-            ScrollView {
-                LazyVGrid(columns: columns, spacing: 2) {
-                    ForEach(collection) { asset in
-                        AttachmentMediaPickerItemView(
-                            assetLoader: assetLoader,
-                            asset: asset,
-                            onImageTap: onImageTap,
-                            imageSelected: imageSelected,
-                            selectedAssetIds: selectedAssetIdsSet
-                        )
-                    }
-                }
-                .animation(nil)
-            }
-            .onChange(of: collection.count) { _ in
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-                    UIAccessibility.post(notification: .screenChanged, argument: nil)
+        ScrollView {
+            LazyVGrid(columns: columns, spacing: 2) {
+                ForEach(collection) { asset in
+                    AttachmentMediaPickerItemView(
+                        assetLoader: assetLoader,
+                        asset: asset,
+                        onImageTap: onImageTap,
+                        imageSelected: imageSelected,
+                        selectedAssetIds: selectedAssetIdsSet
+                    )
                 }
             }
-            .onChange(of: isDisplayed) { displayed in
-                // The picker stays in the view hierarchy while hidden, so reset the
-                // scroll position to the top every time it is shown again.
-                guard displayed, let firstAssetId = collection.first?.id else { return }
-                DispatchQueue.main.async {
-                    proxy.scrollTo(firstAssetId, anchor: .top)
-                }
+            .animation(nil)
+        }
+        // The picker stays in the view hierarchy while hidden. Giving the scroll view a
+        // new identity once it is dismissed starts it back at the top on the next
+        // presentation and releases the rows built while scrolling, which is far cheaper
+        // than scrolling a large grid back to its first item.
+        .id(gridId)
+        .onChange(of: collection.count) { _ in
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                UIAccessibility.post(notification: .screenChanged, argument: nil)
+            }
+        }
+        .onChange(of: isDisplayed) { displayed in
+            if !displayed {
+                gridId = UUID()
             }
         }
     }

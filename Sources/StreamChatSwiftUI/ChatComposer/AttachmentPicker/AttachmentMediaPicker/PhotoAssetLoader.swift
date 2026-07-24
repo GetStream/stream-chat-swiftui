@@ -14,11 +14,26 @@ import SwiftUI
 
     private let imageManager = PHCachingImageManager()
 
-    var loadedImages = [String: UIImage]()
+    // Bounded so that scrolling through a large library does not retain every
+    // decoded thumbnail. NSCache also evicts automatically under memory pressure.
+    private let imageCache: NSCache<NSString, UIImage> = {
+        let cache = NSCache<NSString, UIImage>()
+        cache.countLimit = 200
+        cache.totalCostLimit = 64 * 1024 * 1024
+        return cache
+    }()
 
     /// Returns an already-loaded thumbnail for the asset, if available.
     func cachedImage(for asset: PHAsset) -> UIImage? {
-        loadedImages[asset.localIdentifier]
+        imageCache.object(forKey: asset.localIdentifier as NSString)
+    }
+
+    func cache(_ image: UIImage, for asset: PHAsset) {
+        imageCache.setObject(
+            image,
+            forKey: asset.localIdentifier as NSString,
+            cost: image.cgImage.map { $0.bytesPerRow * $0.height } ?? 0
+        )
     }
 
     /// Loads a thumbnail for the asset, delivering it (possibly progressively) via `completion`.
@@ -29,7 +44,7 @@ import SwiftUI
         targetSize: CGSize,
         completion: @escaping (UIImage?) -> Void
     ) -> PHImageRequestID {
-        if let cached = loadedImages[asset.localIdentifier] {
+        if let cached = cachedImage(for: asset) {
             completion(cached)
             return PHInvalidImageRequestID
         }
@@ -49,7 +64,7 @@ import SwiftUI
             guard let self, let image else { return }
             let isDegraded = (info?[PHImageResultIsDegradedKey] as? Bool) ?? false
             if !isDegraded {
-                loadedImages[asset.localIdentifier] = image
+                cache(image, for: asset)
             }
             completion(image)
         }
@@ -115,7 +130,7 @@ import SwiftUI
 
     /// Clears the cache when there's memory warning.
     func didReceiveMemoryWarning() {
-        loadedImages = [String: UIImage]()
+        imageCache.removeAllObjects()
     }
 }
 
