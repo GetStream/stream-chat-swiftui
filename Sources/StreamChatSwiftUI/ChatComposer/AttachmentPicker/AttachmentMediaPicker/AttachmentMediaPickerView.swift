@@ -20,12 +20,13 @@ public struct AttachmentMediaPickerView: View {
     var onImageTap: (AddedAsset) -> Void
     var imageSelected: (String) -> Bool
     var selectedAssetIds: [String]?
-    
+    var isDisplayed: Bool
+
     private var selectedAssetIdsSet: Set<String>? {
         guard let selectedAssetIds else { return nil }
         return Set(selectedAssetIds)
     }
-    
+
     let columns = Array(repeating: GridItem(.flexible(), spacing: 2), count: 3)
 
     public init(
@@ -33,13 +34,15 @@ public struct AttachmentMediaPickerView: View {
         photoLibraryAssets: PHFetchResult<PHAsset>?,
         onImageTap: @escaping (AddedAsset) -> Void,
         imageSelected: @escaping (String) -> Bool,
-        selectedAssetIds: [String]? = nil
+        selectedAssetIds: [String]? = nil,
+        isDisplayed: Bool = false
     ) {
         _assetLoader = StateObject(wrappedValue: assetLoader)
         self.photoLibraryAssets = photoLibraryAssets
         self.onImageTap = onImageTap
         self.imageSelected = imageSelected
         self.selectedAssetIds = selectedAssetIds
+        self.isDisplayed = isDisplayed
     }
     
     public var body: some View {
@@ -61,23 +64,33 @@ public struct AttachmentMediaPickerView: View {
     // MARK: - Private
 
     private func assetGridContent(collection: PHFetchResultCollection) -> some View {
-        ScrollView {
-            LazyVGrid(columns: columns, spacing: 2) {
-                ForEach(collection) { asset in
-                    AttachmentMediaPickerItemView(
-                        assetLoader: assetLoader,
-                        asset: asset,
-                        onImageTap: onImageTap,
-                        imageSelected: imageSelected,
-                        selectedAssetIds: selectedAssetIdsSet
-                    )
+        ScrollViewReader { proxy in
+            ScrollView {
+                LazyVGrid(columns: columns, spacing: 2) {
+                    ForEach(collection) { asset in
+                        AttachmentMediaPickerItemView(
+                            assetLoader: assetLoader,
+                            asset: asset,
+                            onImageTap: onImageTap,
+                            imageSelected: imageSelected,
+                            selectedAssetIds: selectedAssetIdsSet
+                        )
+                    }
+                }
+                .animation(nil)
+            }
+            .onChange(of: collection.count) { _ in
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                    UIAccessibility.post(notification: .screenChanged, argument: nil)
                 }
             }
-            .animation(nil)
-        }
-        .onChange(of: collection.count) { _ in
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-                UIAccessibility.post(notification: .screenChanged, argument: nil)
+            .onChange(of: isDisplayed) { displayed in
+                // The picker stays in the view hierarchy while hidden, so reset the
+                // scroll position to the top every time it is shown again.
+                guard displayed, let firstAssetId = collection.first?.id else { return }
+                DispatchQueue.main.async {
+                    proxy.scrollTo(firstAssetId, anchor: .top)
+                }
             }
         }
     }

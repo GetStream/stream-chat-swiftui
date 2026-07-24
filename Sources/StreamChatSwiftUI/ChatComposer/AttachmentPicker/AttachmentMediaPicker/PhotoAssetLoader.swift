@@ -12,27 +12,52 @@ import SwiftUI
     @Injected(\.chatClient) private var chatClient
     @Injected(\.utils) private var utils
 
-    @Published var loadedImages = [String: UIImage]()
+    private let imageManager = PHCachingImageManager()
 
-    /// Loads an image from the provided asset.
-    func loadImage(from asset: PHAsset) {
-        if loadedImages[asset.localIdentifier] != nil {
-            return
+    var loadedImages = [String: UIImage]()
+
+    /// Returns an already-loaded thumbnail for the asset, if available.
+    func cachedImage(for asset: PHAsset) -> UIImage? {
+        loadedImages[asset.localIdentifier]
+    }
+
+    /// Loads a thumbnail for the asset, delivering it (possibly progressively) via `completion`.
+    /// Returns a request id that can be passed to `cancelImageLoad(_:)` when the item scrolls away.
+    @discardableResult
+    func loadImage(
+        for asset: PHAsset,
+        targetSize: CGSize,
+        completion: @escaping (UIImage?) -> Void
+    ) -> PHImageRequestID {
+        if let cached = loadedImages[asset.localIdentifier] {
+            completion(cached)
+            return PHInvalidImageRequestID
         }
 
         let options = PHImageRequestOptions()
         options.version = .current
-        options.deliveryMode = .highQualityFormat
+        options.deliveryMode = .opportunistic
+        options.resizeMode = .fast
+        options.isNetworkAccessAllowed = false
 
-        PHImageManager.default().requestImage(
+        return imageManager.requestImage(
             for: asset,
-            targetSize: CGSize(width: 250, height: 250),
-            contentMode: .aspectFit,
+            targetSize: targetSize,
+            contentMode: .aspectFill,
             options: options
-        ) { [weak self] image, _ in
+        ) { [weak self] image, info in
             guard let self, let image else { return }
-            loadedImages[asset.localIdentifier] = image
+            let isDegraded = (info?[PHImageResultIsDegradedKey] as? Bool) ?? false
+            if !isDegraded {
+                loadedImages[asset.localIdentifier] = image
+            }
+            completion(image)
         }
+    }
+
+    func cancelImageLoad(_ requestId: PHImageRequestID) {
+        guard requestId != PHInvalidImageRequestID else { return }
+        imageManager.cancelImageRequest(requestId)
     }
 
     func compressAsset(at url: URL, type: AssetType, completion: @escaping @MainActor (URL?) -> Void) {

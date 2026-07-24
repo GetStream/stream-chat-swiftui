@@ -14,7 +14,9 @@ public struct AttachmentMediaPickerItemView: View {
     @Injected(\.utils) private var utils
     
     @ObservedObject var assetLoader: PhotoAssetLoader
-    
+
+    @State private var thumbnail: UIImage?
+    @State private var imageRequestId: PHImageRequestID?
     @State private var assetURL: URL?
     @State private var compressing = false
     @State private var loading = false
@@ -48,8 +50,9 @@ public struct AttachmentMediaPickerItemView: View {
  
     public var body: some View {
         let selected = isAssetSelected(asset.localIdentifier)
+        let image = thumbnail ?? assetLoader.cachedImage(for: asset)
         ZStack {
-            if let image = assetLoader.loadedImages[asset.localIdentifier] {
+            if let image {
                 GeometryReader { reader in
                     ZStack {
                         Image(uiImage: image)
@@ -115,14 +118,34 @@ public struct AttachmentMediaPickerItemView: View {
         .accessibilityAddTraits(.isButton)
         .accessibilityAddTraits(selected ? .isSelected : [])
         .accessibilityAction {
-            guard let image = assetLoader.loadedImages[asset.localIdentifier] else { return }
+            guard let image = thumbnail ?? assetLoader.cachedImage(for: asset) else { return }
             handleTap(image: image, currentlySelected: selected)
         }
         .onAppear {
-            assetLoader.loadImage(from: asset)
+            loadThumbnail()
         }
         .onDisappear {
+            cancelThumbnailLoad()
             cancelAssetURLRequest()
+        }
+    }
+
+    private var thumbnailTargetSize: CGSize {
+        let dimension = (UIScreen.main.bounds.width / 3) * UIScreen.main.scale
+        return CGSize(width: dimension, height: dimension)
+    }
+
+    private func loadThumbnail() {
+        guard thumbnail == nil, assetLoader.cachedImage(for: asset) == nil else { return }
+        imageRequestId = assetLoader.loadImage(for: asset, targetSize: thumbnailTargetSize) { image in
+            thumbnail = image
+        }
+    }
+
+    private func cancelThumbnailLoad() {
+        if let imageRequestId {
+            assetLoader.cancelImageLoad(imageRequestId)
+            self.imageRequestId = nil
         }
     }
 
