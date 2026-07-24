@@ -69,11 +69,10 @@ public struct AttachmentMediaPickerView: View {
     private func assetGridContent(collection: PHFetchResultCollection) -> some View {
         ScrollView {
             LazyVGrid(columns: columns, spacing: 2) {
-                // The grid is keyed by index instead of by asset so that ForEach updates
-                // never touch the fetch result. `PHFetchResult` materializes `PHAsset`s
-                // from the Photos database on every access outside its small batch
-                // window, so an asset-keyed ForEach re-fetches every instantiated row
-                // on each update, hanging the main thread for large libraries.
+                // Keyed by index so that ForEach updates never touch the fetch result.
+                // An asset-keyed ForEach re-materializes a `PHAsset` from the Photos
+                // database for every instantiated row on each update, which hangs the
+                // main thread for large libraries.
                 ForEach(0..<collection.count, id: \.self) { index in
                     MediaPickerCellView(
                         assetLoader: assetLoader,
@@ -99,23 +98,33 @@ public struct AttachmentMediaPickerView: View {
             }
         }
         .onChange(of: isDisplayed) { displayed in
-            gridResetTask?.cancel()
-            gridResetTask = nil
-            guard !displayed else { return }
-            assetLoader.cancelAllImageLoads()
-            // Tearing down a deeply scrolled grid is expensive, so wait until the
-            // dismiss animation has finished before resetting the grid's identity.
-            // Reopening the picker in the meantime cancels the reset.
-            gridResetTask = Task { @MainActor in
-                try? await Task.sleep(nanoseconds: 500_000_000)
-                guard !Task.isCancelled else { return }
-                var transaction = Transaction()
-                transaction.disablesAnimations = true
-                withTransaction(transaction) {
-                    gridId = UUID()
-                }
+            if displayed {
+                cancelScheduledGridReset()
+            } else {
+                assetLoader.cancelAllImageLoads()
+                scheduleGridReset()
             }
         }
+    }
+
+    // Tearing down a deeply scrolled grid is expensive, so the reset waits until the
+    // dismiss animation has finished. Reopening the picker in the meantime cancels it.
+    private func scheduleGridReset() {
+        cancelScheduledGridReset()
+        gridResetTask = Task { @MainActor in
+            try? await Task.sleep(nanoseconds: 500_000_000)
+            guard !Task.isCancelled else { return }
+            var transaction = Transaction()
+            transaction.disablesAnimations = true
+            withTransaction(transaction) {
+                gridId = UUID()
+            }
+        }
+    }
+
+    private func cancelScheduledGridReset() {
+        gridResetTask?.cancel()
+        gridResetTask = nil
     }
 
     private var accessDeniedContent: some View {

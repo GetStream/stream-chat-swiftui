@@ -49,7 +49,7 @@ public struct AttachmentMediaPickerItemView: View {
  
     public var body: some View {
         let selected = isAssetSelected(asset.localIdentifier)
-        let image = thumbnail ?? assetLoader.cachedImage(for: asset)
+        let image = currentImage
         ZStack {
             if let image {
                 GeometryReader { reader in
@@ -117,7 +117,7 @@ public struct AttachmentMediaPickerItemView: View {
         .accessibilityAddTraits(.isButton)
         .accessibilityAddTraits(selected ? .isSelected : [])
         .accessibilityAction {
-            guard let image = thumbnail ?? assetLoader.cachedImage(for: asset) else { return }
+            guard let image = currentImage else { return }
             handleTap(image: image, currentlySelected: selected)
         }
         .onAppear {
@@ -130,6 +130,10 @@ public struct AttachmentMediaPickerItemView: View {
             // decoded thumbnail in row state would bypass the loader's bounded cache.
             thumbnail = nil
         }
+    }
+
+    private var currentImage: UIImage? {
+        thumbnail ?? assetLoader.cachedImage(for: asset)
     }
 
     private var thumbnailTargetSize: CGSize {
@@ -200,7 +204,7 @@ public struct AttachmentMediaPickerItemView: View {
                 assetURL = url
             }
 
-            // Check file size.
+            // Videos above the allowed size are compressed before they can be selected.
             if assetType == .video, let assetURL, assetLoader.assetExceedsAllowedSize(url: assetURL) {
                 compressing = true
                 assetLoader.compressAsset(at: assetURL, type: assetType) { url in
