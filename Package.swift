@@ -16,7 +16,7 @@ let package = Package(
         )
     ],
     dependencies: [
-        .package(url: "https://github.com/GetStream/stream-chat-swift.git", branch: "nuno/ios-1906-preserve-markdown-links")
+        .package(url: "https://github.com/GetStream/stream-chat-swift.git", revision: "72976679e3a4bda655fbf5ec5c1c515a94483228")
     ],
     targets: [
         .target(
