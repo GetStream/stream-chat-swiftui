@@ -894,8 +894,21 @@ import SwiftUI
         }
         let assets = PHAsset.fetchAssets(with: fetchOptions)
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) { [weak self] in
-            self?.imageAssets = assets
+            guard let self else { return }
+            // Publishing a new fetch result invalidates every instantiated row in the
+            // media picker grid, which is expensive for large libraries, so keep the
+            // current one when the library content has not changed.
+            if let current = imageAssets, Self.haveSameContent(current, assets) {
+                return
+            }
+            imageAssets = assets
         }
+    }
+
+    private static func haveSameContent(_ lhs: PHFetchResult<PHAsset>, _ rhs: PHFetchResult<PHAsset>) -> Bool {
+        guard lhs.count == rhs.count else { return false }
+        return lhs.firstObject?.localIdentifier == rhs.firstObject?.localIdentifier
+            && lhs.lastObject?.localIdentifier == rhs.lastObject?.localIdentifier
     }
 
     public func checkForMentionedUsers(

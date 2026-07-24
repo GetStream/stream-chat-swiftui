@@ -17,6 +17,7 @@ public struct AttachmentMediaPickerView: View {
     @StateObject var assetLoader: PhotoAssetLoader
 
     @State private var gridId = UUID()
+    @State private var gridResetTask: Task<Void, Never>?
 
     var photoLibraryAssets: PHFetchResult<PHAsset>?
     var onImageTap: (AddedAsset) -> Void
@@ -68,14 +69,21 @@ public struct AttachmentMediaPickerView: View {
     private func assetGridContent(collection: PHFetchResultCollection) -> some View {
         ScrollView {
             LazyVGrid(columns: columns, spacing: 2) {
-                ForEach(collection) { asset in
-                    AttachmentMediaPickerItemView(
+                // The grid is keyed by index instead of by asset so that ForEach updates
+                // never touch the fetch result. `PHFetchResult` materializes `PHAsset`s
+                // from the Photos database on every access outside its small batch
+                // window, so an asset-keyed ForEach re-fetches every instantiated row
+                // on each update, hanging the main thread for large libraries.
+                ForEach(0..<collection.count, id: \.self) { index in
+                    MediaPickerCellView(
                         assetLoader: assetLoader,
-                        asset: asset,
+                        assets: collection,
+                        index: index,
                         onImageTap: onImageTap,
                         imageSelected: imageSelected,
                         selectedAssetIds: selectedAssetIdsSet
                     )
+                    .equatable()
                 }
             }
             .animation(nil)
@@ -91,15 +99,66 @@ public struct AttachmentMediaPickerView: View {
             }
         }
         .onChange(of: isDisplayed) { displayed in
-            if !displayed {
-                assetLoader.cancelAllImageLoads()
-                gridId = UUID()
+            gridResetTask?.cancel()
+            gridResetTask = nil
+            guard !displayed else { return }
+            assetLoader.cancelAllImageLoads()
+            // Tearing down a deeply scrolled grid is expensive, so wait until the
+            // dismiss animation has finished before resetting the grid's identity.
+            // Reopening the picker in the meantime cancels the reset.
+            gridResetTask = Task { @MainActor in
+                try? await Task.sleep(nanoseconds: 500_000_000)
+                guard !Task.isCancelled else { return }
+                var transaction = Transaction()
+                transaction.disablesAnimations = true
+                withTransaction(transaction) {
+                    gridId = UUID()
+                }
             }
         }
     }
 
     private var accessDeniedContent: some View {
         PhotoLibraryAccessPromptView()
+    }
+}
+
+/// Grid cell that defers resolving the `PHAsset` until its body runs, so that only
+/// rows that actually render hit the Photos database. The `Equatable` conformance lets
+/// SwiftUI skip the body of the (potentially thousands of) instantiated off-screen rows
+/// on every composer update.
+private struct MediaPickerCellView: View, Equatable {
+    let assetLoader: PhotoAssetLoader
+    let assets: PHFetchResultCollection
+    let index: Int
+    let onImageTap: (AddedAsset) -> Void
+    let imageSelected: (String) -> Bool
+    let selectedAssetIds: Set<String>?
+
+    var body: some View {
+        let asset = assets[index]
+        AttachmentMediaPickerItemView(
+            assetLoader: assetLoader,
+            asset: asset,
+            onImageTap: onImageTap,
+            imageSelected: imageSelected,
+            selectedAssetIds: selectedAssetIds
+        )
+        // Rows are keyed by index, so if the library changes and another asset lands on
+        // this position, this identity change resets the item's internal state.
+        .id(asset.localIdentifier)
+    }
+
+    // Selection changes flow through `selectedAssetIds`; the callbacks are intentionally
+    // not compared. When `selectedAssetIds` is nil the selection state comes from the
+    // `imageSelected` closure, which cannot be compared, so the cell is treated as
+    // always changed.
+    nonisolated static func == (lhs: MediaPickerCellView, rhs: MediaPickerCellView) -> Bool {
+        guard lhs.selectedAssetIds != nil, rhs.selectedAssetIds != nil else { return false }
+        return lhs.index == rhs.index
+            && lhs.assets.fetchResult === rhs.assets.fetchResult
+            && lhs.selectedAssetIds == rhs.selectedAssetIds
+            && lhs.assetLoader === rhs.assetLoader
     }
 }
 

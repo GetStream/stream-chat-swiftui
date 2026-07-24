@@ -13,7 +13,7 @@ public struct AttachmentMediaPickerItemView: View {
     @Injected(\.tokens) private var tokens
     @Injected(\.utils) private var utils
     
-    @ObservedObject var assetLoader: PhotoAssetLoader
+    var assetLoader: PhotoAssetLoader
 
     @State private var thumbnail: UIImage?
     @State private var assetURL: URL?
@@ -126,6 +126,9 @@ public struct AttachmentMediaPickerItemView: View {
         .onDisappear {
             assetLoader.cancelImageLoad(for: asset)
             cancelAssetURLRequest()
+            // Rows scrolled past stay instantiated in the lazy grid, so holding the
+            // decoded thumbnail in row state would bypass the loader's bounded cache.
+            thumbnail = nil
         }
     }
 
