@@ -23,6 +23,8 @@ import SwiftUI
         return cache
     }()
 
+    private var inFlightImageRequests = [String: PHImageRequestID]()
+
     /// Returns an already-loaded thumbnail for the asset, if available.
     func cachedImage(for asset: PHAsset) -> UIImage? {
         imageCache.object(forKey: asset.localIdentifier as NSString)
@@ -37,17 +39,18 @@ import SwiftUI
     }
 
     /// Loads a thumbnail for the asset, delivering it (possibly progressively) via `completion`.
-    /// Returns a request id that can be passed to `cancelImageLoad(_:)` when the item scrolls away.
-    @discardableResult
     func loadImage(
         for asset: PHAsset,
         targetSize: CGSize,
         completion: @escaping (UIImage?) -> Void
-    ) -> PHImageRequestID {
+    ) {
         if let cached = cachedImage(for: asset) {
             completion(cached)
-            return PHInvalidImageRequestID
+            return
         }
+
+        let assetId = asset.localIdentifier
+        cancelImageLoad(for: asset)
 
         let options = PHImageRequestOptions()
         options.version = .current
@@ -55,7 +58,7 @@ import SwiftUI
         options.resizeMode = .fast
         options.isNetworkAccessAllowed = false
 
-        return imageManager.requestImage(
+        let requestId = imageManager.requestImage(
             for: asset,
             targetSize: targetSize,
             contentMode: .aspectFill,
@@ -64,15 +67,26 @@ import SwiftUI
             guard let self, let image else { return }
             let isDegraded = (info?[PHImageResultIsDegradedKey] as? Bool) ?? false
             if !isDegraded {
+                inFlightImageRequests[assetId] = nil
                 cache(image, for: asset)
             }
             completion(image)
         }
+        inFlightImageRequests[assetId] = requestId
     }
 
-    func cancelImageLoad(_ requestId: PHImageRequestID) {
-        guard requestId != PHInvalidImageRequestID else { return }
+    func cancelImageLoad(for asset: PHAsset) {
+        guard let requestId = inFlightImageRequests.removeValue(forKey: asset.localIdentifier) else { return }
         imageManager.cancelImageRequest(requestId)
+    }
+
+    /// Cancels every thumbnail request still in flight, so that a fast scroll followed by
+    /// dismissing the picker does not leave the remaining requests running.
+    func cancelAllImageLoads() {
+        for requestId in inFlightImageRequests.values {
+            imageManager.cancelImageRequest(requestId)
+        }
+        inFlightImageRequests.removeAll()
     }
 
     func compressAsset(at url: URL, type: AssetType, completion: @escaping @MainActor (URL?) -> Void) {

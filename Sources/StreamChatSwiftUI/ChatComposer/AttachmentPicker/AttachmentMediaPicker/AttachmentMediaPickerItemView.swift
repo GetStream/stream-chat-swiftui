@@ -16,7 +16,6 @@ public struct AttachmentMediaPickerItemView: View {
     @ObservedObject var assetLoader: PhotoAssetLoader
 
     @State private var thumbnail: UIImage?
-    @State private var imageRequestId: PHImageRequestID?
     @State private var assetURL: URL?
     @State private var compressing = false
     @State private var loading = false
@@ -125,7 +124,7 @@ public struct AttachmentMediaPickerItemView: View {
             loadThumbnail()
         }
         .onDisappear {
-            cancelThumbnailLoad()
+            assetLoader.cancelImageLoad(for: asset)
             cancelAssetURLRequest()
         }
     }
@@ -137,15 +136,8 @@ public struct AttachmentMediaPickerItemView: View {
 
     private func loadThumbnail() {
         guard thumbnail == nil, assetLoader.cachedImage(for: asset) == nil else { return }
-        imageRequestId = assetLoader.loadImage(for: asset, targetSize: thumbnailTargetSize) { image in
+        assetLoader.loadImage(for: asset, targetSize: thumbnailTargetSize) { image in
             thumbnail = image
-        }
-    }
-
-    private func cancelThumbnailLoad() {
-        if let imageRequestId {
-            assetLoader.cancelImageLoad(imageRequestId)
-            self.imageRequestId = nil
         }
     }
 

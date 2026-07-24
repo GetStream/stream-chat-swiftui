@@ -92,6 +92,7 @@ public struct AttachmentMediaPickerView: View {
         }
         .onChange(of: isDisplayed) { displayed in
             if !displayed {
+                assetLoader.cancelAllImageLoads()
                 gridId = UUID()
             }
         }
