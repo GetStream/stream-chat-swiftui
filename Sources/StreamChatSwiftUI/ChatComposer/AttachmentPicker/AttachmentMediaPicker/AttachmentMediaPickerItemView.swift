@@ -67,9 +67,7 @@ public struct AttachmentMediaPickerItemView: View {
                             .clipped()
                             .allowsHitTesting(true)
                             .onTapGesture {
-                                withAnimation {
-                                    handleAssetTap(image: image, currentlySelected: selected)
-                                }
+                                handleTap(image: image, currentlySelected: selected)
                             }
                     }
                     .overlay(
@@ -118,45 +116,13 @@ public struct AttachmentMediaPickerItemView: View {
         .accessibilityAddTraits(selected ? .isSelected : [])
         .accessibilityAction {
             guard let image = assetLoader.loadedImages[asset.localIdentifier] else { return }
-            handleAssetTap(image: image, currentlySelected: selected)
+            handleTap(image: image, currentlySelected: selected)
         }
         .onAppear {
-            loading = false
-            
             assetLoader.loadImage(from: asset)
-            
-            if assetURL != nil {
-                return
-            }
-            
-            let options = PHContentEditingInputRequestOptions()
-            options.isNetworkAccessAllowed = true
-            loading = true
-            
-            requestId = asset.requestContentEditingInput(with: options) { input, _ in
-                loading = false
-                if asset.mediaType == .image {
-                    assetURL = input?.fullSizeImageURL
-                } else if let url = (input?.audiovisualAsset as? AVURLAsset)?.url {
-                    assetURL = url
-                }
-                
-                // Check file size.
-                if let assetURL, assetLoader.assetExceedsAllowedSize(url: assetURL) {
-                    compressing = true
-                    assetLoader.compressAsset(at: assetURL, type: assetType) { url in
-                        self.assetURL = url
-                        compressing = false
-                    }
-                }
-            }
         }
         .onDisappear {
-            if let requestId {
-                asset.cancelContentEditingInputRequest(requestId)
-                self.requestId = nil
-                loading = false
-            }
+            cancelAssetURLRequest()
         }
     }
 
@@ -182,7 +148,63 @@ public struct AttachmentMediaPickerItemView: View {
         return formatter
     }()
 
-    private func handleAssetTap(image: UIImage, currentlySelected: Bool) {
+    // Toggling off, or an already-downloaded asset, is applied immediately.
+    // Otherwise the asset (which may live in iCloud) is downloaded on demand and
+    // only selected once the download finishes, so an idle picker never downloads.
+    private func handleTap(image: UIImage, currentlySelected: Bool) {
+        if currentlySelected || assetURL != nil {
+            withAnimation {
+                selectAsset(image: image, currentlySelected: currentlySelected)
+            }
+            return
+        }
+
+        guard !loading, !compressing else { return }
+
+        loadAssetURL {
+            guard assetURL != nil else { return }
+            withAnimation {
+                selectAsset(image: image, currentlySelected: false)
+            }
+        }
+    }
+
+    private func loadAssetURL(completion: @escaping () -> Void) {
+        let options = PHContentEditingInputRequestOptions()
+        options.isNetworkAccessAllowed = true
+        loading = true
+
+        requestId = asset.requestContentEditingInput(with: options) { input, _ in
+            loading = false
+            if asset.mediaType == .image {
+                assetURL = input?.fullSizeImageURL
+            } else if let url = (input?.audiovisualAsset as? AVURLAsset)?.url {
+                assetURL = url
+            }
+
+            // Check file size.
+            if assetType == .video, let assetURL, assetLoader.assetExceedsAllowedSize(url: assetURL) {
+                compressing = true
+                assetLoader.compressAsset(at: assetURL, type: assetType) { url in
+                    self.assetURL = url
+                    compressing = false
+                    completion()
+                }
+            } else {
+                completion()
+            }
+        }
+    }
+
+    private func cancelAssetURLRequest() {
+        if let requestId {
+            asset.cancelContentEditingInputRequest(requestId)
+            self.requestId = nil
+        }
+        loading = false
+    }
+
+    private func selectAsset(image: UIImage, currentlySelected: Bool) {
         let resolvedURL = asset.mediaType == .image ? assetJpgURL() : assetURL
         guard let url = resolvedURL else { return }
         let width = Double(asset.pixelWidth)
