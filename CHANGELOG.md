@@ -4,6 +4,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 # Upcoming
 
 ### 🐞 Fixed
+- Fix media attachment picker being unresponsive when the photo library has many videos [#1544](https://github.com/GetStream/stream-chat-swiftui/pull/1544)
 - Pass the channel's team when starting a direct message with a member [#1541](https://github.com/GetStream/stream-chat-swiftui/pull/1541)
 
 ### 🔄 Changed
