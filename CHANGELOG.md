@@ -5,6 +5,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### 🐞 Fixed
 - Pass the channel's team when starting a direct message with a member [#1541](https://github.com/GetStream/stream-chat-swiftui/pull/1541)
+- Fix Markdown links with URL-shaped display text opening the wrong destination, e.g. `[https://text-link.com](https://real-link.com)` [#1543](https://github.com/GetStream/stream-chat-swiftui/pull/1543)
 
 ### 🔄 Changed
 
