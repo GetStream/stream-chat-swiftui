@@ -136,14 +136,9 @@ public struct AttachmentMediaPickerItemView: View {
         thumbnail ?? assetLoader.cachedImage(for: asset)
     }
 
-    private var thumbnailTargetSize: CGSize {
-        let dimension = (UIScreen.main.bounds.width / 3) * UIScreen.main.scale
-        return CGSize(width: dimension, height: dimension)
-    }
-
     private func loadThumbnail() {
         guard thumbnail == nil, assetLoader.cachedImage(for: asset) == nil else { return }
-        assetLoader.loadImage(for: asset, targetSize: thumbnailTargetSize) { image in
+        assetLoader.loadImage(for: asset, targetSize: CGSize(width: 250, height: 250)) { image in
             thumbnail = image
         }
     }
