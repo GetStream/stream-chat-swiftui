@@ -16,8 +16,7 @@ public struct AttachmentMediaPickerView: View {
     
     @StateObject var assetLoader: PhotoAssetLoader
 
-    @State private var gridId = UUID()
-    @State private var gridResetTask: Task<Void, Never>?
+    @State private var scrollToTopTask: Task<Void, Never>?
 
     var photoLibraryAssets: PHFetchResult<PHAsset>?
     var onImageTap: (AddedAsset) -> Void
@@ -67,64 +66,63 @@ public struct AttachmentMediaPickerView: View {
     // MARK: - Private
 
     private func assetGridContent(collection: PHFetchResultCollection) -> some View {
-        ScrollView {
-            LazyVGrid(columns: columns, spacing: 2) {
-                // Keyed by index so that ForEach updates never touch the fetch result.
-                // An asset-keyed ForEach re-materializes a `PHAsset` from the Photos
-                // database for every instantiated row on each update, which hangs the
-                // main thread for large libraries.
-                ForEach(0..<collection.count, id: \.self) { index in
-                    MediaPickerCellView(
-                        assetLoader: assetLoader,
-                        assets: collection,
-                        index: index,
-                        onImageTap: onImageTap,
-                        imageSelected: imageSelected,
-                        selectedAssetIds: selectedAssetIdsSet
-                    )
-                    .equatable()
+        ScrollViewReader { scrollView in
+            ScrollView {
+                LazyVGrid(columns: columns, spacing: 2) {
+                    // Keyed by index so that ForEach updates never touch the fetch result.
+                    // An asset-keyed ForEach re-materializes a `PHAsset` from the Photos
+                    // database for every instantiated row on each update, which hangs the
+                    // main thread for large libraries.
+                    ForEach(0..<collection.count, id: \.self) { index in
+                        MediaPickerCellView(
+                            assetLoader: assetLoader,
+                            assets: collection,
+                            index: index,
+                            onImageTap: onImageTap,
+                            imageSelected: imageSelected,
+                            selectedAssetIds: selectedAssetIdsSet
+                        )
+                        .equatable()
+                    }
+                }
+                .animation(nil)
+            }
+            .onChange(of: collection.count) { _ in
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                    UIAccessibility.post(notification: .screenChanged, argument: nil)
                 }
             }
-            .animation(nil)
-        }
-        // The picker stays in the view hierarchy while hidden. Giving the scroll view a
-        // new identity once it is dismissed starts it back at the top on the next
-        // presentation and releases the rows built while scrolling, which is far cheaper
-        // than scrolling a large grid back to its first item.
-        .id(gridId)
-        .onChange(of: collection.count) { _ in
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-                UIAccessibility.post(notification: .screenChanged, argument: nil)
-            }
-        }
-        .onChange(of: isDisplayed) { displayed in
-            if displayed {
-                cancelScheduledGridReset()
-            } else {
-                assetLoader.cancelAllImageLoads()
-                scheduleGridReset()
+            .onChange(of: isDisplayed) { displayed in
+                if displayed {
+                    cancelScheduledScrollToTop()
+                } else {
+                    assetLoader.cancelAllImageLoads()
+                    scheduleScrollToTop(scrollView)
+                }
             }
         }
     }
 
-    // Tearing down a deeply scrolled grid is expensive, so the reset waits until the
-    // dismiss animation has finished. Reopening the picker in the meantime cancels it.
-    private func scheduleGridReset() {
-        cancelScheduledGridReset()
-        gridResetTask = Task { @MainActor in
+    // The picker stays in the view hierarchy while hidden, so the grid scrolls back to
+    // the top once dismissed to start the next presentation at the most recent assets.
+    // The scroll is deferred until the dismiss animation has finished to keep the jump
+    // invisible; reopening the picker in the meantime cancels it and keeps the position.
+    private func scheduleScrollToTop(_ scrollView: ScrollViewProxy) {
+        cancelScheduledScrollToTop()
+        scrollToTopTask = Task { @MainActor in
             try? await Task.sleep(nanoseconds: 500_000_000)
             guard !Task.isCancelled else { return }
             var transaction = Transaction()
             transaction.disablesAnimations = true
             withTransaction(transaction) {
-                gridId = UUID()
+                scrollView.scrollTo(0, anchor: .top)
             }
         }
     }
 
-    private func cancelScheduledGridReset() {
-        gridResetTask?.cancel()
-        gridResetTask = nil
+    private func cancelScheduledScrollToTop() {
+        scrollToTopTask?.cancel()
+        scrollToTopTask = nil
     }
 
     private var accessDeniedContent: some View {
