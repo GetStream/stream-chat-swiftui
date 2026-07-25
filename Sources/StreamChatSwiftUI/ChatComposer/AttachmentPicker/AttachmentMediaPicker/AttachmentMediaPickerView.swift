@@ -64,40 +64,36 @@ public struct AttachmentMediaPickerView: View {
     // MARK: - Private
 
     private func assetGridContent(collection: PHFetchResultCollection) -> some View {
-        ScrollViewReader { scrollView in
-            ScrollView {
-                LazyVGrid(columns: columns, spacing: 2) {
-                    // Keyed by index so that ForEach updates never touch the fetch result.
-                    // An asset-keyed ForEach re-materializes a `PHAsset` from the Photos
-                    // database for every instantiated row on each update, which hangs the
-                    // main thread for large libraries.
-                    ForEach(0..<collection.count, id: \.self) { index in
-                        MediaPickerCellView(
-                            assetLoader: assetLoader,
-                            assets: collection,
-                            index: index,
-                            onImageTap: onImageTap,
-                            imageSelected: imageSelected,
-                            selectedAssetIds: selectedAssetIdsSet
-                        )
-                        .equatable()
-                    }
-                }
-                .animation(nil)
-            }
-            .onChange(of: collection.count) { _ in
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-                    UIAccessibility.post(notification: .screenChanged, argument: nil)
+        ScrollView {
+            LazyVGrid(columns: columns, spacing: 2) {
+                // Keyed by index so ForEach updates never touch the fetch result.
+                // Asset-keyed ForEach re-materializes PHAssets from Photos for every
+                // instantiated row on each update, which hangs large libraries.
+                ForEach(0..<collection.count, id: \.self) { index in
+                    MediaPickerCellView(
+                        assetLoader: assetLoader,
+                        assets: collection,
+                        index: index,
+                        onImageTap: onImageTap,
+                        imageSelected: imageSelected,
+                        selectedAssetIds: selectedAssetIdsSet
+                    )
+                    .equatable()
                 }
             }
-            .onChange(of: isDisplayed) { displayed in
-                if !displayed {
-                    // The picker stays in the view hierarchy while hidden, so scroll
-                    // back to the top for the next presentation and drop any pending
-                    // thumbnail work from the previous scroll position.
-                    assetLoader.cancelAllImageLoads()
-                    scrollView.scrollTo(0, anchor: .top)
-                }
+            .animation(nil)
+        }
+        .onChange(of: collection.count) { _ in
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                UIAccessibility.post(notification: .screenChanged, argument: nil)
+            }
+        }
+        .onChange(of: isDisplayed) { displayed in
+            if !displayed {
+                // Cells do not disappear when the picker is only hidden, so cancel
+                // explicitly. A fast scroll can also leave requests that never got an
+                // onDisappear.
+                assetLoader.cancelAllImageLoads()
             }
         }
     }
@@ -107,10 +103,8 @@ public struct AttachmentMediaPickerView: View {
     }
 }
 
-/// Grid cell that defers resolving the `PHAsset` until its body runs, so that only
-/// rows that actually render hit the Photos database. The `Equatable` conformance lets
-/// SwiftUI skip the body of the (potentially thousands of) instantiated off-screen rows
-/// on every composer update.
+/// Defers `PHAsset` resolution until the body runs, and skips that body for off-screen
+/// rows via `Equatable` so composer updates do not hit the Photos database.
 private struct MediaPickerCellView: View, Equatable {
     let assetLoader: PhotoAssetLoader
     let assets: PHFetchResultCollection
@@ -128,21 +122,17 @@ private struct MediaPickerCellView: View, Equatable {
             imageSelected: imageSelected,
             selectedAssetIds: selectedAssetIds
         )
-        // Rows are keyed by index, so if the library changes and another asset lands on
-        // this position, this identity change resets the item's internal state.
+        // Reset item state if a different asset lands on this index.
         .id(asset.localIdentifier)
     }
 
-    // Selection changes flow through `selectedAssetIds`; the callbacks are intentionally
-    // not compared. When `selectedAssetIds` is nil the selection state comes from the
-    // `imageSelected` closure, which cannot be compared, so the cell is treated as
-    // always changed.
+    // Selection flows through `selectedAssetIds`. When it is nil, selection comes from
+    // the uncomparable `imageSelected` closure, so the cell is treated as always changed.
     nonisolated static func == (lhs: MediaPickerCellView, rhs: MediaPickerCellView) -> Bool {
         guard lhs.selectedAssetIds != nil, rhs.selectedAssetIds != nil else { return false }
         return lhs.index == rhs.index
             && lhs.assets.fetchResult === rhs.assets.fetchResult
             && lhs.selectedAssetIds == rhs.selectedAssetIds
-            && lhs.assetLoader === rhs.assetLoader
     }
 }
 
