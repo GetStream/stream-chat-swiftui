@@ -16,8 +16,6 @@ public struct AttachmentMediaPickerView: View {
     
     @StateObject var assetLoader: PhotoAssetLoader
 
-    @State private var scrollToTopTask: Task<Void, Never>?
-
     var photoLibraryAssets: PHFetchResult<PHAsset>?
     var onImageTap: (AddedAsset) -> Void
     var imageSelected: (String) -> Bool
@@ -93,36 +91,15 @@ public struct AttachmentMediaPickerView: View {
                 }
             }
             .onChange(of: isDisplayed) { displayed in
-                if displayed {
-                    cancelScheduledScrollToTop()
-                } else {
+                if !displayed {
+                    // The picker stays in the view hierarchy while hidden, so scroll
+                    // back to the top for the next presentation and drop any pending
+                    // thumbnail work from the previous scroll position.
                     assetLoader.cancelAllImageLoads()
-                    scheduleScrollToTop(scrollView)
+                    scrollView.scrollTo(0, anchor: .top)
                 }
             }
         }
-    }
-
-    // The picker stays in the view hierarchy while hidden, so the grid scrolls back to
-    // the top once dismissed to start the next presentation at the most recent assets.
-    // The scroll is deferred until the dismiss animation has finished to keep the jump
-    // invisible; reopening the picker in the meantime cancels it and keeps the position.
-    private func scheduleScrollToTop(_ scrollView: ScrollViewProxy) {
-        cancelScheduledScrollToTop()
-        scrollToTopTask = Task { @MainActor in
-            try? await Task.sleep(nanoseconds: 500_000_000)
-            guard !Task.isCancelled else { return }
-            var transaction = Transaction()
-            transaction.disablesAnimations = true
-            withTransaction(transaction) {
-                scrollView.scrollTo(0, anchor: .top)
-            }
-        }
-    }
-
-    private func cancelScheduledScrollToTop() {
-        scrollToTopTask?.cancel()
-        scrollToTopTask = nil
     }
 
     private var accessDeniedContent: some View {
