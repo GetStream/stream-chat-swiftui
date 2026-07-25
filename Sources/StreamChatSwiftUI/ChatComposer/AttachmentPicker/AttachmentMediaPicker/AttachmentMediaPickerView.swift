@@ -64,36 +64,42 @@ public struct AttachmentMediaPickerView: View {
     // MARK: - Private
 
     private func assetGridContent(collection: PHFetchResultCollection) -> some View {
-        ScrollView {
-            LazyVGrid(columns: columns, spacing: 2) {
-                // Keyed by index so ForEach updates never touch the fetch result.
-                // Asset-keyed ForEach re-materializes PHAssets from Photos for every
-                // instantiated row on each update, which hangs large libraries.
-                ForEach(0..<collection.count, id: \.self) { index in
-                    MediaPickerCellView(
-                        assetLoader: assetLoader,
-                        assets: collection,
-                        index: index,
-                        onImageTap: onImageTap,
-                        imageSelected: imageSelected,
-                        selectedAssetIds: selectedAssetIdsSet
-                    )
-                    .equatable()
+        ScrollViewReader { scrollView in
+            ScrollView {
+                LazyVGrid(columns: columns, spacing: 2) {
+                    // Keyed by index so ForEach updates never touch the fetch result.
+                    // Asset-keyed ForEach re-materializes PHAssets from Photos for every
+                    // instantiated row on each update, which hangs large libraries.
+                    ForEach(0..<collection.count, id: \.self) { index in
+                        MediaPickerCellView(
+                            assetLoader: assetLoader,
+                            assets: collection,
+                            index: index,
+                            onImageTap: onImageTap,
+                            imageSelected: imageSelected,
+                            selectedAssetIds: selectedAssetIdsSet
+                        )
+                        .equatable()
+                    }
+                }
+                .animation(nil)
+            }
+            .onChange(of: collection.count) { _ in
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                    UIAccessibility.post(notification: .screenChanged, argument: nil)
                 }
             }
-            .animation(nil)
-        }
-        .onChange(of: collection.count) { _ in
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-                UIAccessibility.post(notification: .screenChanged, argument: nil)
-            }
-        }
-        .onChange(of: isDisplayed) { displayed in
-            if !displayed {
-                // Cells do not disappear when the picker is only hidden, so cancel
-                // explicitly. A fast scroll can also leave requests that never got an
-                // onDisappear.
-                assetLoader.cancelAllImageLoads()
+            .onChange(of: isDisplayed) { displayed in
+                if displayed {
+                    // The picker stays in the view hierarchy while hidden, so reset to
+                    // the top when it is shown again.
+                    scrollView.scrollTo(0, anchor: .top)
+                } else {
+                    // Cells do not disappear when the picker is only hidden, so cancel
+                    // explicitly. A fast scroll can also leave requests that never got an
+                    // onDisappear.
+                    assetLoader.cancelAllImageLoads()
+                }
             }
         }
     }
