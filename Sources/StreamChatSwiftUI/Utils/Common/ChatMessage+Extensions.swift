@@ -166,11 +166,7 @@ extension ChatMessage {
             if mentionedChannel {
                 addMentionLink(for: "channel", mentionId: "channel", in: &attributedString)
             }
-            for link in utils.linkDetector.links(in: String(attributedString.characters)) {
-                if let attributedStringRange = Range(link.range, in: attributedString) {
-                    attributedString[attributedStringRange].link = link.url
-                }
-            }
+            attributedString.addLinks(detectedBy: utils.linkDetector)
         }
 
         // Link styling

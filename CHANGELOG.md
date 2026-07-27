@@ -3,12 +3,22 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 # Upcoming
 
+### 🐞 Fixed
+- Pass the channel's team when starting a direct message with a member [#1541](https://github.com/GetStream/stream-chat-swiftui/pull/1541)
+- Fix Markdown links with URL-shaped display text opening the wrong destination, e.g. `[https://text-link.com](https://real-link.com)` [#1543](https://github.com/GetStream/stream-chat-swiftui/pull/1543)
+
+### 🔄 Changed
+- Replace vendored Nuke image loading with `StreamImageDownloader` from StreamChatCommonUI [#1531](https://github.com/GetStream/stream-chat-swiftui/pull/1531)
+
+# [5.7.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/5.7.0)
+_July 22, 2026_
+
 ### ✅ Added
 - Add disk cache for video attachments (`MessageListConfig.videoAttachmentCachingPolicy`) [#1508](https://github.com/GetStream/stream-chat-swiftui/pull/1508)
 - Add `MessageListConfig.shouldMessagesStartAtTheTop` to render messages starting from the top of the list when there are few messages [#1530](https://github.com/GetStream/stream-chat-swiftui/pull/1530)
 
-### 🔄 Changed
-- Replace vendored Nuke image loading with `StreamImageDownloader` from StreamChatCommonUI [#1531](https://github.com/GetStream/stream-chat-swiftui/pull/1531)
+### 🐞 Fixed
+- Send images and videos picked from the file picker as their original type instead of always file type [#1515](https://github.com/GetStream/stream-chat-swiftui/pull/1515)
 
 ### ⚡️ Performance
 - Fix the channel list rebuilding on every scroll tick after returning from a channel [#1525](https://github.com/GetStream/stream-chat-swiftui/pull/1525)
@@ -42,7 +52,6 @@ _July 03, 2026_
 - Scale channel list and message list icons with Dynamic Type [#1512](https://github.com/GetStream/stream-chat-swiftui/pull/1512)
 - Fix the composer's quoted and edited message previews overlapping other content at large Dynamic Type sizes [#1512](https://github.com/GetStream/stream-chat-swiftui/pull/1512)
 - Fix the message list date separator overlapping messages at large Dynamic Type sizes [#1512](https://github.com/GetStream/stream-chat-swiftui/pull/1512)
-- Send images and videos picked from the file picker as their original type instead of always file type [#1515](https://github.com/GetStream/stream-chat-swiftui/pull/1515)
 
 ### 🔄 Changed
 - The reactions overlay now scrolls as a whole instead of only its message preview when the content is taller than the screen [#1512](https://github.com/GetStream/stream-chat-swiftui/pull/1512)
