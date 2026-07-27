@@ -90,20 +90,16 @@ import SwiftUI
     }
 
     func compressAsset(at url: URL, type: AssetType, completion: @escaping @MainActor (URL?) -> Void) {
-        if type == .video {
-            let compressedURL = NSURL.fileURL(withPath: NSTemporaryDirectory() + UUID().uuidString + ".mp4")
-            compressVideo(inputURL: url, outputURL: compressedURL) { exportSession in
-                guard let status = exportSession?.status else {
-                    return
-                }
-                Task { @MainActor in
-                    switch status {
-                    case .completed:
-                        completion(compressedURL)
-                    default:
-                        completion(nil)
-                    }
-                }
+        // The completion has to run on every path, otherwise callers wait forever.
+        guard type == .video else {
+            completion(nil)
+            return
+        }
+        let compressedURL = NSURL.fileURL(withPath: NSTemporaryDirectory() + UUID().uuidString + ".mp4")
+        compressVideo(inputURL: url, outputURL: compressedURL) { exportSession in
+            let didComplete = exportSession?.status == .completed
+            Task { @MainActor in
+                completion(didComplete ? compressedURL : nil)
             }
         }
     }

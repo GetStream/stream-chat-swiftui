@@ -260,7 +260,11 @@ public struct AttachmentMediaPickerItemView: View {
         }
         compressing = true
         assetLoader.compressAsset(at: assetURL, type: assetType) { url in
-            self.assetURL = url
+            // Keeping the original url when compression fails leaves the composer's size
+            // validation in charge of reporting it, instead of the tap doing nothing.
+            if let url {
+                self.assetURL = url
+            }
             compressing = false
             completion()
         }
