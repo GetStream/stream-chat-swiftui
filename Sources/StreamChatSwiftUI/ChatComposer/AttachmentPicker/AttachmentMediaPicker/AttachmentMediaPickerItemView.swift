@@ -17,6 +17,7 @@ public struct AttachmentMediaPickerItemView: View {
 
     @State private var thumbnail: UIImage?
     @State private var assetURL: URL?
+    @State private var jpgURL: URL?
     @State private var compressing = false
     @State private var loading = false
     @State var requestId: PHContentEditingInputRequestID?
@@ -122,6 +123,7 @@ public struct AttachmentMediaPickerItemView: View {
         }
         .onAppear {
             loadThumbnail()
+            prepareLocalImageIfNeeded()
         }
         .onDisappear {
             assetLoader.cancelImageLoad(for: asset)
@@ -140,6 +142,20 @@ public struct AttachmentMediaPickerItemView: View {
         guard thumbnail == nil, assetLoader.cachedImage(for: asset) == nil else { return }
         assetLoader.loadImage(for: asset, targetSize: CGSize(width: 250, height: 250)) { image in
             thumbnail = image
+        }
+    }
+
+    // Converts an already on-device image to JPG up front so that selecting it is
+    // instant. Videos are skipped: their compression is expensive, so it only runs
+    // when one is actually picked. iCloud assets are never fetched here.
+    private func prepareLocalImageIfNeeded() {
+        guard assetType == .image, assetURL == nil, requestId == nil else { return }
+        requestContentEditingInput(allowNetwork: false) { input in
+            guard let url = input?.fullSizeImageURL else { return }
+            assetURL = url
+            Task {
+                jpgURL = await Self.makeJpgURL(for: url)
+            }
         }
     }
 
@@ -165,11 +181,12 @@ public struct AttachmentMediaPickerItemView: View {
         return formatter
     }()
 
-    // Toggling off, or an already-downloaded asset, is applied immediately.
-    // Otherwise the asset (which may live in iCloud) is downloaded on demand and
-    // only selected once the download finishes, so an idle picker never downloads.
+    // Toggling off, or an asset that is already prepared, is applied immediately.
+    // Otherwise the asset is resolved on demand: an on-device video is compressed
+    // here, while iCloud assets are downloaded and used as-is.
     private func handleTap(image: UIImage, currentlySelected: Bool) {
-        if currentlySelected || assetURL != nil {
+        if currentlySelected || readyURL != nil {
+            guard !compressing else { return }
             withAnimation {
                 selectAsset(image: image, currentlySelected: currentlySelected)
             }
@@ -178,7 +195,7 @@ public struct AttachmentMediaPickerItemView: View {
 
         guard !loading, !compressing else { return }
 
-        loadAssetURL {
+        resolveAssetURL {
             guard assetURL != nil else { return }
             withAnimation {
                 selectAsset(image: image, currentlySelected: false)
@@ -186,30 +203,65 @@ public struct AttachmentMediaPickerItemView: View {
         }
     }
 
-    private func loadAssetURL(completion: @escaping () -> Void) {
-        let options = PHContentEditingInputRequestOptions()
-        options.isNetworkAccessAllowed = true
+    private var readyURL: URL? {
+        assetType == .image ? jpgURL : assetURL
+    }
+
+    private func resolveAssetURL(completion: @escaping () -> Void) {
+        cancelAssetURLRequest()
         loading = true
 
-        requestId = asset.requestContentEditingInput(with: options) { input, _ in
-            loading = false
-            if asset.mediaType == .image {
-                assetURL = input?.fullSizeImageURL
-            } else if let url = (input?.audiovisualAsset as? AVURLAsset)?.url {
-                assetURL = url
+        // Prefer a local file so oversized on-device videos can be compressed.
+        // iCloud assets are only downloaded if nothing is available locally, and
+        // those downloads are never compressed.
+        requestContentEditingInput(allowNetwork: false) { localInput in
+            applyContentEditingInput(localInput)
+            if assetURL != nil {
+                loading = false
+                compressLocalVideoIfNeeded(completion: completion)
+                return
             }
 
-            // Videos above the allowed size are compressed before they can be selected.
-            if assetType == .video, let assetURL, assetLoader.assetExceedsAllowedSize(url: assetURL) {
-                compressing = true
-                assetLoader.compressAsset(at: assetURL, type: assetType) { url in
-                    self.assetURL = url
-                    compressing = false
-                    completion()
-                }
-            } else {
+            requestContentEditingInput(allowNetwork: true) { remoteInput in
+                loading = false
+                applyContentEditingInput(remoteInput)
                 completion()
             }
+        }
+    }
+
+    private func requestContentEditingInput(
+        allowNetwork: Bool,
+        completion: @escaping (PHContentEditingInput?) -> Void
+    ) {
+        let options = PHContentEditingInputRequestOptions()
+        options.isNetworkAccessAllowed = allowNetwork
+        requestId = asset.requestContentEditingInput(with: options) { input, _ in
+            self.requestId = nil
+            completion(input)
+        }
+    }
+
+    private func applyContentEditingInput(_ input: PHContentEditingInput?) {
+        if asset.mediaType == .image {
+            assetURL = input?.fullSizeImageURL
+        } else if let url = (input?.audiovisualAsset as? AVURLAsset)?.url {
+            assetURL = url
+        }
+    }
+
+    private func compressLocalVideoIfNeeded(completion: @escaping () -> Void) {
+        guard assetType == .video,
+              let assetURL,
+              assetLoader.assetExceedsAllowedSize(url: assetURL) else {
+            completion()
+            return
+        }
+        compressing = true
+        assetLoader.compressAsset(at: assetURL, type: assetType) { url in
+            self.assetURL = url
+            compressing = false
+            completion()
         }
     }
 
@@ -222,7 +274,7 @@ public struct AttachmentMediaPickerItemView: View {
     }
 
     private func selectAsset(image: UIImage, currentlySelected: Bool) {
-        let resolvedURL = asset.mediaType == .image ? assetJpgURL() : assetURL
+        let resolvedURL = assetType == .image ? (jpgURL ?? assetJpgURL()) : assetURL
         guard let url = resolvedURL else { return }
         let width = Double(asset.pixelWidth)
         let height = Double(asset.pixelHeight)
@@ -263,8 +315,18 @@ public struct AttachmentMediaPickerItemView: View {
     /// This way it is more compatible with other platforms.
     private func assetJpgURL() -> URL? {
         guard let assetURL else { return nil }
-        guard let assetData = try? Data(contentsOf: assetURL) else { return nil }
-        return try? UIImage(data: assetData)?.saveAsJpgToTemporaryUrl()
+        return Self.convertToJpg(at: assetURL)
+    }
+
+    private static func makeJpgURL(for url: URL) async -> URL? {
+        await Task.detached(priority: .utility) {
+            convertToJpg(at: url)
+        }.value
+    }
+
+    private nonisolated static func convertToJpg(at url: URL) -> URL? {
+        guard let data = try? Data(contentsOf: url) else { return nil }
+        return try? UIImage(data: data)?.saveAsJpgToTemporaryUrl()
     }
     
     private func isAssetSelected(_ id: String) -> Bool {
