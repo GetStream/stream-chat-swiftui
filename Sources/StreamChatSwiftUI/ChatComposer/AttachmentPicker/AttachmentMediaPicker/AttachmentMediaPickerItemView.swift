@@ -227,9 +227,19 @@ public struct AttachmentMediaPickerItemView: View {
     ) {
         let options = PHContentEditingInputRequestOptions()
         options.isNetworkAccessAllowed = allowNetwork
-        requestId = asset.requestContentEditingInput(with: options) { input, _ in
-            self.requestId = nil
+        // Cancelled requests still report back, so the id is only cleared while it is
+        // the one in flight. A synchronous completion is not tracked at all.
+        var isCompleted = false
+        var newRequestId: PHContentEditingInputRequestID?
+        newRequestId = asset.requestContentEditingInput(with: options) { input, _ in
+            isCompleted = true
+            if let newRequestId, requestId == newRequestId {
+                requestId = nil
+            }
             completion(input)
+        }
+        if !isCompleted {
+            requestId = newRequestId
         }
     }
 
