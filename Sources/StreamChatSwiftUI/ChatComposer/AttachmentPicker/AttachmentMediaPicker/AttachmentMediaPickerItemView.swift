@@ -182,8 +182,8 @@ public struct AttachmentMediaPickerItemView: View {
     }()
 
     // Toggling off, or an asset that is already prepared, is applied immediately.
-    // Otherwise the asset is resolved on demand: an on-device video is compressed
-    // here, while iCloud assets are downloaded and used as-is.
+    // Otherwise the asset is resolved on demand, downloading it from iCloud when
+    // needed, so that an idle picker never downloads anything.
     private func handleTap(image: UIImage, currentlySelected: Bool) {
         if currentlySelected || readyURL != nil {
             guard !compressing else { return }
@@ -211,20 +211,11 @@ public struct AttachmentMediaPickerItemView: View {
         cancelAssetURLRequest()
         loading = true
 
-        // Prefer a local file so oversized on-device videos can be compressed.
-        // iCloud assets are only downloaded if nothing is available locally, and
-        // those downloads are never compressed.
-        requestContentEditingInput(allowNetwork: false) { localInput in
-            applyContentEditingInput(localInput)
-            if assetURL != nil {
+        // Downloads the asset from iCloud when it is not available on the device.
+        requestContentEditingInput(allowNetwork: true) { input in
+            applyContentEditingInput(input)
+            compressVideoIfNeeded {
                 loading = false
-                compressLocalVideoIfNeeded(completion: completion)
-                return
-            }
-
-            requestContentEditingInput(allowNetwork: true) { remoteInput in
-                loading = false
-                applyContentEditingInput(remoteInput)
                 completion()
             }
         }
@@ -250,7 +241,7 @@ public struct AttachmentMediaPickerItemView: View {
         }
     }
 
-    private func compressLocalVideoIfNeeded(completion: @escaping () -> Void) {
+    private func compressVideoIfNeeded(completion: @escaping () -> Void) {
         guard assetType == .video,
               let assetURL,
               assetLoader.assetExceedsAllowedSize(url: assetURL) else {
