@@ -905,7 +905,7 @@ import SwiftUI
         }
     }
 
-    private static func haveSameContent(_ lhs: PHFetchResult<PHAsset>, _ rhs: PHFetchResult<PHAsset>) -> Bool {
+    static func haveSameContent(_ lhs: PHFetchResult<PHAsset>, _ rhs: PHFetchResult<PHAsset>) -> Bool {
         guard lhs.count == rhs.count else { return false }
         return lhs.firstObject?.localIdentifier == rhs.firstObject?.localIdentifier
             && lhs.lastObject?.localIdentifier == rhs.lastObject?.localIdentifier
