@@ -79,6 +79,21 @@ import XCTest
         assertSnapshot(matching: messageListView, as: .image(perceptualPrecision: precision))
     }
 
+    func test_messageListView_typingIndicatorWithBottomInset() {
+        // Given
+        let channelConfig = ChannelConfig(reactionsEnabled: true)
+        let typingUser = ChatUser.mock(id: "martin", name: "Martin")
+        let messageListView = makeMessageListView(
+            channelConfig: channelConfig,
+            currentlyTypingUsers: [typingUser],
+            bottomInset: 100
+        )
+        .applyDefaultSize()
+
+        // Then
+        assertSnapshot(matching: messageListView, as: .image(perceptualPrecision: precision))
+    }
+
     func test_messageListView_snapshotFallback() {
         // Given
         let channelConfig = ChannelConfig(reactionsEnabled: true)
@@ -806,7 +821,8 @@ import XCTest
     func makeMessageListView(
         channelConfig: ChannelConfig,
         unreadCount: ChannelUnreadCount = .noUnread,
-        currentlyTypingUsers: Set<ChatUser> = []
+        currentlyTypingUsers: Set<ChatUser> = [],
+        bottomInset: CGFloat = 0
     ) -> MessageListView<DefaultViewFactory> {
         let reactions = [MessageReactionType(rawValue: "like"): 2]
         let channel = ChatChannel.mockDMChannel(
@@ -834,6 +850,7 @@ import XCTest
             listId: "listId",
             isMessageThread: false,
             shouldShowTypingIndicator: !currentlyTypingUsers.isEmpty,
+            bottomInset: bottomInset,
             onMessageAppear: { _, _ in },
             onScrollToBottom: {},
             onLongPress: { _ in }

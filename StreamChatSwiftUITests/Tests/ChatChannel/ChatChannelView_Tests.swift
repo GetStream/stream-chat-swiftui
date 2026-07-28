@@ -240,8 +240,51 @@ import XCTest
         XCTAssertTrue(viewModel.reactionsShown)
     }
     
+    // MARK: - Typing indicator in an empty channel
+
+    func test_chatChannelView_emptyChannelTypingIndicator_snapshot() {
+        // Given
+        let controller = emptyChannelController()
+
+        // When
+        let view = emptyChannelViewWithTypingUser(for: controller)
+
+        // Then
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
+    }
+
+    func test_chatChannelView_emptyChannelTypingIndicatorMessagesStartAtTheTop_snapshot() {
+        // Given
+        let utils = Utils(
+            dateFormatter: EmptyDateFormatter(),
+            messageListConfig: MessageListConfig(shouldMessagesStartAtTheTop: true)
+        )
+        streamChat = StreamChat(chatClient: chatClient, utils: utils)
+        let controller = emptyChannelController()
+
+        // When
+        let view = emptyChannelViewWithTypingUser(for: controller)
+
+        // Then
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
+    }
+
+    func test_chatChannelView_emptyChannelTypingIndicatorFloatingComposer_snapshot() {
+        // Given
+        let controller = emptyChannelController()
+
+        // When
+        let view = emptyChannelViewWithTypingUser(
+            for: controller,
+            viewFactory: LiquidGlassViewFactory()
+        )
+
+        // Then
+        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
+    }
+
     // MARK: - LiquidGlass Style Tests
-    
+
     func test_chatChannelView_liquidGlassStyle_composer_snapshot() {
         // Given
         let controller = ChatChannelController_Mock.mock(
@@ -279,6 +322,49 @@ import XCTest
 
         // Then
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
+    }
+
+    // MARK: - Helpers
+
+    private func emptyChannelController() -> ChatChannelController_Mock {
+        let controller = ChatChannelController_Mock.mock(
+            channelQuery: .init(cid: .unique),
+            channelListQuery: nil,
+            client: chatClient
+        )
+        controller.simulateInitial(
+            channel: .mock(cid: .unique, name: "Test channel"),
+            messages: [],
+            state: .remoteDataFetched
+        )
+        return controller
+    }
+
+    private func emptyChannelViewWithTypingUser<Factory: ViewFactory>(
+        for controller: ChatChannelController_Mock,
+        viewFactory: Factory = DefaultViewFactory.shared
+    ) -> some SwiftUI.View {
+        let viewModel = ChatChannelViewModel(channelController: controller)
+        let typingUser: ChatChannelMember = .mock(id: .unique, name: "Martin")
+        let channel: ChatChannel = .mock(
+            cid: controller.cid!,
+            name: "Test channel",
+            currentlyTypingUsers: [typingUser]
+        )
+        controller.simulate(channel: channel, change: .update(channel), typingUsers: [typingUser])
+
+        return NavigationView {
+            ScrollView {
+                ChatChannelView(
+                    viewFactory: viewFactory,
+                    viewModel: viewModel,
+                    channelController: controller
+                )
+                .frame(width: defaultScreenSize.width, height: defaultScreenSize.height - 64)
+            }
+            .navigationBarTitleDisplayMode(.inline)
+        }
+        .applyDefaultSize()
     }
 }
 
