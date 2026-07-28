@@ -13,7 +13,17 @@ import UniformTypeIdentifiers
     @Injected(\.chatClient) private var chatClient
     @Injected(\.utils) private var utils
 
-    private let imageManager = PHCachingImageManager()
+    private let imageManager: PHCachingImageManager
+
+    override public init() {
+        imageManager = PHCachingImageManager()
+        super.init()
+    }
+
+    init(imageManager: PHCachingImageManager) {
+        self.imageManager = imageManager
+        super.init()
+    }
 
     // Bounded so that scrolling through a large library does not retain every
     // decoded thumbnail. NSCache also evicts automatically under memory pressure.
@@ -59,6 +69,7 @@ import UniformTypeIdentifiers
         options.resizeMode = .fast
         options.isNetworkAccessAllowed = false
 
+        var isCompleted = false
         let requestId = imageManager.requestImage(
             for: asset,
             targetSize: targetSize,
@@ -68,12 +79,17 @@ import UniformTypeIdentifiers
             guard let self, let image else { return }
             let isDegraded = (info?[PHImageResultIsDegradedKey] as? Bool) ?? false
             if !isDegraded {
+                isCompleted = true
                 inFlightImageRequests[assetId] = nil
                 cache(image, for: asset)
             }
             completion(image)
         }
-        inFlightImageRequests[assetId] = requestId
+        // The final image can be delivered synchronously, in which case the request
+        // must not be tracked, otherwise a later cancel would target a finished request.
+        if !isCompleted {
+            inFlightImageRequests[assetId] = requestId
+        }
     }
 
     func cancelImageLoad(for asset: PHAsset) {
@@ -161,7 +177,6 @@ import UniformTypeIdentifiers
     ) -> PHImageRequestID {
         let options = PHVideoRequestOptions()
         options.version = .current
-        options.deliveryMode = .highQualityFormat
         options.isNetworkAccessAllowed = allowsNetworkAccess
 
         // The handler runs on a Photos queue, so it must not inherit the main actor isolation.

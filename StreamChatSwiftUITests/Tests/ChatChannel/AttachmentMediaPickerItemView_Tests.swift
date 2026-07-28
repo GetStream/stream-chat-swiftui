@@ -8,82 +8,34 @@ import Photos
 import SwiftUI
 import XCTest
 
+/// The behavior itself lives in `MediaPickerAssetHandler` and is covered synchronously in
+/// `MediaPickerAssetHandler_Tests`. These tests only verify that the view forwards its
+/// lifecycle to the handler.
 @MainActor class AttachmentMediaPickerItemView_Tests: StreamChatTestCase {
-    // MARK: - Appear
-
-    func test_itemView_onAppear_loadsThumbnailWithExpectedTargetSize() {
-        // Given
-        let assetLoader = PhotoAssetLoader_Mock()
-        let asset = PHAsset_Mock()
-
-        // When
-        showView(makeItemView(assetLoader: assetLoader, asset: asset))
-        waitForViewUpdates()
-
-        // Then
-        XCTAssertEqual(assetLoader.loadImageCalls.count, 1)
-        XCTAssertTrue(assetLoader.loadImageCalls.first?.asset === asset)
-        XCTAssertEqual(assetLoader.loadImageCalls.first?.targetSize, CGSize(width: 250, height: 250))
-    }
-
-    func test_itemView_onAppearWithImageAsset_requestsAssetURLWithoutNetworkAccess() {
+    func test_itemView_onAppear_startsThumbnailLoadAndAssetPreparation() {
         // Given
         let assetLoader = PhotoAssetLoader_Mock()
         let asset = PHAsset_Mock(mediaType: .image)
 
         // When
-        showView(makeItemView(assetLoader: assetLoader, asset: asset))
-        waitForViewUpdates()
-
-        // Then
-        XCTAssertEqual(assetLoader.assetURLRequests.count, 1)
-        XCTAssertEqual(assetLoader.assetURLRequests.first?.allowsNetworkAccess, false)
-    }
-
-    func test_itemView_onAppearWithVideoAsset_doesNotRequestAssetURL() {
-        // Given
-        let assetLoader = PhotoAssetLoader_Mock()
-        let asset = PHAsset_Mock(mediaType: .video, duration: 12)
-
-        // When
-        showView(makeItemView(assetLoader: assetLoader, asset: asset))
-        waitForViewUpdates()
-
-        // Then
-        XCTAssertTrue(assetLoader.assetURLRequests.isEmpty)
-        XCTAssertEqual(assetLoader.loadImageCalls.count, 1)
-    }
-
-    // MARK: - Disappear
-
-    func test_itemView_onDisappear_cancelsThumbnailLoad() {
-        // Given
-        let assetLoader = PhotoAssetLoader_Mock()
-        let asset = PHAsset_Mock()
-        let hostingController = showView(
-            AttachmentMediaPickerItemVisibilityTestView(
+        showView(
+            AttachmentMediaPickerItemView(
                 assetLoader: assetLoader,
                 asset: asset,
-                isVisible: true
+                onImageTap: { _ in },
+                imageSelected: { _ in false }
             )
         )
         waitForViewUpdates()
 
-        // When
-        hostingController.rootView = AttachmentMediaPickerItemVisibilityTestView(
-            assetLoader: assetLoader,
-            asset: asset,
-            isVisible: false
-        )
-        hostingController.view.layoutIfNeeded()
-        waitForViewUpdates()
-
         // Then
-        XCTAssertEqual(assetLoader.cancelledImageLoads.count, 1)
-        XCTAssertTrue(assetLoader.cancelledImageLoads.first === asset)
+        XCTAssertEqual(assetLoader.loadImageCalls.count, 1)
+        XCTAssertTrue(assetLoader.loadImageCalls.first?.asset === asset)
+        XCTAssertEqual(assetLoader.assetURLRequests.count, 1)
+        XCTAssertEqual(assetLoader.assetURLRequests.first?.allowsNetworkAccess, false)
     }
 
-    func test_itemView_onDisappear_cancelsPendingAssetURLRequest() {
+    func test_itemView_onDisappear_cancelsPendingWork() {
         // Given
         let assetLoader = PhotoAssetLoader_Mock()
         assetLoader.completesAssetURLRequests = false
@@ -108,57 +60,9 @@ import XCTest
         waitForViewUpdates()
 
         // Then
+        XCTAssertEqual(assetLoader.cancelledImageLoads.count, 1)
+        XCTAssertTrue(assetLoader.cancelledImageLoads.first === asset)
         XCTAssertEqual(assetLoader.cancelledRequestIds, [7])
-    }
-
-    func test_itemView_onDisappear_whenAssetURLResolvedSynchronously_doesNotCancelIt() {
-        // Given
-        let assetLoader = PhotoAssetLoader_Mock()
-        assetLoader.assetURL = URL(fileURLWithPath: NSTemporaryDirectory()).appendingPathComponent("photo.jpg")
-        let asset = PHAsset_Mock(mediaType: .image)
-        let hostingController = showView(
-            AttachmentMediaPickerItemVisibilityTestView(
-                assetLoader: assetLoader,
-                asset: asset,
-                isVisible: true
-            )
-        )
-        waitForViewUpdates()
-
-        // When
-        hostingController.rootView = AttachmentMediaPickerItemVisibilityTestView(
-            assetLoader: assetLoader,
-            asset: asset,
-            isVisible: false
-        )
-        hostingController.view.layoutIfNeeded()
-        waitForViewUpdates()
-
-        // Then
-        XCTAssertTrue(assetLoader.cancelledRequestIds.isEmpty)
-    }
-
-    // MARK: - Helpers
-
-    private func makeItemView(
-        assetLoader: PhotoAssetLoader,
-        asset: PHAsset,
-        onImageTap: @escaping (AddedAsset) -> Void = { _ in }
-    ) -> AttachmentMediaPickerItemView {
-        AttachmentMediaPickerItemView(
-            assetLoader: assetLoader,
-            asset: asset,
-            onImageTap: onImageTap,
-            imageSelected: { _ in false }
-        )
-    }
-
-    private func waitForViewUpdates(_ duration: TimeInterval = 0.5) {
-        let expectation = expectation(description: "View updates processed")
-        DispatchQueue.main.asyncAfter(deadline: .now() + duration) {
-            expectation.fulfill()
-        }
-        wait(for: [expectation], timeout: duration + 2)
     }
 }
 

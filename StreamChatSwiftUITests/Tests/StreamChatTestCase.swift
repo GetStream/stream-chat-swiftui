@@ -85,6 +85,15 @@ import XCTest
         hostingController.view.layoutIfNeeded()
         return hostingController
     }
+
+    /// Spins the run loop so hosted views process pending lifecycle updates.
+    func waitForViewUpdates(_ duration: TimeInterval = 0.5) {
+        let expectation = expectation(description: "View updates processed")
+        DispatchQueue.main.asyncAfter(deadline: .now() + duration) {
+            expectation.fulfill()
+        }
+        wait(for: [expectation], timeout: duration + 2)
+    }
 }
 
 // Forces the solid primary button style regardless of platform,

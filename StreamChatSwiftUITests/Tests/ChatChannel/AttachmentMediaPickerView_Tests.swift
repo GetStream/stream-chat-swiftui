@@ -69,12 +69,4 @@ import XCTest
             isDisplayed: isDisplayed
         )
     }
-
-    private func waitForViewUpdates(_ duration: TimeInterval = 0.5) {
-        let expectation = expectation(description: "View updates processed")
-        DispatchQueue.main.asyncAfter(deadline: .now() + duration) {
-            expectation.fulfill()
-        }
-        wait(for: [expectation], timeout: duration + 2)
-    }
 }
