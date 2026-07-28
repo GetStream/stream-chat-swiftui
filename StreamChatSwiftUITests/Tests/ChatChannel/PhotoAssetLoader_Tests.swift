@@ -78,7 +78,7 @@ import XCTest
         // Given
         let degraded = UIImage.testImage(color: .gray)
         let final = UIImage.testImage(color: .green)
-        let imageManager = PHCachingImageManager_Mock()
+        let imageManager = PHImageManager_Mock()
         imageManager.imageResults = [(degraded, true), (final, false)]
         let loader = PhotoAssetLoader(imageManager: imageManager)
         let asset = PHAsset_Mock()
@@ -101,7 +101,7 @@ import XCTest
 
     func test_cancelImageLoad_cancelsTheInFlightRequest() {
         // Given — a request that never delivers an image.
-        let imageManager = PHCachingImageManager_Mock()
+        let imageManager = PHImageManager_Mock()
         imageManager.nextRequestId = 5
         let loader = PhotoAssetLoader(imageManager: imageManager)
         let asset = PHAsset_Mock()
@@ -116,7 +116,7 @@ import XCTest
 
     func test_cancelImageLoad_whenFinalImageWasDelivered_doesNothing() {
         // Given
-        let imageManager = PHCachingImageManager_Mock()
+        let imageManager = PHImageManager_Mock()
         imageManager.imageResults = [(UIImage.testImage(color: .green), false)]
         let loader = PhotoAssetLoader(imageManager: imageManager)
         let asset = PHAsset_Mock()
@@ -131,7 +131,7 @@ import XCTest
 
     func test_cancelAllImageLoads_cancelsEveryInFlightRequest() {
         // Given — two requests that never deliver an image.
-        let imageManager = PHCachingImageManager_Mock()
+        let imageManager = PHImageManager_Mock()
         let loader = PhotoAssetLoader(imageManager: imageManager)
         imageManager.nextRequestId = 1
         loader.loadImage(for: PHAsset_Mock(id: "asset-0"), targetSize: CGSize(width: 250, height: 250)) { _ in }
@@ -163,7 +163,7 @@ import XCTest
 
     func test_requestAssetURL_withImageAsset_deliversTemporaryJpgURL() throws {
         // Given
-        let imageManager = PHCachingImageManager_Mock()
+        let imageManager = PHImageManager_Mock()
         imageManager.imageData = UIImage.testImage(color: .red).pngData()
         imageManager.imageDataUTI = UTType.png.identifier
         let loader = PhotoAssetLoader(imageManager: imageManager)
@@ -185,7 +185,7 @@ import XCTest
 
     func test_requestAssetURL_withImageAsset_whenThereIsNoData_deliversNil() {
         // Given
-        let imageManager = PHCachingImageManager_Mock()
+        let imageManager = PHImageManager_Mock()
         imageManager.imageData = nil
         let loader = PhotoAssetLoader(imageManager: imageManager)
 
@@ -206,7 +206,7 @@ import XCTest
     func test_requestAssetURL_withVideoAsset_deliversTheURLOfTheAVAsset() {
         // Given
         let videoURL = URL(fileURLWithPath: NSTemporaryDirectory()).appendingPathComponent("video.mp4")
-        let imageManager = PHCachingImageManager_Mock()
+        let imageManager = PHImageManager_Mock()
         imageManager.avAsset = AVURLAsset(url: videoURL)
         let loader = PhotoAssetLoader(imageManager: imageManager)
 
@@ -226,7 +226,7 @@ import XCTest
 
     func test_requestAssetURL_withVideoAsset_whenAssetIsNotURLBacked_deliversNil() {
         // Given — compositions, like slow-motion videos, are not backed by a single file.
-        let imageManager = PHCachingImageManager_Mock()
+        let imageManager = PHImageManager_Mock()
         imageManager.avAsset = AVComposition()
         let loader = PhotoAssetLoader(imageManager: imageManager)
 
@@ -245,7 +245,7 @@ import XCTest
 
     func test_cancelRequest_forwardsToTheImageManager() {
         // Given
-        let imageManager = PHCachingImageManager_Mock()
+        let imageManager = PHImageManager_Mock()
         let loader = PhotoAssetLoader(imageManager: imageManager)
 
         // When
@@ -427,7 +427,7 @@ extension UIImage {
 
 /// Records the requests made by `PhotoAssetLoader` and delivers stubbed results synchronously,
 /// without touching the Photos library.
-private final class PHCachingImageManager_Mock: PHCachingImageManager {
+private final class PHImageManager_Mock: PHImageManager {
     var requestImageCalls = [(asset: PHAsset, targetSize: CGSize, options: PHImageRequestOptions?)]()
     var cancelledRequestIds = [PHImageRequestID]()
     var requestImageDataOptions: PHImageRequestOptions?

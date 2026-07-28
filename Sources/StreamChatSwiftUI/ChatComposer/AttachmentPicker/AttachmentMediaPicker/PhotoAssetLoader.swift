@@ -13,14 +13,18 @@ import UniformTypeIdentifiers
     @Injected(\.chatClient) private var chatClient
     @Injected(\.utils) private var utils
 
-    private let imageManager: PHCachingImageManager
+    // Thumbnails are requested one by one as cells appear and are kept in `imageCache`, so
+    // there is nothing for `PHCachingImageManager` to prefetch. Prefetching would mean
+    // resolving assets ahead of the visible range, which is the main-thread Photos work the
+    // grid deliberately avoids.
+    private let imageManager: PHImageManager
 
     override public init() {
-        imageManager = PHCachingImageManager()
+        imageManager = .default()
         super.init()
     }
 
-    init(imageManager: PHCachingImageManager) {
+    init(imageManager: PHImageManager) {
         self.imageManager = imageManager
         super.init()
     }
