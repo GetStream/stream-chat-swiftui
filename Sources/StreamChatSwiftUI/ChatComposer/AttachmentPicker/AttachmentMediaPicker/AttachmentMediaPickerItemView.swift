@@ -22,13 +22,11 @@ public struct AttachmentMediaPickerItemView: View {
 
     public init(
         assetLoader: PhotoAssetLoader,
-        requestId _: PHContentEditingInputRequestID? = nil,
         asset: PHAsset,
         onImageTap: @escaping (AddedAsset) -> Void,
         imageSelected: @escaping (String) -> Bool,
         selectedAssetIds: Set<String>? = nil
     ) {
-        // `requestId` is kept for source compatibility; the handler owns it now.
         _handler = StateObject(wrappedValue: MediaPickerAssetHandler(
             asset: asset,
             assetLoader: assetLoader
@@ -39,11 +37,28 @@ public struct AttachmentMediaPickerItemView: View {
         self.selectedAssetIds = selectedAssetIds
     }
 
+    @available(*, deprecated, message: "requestId is no longer used. Use init(assetLoader:asset:onImageTap:imageSelected:selectedAssetIds:) instead.")
+    public init(
+        assetLoader: PhotoAssetLoader,
+        requestId: PHContentEditingInputRequestID?,
+        asset: PHAsset,
+        onImageTap: @escaping (AddedAsset) -> Void,
+        imageSelected: @escaping (String) -> Bool,
+        selectedAssetIds: Set<String>? = nil
+    ) {
+        self.init(
+            assetLoader: assetLoader,
+            asset: asset,
+            onImageTap: onImageTap,
+            imageSelected: imageSelected,
+            selectedAssetIds: selectedAssetIds
+        )
+    }
+
     public var body: some View {
         let selected = isAssetSelected(asset.localIdentifier)
-        let image = handler.currentImage
         ZStack {
-            if let image {
+            if let image = handler.currentImage {
                 GeometryReader { reader in
                     ZStack {
                         Image(uiImage: image)

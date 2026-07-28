@@ -20,7 +20,7 @@ import UniformTypeIdentifiers
     private let imageCache: NSCache<NSString, UIImage> = {
         let cache = NSCache<NSString, UIImage>()
         cache.countLimit = 200
-        cache.totalCostLimit = 64 * 1024 * 1024
+        cache.totalCostLimit = 50 * 1024 * 1024
         return cache
     }()
 
