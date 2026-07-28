@@ -7,8 +7,8 @@ import SwiftUI
 
 /// A view that renders a single media attachment (image or video) thumbnail.
 ///
-/// Images are loaded through ``StreamAsyncImage``, which consults Nuke's
-/// in-memory cache synchronously and avoids a loading flash when the
+/// Images are loaded through ``StreamAsyncImage``, which consults the image
+/// loader's in-memory cache synchronously and avoids a loading flash when the
 /// thumbnail was rendered earlier (e.g. when the message is shown again
 /// inside the reactions overlay). Video thumbnails go through
 /// ``MediaAttachment/generateThumbnail(resize:preferredSize:completion:)``
