@@ -49,9 +49,14 @@ struct ParticipantInfoView<Factory: ViewFactory>: View {
                         .padding(.top, tokens.spacingSm)
                         
                         VStack(alignment: .leading, spacing: tokens.spacingXxxs) {
-                            Text(participant.displayName)
-                                .font(fonts.title3.weight(.semibold))
-                                .foregroundColor(Color(colors.textPrimary))
+                            HStack(spacing: tokens.spacingXs) {
+                                Text(participant.displayName)
+                                    .font(fonts.title3.weight(.semibold))
+                                    .foregroundColor(Color(colors.textPrimary))
+                                if participant.isMuted {
+                                    MemberMutedIcon()
+                                }
+                            }
                             Text(participant.onlineInfoText)
                                 .font(fonts.footnote)
                                 .foregroundColor(Color(colors.textSecondary))

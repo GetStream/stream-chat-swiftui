@@ -35,6 +35,40 @@ import XCTest
         AssertSnapshot(view)
     }
 
+    func test_memberListView_withMutedMemberSnapshot() {
+        // Given
+        let members = ChannelInfoMockUtils.setupMockMembers(
+            count: 4,
+            currentUserId: chatClient.currentUserId!,
+            onlineUserIndexes: [0, 1]
+        )
+        let group = ChatChannel.mock(
+            cid: .unique,
+            name: "Test Group",
+            ownCapabilities: [],
+            lastActiveMembers: members,
+            memberCount: members.count
+        )
+        let viewModel = ChatChannelInfoViewModel(channel: group)
+        let currentUserController = CurrentChatUserController_Mock(client: chatClient)
+        currentUserController.currentUser_mock = .mock(
+            currentUserId: chatClient.currentUserId!,
+            mutedUsers: [ChatUser.mock(id: members[1].id)]
+        )
+        viewModel.currentUserController = currentUserController
+        viewModel.currentUserController(
+            currentUserController,
+            didChangeCurrentUser: .update(currentUserController.currentUser!)
+        )
+
+        // When
+        let view = MemberListView(factory: DefaultTestViewFactory.shared, viewModel: viewModel)
+            .applyDefaultSize()
+
+        // Then
+        AssertSnapshot(view)
+    }
+
     func test_memberListView_withoutAddButtonSnapshot() {
         // Given
         let members = ChannelInfoMockUtils.setupMockMembers(

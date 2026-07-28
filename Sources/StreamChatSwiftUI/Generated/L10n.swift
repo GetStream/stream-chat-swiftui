@@ -283,6 +283,8 @@ internal enum L10n {
     internal enum Member {
       /// Admin
       internal static var admin: String { L10n.tr("Localizable", "chat-info.member.admin") }
+      /// Muted
+      internal static var muted: String { L10n.tr("Localizable", "chat-info.member.muted") }
     }
     internal enum Members {
       /// Add
