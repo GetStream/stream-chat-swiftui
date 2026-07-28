@@ -164,8 +164,9 @@ struct LazyGiphyView: View {
     }
 }
 
-/// Recommended implementation by SwiftyGif for rendering gifs in SwiftUI
-/// Nuke dropped gif support and therefore it needs to be implemented separately.
+/// Recommended implementation by SwiftyGif for rendering gifs in SwiftUI.
+/// The image pipeline delivers raw GIF data without animating it, so
+/// rendering is implemented separately.
 /// The UIImageView is wrapped in a container with auto-layout constraints
 /// to ensure contentMode scaling works correctly with SwiftyGif's
 /// CADisplayLink-driven frame updates.

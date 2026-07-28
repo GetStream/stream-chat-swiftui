@@ -10,6 +10,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Show a muted icon for muted members in the channel info member list and member details [#1547](https://github.com/GetStream/stream-chat-swiftui/pull/1547)
 
 ### 🔄 Changed
+- Replace vendored Nuke image loading with `StreamImageDownloader` from StreamChatCommonUI [#1531](https://github.com/GetStream/stream-chat-swiftui/pull/1531)
+
+### ⚡️ Performance
+- Reduce SDK size by 400 KB [#1531](https://github.com/GetStream/stream-chat-swiftui/pull/1531)
 
 # [5.7.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/5.7.0)
 _July 22, 2026_
