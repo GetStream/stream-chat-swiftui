@@ -19,16 +19,6 @@ import UniformTypeIdentifiers
     // grid deliberately avoids.
     private let imageManager: PHImageManager
 
-    override public init() {
-        imageManager = .default()
-        super.init()
-    }
-
-    init(imageManager: PHImageManager) {
-        self.imageManager = imageManager
-        super.init()
-    }
-
     // Bounded so that scrolling through a large library does not retain every
     // decoded thumbnail. NSCache also evicts automatically under memory pressure.
     private let imageCache: NSCache<NSString, UIImage> = {
@@ -39,6 +29,16 @@ import UniformTypeIdentifiers
     }()
 
     private var inFlightImageRequests = [String: PHImageRequestID]()
+
+    override public init() {
+        imageManager = .default()
+        super.init()
+    }
+
+    init(imageManager: PHImageManager) {
+        self.imageManager = imageManager
+        super.init()
+    }
 
     /// Returns an already-loaded thumbnail for the asset, if available.
     func cachedImage(for asset: PHAsset) -> UIImage? {

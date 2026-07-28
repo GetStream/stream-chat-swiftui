@@ -14,7 +14,9 @@ public struct AttachmentMediaPickerView: View {
     @Injected(\.images) private var images
     @Injected(\.tokens) private var tokens
     
-    @StateObject var assetLoader: PhotoAssetLoader
+    // Held as state so that the loader, and with it its cache and in-flight requests, survives
+    // view updates. It publishes nothing, so there is nothing to observe.
+    @State var assetLoader: PhotoAssetLoader
 
     var photoLibraryAssets: PHFetchResult<PHAsset>?
     var onImageTap: (AddedAsset) -> Void
@@ -37,7 +39,7 @@ public struct AttachmentMediaPickerView: View {
         selectedAssetIds: [String]? = nil,
         isDisplayed: Bool = false
     ) {
-        _assetLoader = StateObject(wrappedValue: assetLoader)
+        _assetLoader = State(initialValue: assetLoader)
         self.photoLibraryAssets = photoLibraryAssets
         self.onImageTap = onImageTap
         self.imageSelected = imageSelected
