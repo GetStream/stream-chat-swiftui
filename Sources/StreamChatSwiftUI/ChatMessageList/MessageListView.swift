@@ -215,6 +215,10 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
                                         currentUserId: chatClient.currentUserId
                                     )
                                 )
+                                // The indicator is the bottom-most element of the list,
+                                // so it takes over the inset that keeps the content
+                                // clear of the floating composer.
+                                .padding(.bottom, bottomInset)
                                 .flippedUpsideDown()
                             }
 
@@ -248,7 +252,7 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
                                         onMessageAppear(index, scrollDirection)
                                     }
                                 }
-                                .padding(.bottom, message == messages.first ? bottomInset : 0)
+                                .padding(.bottom, message == messages.first && !shouldShowTypingIndicator ? bottomInset : 0)
                                 .padding(
                                     .top,
                                     topPadding(
