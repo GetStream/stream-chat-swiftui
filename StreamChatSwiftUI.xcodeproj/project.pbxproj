@@ -289,7 +289,6 @@
 				Tests/Utils/ReactionsIconProvider_Tests.swift,
 				Tests/Utils/SortReactions_Tests.swift,
 				Tests/Utils/StreamChat_Utils_Tests.swift,
-				Tests/Utils/StreamImageDownloader_Tests.swift,
 				Tests/Utils/StringExtensions_Tests.swift,
 				Tests/Utils/URLUtils_Tests.swift,
 				Tests/Utils/ViewFactory_Tests.swift,
@@ -1543,7 +1542,7 @@
 			repositoryURL = "https://github.com/GetStream/stream-chat-swift.git";
 			requirement = {
 				kind = revision;
-				revision = 72976679e3a4bda655fbf5ec5c1c515a94483228;
+				revision = 8e37eaad2e4b7ba56fdf0386b3bc11fb24c1ecc0;
 			};
 		};
 		E3A1C01A282BAC66002D1E26 /* XCRemoteSwiftPackageReference "sentry-cocoa" */ = {

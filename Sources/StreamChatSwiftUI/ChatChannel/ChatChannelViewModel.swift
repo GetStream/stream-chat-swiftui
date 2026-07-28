@@ -277,7 +277,6 @@ import SwiftUI
     
     @objc
     private func didReceiveMemoryWarning() {
-        ImageCache.shared.removeAll()
         messageCachingUtils.clearCache()
     }
     
@@ -886,7 +885,7 @@ import SwiftUI
             if messageController == nil {
                 utils.channelControllerFactory.clearCurrentController()
                 cleanupAudioPlayer()
-                ImageCache.shared.trim(toCost: utils.messageListConfig.cacheSizeOnChatDismiss)
+                utils.mediaLoader.trimImageMemoryCache(toCost: utils.messageListConfig.cacheSizeOnChatDismiss)
             }
         }
     }

@@ -13,6 +13,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Fix showing the typing indicator in the middle of the screen when a channel has no messages [#1545](https://github.com/GetStream/stream-chat-swiftui/pull/1545)
 
 ### 🔄 Changed
+- Replace vendored Nuke image loading with `StreamImageDownloader` from StreamChatCommonUI [#1531](https://github.com/GetStream/stream-chat-swiftui/pull/1531)
+
+### ⚡️ Performance
+- Reduce SDK size by 400 KB [#1531](https://github.com/GetStream/stream-chat-swiftui/pull/1531)
 
 ### ⚠️ Deprecated
 - Deprecate `AttachmentMediaPickerItemView.init(assetLoader:requestId:asset:onImageTap:imageSelected:selectedAssetIds:)`, the request id is no longer used. Use the initializer without it. [#1546](https://github.com/GetStream/stream-chat-swiftui/pull/1546)
