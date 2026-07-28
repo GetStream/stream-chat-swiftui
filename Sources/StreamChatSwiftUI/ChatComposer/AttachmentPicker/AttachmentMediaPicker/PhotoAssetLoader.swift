@@ -144,7 +144,8 @@ import UniformTypeIdentifiers
         options.version = .current
         options.isNetworkAccessAllowed = allowsNetworkAccess
 
-        return imageManager.requestImageDataAndOrientation(for: asset, options: options) { data, dataUTI, _, _ in
+        // Marked Sendable so the handler makes no isolation assumption about the delivery queue.
+        return imageManager.requestImageDataAndOrientation(for: asset, options: options) { @Sendable data, dataUTI, _, _ in
             // Photos delivers the data on the main thread, so writing the file is moved off it.
             Task.detached(priority: .utility) {
                 let url = data.flatMap { PhotoAssetLoader.temporaryJpgURL(for: $0, dataUTI: dataUTI) }
@@ -163,7 +164,8 @@ import UniformTypeIdentifiers
         options.deliveryMode = .highQualityFormat
         options.isNetworkAccessAllowed = allowsNetworkAccess
 
-        return imageManager.requestAVAsset(forVideo: asset, options: options) { avAsset, _, _ in
+        // The handler runs on a Photos queue, so it must not inherit the main actor isolation.
+        return imageManager.requestAVAsset(forVideo: asset, options: options) { @Sendable avAsset, _, _ in
             // Only the url is handed back, the asset itself is not safe to send across isolation.
             let url = (avAsset as? AVURLAsset)?.url
             Task { @MainActor in
