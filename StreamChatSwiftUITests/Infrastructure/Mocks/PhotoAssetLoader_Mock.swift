@@ -17,6 +17,8 @@ final class PhotoAssetLoader_Mock: PhotoAssetLoader {
     var exceedsAllowedSize = false
     /// Result handed to the completion of `compressAsset`.
     var compressedURL: URL?
+    /// When true, `compressAsset` records the call but never invokes its completion.
+    var hangCompression = false
 
     override func loadImage(
         for asset: PHAsset,
@@ -43,6 +45,7 @@ final class PhotoAssetLoader_Mock: PhotoAssetLoader {
         completion: @escaping @MainActor (URL?) -> Void
     ) {
         compressAssetCalls.append((url, type))
+        guard !hangCompression else { return }
         completion(compressedURL)
     }
 

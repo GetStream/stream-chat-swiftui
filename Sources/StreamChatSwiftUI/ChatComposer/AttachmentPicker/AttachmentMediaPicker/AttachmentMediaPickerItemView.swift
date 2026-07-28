@@ -12,45 +12,36 @@ public struct AttachmentMediaPickerItemView: View {
     @Injected(\.fonts) private var fonts
     @Injected(\.tokens) private var tokens
     @Injected(\.utils) private var utils
-    
-    var assetLoader: PhotoAssetLoader
 
-    @State private var thumbnail: UIImage?
-    @State private var assetURL: URL?
-    @State private var jpgURL: URL?
-    @State private var compressing = false
-    @State private var loading = false
-    @State var requestId: PHContentEditingInputRequestID?
-    @State var idOverlay = UUID()
-    
+    @StateObject private var handler: MediaPickerAssetHandler
+
     var asset: PHAsset
     var onImageTap: (AddedAsset) -> Void
     var imageSelected: (String) -> Bool
     var selectedAssetIds: Set<String>?
-    
-    private var assetType: AssetType {
-        asset.mediaType == .video ? .video : .image
-    }
 
     public init(
         assetLoader: PhotoAssetLoader,
-        requestId: PHContentEditingInputRequestID? = nil,
+        requestId _: PHContentEditingInputRequestID? = nil,
         asset: PHAsset,
         onImageTap: @escaping (AddedAsset) -> Void,
         imageSelected: @escaping (String) -> Bool,
         selectedAssetIds: Set<String>? = nil
     ) {
-        self.assetLoader = assetLoader
-        _requestId = State(initialValue: requestId)
+        // `requestId` is kept for source compatibility; the handler owns it now.
+        _handler = StateObject(wrappedValue: MediaPickerAssetHandler(
+            asset: asset,
+            assetLoader: assetLoader
+        ))
         self.asset = asset
         self.onImageTap = onImageTap
         self.imageSelected = imageSelected
         self.selectedAssetIds = selectedAssetIds
     }
- 
+
     public var body: some View {
         let selected = isAssetSelected(asset.localIdentifier)
-        let image = currentImage
+        let image = handler.currentImage
         ZStack {
             if let image {
                 GeometryReader { reader in
@@ -61,7 +52,7 @@ public struct AttachmentMediaPickerItemView: View {
                             .frame(width: reader.size.width, height: reader.size.height)
                             .allowsHitTesting(false)
                             .clipped()
-                        
+
                         // Needed because of SwiftUI bug with tap area of Image.
                         Rectangle()
                             .fill(.clear)
@@ -70,17 +61,21 @@ public struct AttachmentMediaPickerItemView: View {
                             .clipped()
                             .allowsHitTesting(true)
                             .onTapGesture {
-                                handleTap(image: image, currentlySelected: selected)
+                                handler.handleTap(
+                                    image: image,
+                                    currentlySelected: selected,
+                                    onSelect: onImageTap
+                                )
                             }
                     }
                     .overlay(
-                        (compressing || loading) ? ProgressView() : nil
+                        handler.isBusy ? ProgressView() : nil
                     )
                 }
             } else {
                 Color(colors.backgroundCoreSurfaceDefault)
                     .aspectRatio(1, contentMode: .fill)
-                
+
                 Image(uiImage: images.imagePlaceholder)
                     .customizable()
                     .frame(height: 56)
@@ -111,51 +106,25 @@ public struct AttachmentMediaPickerItemView: View {
             }
             .allowsHitTesting(false)
             .accessibilityHidden(true)
-            .id(idOverlay)
+            .id(handler.overlayID)
         )
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(accessibilityLabel)
         .accessibilityAddTraits(.isButton)
         .accessibilityAddTraits(selected ? .isSelected : [])
         .accessibilityAction {
-            guard let image = currentImage else { return }
-            handleTap(image: image, currentlySelected: selected)
+            guard let image = handler.currentImage else { return }
+            handler.handleTap(
+                image: image,
+                currentlySelected: selected,
+                onSelect: onImageTap
+            )
         }
         .onAppear {
-            loadThumbnail()
-            prepareLocalImageIfNeeded()
+            handler.onAppear()
         }
         .onDisappear {
-            assetLoader.cancelImageLoad(for: asset)
-            cancelAssetURLRequest()
-            // Rows scrolled past stay instantiated in the lazy grid, so holding the
-            // decoded thumbnail in row state would bypass the loader's bounded cache.
-            thumbnail = nil
-        }
-    }
-
-    private var currentImage: UIImage? {
-        thumbnail ?? assetLoader.cachedImage(for: asset)
-    }
-
-    private func loadThumbnail() {
-        guard thumbnail == nil, assetLoader.cachedImage(for: asset) == nil else { return }
-        assetLoader.loadImage(for: asset, targetSize: CGSize(width: 250, height: 250)) { image in
-            thumbnail = image
-        }
-    }
-
-    // Converts an already on-device image to JPG up front so that selecting it is
-    // instant. Videos are skipped: their compression is expensive, so it only runs
-    // when one is actually picked. iCloud assets are never fetched here.
-    private func prepareLocalImageIfNeeded() {
-        guard assetType == .image, assetURL == nil, requestId == nil else { return }
-        requestContentEditingInput(allowNetwork: false) { input in
-            guard let url = input?.fullSizeImageURL else { return }
-            assetURL = url
-            Task {
-                jpgURL = await Self.makeJpgURL(for: url)
-            }
+            handler.onDisappear()
         }
     }
 
@@ -181,159 +150,6 @@ public struct AttachmentMediaPickerItemView: View {
         return formatter
     }()
 
-    // Toggling off, or an asset that is already prepared, is applied immediately.
-    // Otherwise the asset is resolved on demand, downloading it from iCloud when
-    // needed, so that an idle picker never downloads anything.
-    private func handleTap(image: UIImage, currentlySelected: Bool) {
-        if currentlySelected || readyURL != nil {
-            guard !compressing else { return }
-            withAnimation {
-                selectAsset(image: image, currentlySelected: currentlySelected)
-            }
-            return
-        }
-
-        guard !loading, !compressing else { return }
-
-        resolveAssetURL {
-            guard assetURL != nil else { return }
-            withAnimation {
-                selectAsset(image: image, currentlySelected: false)
-            }
-        }
-    }
-
-    private var readyURL: URL? {
-        assetType == .image ? jpgURL : assetURL
-    }
-
-    private func resolveAssetURL(completion: @escaping () -> Void) {
-        cancelAssetURLRequest()
-        loading = true
-
-        // Downloads the asset from iCloud when it is not available on the device.
-        requestContentEditingInput(allowNetwork: true) { input in
-            applyContentEditingInput(input)
-            compressVideoIfNeeded {
-                loading = false
-                completion()
-            }
-        }
-    }
-
-    private func requestContentEditingInput(
-        allowNetwork: Bool,
-        completion: @escaping (PHContentEditingInput?) -> Void
-    ) {
-        let options = PHContentEditingInputRequestOptions()
-        options.isNetworkAccessAllowed = allowNetwork
-        // Cancelled requests still report back, so the id is only cleared while it is
-        // the one in flight. A synchronous completion is not tracked at all.
-        var isCompleted = false
-        var newRequestId: PHContentEditingInputRequestID?
-        newRequestId = asset.requestContentEditingInput(with: options) { input, _ in
-            isCompleted = true
-            if let newRequestId, requestId == newRequestId {
-                requestId = nil
-            }
-            completion(input)
-        }
-        if !isCompleted {
-            requestId = newRequestId
-        }
-    }
-
-    private func applyContentEditingInput(_ input: PHContentEditingInput?) {
-        if asset.mediaType == .image {
-            assetURL = input?.fullSizeImageURL
-        } else if let url = (input?.audiovisualAsset as? AVURLAsset)?.url {
-            assetURL = url
-        }
-    }
-
-    private func compressVideoIfNeeded(completion: @escaping () -> Void) {
-        guard assetType == .video,
-              let assetURL,
-              assetLoader.assetExceedsAllowedSize(url: assetURL) else {
-            completion()
-            return
-        }
-        compressing = true
-        assetLoader.compressAsset(at: assetURL, type: assetType) { url in
-            // Keeping the original url when compression fails leaves the composer's size
-            // validation in charge of reporting it, instead of the tap doing nothing.
-            if let url {
-                self.assetURL = url
-            }
-            compressing = false
-            completion()
-        }
-    }
-
-    private func cancelAssetURLRequest() {
-        if let requestId {
-            asset.cancelContentEditingInputRequest(requestId)
-            self.requestId = nil
-        }
-        loading = false
-    }
-
-    private func selectAsset(image: UIImage, currentlySelected: Bool) {
-        let resolvedURL = assetType == .image ? (jpgURL ?? assetJpgURL()) : assetURL
-        guard let url = resolvedURL else { return }
-        let width = Double(asset.pixelWidth)
-        let height = Double(asset.pixelHeight)
-        let durationSeconds: TimeInterval? = asset.mediaType == .video ? asset.duration : nil
-        onImageTap(
-            AddedAsset(
-                image: image,
-                id: asset.localIdentifier,
-                url: url,
-                type: assetType,
-                extraData: asset.mediaType == .video ? ["duration": .number(asset.duration)] : [:],
-                originalWidth: width > 0 ? width : nil,
-                originalHeight: height > 0 ? height : nil,
-                duration: durationSeconds
-            )
-        )
-        idOverlay = UUID()
-        announceSelectionChange(willBeSelected: !currentlySelected)
-    }
-
-    private func announceSelectionChange(willBeSelected: Bool) {
-        let message: String
-        switch (asset.mediaType, willBeSelected) {
-        case (.video, true):
-            message = L10n.Composer.MediaPicker.Accessibility.videoAdded
-        case (.video, false):
-            message = L10n.Composer.MediaPicker.Accessibility.videoRemoved
-        case (_, true):
-            message = L10n.Composer.MediaPicker.Accessibility.photoAdded
-        case (_, false):
-            message = L10n.Composer.MediaPicker.Accessibility.photoRemoved
-        }
-        ComposerAccessibilityAnnouncer.announce(message)
-    }
-
-    /// The original photo is usually in HEIC format.
-    /// This makes sure that the photo is converted to JPG.
-    /// This way it is more compatible with other platforms.
-    private func assetJpgURL() -> URL? {
-        guard let assetURL else { return nil }
-        return Self.convertToJpg(at: assetURL)
-    }
-
-    private static func makeJpgURL(for url: URL) async -> URL? {
-        await Task.detached(priority: .utility) {
-            convertToJpg(at: url)
-        }.value
-    }
-
-    private nonisolated static func convertToJpg(at url: URL) -> URL? {
-        guard let data = try? Data(contentsOf: url) else { return nil }
-        return try? UIImage(data: data)?.saveAsJpgToTemporaryUrl()
-    }
-    
     private func isAssetSelected(_ id: String) -> Bool {
         if let selectedAssetIds {
             return selectedAssetIds.contains(id)
