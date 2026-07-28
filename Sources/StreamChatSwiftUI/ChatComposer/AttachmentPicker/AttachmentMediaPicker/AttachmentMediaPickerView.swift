@@ -73,15 +73,16 @@ public struct AttachmentMediaPickerView: View {
                     // Asset-keyed ForEach re-materializes PHAssets from Photos for every
                     // instantiated row on each update, which hangs large libraries.
                     ForEach(0..<collection.count, id: \.self) { index in
-                        MediaPickerCellView(
+                        let asset = collection[index]
+                        AttachmentMediaPickerItemView(
                             assetLoader: assetLoader,
-                            assets: collection,
-                            index: index,
+                            asset: asset,
                             onImageTap: onImageTap,
                             imageSelected: imageSelected,
                             selectedAssetIds: selectedAssetIdsSet
                         )
-                        .equatable()
+                        // Reset item state if a different asset lands on this index.
+                        .id(asset.localIdentifier)
                     }
                 }
                 .animation(nil)
@@ -108,39 +109,6 @@ public struct AttachmentMediaPickerView: View {
 
     private var accessDeniedContent: some View {
         PhotoLibraryAccessPromptView()
-    }
-}
-
-/// Defers `PHAsset` resolution until the body runs, and skips that body for off-screen
-/// rows via `Equatable` so composer updates do not hit the Photos database.
-private struct MediaPickerCellView: View, Equatable {
-    let assetLoader: PhotoAssetLoader
-    let assets: PHFetchResultCollection
-    let index: Int
-    let onImageTap: (AddedAsset) -> Void
-    let imageSelected: (String) -> Bool
-    let selectedAssetIds: Set<String>?
-
-    var body: some View {
-        let asset = assets[index]
-        AttachmentMediaPickerItemView(
-            assetLoader: assetLoader,
-            asset: asset,
-            onImageTap: onImageTap,
-            imageSelected: imageSelected,
-            selectedAssetIds: selectedAssetIds
-        )
-        // Reset item state if a different asset lands on this index.
-        .id(asset.localIdentifier)
-    }
-
-    // Selection flows through `selectedAssetIds`. When it is nil, selection comes from
-    // the uncomparable `imageSelected` closure, so the cell is treated as always changed.
-    nonisolated static func == (lhs: MediaPickerCellView, rhs: MediaPickerCellView) -> Bool {
-        guard lhs.selectedAssetIds != nil, rhs.selectedAssetIds != nil else { return false }
-        return lhs.index == rhs.index
-            && lhs.assets.fetchResult === rhs.assets.fetchResult
-            && lhs.selectedAssetIds == rhs.selectedAssetIds
     }
 }
 
