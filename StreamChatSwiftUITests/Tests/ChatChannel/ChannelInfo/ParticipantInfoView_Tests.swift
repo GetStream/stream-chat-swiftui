@@ -107,6 +107,36 @@ import XCTest
         AssertSnapshot(view)
     }
 
+    func test_participantInfoView_mutedParticipantSnapshot() {
+        // Given
+        let participant = ParticipantInfo(
+            chatUser: ChatUser.mock(id: .unique, name: "John Doe", isOnline: true),
+            displayName: "John Doe",
+            onlineInfoText: L10n.Message.Title.online,
+            isDeactivated: false,
+            isMuted: true
+        )
+        let actions: [ParticipantAction] = [
+            ParticipantAction(
+                title: "\(L10n.Channel.Item.unmute) John Doe",
+                iconName: "speaker.wave.1",
+                action: {},
+                confirmationPopup: nil,
+                isDestructive: false
+            )
+        ]
+
+        // When
+        let view = ParticipantInfoView(
+            participant: participant,
+            actions: actions,
+            onDismiss: {}
+        ).applyDefaultSize()
+
+        // Then
+        AssertSnapshot(view)
+    }
+
     func test_participantInfoView_withLeaveGroupActionSnapshot() {
         // Given - current user in a group sees leave group action
         let participant = ParticipantInfo(
