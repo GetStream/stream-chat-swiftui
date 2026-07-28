@@ -362,6 +362,7 @@
 "chat-info.edit.picture.library" = "Choose Image";
 "chat-info.edit.picture.reset" = "Reset Picture";
 "chat-info.member.admin" = "Admin";
+"chat-info.member.muted" = "Muted";
 "chat-info.members.add" = "Add";
 "chat-info.members.add-members-title" = "Add Members";
 "chat-info.members.already-member" = "Already a member";
