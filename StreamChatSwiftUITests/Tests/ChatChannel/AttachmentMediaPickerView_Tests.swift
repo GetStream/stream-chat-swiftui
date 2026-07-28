@@ -16,18 +16,19 @@ import XCTest
         let hostingController = showView(
             makePickerView(assetLoader: assetLoader, fetchResult: fetchResult, isDisplayed: true)
         )
-        waitForViewUpdates()
 
         // When
+        let imageLoadsCancelled = expectation(description: "Image loads cancelled")
+        assetLoader.onCancelAllImageLoads = { imageLoadsCancelled.fulfill() }
         hostingController.rootView = makePickerView(
             assetLoader: assetLoader,
             fetchResult: fetchResult,
             isDisplayed: false
         )
         hostingController.view.layoutIfNeeded()
-        waitForViewUpdates()
 
         // Then
+        wait(for: [imageLoadsCancelled], timeout: defaultTimeout)
         XCTAssertEqual(assetLoader.cancelAllImageLoadsCallCount, 1)
     }
 
@@ -38,18 +39,20 @@ import XCTest
         let hostingController = showView(
             makePickerView(assetLoader: assetLoader, fetchResult: fetchResult, isDisplayed: true)
         )
-        waitForViewUpdates()
 
         // When
+        let imageLoadsCancelled = expectation(description: "Image loads cancelled")
+        imageLoadsCancelled.isInverted = true
+        assetLoader.onCancelAllImageLoads = { imageLoadsCancelled.fulfill() }
         hostingController.rootView = makePickerView(
             assetLoader: assetLoader,
             fetchResult: fetchResult,
             isDisplayed: true
         )
         hostingController.view.layoutIfNeeded()
-        waitForViewUpdates()
 
         // Then
+        wait(for: [imageLoadsCancelled], timeout: defaultTimeoutForInversedExpecations)
         XCTAssertEqual(assetLoader.cancelAllImageLoadsCallCount, 0)
     }
 

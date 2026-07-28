@@ -16,6 +16,10 @@ import XCTest
         // Given
         let assetLoader = PhotoAssetLoader_Mock()
         let asset = PHAsset_Mock(mediaType: .image)
+        let thumbnailLoaded = expectation(description: "Thumbnail load started")
+        assetLoader.onLoadImage = { thumbnailLoaded.fulfill() }
+        let assetPrepared = expectation(description: "Asset preparation started")
+        assetLoader.onAssetURLRequest = { assetPrepared.fulfill() }
 
         // When
         showView(
@@ -26,9 +30,9 @@ import XCTest
                 imageSelected: { _ in false }
             )
         )
-        waitForViewUpdates()
 
         // Then
+        wait(for: [thumbnailLoaded, assetPrepared], timeout: defaultTimeout)
         XCTAssertEqual(assetLoader.loadImageCalls.count, 1)
         XCTAssertTrue(assetLoader.loadImageCalls.first?.asset === asset)
         XCTAssertEqual(assetLoader.assetURLRequests.count, 1)
@@ -41,6 +45,8 @@ import XCTest
         assetLoader.completesAssetURLRequests = false
         assetLoader.assetURLRequestId = 7
         let asset = PHAsset_Mock(mediaType: .image)
+        let assetPrepared = expectation(description: "Asset preparation started")
+        assetLoader.onAssetURLRequest = { assetPrepared.fulfill() }
         let hostingController = showView(
             AttachmentMediaPickerItemVisibilityTestView(
                 assetLoader: assetLoader,
@@ -48,18 +54,22 @@ import XCTest
                 isVisible: true
             )
         )
-        waitForViewUpdates()
+        wait(for: [assetPrepared], timeout: defaultTimeout)
 
         // When
+        let thumbnailLoadCancelled = expectation(description: "Thumbnail load cancelled")
+        assetLoader.onCancelImageLoad = { thumbnailLoadCancelled.fulfill() }
+        let assetRequestCancelled = expectation(description: "Asset request cancelled")
+        assetLoader.onCancelRequest = { assetRequestCancelled.fulfill() }
         hostingController.rootView = AttachmentMediaPickerItemVisibilityTestView(
             assetLoader: assetLoader,
             asset: asset,
             isVisible: false
         )
         hostingController.view.layoutIfNeeded()
-        waitForViewUpdates()
 
         // Then
+        wait(for: [thumbnailLoadCancelled, assetRequestCancelled], timeout: defaultTimeout)
         XCTAssertEqual(assetLoader.cancelledImageLoads.count, 1)
         XCTAssertTrue(assetLoader.cancelledImageLoads.first === asset)
         XCTAssertEqual(assetLoader.cancelledRequestIds, [7])

@@ -28,6 +28,14 @@ final class PhotoAssetLoader_Mock: PhotoAssetLoader {
     /// When false, `requestAssetURL` records the call but never invokes its completion.
     var completesAssetURLRequests = true
 
+    // Called after each recorded request, so that tests can wait for the calls made by a
+    // hosted view instead of waiting for a fixed duration.
+    var onLoadImage: (() -> Void)?
+    var onCancelImageLoad: (() -> Void)?
+    var onCancelAllImageLoads: (() -> Void)?
+    var onAssetURLRequest: (() -> Void)?
+    var onCancelRequest: (() -> Void)?
+
     override func loadImage(
         for asset: PHAsset,
         targetSize: CGSize,
@@ -37,14 +45,17 @@ final class PhotoAssetLoader_Mock: PhotoAssetLoader {
         if let cached = cachedImage(for: asset) {
             completion(cached)
         }
+        onLoadImage?()
     }
 
     override func cancelImageLoad(for asset: PHAsset) {
         cancelledImageLoads.append(asset)
+        onCancelImageLoad?()
     }
 
     override func cancelAllImageLoads() {
         cancelAllImageLoadsCallCount += 1
+        onCancelAllImageLoads?()
     }
 
     override func requestAssetURL(
@@ -56,11 +67,13 @@ final class PhotoAssetLoader_Mock: PhotoAssetLoader {
         if completesAssetURLRequests {
             completion(assetURL)
         }
+        onAssetURLRequest?()
         return assetURLRequestId
     }
 
     override func cancelRequest(_ requestId: PHImageRequestID) {
         cancelledRequestIds.append(requestId)
+        onCancelRequest?()
     }
 
     override func compressAsset(
