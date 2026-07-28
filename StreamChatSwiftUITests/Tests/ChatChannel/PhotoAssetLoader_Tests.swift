@@ -5,6 +5,7 @@
 import Photos
 @testable import StreamChat
 @testable import StreamChatSwiftUI
+import UniformTypeIdentifiers
 import XCTest
 
 @MainActor class PhotoAssetLoader_Tests: StreamChatTestCase {
@@ -135,6 +136,38 @@ import XCTest
         // Then
         wait(for: [expectation], timeout: 10)
         XCTAssertNil(completedURL)
+    }
+
+    // MARK: - Temporary JPG
+
+    func test_temporaryJpgURL_whenDataIsJpg_writesItWithoutConverting() throws {
+        // Given
+        let data = try XCTUnwrap(UIImage.testImage(color: .red).jpegData(compressionQuality: 1))
+
+        // When
+        let url = try XCTUnwrap(PhotoAssetLoader.temporaryJpgURL(for: data, dataUTI: UTType.jpeg.identifier))
+
+        // Then
+        XCTAssertEqual(url.pathExtension, "jpg")
+        XCTAssertEqual(try Data(contentsOf: url), data)
+    }
+
+    func test_temporaryJpgURL_whenDataIsNotJpg_convertsItToJpg() throws {
+        // Given
+        let data = try XCTUnwrap(UIImage.testImage(color: .red).pngData())
+
+        // When
+        let url = try XCTUnwrap(PhotoAssetLoader.temporaryJpgURL(for: data, dataUTI: UTType.png.identifier))
+
+        // Then
+        XCTAssertEqual(url.pathExtension, "jpg")
+        XCTAssertNotNil(UIImage(data: try Data(contentsOf: url)))
+        XCTAssertNotEqual(try Data(contentsOf: url), data)
+    }
+
+    func test_temporaryJpgURL_whenDataIsNotAnImage_returnsNil() {
+        // Then
+        XCTAssertNil(PhotoAssetLoader.temporaryJpgURL(for: Data([0x01, 0x02]), dataUTI: nil))
     }
 
     // MARK: - Allowed Size

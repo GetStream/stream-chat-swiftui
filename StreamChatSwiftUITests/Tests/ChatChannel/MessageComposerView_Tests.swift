@@ -1755,7 +1755,8 @@ private extension MessageComposerView_Tests {
         }
 
         let fetchResult = MockPHFetchResult(mockAssets: mockAssets)
-        let loader = PhotoAssetLoader()
+        // The mock assets are not in the photo library, so the loader must not reach it.
+        let loader = PhotoAssetLoader_Mock()
         let imageSize = CGSize(width: 200, height: 200)
         for (index, asset) in mockAssets.enumerated() {
             loader.cache(
@@ -1905,16 +1906,6 @@ private class MockPHAsset: PHAsset, @unchecked Sendable {
     override var localIdentifier: String { _mockId }
     override var mediaType: PHAssetMediaType { _mockMediaType }
     override var duration: TimeInterval { _mockDuration }
-
-    override func requestContentEditingInput(
-        with options: PHContentEditingInputRequestOptions?,
-        completionHandler: @escaping (PHContentEditingInput?, [AnyHashable: Any]) -> Void
-    ) -> PHContentEditingInputRequestID {
-        completionHandler(nil, [:])
-        return 0
-    }
-
-    override func cancelContentEditingInputRequest(_ requestID: PHContentEditingInputRequestID) {}
 }
 
 private class MockPHFetchResult: PHFetchResult<PHAsset>, @unchecked Sendable {

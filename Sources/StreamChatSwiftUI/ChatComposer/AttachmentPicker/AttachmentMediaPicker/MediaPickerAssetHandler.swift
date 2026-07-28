@@ -14,9 +14,8 @@ final class MediaPickerAssetHandler: ObservableObject {
     @Published private(set) var compressing = false
     @Published private(set) var overlayID = UUID()
 
-    private(set) var requestId: PHContentEditingInputRequestID?
+    private(set) var requestId: PHImageRequestID?
     private(set) var assetURL: URL?
-    private(set) var jpgURL: URL?
 
     private let asset: PHAsset
     private let assetLoader: PhotoAssetLoader
@@ -31,10 +30,6 @@ final class MediaPickerAssetHandler: ObservableObject {
 
     var currentImage: UIImage? {
         thumbnail ?? assetLoader.cachedImage(for: asset)
-    }
-
-    var readyURL: URL? {
-        assetType == .image ? jpgURL : assetURL
     }
 
     init(asset: PHAsset, assetLoader: PhotoAssetLoader) {
@@ -67,7 +62,7 @@ final class MediaPickerAssetHandler: ObservableObject {
         currentlySelected: Bool,
         onSelect: @escaping (AddedAsset) -> Void
     ) {
-        if currentlySelected || readyURL != nil {
+        if currentlySelected || assetURL != nil {
             guard !compressing else { return }
             withAnimation {
                 selectAsset(image: image, currentlySelected: currentlySelected, onSelect: onSelect)
@@ -94,17 +89,14 @@ final class MediaPickerAssetHandler: ObservableObject {
         }
     }
 
-    // Converts an already on-device image to JPG up front so that selecting it is
-    // instant. Videos are skipped: their compression is expensive, so it only runs
-    // when one is actually picked. iCloud assets are never fetched here.
+    // Prepares an already on-device image up front so that selecting it is instant.
+    // Videos are skipped: their compression is expensive, so it only runs when one is
+    // actually picked. iCloud assets are never fetched here.
     private func prepareLocalImageIfNeeded() {
         guard assetType == .image, assetURL == nil, requestId == nil else { return }
-        requestContentEditingInput(allowNetwork: false) { [weak self] input in
-            guard let self, let url = input?.fullSizeImageURL else { return }
-            assetURL = url
-            Task {
-                jpgURL = await Self.makeJpgURL(for: url)
-            }
+        requestAssetURL(allowsNetworkAccess: false) { [weak self] url in
+            guard let url else { return }
+            self?.assetURL = url
         }
     }
 
@@ -113,9 +105,9 @@ final class MediaPickerAssetHandler: ObservableObject {
         loading = true
 
         // Downloads the asset from iCloud when it is not available on the device.
-        requestContentEditingInput(allowNetwork: true) { [weak self] input in
+        requestAssetURL(allowsNetworkAccess: true) { [weak self] url in
             guard let self else { return }
-            applyContentEditingInput(input)
+            assetURL = url
             compressVideoIfNeeded {
                 self.loading = false
                 completion()
@@ -123,33 +115,26 @@ final class MediaPickerAssetHandler: ObservableObject {
         }
     }
 
-    private func requestContentEditingInput(
-        allowNetwork: Bool,
-        completion: @escaping (PHContentEditingInput?) -> Void
+    private func requestAssetURL(
+        allowsNetworkAccess: Bool,
+        completion: @escaping (URL?) -> Void
     ) {
-        let options = PHContentEditingInputRequestOptions()
-        options.isNetworkAccessAllowed = allowNetwork
         // Cancelled requests still report back, so the id is only cleared while it is
         // the one in flight. A synchronous completion is not tracked at all.
         var isCompleted = false
-        var newRequestId: PHContentEditingInputRequestID?
-        newRequestId = asset.requestContentEditingInput(with: options) { [weak self] input, _ in
+        var newRequestId: PHImageRequestID?
+        newRequestId = assetLoader.requestAssetURL(
+            for: asset,
+            allowsNetworkAccess: allowsNetworkAccess
+        ) { [weak self] url in
             isCompleted = true
             if let self, let newRequestId, requestId == newRequestId {
                 requestId = nil
             }
-            completion(input)
+            completion(url)
         }
         if !isCompleted {
             requestId = newRequestId
-        }
-    }
-
-    private func applyContentEditingInput(_ input: PHContentEditingInput?) {
-        if asset.mediaType == .image {
-            assetURL = input?.fullSizeImageURL
-        } else if let url = (input?.audiovisualAsset as? AVURLAsset)?.url {
-            assetURL = url
         }
     }
 
@@ -175,7 +160,7 @@ final class MediaPickerAssetHandler: ObservableObject {
 
     private func cancelAssetURLRequest() {
         if let requestId {
-            asset.cancelContentEditingInputRequest(requestId)
+            assetLoader.cancelRequest(requestId)
             self.requestId = nil
         }
         loading = false
@@ -186,8 +171,7 @@ final class MediaPickerAssetHandler: ObservableObject {
         currentlySelected: Bool,
         onSelect: @escaping (AddedAsset) -> Void
     ) {
-        let resolvedURL = assetType == .image ? (jpgURL ?? assetJpgURL()) : assetURL
-        guard let url = resolvedURL else { return }
+        guard let url = assetURL else { return }
         let width = Double(asset.pixelWidth)
         let height = Double(asset.pixelHeight)
         let durationSeconds: TimeInterval? = asset.mediaType == .video ? asset.duration : nil
@@ -220,23 +204,5 @@ final class MediaPickerAssetHandler: ObservableObject {
             message = L10n.Composer.MediaPicker.Accessibility.photoRemoved
         }
         ComposerAccessibilityAnnouncer.announce(message)
-    }
-
-    /// The original photo is usually in HEIC format.
-    /// This makes sure that the photo is converted to JPG.
-    private func assetJpgURL() -> URL? {
-        guard let assetURL else { return nil }
-        return Self.convertToJpg(at: assetURL)
-    }
-
-    private static func makeJpgURL(for url: URL) async -> URL? {
-        await Task.detached(priority: .utility) {
-            convertToJpg(at: url)
-        }.value
-    }
-
-    private nonisolated static func convertToJpg(at url: URL) -> URL? {
-        guard let data = try? Data(contentsOf: url) else { return nil }
-        return try? UIImage(data: data)?.saveAsJpgToTemporaryUrl()
     }
 }

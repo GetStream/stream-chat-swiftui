@@ -2,7 +2,6 @@
 // Copyright © 2026 Stream.io Inc. All rights reserved.
 //
 
-import AVFoundation
 import Photos
 @testable import StreamChat
 @testable import StreamChatSwiftUI
@@ -27,51 +26,65 @@ final class MediaPickerAssetHandler_Tests: StreamChatTestCase {
         XCTAssertEqual(assetLoader.loadImageCalls.first?.targetSize, CGSize(width: 250, height: 250))
     }
 
-    func test_onAppear_withImageAsset_requestsContentEditingInputWithoutNetworkAccess() {
+    func test_onAppear_withImageAsset_requestsAssetURLWithoutNetworkAccess() {
         // Given
-        let asset = PHAsset_Mock(mediaType: .image)
-        let handler = MediaPickerAssetHandler(asset: asset, assetLoader: PhotoAssetLoader_Mock())
-
-        // When
-        handler.onAppear()
-
-        // Then
-        XCTAssertEqual(asset.contentEditingInputRequests.count, 1)
-        XCTAssertEqual(asset.contentEditingInputRequests.first?.isNetworkAccessAllowed, false)
-    }
-
-    func test_onAppear_withVideoAsset_doesNotRequestContentEditingInput() {
-        // Given
-        let asset = PHAsset_Mock(mediaType: .video, duration: 12)
         let assetLoader = PhotoAssetLoader_Mock()
+        let asset = PHAsset_Mock(mediaType: .image)
         let handler = MediaPickerAssetHandler(asset: asset, assetLoader: assetLoader)
 
         // When
         handler.onAppear()
 
         // Then
-        XCTAssertTrue(asset.contentEditingInputRequests.isEmpty)
-        XCTAssertEqual(assetLoader.loadImageCalls.count, 1)
+        XCTAssertEqual(assetLoader.assetURLRequests.count, 1)
+        XCTAssertEqual(assetLoader.assetURLRequests.first?.allowsNetworkAccess, false)
     }
 
-    func test_onAppear_withLocalImage_preparesJpgURL() throws {
+    func test_onAppear_withVideoAsset_doesNotRequestAssetURL() {
         // Given
-        let imageURL = try makeTemporaryJPEG()
-        let asset = PHAsset_Mock(mediaType: .image)
-        asset.contentEditingInput = PHContentEditingInput_Mock(fullSizeImageURL: imageURL)
-        let handler = MediaPickerAssetHandler(asset: asset, assetLoader: PhotoAssetLoader_Mock())
+        let assetLoader = PhotoAssetLoader_Mock()
+        let asset = PHAsset_Mock(mediaType: .video, duration: 12)
+        let handler = MediaPickerAssetHandler(asset: asset, assetLoader: assetLoader)
 
         // When
         handler.onAppear()
-        waitFor {
-            handler.jpgURL != nil
-        }
+
+        // Then
+        XCTAssertTrue(assetLoader.assetURLRequests.isEmpty)
+        XCTAssertEqual(assetLoader.loadImageCalls.count, 1)
+    }
+
+    func test_onAppear_withLocalImage_preparesAssetURL() throws {
+        // Given
+        let imageURL = try makeTemporaryJPEG()
+        let assetLoader = PhotoAssetLoader_Mock()
+        assetLoader.assetURL = imageURL
+        let asset = PHAsset_Mock(mediaType: .image)
+        let handler = MediaPickerAssetHandler(asset: asset, assetLoader: assetLoader)
+
+        // When
+        handler.onAppear()
 
         // Then
         XCTAssertEqual(handler.assetURL, imageURL)
-        XCTAssertNotNil(handler.jpgURL)
-        XCTAssertEqual(handler.jpgURL?.pathExtension.lowercased(), "jpg")
-        XCTAssertEqual(handler.readyURL, handler.jpgURL)
+        XCTAssertFalse(handler.isBusy, "Preparing on appear must not show the progress indicator")
+    }
+
+    func test_onAppear_whenAlreadyPrepared_doesNotRequestAssetURLAgain() throws {
+        // Given
+        let assetLoader = PhotoAssetLoader_Mock()
+        assetLoader.assetURL = try makeTemporaryJPEG()
+        let handler = MediaPickerAssetHandler(
+            asset: PHAsset_Mock(mediaType: .image),
+            assetLoader: assetLoader
+        )
+        handler.onAppear()
+
+        // When
+        handler.onAppear()
+
+        // Then
+        XCTAssertEqual(assetLoader.assetURLRequests.count, 1)
     }
 
     // MARK: - Disappear
@@ -86,7 +99,7 @@ final class MediaPickerAssetHandler_Tests: StreamChatTestCase {
         handler.onAppear()
         XCTAssertEqual(handler.currentImage, image)
 
-        // When — force a local thumbnail then clear it on disappear.
+        // When
         handler.onDisappear()
 
         // Then
@@ -95,11 +108,15 @@ final class MediaPickerAssetHandler_Tests: StreamChatTestCase {
         XCTAssertNil(handler.thumbnail)
     }
 
-    func test_onDisappear_cancelsPendingContentEditingInputRequest() {
+    func test_onDisappear_cancelsPendingAssetURLRequest() {
         // Given
-        let asset = PHAsset_Mock(mediaType: .image)
-        asset.contentEditingInputRequestId = 7
-        let handler = MediaPickerAssetHandler(asset: asset, assetLoader: PhotoAssetLoader_Mock())
+        let assetLoader = PhotoAssetLoader_Mock()
+        assetLoader.completesAssetURLRequests = false
+        assetLoader.assetURLRequestId = 7
+        let handler = MediaPickerAssetHandler(
+            asset: PHAsset_Mock(mediaType: .image),
+            assetLoader: assetLoader
+        )
         handler.onAppear()
         XCTAssertEqual(handler.requestId, 7)
 
@@ -107,25 +124,26 @@ final class MediaPickerAssetHandler_Tests: StreamChatTestCase {
         handler.onDisappear()
 
         // Then
-        XCTAssertEqual(asset.cancelledContentEditingInputRequestIds, [7])
+        XCTAssertEqual(assetLoader.cancelledRequestIds, [7])
         XCTAssertNil(handler.requestId)
         XCTAssertFalse(handler.loading)
     }
 
-    func test_onDisappear_whenContentEditingInputResolvedSynchronously_doesNotCancelIt() {
+    func test_onDisappear_whenAssetURLResolvedSynchronously_doesNotCancelIt() throws {
         // Given
-        let asset = PHAsset_Mock(mediaType: .image)
-        asset.contentEditingInput = PHContentEditingInput_Mock(
-            fullSizeImageURL: URL(fileURLWithPath: "/tmp/photo.heic")
+        let assetLoader = PhotoAssetLoader_Mock()
+        assetLoader.assetURL = try makeTemporaryJPEG()
+        let handler = MediaPickerAssetHandler(
+            asset: PHAsset_Mock(mediaType: .image),
+            assetLoader: assetLoader
         )
-        let handler = MediaPickerAssetHandler(asset: asset, assetLoader: PhotoAssetLoader_Mock())
         handler.onAppear()
 
         // When
         handler.onDisappear()
 
         // Then
-        XCTAssertTrue(asset.cancelledContentEditingInputRequestIds.isEmpty)
+        XCTAssertTrue(assetLoader.cancelledRequestIds.isEmpty)
         XCTAssertNil(handler.requestId)
     }
 
@@ -134,11 +152,11 @@ final class MediaPickerAssetHandler_Tests: StreamChatTestCase {
     func test_handleTap_whenAlreadySelected_selectsImmediately() throws {
         // Given
         let imageURL = try makeTemporaryJPEG()
+        let assetLoader = PhotoAssetLoader_Mock()
+        assetLoader.assetURL = imageURL
         let asset = PHAsset_Mock(id: "photo-1", mediaType: .image)
-        asset.contentEditingInput = PHContentEditingInput_Mock(fullSizeImageURL: imageURL)
-        let handler = MediaPickerAssetHandler(asset: asset, assetLoader: PhotoAssetLoader_Mock())
+        let handler = MediaPickerAssetHandler(asset: asset, assetLoader: assetLoader)
         handler.onAppear()
-        waitFor { handler.jpgURL != nil }
 
         var selected: AddedAsset?
         let image = UIImage.testImage(color: .blue)
@@ -149,41 +167,41 @@ final class MediaPickerAssetHandler_Tests: StreamChatTestCase {
         // Then
         XCTAssertEqual(selected?.id, "photo-1")
         XCTAssertEqual(selected?.type, .image)
-        XCTAssertEqual(selected?.url, handler.jpgURL)
-        XCTAssertEqual(asset.contentEditingInputRequests.count, 1, "No additional resolve on deselect")
+        XCTAssertEqual(selected?.url, imageURL)
+        XCTAssertEqual(assetLoader.assetURLRequests.count, 1, "No additional resolve on deselect")
     }
 
     func test_handleTap_whenImageAlreadyPrepared_selectsImmediatelyWithoutNetwork() throws {
         // Given
         let imageURL = try makeTemporaryJPEG()
-        let asset = PHAsset_Mock(mediaType: .image)
-        asset.contentEditingInput = PHContentEditingInput_Mock(fullSizeImageURL: imageURL)
-        let handler = MediaPickerAssetHandler(asset: asset, assetLoader: PhotoAssetLoader_Mock())
+        let assetLoader = PhotoAssetLoader_Mock()
+        assetLoader.assetURL = imageURL
+        let handler = MediaPickerAssetHandler(
+            asset: PHAsset_Mock(mediaType: .image),
+            assetLoader: assetLoader
+        )
         handler.onAppear()
-        waitFor { handler.jpgURL != nil }
-        let requestsBeforeTap = asset.contentEditingInputRequests.count
 
+        // When
         var selected: AddedAsset?
         handler.handleTap(image: UIImage.testImage(color: .green), currentlySelected: false) {
             selected = $0
         }
 
         // Then
-        XCTAssertNotNil(selected)
-        XCTAssertEqual(selected?.url, handler.jpgURL)
-        XCTAssertEqual(asset.contentEditingInputRequests.count, requestsBeforeTap)
+        XCTAssertEqual(selected?.url, imageURL)
+        XCTAssertEqual(assetLoader.assetURLRequests.count, 1)
+        XCTAssertEqual(assetLoader.assetURLRequests.first?.allowsNetworkAccess, false)
     }
 
     func test_handleTap_whenCompressing_ignoresTap() throws {
-        // Given — video that needs compression, with an async compress that never finishes.
-        let videoURL = try makeTemporaryFile(named: "video.mp4", contents: Data(repeating: 1, count: 32))
+        // Given — video that needs compression, with a compression that never finishes.
+        let videoURL = try makeTemporaryFile(named: "video.mp4")
         let assetLoader = PhotoAssetLoader_Mock()
+        assetLoader.assetURL = videoURL
         assetLoader.exceedsAllowedSize = true
         assetLoader.hangCompression = true
         let asset = PHAsset_Mock(mediaType: .video, duration: 9)
-        asset.contentEditingInput = PHContentEditingInput_Mock(
-            audiovisualAsset: AVURLAsset(url: videoURL)
-        )
         let handler = MediaPickerAssetHandler(asset: asset, assetLoader: assetLoader)
 
         var selectedCount = 0
@@ -207,37 +225,37 @@ final class MediaPickerAssetHandler_Tests: StreamChatTestCase {
     func test_handleTap_withUnpreparedImage_resolvesWithNetworkAccessAndSelects() throws {
         // Given — no onAppear prepare; tap must resolve with network allowed.
         let imageURL = try makeTemporaryJPEG()
+        let assetLoader = PhotoAssetLoader_Mock()
+        assetLoader.assetURL = imageURL
         let asset = PHAsset_Mock(id: "late-photo", mediaType: .image)
-        asset.contentEditingInput = PHContentEditingInput_Mock(fullSizeImageURL: imageURL)
-        let handler = MediaPickerAssetHandler(asset: asset, assetLoader: PhotoAssetLoader_Mock())
+        let handler = MediaPickerAssetHandler(asset: asset, assetLoader: assetLoader)
 
+        // When
         var selected: AddedAsset?
         handler.handleTap(image: UIImage.testImage(color: .purple), currentlySelected: false) {
             selected = $0
         }
 
         // Then
-        XCTAssertEqual(asset.contentEditingInputRequests.count, 1)
-        XCTAssertEqual(asset.contentEditingInputRequests.first?.isNetworkAccessAllowed, true)
-        XCTAssertNotNil(selected)
+        XCTAssertEqual(assetLoader.assetURLRequests.count, 1)
+        XCTAssertEqual(assetLoader.assetURLRequests.first?.allowsNetworkAccess, true)
         XCTAssertEqual(selected?.id, "late-photo")
         XCTAssertEqual(selected?.type, .image)
-        XCTAssertEqual(selected?.url.pathExtension.lowercased(), "jpg")
+        XCTAssertEqual(selected?.url, imageURL)
         XCTAssertFalse(handler.loading)
         XCTAssertFalse(handler.compressing)
     }
 
     func test_handleTap_withVideoUnderSizeLimit_selectsWithoutCompression() throws {
         // Given
-        let videoURL = try makeTemporaryFile(named: "small.mp4", contents: Data(repeating: 1, count: 16))
+        let videoURL = try makeTemporaryFile(named: "small.mp4")
         let assetLoader = PhotoAssetLoader_Mock()
+        assetLoader.assetURL = videoURL
         assetLoader.exceedsAllowedSize = false
         let asset = PHAsset_Mock(id: "vid-1", mediaType: .video, duration: 4.5)
-        asset.contentEditingInput = PHContentEditingInput_Mock(
-            audiovisualAsset: AVURLAsset(url: videoURL)
-        )
         let handler = MediaPickerAssetHandler(asset: asset, assetLoader: assetLoader)
 
+        // When
         var selected: AddedAsset?
         handler.handleTap(image: UIImage.testImage(color: .cyan), currentlySelected: false) {
             selected = $0
@@ -254,17 +272,16 @@ final class MediaPickerAssetHandler_Tests: StreamChatTestCase {
 
     func test_handleTap_withOversizedVideo_compressesBeforeSelecting() throws {
         // Given
-        let videoURL = try makeTemporaryFile(named: "large.mp4", contents: Data(repeating: 1, count: 64))
-        let compressedURL = try makeTemporaryFile(named: "compressed.mp4", contents: Data(repeating: 2, count: 8))
+        let videoURL = try makeTemporaryFile(named: "large.mp4")
+        let compressedURL = try makeTemporaryFile(named: "compressed.mp4")
         let assetLoader = PhotoAssetLoader_Mock()
+        assetLoader.assetURL = videoURL
         assetLoader.exceedsAllowedSize = true
         assetLoader.compressedURL = compressedURL
         let asset = PHAsset_Mock(id: "vid-large", mediaType: .video, duration: 30)
-        asset.contentEditingInput = PHContentEditingInput_Mock(
-            audiovisualAsset: AVURLAsset(url: videoURL)
-        )
         let handler = MediaPickerAssetHandler(asset: asset, assetLoader: assetLoader)
 
+        // When
         var selected: AddedAsset?
         handler.handleTap(image: UIImage.testImage(color: .yellow), currentlySelected: false) {
             selected = $0
@@ -282,16 +299,15 @@ final class MediaPickerAssetHandler_Tests: StreamChatTestCase {
 
     func test_handleTap_whenCompressionFails_selectsOriginalURL() throws {
         // Given
-        let videoURL = try makeTemporaryFile(named: "fail.mp4", contents: Data(repeating: 1, count: 64))
+        let videoURL = try makeTemporaryFile(named: "fail.mp4")
         let assetLoader = PhotoAssetLoader_Mock()
+        assetLoader.assetURL = videoURL
         assetLoader.exceedsAllowedSize = true
         assetLoader.compressedURL = nil
         let asset = PHAsset_Mock(id: "vid-fail", mediaType: .video, duration: 20)
-        asset.contentEditingInput = PHContentEditingInput_Mock(
-            audiovisualAsset: AVURLAsset(url: videoURL)
-        )
         let handler = MediaPickerAssetHandler(asset: asset, assetLoader: assetLoader)
 
+        // When
         var selected: AddedAsset?
         handler.handleTap(image: UIImage.testImage(color: .magenta), currentlySelected: false) {
             selected = $0
@@ -305,11 +321,15 @@ final class MediaPickerAssetHandler_Tests: StreamChatTestCase {
     }
 
     func test_handleTap_whenResolveReturnsNoURL_doesNotSelect() {
-        // Given — content editing input resolves to nil payload.
-        let asset = PHAsset_Mock(mediaType: .video, duration: 3)
-        asset.contentEditingInput = PHContentEditingInput_Mock()
-        let handler = MediaPickerAssetHandler(asset: asset, assetLoader: PhotoAssetLoader_Mock())
+        // Given — the asset cannot be resolved, for example a video stored as a composition.
+        let assetLoader = PhotoAssetLoader_Mock()
+        assetLoader.assetURL = nil
+        let handler = MediaPickerAssetHandler(
+            asset: PHAsset_Mock(mediaType: .video, duration: 3),
+            assetLoader: assetLoader
+        )
 
+        // When
         var selected: AddedAsset?
         handler.handleTap(image: UIImage.testImage(color: .brown), currentlySelected: false) {
             selected = $0
@@ -323,16 +343,19 @@ final class MediaPickerAssetHandler_Tests: StreamChatTestCase {
 
     func test_handleTap_whileLoading_ignoresAdditionalTaps() {
         // Given — first tap starts a request that never completes.
-        let asset = PHAsset_Mock(mediaType: .video, duration: 2)
-        // contentEditingInput left nil → completion never fires, loading stays true.
-        let handler = MediaPickerAssetHandler(asset: asset, assetLoader: PhotoAssetLoader_Mock())
+        let assetLoader = PhotoAssetLoader_Mock()
+        assetLoader.completesAssetURLRequests = false
+        let handler = MediaPickerAssetHandler(
+            asset: PHAsset_Mock(mediaType: .video, duration: 2),
+            assetLoader: assetLoader
+        )
 
         var selectedCount = 0
         handler.handleTap(image: UIImage.testImage(color: .gray), currentlySelected: false) { _ in
             selectedCount += 1
         }
         XCTAssertTrue(handler.loading)
-        XCTAssertEqual(asset.contentEditingInputRequests.count, 1)
+        XCTAssertEqual(assetLoader.assetURLRequests.count, 1)
 
         // When
         handler.handleTap(image: UIImage.testImage(color: .gray), currentlySelected: false) { _ in
@@ -341,43 +364,26 @@ final class MediaPickerAssetHandler_Tests: StreamChatTestCase {
 
         // Then
         XCTAssertEqual(selectedCount, 0)
-        XCTAssertEqual(asset.contentEditingInputRequests.count, 1)
+        XCTAssertEqual(assetLoader.assetURLRequests.count, 1)
     }
 
     // MARK: - Helpers
 
     private func makeTemporaryJPEG() throws -> URL {
         let image = UIImage.testImage(color: .red, size: CGSize(width: 40, height: 40))
-        let url = URL(fileURLWithPath: NSTemporaryDirectory())
-            .appendingPathComponent("\(UUID().uuidString).jpg")
         guard let data = image.jpegData(compressionQuality: 1) else {
             throw TestError()
         }
-        try data.write(to: url)
-        return url
+        return try makeTemporaryFile(named: "photo.jpg", contents: data)
     }
 
-    private func makeTemporaryFile(named name: String, contents: Data) throws -> URL {
+    private func makeTemporaryFile(
+        named name: String,
+        contents: Data = Data(repeating: 1, count: 32)
+    ) throws -> URL {
         let url = URL(fileURLWithPath: NSTemporaryDirectory())
             .appendingPathComponent("\(UUID().uuidString)-\(name)")
         try contents.write(to: url)
         return url
-    }
-
-    private func waitFor(
-        timeout: TimeInterval = defaultTimeout,
-        _ condition: @escaping () -> Bool
-    ) {
-        let expectation = expectation(description: "Condition met")
-        let deadline = Date().addingTimeInterval(timeout)
-        func poll() {
-            if condition() {
-                expectation.fulfill()
-            } else if Date() < deadline {
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.05, execute: poll)
-            }
-        }
-        poll()
-        wait(for: [expectation], timeout: timeout + 1)
     }
 }

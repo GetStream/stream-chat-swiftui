@@ -6,6 +6,7 @@ import Combine
 import Photos
 import StreamChat
 import SwiftUI
+import UniformTypeIdentifiers
 
 /// Helper class that loads assets from the photo library.
 @MainActor public class PhotoAssetLoader: NSObject, ObservableObject {
@@ -80,6 +81,25 @@ import SwiftUI
         imageManager.cancelImageRequest(requestId)
     }
 
+    /// Resolves a local file url for the asset, downloading it from iCloud when allowed.
+    ///
+    /// Images are delivered as JPG, since the originals are usually HEIC. These requests are
+    /// served by the Photos image pipeline, unlike `PHAsset.requestContentEditingInput`, which
+    /// needs the asset's adjustment properties and fetches them on demand on the main queue.
+    func requestAssetURL(
+        for asset: PHAsset,
+        allowsNetworkAccess: Bool,
+        completion: @escaping @MainActor (URL?) -> Void
+    ) -> PHImageRequestID {
+        asset.mediaType == .video
+            ? requestVideoURL(for: asset, allowsNetworkAccess: allowsNetworkAccess, completion: completion)
+            : requestImageURL(for: asset, allowsNetworkAccess: allowsNetworkAccess, completion: completion)
+    }
+
+    func cancelRequest(_ requestId: PHImageRequestID) {
+        imageManager.cancelImageRequest(requestId)
+    }
+
     /// Cancels every thumbnail request still in flight, so that a fast scroll followed by
     /// dismissing the picker does not leave the remaining requests running.
     func cancelAllImageLoads() {
@@ -115,6 +135,43 @@ import SwiftUI
         }
     }
 
+    private func requestImageURL(
+        for asset: PHAsset,
+        allowsNetworkAccess: Bool,
+        completion: @escaping @MainActor (URL?) -> Void
+    ) -> PHImageRequestID {
+        let options = PHImageRequestOptions()
+        options.version = .current
+        options.isNetworkAccessAllowed = allowsNetworkAccess
+
+        return imageManager.requestImageDataAndOrientation(for: asset, options: options) { data, dataUTI, _, _ in
+            // Photos delivers the data on the main thread, so writing the file is moved off it.
+            Task.detached(priority: .utility) {
+                let url = data.flatMap { PhotoAssetLoader.temporaryJpgURL(for: $0, dataUTI: dataUTI) }
+                await completion(url)
+            }
+        }
+    }
+
+    private func requestVideoURL(
+        for asset: PHAsset,
+        allowsNetworkAccess: Bool,
+        completion: @escaping @MainActor (URL?) -> Void
+    ) -> PHImageRequestID {
+        let options = PHVideoRequestOptions()
+        options.version = .current
+        options.deliveryMode = .highQualityFormat
+        options.isNetworkAccessAllowed = allowsNetworkAccess
+
+        return imageManager.requestAVAsset(forVideo: asset, options: options) { avAsset, _, _ in
+            // Only the url is handed back, the asset itself is not safe to send across isolation.
+            let url = (avAsset as? AVURLAsset)?.url
+            Task { @MainActor in
+                completion(url)
+            }
+        }
+    }
+
     private func compressVideo(
         inputURL: URL,
         outputURL: URL,
@@ -141,6 +198,22 @@ import SwiftUI
     /// Clears the cache when there's memory warning.
     func didReceiveMemoryWarning() {
         imageCache.removeAllObjects()
+    }
+
+    /// Writes image data to a temporary JPG file, converting it first when it is not JPG already.
+    nonisolated static func temporaryJpgURL(for data: Data, dataUTI: String?) -> URL? {
+        // Data that already is JPG is written as is, which skips a full decode and re-encode.
+        guard dataUTI == UTType.jpeg.identifier else {
+            return try? UIImage(data: data)?.saveAsJpgToTemporaryUrl()
+        }
+        let url = URL(fileURLWithPath: NSTemporaryDirectory())
+            .appendingPathComponent("\(UUID().uuidString).jpg")
+        do {
+            try data.write(to: url)
+            return url
+        } catch {
+            return nil
+        }
     }
 }
 

@@ -26,7 +26,7 @@ import XCTest
         XCTAssertEqual(assetLoader.loadImageCalls.first?.targetSize, CGSize(width: 250, height: 250))
     }
 
-    func test_itemView_onAppearWithImageAsset_requestsContentEditingInputWithoutNetworkAccess() {
+    func test_itemView_onAppearWithImageAsset_requestsAssetURLWithoutNetworkAccess() {
         // Given
         let assetLoader = PhotoAssetLoader_Mock()
         let asset = PHAsset_Mock(mediaType: .image)
@@ -36,11 +36,11 @@ import XCTest
         waitForViewUpdates()
 
         // Then
-        XCTAssertEqual(asset.contentEditingInputRequests.count, 1)
-        XCTAssertEqual(asset.contentEditingInputRequests.first?.isNetworkAccessAllowed, false)
+        XCTAssertEqual(assetLoader.assetURLRequests.count, 1)
+        XCTAssertEqual(assetLoader.assetURLRequests.first?.allowsNetworkAccess, false)
     }
 
-    func test_itemView_onAppearWithVideoAsset_doesNotRequestContentEditingInput() {
+    func test_itemView_onAppearWithVideoAsset_doesNotRequestAssetURL() {
         // Given
         let assetLoader = PhotoAssetLoader_Mock()
         let asset = PHAsset_Mock(mediaType: .video, duration: 12)
@@ -50,7 +50,7 @@ import XCTest
         waitForViewUpdates()
 
         // Then
-        XCTAssertTrue(asset.contentEditingInputRequests.isEmpty)
+        XCTAssertTrue(assetLoader.assetURLRequests.isEmpty)
         XCTAssertEqual(assetLoader.loadImageCalls.count, 1)
     }
 
@@ -83,11 +83,12 @@ import XCTest
         XCTAssertTrue(assetLoader.cancelledImageLoads.first === asset)
     }
 
-    func test_itemView_onDisappear_cancelsPendingContentEditingInputRequest() {
+    func test_itemView_onDisappear_cancelsPendingAssetURLRequest() {
         // Given
         let assetLoader = PhotoAssetLoader_Mock()
+        assetLoader.completesAssetURLRequests = false
+        assetLoader.assetURLRequestId = 7
         let asset = PHAsset_Mock(mediaType: .image)
-        asset.contentEditingInputRequestId = 7
         let hostingController = showView(
             AttachmentMediaPickerItemVisibilityTestView(
                 assetLoader: assetLoader,
@@ -107,16 +108,14 @@ import XCTest
         waitForViewUpdates()
 
         // Then
-        XCTAssertEqual(asset.cancelledContentEditingInputRequestIds, [7])
+        XCTAssertEqual(assetLoader.cancelledRequestIds, [7])
     }
 
-    func test_itemView_onDisappear_whenContentEditingInputResolvedSynchronously_doesNotCancelIt() {
+    func test_itemView_onDisappear_whenAssetURLResolvedSynchronously_doesNotCancelIt() {
         // Given
         let assetLoader = PhotoAssetLoader_Mock()
+        assetLoader.assetURL = URL(fileURLWithPath: NSTemporaryDirectory()).appendingPathComponent("photo.jpg")
         let asset = PHAsset_Mock(mediaType: .image)
-        asset.contentEditingInput = PHContentEditingInput_Mock(
-            fullSizeImageURL: URL(fileURLWithPath: NSTemporaryDirectory()).appendingPathComponent("photo.heic")
-        )
         let hostingController = showView(
             AttachmentMediaPickerItemVisibilityTestView(
                 assetLoader: assetLoader,
@@ -136,7 +135,7 @@ import XCTest
         waitForViewUpdates()
 
         // Then
-        XCTAssertTrue(asset.cancelledContentEditingInputRequestIds.isEmpty)
+        XCTAssertTrue(assetLoader.cancelledRequestIds.isEmpty)
     }
 
     // MARK: - Helpers

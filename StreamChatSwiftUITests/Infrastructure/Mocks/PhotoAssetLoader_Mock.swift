@@ -12,6 +12,8 @@ final class PhotoAssetLoader_Mock: PhotoAssetLoader {
     var cancelledImageLoads = [PHAsset]()
     var cancelAllImageLoadsCallCount = 0
     var compressAssetCalls = [(url: URL, type: AssetType)]()
+    var assetURLRequests = [(asset: PHAsset, allowsNetworkAccess: Bool)]()
+    var cancelledRequestIds = [PHImageRequestID]()
 
     /// Result of `assetExceedsAllowedSize`.
     var exceedsAllowedSize = false
@@ -19,6 +21,12 @@ final class PhotoAssetLoader_Mock: PhotoAssetLoader {
     var compressedURL: URL?
     /// When true, `compressAsset` records the call but never invokes its completion.
     var hangCompression = false
+    /// Result handed to the completion of `requestAssetURL`.
+    var assetURL: URL?
+    /// Id returned by `requestAssetURL`.
+    var assetURLRequestId: PHImageRequestID = 1
+    /// When false, `requestAssetURL` records the call but never invokes its completion.
+    var completesAssetURLRequests = true
 
     override func loadImage(
         for asset: PHAsset,
@@ -37,6 +45,22 @@ final class PhotoAssetLoader_Mock: PhotoAssetLoader {
 
     override func cancelAllImageLoads() {
         cancelAllImageLoadsCallCount += 1
+    }
+
+    override func requestAssetURL(
+        for asset: PHAsset,
+        allowsNetworkAccess: Bool,
+        completion: @escaping @MainActor (URL?) -> Void
+    ) -> PHImageRequestID {
+        assetURLRequests.append((asset, allowsNetworkAccess))
+        if completesAssetURLRequests {
+            completion(assetURL)
+        }
+        return assetURLRequestId
+    }
+
+    override func cancelRequest(_ requestId: PHImageRequestID) {
+        cancelledRequestIds.append(requestId)
     }
 
     override func compressAsset(
