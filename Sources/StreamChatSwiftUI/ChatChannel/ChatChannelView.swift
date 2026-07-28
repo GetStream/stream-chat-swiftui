@@ -9,6 +9,7 @@ import SwiftUI
 public struct ChatChannelView<Factory: ViewFactory>: View, KeyboardReadable {
     @Injected(\.colors) private var colors
     @Injected(\.utils) private var utils
+    @Injected(\.tokens) private var tokens
     @Injected(\.chatClient) private var chatClient
 
     @StateObject private var viewModel: ChatChannelViewModel
@@ -93,8 +94,12 @@ public struct ChatChannelView<Factory: ViewFactory>: View, KeyboardReadable {
                                 : nil
                         )
                     } else {
-                        ZStack {
+                        ZStack(alignment: emptyChannelTypingIndicatorAlignment) {
                             factory.makeEmptyMessagesView(options: EmptyMessagesViewOptions(channel: channel))
+                                // Keeps the empty view filling (and centered in) the
+                                // available space, independent of the alignment the
+                                // typing indicator needs.
+                                .frame(maxWidth: .infinity, maxHeight: .infinity)
                                 .dismissKeyboardOnTap(enabled: keyboardShown) {
                                     hideComposerCommandsAndAttachmentsPicker()
                                 }
@@ -105,6 +110,8 @@ public struct ChatChannelView<Factory: ViewFactory>: View, KeyboardReadable {
                                         currentUserId: chatClient.currentUserId
                                     )
                                 )
+                                .padding(.top, messagesStartAtTheTop ? tokens.spacingSm : 0)
+                                .padding(.bottom, messagesStartAtTheTop ? 0 : emptyChannelTypingIndicatorBottomPadding)
                             }
                         }
                     }
@@ -259,6 +266,26 @@ public struct ChatChannelView<Factory: ViewFactory>: View, KeyboardReadable {
     
     private var composerPlacement: ComposerPlacement {
         factory.styles.composerPlacement
+    }
+
+    private var messagesStartAtTheTop: Bool {
+        utils.messageListConfig.shouldMessagesStartAtTheTop
+    }
+
+    /// Where the inline typing indicator sits while the channel has no messages.
+    /// It follows the message list's reading direction, so it appears where the
+    /// first incoming message would: at the top when messages start at the top,
+    /// right above the composer otherwise.
+    private var emptyChannelTypingIndicatorAlignment: Alignment {
+        messagesStartAtTheTop ? .top : .bottom
+    }
+
+    /// Space the inline typing indicator has to clear in an empty channel to stay
+    /// above the floating composer. Unlike the message list, the empty state does
+    /// not ignore the bottom safe area, so only the composer's own height counts.
+    private var emptyChannelTypingIndicatorBottomPadding: CGFloat {
+        guard composerPlacement == .floating else { return 0 }
+        return floatingComposerBottomPadding + max(0, floatingComposerHeight - bottomPadding)
     }
 
     private var generatingSnapshot: Bool {
