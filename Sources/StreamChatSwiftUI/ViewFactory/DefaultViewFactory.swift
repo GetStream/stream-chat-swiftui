@@ -985,7 +985,7 @@ extension ViewFactory {
     }
 
     public func makeThreadListBackground(options: ThreadListBackgroundOptions) -> some View {
-        Color(options.colors.backgroundCoreElevation1)
+        Color(options.colors.backgroundCoreElevation0)
             .edgesIgnoringSafeArea(.bottom)
     }
 
@@ -993,7 +993,7 @@ extension ViewFactory {
         options: ThreadListItemBackgroundOptions
     ) -> some View {
         let colors = InjectedValues[\.colors]
-        return Color(colors.backgroundCoreElevation1)
+        return Color(colors.backgroundCoreElevation0)
     }
 
     public func makeThreadListDividerItem(options: ThreadListDividerItemOptions) -> some View {
