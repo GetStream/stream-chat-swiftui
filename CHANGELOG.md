@@ -13,6 +13,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Fix showing the typing indicator in the middle of the screen when a channel has no messages [#1545](https://github.com/GetStream/stream-chat-swiftui/pull/1545)
 - Show a muted icon for muted members in the channel info member list and member details [#1547](https://github.com/GetStream/stream-chat-swiftui/pull/1547)
 - Show a media preview in the thread list when the thread's parent message only contains attachments [#1548](https://github.com/GetStream/stream-chat-swiftui/pull/1548)
+- Fix thread list items appearing lighter than the app background in dark mode [#1550](https://github.com/GetStream/stream-chat-swiftui/pull/1550)
 
 ### 🔄 Changed
 - Replace vendored Nuke image loading with `StreamImageDownloader` from StreamChatCommonUI [#1531](https://github.com/GetStream/stream-chat-swiftui/pull/1531)
