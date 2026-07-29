@@ -64,8 +64,11 @@ import SwiftUI
             guard let fileAttachment = previewMessage.fileAttachments.first else {
                 return nil
             }
-            let title = fileAttachment.payload.title
-            return title ?? text
+            if let title = fileAttachment.payload.title, !title.isEmpty {
+                return title
+            }
+            let defaultFileText = L10n.Channel.Item.file
+            return text.isEmpty ? defaultFileText : text
         case .image:
             let defaultPhotoText = L10n.Channel.Item.photo
             return text.isEmpty ? defaultPhotoText : text

@@ -369,6 +369,60 @@ import XCTest
         XCTAssertEqual(result, "Report.pdf")
     }
 
+    func test_formatAttachmentContent_file_noTitle_emptyText() throws {
+        // Given
+        let message = try ChatMessage.mock(
+            id: .unique,
+            cid: .unique,
+            text: "",
+            attachments: [
+                .dummy(
+                    type: .file,
+                    payload: JSONEncoder().encode(FileAttachmentPayload(
+                        title: nil,
+                        assetRemoteURL: URL(string: "https://example.com/report.pdf")!,
+                        file: .init(type: .pdf, size: 123, mimeType: nil),
+                        extraData: nil
+                    ))
+                )
+            ]
+        )
+        let channel = ChatChannel.mock(cid: .unique)
+
+        // When
+        let result = formatter.formatAttachmentContent(for: message, in: channel)
+
+        // Then
+        XCTAssertEqual(result, L10n.Channel.Item.file)
+    }
+
+    func test_formatAttachmentContent_file_noTitle_usesText() throws {
+        // Given
+        let message = try ChatMessage.mock(
+            id: .unique,
+            cid: .unique,
+            text: "Some text",
+            attachments: [
+                .dummy(
+                    type: .file,
+                    payload: JSONEncoder().encode(FileAttachmentPayload(
+                        title: nil,
+                        assetRemoteURL: URL(string: "https://example.com/report.pdf")!,
+                        file: .init(type: .pdf, size: 123, mimeType: nil),
+                        extraData: nil
+                    ))
+                )
+            ]
+        )
+        let channel = ChatChannel.mock(cid: .unique)
+
+        // When
+        let result = formatter.formatAttachmentContent(for: message, in: channel)
+
+        // Then
+        XCTAssertEqual(result, "Some text")
+    }
+
     func test_formatAttachmentContent_linkPreview() throws {
         // Given
         let url = URL(string: "https://example.com/article")!

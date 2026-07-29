@@ -369,6 +369,7 @@
 "chat-info.members.title" = "Members";
 
 "channel.item.audio" = "Audio";
+"channel.item.file" = "File";
 "channel.item.giphy" = "Giphy";
 "channel.item.photo" = "Photo";
 "channel.item.video" = "Video";
