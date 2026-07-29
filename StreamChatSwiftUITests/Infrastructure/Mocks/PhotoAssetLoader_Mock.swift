@@ -27,6 +27,8 @@ final class PhotoAssetLoader_Mock: PhotoAssetLoader {
     var assetURLRequestId: PHImageRequestID = 1
     /// When false, `requestAssetURL` records the call but never invokes its completion.
     var completesAssetURLRequests = true
+    /// When true, `requestAssetURL` only delivers `assetURL` when network access is allowed.
+    var assetIsInCloud = false
 
     // Called after each recorded request, so that tests can wait for the calls made by a
     // hosted view instead of waiting for a fixed duration.
@@ -65,7 +67,8 @@ final class PhotoAssetLoader_Mock: PhotoAssetLoader {
     ) -> PHImageRequestID {
         assetURLRequests.append((asset, allowsNetworkAccess))
         if completesAssetURLRequests {
-            completion(assetURL)
+            let isAvailable = allowsNetworkAccess || !assetIsInCloud
+            completion(isAvailable ? assetURL : nil)
         }
         onAssetURLRequest?()
         return assetURLRequestId

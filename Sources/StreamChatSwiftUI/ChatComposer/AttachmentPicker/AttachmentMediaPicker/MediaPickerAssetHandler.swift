@@ -6,7 +6,7 @@ import Photos
 import SwiftUI
 
 /// Owns the non-UI work for a single media-picker cell: thumbnail loading,
-/// local image preparation, on-tap resolution / compression, and selection.
+/// on-tap resolution / compression, and selection.
 @MainActor
 final class MediaPickerAssetHandler: ObservableObject {
     @Published private(set) var thumbnail: UIImage?
@@ -41,7 +41,6 @@ final class MediaPickerAssetHandler: ObservableObject {
 
     func onAppear() {
         loadThumbnail()
-        prepareLocalImageIfNeeded()
     }
 
     func onDisappear() {
@@ -70,7 +69,7 @@ final class MediaPickerAssetHandler: ObservableObject {
             return
         }
 
-        guard !loading, !compressing else { return }
+        guard !loading, !compressing, requestId == nil else { return }
 
         resolveAssetURL {
             guard self.assetURL != nil else { return }
@@ -89,22 +88,25 @@ final class MediaPickerAssetHandler: ObservableObject {
         }
     }
 
-    // Prepares an already on-device image up front so that selecting it is instant.
-    // Videos are skipped: their compression is expensive, so it only runs when one is
-    // actually picked. iCloud assets are never fetched here.
-    private func prepareLocalImageIfNeeded() {
-        guard assetType == .image, assetURL == nil, requestId == nil else { return }
+    // On-device assets resolve without the spinner, since that is fast. Only an iCloud
+    // download, which the local-only attempt rules out first, shows it.
+    private func resolveAssetURL(completion: @escaping () -> Void) {
+        cancelAssetURLRequest()
+
         requestAssetURL(allowsNetworkAccess: false) { [weak self] url in
-            guard let url else { return }
-            self?.assetURL = url
+            guard let self else { return }
+            if let url {
+                assetURL = url
+                compressVideoIfNeeded(completion: completion)
+            } else {
+                downloadAssetURL(completion: completion)
+            }
         }
     }
 
-    private func resolveAssetURL(completion: @escaping () -> Void) {
-        cancelAssetURLRequest()
+    private func downloadAssetURL(completion: @escaping () -> Void) {
         loading = true
 
-        // Downloads the asset from iCloud when it is not available on the device.
         requestAssetURL(allowsNetworkAccess: true) { [weak self] url in
             guard let self else { return }
             assetURL = url

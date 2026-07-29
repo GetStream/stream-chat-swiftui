@@ -2,6 +2,7 @@
 // Copyright © 2026 Stream.io Inc. All rights reserved.
 //
 
+import Combine
 import Photos
 @testable import StreamChat
 @testable import StreamChatSwiftUI
@@ -26,24 +27,11 @@ final class MediaPickerAssetHandler_Tests: StreamChatTestCase {
         XCTAssertEqual(assetLoader.loadImageCalls.first?.targetSize, CGSize(width: 250, height: 250))
     }
 
-    func test_onAppear_withImageAsset_requestsAssetURLWithoutNetworkAccess() {
-        // Given
+    func test_onAppear_doesNotRequestAssetURL() {
+        // Given — assets are only resolved on tap, so appearing does no Photos work
+        // beyond the thumbnail.
         let assetLoader = PhotoAssetLoader_Mock()
         let asset = PHAsset_Mock(mediaType: .image)
-        let handler = MediaPickerAssetHandler(asset: asset, assetLoader: assetLoader)
-
-        // When
-        handler.onAppear()
-
-        // Then
-        XCTAssertEqual(assetLoader.assetURLRequests.count, 1)
-        XCTAssertEqual(assetLoader.assetURLRequests.first?.allowsNetworkAccess, false)
-    }
-
-    func test_onAppear_withVideoAsset_doesNotRequestAssetURL() {
-        // Given
-        let assetLoader = PhotoAssetLoader_Mock()
-        let asset = PHAsset_Mock(mediaType: .video, duration: 12)
         let handler = MediaPickerAssetHandler(asset: asset, assetLoader: assetLoader)
 
         // When
@@ -52,39 +40,6 @@ final class MediaPickerAssetHandler_Tests: StreamChatTestCase {
         // Then
         XCTAssertTrue(assetLoader.assetURLRequests.isEmpty)
         XCTAssertEqual(assetLoader.loadImageCalls.count, 1)
-    }
-
-    func test_onAppear_withLocalImage_preparesAssetURL() throws {
-        // Given
-        let imageURL = try makeTemporaryJPEG()
-        let assetLoader = PhotoAssetLoader_Mock()
-        assetLoader.assetURL = imageURL
-        let asset = PHAsset_Mock(mediaType: .image)
-        let handler = MediaPickerAssetHandler(asset: asset, assetLoader: assetLoader)
-
-        // When
-        handler.onAppear()
-
-        // Then
-        XCTAssertEqual(handler.assetURL, imageURL)
-        XCTAssertFalse(handler.isBusy, "Preparing on appear must not show the progress indicator")
-    }
-
-    func test_onAppear_whenAlreadyPrepared_doesNotRequestAssetURLAgain() throws {
-        // Given
-        let assetLoader = PhotoAssetLoader_Mock()
-        assetLoader.assetURL = try makeTemporaryJPEG()
-        let handler = MediaPickerAssetHandler(
-            asset: PHAsset_Mock(mediaType: .image),
-            assetLoader: assetLoader
-        )
-        handler.onAppear()
-
-        // When
-        handler.onAppear()
-
-        // Then
-        XCTAssertEqual(assetLoader.assetURLRequests.count, 1)
     }
 
     // MARK: - Disappear
@@ -109,7 +64,7 @@ final class MediaPickerAssetHandler_Tests: StreamChatTestCase {
     }
 
     func test_onDisappear_cancelsPendingAssetURLRequest() {
-        // Given
+        // Given — a tap starts a request that never completes.
         let assetLoader = PhotoAssetLoader_Mock()
         assetLoader.completesAssetURLRequests = false
         assetLoader.assetURLRequestId = 7
@@ -117,7 +72,7 @@ final class MediaPickerAssetHandler_Tests: StreamChatTestCase {
             asset: PHAsset_Mock(mediaType: .image),
             assetLoader: assetLoader
         )
-        handler.onAppear()
+        handler.handleTap(image: UIImage.testImage(color: .red), currentlySelected: false) { _ in }
         XCTAssertEqual(handler.requestId, 7)
 
         // When
@@ -130,14 +85,14 @@ final class MediaPickerAssetHandler_Tests: StreamChatTestCase {
     }
 
     func test_onDisappear_whenAssetURLResolvedSynchronously_doesNotCancelIt() throws {
-        // Given
+        // Given — the tap's request completes immediately.
         let assetLoader = PhotoAssetLoader_Mock()
         assetLoader.assetURL = try makeTemporaryJPEG()
         let handler = MediaPickerAssetHandler(
             asset: PHAsset_Mock(mediaType: .image),
             assetLoader: assetLoader
         )
-        handler.onAppear()
+        handler.handleTap(image: UIImage.testImage(color: .red), currentlySelected: false) { _ in }
 
         // When
         handler.onDisappear()
@@ -147,22 +102,21 @@ final class MediaPickerAssetHandler_Tests: StreamChatTestCase {
         XCTAssertNil(handler.requestId)
     }
 
-    // MARK: - Tap: already prepared / selected
+    // MARK: - Tap: already resolved / selected
 
-    func test_handleTap_whenAlreadySelected_selectsImmediately() throws {
-        // Given
+    func test_handleTap_whenAlreadySelected_deselectsWithoutNewRequest() throws {
+        // Given — a first tap resolved and selected the asset.
         let imageURL = try makeTemporaryJPEG()
         let assetLoader = PhotoAssetLoader_Mock()
         assetLoader.assetURL = imageURL
         let asset = PHAsset_Mock(id: "photo-1", mediaType: .image)
         let handler = MediaPickerAssetHandler(asset: asset, assetLoader: assetLoader)
-        handler.onAppear()
+        handler.handleTap(image: UIImage.testImage(color: .blue), currentlySelected: false) { _ in }
 
         var selected: AddedAsset?
-        let image = UIImage.testImage(color: .blue)
 
         // When
-        handler.handleTap(image: image, currentlySelected: true) { selected = $0 }
+        handler.handleTap(image: UIImage.testImage(color: .blue), currentlySelected: true) { selected = $0 }
 
         // Then
         XCTAssertEqual(selected?.id, "photo-1")
@@ -171,8 +125,8 @@ final class MediaPickerAssetHandler_Tests: StreamChatTestCase {
         XCTAssertEqual(assetLoader.assetURLRequests.count, 1, "No additional resolve on deselect")
     }
 
-    func test_handleTap_whenImageAlreadyPrepared_selectsImmediatelyWithoutNetwork() throws {
-        // Given
+    func test_handleTap_whenURLAlreadyResolved_selectsWithoutNewRequest() throws {
+        // Given — a previous tap already resolved the url.
         let imageURL = try makeTemporaryJPEG()
         let assetLoader = PhotoAssetLoader_Mock()
         assetLoader.assetURL = imageURL
@@ -180,7 +134,7 @@ final class MediaPickerAssetHandler_Tests: StreamChatTestCase {
             asset: PHAsset_Mock(mediaType: .image),
             assetLoader: assetLoader
         )
-        handler.onAppear()
+        handler.handleTap(image: UIImage.testImage(color: .green), currentlySelected: false) { _ in }
 
         // When
         var selected: AddedAsset?
@@ -191,7 +145,6 @@ final class MediaPickerAssetHandler_Tests: StreamChatTestCase {
         // Then
         XCTAssertEqual(selected?.url, imageURL)
         XCTAssertEqual(assetLoader.assetURLRequests.count, 1)
-        XCTAssertEqual(assetLoader.assetURLRequests.first?.allowsNetworkAccess, false)
     }
 
     func test_handleTap_whenCompressing_ignoresTap() throws {
@@ -222,13 +175,17 @@ final class MediaPickerAssetHandler_Tests: StreamChatTestCase {
 
     // MARK: - Tap: resolve on demand
 
-    func test_handleTap_withUnpreparedImage_resolvesWithNetworkAccessAndSelects() throws {
-        // Given — no onAppear prepare; tap must resolve with network allowed.
+    func test_handleTap_withLocalImage_resolvesAndSelectsWithoutSpinner() throws {
+        // Given
         let imageURL = try makeTemporaryJPEG()
         let assetLoader = PhotoAssetLoader_Mock()
         assetLoader.assetURL = imageURL
         let asset = PHAsset_Mock(id: "late-photo", mediaType: .image)
         let handler = MediaPickerAssetHandler(asset: asset, assetLoader: assetLoader)
+
+        var shownSpinner = false
+        let spinnerObservation = handler.$loading.sink { shownSpinner = shownSpinner || $0 }
+        defer { spinnerObservation.cancel() }
 
         // When
         var selected: AddedAsset?
@@ -238,12 +195,39 @@ final class MediaPickerAssetHandler_Tests: StreamChatTestCase {
 
         // Then
         XCTAssertEqual(assetLoader.assetURLRequests.count, 1)
-        XCTAssertEqual(assetLoader.assetURLRequests.first?.allowsNetworkAccess, true)
+        XCTAssertEqual(assetLoader.assetURLRequests.first?.allowsNetworkAccess, false)
         XCTAssertEqual(selected?.id, "late-photo")
         XCTAssertEqual(selected?.type, .image)
         XCTAssertEqual(selected?.url, imageURL)
-        XCTAssertFalse(handler.loading)
+        XCTAssertFalse(shownSpinner, "Local assets must resolve without the progress indicator")
         XCTAssertFalse(handler.compressing)
+    }
+
+    func test_handleTap_withICloudImage_downloadsWithSpinnerAndSelects() throws {
+        // Given — the local-only attempt fails, so the asset is downloaded from iCloud.
+        let imageURL = try makeTemporaryJPEG()
+        let assetLoader = PhotoAssetLoader_Mock()
+        assetLoader.assetURL = imageURL
+        assetLoader.assetIsInCloud = true
+        let asset = PHAsset_Mock(id: "cloud-photo", mediaType: .image)
+        let handler = MediaPickerAssetHandler(asset: asset, assetLoader: assetLoader)
+
+        var shownSpinner = false
+        let spinnerObservation = handler.$loading.sink { shownSpinner = shownSpinner || $0 }
+        defer { spinnerObservation.cancel() }
+
+        // When
+        var selected: AddedAsset?
+        handler.handleTap(image: UIImage.testImage(color: .purple), currentlySelected: false) {
+            selected = $0
+        }
+
+        // Then
+        XCTAssertEqual(assetLoader.assetURLRequests.map(\.allowsNetworkAccess), [false, true])
+        XCTAssertEqual(selected?.id, "cloud-photo")
+        XCTAssertEqual(selected?.url, imageURL)
+        XCTAssertTrue(shownSpinner, "Downloads must show the progress indicator")
+        XCTAssertFalse(handler.loading)
     }
 
     func test_handleTap_withVideoUnderSizeLimit_selectsWithoutCompression() throws {
@@ -341,7 +325,7 @@ final class MediaPickerAssetHandler_Tests: StreamChatTestCase {
         XCTAssertFalse(handler.loading)
     }
 
-    func test_handleTap_whileLoading_ignoresAdditionalTaps() {
+    func test_handleTap_whileResolving_ignoresAdditionalTaps() {
         // Given — first tap starts a request that never completes.
         let assetLoader = PhotoAssetLoader_Mock()
         assetLoader.completesAssetURLRequests = false
@@ -354,7 +338,7 @@ final class MediaPickerAssetHandler_Tests: StreamChatTestCase {
         handler.handleTap(image: UIImage.testImage(color: .gray), currentlySelected: false) { _ in
             selectedCount += 1
         }
-        XCTAssertTrue(handler.loading)
+        XCTAssertNotNil(handler.requestId)
         XCTAssertEqual(assetLoader.assetURLRequests.count, 1)
 
         // When

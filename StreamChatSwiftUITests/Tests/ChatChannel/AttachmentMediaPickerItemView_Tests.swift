@@ -12,14 +12,12 @@ import XCTest
 /// `MediaPickerAssetHandler_Tests`. These tests only verify that the view forwards its
 /// lifecycle to the handler.
 @MainActor class AttachmentMediaPickerItemView_Tests: StreamChatTestCase {
-    func test_itemView_onAppear_startsThumbnailLoadAndAssetPreparation() {
+    func test_itemView_onAppear_startsThumbnailLoad() {
         // Given
         let assetLoader = PhotoAssetLoader_Mock()
         let asset = PHAsset_Mock(mediaType: .image)
         let thumbnailLoaded = expectation(description: "Thumbnail load started")
         assetLoader.onLoadImage = { thumbnailLoaded.fulfill() }
-        let assetPrepared = expectation(description: "Asset preparation started")
-        assetLoader.onAssetURLRequest = { assetPrepared.fulfill() }
 
         // When
         showView(
@@ -32,21 +30,18 @@ import XCTest
         )
 
         // Then
-        wait(for: [thumbnailLoaded, assetPrepared], timeout: defaultTimeout)
+        wait(for: [thumbnailLoaded], timeout: defaultTimeout)
         XCTAssertEqual(assetLoader.loadImageCalls.count, 1)
         XCTAssertTrue(assetLoader.loadImageCalls.first?.asset === asset)
-        XCTAssertEqual(assetLoader.assetURLRequests.count, 1)
-        XCTAssertEqual(assetLoader.assetURLRequests.first?.allowsNetworkAccess, false)
+        XCTAssertTrue(assetLoader.assetURLRequests.isEmpty, "Assets are only resolved on tap")
     }
 
-    func test_itemView_onDisappear_cancelsPendingWork() {
+    func test_itemView_onDisappear_cancelsThumbnailLoad() {
         // Given
         let assetLoader = PhotoAssetLoader_Mock()
-        assetLoader.completesAssetURLRequests = false
-        assetLoader.assetURLRequestId = 7
         let asset = PHAsset_Mock(mediaType: .image)
-        let assetPrepared = expectation(description: "Asset preparation started")
-        assetLoader.onAssetURLRequest = { assetPrepared.fulfill() }
+        let thumbnailLoaded = expectation(description: "Thumbnail load started")
+        assetLoader.onLoadImage = { thumbnailLoaded.fulfill() }
         let hostingController = showView(
             AttachmentMediaPickerItemVisibilityTestView(
                 assetLoader: assetLoader,
@@ -54,13 +49,11 @@ import XCTest
                 isVisible: true
             )
         )
-        wait(for: [assetPrepared], timeout: defaultTimeout)
+        wait(for: [thumbnailLoaded], timeout: defaultTimeout)
 
         // When
         let thumbnailLoadCancelled = expectation(description: "Thumbnail load cancelled")
         assetLoader.onCancelImageLoad = { thumbnailLoadCancelled.fulfill() }
-        let assetRequestCancelled = expectation(description: "Asset request cancelled")
-        assetLoader.onCancelRequest = { assetRequestCancelled.fulfill() }
         hostingController.rootView = AttachmentMediaPickerItemVisibilityTestView(
             assetLoader: assetLoader,
             asset: asset,
@@ -69,10 +62,9 @@ import XCTest
         hostingController.view.layoutIfNeeded()
 
         // Then
-        wait(for: [thumbnailLoadCancelled, assetRequestCancelled], timeout: defaultTimeout)
+        wait(for: [thumbnailLoadCancelled], timeout: defaultTimeout)
         XCTAssertEqual(assetLoader.cancelledImageLoads.count, 1)
         XCTAssertTrue(assetLoader.cancelledImageLoads.first === asset)
-        XCTAssertEqual(assetLoader.cancelledRequestIds, [7])
     }
 }
 

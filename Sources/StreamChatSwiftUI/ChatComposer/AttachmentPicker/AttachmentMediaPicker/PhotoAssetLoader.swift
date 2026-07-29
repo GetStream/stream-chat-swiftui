@@ -166,11 +166,8 @@ import UniformTypeIdentifiers
 
         // Marked Sendable so the handler makes no isolation assumption about the delivery queue.
         return imageManager.requestImageDataAndOrientation(for: asset, options: options) { @Sendable data, dataUTI, _, _ in
-            // Photos delivers the data on the main thread, so writing the file is moved off it.
-            // User initiated because on the tap path the user is waiting on a spinner for this.
-            Task.detached(priority: .userInitiated) {
-                let url = data.flatMap { PhotoAssetLoader.temporaryJpgURL(for: $0, dataUTI: dataUTI) }
-                await completion(url)
+            Task { @MainActor in
+                completion(data.flatMap { PhotoAssetLoader.temporaryJpgURL(for: $0, dataUTI: dataUTI) })
             }
         }
     }
