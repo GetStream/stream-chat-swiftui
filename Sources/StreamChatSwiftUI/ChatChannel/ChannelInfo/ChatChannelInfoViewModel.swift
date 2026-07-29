@@ -8,7 +8,7 @@ import StreamChat
 import SwiftUI
 
 // View model for the `ChatChannelInfoView`.
-@MainActor open class ChatChannelInfoViewModel: ObservableObject, ChatChannelControllerDelegate {
+@MainActor open class ChatChannelInfoViewModel: ObservableObject, ChatChannelControllerDelegate, CurrentChatUserControllerDelegate {
     @Injected(\.chatClient) private var chatClient
     @Injected(\.utils) private var utils
     @Injected(\.images) private var images
@@ -158,15 +158,12 @@ import SwiftUI
             query: .init(cid: channel.cid, filter: .none)
         )
         currentUserController = chatClient.currentUserController()
+        currentUserController?.delegate = self
         currentUserController?.synchronize()
 
+        let mutedIds = mutedUserIds
         participants = channel.lastActiveMembers.map { member in
-            ParticipantInfo(
-                chatUser: member,
-                displayName: memberDisplayName(member),
-                onlineInfoText: onlineInfo(for: member),
-                isDeactivated: member.isDeactivated
-            )
+            participantInfo(for: member, mutedUserIds: mutedIds)
         }
     }
 
@@ -293,15 +290,18 @@ import SwiftUI
                     channel: channel,
                     forCurrentUserId: chatClient.currentUserId
                 ) ?? "")
+            let mutedIds = mutedUserIds
             participants = channel.lastActiveMembers.map { member in
-                ParticipantInfo(
-                    chatUser: member,
-                    displayName: memberDisplayName(member),
-                    onlineInfoText: onlineInfo(for: member),
-                    isDeactivated: member.isDeactivated
-                )
+                participantInfo(for: member, mutedUserIds: mutedIds)
             }
         }
+    }
+
+    public func currentUserController(
+        _ controller: CurrentChatUserController,
+        didChangeCurrentUser: EntityChange<CurrentChatUser>
+    ) {
+        updateMutedParticipants()
     }
 
     public func addUsersTapped(_ users: [ChatUser]) {
@@ -344,13 +344,9 @@ import SwiftUI
             guard let self else { return }
             loadingUsers = false
             if error == nil {
+                let mutedIds = mutedUserIds
                 let newMembers = memberListController.members.map { member in
-                    ParticipantInfo(
-                        chatUser: member,
-                        displayName: self.memberDisplayName(member),
-                        onlineInfoText: self.onlineInfo(for: member),
-                        isDeactivated: member.isDeactivated
-                    )
+                    self.participantInfo(for: member, mutedUserIds: mutedIds)
                 }
                 if newMembers.count > participants.count {
                     participants = newMembers
@@ -365,6 +361,38 @@ import SwiftUI
 
     private func memberDisplayName(_ member: ChatChannelMember) -> String {
         member.id == chatClient.currentUserId ? L10n.Channel.Item.you : (member.name ?? member.id)
+    }
+
+    private var mutedUserIds: Set<UserId> {
+        Set((currentUserController?.currentUser?.mutedUsers ?? []).map(\.id))
+    }
+
+    private func participantInfo(
+        for member: ChatChannelMember,
+        mutedUserIds: Set<UserId>
+    ) -> ParticipantInfo {
+        ParticipantInfo(
+            chatUser: member,
+            displayName: memberDisplayName(member),
+            onlineInfoText: onlineInfo(for: member),
+            isDeactivated: member.isDeactivated,
+            isMuted: mutedUserIds.contains(member.id)
+        )
+    }
+
+    private func updateMutedParticipants() {
+        let mutedIds = mutedUserIds
+        let changed = participants.contains { $0.isMuted != mutedIds.contains($0.id) }
+        guard changed else { return }
+        participants = participants.map { participant in
+            ParticipantInfo(
+                chatUser: participant.chatUser,
+                displayName: participant.displayName,
+                onlineInfoText: participant.onlineInfoText,
+                isDeactivated: participant.isDeactivated,
+                isMuted: mutedIds.contains(participant.id)
+            )
+        }
     }
     
     open func participantActions(for participant: ParticipantInfo) -> [ParticipantAction] {
@@ -397,8 +425,7 @@ import SwiftUI
         }
 
         if channel.config.mutesEnabled {
-            let mutedUsers = currentUserController?.currentUser?.mutedUsers ?? []
-            if mutedUsers.contains(participant.chatUser) == true {
+            if mutedUserIds.contains(participant.id) {
                 let unmuteUser = unmuteAction(
                     participant: participant,
                     onDismiss: handleParticipantActionDismiss,

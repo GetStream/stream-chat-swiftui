@@ -157,6 +157,10 @@ public struct ChatInfoMemberView<Factory: ViewFactory>: View {
             }
 
             Spacer()
+            
+            if participant.isMuted {
+                MemberMutedIcon()
+            }
 
             if isAdminOrOwner {
                 Text(L10n.ChatInfo.Member.admin)
@@ -175,6 +179,27 @@ public struct ChatInfoMemberView<Factory: ViewFactory>: View {
     private var isAdminOrOwner: Bool {
         guard let member = participant.chatUser as? ChatChannelMember else { return false }
         return member.memberRole == .admin || member.memberRole == .owner || member.memberRole == .moderator
+    }
+}
+
+// MARK: - Muted Icon
+
+/// The icon shown next to a member's name when that member is muted.
+public struct MemberMutedIcon: View {
+    @Injected(\.colors) private var colors
+    @Injected(\.images) private var images
+    @Injected(\.tokens) private var tokens
+
+    @ScaledMetric(relativeTo: .subheadline) private var iconScale: CGFloat = 1
+
+    public init() {}
+
+    public var body: some View {
+        Image(uiImage: images.muted)
+            .customizable()
+            .frame(height: tokens.iconSizeSm * iconScale)
+            .foregroundColor(Color(colors.textTertiary))
+            .accessibilityLabel(Text(L10n.ChatInfo.Member.muted))
     }
 }
 
@@ -266,16 +291,19 @@ public final class ParticipantInfo: Identifiable {
     public let displayName: String
     public let onlineInfoText: String
     public let isDeactivated: Bool
+    public let isMuted: Bool
 
     public init(
         chatUser: ChatUser,
         displayName: String,
         onlineInfoText: String,
-        isDeactivated: Bool = false
+        isDeactivated: Bool = false,
+        isMuted: Bool = false
     ) {
         self.chatUser = chatUser
         self.displayName = displayName
         self.onlineInfoText = onlineInfoText
         self.isDeactivated = isDeactivated
+        self.isMuted = isMuted
     }
 }

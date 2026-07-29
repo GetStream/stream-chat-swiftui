@@ -447,6 +447,78 @@ import XCTest
         XCTAssertFalse(actions.contains { $0.title == L10n.Alert.Actions.cancel })
     }
 
+    func test_chatChannelInfoVM_participantsMutedState_whenUserIsMuted() {
+        // Given
+        let members = ChannelInfoMockUtils.setupMockMembers(
+            count: 3,
+            currentUserId: chatClient.currentUserId!
+        )
+        let channel = ChatChannel.mock(
+            cid: .unique,
+            lastActiveMembers: members,
+            memberCount: members.count
+        )
+        let viewModel = ChatChannelInfoViewModel(channel: channel)
+        let mutedMember = members[1]
+        XCTAssertFalse(viewModel.participants.contains { $0.isMuted })
+
+        // When
+        let currentUserController = mockCurrentUserController(mutedUserIds: [mutedMember.id])
+        viewModel.currentUserController = currentUserController
+        simulateCurrentUserChange(for: viewModel, controller: currentUserController)
+
+        // Then
+        XCTAssert(viewModel.participants.first { $0.id == mutedMember.id }?.isMuted == true)
+        XCTAssert(viewModel.participants.filter(\.isMuted).count == 1)
+    }
+
+    func test_chatChannelInfoVM_participantsMutedState_whenUserIsUnmuted() {
+        // Given
+        let members = ChannelInfoMockUtils.setupMockMembers(
+            count: 3,
+            currentUserId: chatClient.currentUserId!
+        )
+        let channel = ChatChannel.mock(
+            cid: .unique,
+            lastActiveMembers: members,
+            memberCount: members.count
+        )
+        let viewModel = ChatChannelInfoViewModel(channel: channel)
+        let mutedMember = members[1]
+        let currentUserController = mockCurrentUserController(mutedUserIds: [mutedMember.id])
+        viewModel.currentUserController = currentUserController
+        simulateCurrentUserChange(for: viewModel, controller: currentUserController)
+
+        // When
+        currentUserController.currentUser_mock = .mock(currentUserId: chatClient.currentUserId!)
+        simulateCurrentUserChange(for: viewModel, controller: currentUserController)
+
+        // Then
+        XCTAssertFalse(viewModel.participants.contains { $0.isMuted })
+    }
+
+    func test_chatChannelInfoVM_participantActions_mutedParticipant_showsUnmuteAction() {
+        // Given
+        let channel = mockGroup(with: 5)
+        let viewModel = ChatChannelInfoViewModel(channel: channel)
+        let member = ChatChannelMember.mock(id: .unique, name: "Muted User")
+        viewModel.currentUserController = mockCurrentUserController(mutedUserIds: [member.id])
+        let participant = ParticipantInfo(
+            chatUser: member,
+            displayName: "Muted User",
+            onlineInfoText: "online",
+            isDeactivated: false,
+            isMuted: true
+        )
+
+        // When
+        let actions = viewModel.participantActions(for: participant)
+
+        // Then
+        XCTAssert(actions.contains { $0.title == "\(L10n.Channel.Item.unmute) Muted User" })
+        XCTAssertFalse(actions.contains { $0.title == "\(L10n.Channel.Item.mute) Muted User" })
+    }
+
     func test_chatChannelInfoVM_muteAction_properties() {
         // Given
         let channel = mockGroup(with: 5)
@@ -1138,5 +1210,24 @@ import XCTest
             memberCount: activeMembers.count
         )
         return channel
+    }
+
+    private func mockCurrentUserController(mutedUserIds: [UserId]) -> CurrentChatUserController_Mock {
+        let currentUserController = CurrentChatUserController_Mock(client: chatClient)
+        currentUserController.currentUser_mock = .mock(
+            currentUserId: chatClient.currentUserId!,
+            mutedUsers: Set(mutedUserIds.map { ChatUser.mock(id: $0) })
+        )
+        return currentUserController
+    }
+
+    private func simulateCurrentUserChange(
+        for viewModel: ChatChannelInfoViewModel,
+        controller: CurrentChatUserController_Mock
+    ) {
+        viewModel.currentUserController(
+            controller,
+            didChangeCurrentUser: .update(controller.currentUser!)
+        )
     }
 }
