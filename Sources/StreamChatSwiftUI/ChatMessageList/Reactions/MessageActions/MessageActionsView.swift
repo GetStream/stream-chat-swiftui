@@ -24,8 +24,10 @@ public struct MessageActionsView: View {
 
     public var body: some View {
         VStack(spacing: 0) {
-            ForEach(viewModel.messageActions) { action in
-                if showsDivider(before: action) {
+            ForEach(actionRows) { row in
+                let action = row.action
+
+                if row.showsDivider {
                     Divider()
                 }
 
@@ -87,9 +89,25 @@ public struct MessageActionsView: View {
         .accessibilityIdentifier("MessageActionsView")
     }
 
-    private func showsDivider(before action: MessageAction) -> Bool {
-        guard action.isDestructive else { return false }
-        guard let index = viewModel.messageActions.firstIndex(of: action), index > 0 else { return false }
-        return !viewModel.messageActions[index - 1].isDestructive
+    /// The divider goes in front of the trailing run of destructive actions, and is skipped
+    /// when there is nothing above it to separate from.
+    private var actionRows: [ActionRow] {
+        let actions = viewModel.messageActions
+        var dividerIndex: Int?
+        if let lastRegularIndex = actions.lastIndex(where: { !$0.isDestructive }) {
+            let destructiveGroupIndex = lastRegularIndex + 1
+            dividerIndex = destructiveGroupIndex < actions.count ? destructiveGroupIndex : nil
+        }
+
+        return actions.enumerated().map { index, action in
+            ActionRow(action: action, showsDivider: index == dividerIndex)
+        }
     }
+}
+
+private struct ActionRow: Identifiable {
+    let action: MessageAction
+    let showsDivider: Bool
+
+    var id: String { action.id }
 }
