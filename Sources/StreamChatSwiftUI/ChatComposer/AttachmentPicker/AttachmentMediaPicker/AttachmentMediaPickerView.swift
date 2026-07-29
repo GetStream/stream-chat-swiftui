@@ -14,18 +14,21 @@ public struct AttachmentMediaPickerView: View {
     @Injected(\.images) private var images
     @Injected(\.tokens) private var tokens
     
-    @StateObject var assetLoader: PhotoAssetLoader
-    
+    // Held as state so that the loader, and with it its cache and in-flight requests, survives
+    // view updates. It publishes nothing, so there is nothing to observe.
+    @State var assetLoader: PhotoAssetLoader
+
     var photoLibraryAssets: PHFetchResult<PHAsset>?
     var onImageTap: (AddedAsset) -> Void
     var imageSelected: (String) -> Bool
     var selectedAssetIds: [String]?
-    
+    var isDisplayed: Bool
+
     private var selectedAssetIdsSet: Set<String>? {
         guard let selectedAssetIds else { return nil }
         return Set(selectedAssetIds)
     }
-    
+
     let columns = Array(repeating: GridItem(.flexible(), spacing: 2), count: 3)
 
     public init(
@@ -33,13 +36,15 @@ public struct AttachmentMediaPickerView: View {
         photoLibraryAssets: PHFetchResult<PHAsset>?,
         onImageTap: @escaping (AddedAsset) -> Void,
         imageSelected: @escaping (String) -> Bool,
-        selectedAssetIds: [String]? = nil
+        selectedAssetIds: [String]? = nil,
+        isDisplayed: Bool = false
     ) {
-        _assetLoader = StateObject(wrappedValue: assetLoader)
+        _assetLoader = State(initialValue: assetLoader)
         self.photoLibraryAssets = photoLibraryAssets
         self.onImageTap = onImageTap
         self.imageSelected = imageSelected
         self.selectedAssetIds = selectedAssetIds
+        self.isDisplayed = isDisplayed
     }
     
     public var body: some View {
@@ -61,23 +66,43 @@ public struct AttachmentMediaPickerView: View {
     // MARK: - Private
 
     private func assetGridContent(collection: PHFetchResultCollection) -> some View {
-        ScrollView {
-            LazyVGrid(columns: columns, spacing: 2) {
-                ForEach(collection) { asset in
-                    AttachmentMediaPickerItemView(
-                        assetLoader: assetLoader,
-                        asset: asset,
-                        onImageTap: onImageTap,
-                        imageSelected: imageSelected,
-                        selectedAssetIds: selectedAssetIdsSet
-                    )
+        ScrollViewReader { scrollView in
+            ScrollView {
+                LazyVGrid(columns: columns, spacing: 2) {
+                    // Keyed by index so ForEach updates never touch the fetch result.
+                    // Asset-keyed ForEach re-materializes PHAssets from Photos for every
+                    // instantiated row on each update, which hangs large libraries.
+                    ForEach(0..<collection.count, id: \.self) { index in
+                        let asset = collection[index]
+                        AttachmentMediaPickerItemView(
+                            assetLoader: assetLoader,
+                            asset: asset,
+                            onImageTap: onImageTap,
+                            imageSelected: imageSelected,
+                            selectedAssetIds: selectedAssetIdsSet
+                        )
+                        // Reset item state if a different asset lands on this index.
+                        .id(asset.localIdentifier)
+                    }
+                }
+                .animation(nil)
+            }
+            .onChange(of: collection.count) { _ in
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                    UIAccessibility.post(notification: .screenChanged, argument: nil)
                 }
             }
-            .animation(nil)
-        }
-        .onChange(of: collection.count) { _ in
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-                UIAccessibility.post(notification: .screenChanged, argument: nil)
+            .onChange(of: isDisplayed) { displayed in
+                if displayed {
+                    // The picker stays in the view hierarchy while hidden, so reset to
+                    // the top when it is shown again.
+                    scrollView.scrollTo(0, anchor: .top)
+                } else {
+                    // Cells do not disappear when the picker is only hidden, so cancel
+                    // explicitly. A fast scroll can also leave requests that never got an
+                    // onDisappear.
+                    assetLoader.cancelAllImageLoads()
+                }
             }
         }
     }

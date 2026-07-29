@@ -2562,6 +2562,67 @@ import XCTest
         XCTAssertTrue(viewModel.shouldSendOnRecordingFinish)
     }
 
+    // MARK: - haveSameContent
+
+    func test_haveSameContent_whenCountAndBoundaryAssetsAreEqual_returnsTrue() {
+        // Given
+        let current = PHFetchResult_Mock(assets: [
+            PHAsset_Mock(id: "asset-0"),
+            PHAsset_Mock(id: "asset-1"),
+            PHAsset_Mock(id: "asset-2")
+        ])
+        let refetched = PHFetchResult_Mock(assets: [
+            PHAsset_Mock(id: "asset-0"),
+            PHAsset_Mock(id: "asset-1"),
+            PHAsset_Mock(id: "asset-2")
+        ])
+
+        // Then
+        XCTAssertTrue(MessageComposerViewModel.haveSameContent(current, refetched))
+    }
+
+    func test_haveSameContent_whenCountsAreDifferent_returnsFalse() {
+        // Given
+        let current = PHFetchResult_Mock(assets: [PHAsset_Mock(id: "asset-0")])
+        let refetched = PHFetchResult_Mock(assets: [
+            PHAsset_Mock(id: "asset-0"),
+            PHAsset_Mock(id: "asset-1")
+        ])
+
+        // Then
+        XCTAssertFalse(MessageComposerViewModel.haveSameContent(current, refetched))
+    }
+
+    func test_haveSameContent_whenFirstAssetIsDifferent_returnsFalse() {
+        // Given
+        let current = PHFetchResult_Mock(assets: [
+            PHAsset_Mock(id: "asset-0"),
+            PHAsset_Mock(id: "asset-1")
+        ])
+        let refetched = PHFetchResult_Mock(assets: [
+            PHAsset_Mock(id: "asset-new"),
+            PHAsset_Mock(id: "asset-1")
+        ])
+
+        // Then
+        XCTAssertFalse(MessageComposerViewModel.haveSameContent(current, refetched))
+    }
+
+    func test_haveSameContent_whenLastAssetIsDifferent_returnsFalse() {
+        // Given
+        let current = PHFetchResult_Mock(assets: [
+            PHAsset_Mock(id: "asset-0"),
+            PHAsset_Mock(id: "asset-1")
+        ])
+        let refetched = PHFetchResult_Mock(assets: [
+            PHAsset_Mock(id: "asset-0"),
+            PHAsset_Mock(id: "asset-new")
+        ])
+
+        // Then
+        XCTAssertFalse(MessageComposerViewModel.haveSameContent(current, refetched))
+    }
+
     // MARK: - private
 
     private func makeComposerDraftsViewModel(

@@ -703,7 +703,8 @@ extension ViewFactory {
             photoLibraryAssets: options.photoLibraryAssets,
             onImageTap: options.onAssetTap,
             imageSelected: options.isAssetSelected,
-            selectedAssetIds: options.selectedAssetIds
+            selectedAssetIds: options.selectedAssetIds,
+            isDisplayed: options.isDisplayed
         )
     }
     

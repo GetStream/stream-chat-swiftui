@@ -3,7 +3,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 # Upcoming
 
+### ✅ Added
+- Add `AttachmentMediaPickerViewOptions.isDisplayed`, so that a custom media picker can react to the attachment picker being shown and hidden [#1546](https://github.com/GetStream/stream-chat-swiftui/pull/1546)
+
 ### 🐞 Fixed
+- Fix media attachment picker being unresponsive and slow with many iCloud assets [#1546](https://github.com/GetStream/stream-chat-swiftui/pull/1546)
 - Pass the channel's team when starting a direct message with a member [#1541](https://github.com/GetStream/stream-chat-swiftui/pull/1541)
 - Fix Markdown links with URL-shaped display text opening the wrong destination, e.g. `[https://text-link.com](https://real-link.com)` [#1543](https://github.com/GetStream/stream-chat-swiftui/pull/1543)
 - Fix showing the typing indicator in the middle of the screen when a channel has no messages [#1545](https://github.com/GetStream/stream-chat-swiftui/pull/1545)
@@ -15,6 +19,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### ⚡️ Performance
 - Reduce SDK size by 400 KB [#1531](https://github.com/GetStream/stream-chat-swiftui/pull/1531)
+
+### ⚠️ Deprecated
+- Deprecate `AttachmentMediaPickerItemView.init(assetLoader:requestId:asset:onImageTap:imageSelected:selectedAssetIds:)`, the request id is no longer used. Use the initializer without it. [#1546](https://github.com/GetStream/stream-chat-swiftui/pull/1546)
 
 # [5.7.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/5.7.0)
 _July 22, 2026_

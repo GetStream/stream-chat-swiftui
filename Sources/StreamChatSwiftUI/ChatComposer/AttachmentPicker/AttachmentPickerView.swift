@@ -115,7 +115,8 @@ public struct AttachmentPickerView<Factory: ViewFactory>: View {
                         photoLibraryAssets: photoLibraryAssets,
                         onAssetTap: onAssetTap,
                         isAssetSelected: isAssetSelected,
-                        selectedAssetIds: selectedAssetIds
+                        selectedAssetIds: selectedAssetIds,
+                        isDisplayed: isDisplayed
                     )
                 )
 
