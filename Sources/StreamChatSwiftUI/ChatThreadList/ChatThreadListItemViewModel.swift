@@ -26,7 +26,7 @@ import SwiftUI
         var parentMessageText: String
         if thread.parentMessage.isDeleted {
             parentMessageText = L10n.Message.deletedMessagePlaceholder
-        } else if let threadTitle = thread.title {
+        } else if let threadTitle {
             parentMessageText = threadTitle
         } else {
             let formatter = utils.messagePreviewFormatter
@@ -40,7 +40,7 @@ import SwiftUI
         if thread.parentMessage.isDeleted {
             return L10n.Message.deletedMessagePlaceholder
         }
-        if let threadTitle = thread.title {
+        if let threadTitle {
             return threadTitle
         }
         let formatter = utils.messagePreviewFormatter
@@ -52,11 +52,20 @@ import SwiftUI
         if thread.parentMessage.isDeleted {
             return L10n.Message.deletedMessagePlaceholder
         }
-        if let threadTitle = thread.title {
+        if let threadTitle {
             return threadTitle
         }
         let formatter = utils.messagePreviewFormatter
         return formatter.formatContent(for: thread.parentMessage, in: thread.channel)
+    }
+
+    /// The attachment glyph shown before the parent message preview text, or
+    /// `nil` when the parent message has no attachments to preview.
+    open var parentMessageAttachmentIcon: UIImage? {
+        guard !thread.parentMessage.isDeleted, threadTitle == nil else { return nil }
+        let resolver = MessageAttachmentPreviewResolver(message: thread.parentMessage)
+        guard let previewIcon = resolver.previewIcon else { return nil }
+        return utils.messageAttachmentPreviewIconProvider.image(for: previewIcon)
     }
 
     /// For group channels, the author name to display before the message content.
@@ -154,6 +163,13 @@ import SwiftUI
     }
 
     // MARK: - Private
+
+    /// The backend sends an empty title for threads whose parent message has no
+    /// text, so a blank title must not shadow the parent message preview.
+    private var threadTitle: String? {
+        guard let title = thread.title, !title.trimmed.isEmpty else { return nil }
+        return title
+    }
 
     private var latestReplyAuthor: ChatUser? {
         thread.latestReplies.last?.author

@@ -24,6 +24,7 @@ public struct ChatThreadListItem<Factory: ViewFactory>: View {
             channelNameText: viewModel.channelNameText,
             parentMessageAuthorName: viewModel.parentMessageAuthorName,
             parentMessageContentText: viewModel.parentMessageContentText,
+            parentMessageAttachmentIcon: viewModel.parentMessageAttachmentIcon,
             unreadRepliesCount: viewModel.unreadRepliesCount,
             parentAuthor: viewModel.parentMessageAuthor,
             replyCountText: viewModel.replyCountText,
@@ -39,11 +40,13 @@ struct ChatThreadListItemContentView<Factory: ViewFactory>: View {
     @Injected(\.fonts) private var fonts
     @Injected(\.colors) private var colors
     @Injected(\.tokens) private var tokens
+    @ScaledMetric(relativeTo: .body) private var iconScale: CGFloat = 1
 
     var factory: Factory
     var channelNameText: String
     var parentMessageAuthorName: String?
     var parentMessageContentText: String
+    var parentMessageAttachmentIcon: UIImage?
     var unreadRepliesCount: Int
     let parentAuthor: ChatUser?
     var replyCountText: String
@@ -56,6 +59,7 @@ struct ChatThreadListItemContentView<Factory: ViewFactory>: View {
         channelNameText: String,
         parentMessageAuthorName: String?,
         parentMessageContentText: String,
+        parentMessageAttachmentIcon: UIImage? = nil,
         unreadRepliesCount: Int,
         parentAuthor: ChatUser?,
         replyCountText: String,
@@ -67,6 +71,7 @@ struct ChatThreadListItemContentView<Factory: ViewFactory>: View {
         self.channelNameText = channelNameText
         self.parentMessageAuthorName = parentMessageAuthorName
         self.parentMessageContentText = parentMessageContentText
+        self.parentMessageAttachmentIcon = parentMessageAttachmentIcon
         self.unreadRepliesCount = unreadRepliesCount
         self.parentAuthor = parentAuthor
         self.replyCountText = replyCountText
@@ -132,11 +137,27 @@ struct ChatThreadListItemContentView<Factory: ViewFactory>: View {
                     .font(fonts.body)
                     .fontWeight(.semibold)
                     .foregroundColor(Color(colors.textSecondary))
+                attachmentIconView
                 messageTitle(text: parentMessageContentText)
             }
             .lineLimit(1)
         } else {
-            messageTitle(text: parentMessageContentText)
+            HStack(spacing: tokens.spacingXxs) {
+                attachmentIconView
+                messageTitle(text: parentMessageContentText)
+            }
+            .lineLimit(1)
+        }
+    }
+
+    @ViewBuilder
+    var attachmentIconView: some View {
+        if let parentMessageAttachmentIcon {
+            Image(uiImage: parentMessageAttachmentIcon)
+                .customizable()
+                .frame(width: tokens.iconSizeSm * iconScale, height: tokens.iconSizeSm * iconScale)
+                .foregroundColor(colors.textPrimary.toColor)
+                .accessibilityHidden(true)
         }
     }
 
