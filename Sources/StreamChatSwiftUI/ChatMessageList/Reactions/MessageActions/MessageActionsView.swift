@@ -25,6 +25,10 @@ public struct MessageActionsView: View {
     public var body: some View {
         VStack(spacing: 0) {
             ForEach(viewModel.messageActions) { action in
+                if showsDivider(before: action) {
+                    Divider()
+                }
+
                 VStack(spacing: 0) {
                     if let destination = action.navigationDestination {
                         NavigationLink {
@@ -81,5 +85,11 @@ public struct MessageActionsView: View {
         }
         .accessibilityElement(children: .contain)
         .accessibilityIdentifier("MessageActionsView")
+    }
+
+    private func showsDivider(before action: MessageAction) -> Bool {
+        guard action.isDestructive else { return false }
+        guard let index = viewModel.messageActions.firstIndex(of: action), index > 0 else { return false }
+        return !viewModel.messageActions[index - 1].isDestructive
     }
 }
