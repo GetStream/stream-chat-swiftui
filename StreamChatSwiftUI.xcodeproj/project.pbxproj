@@ -263,6 +263,7 @@
 				Tests/ChatChannelList/MoreChannelActionsView_Tests.swift,
 				Tests/ChatChannelList/MoreChannelActionsViewModel_Tests.swift,
 				Tests/ChatChannelList/SearchResultsView_Tests.swift,
+				Tests/ChatChannelList/TabBarAccessor_Tests.swift,
 				Tests/ChatThreadList/ChatThreadListItemView_Tests.swift,
 				Tests/ChatThreadList/ChatThreadListView_Tests.swift,
 				Tests/ChatThreadList/ChatThreadListViewModel_Tests.swift,
