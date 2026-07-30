@@ -50,7 +50,7 @@ final class ChatThreadListItemView_Tests: StreamChatTestCase {
         let view = ChatThreadListItem(thread: mockThread)
             .frame(width: defaultScreenSize.width)
 
-        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
+        AssertSnapshot(view, variants: [.defaultLight, .defaultDark], size: defaultScreenSize)
     }
 
     func test_threadListItem_withUnreads() throws {
@@ -60,7 +60,7 @@ final class ChatThreadListItemView_Tests: StreamChatTestCase {
         let view = ChatThreadListItem(thread: thread)
             .frame(width: defaultScreenSize.width)
         
-        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
+        AssertSnapshot(view, variants: [.defaultLight, .defaultDark], size: defaultScreenSize)
     }
 
     func test_threadListItem_withTitle() throws {
@@ -70,7 +70,7 @@ final class ChatThreadListItemView_Tests: StreamChatTestCase {
         let view = ChatThreadListItem(thread: thread)
             .frame(width: defaultScreenSize.width)
 
-        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
+        AssertSnapshot(view, variants: [.defaultLight, .defaultDark], size: defaultScreenSize)
     }
 
     func test_threadListItem_withParentMessageDeleted() throws {
@@ -80,7 +80,7 @@ final class ChatThreadListItemView_Tests: StreamChatTestCase {
         let view = ChatThreadListItem(thread: thread)
             .frame(width: defaultScreenSize.width)
 
-        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
+        AssertSnapshot(view, variants: [.defaultLight, .defaultDark], size: defaultScreenSize)
     }
 
     func test_threadListItem_withLastReplyDeleted() throws {
@@ -94,7 +94,7 @@ final class ChatThreadListItemView_Tests: StreamChatTestCase {
         let view = ChatThreadListItem(thread: thread)
             .frame(width: defaultScreenSize.width)
 
-        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
+        AssertSnapshot(view, variants: [.defaultLight, .defaultDark], size: defaultScreenSize)
     }
 
     func test_threadListItem_whenAttachments() throws {
@@ -109,7 +109,7 @@ final class ChatThreadListItemView_Tests: StreamChatTestCase {
         let view = ChatThreadListItem(thread: thread)
             .frame(width: defaultScreenSize.width)
 
-        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
+        AssertSnapshot(view, variants: [.defaultLight, .defaultDark], size: defaultScreenSize)
     }
 
     func test_threadListItem_whenAttachmentIsPoll() throws {
@@ -124,7 +124,7 @@ final class ChatThreadListItemView_Tests: StreamChatTestCase {
         let view = ChatThreadListItem(thread: thread)
             .frame(width: defaultScreenSize.width)
 
-        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
+        AssertSnapshot(view, variants: [.defaultLight, .defaultDark], size: defaultScreenSize)
     }
 
     func test_threadListItem_whenParentMessageIsImageOnly() throws {
@@ -134,7 +134,7 @@ final class ChatThreadListItemView_Tests: StreamChatTestCase {
         let view = ChatThreadListItem(thread: thread)
             .frame(width: defaultScreenSize.width)
 
-        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
+        AssertSnapshot(view, variants: [.defaultLight, .defaultDark], size: defaultScreenSize)
     }
 
     func test_threadListItem_whenParentMessageIsVideoOnly() throws {
@@ -144,7 +144,7 @@ final class ChatThreadListItemView_Tests: StreamChatTestCase {
         let view = ChatThreadListItem(thread: thread)
             .frame(width: defaultScreenSize.width)
 
-        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
+        AssertSnapshot(view, variants: [.defaultLight, .defaultDark], size: defaultScreenSize)
     }
 
     func test_threadListItem_whenParentMessageIsFileWithoutTitle() throws {
@@ -154,7 +154,7 @@ final class ChatThreadListItemView_Tests: StreamChatTestCase {
         let view = ChatThreadListItem(thread: thread)
             .frame(width: defaultScreenSize.width)
 
-        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
+        AssertSnapshot(view, variants: [.defaultLight, .defaultDark], size: defaultScreenSize)
     }
 
     func test_threadListItem_whenThreadTitleIsBlankAndParentMessageIsImageOnly() throws {
@@ -165,7 +165,7 @@ final class ChatThreadListItemView_Tests: StreamChatTestCase {
         let view = ChatThreadListItem(thread: thread)
             .frame(width: defaultScreenSize.width)
 
-        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
+        AssertSnapshot(view, variants: [.defaultLight, .defaultDark], size: defaultScreenSize)
     }
 
     func test_threadListItemViewModel_whenThreadTitleIsBlank_usesParentMessagePreview() throws {
@@ -211,7 +211,7 @@ final class ChatThreadListItemView_Tests: StreamChatTestCase {
         let view = ChatThreadListItem(thread: thread)
             .frame(width: defaultScreenSize.width)
 
-        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
+        AssertSnapshot(view, variants: [.defaultLight, .defaultDark], size: defaultScreenSize)
     }
 
     func test_threadListItem_whenDraftMessageHasAttachment() throws {
@@ -231,7 +231,7 @@ final class ChatThreadListItemView_Tests: StreamChatTestCase {
         let view = ChatThreadListItem(thread: thread)
             .frame(width: defaultScreenSize.width)
 
-        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
+        AssertSnapshot(view, variants: [.defaultLight, .defaultDark], size: defaultScreenSize)
     }
 
     // MARK: - Helpers
