@@ -75,36 +75,57 @@ extension CGSize {
     public nonisolated(unsafe) static var defaultAvatarSize: CGSize = CGSize(width: 48, height: 48)
 }
 
-/// Provides access to the the app's tab bar (if present).
+/// Provides access to the the app's tab bar (if present) and updates its visibility.
+///
+/// Hiding the tab bar is applied right away, while showing it happens only when the
+/// containing screen is actually visible. During an interactive back swipe the pushed
+/// screen is still on screen, so an earlier update would place the tab bar on top of it.
 struct TabBarAccessor: UIViewControllerRepresentable {
-    var callback: (UITabBar) -> Void
-    private let proxyController = ViewController()
+    /// Whether the tab bar should be hidden. Its visibility is not managed when nil.
+    var isTabBarHidden: Bool?
+    /// Called when the tab bar is found in the view hierarchy.
+    var callback: ((UITabBar) -> Void)?
 
-    func makeUIViewController(context: UIViewControllerRepresentableContext<TabBarAccessor>) ->
-        UIViewController {
-        proxyController.callback = callback
-        return proxyController
+    func makeUIViewController(context: Context) -> ViewController {
+        ViewController()
     }
 
-    func updateUIViewController(
-        _ uiViewController: UIViewController,
-        context: UIViewControllerRepresentableContext<TabBarAccessor>
-    ) {
-        // No handling needed.
+    func updateUIViewController(_ uiViewController: ViewController, context: Context) {
+        uiViewController.callback = callback
+        uiViewController.isTabBarHidden = isTabBarHidden
     }
 
-    typealias UIViewControllerType = UIViewController
+    class ViewController: UIViewController {
+        var callback: ((UITabBar) -> Void)?
 
-    private class ViewController: UIViewController {
-        var callback: (UITabBar) -> Void = { _ in
-            // Default implementation.
+        var isTabBarHidden: Bool? {
+            didSet { updateTabBarVisibility() }
         }
+
+        private var isScreenVisible = false
 
         override func viewWillAppear(_ animated: Bool) {
             super.viewWillAppear(animated)
-            if let tabBar = tabBarController {
-                callback(tabBar.tabBar)
+            if let tabBar = tabBarController?.tabBar {
+                callback?(tabBar)
             }
+        }
+
+        override func viewDidAppear(_ animated: Bool) {
+            super.viewDidAppear(animated)
+            isScreenVisible = true
+            updateTabBarVisibility()
+        }
+
+        override func viewWillDisappear(_ animated: Bool) {
+            super.viewWillDisappear(animated)
+            isScreenVisible = false
+        }
+
+        private func updateTabBarVisibility() {
+            guard let isTabBarHidden, let tabBar = tabBarController?.tabBar else { return }
+            guard isTabBarHidden || isScreenVisible else { return }
+            tabBar.isHidden = isTabBarHidden
         }
     }
 }

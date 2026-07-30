@@ -4,7 +4,6 @@
 
 import StreamChat
 import SwiftUI
-import UIKit
 
 /// View for the chat channel list.
 public struct ChatChannelListView<Factory: ViewFactory>: View {
@@ -13,7 +12,6 @@ public struct ChatChannelListView<Factory: ViewFactory>: View {
     @Injected(\.utils) private var utils
 
     @StateObject private var viewModel: ChatChannelListViewModel
-    @State private var tabBar: UITabBar?
 
     private let viewFactory: Factory
     private let title: String
@@ -83,22 +81,6 @@ public struct ChatChannelListView<Factory: ViewFactory>: View {
             .if(isIphone || !utils.messageListConfig.iPadSplitViewEnabled, transform: { view in
                 view.navigationViewStyle(.stack)
             })
-            .background(
-                isIphone && handleTabBarVisibility ?
-                    Color.clear.background(
-                        TabBarAccessor { tabBar in
-                            self.tabBar = tabBar
-                        }
-                    )
-                    .allowsHitTesting(false)
-                    : nil
-            )
-            .onReceive(viewModel.$hideTabBar) { newValue in
-                if isIphone && handleTabBarVisibility {
-                    setupTabBarAppeareance()
-                    tabBar?.isHidden = newValue
-                }
-            }
             .accessibilityIdentifier("ChatChannelListView")
     }
 
@@ -146,6 +128,14 @@ public struct ChatChannelListView<Factory: ViewFactory>: View {
         .background(
             viewFactory.makeChannelListBackground(options: .init())
         )
+        .background(
+            isIphone && handleTabBarVisibility ?
+                Color.clear.background(
+                    TabBarAccessor(isTabBarHidden: viewModel.hideTabBar)
+                )
+                .allowsHitTesting(false)
+                : nil
+        )
         .alert(isPresented: $viewModel.alertShown) {
             switch viewModel.channelAlertType {
             case let .deleteChannel(channel):
@@ -187,15 +177,6 @@ public struct ChatChannelListView<Factory: ViewFactory>: View {
 
     private var channelDestination: @MainActor (ChannelSelectionInfo) -> Factory.ChannelDestination {
         viewFactory.makeChannelDestination(options: ChannelDestinationOptions())
-    }
-
-    private func setupTabBarAppeareance() {
-        if #available(iOS 15.0, *) {
-            let tabBarAppearance: UITabBarAppearance = UITabBarAppearance()
-            tabBarAppearance.configureWithDefaultBackground()
-            UITabBar.appearance().standardAppearance = tabBarAppearance
-            UITabBar.appearance().scrollEdgeAppearance = tabBarAppearance
-        }
     }
 
     @ViewBuilder
