@@ -474,17 +474,21 @@ public final class AttachmentMediaPickerViewOptions: Sendable {
     public let isAssetSelected: @MainActor (String) -> Bool
     /// Snapshot of the currently selected asset identifiers.
     public let selectedAssetIds: [String]?
-    
+    /// Whether the picker is currently being displayed.
+    public let isDisplayed: Bool
+
     public init(
         photoLibraryAssets: PHFetchResult<PHAsset>?,
         onAssetTap: @escaping @MainActor (AddedAsset) -> Void,
         isAssetSelected: @escaping @MainActor (String) -> Bool,
-        selectedAssetIds: [String]? = nil
+        selectedAssetIds: [String]? = nil,
+        isDisplayed: Bool = false
     ) {
         self.photoLibraryAssets = photoLibraryAssets
         self.onAssetTap = onAssetTap
         self.isAssetSelected = isAssetSelected
         self.selectedAssetIds = selectedAssetIds
+        self.isDisplayed = isDisplayed
     }
 }
 
