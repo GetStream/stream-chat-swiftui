@@ -24,7 +24,13 @@ public struct MessageActionsView: View {
 
     public var body: some View {
         VStack(spacing: 0) {
-            ForEach(viewModel.messageActions) { action in
+            ForEach(actionRows) { row in
+                let action = row.action
+
+                if row.showsDivider {
+                    Divider()
+                }
+
                 VStack(spacing: 0) {
                     if let destination = action.navigationDestination {
                         NavigationLink {
@@ -57,8 +63,6 @@ public struct MessageActionsView: View {
                         }
                         .accessibilityLabel(action.title)
                     }
-
-                    Divider()
                 }
                 .padding(.leading)
                 .accessibilityElement(children: .contain)
@@ -84,4 +88,26 @@ public struct MessageActionsView: View {
         .accessibilityElement(children: .contain)
         .accessibilityIdentifier("MessageActionsView")
     }
+
+    /// The divider goes in front of the trailing run of destructive actions, and is skipped
+    /// when there is nothing above it to separate from.
+    private var actionRows: [ActionRow] {
+        let actions = viewModel.messageActions
+        var dividerIndex: Int?
+        if let lastRegularIndex = actions.lastIndex(where: { !$0.isDestructive }) {
+            let destructiveGroupIndex = lastRegularIndex + 1
+            dividerIndex = destructiveGroupIndex < actions.count ? destructiveGroupIndex : nil
+        }
+
+        return actions.enumerated().map { index, action in
+            ActionRow(action: action, showsDivider: index == dividerIndex)
+        }
+    }
+}
+
+private struct ActionRow: Identifiable {
+    let action: MessageAction
+    let showsDivider: Bool
+
+    var id: String { action.id }
 }
