@@ -203,6 +203,7 @@
 				Tests/ChatChannel/MediaPickerAssetHandler_Tests.swift,
 				Tests/ChatChannel/MediaViewer_Tests.swift,
 				Tests/ChatChannel/MessageActions_Tests.swift,
+				Tests/ChatChannel/MessageActionsView_Tests.swift,
 				Tests/ChatChannel/MessageActionsViewModel_Tests.swift,
 				Tests/ChatChannel/MessageAttachmentPreviewResolver_Tests.swift,
 				Tests/ChatChannel/MessageAttachmentsConverter_Tests.swift,
