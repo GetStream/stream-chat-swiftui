@@ -208,18 +208,18 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
         ZStack {
             if !orientationChanged {
                 Image(uiImage: currentSnapshot)
-                    .overlay(
-                        Color(colors.backgroundCoreScrim)
-                            .edgesIgnoringSafeArea(.all)
-                            .opacity(popIn ? 1 : 0)
-                    )
-                    .blur(radius: popIn ? 4 : 0)
+                    // A non-opaque blur samples transparency outside the snapshot's bounds,
+                    // which fades its edges and lets the view's background bleed through as
+                    // a lighter ring. An opaque blur clamps at the edges instead.
+                    .blur(radius: popIn ? 4 : 0, opaque: true)
                     .edgesIgnoringSafeArea(.all)
                     .offset(y: overlayOffsetY)
-            } else {
-                Color(colors.backgroundCoreScrim)
-                    .edgesIgnoringSafeArea(.all)
             }
+            // The scrim is layered on top of the blur rather than blurred with the snapshot:
+            // blurring a translucent color only thins it out along the edges.
+            Color(colors.backgroundCoreScrim)
+                .opacity(orientationChanged || popIn ? 1 : 0)
+                .edgesIgnoringSafeArea(.all)
         }
         // The blurred snapshot and scrim are purely decorative; keep them out of
         // the accessibility tree so VoiceOver focuses the overlay's content.
