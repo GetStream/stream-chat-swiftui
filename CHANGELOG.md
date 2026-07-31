@@ -15,6 +15,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Show a media preview in the thread list when the thread's parent message only contains attachments [#1548](https://github.com/GetStream/stream-chat-swiftui/pull/1548)
 - Fix the tab bar covering the message composer while swiping back to the channel list [#1551](https://github.com/GetStream/stream-chat-swiftui/pull/1551)
 - Fix a lighter ring appearing along the screen edges of the blurred background behind the message action menu [#1552](https://github.com/GetStream/stream-chat-swiftui/pull/1552)
+- Fix the composer's add attachment icon being thinner than the other composer icons [#1553](https://github.com/GetStream/stream-chat-swiftui/pull/1553)
 
 ### 🔄 Changed
 - Replace vendored Nuke image loading with `StreamImageDownloader` from StreamChatCommonUI [#1531](https://github.com/GetStream/stream-chat-swiftui/pull/1531)
