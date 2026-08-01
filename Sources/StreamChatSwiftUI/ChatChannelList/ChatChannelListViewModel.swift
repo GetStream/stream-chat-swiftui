@@ -113,6 +113,8 @@ import UIKit
     
     /// The channel search controller which should be created only by ``performChannelSearch()``.
     public var channelListSearchController: ChatChannelListController?
+    /// The LLC channel search controller used for debounced channel name search.
+    public var channelSearchController: ChatChannelSearchController?
     /// The message search controller which should be created only by ``performMessageSearch()``.
     public var messageSearchController: ChatMessageSearchController?
 
@@ -471,8 +473,12 @@ import UIKit
     }
 
     /// Creates a new message search controller, sets its delegate, and triggers the search operation.
+    ///
+    /// Debouncing is handled by ``ChatMessageSearchController``.
     open func performMessageSearch() {
-        messageSearchController = chatClient.messageSearchController()
+        if messageSearchController == nil {
+            messageSearchController = chatClient.messageSearchController()
+        }
         loadingSearchResults = true
         messageSearchController?.search(text: searchText, sort: messageSearchSort) { [weak self] _ in
             self?.loadingSearchResults = false
@@ -481,20 +487,19 @@ import UIKit
         }
     }
 
-    /// Creates a new channel search controller, sets its delegate, and triggers the search operation.
+    /// Creates a new channel search controller and triggers the debounced search operation.
+    ///
+    /// Debouncing is handled by ``ChatChannelSearchController``.
     open func performChannelSearch() {
-        guard let userId = chatClient.currentUserId else { return }
-        var query = ChannelListQuery(
-            filter: .and([
-                .autocomplete(.name, text: searchText),
-                .containMembers(userIds: [userId])
-            ])
-        )
-        // Do not start watching any of the searched channels.
-        query.options = []
-        channelListSearchController = chatClient.channelListController(query: query)
+        if channelSearchController == nil {
+            let searchController = chatClient.channelSearchController()
+            searchController.didCreateChannelListController = { [weak self] listController in
+                self?.channelListSearchController = listController
+            }
+            channelSearchController = searchController
+        }
         loadingSearchResults = true
-        channelListSearchController?.synchronize { [weak self] _ in
+        channelSearchController?.search(text: searchText) { [weak self] _ in
             self?.loadingSearchResults = false
             self?.updateChannelSearchResults()
         }

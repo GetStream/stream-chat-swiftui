@@ -2,7 +2,6 @@
 // Copyright © 2026 Stream.io Inc. All rights reserved.
 //
 
-import Combine
 import StreamChat
 import SwiftUI
 
@@ -11,35 +10,28 @@ import SwiftUI
     @Injected(\.chatClient) private var chatClient
 
     @Published var users = [ChatUser]()
-    @Published var searchText = ""
+    @Published var searchText = "" {
+        didSet {
+            guard searchText != oldValue else { return }
+            searchUsers(term: searchText)
+        }
+    }
+
     @Published private(set) var selectedUserIds = Set<String>()
 
     private var loadedUserIds: [String]
     private var loadingNextUsers = false
-    private var cancellables = Set<AnyCancellable>()
     private lazy var searchController: ChatUserSearchController = chatClient.userSearchController()
 
     init(loadedUserIds: [String]) {
         self.loadedUserIds = loadedUserIds
         searchUsers()
-        observeSearchText()
     }
 
     init(loadedUserIds: [String], searchController: ChatUserSearchController) {
         self.loadedUserIds = loadedUserIds
         self.searchController = searchController
         searchUsers()
-        observeSearchText()
-    }
-
-    private func observeSearchText() {
-        $searchText
-            .dropFirst()
-            .debounce(for: .milliseconds(300), scheduler: RunLoop.main)
-            .sink { [weak self] term in
-                self?.searchUsers(term: term)
-            }
-            .store(in: &cancellables)
     }
 
     func toggleUser(_ user: ChatUser) {
@@ -95,6 +87,7 @@ import SwiftUI
             searchUsers()
             return
         }
+        // Debouncing is handled by ChatUserSearchController.
         searchController.search(term: term) { [weak self] error in
             guard let self, error == nil else { return }
             users = searchController.userArray
