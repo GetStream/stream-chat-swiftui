@@ -219,6 +219,8 @@ Observing what happens at runtime
 ### Branching & changelog
 
 - The default integration branch is `develop`. Feature branches are merged into `develop`.
+- Name branches with a type prefix and a short kebab-case description, e.g. `add/dynamic-search-debounce`, `fix/empty-search-results`, `docs/channel-search`.
+- Prefer prefixes that match the change type: `add/`, `fix/`, `docs/`, etc. Do **not** use personal name prefixes (e.g. `nuno/...`) or ticket IDs (e.g. `ios-1932`, `IOS-1932`) in branch names.
 - Update `CHANGELOG.md` under the `# Upcoming` section when making client-facing changes (follow the Keep a Changelog format with `### Added`, `### Fixed`, `### Changed` subsections).
 - Only update `CHANGELOG.md` **after the PR has been opened**, so the entry can include the PR link (e.g. `[#1234](https://github.com/GetStream/stream-chat-swiftui/pull/1234)`). Push the changelog update as a follow-up commit on the same branch.
 - Keep changelog entries as short and high-level as possible. Describe the user-visible outcome in one line and do not explain implementation details, file names, or internal APIs.
@@ -228,6 +230,7 @@ Observing what happens at runtime
 - Start commit subject lines with a capital letter.
 - Do not end commit subject lines with a period.
 - Keep the subject line concise (ideally under 72 characters); put additional context in the body separated by a blank line.
+- Do **not** include ticket IDs or Linear issue keys in commit subjects (e.g. avoid `[IOS-1932]` prefixes). Link tickets from the PR instead.
 
 ### Pull Requests
 
