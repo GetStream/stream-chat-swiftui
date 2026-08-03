@@ -3,6 +3,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 # Upcoming
 
+### 🔄 Changed
+
+# [5.8.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/5.8.0)
+_August 03, 2026_
+
 ### ✅ Added
 - Add `AttachmentMediaPickerViewOptions.isDisplayed`, so that a custom media picker can react to the attachment picker being shown and hidden [#1546](https://github.com/GetStream/stream-chat-swiftui/pull/1546)
 
