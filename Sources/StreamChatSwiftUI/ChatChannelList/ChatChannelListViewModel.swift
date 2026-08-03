@@ -544,8 +544,14 @@ import UIKit
     }
 
     private func clearSearchResults() {
+        // Cancel the debounced searches before dropping the controllers, otherwise a search
+        // that was already scheduled still reaches the backend after the field was cleared
+        // and repopulates the results.
+        messageSearchController?.clearResults()
         messageSearchController?.delegate = nil
         messageSearchController = nil
+        channelSearchController?.clearResults()
+        channelSearchController = nil
         channelListSearchController?.delegate = nil
         channelListSearchController = nil
         searchResults = []
