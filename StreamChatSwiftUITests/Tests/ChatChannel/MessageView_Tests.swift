@@ -1479,6 +1479,31 @@ import XCTest
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
     
+    func test_messageRepliesViewSentByCurrentUser_snapshot() {
+        // Given
+        let channel = ChatChannel.mockDMChannel()
+        let message = ChatMessage.mock(
+            id: .unique,
+            cid: channel.cid,
+            text: "Message with replies",
+            author: .mock(id: Self.currentUserId),
+            threadParticipants: [.mock(id: .unique)],
+            isSentByCurrentUser: true
+        )
+
+        // When
+        let view = MessageRepliesView(
+            factory: DefaultViewFactory.shared,
+            channel: channel,
+            message: message,
+            replyCount: 3
+        )
+        .frame(width: 300, height: 60)
+
+        // Then
+        AssertSnapshot(view, variants: .onlyUserInterfaceStyles, size: CGSize(width: 300, height: 60))
+    }
+    
     func test_topLeftView_snapshot() {
         // Given
         let textView = Text("Test")

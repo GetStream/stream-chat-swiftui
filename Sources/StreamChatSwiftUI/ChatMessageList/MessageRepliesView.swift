@@ -28,7 +28,7 @@ public struct MessageRepliesView<Factory: ViewFactory>: View {
     var replyCount: Int
     var isRightAligned: Bool
     var showReplyCount: Bool
-    /// When true, the `textOnAccent` color is used instead of the default darker text color.
+    /// When true, the `textOnAccent` color is used instead of the default link text color.
     var usesInvertedStyle: Bool
     var threadReplyMessage: ChatMessage?
 
@@ -89,7 +89,7 @@ public struct MessageRepliesView<Factory: ViewFactory>: View {
                     )
                 }
                 .stroke(
-                    Color(message.isSentByCurrentUser ? colors.chatBackgroundOutgoing : colors.chatBackgroundIncoming),
+                    Color(message.isSentByCurrentUser ? colors.chatThreadConnectorOutgoing : colors.chatThreadConnectorIncoming),
                     style: StrokeStyle(
                         lineWidth: 1.0,
                         lineCap: .round,
@@ -104,7 +104,7 @@ public struct MessageRepliesView<Factory: ViewFactory>: View {
                 ),
                 alignment: isRightAligned ? .trailing : .leading
             )
-            .foregroundColor(usesInvertedStyle ? colors.textOnAccent.toColor : colors.textPrimary.toColor)
+            .foregroundColor(usesInvertedStyle ? colors.textOnAccent.toColor : colors.textLink.toColor)
         }
     }
     
