@@ -360,7 +360,11 @@ import XCTest
 
     func test_searchText_whenChanged_whenSearchTypeIsChannels_shouldPerformChannelSearch() {
         let viewModel = makeDefaultChannelListVM(searchType: .channels)
+        // Channel search is debounced, so inject a controller that searches synchronously.
+        viewModel.channelSearchController = ChatChannelSearchController(client: chatClient, debouncePolicy: .constant(0))
+
         viewModel.searchText = "Hey"
+
         XCTAssertNotNil(viewModel.channelListSearchController)
         XCTAssertNil(viewModel.messageSearchController)
     }

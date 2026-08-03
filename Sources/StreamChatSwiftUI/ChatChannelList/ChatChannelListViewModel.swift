@@ -114,7 +114,16 @@ import UIKit
     /// The channel search controller which should be created only by ``performChannelSearch()``.
     public var channelListSearchController: ChatChannelListController?
     /// The LLC channel search controller used for debounced channel name search.
-    public var channelSearchController: ChatChannelSearchController?
+    ///
+    /// Assigning a controller wires it up to publish its results into ``channelListSearchController``.
+    public var channelSearchController: ChatChannelSearchController? {
+        didSet {
+            channelSearchController?.didCreateChannelListController = { [weak self] listController in
+                self?.channelListSearchController = listController
+            }
+        }
+    }
+
     /// The message search controller which should be created only by ``performMessageSearch()``.
     public var messageSearchController: ChatMessageSearchController?
 
@@ -492,11 +501,7 @@ import UIKit
     /// Debouncing is handled by ``ChatChannelSearchController``.
     open func performChannelSearch() {
         if channelSearchController == nil {
-            let searchController = chatClient.channelSearchController()
-            searchController.didCreateChannelListController = { [weak self] listController in
-                self?.channelListSearchController = listController
-            }
-            channelSearchController = searchController
+            channelSearchController = chatClient.channelSearchController()
         }
         loadingSearchResults = true
         channelSearchController?.search(text: searchText) { [weak self] _ in
