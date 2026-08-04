@@ -480,8 +480,6 @@ import UIKit
     }
 
     /// Creates a new message search controller, sets its delegate, and triggers the search operation.
-    ///
-    /// Debouncing is handled by ``ChatMessageSearchController``.
     open func performMessageSearch() {
         if messageSearchController == nil {
             messageSearchController = chatClient.messageSearchController()
@@ -494,9 +492,7 @@ import UIKit
         }
     }
 
-    /// Creates a new channel search controller, sets its delegate, and triggers the debounced search operation.
-    ///
-    /// Debouncing is handled by ``ChatChannelSearchController``.
+    /// Creates a new channel search controller, sets its delegate, and triggers the search operation.
     open func performChannelSearch() {
         if channelSearchController == nil {
             channelSearchController = chatClient.channelSearchController()
