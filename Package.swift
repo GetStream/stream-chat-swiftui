@@ -16,7 +16,7 @@ let package = Package(
         )
     ],
     dependencies: [
-        .package(url: "https://github.com/GetStream/stream-chat-swift.git", branch: "add/improve-search-debouncing-dynamic-debounce-based-on-query")
+        .package(path: "../stream-chat-swift")
     ],
     targets: [
         .target(
