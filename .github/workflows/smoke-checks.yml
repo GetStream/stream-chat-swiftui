@@ -102,6 +102,9 @@ jobs:
     name: Test SwiftUI (Debug)
     runs-on: macos-15
     needs: guard
+    permissions:
+      contents: write # to push the snapshots branch
+      pull-requests: write
     env:
       GITHUB_TOKEN: ${{ secrets.CI_BOT_GITHUB_TOKEN }} # to open a PR
     steps:

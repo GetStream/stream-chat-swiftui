@@ -16,7 +16,7 @@ let package = Package(
         )
     ],
     dependencies: [
-        .package(url: "https://github.com/GetStream/stream-chat-swift.git", branch: "connector-colors")
+        .package(url: "https://github.com/GetStream/stream-chat-swift.git", revision: "b1842c5e95698c420b2462615ff9cee7d90dacb7")
     ],
     targets: [
         .target(
