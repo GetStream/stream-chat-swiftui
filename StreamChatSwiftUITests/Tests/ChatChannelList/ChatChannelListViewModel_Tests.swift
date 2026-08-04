@@ -339,13 +339,13 @@ import XCTest
     // MARK: - Search
 
     func test_loadAdditionalSearchResults_whenSearchTypeIsChannels_shouldLoadNextChannels() {
-        let searchChannelListController = makeChannelListController()
+        let channelSearchController = ChatChannelSearchController_Mock(client: chatClient)
         let viewModel = makeDefaultChannelListVM(searchType: .channels)
-        viewModel.channelListSearchController = searchChannelListController
-        
+        viewModel.channelSearchController = channelSearchController
+
         viewModel.loadAdditionalSearchResults(index: 1)
 
-        XCTAssertEqual(searchChannelListController.loadNextChannelsCallCount, 1)
+        XCTAssertEqual(channelSearchController.loadNextChannelsCallCount, 1)
     }
 
     func test_loadAdditionalSearchResults_whenSearchTypeIsMessages_shouldLoadNextMessages() {
@@ -360,21 +360,19 @@ import XCTest
 
     func test_searchText_whenChanged_whenSearchTypeIsChannels_shouldPerformChannelSearch() {
         let viewModel = makeDefaultChannelListVM(searchType: .channels)
-        // Channel search is debounced, so inject a controller that searches synchronously.
-        viewModel.channelSearchController = ChatChannelSearchController(client: chatClient, debouncePolicy: .constant(0))
+        let channelSearchController = ChatChannelSearchController_Mock(client: chatClient)
+        viewModel.channelSearchController = channelSearchController
 
         viewModel.searchText = "Hey"
 
-        // `channelListSearchController` is published once the search completes, so assert on the
-        // search controller itself to check that a channel search was started, not a message one.
-        XCTAssertNotNil(viewModel.channelSearchController?.channelListController)
+        XCTAssertEqual(channelSearchController.searchedTexts, ["Hey"])
         XCTAssertNil(viewModel.messageSearchController)
     }
 
     func test_searchText_whenChanged_whenSearchTypeIsMessages_shouldPerformMessageSearch() {
         let viewModel = makeDefaultChannelListVM(searchType: .messages)
         viewModel.searchText = "Hey"
-        XCTAssertNil(viewModel.channelListSearchController)
+        XCTAssertNil(viewModel.channelSearchController)
         XCTAssertNotNil(viewModel.messageSearchController)
     }
 
@@ -517,7 +515,7 @@ import XCTest
         XCTAssertFalse(viewModel.isSearching, "isSearching should be false after opening a channel")
         XCTAssertEqual(viewModel.searchText, "", "searchText should be cleared after opening a channel")
         XCTAssertNil(viewModel.messageSearchController, "Message search controller should be cleared when search ends")
-        XCTAssertNil(viewModel.channelListSearchController, "Channel search controller should be cleared when search ends")
+        XCTAssertNil(viewModel.channelSearchController, "Channel search controller should be cleared when search ends")
     }
     
     func test_openChannel_whenSelectedChannelIsSet_shouldClearSelectedChannel() {

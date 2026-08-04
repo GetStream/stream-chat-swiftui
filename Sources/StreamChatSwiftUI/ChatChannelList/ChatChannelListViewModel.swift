@@ -9,7 +9,8 @@ import SwiftUI
 import UIKit
 
 /// View model for the `ChatChannelListView`.
-@MainActor open class ChatChannelListViewModel: ObservableObject, ChatChannelListControllerDelegate, ChatMessageSearchControllerDelegate {
+@MainActor open class ChatChannelListViewModel: ObservableObject, ChatChannelListControllerDelegate,
+    ChatChannelSearchControllerDelegate, ChatMessageSearchControllerDelegate {
     /// Context provided dependencies.
     @Injected(\.chatClient) private var chatClient
     @Injected(\.images) private var images
@@ -111,9 +112,10 @@ import UIKit
         }
     }
     
-    /// The channel search controller which should be created only by ``performChannelSearch()``.
+    @available(*, deprecated, message: "Channel search results are provided by `channelSearchController` instead.")
     public var channelListSearchController: ChatChannelListController?
-    /// The LLC channel search controller used for debounced channel name search.
+
+    /// The channel search controller which should be created only by ``performChannelSearch()``.
     public var channelSearchController: ChatChannelSearchController?
 
     /// The message search controller which should be created only by ``performMessageSearch()``.
@@ -345,6 +347,10 @@ import UIKit
         updateMessageSearchResults()
     }
 
+    public func controller(_ controller: ChatChannelSearchController, didChangeChannels changes: [ListChange<ChatChannel>]) {
+        updateChannelSearchResults()
+    }
+
     // MARK: - private
 
     private func handleChannelListChanges(_ controller: ChatChannelListController) {
@@ -455,17 +461,17 @@ import UIKit
     }
 
     private func loadAdditionalChannelSearchResults(index: Int) {
-        guard let channelListSearchController = self.channelListSearchController else {
+        guard let channelSearchController = self.channelSearchController else {
             return
         }
 
-        if index < channelListSearchController.channels.count - 10 {
+        if index < channelSearchController.channels.count - 10 {
             return
         }
 
         if !loadingNextChannels {
             loadingNextChannels = true
-            channelListSearchController.loadNextChannels { [weak self] _ in
+            channelSearchController.loadNextChannels { [weak self] _ in
                 guard let self = self else { return }
                 self.loadingNextChannels = false
                 self.updateChannelSearchResults()
@@ -488,17 +494,17 @@ import UIKit
         }
     }
 
-    /// Creates a new channel search controller and triggers the debounced search operation.
+    /// Creates a new channel search controller, sets its delegate, and triggers the debounced search operation.
     ///
     /// Debouncing is handled by ``ChatChannelSearchController``.
     open func performChannelSearch() {
         if channelSearchController == nil {
             channelSearchController = chatClient.channelSearchController()
+            channelSearchController?.delegate = self
         }
         loadingSearchResults = true
         channelSearchController?.search(text: searchText) { [weak self] _ in
             guard let self else { return }
-            channelListSearchController = channelSearchController?.channelListController
             loadingSearchResults = false
             updateChannelSearchResults()
         }
@@ -528,11 +534,11 @@ import UIKit
     }
 
     private func updateChannelSearchResults() {
-        guard let channelListSearchController, searchType == .channels else {
+        guard let channelSearchController, searchType == .channels else {
             return
         }
 
-        searchResults = channelListSearchController.channels
+        searchResults = channelSearchController.channels
             .compactMap { channel in
                 ChannelSelectionInfo(
                     channel: channel,
@@ -550,9 +556,8 @@ import UIKit
         messageSearchController?.delegate = nil
         messageSearchController = nil
         channelSearchController?.clearResults()
+        channelSearchController?.delegate = nil
         channelSearchController = nil
-        channelListSearchController?.delegate = nil
-        channelListSearchController = nil
         searchResults = []
         updateChannels()
     }
