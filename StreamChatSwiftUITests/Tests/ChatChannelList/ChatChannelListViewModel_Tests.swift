@@ -365,7 +365,9 @@ import XCTest
 
         viewModel.searchText = "Hey"
 
-        XCTAssertNotNil(viewModel.channelListSearchController)
+        // `channelListSearchController` is published once the search completes, so assert on the
+        // search controller itself to check that a channel search was started, not a message one.
+        XCTAssertNotNil(viewModel.channelSearchController?.channelListController)
         XCTAssertNil(viewModel.messageSearchController)
     }
 
