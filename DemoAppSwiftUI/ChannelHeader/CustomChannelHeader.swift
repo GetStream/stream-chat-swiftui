@@ -68,6 +68,7 @@ struct CustomChannelModifier: ChannelListHeaderViewModifier {
     @State var logoutAlertShown = false
     @State var actionsPopupShown = false
     @State var blockedUsersShown = false
+    @State var channelSearchShown = false
 
     func body(content: Content) -> some View {
         ZStack {
@@ -96,6 +97,13 @@ struct CustomChannelModifier: ChannelListHeaderViewModifier {
             
             NavigationLink(isActive: $blockedUsersShown) {
                 BlockedUsersView()
+            } label: {
+                EmptyView()
+            }
+            .opacity(0) // Fixes showing accessibility button shape
+
+            NavigationLink(isActive: $channelSearchShown) {
+                ChannelSearchDemoView()
             } label: {
                 EmptyView()
             }
@@ -131,6 +139,9 @@ struct CustomChannelModifier: ChannelListHeaderViewModifier {
                 }
                 Button("Show Blocked Users") {
                     blockedUsersShown = true
+                }
+                Button("Channel Search (State Layer)") {
+                    channelSearchShown = true
                 }
                 
                 Button("Logout", role: .destructive) {
