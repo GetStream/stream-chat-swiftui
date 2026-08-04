@@ -1525,7 +1525,7 @@
 /* Begin XCLocalSwiftPackageReference section */
 		84E7F9E02EFAF9BF00BA56A3 /* XCLocalSwiftPackageReference "../stream-chat-swift" */ = {
 			isa = XCLocalSwiftPackageReference;
-			relativePath = ../stream-chat-swift;
+			relativePath = "../stream-chat-swift";
 		};
 /* End XCLocalSwiftPackageReference section */
 
