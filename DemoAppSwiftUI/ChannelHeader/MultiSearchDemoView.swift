@@ -7,7 +7,8 @@ import StreamChatSwiftUI
 import SwiftUI
 
 /// Combined search prototype: channels, messages, and users in parallel using the state layer.
-struct ChannelSearchDemoView: View {
+@MainActor
+struct MultiSearchDemoView: View {
     @StateObject private var viewModel = MultiSearchDemoViewModel()
 
     var body: some View {
@@ -20,6 +21,7 @@ struct ChannelSearchDemoView: View {
     }
 }
 
+@MainActor
 private struct MultiSearchDemoContent: View {
     @Injected(\.colors) var colors
 
@@ -152,6 +154,7 @@ private struct MultiSearchDemoContent: View {
     }
 }
 
+@MainActor
 private struct MultiSearchSectionView: View {
     @Injected(\.colors) var colors
     @Injected(\.fonts) var fonts
@@ -242,6 +245,7 @@ private struct MultiSearchSectionView: View {
 
 // MARK: - Detail Screens
 
+@MainActor
 struct ChannelSearchDetailView: View {
     let searchText: String
     @StateObject private var viewModel = ChannelSearchDetailViewModel()
@@ -255,6 +259,7 @@ struct ChannelSearchDetailView: View {
     }
 }
 
+@MainActor
 private struct ChannelSearchDetailContent: View {
     @Injected(\.colors) var colors
 
@@ -302,6 +307,7 @@ private struct ChannelSearchDetailContent: View {
     }
 }
 
+@MainActor
 struct MessageSearchDetailView: View {
     let searchText: String
     @StateObject private var viewModel = MessageSearchDetailViewModel()
@@ -315,6 +321,7 @@ struct MessageSearchDetailView: View {
     }
 }
 
+@MainActor
 private struct MessageSearchDetailContent: View {
     @Injected(\.colors) var colors
 
@@ -362,6 +369,7 @@ private struct MessageSearchDetailContent: View {
     }
 }
 
+@MainActor
 struct UserSearchDetailView: View {
     let searchText: String
     @StateObject private var viewModel = UserSearchDetailViewModel()
@@ -375,6 +383,7 @@ struct UserSearchDetailView: View {
     }
 }
 
+@MainActor
 private struct UserSearchDetailContent: View {
     @Injected(\.colors) var colors
 
@@ -424,6 +433,7 @@ private struct UserSearchDetailContent: View {
 
 // MARK: - Rows
 
+@MainActor
 private struct ChannelSearchRow: View {
     @Injected(\.colors) var colors
     @Injected(\.fonts) var fonts
@@ -459,6 +469,7 @@ private struct ChannelSearchRow: View {
     }
 }
 
+@MainActor
 private struct MessageSearchRow: View {
     @Injected(\.chatClient) var chatClient
     @Injected(\.colors) var colors
@@ -500,6 +511,7 @@ private struct MessageSearchRow: View {
     }
 }
 
+@MainActor
 private struct UserSearchRow: View {
     @Injected(\.colors) var colors
     @Injected(\.fonts) var fonts

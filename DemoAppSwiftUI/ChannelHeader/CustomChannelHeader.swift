@@ -103,7 +103,7 @@ struct CustomChannelModifier: ChannelListHeaderViewModifier {
             .opacity(0) // Fixes showing accessibility button shape
 
             NavigationLink(isActive: $channelSearchShown) {
-                ChannelSearchDemoView()
+                MultiSearchDemoView()
             } label: {
                 EmptyView()
             }
