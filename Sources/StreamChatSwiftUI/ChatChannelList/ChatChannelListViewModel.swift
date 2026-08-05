@@ -311,11 +311,9 @@ import UIKit
         _ controller: ChatChannelListController,
         didChangeChannels changes: [ListChange<ChatChannel>]
     ) {
-        // The view model is the delegate of both the channel list and the search results, and only
-        // the former backs `channels`. Without this the search results would replace the list.
         if controller === channelListSearchController {
             updateChannelSearchResults()
-        } else {
+        } else if controller === self.controller {
             handleChannelListChanges(controller)
         }
     }
@@ -511,6 +509,7 @@ import UIKit
             )
             // Do not start watching any of the searched channels.
             query.options = []
+            channelListSearchController?.delegate = nil
             let searchController = chatClient.channelListController(query: query)
             channelListSearchController = searchController
             searchController.delegate = self
