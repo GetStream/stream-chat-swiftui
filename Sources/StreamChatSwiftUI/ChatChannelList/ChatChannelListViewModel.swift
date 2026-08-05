@@ -500,7 +500,11 @@ import UIKit
         loadingSearchResults = true
         let searchText = self.searchText
         channelSearchDebouncer.execute(queryLength: searchText.count) { [weak self] in
-            guard let self, let userId = chatClient.currentUserId else { return }
+            guard let self else { return }
+            guard let userId = chatClient.currentUserId else {
+                loadingSearchResults = false
+                return
+            }
             var query = ChannelListQuery(
                 filter: .and([
                     .autocomplete(.name, text: searchText),
