@@ -10,8 +10,16 @@ import SwiftUI
 @main
 struct DemoAppSwiftUIApp: App {
     @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
-    @Injected(\.chatClient) public var chatClient: ChatClient
 
+    var body: some Scene {
+        WindowGroup {
+            RootView()
+        }
+    }
+}
+
+@MainActor
+struct RootView: View {
     @ObservedObject var appState = AppState.shared
     @ObservedObject var notificationsHandler = NotificationsHandler.shared
 
@@ -23,8 +31,8 @@ struct DemoAppSwiftUIApp: App {
         .messages
     }
 
-    var body: some Scene {
-        WindowGroup {
+    var body: some View {
+        Group {
             switch appState.userState {
             case .launchAnimation:
                 StreamLogoLaunch()
@@ -123,6 +131,7 @@ struct DemoAppSwiftUIApp: App {
     }
 
     func currentUserController(_ controller: CurrentChatUserController, didChangeCurrentUserUnreadCount: UnreadCount) {
+        guard unreadCount != didChangeCurrentUserUnreadCount else { return }
         unreadCount = didChangeCurrentUserUnreadCount
         let totalUnreadBadge = unreadCount.channels + unreadCount.threads
         if #available(iOS 16.0, *) {

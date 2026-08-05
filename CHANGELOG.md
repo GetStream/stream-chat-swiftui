@@ -3,6 +3,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 # Upcoming
 
+### 🔄 Changed
+
+# [5.8.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/5.8.0)
+_August 03, 2026_
+
 ### ✅ Added
 - Add `AttachmentMediaPickerViewOptions.isDisplayed`, so that a custom media picker can react to the attachment picker being shown and hidden [#1546](https://github.com/GetStream/stream-chat-swiftui/pull/1546)
 
@@ -16,6 +21,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Fix the tab bar covering the message composer while swiping back to the channel list [#1551](https://github.com/GetStream/stream-chat-swiftui/pull/1551)
 - Fix a lighter ring appearing along the screen edges of the blurred background behind the message action menu [#1552](https://github.com/GetStream/stream-chat-swiftui/pull/1552)
 - Fix the composer's add attachment icon being thinner than the other composer icons [#1553](https://github.com/GetStream/stream-chat-swiftui/pull/1553)
+- Fix thread list items appearing lighter than the app background in dark mode [#1550](https://github.com/GetStream/stream-chat-swiftui/pull/1550)
 
 ### ⚡️ Performance
 - Reduce SDK size by 400 KB [#1531](https://github.com/GetStream/stream-chat-swiftui/pull/1531)

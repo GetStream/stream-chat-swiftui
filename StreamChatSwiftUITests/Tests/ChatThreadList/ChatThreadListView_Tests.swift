@@ -13,42 +13,42 @@ import XCTest
 @MainActor class ChatThreadListView_Tests: StreamChatTestCase {
     func test_chatThreadListView_empty() {
         let view = makeView(.empty())
-        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
+        AssertSnapshot(view, variants: [.defaultLight, .defaultDark], size: defaultScreenSize)
     }
 
     func test_chatThreadListView_loading() {
         let view = makeView(.loading())
-        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
+        AssertSnapshot(view, variants: [.defaultLight, .defaultDark], size: defaultScreenSize)
     }
 
     func test_chatThreadListView_withThreads() {
         let view = makeView(.withThreads())
-        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
+        AssertSnapshot(view, variants: [.defaultLight, .defaultDark], size: defaultScreenSize)
     }
 
     func test_chatThreadListView_loadingMoreThreads() {
         let view = makeView(.loadingMoreThreads())
-        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
+        AssertSnapshot(view, variants: [.defaultLight, .defaultDark], size: defaultScreenSize)
     }
 
     func test_chatThreadListView_reloadingThreads() {
         let view = makeView(.reloadingThreads())
-        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
+        AssertSnapshot(view, variants: [.defaultLight, .defaultDark], size: defaultScreenSize)
     }
 
     func test_chatThreadListView_whenNewThreadsAvailable() {
         let view = makeView(.newThreadsAvailable())
-        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
+        AssertSnapshot(view, variants: [.defaultLight, .defaultDark], size: defaultScreenSize)
     }
 
     func test_chatThreadListView_errorLoadingThreads() {
         let view = makeView(.errorLoadingThreads())
-        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
+        AssertSnapshot(view, variants: [.defaultLight, .defaultDark], size: defaultScreenSize)
     }
 
     func test_chatThreadListView_errorLoadingMoreThreads() {
         let view = makeView(.errorLoadingMoreThreads())
-        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
+        AssertSnapshot(view, variants: [.defaultLight, .defaultDark], size: defaultScreenSize)
     }
 
     private func makeView(_ viewModel: MockChatThreadListViewModel) -> some View {
