@@ -8,7 +8,7 @@ import SwiftUI
 
 /// A scratch screen for exercising the state layer's `ChannelSearch`.
 ///
-/// It shows the debounced searching, the live results, and pagination when scrolling to the end
+/// It shows debounced searching, DB-backed results, and pagination when scrolling to the end
 /// of the list.
 struct ChannelSearchDemoView: View {
     @Injected(\.colors) var colors

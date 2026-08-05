@@ -513,7 +513,6 @@ import UIKit
             query.options = []
             let searchController = chatClient.channelListController(query: query)
             channelListSearchController = searchController
-            // Observed so that a change to a matching channel reaches the list while it is shown.
             searchController.delegate = self
             searchController.synchronize { [weak self] _ in
                 guard let self else { return }
