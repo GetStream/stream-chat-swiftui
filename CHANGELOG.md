@@ -3,6 +3,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 # Upcoming
 
+### 🔄 Changed
+- Debounce channel list search dynamically based on query length (500ms for 1–2 characters, 300ms for 3+) [#1560](https://github.com/GetStream/stream-chat-swiftui/pull/1560)
+
 ### ✅ Added
 - Add `AttachmentMediaPickerViewOptions.isDisplayed`, so that a custom media picker can react to the attachment picker being shown and hidden [#1546](https://github.com/GetStream/stream-chat-swiftui/pull/1546)
 
