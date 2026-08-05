@@ -62,6 +62,7 @@ enum MultiSearchSection: String, CaseIterable, Identifiable {
             Task {
                 try? await channelSearch.search(text: "")
                 try? await messageSearch.search(text: "")
+                try? await userSearch.search(term: nil)
             }
             return
         }
