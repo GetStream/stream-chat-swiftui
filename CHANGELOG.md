@@ -3,9 +3,6 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 # Upcoming
 
-### 🔄 Changed
-- Debounce channel list search dynamically based on query length (500ms for 1–2 characters, 300ms for 3+) [#1560](https://github.com/GetStream/stream-chat-swiftui/pull/1560)
-
 ### ✅ Added
 - Add `AttachmentMediaPickerViewOptions.isDisplayed`, so that a custom media picker can react to the attachment picker being shown and hidden [#1546](https://github.com/GetStream/stream-chat-swiftui/pull/1546)
 
@@ -20,15 +17,16 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Fix a lighter ring appearing along the screen edges of the blurred background behind the message action menu [#1552](https://github.com/GetStream/stream-chat-swiftui/pull/1552)
 - Fix the composer's add attachment icon being thinner than the other composer icons [#1553](https://github.com/GetStream/stream-chat-swiftui/pull/1553)
 
-### 🔄 Changed
-- Replace vendored Nuke image loading with `StreamImageDownloader` from StreamChatCommonUI [#1531](https://github.com/GetStream/stream-chat-swiftui/pull/1531)
-- Remove the separators between the message action menu items, keeping one before the destructive actions [#1549](https://github.com/GetStream/stream-chat-swiftui/pull/1549)
-
 ### ⚡️ Performance
 - Reduce SDK size by 400 KB [#1531](https://github.com/GetStream/stream-chat-swiftui/pull/1531)
 
 ### ⚠️ Deprecated
 - Deprecate `AttachmentMediaPickerItemView.init(assetLoader:requestId:asset:onImageTap:imageSelected:selectedAssetIds:)`, the request id is no longer used. Use the initializer without it. [#1546](https://github.com/GetStream/stream-chat-swiftui/pull/1546)
+
+### 🔄 Changed
+- Debounce channel list search dynamically based on query length (500ms for 1–2 characters, 300ms for 3+) [#1560](https://github.com/GetStream/stream-chat-swiftui/pull/1560)
+- Replace vendored Nuke image loading with `StreamImageDownloader` from StreamChatCommonUI [#1531](https://github.com/GetStream/stream-chat-swiftui/pull/1531)
+- Remove the separators between the message action menu items, keeping one before the destructive actions [#1549](https://github.com/GetStream/stream-chat-swiftui/pull/1549)
 
 # [5.7.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/5.7.0)
 _July 22, 2026_
