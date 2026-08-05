@@ -140,7 +140,7 @@ struct CustomChannelModifier: ChannelListHeaderViewModifier {
                 Button("Show Blocked Users") {
                     blockedUsersShown = true
                 }
-                Button("Channel Search (State Layer)") {
+                Button("Multi Search (State Layer)") {
                     channelSearchShown = true
                 }
                 
