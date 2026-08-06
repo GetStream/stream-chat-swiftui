@@ -10,6 +10,11 @@ on:
         type: boolean
         required: false
         default: false
+      verbose:
+        description: 'Run tests in verbose mode?'
+        type: boolean
+        required: false
+        default: false
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -27,6 +32,7 @@ env:
   GITHUB_EVENT_ACTION: ${{ github.event.action }}
   GITHUB_EVENT_BEFORE: ${{ github.event.before }}
   GITHUB_EVENT_AFTER: ${{ github.event.after }}
+  VERBOSE: ${{ github.event.inputs.verbose == 'true' && '--verbose' || '' }}
 
 jobs:
   guard:
@@ -48,7 +54,7 @@ jobs:
     - uses: ./.github/actions/ruby-cache
     - uses: ./.github/actions/xcode-cache
     - name: Build
-      run: bundle exec fastlane build_test_app_and_frameworks
+      run: bundle exec fastlane build_test_app_and_frameworks ${{ env.VERBOSE }}
       timeout-minutes: 60
     - uses: actions/upload-artifact@v4
       if: success()
@@ -95,7 +101,7 @@ jobs:
     - uses: ./.github/actions/xcode-cache
     - uses: ./.github/actions/ruby-cache
     - name: Build SwiftUI
-      run: bundle exec fastlane test_ui device:"iPhone 16 (18.1)" build_for_testing:true
+      run: bundle exec fastlane test_ui device:"iPhone 16 (18.1)" build_for_testing:true ${{ env.VERBOSE }}
       timeout-minutes: 25
 
   test-ui-debug:
@@ -114,7 +120,7 @@ jobs:
         INSTALL_YEETD: true
         INSTALL_SONAR: true
     - name: Run UI Tests (Debug)
-      run: bundle exec fastlane test_ui device:"${{ env.IOS_SIMULATOR_DEVICE }}" record:"${{ github.event.inputs.record_snapshots }}"
+      run: bundle exec fastlane test_ui device:"${{ env.IOS_SIMULATOR_DEVICE }}" record:"${{ github.event.inputs.record_snapshots }}" ${{ env.VERBOSE }}
       timeout-minutes: 120
     - name: Run Sonar analysis
       if: ${{ github.event.inputs.record_snapshots != 'true' }}
@@ -189,7 +195,7 @@ jobs:
         INSTALL_YEETD: true
         SKIP_SWIFT_BOOTSTRAP: true
     - name: Run UI Tests (Debug)
-      run: bundle exec fastlane test_e2e_mock device:"${{ env.IOS_SIMULATOR_DEVICE }}" batch:'${{ matrix.batch }}' test_without_building:true
+      run: bundle exec fastlane test_e2e_mock device:"${{ env.IOS_SIMULATOR_DEVICE }}" batch:'${{ matrix.batch }}' test_without_building:true ${{ env.VERBOSE }}
       timeout-minutes: 100
       env:
         MATRIX_SIZE: ${{ strategy.job-total }}
@@ -234,4 +240,4 @@ jobs:
     - uses: ./.github/actions/ruby-cache
     - uses: ./.github/actions/xcode-cache
     - name: Build Demo App
-      run: bundle exec fastlane build_demo
+      run: bundle exec fastlane build_demo ${{ env.VERBOSE }}
