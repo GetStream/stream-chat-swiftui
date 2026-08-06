@@ -9,7 +9,7 @@ import SwiftUI
 import UIKit
 
 /// View model for the `ChatChannelListView`.
-@MainActor open class ChatChannelListViewModel: ObservableObject, ChatChannelListControllerDelegate, ChatMessageSearchControllerDelegate {
+@MainActor open class ChatChannelListViewModel: ObservableObject, ChatChannelListControllerDelegate, ChatChannelSearchControllerDelegate, ChatMessageSearchControllerDelegate {
     /// Context provided dependencies.
     @Injected(\.chatClient) private var chatClient
     @Injected(\.images) private var images
@@ -112,7 +112,14 @@ import UIKit
     }
     
     /// The channel search controller which should be created only by ``performChannelSearch()``.
-    public var channelListSearchController: ChatChannelListController?
+    public var channelSearchController: ChatChannelSearchController?
+
+    /// The channel list controller previously used for channel search.
+    @available(*, deprecated, renamed: "channelSearchController", message: "Channel search now uses ChatChannelSearchController instead of replacing a ChatChannelListController.")
+    public var channelListSearchController: ChatChannelListController? {
+        get { nil }
+        set { _ = newValue }
+    }
 
     /// The message search controller which should be created only by ``performMessageSearch()``.
     public var messageSearchController: ChatMessageSearchController?
@@ -120,10 +127,6 @@ import UIKit
     /// Sort order for message search results. When set (e.g. from the channel list's sort), it is passed to the search API.
     /// When `nil`, the controller uses its default (newest first).
     public var messageSearchSort: [Sorting<MessageSearchSortingKey>]?
-
-    /// Debounces channel search requests, which are issued by the view model rather than by a
-    /// search controller because each search replaces the channel list controller outright.
-    private var channelSearchDebouncer = Debouncer.search(queue: .main)
 
     /// Serial queue used to process the search results.
     private let queue = DispatchQueue(label: "com.getstream.stream-chat-swiftui.ChatChannelListViewModel")
@@ -311,9 +314,7 @@ import UIKit
         _ controller: ChatChannelListController,
         didChangeChannels changes: [ListChange<ChatChannel>]
     ) {
-        if controller === channelListSearchController {
-            updateChannelSearchResults()
-        } else if controller === self.controller {
+        if controller === self.controller {
             handleChannelListChanges(controller)
         }
     }
@@ -345,6 +346,12 @@ import UIKit
         }
     }
     
+    // MARK: - ChatChannelSearchControllerDelegate
+
+    public func controller(_ controller: ChatChannelSearchController, didChangeChannels changes: [ListChange<ChatChannel>]) {
+        updateChannelSearchResults()
+    }
+
     // MARK: - ChatMessageSearchControllerDelegate
     
     public func controller(_ controller: ChatMessageSearchController, didChangeMessages changes: [ListChange<ChatMessage>]) {
@@ -461,20 +468,19 @@ import UIKit
     }
 
     private func loadAdditionalChannelSearchResults(index: Int) {
-        guard let channelListSearchController = self.channelListSearchController else {
+        guard let channelSearchController else {
             return
         }
 
-        if index < channelListSearchController.channels.count - 10 {
+        if index < channelSearchController.channels.count - 10 {
             return
         }
 
         if !loadingNextChannels {
             loadingNextChannels = true
-            channelListSearchController.loadNextChannels { [weak self] _ in
+            channelSearchController.loadNextChannels { [weak self] _ in
                 guard let self = self else { return }
                 self.loadingNextChannels = false
-                self.updateChannelSearchResults()
             }
         }
     }
@@ -493,35 +499,15 @@ import UIKit
     }
 
     /// Creates a new channel search controller, sets its delegate, and triggers the search operation.
-    ///
-    /// The request is debounced with the same thresholds the SDK's search controllers use, so short
-    /// and low selectivity queries wait longer than the rest.
     open func performChannelSearch() {
-        loadingSearchResults = true
-        let searchText = self.searchText
-        channelSearchDebouncer.execute(queryLength: searchText.count) { [weak self] in
-            guard let self else { return }
-            guard let userId = chatClient.currentUserId else {
-                loadingSearchResults = false
-                return
-            }
-            var query = ChannelListQuery(
-                filter: .and([
-                    .autocomplete(.name, text: searchText),
-                    .containMembers(userIds: [userId])
-                ])
-            )
-            // Do not start watching any of the searched channels.
-            query.options = []
-            channelListSearchController?.delegate = nil
-            let searchController = chatClient.channelListController(query: query)
-            channelListSearchController = searchController
-            searchController.delegate = self
-            searchController.synchronize { [weak self] _ in
-                guard let self else { return }
-                loadingSearchResults = false
-                updateChannelSearchResults()
-            }
+        if channelSearchController == nil {
+            channelSearchController = chatClient.channelSearchController()
+        }
+        loadingSearchResults = searchResults.isEmpty
+        channelSearchController?.delegate = self
+        channelSearchController?.search(text: searchText) { [weak self] _ in
+            self?.loadingSearchResults = false
+            self?.updateChannelSearchResults()
         }
     }
 
@@ -549,11 +535,11 @@ import UIKit
     }
 
     private func updateChannelSearchResults() {
-        guard let channelListSearchController, searchType == .channels else {
+        guard let channelSearchController, searchType == .channels else {
             return
         }
 
-        searchResults = channelListSearchController.channels
+        searchResults = channelSearchController.channels
             .compactMap { channel in
                 ChannelSelectionInfo(
                     channel: channel,
@@ -570,10 +556,11 @@ import UIKit
         messageSearchController?.clearResults()
         messageSearchController?.delegate = nil
         messageSearchController = nil
-        channelSearchDebouncer.invalidate()
-        channelListSearchController?.delegate = nil
-        channelListSearchController = nil
+        channelSearchController?.clearResults()
+        channelSearchController?.delegate = nil
+        channelSearchController = nil
         searchResults = []
+        loadingSearchResults = false
         updateChannels()
     }
 

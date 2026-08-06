@@ -6,6 +6,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ### 🔄 Changed
 - Debounce channel and message search dynamically based on query length [#1560](https://github.com/GetStream/stream-chat-swiftui/pull/1560)
 
+### ⚠️ Deprecated
+- Deprecate `ChatChannelListViewModel.channelListSearchController` in favor of `channelSearchController` [#1560](https://github.com/GetStream/stream-chat-swiftui/pull/1560)
+
 # [5.8.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/5.8.0)
 _August 03, 2026_
 
