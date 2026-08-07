@@ -15,6 +15,14 @@ enum MessageRepliesConstants {
     static let threadMessageReplyId = "threadMessageReplyId"
 }
 
+private enum ThreadConnector {
+    static let width: CGFloat = 16
+    static let lineWidth: CGFloat = 1
+    static let cornerRadius: CGFloat = 15.5
+    /// Cubic Bézier approximation of a quarter circle.
+    static let controlPointOffset: CGFloat = cornerRadius * 0.5523
+}
+
 /// View shown below a message, when there are replies to it.
 public struct MessageRepliesView<Factory: ViewFactory>: View {
     @Environment(\.layoutDirection) private var layoutDirection
@@ -28,7 +36,7 @@ public struct MessageRepliesView<Factory: ViewFactory>: View {
     var replyCount: Int
     var isRightAligned: Bool
     var showReplyCount: Bool
-    /// When true, the `textOnAccent` color is used instead of the default darker text color.
+    /// When true, the `textOnAccent` color is used instead of the default link text color.
     var usesInvertedStyle: Bool
     var threadReplyMessage: ChatMessage?
 
@@ -79,35 +87,47 @@ public struct MessageRepliesView<Factory: ViewFactory>: View {
             .padding(.horizontal, 16 + tokens.spacingXs)
             .padding(.top, tokens.spacingXxs)
             .overlay(
-                Path { path in
-                    path.move(to: CGPoint(x: 0.5, y: 0))
-                    path.addLine(to: CGPoint(x: 0.5, y: 20.5))
-                    path.addCurve(
-                        to: CGPoint(x: 16, y: 36),
-                        control1: CGPoint(x: 0.5, y: 29.0604),
-                        control2: CGPoint(x: 7.43959, y: 36)
-                    )
-                }
-                .stroke(
-                    Color(message.isSentByCurrentUser ? colors.chatBackgroundOutgoing : colors.chatBackgroundIncoming),
-                    style: StrokeStyle(
-                        lineWidth: 1.0,
-                        lineCap: .round,
-                        lineJoin: .round
-                    )
-                )
-                .frame(width: 16, height: 48)
-                .offset(y: -10)
-                .rotation3DEffect(
-                    .degrees(isLineFlipped ? 180 : 0),
-                    axis: (x: 0, y: 1, z: 0)
-                ),
+                threadConnector,
                 alignment: isRightAligned ? .trailing : .leading
             )
-            .foregroundColor(usesInvertedStyle ? colors.textOnAccent.toColor : colors.textPrimary.toColor)
+            .foregroundColor(usesInvertedStyle ? colors.textOnAccent.toColor : colors.textLink.toColor)
         }
     }
-    
+
+    /// The connector starts at the bottom edge of the message bubble, which sits
+    /// `spacingXxs` above this view, and ends at the vertical center of the avatar.
+    private var threadConnector: some View {
+        GeometryReader { proxy in
+            let startY = -tokens.spacingXxs + ThreadConnector.lineWidth / 2
+            let endY = (proxy.size.height + tokens.spacingXxs) / 2
+            Path { path in
+                path.move(to: CGPoint(x: ThreadConnector.lineWidth / 2, y: startY))
+                path.addLine(to: CGPoint(x: ThreadConnector.lineWidth / 2, y: endY - ThreadConnector.cornerRadius))
+                path.addCurve(
+                    to: CGPoint(x: ThreadConnector.width, y: endY),
+                    control1: CGPoint(
+                        x: ThreadConnector.lineWidth / 2,
+                        y: endY - ThreadConnector.cornerRadius + ThreadConnector.controlPointOffset
+                    ),
+                    control2: CGPoint(x: ThreadConnector.width - ThreadConnector.controlPointOffset, y: endY)
+                )
+            }
+            .stroke(
+                Color(message.isSentByCurrentUser ? colors.chatThreadConnectorOutgoing : colors.chatThreadConnectorIncoming),
+                style: StrokeStyle(
+                    lineWidth: ThreadConnector.lineWidth,
+                    lineCap: .round,
+                    lineJoin: .round
+                )
+            )
+        }
+        .frame(width: ThreadConnector.width)
+        .rotation3DEffect(
+            .degrees(isLineFlipped ? 180 : 0),
+            axis: (x: 0, y: 1, z: 0)
+        )
+    }
+
     private var isLineFlipped: Bool {
         isRightAligned != (layoutDirection == .rightToLeft)
     }

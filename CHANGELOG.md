@@ -26,6 +26,7 @@ _August 03, 2026_
 - Fix a lighter ring appearing along the screen edges of the blurred background behind the message action menu [#1552](https://github.com/GetStream/stream-chat-swiftui/pull/1552)
 - Fix the composer's add attachment icon being thinner than the other composer icons [#1553](https://github.com/GetStream/stream-chat-swiftui/pull/1553)
 - Fix thread list items appearing lighter than the app background in dark mode [#1550](https://github.com/GetStream/stream-chat-swiftui/pull/1550)
+- Fix the thread reply link color and the low contrast of the thread indicator's connector line [#1555](https://github.com/GetStream/stream-chat-swiftui/pull/1555)
 
 ### 🔄 Changed
 - Replace vendored Nuke image loading with `StreamImageDownloader` from StreamChatCommonUI [#1531](https://github.com/GetStream/stream-chat-swiftui/pull/1531)
