@@ -13,6 +13,7 @@ struct AppConfigurationView: View {
     @State private var appStyle = AppConfiguration.default.appStyle
     @State private var voiceRecordingAutoSend = AppConfiguration.default.isVoiceRecordingAutoSendEnabled
     @State private var messagesStartAtTheTop = AppConfiguration.default.shouldMessagesStartAtTheTop
+    @State private var channelListSearchType = AppConfiguration.default.channelListSearchType
     @State private var attachmentDownloadsDirectory = AppConfiguration.default.attachmentDownloadsDirectory
 
     var body: some View {
@@ -45,6 +46,17 @@ struct AppConfigurationView: View {
                 }
                 Section("Message List") {
                     Toggle("Messages Start at the Top", isOn: $messagesStartAtTheTop)
+                }
+                Section {
+                    Picker("Search By", selection: $channelListSearchType) {
+                        ForEach(AppConfiguration.ChannelListSearchTypeOption.allCases) { option in
+                            Text(option.title).tag(option)
+                        }
+                    }
+                } header: {
+                    Text("Channel List Search")
+                } footer: {
+                    Text("Takes effect the next time the channel list is loaded, e.g. after logging back in.")
                 }
                 Section {
                     Picker("Directory", selection: $attachmentDownloadsDirectory) {
@@ -85,6 +97,9 @@ struct AppConfigurationView: View {
         .onChange(of: messagesStartAtTheTop) { newValue in
             AppConfiguration.default.shouldMessagesStartAtTheTop = newValue
             InjectedValues[\.utils].messageListConfig = AppConfiguration.makeMessageListConfig()
+        }
+        .onChange(of: channelListSearchType) { newValue in
+            AppConfiguration.default.channelListSearchType = newValue
         }
         .onChange(of: attachmentDownloadsDirectory) { newValue in
             AppConfiguration.default.attachmentDownloadsDirectory = newValue

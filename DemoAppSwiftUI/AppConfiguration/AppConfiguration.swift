@@ -24,6 +24,12 @@ final class AppConfiguration {
     var isVoiceRecordingAutoSendEnabled = false
     /// When enabled, messages start at the top of the list when there are few messages.
     var shouldMessagesStartAtTheTop = false
+    /// The channel list search strategy (channels or messages).
+    ///
+    /// Mirrors UIKit's `Components.default.channelListSearchStrategy`. In-memory only, like the
+    /// rest of the toggles above: it takes effect the next time the channel list is constructed
+    /// (e.g. after logging back in), not on the already-presented one.
+    var channelListSearchType: ChannelListSearchTypeOption = .messages
     /// Base directory used for Stream Chat attachment downloads.
     ///
     /// Applied when creating `ChatClient`, so changes take effect on the next app launch.
@@ -34,6 +40,31 @@ final class AppConfiguration {
     enum AppStyle: String, CaseIterable {
         case regular
         case liquidGlass
+    }
+
+    /// The channel list search backend to query from the search bar.
+    ///
+    /// A thin, `Hashable`, demo-app-local stand-in for `ChannelListSearchType` (which is a plain
+    /// `Equatable` class in the SDK and so isn't usable directly as a `Picker` selection).
+    enum ChannelListSearchTypeOption: String, CaseIterable, Identifiable {
+        case channels
+        case messages
+
+        var id: String { rawValue }
+
+        var title: String {
+            switch self {
+            case .channels: return "Channels"
+            case .messages: return "Messages"
+            }
+        }
+
+        var resolved: ChannelListSearchType {
+            switch self {
+            case .channels: return .channels
+            case .messages: return .messages
+            }
+        }
     }
 
     /// Common sandbox locations for storing downloaded attachments.
