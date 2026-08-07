@@ -18,6 +18,7 @@ is_localhost = !is_ci
 mock_server_driver_port = 4568
 swift_environment_path = File.absolute_path('../Sources/StreamChatSwiftUI/Generated/SystemEnvironment+Version.swift')
 @force_check = false
+xcodebuild_formatter = FastlaneCore::Globals.verbose? ? '' : nil
 @impact = nil
 
 before_all do |lane|
@@ -211,7 +212,8 @@ lane :test_ui do |options|
     build_for_testing: options[:build_for_testing],
     skip_build: options[:skip_build],
     number_of_retries: options[:record].to_s.empty? ? 1 : nil,
-    fail_build: !record_mode
+    fail_build: !record_mode,
+    xcodebuild_formatter: xcodebuild_formatter
   )
 
   if record_mode && is_ci
@@ -243,7 +245,8 @@ lane :build_test_app_and_frameworks do
     derived_data_path: derived_data_path,
     cloned_source_packages_path: source_packages_path,
     clean: is_localhost,
-    build_for_testing: true
+    build_for_testing: true,
+    xcodebuild_formatter: xcodebuild_formatter
   )
 end
 
@@ -293,7 +296,8 @@ lane :test_e2e_mock do |options|
     test_without_building: options[:test_without_building],
     devices: options[:device],
     prelaunch_simulator: is_ci,
-    number_of_retries: 3
+    number_of_retries: 3,
+    xcodebuild_formatter: xcodebuild_formatter
   }
 
   if ENV['MATRIX_SIZE'] && options[:batch]
@@ -350,7 +354,8 @@ lane :build_demo do |options|
     derived_data_path: derived_data_path,
     cloned_source_packages_path: source_packages_path,
     build_for_testing: true,
-    devices: options[:device]
+    devices: options[:device],
+    xcodebuild_formatter: xcodebuild_formatter
   )
 end
 
@@ -562,7 +567,8 @@ lane :size_analyze do
     skip_package_pkg: true,
     skip_codesigning: true,
     derived_data_path: derived_data_path,
-    cloned_source_packages_path: source_packages_path
+    cloned_source_packages_path: source_packages_path,
+    xcodebuild_formatter: xcodebuild_formatter
   )
 
   show_detailed_sdk_size(sdk_names: sdk_names, threshold: 42)
