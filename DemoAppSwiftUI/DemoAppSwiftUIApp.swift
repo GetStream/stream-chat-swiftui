@@ -28,7 +28,7 @@ struct RootView: View {
     }
 
     var channelListSearchType: ChannelListSearchType {
-        .messages
+        AppConfiguration.default.channelListSearchType.resolved
     }
 
     var body: some View {
