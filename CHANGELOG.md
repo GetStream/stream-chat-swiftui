@@ -6,7 +6,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ### 🔄 Changed
 - Debounce channel and message search dynamically based on query length [#1560](https://github.com/GetStream/stream-chat-swiftui/pull/1560)
 
-### ⚠️ Deprecated
+### ⚠ Deprecated
 - Deprecate `ChatChannelListViewModel.channelListSearchController` in favor of `channelSearchController` [#1560](https://github.com/GetStream/stream-chat-swiftui/pull/1560)
 
 # [5.8.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/5.8.0)
@@ -32,10 +32,10 @@ _August 03, 2026_
 - Replace vendored Nuke image loading with `StreamImageDownloader` from StreamChatCommonUI [#1531](https://github.com/GetStream/stream-chat-swiftui/pull/1531)
 - Remove the separators between the message action menu items, keeping one before the destructive actions [#1549](https://github.com/GetStream/stream-chat-swiftui/pull/1549)
 
-### ⚡️ Performance
+### ⚡ Performance
 - Reduce SDK size by 400 KB [#1531](https://github.com/GetStream/stream-chat-swiftui/pull/1531)
 
-### ⚠️ Deprecated
+### ⚠ Deprecated
 - Deprecate `AttachmentMediaPickerItemView.init(assetLoader:requestId:asset:onImageTap:imageSelected:selectedAssetIds:)`, the request id is no longer used. Use the initializer without it. [#1546](https://github.com/GetStream/stream-chat-swiftui/pull/1546)
 
 # [5.7.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/5.7.0)
@@ -48,7 +48,7 @@ _July 22, 2026_
 ### 🐞 Fixed
 - Send images and videos picked from the file picker as their original type instead of always file type [#1515](https://github.com/GetStream/stream-chat-swiftui/pull/1515)
 
-### ⚡️ Performance
+### ⚡ Performance
 - Fix the channel list rebuilding on every scroll tick after returning from a channel [#1525](https://github.com/GetStream/stream-chat-swiftui/pull/1525)
 - Render channel list dividers as row overlays instead of sibling views [#1529](https://github.com/GetStream/stream-chat-swiftui/pull/1529)
 - Reduce SDK size by 2.5 MB [#1529](https://github.com/GetStream/stream-chat-swiftui/pull/1529)
@@ -318,7 +318,7 @@ _February 11, 2026_
 - Add public init for `ImageContainerView` [#1174](https://github.com/GetStream/stream-chat-swiftui/pull/1174)
 - Expose Keyboard Handling methods [#1175](https://github.com/GetStream/stream-chat-swiftui/pull/1175)
 
-### ⚡️ Performance
+### ⚡ Performance
 - Reduction of the SDK size by 2MB [#1173
 ](https://github.com/GetStream/stream-chat-swiftui/pull/1173)
 
