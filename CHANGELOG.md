@@ -5,6 +5,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### 🐞 Fixed
 - Fix attachment preview being too big in quoted messages when its thumbnail is unavailable [#1564](https://github.com/GetStream/stream-chat-swiftui/pull/1564)
+- Fix jump-to-unread button flickering when receiving messages in an open channel [#1566](https://github.com/GetStream/stream-chat-swiftui/pull/1566)
 
 ### 🔄 Changed
 - Debounce channel and message search dynamically based on query length [#1560](https://github.com/GetStream/stream-chat-swiftui/pull/1560)
