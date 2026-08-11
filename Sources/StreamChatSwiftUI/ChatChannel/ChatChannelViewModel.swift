@@ -579,6 +579,10 @@ import SwiftUI
     }
     
     @objc public func onViewDissappear() {
+        throttler.cancel()
+        if shouldMarkChannelRead {
+            channelController.markRead()
+        }
         isActive = false
     }
     
@@ -767,6 +771,14 @@ import SwiftUI
                 canMarkRead = false
             }
         }
+    }
+
+    private var shouldMarkChannelRead: Bool {
+        guard !isMessageThread else { return false }
+        guard hasSetInitialCanMarkRead, canMarkRead else { return false }
+        guard !currentUserMarkedMessageUnread else { return false }
+        guard !showScrollToLatestButton else { return false }
+        return channelDataSource.hasLoadedAllNextMessages
     }
 
     private var shouldMarkThreadRead: Bool {
