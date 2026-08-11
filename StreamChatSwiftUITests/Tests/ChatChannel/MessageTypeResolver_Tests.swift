@@ -26,6 +26,7 @@ class MessageTypeResolver_Tests: XCTestCase {
         let hasVideoAttachment = messageTypeResolver.hasVideoAttachment(message: message)
         let hasLinkAttachment = messageTypeResolver.hasLinkAttachment(message: message)
         let hasFileAttachment = messageTypeResolver.hasFileAttachment(message: message)
+        let hasAudioAttachment = messageTypeResolver.hasAudioAttachment(message: message)
         let hasCustomAttachment = messageTypeResolver.hasCustomAttachment(message: message)
 
         // Then
@@ -35,6 +36,7 @@ class MessageTypeResolver_Tests: XCTestCase {
         XCTAssert(hasVideoAttachment == false)
         XCTAssert(hasLinkAttachment == false)
         XCTAssert(hasFileAttachment == false)
+        XCTAssert(hasAudioAttachment == false)
         XCTAssert(hasCustomAttachment == false)
     }
 
@@ -162,5 +164,25 @@ class MessageTypeResolver_Tests: XCTestCase {
 
         // Then
         XCTAssert(hasVoiceRecording == true)
+    }
+
+    func test_messageTypeResolver_hasAudioAttachment() {
+        // Given
+        let message = ChatMessage.mock(
+            id: .unique,
+            cid: .unique,
+            text: "",
+            author: .mock(id: .unique),
+            attachments: ChatChannelTestHelpers.audioAttachments
+        )
+        let messageTypeResolver = MessageTypeResolver()
+
+        // When
+        let hasAudioAttachment = messageTypeResolver.hasAudioAttachment(message: message)
+        let hasFileAttachment = messageTypeResolver.hasFileAttachment(message: message)
+
+        // Then
+        XCTAssertTrue(hasAudioAttachment)
+        XCTAssertFalse(hasFileAttachment)
     }
 }

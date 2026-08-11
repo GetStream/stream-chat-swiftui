@@ -1309,6 +1309,30 @@ import XCTest
         // Then
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
+
+    func test_audioAttachmentView_snapshot() {
+        // Given
+        let message = ChatMessage.mock(
+            id: .unique,
+            cid: .unique,
+            text: "",
+            author: .mock(id: .unique),
+            attachments: ChatChannelTestHelpers.audioAttachments
+        )
+
+        // When
+        let view = MessageAttachmentsView(
+            factory: DefaultViewFactory.shared,
+            message: message,
+            width: defaultScreenSize.width,
+            isFirst: true,
+            scrolledId: .constant(nil)
+        )
+        .frame(width: defaultScreenSize.width, height: 120)
+
+        // Then
+        AssertSnapshot(view, variants: .onlyUserInterfaceStyles, size: CGSize(width: defaultScreenSize.width, height: 120))
+    }
     
     func test_linkAttachmentView_customColors_snapshot() {
         // Given

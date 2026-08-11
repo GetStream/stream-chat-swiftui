@@ -28,7 +28,9 @@ public struct FileAttachmentsContainer<Factory: ViewFactory>: View {
     }
 
     public var body: some View {
-        let attachments = message.fileAttachments
+        // Audio attachments reuse the file attachment UI until native audio
+        // playback support is available.
+        let attachments = message.fileAttachments + message.audioAttachments.map(\.asFileAttachment)
         VStack(spacing: tokens.spacingXxs) {
             ForEach(attachments) { attachment in
                 FileAttachmentView(
@@ -48,6 +50,24 @@ public struct FileAttachmentsContainer<Factory: ViewFactory>: View {
             }
         }
         .accessibilityIdentifier("FileAttachmentsContainer")
+    }
+}
+
+extension ChatMessageAudioAttachment {
+    /// Maps an audio attachment to a file attachment so it can reuse the file UI.
+    var asFileAttachment: ChatMessageFileAttachment {
+        ChatMessageFileAttachment(
+            id: id,
+            type: .file,
+            payload: FileAttachmentPayload(
+                title: payload.title,
+                assetRemoteURL: payload.audioURL,
+                file: payload.file,
+                extraData: payload.extraData
+            ),
+            downloadingState: downloadingState,
+            uploadingState: uploadingState
+        )
     }
 }
 

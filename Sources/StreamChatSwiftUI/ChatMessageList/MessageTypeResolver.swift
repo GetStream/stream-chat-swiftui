@@ -36,6 +36,11 @@ public protocol MessageTypeResolving {
     /// - Parameter message: the message being checked.
     /// - Returns: bool, whether the condition is satisfied.
     func hasFileAttachment(message: ChatMessage) -> Bool
+
+    /// Checks whether the message has audio attachment.
+    /// - Parameter message: the message being checked.
+    /// - Returns: bool, whether the condition is satisfied.
+    func hasAudioAttachment(message: ChatMessage) -> Bool
     
     /// Checks whether the message has voice recording.
     /// - Parameter message: the message being checked.
@@ -74,6 +79,10 @@ extension MessageTypeResolving {
 
     public func hasFileAttachment(message: ChatMessage) -> Bool {
         !message.fileAttachments.isEmpty
+    }
+
+    public func hasAudioAttachment(message: ChatMessage) -> Bool {
+        !message.audioAttachments.isEmpty
     }
     
     public func hasVoiceRecording(message: ChatMessage) -> Bool {
