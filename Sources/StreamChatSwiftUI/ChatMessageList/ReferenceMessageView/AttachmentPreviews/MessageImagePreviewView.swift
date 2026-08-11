@@ -28,6 +28,9 @@ public struct MessageImagePreviewView: View {
             resize: true,
             showVideoIcon: false
         )
+        // Without an explicit frame the placeholder shown while the thumbnail is
+        // loading (or when it fails) stretches to fill the available space.
+        .frame(width: size, height: size)
         .clipShape(RoundedRectangle(cornerRadius: tokens.radiusMd, style: .continuous))
     }
 }

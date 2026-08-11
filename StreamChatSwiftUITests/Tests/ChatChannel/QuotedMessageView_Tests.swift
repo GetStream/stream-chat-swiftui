@@ -820,6 +820,44 @@ import XCTest
         XCTAssertEqual(viewModel.subtitle, "Hello")
     }
 
+    // MARK: - Reply - Video (Thumbnail Unavailable)
+
+    func test_quotedMessageView_videoWithoutLoadedThumbnail() {
+        // Given
+        streamChat = StreamChat(
+            chatClient: chatClient,
+            utils: Utils(mediaLoader: FailingMediaLoader())
+        )
+        let videoAttachment = ChatMessageVideoAttachment(
+            id: .unique,
+            type: .video,
+            payload: VideoAttachmentPayload(
+                title: "video.mp4",
+                videoRemoteURL: .localYodaImage,
+                thumbnailURL: .localYodaImage,
+                file: .init(type: .mp4, size: 1024, mimeType: "video/mp4"),
+                extraData: nil
+            ),
+            downloadingState: nil,
+            uploadingState: nil
+        )
+        let message = ChatMessage.mock(
+            id: .unique,
+            cid: .unique,
+            text: "I took a short clip earlier",
+            author: author,
+            attachments: [videoAttachment.asAnyAttachment]
+        )
+
+        // When
+        let view = containerView {
+            QuotedMessageView(message: message)
+        }
+
+        // Then
+        AssertSnapshot(view, size: containerSize)
+    }
+
     // MARK: - Helper
 
     /// Wraps the quoted message view in a container to visualize corner radius properly
@@ -830,6 +868,49 @@ import XCTest
                 .frame(width: quotedViewSize.width, height: quotedViewSize.height)
         }
         .frame(width: containerSize.width, height: containerSize.height)
+    }
+}
+
+/// A media loader that never resolves any media, used to render preview placeholders.
+private final class FailingMediaLoader: MediaLoader, @unchecked Sendable {
+    func loadImage(
+        url: URL?,
+        options: ImageLoadOptions,
+        completion: @escaping @MainActor (Result<MediaLoaderImage, Error>) -> Void
+    ) {
+        StreamConcurrency.onMain { completion(.failure(ClientError("no image"))) }
+    }
+
+    func loadVideoAsset(
+        at url: URL,
+        options: VideoLoadOptions,
+        completion: @escaping @MainActor (Result<MediaLoaderVideoAsset, Error>) -> Void
+    ) {
+        StreamConcurrency.onMain { completion(.failure(ClientError("no asset"))) }
+    }
+
+    func loadVideoPreview(
+        with attachment: ChatMessageVideoAttachment,
+        options: VideoLoadOptions,
+        completion: @escaping @MainActor (Result<MediaLoaderVideoPreview, Error>) -> Void
+    ) {
+        StreamConcurrency.onMain { completion(.failure(ClientError("no preview"))) }
+    }
+
+    func loadVideoPreview(
+        at url: URL,
+        options: VideoLoadOptions,
+        completion: @escaping @MainActor (Result<MediaLoaderVideoPreview, Error>) -> Void
+    ) {
+        StreamConcurrency.onMain { completion(.failure(ClientError("no preview"))) }
+    }
+
+    func loadFileRequest(
+        for url: URL,
+        options: DownloadFileRequestOptions,
+        completion: @escaping @MainActor (Result<MediaLoaderFileRequest, Error>) -> Void
+    ) {
+        StreamConcurrency.onMain { completion(.failure(ClientError("no file"))) }
     }
 }
 
