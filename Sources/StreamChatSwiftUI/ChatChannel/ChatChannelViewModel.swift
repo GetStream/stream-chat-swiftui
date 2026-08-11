@@ -34,7 +34,8 @@ import SwiftUI
 
     private var isActive = true
     private var readsString = ""
-    private var canMarkRead = false
+    /// Whether the channel can currently be marked as read (user has seen first unread / is caught up).
+    @Published public private(set) var canMarkRead = false
     private var hasSetInitialCanMarkRead = false
     private var pendingMarkReadMessageId: MessageId?
     private var currentUserSentNewMessage = false
@@ -657,10 +658,10 @@ import SwiftUI
             pendingMarkReadMessageId = message.id
             return
         }
-        throttler.execute { [weak self] in
-            self?.channelController.markRead()
-            // We keep `firstUnreadMessageId` value set which keeps showing the new messages header in the channel view
-        }
+        // Mark read immediately so optimistic local unread clearing can hide
+        // jump-to-unread before the next frame. API calls are coalesced in the LLC.
+        // We keep `firstUnreadMessageId` set which keeps showing the new messages header.
+        channelController.markRead()
     }
     
     private func refreshMessageListIfNeeded() {
