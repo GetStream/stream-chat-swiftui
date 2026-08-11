@@ -56,8 +56,8 @@ import SwiftUI
 
     @Published public var selectedRangeLocation: Int = 0
 
-    /// An helper property to store additional information of file attachments.
-    private var addedRemoteFileURLs: [URL: FileAttachmentPayload] = [:]
+    /// An helper property to store additional information of file/audio attachments.
+    private var addedRemoteFileURLs: [URL: AnyAttachmentPayload] = [:]
 
     @Published public var addedVoiceRecordings = [AddedVoiceRecording]() {
         didSet {
@@ -1225,13 +1225,13 @@ final class TotalAddedAssets {
     }
 }
 
-// A asset containing file information.
-// If it has a payload, it means that the file is already uploaded to the server.
+// A asset containing file or audio information.
+// If it has a payload, it means that the attachment is already uploaded to the server.
 final class FileAddedAsset {
     var url: URL
-    var payload: FileAttachmentPayload?
+    var payload: AnyAttachmentPayload?
 
-    init(url: URL, payload: FileAttachmentPayload? = nil) {
+    init(url: URL, payload: AnyAttachmentPayload? = nil) {
         self.url = url
         self.payload = payload
     }
@@ -1252,15 +1252,10 @@ final class FileAddedAsset {
         var attachments = try mediaAssets.map { try $0.toAttachmentPayload() }
         attachments += try fileAssets.map { file in
             _ = file.url.startAccessingSecurityScopedResource()
-            if let filePayload = file.payload {
-                return AnyAttachmentPayload(payload: filePayload)
+            if let uploadedPayload = file.payload {
+                return uploadedPayload
             }
-            var attachmentType = AttachmentType(fileExtension: file.url.pathExtension)
-            // Audio files are treated as regular files, since the composer only
-            // supports audio through voice recordings.
-            if attachmentType == .audio {
-                attachmentType = .file
-            }
+            let attachmentType = AttachmentType(fileExtension: file.url.pathExtension)
             return try AnyAttachmentPayload(localFileURL: file.url, attachmentType: attachmentType)
         }
         attachments += try voiceAssets.map { recording in
@@ -1323,12 +1318,16 @@ final class FileAddedAsset {
                 guard let fileAsset = fileAttachmentToAddedAsset(attachment) else { break }
                 addedAssets.fileAssets.append(fileAsset)
                 group?.leave()
+            case .audio:
+                guard let fileAsset = audioAttachmentToAddedAsset(attachment) else { break }
+                addedAssets.fileAssets.append(fileAsset)
+                group?.leave()
             case .voiceRecording:
                 if let addedVoiceRecording = attachment.toAddedVoiceRecording() {
                     addedAssets.voiceAssets.append(addedVoiceRecording)
                 }
                 group?.leave()
-            case .linkPreview, .audio, .giphy, .unknown:
+            case .linkPreview, .giphy, .unknown:
                 break
             default:
                 guard let customAttachment = customAttachmentToAddedAsset(attachment) else { break }
@@ -1361,7 +1360,22 @@ final class FileAddedAsset {
         }
         return FileAddedAsset(
             url: filePayload.assetURL,
-            payload: filePayload.payload
+            payload: AnyAttachmentPayload(payload: filePayload.payload)
+        )
+    }
+
+    private func audioAttachmentToAddedAsset(
+        _ attachment: AnyChatMessageAttachment
+    ) -> FileAddedAsset? {
+        guard let audioPayload = attachment.attachment(payloadType: AudioAttachmentPayload.self) else {
+            return nil
+        }
+        if let localUrl = attachment.uploadingState?.localFileURL {
+            return FileAddedAsset(url: localUrl)
+        }
+        return FileAddedAsset(
+            url: audioPayload.audioURL,
+            payload: AnyAttachmentPayload(payload: audioPayload.payload)
         )
     }
 

@@ -8,6 +8,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Fix attachment preview being too big in quoted messages when its thumbnail is unavailable [#1564](https://github.com/GetStream/stream-chat-swiftui/pull/1564)
 
 ### 🔄 Changed
+- Send picked audio files from the composer as `.audio` attachments instead of `.file` [#1565](https://github.com/GetStream/stream-chat-swiftui/pull/1565)
 - Debounce channel and message search dynamically based on query length [#1560](https://github.com/GetStream/stream-chat-swiftui/pull/1560)
 
 ### ⚠ Deprecated
