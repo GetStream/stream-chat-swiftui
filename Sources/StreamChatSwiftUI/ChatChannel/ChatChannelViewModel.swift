@@ -658,10 +658,12 @@ import SwiftUI
             pendingMarkReadMessageId = message.id
             return
         }
-        // Mark read immediately so optimistic local unread clearing can hide
-        // jump-to-unread before the next frame. API calls are coalesced in the LLC.
-        // We keep `firstUnreadMessageId` set which keeps showing the new messages header.
-        channelController.markRead()
+        // First request runs immediately via Throttler; later calls within the
+        // interval are coalesced. We keep `firstUnreadMessageId` set which keeps
+        // showing the new messages header in the channel view.
+        throttler.execute { [weak self] in
+            self?.channelController.markRead()
+        }
     }
     
     private func refreshMessageListIfNeeded() {
