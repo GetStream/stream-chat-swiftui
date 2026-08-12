@@ -155,6 +155,73 @@ class FileAttachmentView_Tests: StreamChatTestCase {
         XCTAssertFalse(viewModel.downloadButtonShown)
     }
 
+    // MARK: - Audio Attachments
+
+    func test_audioAttachment_asFileAttachment_mapsPayload() {
+        let audioURL = URL(string: "https://example.com/sample.mp3")!
+        let file = AttachmentFile(type: .mp3, size: 2048, mimeType: "audio/mpeg")
+        let audio = ChatMessageAudioAttachment(
+            id: .unique,
+            type: .audio,
+            payload: AudioAttachmentPayload(
+                title: "Sample.mp3",
+                audioRemoteURL: audioURL,
+                file: file,
+                extraData: ["source": .string("web")]
+            ),
+            downloadingState: nil,
+            uploadingState: nil
+        )
+
+        let fileAttachment = audio.asFileAttachment
+
+        XCTAssertEqual(fileAttachment.id, audio.id)
+        XCTAssertEqual(fileAttachment.type, .file)
+        XCTAssertEqual(fileAttachment.title, "Sample.mp3")
+        XCTAssertEqual(fileAttachment.assetURL, audioURL)
+        XCTAssertEqual(fileAttachment.file, file)
+        XCTAssertEqual(fileAttachment.extraData, ["source": .string("web")])
+    }
+
+    func test_fileAttachmentsContainer_audioOnlyMessage_snapshot() {
+        let message = ChatMessage.mock(
+            id: .unique,
+            cid: .unique,
+            text: "",
+            author: .mock(id: .unique),
+            attachments: ChatChannelTestHelpers.audioAttachments
+        )
+        let view = FileAttachmentsContainer(
+            factory: DefaultViewFactory.shared,
+            message: message,
+            width: 300,
+            isFirst: true,
+            scrolledId: .constant(nil)
+        )
+        .frame(width: 320, height: 80)
+        AssertSnapshot(view, variants: .onlyUserInterfaceStyles, size: CGSize(width: 320, height: 80))
+    }
+
+    func test_fileAttachmentsContainer_fileAndAudioMessage_snapshot() {
+        let message = ChatMessage.mock(
+            id: .unique,
+            cid: .unique,
+            text: "",
+            author: .mock(id: .unique),
+            attachments: ChatChannelTestHelpers.pdfFileAttachments + ChatChannelTestHelpers.audioAttachments
+        )
+        let size = CGSize(width: 320, height: 160)
+        let view = FileAttachmentsContainer(
+            factory: DefaultViewFactory.shared,
+            message: message,
+            width: 300,
+            isFirst: true,
+            scrolledId: .constant(nil)
+        )
+        .frame(width: size.width, height: size.height)
+        AssertSnapshot(view, variants: .onlyUserInterfaceStyles, size: size)
+    }
+
     // MARK: - Helper Methods
     
     private func createFileAttachment(
