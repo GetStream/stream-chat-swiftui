@@ -38,13 +38,18 @@ import SwiftUI
             } else {
                 // Mentions use `displayInfo == nil`, so clear any non-instant command
                 // (not only commands with `isInstant == false`).
-                if composerCommand?.displayInfo?.isInstant != true {
+                // When a command is cleared here, `composerCommand` didSet clears suggestions;
+                // otherwise clear them explicitly (instant command kept, or no command).
+                let clearingCommand = composerCommand != nil
+                    && composerCommand?.displayInfo?.isInstant != true
+                if clearingCommand {
                     withAnimation(.easeInOut(duration: 0.2)) {
                         composerCommand = nil
                     }
+                } else {
+                    clearComposerSuggestions()
                 }
                 selectedRangeLocation = 0
-                clearComposerSuggestions()
                 clearMentions()
 
                 if shouldDeleteDraftMessage(oldValue: oldValue) {

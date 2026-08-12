@@ -715,20 +715,29 @@ import XCTest
     }
 
     func test_messageComposerVM_deletingMentionQuery_doesNotShowStaleSuggestionsWhenEmpty() async {
-        let viewModel = makeComposerViewModel()
+        let requestStarted = expectation(description: "delayed mention request started")
+        let requestFinished = expectation(description: "delayed mention request finished")
+        let provider = DelayedMentionSuggestionsProvider(
+            suggestions: [.user(.mock(id: "ios", name: "iOS"))],
+            delayNanoseconds: 100_000_000,
+            onStarted: { requestStarted.fulfill() },
+            onFinished: { requestFinished.fulfill() }
+        )
+        let viewModel = MessageComposerViewModel(
+            channelController: makeChannelController(),
+            messageController: nil
+        )
+        viewModel.utils = Utils(
+            commandsConfig: MentionsProviderCommandsConfig(provider: provider)
+        )
+
         viewModel.selectedRangeLocation = 4
         viewModel.text = "@iOS"
-        viewModel.selectedRangeLocation = 3
-        viewModel.text = "@iO"
-        viewModel.selectedRangeLocation = 2
-        viewModel.text = "@i"
-        viewModel.selectedRangeLocation = 1
-        viewModel.text = "@"
+        await fulfillment(of: [requestStarted], timeout: defaultTimeout)
+
         viewModel.selectedRangeLocation = 0
         viewModel.text = ""
-
-        // Allow any in-flight / debounced suggestion request to finish.
-        try? await Task.sleep(nanoseconds: 800_000_000)
+        await fulfillment(of: [requestFinished], timeout: defaultTimeout)
 
         XCTAssertNil(viewModel.composerCommand)
         XCTAssertTrue(viewModel.suggestions.isEmpty)
@@ -2837,5 +2846,54 @@ enum MessageComposerTestUtils {
             chatClient: chatClient,
             messages: messages
         )
+    }
+}
+
+private final class MentionsProviderCommandsConfig: CommandsConfig {
+    let mentionsSymbol = "@"
+    let instantCommandsSymbol = "/"
+    private let provider: MentionSuggestionsProvider
+
+    init(provider: MentionSuggestionsProvider) {
+        self.provider = provider
+    }
+
+    func makeCommandsHandler(with channelController: ChatChannelController) -> CommandsHandler {
+        let mentionsCommandHandler = MentionsCommandHandler(
+            channelController: channelController,
+            commandSymbol: mentionsSymbol,
+            provider: provider
+        )
+        return DefaultCommandsConfig.makeCommandsHandler(
+            mentionsCommandHandler: mentionsCommandHandler,
+            channelController: channelController
+        )
+    }
+}
+
+private final class DelayedMentionSuggestionsProvider: MentionSuggestionsProvider, @unchecked Sendable {
+    private let suggestions: [MentionSuggestion]
+    private let delayNanoseconds: UInt64
+    private let onStarted: @Sendable () -> Void
+    private let onFinished: @Sendable () -> Void
+
+    init(
+        suggestions: [MentionSuggestion],
+        delayNanoseconds: UInt64,
+        onStarted: @escaping @Sendable () -> Void,
+        onFinished: @escaping @Sendable () -> Void
+    ) {
+        self.suggestions = suggestions
+        self.delayNanoseconds = delayNanoseconds
+        self.onStarted = onStarted
+        self.onFinished = onFinished
+    }
+
+    func mentionSuggestions(for request: MentionSuggestionsRequest) async throws -> [MentionSuggestion] {
+        onStarted()
+        defer { onFinished() }
+        try await Task.sleep(nanoseconds: delayNanoseconds)
+        try Task.checkCancellation()
+        return suggestions
     }
 }
