@@ -65,6 +65,12 @@ import SwiftUI
         composerCommand: ComposerCommand,
         completion: @escaping @MainActor (Error?) -> Void
     )
+
+    /// Cancels any pending suggestion work and clears cached search results.
+    ///
+    /// Called when the active command ends so a slower, superseded search cannot
+    /// resurface stale suggestions.
+    func clearSuggestions()
 }
 
 /// Default implementations.
@@ -82,6 +88,10 @@ extension CommandHandler {
 
     public func canBeExecuted(composerCommand: ComposerCommand) -> Bool {
         !composerCommand.typingSuggestion.text.isEmpty
+    }
+
+    public func clearSuggestions() {
+        // optional method.
     }
 }
 
@@ -253,6 +263,12 @@ public class CommandsHandler: CommandHandler {
         }
 
         return StreamChatError.noSuggestionsAvailable.asFailedPromise()
+    }
+
+    public func clearSuggestions() {
+        for command in commands {
+            command.clearSuggestions()
+        }
     }
 
     public func handleCommand(

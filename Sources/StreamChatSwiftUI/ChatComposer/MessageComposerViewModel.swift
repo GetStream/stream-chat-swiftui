@@ -44,10 +44,7 @@ import SwiftUI
                     }
                 }
                 selectedRangeLocation = 0
-                suggestionsCancellable?.cancel()
-                withAnimation(.easeInOut(duration: 0.2)) {
-                    suggestions = [String: Any]()
-                }
+                clearComposerSuggestions()
                 clearMentions()
 
                 if shouldDeleteDraftMessage(oldValue: oldValue) {
@@ -122,6 +119,7 @@ import SwiftUI
             }
             if oldValue != nil && composerCommand == nil {
                 pickerTypeState = .expanded(.none)
+                clearComposerSuggestions()
             }
         }
     }
@@ -1048,9 +1046,7 @@ import SwiftUI
         suggestionsCancellable?.cancel()
 
         guard let composerCommand else {
-            withAnimation(.easeInOut(duration: 0.2)) {
-                suggestions = [String: Any]()
-            }
+            clearComposerSuggestions()
             return
         }
 
@@ -1072,6 +1068,14 @@ import SwiftUI
                     self.suggestions[suggestionInfo.key] = suggestionInfo.value
                 }
             }
+    }
+
+    private func clearComposerSuggestions() {
+        suggestionsCancellable?.cancel()
+        commandsHandler.clearSuggestions()
+        withAnimation(.easeInOut(duration: 0.2)) {
+            suggestions = [String: Any]()
+        }
     }
     
     private func listenToCooldownUpdates() {

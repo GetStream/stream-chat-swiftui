@@ -289,6 +289,30 @@ import XCTest
         XCTAssertTrue(provider.receivedRequests.isEmpty)
     }
 
+    func test_clearSuggestions_cancelsInFlightAndClearsProvider() async {
+        // Given
+        let provider = MockMentionSuggestionsProvider(suggestions: [.here], delayNanoseconds: 500_000_000)
+        let handler = makeHandler(provider: provider)
+        let expectation = expectation(description: "suggestions")
+        expectation.isInverted = true
+
+        let cancellable = handler.showSuggestions(for: mentionsCommand(text: "mar")).sink { _ in
+        } receiveValue: { _ in
+            expectation.fulfill()
+        }
+
+        // When
+        handler.clearSuggestions()
+
+        // Then
+        await fulfillment(of: [expectation], timeout: 0.2)
+        cancellable.cancel()
+
+        // Allow the async provider clear to run.
+        try? await Task.sleep(nanoseconds: 50_000_000)
+        XCTAssertEqual(provider.clearResultsCallCount, 1)
+    }
+
     // MARK: - private
 
     private func makeHandler(provider: MentionSuggestionsProvider? = nil) -> MentionsCommandHandler {
@@ -328,18 +352,33 @@ private final class Box<Value> {
 private final class MockMentionSuggestionsProvider: MentionSuggestionsProvider, @unchecked Sendable {
     let suggestions: [MentionSuggestion]
     let error: Error?
+    let delayNanoseconds: UInt64
     private(set) var receivedRequests: [MentionSuggestionsRequest] = []
+    private(set) var clearResultsCallCount = 0
 
-    init(suggestions: [MentionSuggestion] = [], error: Error? = nil) {
+    init(
+        suggestions: [MentionSuggestion] = [],
+        error: Error? = nil,
+        delayNanoseconds: UInt64 = 0
+    ) {
         self.suggestions = suggestions
         self.error = error
+        self.delayNanoseconds = delayNanoseconds
     }
 
     func mentionSuggestions(for request: MentionSuggestionsRequest) async throws -> [MentionSuggestion] {
         receivedRequests.append(request)
+        if delayNanoseconds > 0 {
+            try await Task.sleep(nanoseconds: delayNanoseconds)
+        }
+        try Task.checkCancellation()
         if let error {
             throw error
         }
         return suggestions
+    }
+
+    func clearResults() async {
+        clearResultsCallCount += 1
     }
 }
