@@ -321,4 +321,24 @@ class ChatChannelTestHelpers {
     static var voiceRecordingAttachments: [AnyChatMessageAttachment] {
         voiceRecordingAttachments(count: 1)
     }
+
+    static var audioAttachments: [AnyChatMessageAttachment] {
+        let attachmentFile = AttachmentFile(type: .mp3, size: 1024, mimeType: "audio/mpeg")
+        let audioURL = URL(string: "https://example.com/sample.mp3")!
+        return [
+            ChatMessageAudioAttachment(
+                id: .unique,
+                type: .audio,
+                payload: AudioAttachmentPayload(
+                    title: "Sample.mp3",
+                    audioRemoteURL: audioURL,
+                    file: attachmentFile,
+                    extraData: nil
+                ),
+                downloadingState: nil,
+                uploadingState: nil
+            )
+            .asAnyAttachment
+        ]
+    }
 }

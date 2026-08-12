@@ -200,6 +200,37 @@ class MessageAttachmentsConverter_Tests: StreamChatTestCase {
         XCTAssertEqual(result?.fileAssets.first?.url, URL(string: "https://example.com/file.pdf"))
         XCTAssertNotNil(result?.fileAssets.first?.payload)
     }
+
+    func test_attachmentsToAssets_audioAttachmentWithoutLocalURL() {
+        let attachments = [createAudioAttachmentWithoutLocalURL()]
+        let expectation = XCTestExpectation(description: "Audio attachment conversion completion")
+        nonisolated(unsafe) var result: TotalAddedAssets?
+
+        converter.attachmentsToAssets(attachments) { totalAddedAssets in
+            result = totalAddedAssets
+            expectation.fulfill()
+        }
+
+        wait(for: [expectation], timeout: 1.0)
+        XCTAssertEqual(result?.fileAssets.count, 1)
+        XCTAssertEqual(result?.fileAssets.first?.url, URL(string: "https://example.com/sample.mp3"))
+        XCTAssertEqual(result?.fileAssets.first?.payload?.type, .audio)
+        XCTAssertNotNil(result?.fileAssets.first?.payload?.payload as? AudioAttachmentPayload)
+    }
+
+    func test_assetsToPayloads_audioFileURL_createsAudioAttachment() throws {
+        let audioURL = createTemporaryFileURL(extension: "mp3")
+        defer { try? FileManager.default.removeItem(at: audioURL) }
+        try Data("mock audio".utf8).write(to: audioURL)
+
+        let payloads = try converter.assetsToPayloads(
+            TotalAddedAssets(fileAssets: [FileAddedAsset(url: audioURL)])
+        )
+
+        XCTAssertEqual(payloads.count, 1)
+        XCTAssertEqual(payloads.first?.type, .audio)
+        XCTAssertNotNil(payloads.first?.payload as? AudioAttachmentPayload)
+    }
     
     func test_attachmentsToAssets_videoAttachmentWithLocalURL() {
         // Given
@@ -414,6 +445,22 @@ class MessageAttachmentsConverter_Tests: StreamChatTestCase {
                 thumbnailURL: TestImages.yoda.url,
                 file: attachmentFile,
                 extraData: ["test": "value"]
+            ),
+            downloadingState: nil,
+            uploadingState: nil
+        ).asAnyAttachment
+    }
+
+    private func createAudioAttachmentWithoutLocalURL() -> AnyChatMessageAttachment {
+        let attachmentFile = AttachmentFile(type: .mp3, size: 1024, mimeType: "audio/mpeg")
+        return ChatMessageAudioAttachment(
+            id: .unique,
+            type: .audio,
+            payload: AudioAttachmentPayload(
+                title: "Sample.mp3",
+                audioRemoteURL: URL(string: "https://example.com/sample.mp3")!,
+                file: attachmentFile,
+                extraData: nil
             ),
             downloadingState: nil,
             uploadingState: nil

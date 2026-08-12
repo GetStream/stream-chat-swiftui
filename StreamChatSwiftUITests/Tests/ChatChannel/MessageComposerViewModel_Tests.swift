@@ -1458,7 +1458,7 @@ import XCTest
         XCTAssertNotNil(payloads.first?.payload as? VideoAttachmentPayload)
     }
 
-    func test_addFileURLs_audioURL_isSentAsFileAttachment() throws {
+    func test_addFileURLs_audioURL_isSentAsAudioAttachment() throws {
         let viewModel = makeComposerViewModel()
         let url = URL.newTemporaryFileURL().appendingPathExtension("mp3")
         defer { try? FileManager.default.removeItem(at: url) }
@@ -1469,8 +1469,8 @@ import XCTest
 
         let payloads = try viewModel.convertAddedAssetsToPayloads()
         XCTAssertEqual(payloads.count, 1)
-        XCTAssertEqual(payloads.first?.type, .file)
-        XCTAssertNotNil(payloads.first?.payload as? FileAttachmentPayload)
+        XCTAssertEqual(payloads.first?.type, .audio)
+        XCTAssertNotNil(payloads.first?.payload as? AudioAttachmentPayload)
     }
 
     func test_addFileURLs_documentURL_isSentAsFileAttachment() throws {
