@@ -1100,6 +1100,26 @@ import XCTest
         XCTAssertEqual(1, channelController.markReadCallCount)
     }
 
+    func test_chatChannelVM_onViewDissappear_whenCalledRepeatedly_marksReadOnlyOnce() {
+        // Given
+        let message = ChatMessage.mock()
+        let channelController = makeChannelController(messages: [message])
+        channelController.hasLoadedAllNextMessages_mock = true
+        let viewModel = ChatChannelViewModel(channelController: channelController)
+        let throttler = CancelRecordingThrottler()
+        viewModel.throttler = throttler
+        viewModel.showScrollToLatestButton = false
+        channelController.markReadCallCount = 0
+
+        // When
+        viewModel.onViewDissappear()
+        viewModel.onViewDissappear()
+
+        // Then
+        XCTAssertEqual(1, throttler.cancelCallCount)
+        XCTAssertEqual(1, channelController.markReadCallCount)
+    }
+
     func test_chatChannelVM_onViewDissappear_whenScrolledUp_doesNotMarkRead() {
         // Given
         let message = ChatMessage.mock()

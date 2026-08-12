@@ -579,11 +579,12 @@ import SwiftUI
     }
     
     @objc public func onViewDissappear() {
+        guard isActive else { return }
+        isActive = false
         throttler.cancel()
         if shouldMarkChannelRead {
             channelController.markRead()
         }
-        isActive = false
     }
     
     public func setActive() {
