@@ -1120,6 +1120,29 @@ import XCTest
         XCTAssertEqual(1, channelController.markReadCallCount)
     }
 
+    func test_chatChannelVM_onViewDissappear_whenLatestMessageIsPendingSend_doesNotMarkRead() {
+        // Given - user is at the bottom but their newest message is still sending.
+        let existing = ChatMessage.mock(id: .unique, localState: nil)
+        let pendingMessage = ChatMessage.mock(localState: .pendingSend)
+        let channelController = makeChannelController(messages: [pendingMessage, existing])
+        channelController.channel_mock = .mockDMChannel(reads: [])
+        channelController.hasLoadedAllNextMessages_mock = true
+        let viewModel = ChatChannelViewModel(channelController: channelController)
+        viewModel.currentUserMarkedMessageUnread = false
+        let throttler = CancelRecordingThrottler()
+        viewModel.throttler = throttler
+        viewModel.showScrollToLatestButton = false
+        channelController.markReadCallCount = 0
+        viewModel.handleMessageAppear(index: 0, scrollDirection: .down)
+
+        // When
+        viewModel.onViewDissappear()
+
+        // Then - markRead stays deferred until the pending message is sent.
+        XCTAssertEqual(1, throttler.cancelCallCount)
+        XCTAssertEqual(0, channelController.markReadCallCount)
+    }
+
     func test_chatChannelVM_onViewDissappear_whenScrolledUp_doesNotMarkRead() {
         // Given
         let message = ChatMessage.mock()

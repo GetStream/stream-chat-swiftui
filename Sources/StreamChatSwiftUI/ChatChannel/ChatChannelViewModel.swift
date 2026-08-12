@@ -779,6 +779,8 @@ import SwiftUI
         guard hasSetInitialCanMarkRead, canMarkRead else { return false }
         guard !currentUserMarkedMessageUnread else { return false }
         guard !showScrollToLatestButton else { return false }
+        guard pendingMarkReadMessageId == nil else { return false }
+        guard messages.first?.isLocalOnly != true else { return false }
         return channelDataSource.hasLoadedAllNextMessages
     }
 
