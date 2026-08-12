@@ -686,6 +686,54 @@ import XCTest
         XCTAssert(viewModel.mentionedUsers.isEmpty)
     }
 
+    func test_messageComposerVM_clearingTextClearsMentionSuggestionsAndCommand() {
+        let viewModel = makeComposerViewModel()
+        viewModel.suggestions = ["mentions": [ChatUser.mock(id: "ios", name: "iOS")]]
+        viewModel.composerCommand = ComposerCommand(
+            id: "mentions",
+            typingSuggestion: TypingSuggestion(text: "i", locationRange: NSRange(location: 1, length: 1)),
+            displayInfo: nil
+        )
+
+        viewModel.text = ""
+
+        XCTAssertNil(viewModel.composerCommand)
+        XCTAssertTrue(viewModel.suggestions.isEmpty)
+    }
+
+    func test_messageComposerVM_endingMentionClearsSuggestions() {
+        let viewModel = makeComposerViewModel()
+        viewModel.selectedRangeLocation = 8
+        viewModel.text = "hello @i"
+        XCTAssertEqual(viewModel.composerCommand?.id, "mentions")
+
+        viewModel.selectedRangeLocation = 6
+        viewModel.text = "hello "
+
+        XCTAssertNil(viewModel.composerCommand)
+        XCTAssertTrue(viewModel.suggestions.isEmpty)
+    }
+
+    func test_messageComposerVM_deletingMentionQuery_doesNotShowStaleSuggestionsWhenEmpty() async {
+        let viewModel = makeComposerViewModel()
+        viewModel.selectedRangeLocation = 4
+        viewModel.text = "@iOS"
+        viewModel.selectedRangeLocation = 3
+        viewModel.text = "@iO"
+        viewModel.selectedRangeLocation = 2
+        viewModel.text = "@i"
+        viewModel.selectedRangeLocation = 1
+        viewModel.text = "@"
+        viewModel.selectedRangeLocation = 0
+        viewModel.text = ""
+
+        // Allow any in-flight / debounced suggestion request to finish.
+        try? await Task.sleep(nanoseconds: 800_000_000)
+
+        XCTAssertNil(viewModel.composerCommand)
+        XCTAssertTrue(viewModel.suggestions.isEmpty)
+    }
+
     func test_checkForMentionedUsers_withUserSuggestion() {
         // Given
         let viewModel = makeComposerViewModel()

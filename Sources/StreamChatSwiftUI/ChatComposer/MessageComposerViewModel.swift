@@ -36,12 +36,15 @@ import SwiftUI
                     channelController.sendKeystrokeEvent()
                 }
             } else {
-                if composerCommand?.displayInfo?.isInstant == false {
+                // Mentions use `displayInfo == nil`, so clear any non-instant command
+                // (not only commands with `isInstant == false`).
+                if composerCommand?.displayInfo?.isInstant != true {
                     withAnimation(.easeInOut(duration: 0.2)) {
                         composerCommand = nil
                     }
                 }
                 selectedRangeLocation = 0
+                suggestionsCancellable?.cancel()
                 withAnimation(.easeInOut(duration: 0.2)) {
                     suggestions = [String: Any]()
                 }
@@ -211,6 +214,8 @@ import SwiftUI
     }
     
     private var cancellables = Set<AnyCancellable>()
+    /// Tracks the in-flight suggestions request so stale results can be discarded.
+    private var suggestionsCancellable: AnyCancellable?
     public lazy var commandsHandler = utils
         .commandsConfig
         .makeCommandsHandler(
@@ -1040,17 +1045,33 @@ import SwiftUI
     }
     
     private func showTypingSuggestions() {
-        if let composerCommand {
-            commandsHandler.showSuggestions(for: composerCommand)
-                .sink { _ in
-                    log.debug("Finished showing suggestions")
-                } receiveValue: { [weak self] suggestionInfo in
-                    withAnimation {
-                        self?.suggestions[suggestionInfo.key] = suggestionInfo.value
-                    }
-                }
-                .store(in: &cancellables)
+        suggestionsCancellable?.cancel()
+
+        guard let composerCommand else {
+            withAnimation(.easeInOut(duration: 0.2)) {
+                suggestions = [String: Any]()
+            }
+            return
         }
+
+        // Capture the query that started this request so a slower, superseded
+        // search cannot overwrite newer (or cleared) suggestions while deleting.
+        let expectedCommandId = composerCommand.id
+        let expectedTypingText = composerCommand.typingSuggestion.text
+
+        suggestionsCancellable = commandsHandler.showSuggestions(for: composerCommand)
+            .sink { _ in
+                log.debug("Finished showing suggestions")
+            } receiveValue: { [weak self] suggestionInfo in
+                guard let self else { return }
+                guard self.composerCommand?.id == expectedCommandId,
+                      self.composerCommand?.typingSuggestion.text == expectedTypingText else {
+                    return
+                }
+                withAnimation {
+                    self.suggestions[suggestionInfo.key] = suggestionInfo.value
+                }
+            }
     }
     
     private func listenToCooldownUpdates() {
