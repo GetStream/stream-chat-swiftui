@@ -1061,17 +1061,19 @@ import SwiftUI
         let expectedTypingText = composerCommand.typingSuggestion.text
 
         suggestionsCancellable = commandsHandler.showSuggestions(for: composerCommand)
-            .sink(receiveCompletion: { _ in },
-                  receiveValue: { [weak self] suggestionInfo in
-                guard let self else { return }
-                guard self.composerCommand?.id == expectedCommandId,
-                      self.composerCommand?.typingSuggestion.text == expectedTypingText else {
-                    return
+            .sink(
+                receiveCompletion: { _ in },
+                receiveValue: { [weak self] suggestionInfo in
+                    guard let self else { return }
+                    guard self.composerCommand?.id == expectedCommandId,
+                          self.composerCommand?.typingSuggestion.text == expectedTypingText else {
+                        return
+                    }
+                    withAnimation {
+                        self.suggestions[suggestionInfo.key] = suggestionInfo.value
+                    }
                 }
-                withAnimation {
-                    self.suggestions[suggestionInfo.key] = suggestionInfo.value
-                }
-            })
+            )
     }
 
     private func clearComposerSuggestions() {
