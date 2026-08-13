@@ -1543,8 +1543,8 @@
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/GetStream/stream-chat-swift.git";
 			requirement = {
-				kind = branch;
-				branch = "fix/unread-banner-flicker";
+				kind = revision;
+				revision = e734b326e5c6959efa1107bcc63df939dd6a3beb;
 			};
 		};
 		E3A1C01A282BAC66002D1E26 /* XCRemoteSwiftPackageReference "sentry-cocoa" */ = {

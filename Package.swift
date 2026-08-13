@@ -16,7 +16,7 @@ let package = Package(
         )
     ],
     dependencies: [
-        .package(url: "https://github.com/GetStream/stream-chat-swift.git", branch: "fix/unread-banner-flicker")
+        .package(url: "https://github.com/GetStream/stream-chat-swift.git", revision: "e734b326e5c6959efa1107bcc63df939dd6a3beb")
     ],
     targets: [
         .target(
