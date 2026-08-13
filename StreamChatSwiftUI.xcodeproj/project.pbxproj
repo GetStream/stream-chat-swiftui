@@ -1543,8 +1543,8 @@
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/GetStream/stream-chat-swift.git";
 			requirement = {
-				kind = branch;
-				branch = "fix/mention-suggestions-large-channels";
+				kind = revision;
+				revision = 8263bddc2f9395fb1c4a275c86db711ceda954ed;
 			};
 		};
 		E3A1C01A282BAC66002D1E26 /* XCRemoteSwiftPackageReference "sentry-cocoa" */ = {
