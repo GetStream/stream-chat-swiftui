@@ -34,7 +34,8 @@ import SwiftUI
 
     private var isActive = true
     private var readsString = ""
-    private var canMarkRead = false
+    /// Whether the channel can currently be marked as read (user has seen first unread / is caught up).
+    @Published public private(set) var canMarkRead = false
     private var hasSetInitialCanMarkRead = false
     private var pendingMarkReadMessageId: MessageId?
     private var currentUserSentNewMessage = false
@@ -578,7 +579,12 @@ import SwiftUI
     }
     
     @objc public func onViewDissappear() {
+        guard isActive else { return }
         isActive = false
+        throttler.cancel()
+        if shouldMarkChannelRead {
+            channelController.markRead()
+        }
     }
     
     public func setActive() {
@@ -657,9 +663,11 @@ import SwiftUI
             pendingMarkReadMessageId = message.id
             return
         }
+        // First request runs immediately via Throttler; later calls within the
+        // interval are coalesced. We keep `firstUnreadMessageId` set which keeps
+        // showing the new messages header in the channel view.
         throttler.execute { [weak self] in
             self?.channelController.markRead()
-            // We keep `firstUnreadMessageId` value set which keeps showing the new messages header in the channel view
         }
     }
     
@@ -764,6 +772,16 @@ import SwiftUI
                 canMarkRead = false
             }
         }
+    }
+
+    private var shouldMarkChannelRead: Bool {
+        guard !isMessageThread else { return false }
+        guard hasSetInitialCanMarkRead, canMarkRead else { return false }
+        guard !currentUserMarkedMessageUnread else { return false }
+        guard !showScrollToLatestButton else { return false }
+        guard pendingMarkReadMessageId == nil else { return false }
+        guard messages.first?.isLocalOnly != true else { return false }
+        return channelDataSource.hasLoadedAllNextMessages
     }
 
     private var shouldMarkThreadRead: Bool {

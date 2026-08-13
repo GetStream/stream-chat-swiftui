@@ -1081,6 +1081,87 @@ import XCTest
         XCTAssertEqual(baseline + 1, channelController.markReadCallCount)
     }
 
+    func test_chatChannelVM_onViewDissappear_whenShouldMarkRead_marksReadImmediately() {
+        // Given
+        let message = ChatMessage.mock()
+        let channelController = makeChannelController(messages: [message])
+        channelController.hasLoadedAllNextMessages_mock = true
+        let viewModel = ChatChannelViewModel(channelController: channelController)
+        let throttler = CancelRecordingThrottler()
+        viewModel.throttler = throttler
+        viewModel.showScrollToLatestButton = false
+        channelController.markReadCallCount = 0
+
+        // When
+        viewModel.onViewDissappear()
+
+        // Then
+        XCTAssertEqual(1, throttler.cancelCallCount)
+        XCTAssertEqual(1, channelController.markReadCallCount)
+    }
+
+    func test_chatChannelVM_onViewDissappear_whenCalledRepeatedly_marksReadOnlyOnce() {
+        // Given
+        let message = ChatMessage.mock()
+        let channelController = makeChannelController(messages: [message])
+        channelController.hasLoadedAllNextMessages_mock = true
+        let viewModel = ChatChannelViewModel(channelController: channelController)
+        let throttler = CancelRecordingThrottler()
+        viewModel.throttler = throttler
+        viewModel.showScrollToLatestButton = false
+        channelController.markReadCallCount = 0
+
+        // When
+        viewModel.onViewDissappear()
+        viewModel.onViewDissappear()
+
+        // Then
+        XCTAssertEqual(1, throttler.cancelCallCount)
+        XCTAssertEqual(1, channelController.markReadCallCount)
+    }
+
+    func test_chatChannelVM_onViewDissappear_whenLatestMessageIsPendingSend_doesNotMarkRead() {
+        // Given - user is at the bottom but their newest message is still sending.
+        let existing = ChatMessage.mock(id: .unique, localState: nil)
+        let pendingMessage = ChatMessage.mock(localState: .pendingSend)
+        let channelController = makeChannelController(messages: [pendingMessage, existing])
+        channelController.channel_mock = .mockDMChannel(reads: [])
+        channelController.hasLoadedAllNextMessages_mock = true
+        let viewModel = ChatChannelViewModel(channelController: channelController)
+        viewModel.currentUserMarkedMessageUnread = false
+        let throttler = CancelRecordingThrottler()
+        viewModel.throttler = throttler
+        viewModel.showScrollToLatestButton = false
+        channelController.markReadCallCount = 0
+        viewModel.handleMessageAppear(index: 0, scrollDirection: .down)
+
+        // When
+        viewModel.onViewDissappear()
+
+        // Then - markRead stays deferred until the pending message is sent.
+        XCTAssertEqual(1, throttler.cancelCallCount)
+        XCTAssertEqual(0, channelController.markReadCallCount)
+    }
+
+    func test_chatChannelVM_onViewDissappear_whenScrolledUp_doesNotMarkRead() {
+        // Given
+        let message = ChatMessage.mock()
+        let channelController = makeChannelController(messages: [message])
+        channelController.hasLoadedAllNextMessages_mock = true
+        let viewModel = ChatChannelViewModel(channelController: channelController)
+        let throttler = CancelRecordingThrottler()
+        viewModel.throttler = throttler
+        viewModel.showScrollToLatestButton = true
+        channelController.markReadCallCount = 0
+
+        // When
+        viewModel.onViewDissappear()
+
+        // Then
+        XCTAssertEqual(1, throttler.cancelCallCount)
+        XCTAssertEqual(0, channelController.markReadCallCount)
+    }
+
     // MARK: - highlightMessage Tests
 
     func test_highlightMessage_highlightsWhenSkipHighlightMessageIdIsNotSet() {
@@ -1174,5 +1255,18 @@ import XCTest
 private class Throttler_Mock: Throttler {
     override func execute(_ action: @escaping () -> Void) {
         action()
+    }
+}
+
+private class CancelRecordingThrottler: Throttler {
+    var cancelCallCount = 0
+
+    init() {
+        super.init(interval: 3, queue: .main)
+    }
+
+    override func cancel() {
+        cancelCallCount += 1
+        super.cancel()
     }
 }
