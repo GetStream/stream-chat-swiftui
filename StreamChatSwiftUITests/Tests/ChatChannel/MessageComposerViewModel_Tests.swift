@@ -686,6 +686,63 @@ import XCTest
         XCTAssert(viewModel.mentionedUsers.isEmpty)
     }
 
+    func test_messageComposerVM_clearingTextClearsMentionSuggestionsAndCommand() {
+        let viewModel = makeComposerViewModel()
+        viewModel.suggestions = ["mentions": [ChatUser.mock(id: "ios", name: "iOS")]]
+        viewModel.composerCommand = ComposerCommand(
+            id: "mentions",
+            typingSuggestion: TypingSuggestion(text: "i", locationRange: NSRange(location: 1, length: 1)),
+            displayInfo: nil
+        )
+
+        viewModel.text = ""
+
+        XCTAssertNil(viewModel.composerCommand)
+        XCTAssertTrue(viewModel.suggestions.isEmpty)
+    }
+
+    func test_messageComposerVM_endingMentionClearsSuggestions() {
+        let viewModel = makeComposerViewModel()
+        viewModel.selectedRangeLocation = 8
+        viewModel.text = "hello @i"
+        XCTAssertEqual(viewModel.composerCommand?.id, "mentions")
+
+        viewModel.selectedRangeLocation = 6
+        viewModel.text = "hello "
+
+        XCTAssertNil(viewModel.composerCommand)
+        XCTAssertTrue(viewModel.suggestions.isEmpty)
+    }
+
+    func test_messageComposerVM_deletingMentionQuery_doesNotShowStaleSuggestionsWhenEmpty() async {
+        let requestStarted = expectation(description: "delayed mention request started")
+        let requestFinished = expectation(description: "delayed mention request finished")
+        let provider = DelayedMentionSuggestionsProvider(
+            suggestions: [.user(.mock(id: "ios", name: "iOS"))],
+            delayNanoseconds: 100_000_000,
+            onStarted: { requestStarted.fulfill() },
+            onFinished: { requestFinished.fulfill() }
+        )
+        let viewModel = MessageComposerViewModel(
+            channelController: makeChannelController(),
+            messageController: nil
+        )
+        viewModel.utils = Utils(
+            commandsConfig: MentionsProviderCommandsConfig(provider: provider)
+        )
+
+        viewModel.selectedRangeLocation = 4
+        viewModel.text = "@iOS"
+        await fulfillment(of: [requestStarted], timeout: defaultTimeout)
+
+        viewModel.selectedRangeLocation = 0
+        viewModel.text = ""
+        await fulfillment(of: [requestFinished], timeout: defaultTimeout)
+
+        XCTAssertNil(viewModel.composerCommand)
+        XCTAssertTrue(viewModel.suggestions.isEmpty)
+    }
+
     func test_checkForMentionedUsers_withUserSuggestion() {
         // Given
         let viewModel = makeComposerViewModel()
@@ -2789,5 +2846,54 @@ enum MessageComposerTestUtils {
             chatClient: chatClient,
             messages: messages
         )
+    }
+}
+
+private final class MentionsProviderCommandsConfig: CommandsConfig {
+    let mentionsSymbol = "@"
+    let instantCommandsSymbol = "/"
+    private let provider: MentionSuggestionsProvider
+
+    init(provider: MentionSuggestionsProvider) {
+        self.provider = provider
+    }
+
+    func makeCommandsHandler(with channelController: ChatChannelController) -> CommandsHandler {
+        let mentionsCommandHandler = MentionsCommandHandler(
+            channelController: channelController,
+            commandSymbol: mentionsSymbol,
+            provider: provider
+        )
+        return DefaultCommandsConfig.makeCommandsHandler(
+            mentionsCommandHandler: mentionsCommandHandler,
+            channelController: channelController
+        )
+    }
+}
+
+private final class DelayedMentionSuggestionsProvider: MentionSuggestionsProvider, @unchecked Sendable {
+    private let suggestions: [MentionSuggestion]
+    private let delayNanoseconds: UInt64
+    private let onStarted: @Sendable () -> Void
+    private let onFinished: @Sendable () -> Void
+
+    init(
+        suggestions: [MentionSuggestion],
+        delayNanoseconds: UInt64,
+        onStarted: @escaping @Sendable () -> Void,
+        onFinished: @escaping @Sendable () -> Void
+    ) {
+        self.suggestions = suggestions
+        self.delayNanoseconds = delayNanoseconds
+        self.onStarted = onStarted
+        self.onFinished = onFinished
+    }
+
+    func mentionSuggestions(for request: MentionSuggestionsRequest) async throws -> [MentionSuggestion] {
+        onStarted()
+        defer { onFinished() }
+        try await Task.sleep(nanoseconds: delayNanoseconds)
+        try Task.checkCancellation()
+        return suggestions
     }
 }

@@ -36,15 +36,20 @@ import SwiftUI
                     channelController.sendKeystrokeEvent()
                 }
             } else {
-                if composerCommand?.displayInfo?.isInstant == false {
+                // Mentions use `displayInfo == nil`, so clear any non-instant command
+                // (not only commands with `isInstant == false`).
+                // When a command is cleared here, `composerCommand` didSet clears suggestions;
+                // otherwise clear them explicitly (instant command kept, or no command).
+                let clearingCommand = composerCommand != nil
+                    && composerCommand?.displayInfo?.isInstant != true
+                if clearingCommand {
                     withAnimation(.easeInOut(duration: 0.2)) {
                         composerCommand = nil
                     }
+                } else {
+                    clearComposerSuggestions()
                 }
                 selectedRangeLocation = 0
-                withAnimation(.easeInOut(duration: 0.2)) {
-                    suggestions = [String: Any]()
-                }
                 clearMentions()
 
                 if shouldDeleteDraftMessage(oldValue: oldValue) {
@@ -119,6 +124,7 @@ import SwiftUI
             }
             if oldValue != nil && composerCommand == nil {
                 pickerTypeState = .expanded(.none)
+                clearComposerSuggestions()
             }
         }
     }
@@ -211,6 +217,8 @@ import SwiftUI
     }
     
     private var cancellables = Set<AnyCancellable>()
+    /// Tracks the in-flight suggestions request so stale results can be discarded.
+    private var suggestionsCancellable: AnyCancellable?
     public lazy var commandsHandler = utils
         .commandsConfig
         .makeCommandsHandler(
@@ -1040,16 +1048,39 @@ import SwiftUI
     }
     
     private func showTypingSuggestions() {
-        if let composerCommand {
-            commandsHandler.showSuggestions(for: composerCommand)
-                .sink { _ in
-                    log.debug("Finished showing suggestions")
-                } receiveValue: { [weak self] suggestionInfo in
+        suggestionsCancellable?.cancel()
+
+        guard let composerCommand else {
+            clearComposerSuggestions()
+            return
+        }
+
+        // Capture the query that started this request so a slower, superseded
+        // search cannot overwrite newer (or cleared) suggestions while deleting.
+        let expectedCommandId = composerCommand.id
+        let expectedTypingText = composerCommand.typingSuggestion.text
+
+        suggestionsCancellable = commandsHandler.showSuggestions(for: composerCommand)
+            .sink(
+                receiveCompletion: { _ in },
+                receiveValue: { [weak self] suggestionInfo in
+                    guard let self else { return }
+                    guard self.composerCommand?.id == expectedCommandId,
+                          self.composerCommand?.typingSuggestion.text == expectedTypingText else {
+                        return
+                    }
                     withAnimation {
-                        self?.suggestions[suggestionInfo.key] = suggestionInfo.value
+                        self.suggestions[suggestionInfo.key] = suggestionInfo.value
                     }
                 }
-                .store(in: &cancellables)
+            )
+    }
+
+    private func clearComposerSuggestions() {
+        suggestionsCancellable?.cancel()
+        commandsHandler.clearSuggestions()
+        withAnimation(.easeInOut(duration: 0.2)) {
+            suggestions.removeAll()
         }
     }
     

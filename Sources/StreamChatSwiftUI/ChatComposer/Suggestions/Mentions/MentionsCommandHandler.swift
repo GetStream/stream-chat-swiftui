@@ -15,6 +15,7 @@ public final class MentionsCommandHandler: CommandHandler {
 
     private let channelController: ChatChannelController
     private let provider: MentionSuggestionsProvider
+    private var suggestionsTask: Task<Void, Never>?
 
     /// Creates a new mentions command handler.
     ///
@@ -123,6 +124,12 @@ public final class MentionsCommandHandler: CommandHandler {
         )
     }
 
+    public func clearSuggestions() {
+        suggestionsTask?.cancel()
+        suggestionsTask = nil
+        Task { await provider.clearResults() }
+    }
+
     func mentionText(for suggestion: MentionSuggestion) -> String {
         switch suggestion.kind {
         case let userSuggestion as MentionSuggestion.User:
@@ -147,14 +154,16 @@ public final class MentionsCommandHandler: CommandHandler {
         mentionRange: NSRange
     ) -> Future<SuggestionInfo, Error> {
         let id = id
+        suggestionsTask?.cancel()
         return Future { [weak self] promise in
             guard let self else {
                 promise(.success(SuggestionInfo(key: id, value: [MentionSuggestion]())))
                 return
             }
             nonisolated(unsafe) let unsafePromise = promise
-            Task { @MainActor in
+            self.suggestionsTask = Task { @MainActor in
                 let suggestions = await self.makeSuggestions(for: typingMention)
+                guard !Task.isCancelled else { return }
                 unsafePromise(.success(SuggestionInfo(key: id, value: suggestions)))
             }
         }
