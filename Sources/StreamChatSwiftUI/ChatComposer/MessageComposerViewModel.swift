@@ -1061,9 +1061,7 @@ import SwiftUI
         let expectedTypingText = composerCommand.typingSuggestion.text
 
         suggestionsCancellable = commandsHandler.showSuggestions(for: composerCommand)
-            .sink { _ in
-                log.debug("Finished showing suggestions")
-            } receiveValue: { [weak self] suggestionInfo in
+            .sink { [weak self] suggestionInfo in
                 guard let self else { return }
                 guard self.composerCommand?.id == expectedCommandId,
                       self.composerCommand?.typingSuggestion.text == expectedTypingText else {
@@ -1079,7 +1077,7 @@ import SwiftUI
         suggestionsCancellable?.cancel()
         commandsHandler.clearSuggestions()
         withAnimation(.easeInOut(duration: 0.2)) {
-            suggestions = [String: Any]()
+            suggestions.removeAll()
         }
     }
     
