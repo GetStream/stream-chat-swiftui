@@ -129,30 +129,28 @@ private_lane :appstore_api_key do
   )
 end
 
-desc "Updates StreamChat dependency locally. Usage: `bundle exec fastlane update_stream_chat version:4.56.0`"
+desc "Updates StreamChat dependency locally. Usage: `bundle exec fastlane update_stream_chat version:5.9.0`"
 lane :update_stream_chat do |options|
-  raise UI.user_error!('Provide a version.') unless options[:version]
+  version = options[:version]
+  UI.user_error!('Provide a version.') unless version
 
   Dir.chdir('..') do
+    # The dependency is pinned to a develop revision between releases, so accept any requirement kind
     file = 'Package.swift'
-    current_stream_chat_version = File.read(file)[/stream-chat-swift\.git", from: "([^"]+)"\)/, 1]
-    UI.user_error!("Could not find current StreamChat version in #{file}") unless current_stream_chat_version
-
-    File.write(file, File.read(file).gsub(/(stream-chat-swift\.git", from: ")[^"]+"/, "\\1#{options[:version]}\""))
+    content = File.read(file)
+    dependency = /(stream-chat-swift\.git",\s*)(?:from|exact|branch|revision): "[^"]+"/
+    UI.user_error!("Could not find the StreamChat dependency in #{file}") unless content.match?(dependency)
+    File.write(file, content.sub(dependency, "\\1from: \"#{version}\""))
 
     file = 'StreamChatSwiftUI.xcodeproj/project.pbxproj'
     content = File.read(file)
-    if content.include?("minimumVersion = #{current_stream_chat_version}")
-      File.write(file, content.gsub("minimumVersion = #{current_stream_chat_version}", "minimumVersion = #{options[:version]}"))
-    elsif content.include?('branch = develop')
-      File.write(file, content.gsub('kind = branch', "minimumVersion = #{options[:version]}").gsub('branch = develop', 'kind = upToNextMajorVersion'))
-    else
-      UI.user_error!("Something went wrong after trying to modify #{file}.")
-    end
+    requirement = /(stream-chat-swift\.git";\s*requirement = \{)[^}]*\n(\s*)\};/
+    UI.user_error!("Could not find the StreamChat package reference in #{file}") unless content.match?(requirement)
+    File.write(file, content.sub(requirement) { "#{$1}\n#{$2}\tkind = upToNextMajorVersion;\n#{$2}\tminimumVersion = #{version};\n#{$2}};" })
   end
 
   pr_create(
-    title: "Update StreamChat dependency to #{options[:version]}",
+    title: "Update StreamChat dependency to #{version}",
     base_branch: 'develop',
     head_branch: "ci/update-stream-chat-dependency-#{Time.now.to_i}",
     github_repo: github_repo
