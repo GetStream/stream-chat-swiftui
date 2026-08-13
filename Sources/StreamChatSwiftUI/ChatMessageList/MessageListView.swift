@@ -26,6 +26,10 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
     var isMessageThread: Bool
     var shouldShowTypingIndicator: Bool
     var bottomInset: CGFloat
+    /// Whether the channel can currently be marked as read (user is caught up).
+    /// When `true` and the list is stuck to the bottom, jump-to-unread is hidden
+    /// so newly arrived messages don't flash the button.
+    var canMarkRead: Bool
 
     var onMessageAppear: (Int, ScrollDirection) -> Void
     var onScrollToBottom: @MainActor () -> Void
@@ -96,6 +100,7 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
         scrollPosition: Binding<String?> = .constant(nil),
         loadingNextMessages: Bool = false,
         firstUnreadMessageId: Binding<MessageId?> = .constant(nil),
+        canMarkRead: Bool = false,
         onMessageAppear: @escaping @MainActor (Int, ScrollDirection) -> Void,
         onScrollToBottom: @escaping @MainActor () -> Void,
         onLongPress: @escaping @MainActor (MessageDisplayInfo) -> Void,
@@ -108,6 +113,7 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
         self.currentDateString = currentDateString
         self.listId = listId
         self.isMessageThread = isMessageThread
+        self.canMarkRead = canMarkRead
         self.onMessageAppear = onMessageAppear
         self.onScrollToBottom = onScrollToBottom
         self.onLongPress = onLongPress
@@ -169,6 +175,7 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
                 get: { viewModel.firstUnreadMessageId },
                 set: { viewModel.firstUnreadMessageId = $0 }
             ),
+            canMarkRead: viewModel.canMarkRead,
             onMessageAppear: viewModel.handleMessageAppear(index:scrollDirection:),
             onScrollToBottom: viewModel.scrollToLastMessage,
             onLongPress: onLongPress,
@@ -462,10 +469,16 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
     }
 
     private var shouldShowJumpToUnreadButton: Bool {
-        channel.unreadCount.messages > 0
-            && !unreadMessagesBannerShown
-            && !isMessageThread
-            && !unreadButtonDismissed
+        guard channel.unreadCount.messages > 0,
+              !unreadMessagesBannerShown,
+              !isMessageThread,
+              !unreadButtonDismissed else {
+            return false
+        }
+        // While stuck to the bottom and already able to mark read, don't flash the
+        // button for brand-new messages. Still show it when scrolled up, or when
+        // older unreads haven't been seen yet (`canMarkRead == false`).
+        return showScrollToLatestButton || !canMarkRead
     }
 
     /// The top padding reserved for the date/separator overlay above a message row.
