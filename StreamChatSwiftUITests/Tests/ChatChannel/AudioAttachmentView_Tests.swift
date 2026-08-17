@@ -120,7 +120,7 @@ final class AudioAttachmentView_Tests: StreamChatTestCase {
         )
     }
 
-    func test_audioAttachmentsContainer_snapshot() {
+    func test_audioAttachmentsContainer_withoutCaption_snapshot() {
         let message = ChatMessage.mock(
             id: .unique,
             cid: .unique,
@@ -141,6 +141,30 @@ final class AudioAttachmentView_Tests: StreamChatTestCase {
             view,
             variants: .onlyUserInterfaceStyles,
             size: CGSize(width: defaultScreenSize.width, height: 80)
+        )
+    }
+
+    func test_audioAttachmentsContainer_withCaption_snapshot() {
+        let message = ChatMessage.mock(
+            id: .unique,
+            cid: .unique,
+            text: "Audio caption",
+            author: .mock(id: .unique),
+            attachments: ChatChannelTestHelpers.audioAttachments
+        )
+        let view = MessageAttachmentsView(
+            factory: DefaultViewFactory.shared,
+            message: message,
+            width: defaultScreenSize.width,
+            isFirst: true,
+            scrolledId: .constant(nil)
+        )
+        .frame(width: defaultScreenSize.width, height: 120)
+
+        AssertSnapshot(
+            view,
+            variants: .onlyUserInterfaceStyles,
+            size: CGSize(width: defaultScreenSize.width, height: 120)
         )
     }
 
