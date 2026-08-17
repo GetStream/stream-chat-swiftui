@@ -307,6 +307,28 @@ public final class MemberAddViewOptions: Sendable {
     }
 }
 
+// MARK: - Channel Info Options
+
+/// Options for creating the actions section of the channel info screen.
+public final class ChannelInfoActionsViewOptions: Sendable {
+    /// The view model of the channel info screen.
+    public let viewModel: ChatChannelInfoViewModel
+    /// Leaves the group, or deletes the conversation in direct message channels, and dismisses
+    /// the channel info screen.
+    ///
+    /// Call it from the leave button of a custom actions view. To change what happens when leaving
+    /// the conversation, override `leaveConversationTapped` in ``ChatChannelInfoViewModel`` instead.
+    public let leaveConversation: @MainActor () -> Void
+
+    public init(
+        viewModel: ChatChannelInfoViewModel,
+        leaveConversation: @escaping @MainActor () -> Void
+    ) {
+        self.viewModel = viewModel
+        self.leaveConversation = leaveConversation
+    }
+}
+
 // MARK: - Subtitle Typing Indicator Options
 
 /// Options for creating the subtitle typing indicator view shown in the channel header.

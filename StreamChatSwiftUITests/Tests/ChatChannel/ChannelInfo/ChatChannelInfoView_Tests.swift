@@ -517,4 +517,78 @@ import XCTest
         // Then - shows group-style layout with member list, not single DM header
         AssertSnapshot(view)
     }
+
+    func test_chatChannelInfoView_customActionsViewSnapshot() {
+        // Given - a factory providing a custom actions section
+        let members = ChannelInfoMockUtils.setupMockMembers(
+            count: 3,
+            currentUserId: chatClient.currentUserId!,
+            onlineUserIndexes: [0]
+        )
+        let group = ChatChannel.mock(
+            cid: .unique,
+            name: "Test Group",
+            ownCapabilities: [.leaveChannel, .updateChannel, .muteChannel],
+            lastActiveMembers: members,
+            memberCount: members.count
+        )
+
+        // When
+        let view = ChatChannelInfoView(
+            factory: ChannelInfoActionsViewFactory(),
+            channel: group
+        )
+        .applyDefaultSize()
+
+        // Then - the custom actions section replaces the default one
+        AssertSnapshot(view)
+    }
+
+    func test_chatChannelInfoView_customActionsView_leaveConversationInvokesViewModel() throws {
+        // Given
+        let group = ChatChannel.mock(
+            cid: .unique,
+            name: "Test Group",
+            ownCapabilities: [.leaveChannel],
+            lastActiveMembers: ChannelInfoMockUtils.setupMockMembers(
+                count: 3,
+                currentUserId: chatClient.currentUserId!
+            ),
+            memberCount: 3
+        )
+        let viewModel = MockChatChannelInfoViewModel(channel: group)
+        let factory = ChannelInfoActionsViewFactory()
+        showView(ChatChannelInfoView(factory: factory, viewModel: viewModel))
+
+        // When - the leave handler received by the factory is invoked
+        let options = try XCTUnwrap(factory.capturedOptions)
+        options.leaveConversation()
+
+        // Then
+        XCTAssertEqual(viewModel.leaveConversationTappedCallCount, 1)
+    }
+}
+
+class MockChatChannelInfoViewModel: ChatChannelInfoViewModel {
+    var leaveConversationTappedCallCount = 0
+
+    override func leaveConversationTapped(completion: @escaping @MainActor () -> Void) {
+        leaveConversationTappedCallCount += 1
+    }
+}
+
+class ChannelInfoActionsViewFactory: ViewFactory {
+    @Injected(\.chatClient) var chatClient
+
+    var styles = RegularStyles()
+
+    var capturedOptions: ChannelInfoActionsViewOptions?
+
+    func makeChannelInfoActionsView(options: ChannelInfoActionsViewOptions) -> some SwiftUI.View {
+        capturedOptions = options
+        return Text("Custom actions")
+            .frame(maxWidth: .infinity)
+            .padding()
+            .background(Color.red)
+    }
 }

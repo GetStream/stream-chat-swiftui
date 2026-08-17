@@ -1113,6 +1113,23 @@ import XCTest
         XCTAssert(view is MemberAddView<DefaultViewFactory>)
     }
 
+    func test_viewFactory_makeChannelInfoActionsView() {
+        // Given
+        let viewFactory = DefaultViewFactory.shared
+        let viewModel = ChatChannelInfoViewModel(channel: .mockDMChannel())
+
+        // When
+        let view = viewFactory.makeChannelInfoActionsView(
+            options: ChannelInfoActionsViewOptions(
+                viewModel: viewModel,
+                leaveConversation: {}
+            )
+        )
+
+        // Then
+        XCTAssert(view is ChannelInfoActionsView)
+    }
+
     func test_viewFactory_makeStreamTextView() {
         // Given
         let viewFactory = DefaultViewFactory.shared

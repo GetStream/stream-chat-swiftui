@@ -80,7 +80,8 @@ import SwiftUI
         }
     }
 
-    var channelController: ChatChannelController!
+    /// The controller of the channel shown in the channel info screen.
+    public var channelController: ChatChannelController!
     var currentUserController: CurrentChatUserController?
     
     private var memberListController: ChatChannelMemberListController!
@@ -209,7 +210,12 @@ import SwiftUI
         loadAdditionalUsers()
     }
 
-    public func leaveConversationTapped(completion: @escaping @MainActor () -> Void) {
+    /// Leaves the group, or deletes the conversation in direct message channels.
+    ///
+    /// Override this method to run additional logic, such as sending a system message,
+    /// before or after calling the default implementation.
+    /// - Parameter completion: Called when the conversation was successfully left or deleted.
+    open func leaveConversationTapped(completion: @escaping @MainActor () -> Void) {
         if !showSingleMemberDMView {
             removeUserFromConversation(completion: completion)
         } else {
@@ -217,7 +223,7 @@ import SwiftUI
         }
     }
 
-    public func blockUserTapped() {
+    open func blockUserTapped() {
         guard let otherUserId = displayedParticipants.first?.id else { return }
         let controller = chatClient.userController(userId: otherUserId)
         if isDMUserBlocked {
@@ -304,7 +310,7 @@ import SwiftUI
         updateMutedParticipants()
     }
 
-    public func addUsersTapped(_ users: [ChatUser]) {
+    open func addUsersTapped(_ users: [ChatUser]) {
         if !users.isEmpty {
             channelController.addMembers(userIds: Set(users.map(\.id)))
         }

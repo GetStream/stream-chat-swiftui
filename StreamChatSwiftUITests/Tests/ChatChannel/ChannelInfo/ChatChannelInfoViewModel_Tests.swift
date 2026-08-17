@@ -1027,6 +1027,23 @@ import XCTest
         XCTAssertEqual(leaveAction.confirmationPopup?.buttonTitle, L10n.Alert.Actions.leaveGroupButton)
     }
 
+    // MARK: - leaveConversationTapped
+
+    func test_chatChannelInfoVM_leaveConversationTapped_overrideRunsCustomLogic() {
+        // Given - a subclass sending a system message before leaving the group
+        let channel = mockGroup(with: 5)
+        let viewModel = SystemMessageChannelInfoViewModel(channel: channel)
+        let controller = ChatChannelController_Mock.mock()
+        viewModel.channelController = controller
+
+        // When
+        viewModel.leaveConversationTapped {}
+
+        // Then
+        XCTAssertEqual(controller.createNewMessageCallCount, 1)
+        XCTAssertTrue(viewModel.didCallSuper)
+    }
+
     // MARK: - addUsersTapped
 
     func test_chatChannelInfoVM_addUsersTapped_withUsers_closesSheet() {
@@ -1229,5 +1246,15 @@ import XCTest
             controller,
             didChangeCurrentUser: .update(controller.currentUser!)
         )
+    }
+}
+
+private class SystemMessageChannelInfoViewModel: ChatChannelInfoViewModel {
+    var didCallSuper = false
+
+    override func leaveConversationTapped(completion: @escaping @MainActor () -> Void) {
+        channelController.createNewMessage(text: "Left the group")
+        didCallSuper = true
+        super.leaveConversationTapped(completion: completion)
     }
 }
