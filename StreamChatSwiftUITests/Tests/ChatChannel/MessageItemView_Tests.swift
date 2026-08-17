@@ -93,7 +93,7 @@ import XCTest
         let utils = Utils(dateFormatter: EmptyDateFormatter())
         let colors = Appearance.ColorPalette()
         colors.chatTextOutgoing = .red
-        var appearance = Appearance()
+        let appearance = Appearance()
         appearance.colorPalette = colors
         streamChat = StreamChat(chatClient: chatClient, appearance: appearance, utils: utils)
         let message = ChatMessage.mock(
@@ -117,7 +117,7 @@ import XCTest
         let utils = Utils(dateFormatter: EmptyDateFormatter())
         let colors = Appearance.ColorPalette()
         colors.chatTextIncoming = .red
-        var appearance = Appearance()
+        let appearance = Appearance()
         appearance.colorPalette = colors
         streamChat = StreamChat(chatClient: chatClient, appearance: appearance, utils: utils)
         let message = ChatMessage.mock(

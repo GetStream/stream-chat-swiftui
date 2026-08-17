@@ -72,7 +72,7 @@ final class Ephemeral_Messages_Tests: StreamTestCase {
     func test_deliveryStatusHidden_whenEphemeralMessageShown() throws {
         linkToScenario(withId: 439)
         
-        throw XCTSkip("https://linear.app/stream/issue/IOS-1324")
+        try XCTSkipIf(true, "https://linear.app/stream/issue/IOS-1324")
 
         GIVEN("user opens a channel") {
             userRobot
@@ -90,7 +90,7 @@ final class Ephemeral_Messages_Tests: StreamTestCase {
     func test_deliveryStatusHidden_whenEphemeralMessageShownInThread() throws {
         linkToScenario(withId: 440)
         
-        throw XCTSkip("https://linear.app/stream/issue/IOS-1324")
+        try XCTSkipIf(true, "https://linear.app/stream/issue/IOS-1324")
 
         GIVEN("user opens a channel") {
             backendRobot.generateChannels(channelsCount: 1, messagesCount: 1)

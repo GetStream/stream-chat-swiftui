@@ -29,7 +29,7 @@ final class ChannelList_Tests: StreamTestCase {
     func test_participantMessageShownInChannelPreview_whenReturningFromOffline() throws {
         linkToScenario(withId: 349)
         
-        throw XCTSkip("https://linear.app/stream/issue/IOS-1315")
+        try XCTSkipIf(true, "https://linear.app/stream/issue/IOS-1315")
 
         GIVEN("user opens the channel") {
             userRobot
@@ -57,7 +57,7 @@ final class ChannelList_Tests: StreamTestCase {
     func test_paginationOnChannelList() throws {
         linkToScenario(withId: 350)
 
-        throw XCTSkip("Check out SWUI-253")
+        try XCTSkipIf(true, "Check out SWUI-253")
 
         let channelsCount = 30
 
