@@ -23,7 +23,7 @@ struct ComposerVoiceRecordingInputView<Factory: ViewFactory>: View {
     var discardRecording: @MainActor () -> Void
     var previewRecording: @MainActor () -> Void
 
-    @StateObject private var handler = VoiceRecordingHandler()
+    @StateObject private var handler = AudioSessionHandler()
 
     private var player: AudioPlaying { utils.audioPlayer }
 

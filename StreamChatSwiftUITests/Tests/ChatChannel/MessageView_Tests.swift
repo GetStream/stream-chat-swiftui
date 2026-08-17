@@ -1211,7 +1211,7 @@ import XCTest
             duration: 10,
             waveform: [0, 0.1, 0.4, 0.7, 1.0, 0.8, 0.5, 0.3, 0.6, 0.9]
         )
-        let handler = VoiceRecordingHandler()
+        let handler = AudioSessionHandler()
         handler.isPlaying = true
         handler.context = AudioPlaybackContext(
             assetLocation: url,

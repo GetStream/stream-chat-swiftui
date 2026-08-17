@@ -9,7 +9,7 @@ public struct ComposerVoiceRecordingContainerView: View {
     @Injected(\.tokens) private var tokens
     @Injected(\.utils) private var utils
 
-    @StateObject var voiceRecordingHandler = VoiceRecordingHandler()
+    @StateObject var handler = AudioSessionHandler()
 
     var addedVoiceRecordings: [AddedVoiceRecording]
     var onDiscardAttachment: (String) -> Void
@@ -27,14 +27,14 @@ public struct ComposerVoiceRecordingContainerView: View {
         VStack(spacing: tokens.spacingXxs) {
             ForEach(addedVoiceRecordings) { recording in
                 ComposerVoiceRecordingAttachmentView(
-                    handler: voiceRecordingHandler,
+                    handler: handler,
                     recording: recording,
                     onDiscardAttachment: onDiscardAttachment
                 )
             }
         }
         .onAppear {
-            player.subscribe(voiceRecordingHandler)
+            player.subscribe(handler)
         }
     }
 }
@@ -47,7 +47,7 @@ struct ComposerVoiceRecordingAttachmentView: View {
     @Injected(\.tokens) private var tokens
     @Injected(\.utils) private var utils
 
-    @ObservedObject var handler: VoiceRecordingHandler
+    @ObservedObject var handler: AudioSessionHandler
 
     let recording: AddedVoiceRecording
     var onDiscardAttachment: (String) -> Void

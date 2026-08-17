@@ -8,9 +8,9 @@
 import XCTest
 
 @MainActor
-final class VoiceRecordingHandler_Tests: StreamChatTestCase {
+final class AudioSessionHandler_Tests: StreamChatTestCase {
     private lazy var mockPlayer: MockAudioPlayer! = .init()
-    private lazy var handler: VoiceRecordingHandler! = .init()
+    private lazy var handler: AudioSessionHandler! = .init()
     private let url = URL(fileURLWithPath: "/tmp/voice.aac")
     private let duration: TimeInterval = 30
 
@@ -18,7 +18,7 @@ final class VoiceRecordingHandler_Tests: StreamChatTestCase {
         super.setUp()
         mockPlayer = MockAudioPlayer()
         streamChat?.utils._audioPlayer = mockPlayer
-        handler = VoiceRecordingHandler()
+        handler = AudioSessionHandler()
     }
 
     override func tearDown() {
