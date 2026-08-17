@@ -28,11 +28,8 @@ public struct FileAttachmentsContainer<Factory: ViewFactory>: View {
     }
 
     public var body: some View {
-        // Audio attachments reuse the file attachment UI until native audio
-        // playback support is available.
-        let attachments = message.fileAttachments + message.audioAttachments.map(\.asFileAttachment)
         VStack(spacing: tokens.spacingXxs) {
-            ForEach(attachments) { attachment in
+            ForEach(message.fileAttachments) { attachment in
                 FileAttachmentView(
                     attachment: attachment,
                     width: width,

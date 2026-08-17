@@ -272,6 +272,24 @@ import XCTest
         XCTAssert(view is FileAttachmentsContainer<DefaultViewFactory>)
     }
 
+    func test_viewFactory_makeAudioAttachmentView() {
+        // Given
+        let viewFactory = DefaultViewFactory.shared
+
+        // When
+        let view = viewFactory.makeAudioAttachmentView(
+            options: AudioAttachmentViewOptions(
+                message: message,
+                isFirst: true,
+                availableWidth: 300,
+                scrolledId: .constant(nil)
+            )
+        )
+
+        // Then
+        XCTAssert(view is AudioAttachmentContainerView<DefaultViewFactory>)
+    }
+
     func test_viewFactory_makeDeletedMessageView() {
         // Given
         let viewFactory = DefaultViewFactory.shared

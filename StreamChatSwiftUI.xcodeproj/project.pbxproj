@@ -163,6 +163,7 @@
 				Tests/ChatChannel/AttachmentFilePickerView_Tests.swift,
 				Tests/ChatChannel/AttachmentMediaPickerItemView_Tests.swift,
 				Tests/ChatChannel/AttachmentMediaPickerView_Tests.swift,
+				Tests/ChatChannel/AudioAttachmentView_Tests.swift,
 				Tests/ChatChannel/ChannelControllerFactory_Tests.swift,
 				Tests/ChatChannel/ChannelInfo/ChannelInfoMockUtils.swift,
 				Tests/ChatChannel/ChannelInfo/ChatChannelInfoView_Tests.swift,
