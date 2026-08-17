@@ -18,11 +18,6 @@ public struct VoiceRecordingContainerView<Factory: ViewFactory>: View {
     @Binding var scrolledId: String?
     
     @ObservedObject var handler: AudioSessionHandler
-    @State var playingIndex: Int?
-    
-    private var player: AudioPlaying {
-        utils.audioPlayer
-    }
     
     public init(
         factory: Factory,
@@ -66,27 +61,10 @@ public struct VoiceRecordingContainerView<Factory: ViewFactory>: View {
             }
         }
         .frame(width: width, alignment: message.isRightAligned ? .trailing : .leading)
-        .onReceive(handler.$context, perform: { value in
-            guard message.voiceRecordingAttachments.count > 1 else { return }
-            if value.state == .playing {
-                let index = message.voiceRecordingAttachments.firstIndex { payload in
-                    payload.voiceRecordingURL == value.assetLocation
-                }
-                if index != playingIndex {
-                    playingIndex = index
-                }
-            } else if value.state == .stopped, let playingIndex {
-                if playingIndex < (message.voiceRecordingAttachments.count - 1) {
-                    let next = playingIndex + 1
-                    let nextURL = message.voiceRecordingAttachments[next].voiceRecordingURL
-                    player.loadAsset(from: nextURL)
-                }
-                self.playingIndex = nil
-            }
-        })
-        .onAppear {
-            player.subscribe(handler)
-        }
+        .audioPlaybackQueue(
+            handler: handler,
+            urls: message.voiceRecordingAttachments.map(\.voiceRecordingURL)
+        )
     }
 
     private func voiceMessageAccessibilityLabel(duration: TimeInterval) -> String {
@@ -105,7 +83,6 @@ struct VoiceRecordingView: View {
     @Injected(\.tokens) var tokens
     @Injected(\.utils) var utils
 
-    @State var loading: Bool = false
     @ObservedObject var handler: AudioSessionHandler
 
     let addedVoiceRecording: AddedVoiceRecording
@@ -114,12 +91,14 @@ struct VoiceRecordingView: View {
 
     private var isActive: Bool { handler.isActive(for: addedVoiceRecording.url) }
 
+    private var isLoading: Bool { isActive && handler.context.state == .loading }
+
     private var displayedPlaybackTime: TimeInterval {
         handler.displayedTime(for: addedVoiceRecording.url, duration: addedVoiceRecording.duration)
     }
 
-    private var controlBorderColor: Color? {
-        isSentByCurrentUser ? Color(colors.chatBorderOnChatOutgoing) : Color(colors.chatBorderOnChatIncoming)
+    private var controlBorderColor: Color {
+        colors.chatControlBorder(isSentByCurrentUser: isSentByCurrentUser)
     }
 
     var body: some View {
@@ -137,31 +116,17 @@ struct VoiceRecordingView: View {
 
             PlaybackSpeedToggle(handler: handler, borderColor: controlBorderColor)
         }
-        .onReceive(handler.$context) { value in
-            guard value.assetLocation == addedVoiceRecording.url else { return }
-            if value.state == .loading {
-                loading = true
-                return
-            } else if loading {
-                loading = false
-            }
-            handler.updatePlaybackState(for: addedVoiceRecording.url)
-        }
+        .audioPlaybackStateUpdates(handler: handler, url: addedVoiceRecording.url)
     }
 
     private var playButton: some View {
-        PlayPauseButton(isPlaying: handler.isPlaying && isActive) {
+        AudioPlaybackButton(
+            isPlaying: handler.isPlaying && isActive,
+            isLoading: isLoading,
+            isSentByCurrentUser: isSentByCurrentUser
+        ) {
             handler.togglePlayback(for: addedVoiceRecording.url)
         }
-        .overlay(
-            Group {
-                if let controlBorderColor {
-                    Circle().stroke(controlBorderColor, lineWidth: 1)
-                }
-            }
-        )
-        .opacity(loading ? 0 : 1)
-        .overlay(loading ? ProgressView() : nil)
     }
 
     private var durationAndWaveform: some View {

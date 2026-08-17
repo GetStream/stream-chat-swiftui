@@ -2,14 +2,12 @@
 // Copyright © 2026 Stream.io Inc. All rights reserved.
 //
 
-import AVFoundation
 import StreamChat
 import SwiftUI
 
 /// Displays the audio file attachments of a message.
 public struct AudioAttachmentContainerView<Factory: ViewFactory>: View {
     @Injected(\.tokens) var tokens
-    @Injected(\.utils) var utils
 
     let factory: Factory
     let message: ChatMessage
@@ -18,11 +16,6 @@ public struct AudioAttachmentContainerView<Factory: ViewFactory>: View {
     @Binding var scrolledId: String?
 
     @ObservedObject var handler: AudioSessionHandler
-    @State var playingIndex: Int?
-
-    private var player: AudioPlaying {
-        utils.audioPlayer
-    }
 
     public init(
         factory: Factory,
@@ -60,27 +53,10 @@ public struct AudioAttachmentContainerView<Factory: ViewFactory>: View {
             }
         }
         .frame(width: width, alignment: message.isRightAligned ? .trailing : .leading)
-        .onReceive(handler.$context, perform: { value in
-            guard message.audioAttachments.count > 1 else { return }
-            if value.state == .playing {
-                let index = message.audioAttachments.firstIndex { payload in
-                    payload.payload.audioURL == value.assetLocation
-                }
-                if index != playingIndex {
-                    playingIndex = index
-                }
-            } else if value.state == .stopped, let playingIndex {
-                if playingIndex < (message.audioAttachments.count - 1) {
-                    let next = playingIndex + 1
-                    let nextURL = message.audioAttachments[next].payload.audioURL
-                    player.loadAsset(from: nextURL)
-                }
-                self.playingIndex = nil
-            }
-        })
-        .onAppear {
-            player.subscribe(handler)
-        }
+        .audioPlaybackQueue(
+            handler: handler,
+            urls: message.audioAttachments.map(\.payload.audioURL)
+        )
         .accessibilityIdentifier("AudioAttachmentContainerView")
     }
 }
@@ -92,7 +68,6 @@ struct AudioAttachmentView: View {
     @Injected(\.utils) var utils
     @Injected(\.chatClient) var chatClient
 
-    @State private var loading = false
     @State private var loadedDuration: TimeInterval?
     @ObservedObject var handler: AudioSessionHandler
 
@@ -107,6 +82,8 @@ struct AudioAttachmentView: View {
     private var isActive: Bool { handler.isActive(for: playbackURL) }
 
     private var isPlaying: Bool { handler.isPlaying && isActive }
+
+    private var isLoading: Bool { isActive && handler.context.state == .loading }
 
     private var isInteractive: Bool {
         switch attachment.uploadingState?.state {
@@ -147,10 +124,6 @@ struct AudioAttachmentView: View {
         }
     }
 
-    private var controlBorderColor: Color? {
-        isSentByCurrentUser ? Color(colors.chatBorderOnChatOutgoing) : Color(colors.chatBorderOnChatIncoming)
-    }
-
     var body: some View {
         let knownDuration = payloadDuration
         let url = playbackURL
@@ -167,37 +140,23 @@ struct AudioAttachmentView: View {
             guard isInteractive else { return }
             handler.togglePlayback(for: playbackURL)
         }
-        .onReceive(handler.$context) { value in
-            guard value.assetLocation == playbackURL else { return }
-            if value.state == .loading {
-                loading = true
-                return
-            } else if loading {
-                loading = false
-            }
-            handler.updatePlaybackState(for: playbackURL)
-        }
+        .audioPlaybackStateUpdates(handler: handler, url: url)
         .compatibility.task(id: url) { @MainActor in
             guard knownDuration == nil else { return }
-            loadedDuration = await AudioDurationLoader.duration(from: url)
+            loadedDuration = await AssetDurationLoader.duration(from: url)
         }
         .accessibilityIdentifier("AudioAttachmentView")
     }
 
     private var playButton: some View {
-        PlayPauseButton(isPlaying: isPlaying) {
+        AudioPlaybackButton(
+            isPlaying: isPlaying,
+            isLoading: isLoading,
+            isSentByCurrentUser: isSentByCurrentUser,
+            isEnabled: isInteractive
+        ) {
             handler.togglePlayback(for: playbackURL)
         }
-        .overlay(
-            Group {
-                if isInteractive, let controlBorderColor {
-                    Circle().stroke(controlBorderColor, lineWidth: 1)
-                }
-            }
-        )
-        .opacity(loading ? 0 : 1)
-        .overlay(loading ? ProgressView() : nil)
-        .disabled(!isInteractive)
     }
 
     private var fileNameAndMetadata: some View {
@@ -332,32 +291,6 @@ struct AudioAttachmentView: View {
             value > 0
         else { return nil }
         return value
-    }
-}
-
-enum AudioDurationLoader: Sendable {
-    static func duration(from url: URL) async -> TimeInterval? {
-        let asset = AVURLAsset(url: url)
-        if #available(iOS 16, *) {
-            guard let duration = try? await asset.load(.duration) else { return nil }
-            return Self.validDuration(duration.seconds)
-        } else {
-            return await withCheckedContinuation { continuation in
-                asset.loadValuesAsynchronously(forKeys: ["duration"]) {
-                    var error: NSError?
-                    let status = asset.statusOfValue(forKey: "duration", error: &error)
-                    guard status == .loaded else {
-                        continuation.resume(returning: nil)
-                        return
-                    }
-                    continuation.resume(returning: Self.validDuration(asset.duration.seconds))
-                }
-            }
-        }
-    }
-
-    private static func validDuration(_ seconds: TimeInterval) -> TimeInterval? {
-        seconds.isFinite && seconds > 0 ? seconds : nil
     }
 }
 

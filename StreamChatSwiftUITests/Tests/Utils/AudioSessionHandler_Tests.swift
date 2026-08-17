@@ -335,6 +335,75 @@ final class AudioSessionHandler_Tests: StreamChatTestCase {
         XCTAssertTrue(utils?.audioSessionHandler === utils?.audioSessionHandler)
     }
 
+    // MARK: - advanceQueueIfNeeded(urls:playingIndex:)
+
+    func test_advanceQueueIfNeeded_whenSingleURL_returnsCurrentIndex() {
+        let result = handler.advanceQueueIfNeeded(urls: [url], playingIndex: 0)
+
+        XCTAssertEqual(result, 0)
+        XCTAssertNil(mockPlayer.loadAssetWasCalledWithURL)
+    }
+
+    func test_advanceQueueIfNeeded_whenPlaying_updatesIndexForActiveURL() {
+        let urls = [
+            URL(fileURLWithPath: "/tmp/a.aac"),
+            URL(fileURLWithPath: "/tmp/b.aac")
+        ]
+        handler.context = AudioPlaybackContext(
+            assetLocation: urls[1],
+            duration: duration,
+            currentTime: 0,
+            state: .playing,
+            rate: .normal,
+            isSeeking: false
+        )
+
+        let result = handler.advanceQueueIfNeeded(urls: urls, playingIndex: nil)
+
+        XCTAssertEqual(result, 1)
+        XCTAssertNil(mockPlayer.loadAssetWasCalledWithURL)
+    }
+
+    func test_advanceQueueIfNeeded_whenStoppedWithNextItem_loadsNextURL() {
+        let urls = [
+            URL(fileURLWithPath: "/tmp/a.aac"),
+            URL(fileURLWithPath: "/tmp/b.aac")
+        ]
+        handler.context = AudioPlaybackContext(
+            assetLocation: urls[0],
+            duration: duration,
+            currentTime: 0,
+            state: .stopped,
+            rate: .zero,
+            isSeeking: false
+        )
+
+        let result = handler.advanceQueueIfNeeded(urls: urls, playingIndex: 0)
+
+        XCTAssertNil(result)
+        XCTAssertEqual(mockPlayer.loadAssetWasCalledWithURL, urls[1])
+    }
+
+    func test_advanceQueueIfNeeded_whenStoppedOnLastItem_doesNotLoad() {
+        let urls = [
+            URL(fileURLWithPath: "/tmp/a.aac"),
+            URL(fileURLWithPath: "/tmp/b.aac")
+        ]
+        handler.context = AudioPlaybackContext(
+            assetLocation: urls[1],
+            duration: duration,
+            currentTime: 0,
+            state: .stopped,
+            rate: .zero,
+            isSeeking: false
+        )
+
+        let result = handler.advanceQueueIfNeeded(urls: urls, playingIndex: 1)
+
+        XCTAssertNil(result)
+        XCTAssertNil(mockPlayer.loadAssetWasCalledWithURL)
+    }
+
     // MARK: - Helpers
 
     private func makeContext(

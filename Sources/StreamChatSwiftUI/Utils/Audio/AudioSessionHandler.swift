@@ -90,4 +90,20 @@ class AudioSessionHandler: ObservableObject, AudioPlayingDelegate {
         }
         player.seek(to: time)
     }
+
+    /// Tracks the active item in a multi-attachment queue and loads the next URL when playback stops.
+    /// - Returns: The updated queue index to store in the view.
+    func advanceQueueIfNeeded(urls: [URL], playingIndex: Int?) -> Int? {
+        guard urls.count > 1 else { return playingIndex }
+        if context.state == .playing {
+            let index = urls.firstIndex { $0 == context.assetLocation }
+            return index != playingIndex ? index : playingIndex
+        } else if context.state == .stopped, let playingIndex {
+            if playingIndex < urls.count - 1 {
+                player.loadAsset(from: urls[playingIndex + 1])
+            }
+            return nil
+        }
+        return playingIndex
+    }
 }
