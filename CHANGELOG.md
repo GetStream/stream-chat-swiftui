@@ -3,7 +3,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 # Upcoming
 
+### ✅ Added
+- Add `ViewFactory.makeChannelInfoActionsView` for customizing the actions in the channel info screen [#1573](https://github.com/GetStream/stream-chat-swiftui/pull/1573)
+
 ### 🔄 Changed
+- Allow overriding the leave conversation, block user and add members actions in `ChatChannelInfoViewModel` [#1573](https://github.com/GetStream/stream-chat-swiftui/pull/1573)
 
 # [5.9.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/5.9.0)
 _August 12, 2026_
