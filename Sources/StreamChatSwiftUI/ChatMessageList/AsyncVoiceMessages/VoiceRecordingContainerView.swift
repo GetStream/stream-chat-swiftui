@@ -17,7 +17,7 @@ public struct VoiceRecordingContainerView<Factory: ViewFactory>: View {
     let isFirst: Bool
     @Binding var scrolledId: String?
     
-    @StateObject var handler = AudioSessionHandler()
+    @ObservedObject var handler: AudioSessionHandler
     @State var playingIndex: Int?
     
     private var player: AudioPlaying {
@@ -36,6 +36,7 @@ public struct VoiceRecordingContainerView<Factory: ViewFactory>: View {
         self.width = width
         self.isFirst = isFirst
         _scrolledId = scrolledId
+        _handler = ObservedObject(wrappedValue: InjectedValues[\.utils].audioSessionHandler)
     }
     
     public var body: some View {

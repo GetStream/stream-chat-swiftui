@@ -9,7 +9,7 @@ public struct ComposerVoiceRecordingContainerView: View {
     @Injected(\.tokens) private var tokens
     @Injected(\.utils) private var utils
 
-    @StateObject var handler = AudioSessionHandler()
+    @ObservedObject var handler: AudioSessionHandler
 
     var addedVoiceRecordings: [AddedVoiceRecording]
     var onDiscardAttachment: (String) -> Void
@@ -17,6 +17,7 @@ public struct ComposerVoiceRecordingContainerView: View {
     public init(addedVoiceRecordings: [AddedVoiceRecording], onDiscardAttachment: @escaping (String) -> Void) {
         self.addedVoiceRecordings = addedVoiceRecordings
         self.onDiscardAttachment = onDiscardAttachment
+        _handler = ObservedObject(wrappedValue: InjectedValues[\.utils].audioSessionHandler)
     }
 
     private var player: AudioPlaying {

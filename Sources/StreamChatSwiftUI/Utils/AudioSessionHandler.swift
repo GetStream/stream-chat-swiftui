@@ -44,11 +44,17 @@ class AudioSessionHandler: ObservableObject, AudioPlayingDelegate {
     }
 
     func togglePlayback(for url: URL) {
-        if isPlaying {
+        if isPlaying, isActive(for: url) {
             player.pause()
         } else {
             player.loadAsset(from: url)
         }
+    }
+
+    func resetPlaybackState() {
+        context = .notLoaded
+        isPlaying = false
+        rate = .normal
     }
 
     func cycleRate() {

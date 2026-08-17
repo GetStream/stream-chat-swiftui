@@ -176,11 +176,23 @@ final class AudioSessionHandler_Tests: StreamChatTestCase {
 
     func test_togglePlayback_whenPlaying_pausesPlayer() {
         handler.isPlaying = true
+        handler.context = makeContext(state: .playing)
 
         handler.togglePlayback(for: url)
 
         XCTAssertTrue(mockPlayer.pauseWasCalled)
         XCTAssertNil(mockPlayer.loadAssetWasCalledWithURL)
+    }
+
+    func test_togglePlayback_whenPlayingDifferentURL_loadsRequestedAsset() {
+        handler.isPlaying = true
+        handler.context = makeContext(state: .playing)
+        let otherURL = URL(fileURLWithPath: "/tmp/audio.mp3")
+
+        handler.togglePlayback(for: otherURL)
+
+        XCTAssertEqual(mockPlayer.loadAssetWasCalledWithURL, otherURL)
+        XCTAssertFalse(mockPlayer.pauseWasCalled)
     }
 
     func test_togglePlayback_whenNotPlaying_loadsAssetWithoutApplyingRate() {
@@ -300,6 +312,27 @@ final class AudioSessionHandler_Tests: StreamChatTestCase {
 
         XCTAssertEqual(mockPlayer.loadAssetWasCalledWithURL, newURL)
         XCTAssertEqual(mockPlayer.seekWasCalledWithTime, 5)
+    }
+
+    // MARK: - resetPlaybackState()
+
+    func test_resetPlaybackState_clearsPlayback() {
+        handler.isPlaying = true
+        handler.rate = .double
+        handler.context = makeContext(state: .playing)
+
+        handler.resetPlaybackState()
+
+        XCTAssertFalse(handler.isPlaying)
+        XCTAssertEqual(handler.rate, .normal)
+        XCTAssertEqual(handler.context, .notLoaded)
+    }
+
+    // MARK: - Shared handler
+
+    func test_utils_audioSessionHandler_isShared() {
+        let utils = streamChat?.utils
+        XCTAssertTrue(utils?.audioSessionHandler === utils?.audioSessionHandler)
     }
 
     // MARK: - Helpers

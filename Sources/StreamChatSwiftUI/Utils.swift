@@ -47,8 +47,18 @@ import StreamChatCommonUI
         } else {
             let player = audioPlayerBuilder()
             _audioPlayer = player
+            player.subscribe(audioSessionHandler)
             return player
         }
+    }
+
+    var audioSessionHandler: AudioSessionHandler {
+        if let _audioSessionHandler {
+            return _audioSessionHandler
+        }
+        let handler = AudioSessionHandler()
+        _audioSessionHandler = handler
+        return handler
     }
     
     public var audioRecorderBuilder: () -> AudioRecording = { StreamAudioRecorder() }
@@ -74,6 +84,7 @@ import StreamChatCommonUI
     var channelControllerFactory = ChannelControllerFactory()
     
     var _audioPlayer: AudioPlaying?
+    var _audioSessionHandler: AudioSessionHandler?
     var _audioRecorder: AudioRecording?
     var linkDetector = TextLinkDetector()
     var pollsDateFormatter: PollTimestampFormatter = DefaultPollTimestampFormatter()

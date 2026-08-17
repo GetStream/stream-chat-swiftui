@@ -894,6 +894,7 @@ import SwiftUI
         utils.audioPlayer.updateRate(.normal)
         utils.audioPlayer.stop()
         utils._audioPlayer = nil
+        utils._audioSessionHandler?.resetPlaybackState()
     }
     
     deinit {
