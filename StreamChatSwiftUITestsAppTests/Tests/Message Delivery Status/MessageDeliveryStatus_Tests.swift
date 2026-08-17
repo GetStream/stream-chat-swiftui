@@ -51,7 +51,7 @@ final class MessageDeliveryStatus_Tests: StreamTestCase {
     func test_errorIndicatorShown_whenMessageFailedToBeSent() throws {
         linkToScenario(withId: 399)
         
-        throw XCTSkip("https://linear.app/stream/issue/IOS-1315")
+        try XCTSkipIf(true, "https://linear.app/stream/issue/IOS-1315")
 
         GIVEN("user becomes offline") {
             userRobot
@@ -93,7 +93,7 @@ final class MessageDeliveryStatus_Tests: StreamTestCase {
     func test_doubleCheckmarkShown_whenNewParticipantAdded() throws {
         linkToScenario(withId: 401)
         
-        throw XCTSkip("https://linear.app/stream/issue/IOS-1316")
+        try XCTSkipIf(true, "https://linear.app/stream/issue/IOS-1316")
 
         GIVEN("user opens the channel") {
             userRobot
@@ -118,7 +118,7 @@ final class MessageDeliveryStatus_Tests: StreamTestCase {
     func test_readByDecremented_whenParticipantIsRemoved() throws {
         linkToScenario(withId: 402)
         
-        throw XCTSkip("https://linear.app/stream/issue/IOS-1316")
+        try XCTSkipIf(true, "https://linear.app/stream/issue/IOS-1316")
 
         GIVEN("user opens the channel") {
             userRobot
@@ -217,7 +217,7 @@ extension MessageDeliveryStatus_Tests {
     func test_errorIndicatorShown_whenMessageFailedToBeSent_andCantBePreviewedInThread() throws {
         linkToScenario(withId: 406)
         
-        throw XCTSkip("https://linear.app/stream/issue/IOS-1315")
+        try XCTSkipIf(true, "https://linear.app/stream/issue/IOS-1315")
 
         GIVEN("user becomes offline") {
             userRobot
@@ -243,7 +243,7 @@ extension MessageDeliveryStatus_Tests {
     func test_doubleCheckmarkShown_whenMessageReadByParticipant_andPreviewedInThread() throws {
         linkToScenario(withId: 407)
         
-        throw XCTSkip("https://linear.app/stream/issue/IOS-46")
+        try XCTSkipIf(true, "https://linear.app/stream/issue/IOS-46")
 
         GIVEN("user opens the channel") {
             userRobot
@@ -288,7 +288,7 @@ extension MessageDeliveryStatus_Tests {
     func test_errorIndicatorShown_whenThreadReplyFailedToBeSent() throws {
         linkToScenario(withId: 409)
         
-        throw XCTSkip("https://linear.app/stream/issue/IOS-1315")
+        try XCTSkipIf(true, "https://linear.app/stream/issue/IOS-1315")
 
         GIVEN("user becomes offline") {
             backendRobot.generateChannels(channelsCount: 1, messagesCount: 1)
@@ -312,7 +312,7 @@ extension MessageDeliveryStatus_Tests {
     func test_doubleCheckmarkShown_whenThreadReplyReadByParticipant() throws {
         linkToScenario(withId: 410)
         
-        throw XCTSkip("https://linear.app/stream/issue/IOS-46")
+        try XCTSkipIf(true, "https://linear.app/stream/issue/IOS-46")
 
         GIVEN("user opens the channel") {
             userRobot
@@ -336,7 +336,7 @@ extension MessageDeliveryStatus_Tests {
     func test_doubleCheckmarkShownInThreadReply_whenNewParticipantAdded() throws {
         linkToScenario(withId: 411)
         
-        throw XCTSkip("https://linear.app/stream/issue/IOS-1316")
+        try XCTSkipIf(true, "https://linear.app/stream/issue/IOS-1316")
 
         GIVEN("user opens the channel") {
             userRobot
@@ -360,7 +360,7 @@ extension MessageDeliveryStatus_Tests {
     func test_readByDecrementedInThreadReply_whenParticipantIsRemoved() throws {
         linkToScenario(withId: 412)
         
-        throw XCTSkip("https://linear.app/stream/issue/IOS-1316")
+        try XCTSkipIf(true, "https://linear.app/stream/issue/IOS-1316")
 
         GIVEN("user opens the channel") {
             userRobot
@@ -487,7 +487,7 @@ extension MessageDeliveryStatus_Tests {
     func test_deliveryStatusShowsClocks_whenMessageIsInPendingStateAndReadEventsIsDisabled() throws {
         linkToScenario(withId: 417)
         
-        throw XCTSkip("https://linear.app/stream/issue/IOS-970")
+        try XCTSkipIf(true, "https://linear.app/stream/issue/IOS-970")
 
         GIVEN("user opens the channel") {
             backendRobot.setReadEvents(to: false)
@@ -507,7 +507,7 @@ extension MessageDeliveryStatus_Tests {
     func test_errorIndicatorShown_whenMessageFailedToBeSentAndReadEventsIsDisabled() throws {
         linkToScenario(withId: 418)
         
-        throw XCTSkip("https://linear.app/stream/issue/IOS-1315")
+        try XCTSkipIf(true, "https://linear.app/stream/issue/IOS-1315")
 
         GIVEN("user becomes offline") {
             backendRobot.setReadEvents(to: false)
@@ -551,7 +551,7 @@ extension MessageDeliveryStatus_Tests {
     func test_deliveryStatusHidden_whenNewParticipantAddedAndReadEventsIsDisabled() throws {
         linkToScenario(withId: 420)
         
-        throw XCTSkip("https://linear.app/stream/issue/IOS-1316")
+        try XCTSkipIf(true, "https://linear.app/stream/issue/IOS-1316")
 
         GIVEN("user opens the channel") {
             backendRobot.setReadEvents(to: false)
@@ -576,7 +576,7 @@ extension MessageDeliveryStatus_Tests {
     func test_deliveryStatusHidden_whenParticipantIsRemovedAndReadEventsIsDisabled() throws {
         linkToScenario(withId: 421)
         
-        throw XCTSkip("https://linear.app/stream/issue/IOS-1316")
+        try XCTSkipIf(true, "https://linear.app/stream/issue/IOS-1316")
 
         GIVEN("user opens the channel") {
             backendRobot.setReadEvents(to: false)

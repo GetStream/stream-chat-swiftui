@@ -19,6 +19,7 @@ final class MediaPickerAssetHandler: ObservableObject {
 
     private let asset: PHAsset
     private let assetLoader: PhotoAssetLoader
+    private var requestToken: UUID?
 
     var assetType: AssetType {
         asset.mediaType == .video ? .video : .image
@@ -123,19 +124,19 @@ final class MediaPickerAssetHandler: ObservableObject {
     ) {
         // Cancelled requests still report back, so the id is only cleared while it is
         // the one in flight. A synchronous completion is not tracked at all.
-        var isCompleted = false
-        var newRequestId: PHImageRequestID?
-        newRequestId = assetLoader.requestAssetURL(
+        let token = UUID()
+        requestToken = token
+        let newRequestId = assetLoader.requestAssetURL(
             for: asset,
             allowsNetworkAccess: allowsNetworkAccess
         ) { [weak self] url in
-            isCompleted = true
-            if let self, let newRequestId, requestId == newRequestId {
+            if let self, requestToken == token {
                 requestId = nil
+                requestToken = nil
             }
             completion(url)
         }
-        if !isCompleted {
+        if requestToken == token {
             requestId = newRequestId
         }
     }
@@ -165,6 +166,7 @@ final class MediaPickerAssetHandler: ObservableObject {
             assetLoader.cancelRequest(requestId)
             self.requestId = nil
         }
+        requestToken = nil
         loading = false
     }
 
