@@ -28,7 +28,9 @@ import SwiftUI
     @Published public var memberListSheetShown = false
     @Published public var editGroupShown = false
     @Published public var isUploadingGroupAvatar = false
+    /// Whether the confirmation for leaving the group, or deleting the conversation, is shown.
     @Published public var leaveGroupAlertShown = false
+    /// Whether the confirmation for blocking or unblocking the user is shown.
     @Published public var blockUserAlertShown = false
     @Published public var errorShown = false
     @Published public var channelName: String
@@ -120,6 +122,26 @@ import SwiftUI
         } else {
             L10n.Alert.Actions.leaveGroupMessage
         }
+    }
+
+    /// The confirmation shown before leaving the group, or deleting the conversation.
+    open var leaveConversationConfirmation: ConfirmationPopup {
+        ConfirmationPopup(
+            title: leaveButtonTitle,
+            message: leaveConversationDescription,
+            buttonTitle: leaveButtonTitle
+        )
+    }
+
+    /// The confirmation shown before blocking or unblocking the user.
+    open var blockUserConfirmation: ConfirmationPopup {
+        ConfirmationPopup(
+            title: blockUserTitle,
+            message: isDMUserBlocked
+                ? L10n.Message.Actions.UserUnblock.confirmationMessage
+                : L10n.Message.Actions.UserBlock.confirmationMessage,
+            buttonTitle: blockUserTitle
+        )
     }
     
     public var notDisplayedParticipantsCount: Int {

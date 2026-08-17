@@ -19,13 +19,6 @@ public struct ChannelInfoActionsView: View {
 
     private let leaveConversation: @MainActor () -> Void
 
-    private enum AlertType: Identifiable {
-        case blockUser, leaveConversation
-        var id: Self { self }
-    }
-
-    @State private var alertType: AlertType?
-
     public init(options: ChannelInfoActionsViewOptions) {
         viewModel = options.viewModel
         leaveConversation = options.leaveConversation
@@ -55,38 +48,12 @@ public struct ChannelInfoActionsView: View {
                     leaveButton
                 }
             }
-            .alert(item: $alertType) { type -> Alert in
-                switch type {
-                case .blockUser:
-                    return Alert(
-                        title: Text(viewModel.blockUserTitle),
-                        message: Text(
-                            viewModel.isDMUserBlocked
-                                ? L10n.Message.Actions.UserUnblock.confirmationMessage
-                                : L10n.Message.Actions.UserBlock.confirmationMessage
-                        ),
-                        primaryButton: .destructive(Text(viewModel.blockUserTitle)) {
-                            viewModel.blockUserTapped()
-                        },
-                        secondaryButton: .cancel()
-                    )
-                case .leaveConversation:
-                    return Alert(
-                        title: Text(viewModel.leaveButtonTitle),
-                        message: Text(viewModel.leaveConversationDescription),
-                        primaryButton: .destructive(Text(viewModel.leaveButtonTitle)) {
-                            leaveConversation()
-                        },
-                        secondaryButton: .cancel()
-                    )
-                }
-            }
         }
     }
 
     private var blockButton: some View {
         Button {
-            alertType = .blockUser
+            viewModel.blockUserAlertShown = true
         } label: {
             HStack(spacing: tokens.spacingMd) {
                 Image(uiImage: images.messageActionBlockUser)
@@ -101,11 +68,16 @@ public struct ChannelInfoActionsView: View {
             .foregroundColor(Color(colors.textPrimary))
             .background(Color(colors.backgroundCoreSurfaceSubtle))
         }
+        .alert(isPresented: $viewModel.blockUserAlertShown) {
+            confirmationAlert(for: viewModel.blockUserConfirmation) {
+                viewModel.blockUserTapped()
+            }
+        }
     }
 
     private var leaveButton: some View {
         Button {
-            alertType = .leaveConversation
+            viewModel.leaveGroupAlertShown = true
         } label: {
             HStack(spacing: tokens.spacingMd) {
                 Image(systemName: viewModel.showSingleMemberDMView ? "trash" : "rectangle.portrait.and.arrow.right")
@@ -120,5 +92,22 @@ public struct ChannelInfoActionsView: View {
             .foregroundColor(Color(colors.accentError))
             .background(Color(colors.backgroundCoreSurfaceSubtle))
         }
+        .alert(isPresented: $viewModel.leaveGroupAlertShown) {
+            confirmationAlert(for: viewModel.leaveConversationConfirmation) {
+                leaveConversation()
+            }
+        }
+    }
+
+    private func confirmationAlert(
+        for confirmation: ConfirmationPopup,
+        action: @escaping @MainActor () -> Void
+    ) -> Alert {
+        Alert(
+            title: Text(confirmation.title),
+            message: confirmation.message.map { Text($0) },
+            primaryButton: .destructive(Text(confirmation.buttonTitle), action: action),
+            secondaryButton: .cancel()
+        )
     }
 }

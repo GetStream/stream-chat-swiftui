@@ -62,15 +62,7 @@ import XCTest
 
     func test_chatChannelInfoVM_directChannelParticipant() {
         // Given
-        let members = ChannelInfoMockUtils.setupMockMembers(
-            count: 2,
-            currentUserId: chatClient.currentUserId!
-        )
-        let channel = ChatChannel.mockDMChannel(
-            lastActiveMembers: members,
-            memberCount: 2
-        )
-        let viewModel = ChatChannelInfoViewModel(channel: channel)
+        let viewModel = ChatChannelInfoViewModel(channel: mockDirectMessage())
 
         // When
         let participants = viewModel.participants
@@ -824,15 +816,7 @@ import XCTest
 
     func test_chatChannelInfoVM_shouldShowBlockUserButton_trueForSingleMemberDM() {
         // Given
-        let members = ChannelInfoMockUtils.setupMockMembers(
-            count: 2,
-            currentUserId: chatClient.currentUserId!
-        )
-        let channel = ChatChannel.mockDMChannel(
-            lastActiveMembers: members,
-            memberCount: 2
-        )
-        let viewModel = ChatChannelInfoViewModel(channel: channel)
+        let viewModel = ChatChannelInfoViewModel(channel: mockDirectMessage())
 
         // Then - showSingleMemberDMView == true → block button shown
         XCTAssertTrue(viewModel.shouldShowBlockUserButton)
@@ -916,15 +900,7 @@ import XCTest
 
     func test_chatChannelInfoVM_participantActions_currentUserInSingleDM_returnsEmpty() {
         // Given
-        let members = ChannelInfoMockUtils.setupMockMembers(
-            count: 2,
-            currentUserId: chatClient.currentUserId!
-        )
-        let channel = ChatChannel.mockDMChannel(
-            lastActiveMembers: members,
-            memberCount: 2
-        )
-        let viewModel = ChatChannelInfoViewModel(channel: channel)
+        let viewModel = ChatChannelInfoViewModel(channel: mockDirectMessage())
         let currentUserParticipant = viewModel.participants.first { $0.id == chatClient.currentUserId }!
 
         // When
@@ -981,15 +957,7 @@ import XCTest
 
     func test_chatChannelInfoVM_blockParticipantAction_properties() {
         // Given
-        let members = ChannelInfoMockUtils.setupMockMembers(
-            count: 2,
-            currentUserId: chatClient.currentUserId!
-        )
-        let channel = ChatChannel.mockDMChannel(
-            lastActiveMembers: members,
-            memberCount: 2
-        )
-        let viewModel = ChatChannelInfoViewModel(channel: channel)
+        let viewModel = ChatChannelInfoViewModel(channel: mockDirectMessage())
         let otherParticipant = viewModel.participants.first { $0.id != chatClient.currentUserId }!
 
         // When
@@ -1042,6 +1010,269 @@ import XCTest
         // Then
         XCTAssertEqual(controller.createNewMessageCallCount, 1)
         XCTAssertTrue(viewModel.didCallSuper)
+    }
+
+    // MARK: - leaveConversationTapped
+
+    func test_chatChannelInfoVM_leaveConversationTapped_whenGroup_removesCurrentUser() {
+        // Given
+        let viewModel = ChatChannelInfoViewModel(channel: mockGroup(with: 5))
+        let controller = channelControllerSpy()
+        viewModel.channelController = controller
+
+        // When
+        viewModel.leaveConversationTapped {}
+
+        // Then
+        XCTAssertEqual(controller.removeMembersUserIds, [chatClient.currentUserId!])
+        XCTAssertEqual(controller.deleteChannelCallCount, 0)
+    }
+
+    func test_chatChannelInfoVM_leaveConversationTapped_whenGroupLeft_callsCompletion() {
+        // Given
+        let viewModel = ChatChannelInfoViewModel(channel: mockGroup(with: 5))
+        let controller = channelControllerSpy()
+        viewModel.channelController = controller
+        var completionCallCount = 0
+
+        // When
+        viewModel.leaveConversationTapped { completionCallCount += 1 }
+        controller.removeMembersCompletion?(nil)
+
+        // Then
+        XCTAssertEqual(completionCallCount, 1)
+        XCTAssertFalse(viewModel.errorShown)
+    }
+
+    func test_chatChannelInfoVM_leaveConversationTapped_whenLeavingFails_showsError() {
+        // Given
+        let viewModel = ChatChannelInfoViewModel(channel: mockGroup(with: 5))
+        let controller = channelControllerSpy()
+        viewModel.channelController = controller
+        var completionCallCount = 0
+
+        // When
+        viewModel.leaveConversationTapped { completionCallCount += 1 }
+        controller.removeMembersCompletion?(ClientError.Unknown())
+
+        // Then
+        XCTAssertEqual(completionCallCount, 0)
+        XCTAssertTrue(viewModel.errorShown)
+    }
+
+    func test_chatChannelInfoVM_leaveConversationTapped_whenDirectMessage_deletesChannel() {
+        // Given
+        let viewModel = ChatChannelInfoViewModel(channel: mockDirectMessage())
+        let controller = channelControllerSpy()
+        viewModel.channelController = controller
+        var completionCallCount = 0
+
+        // When
+        viewModel.leaveConversationTapped { completionCallCount += 1 }
+        controller.deleteChannelCompletion?(nil)
+
+        // Then
+        XCTAssertEqual(controller.deleteChannelCallCount, 1)
+        XCTAssertNil(controller.removeMembersUserIds)
+        XCTAssertEqual(completionCallCount, 1)
+    }
+
+    func test_chatChannelInfoVM_leaveConversationTapped_whenDeletingFails_showsError() {
+        // Given
+        let viewModel = ChatChannelInfoViewModel(channel: mockDirectMessage())
+        let controller = channelControllerSpy()
+        viewModel.channelController = controller
+        var completionCallCount = 0
+
+        // When
+        viewModel.leaveConversationTapped { completionCallCount += 1 }
+        controller.deleteChannelCompletion?(ClientError.Unknown())
+
+        // Then
+        XCTAssertEqual(completionCallCount, 0)
+        XCTAssertTrue(viewModel.errorShown)
+    }
+
+    // MARK: - muted
+
+    func test_chatChannelInfoVM_muted_whenSetToTrue_mutesChannel() {
+        // Given
+        let viewModel = ChatChannelInfoViewModel(channel: mockGroup(with: 5))
+        let controller = channelControllerSpy()
+        viewModel.channelController = controller
+
+        // When
+        viewModel.muted = true
+
+        // Then
+        XCTAssertEqual(controller.muteChannelCallCount, 1)
+        XCTAssertEqual(controller.unmuteChannelCallCount, 0)
+    }
+
+    func test_chatChannelInfoVM_muted_whenSetToFalse_unmutesChannel() {
+        // Given
+        let channel = ChatChannel.mock(
+            cid: .unique,
+            lastActiveMembers: ChannelInfoMockUtils.setupMockMembers(
+                count: 5,
+                currentUserId: chatClient.currentUserId!
+            ),
+            memberCount: 5,
+            muteDetails: MuteDetails(createdAt: Date(), updatedAt: Date(), expiresAt: nil)
+        )
+        let viewModel = ChatChannelInfoViewModel(channel: channel)
+        let controller = channelControllerSpy()
+        viewModel.channelController = controller
+        XCTAssertTrue(viewModel.muted)
+
+        // When
+        viewModel.muted = false
+
+        // Then
+        XCTAssertEqual(controller.unmuteChannelCallCount, 1)
+        XCTAssertEqual(controller.muteChannelCallCount, 0)
+    }
+
+    // MARK: - leaveGroupAction
+
+    func test_chatChannelInfoVM_leaveGroupAction_whenPerformed_removesCurrentUser() {
+        // Given
+        let viewModel = ChatChannelInfoViewModel(channel: mockGroup(with: 5))
+        let controller = channelControllerSpy()
+        viewModel.channelController = controller
+        var dismissCallCount = 0
+        var errors = [Error]()
+        let action = viewModel.leaveGroupAction(
+            onDismiss: { dismissCallCount += 1 },
+            onError: { errors.append($0) }
+        )
+
+        // When
+        action.action()
+        controller.removeMembersCompletion?(nil)
+
+        // Then
+        XCTAssertEqual(controller.removeMembersUserIds, [chatClient.currentUserId!])
+        XCTAssertEqual(dismissCallCount, 1)
+        XCTAssertTrue(errors.isEmpty)
+    }
+
+    func test_chatChannelInfoVM_leaveGroupAction_whenLeavingFails_callsOnError() {
+        // Given
+        let viewModel = ChatChannelInfoViewModel(channel: mockGroup(with: 5))
+        let controller = channelControllerSpy()
+        viewModel.channelController = controller
+        var dismissCallCount = 0
+        var errors = [Error]()
+        let action = viewModel.leaveGroupAction(
+            onDismiss: { dismissCallCount += 1 },
+            onError: { errors.append($0) }
+        )
+
+        // When
+        action.action()
+        controller.removeMembersCompletion?(ClientError.Unknown())
+
+        // Then
+        XCTAssertEqual(dismissCallCount, 0)
+        XCTAssertEqual(errors.count, 1)
+    }
+
+    // MARK: - Confirmations
+
+    func test_chatChannelInfoVM_leaveConversationConfirmation_whenGroup_asksToLeaveGroup() {
+        // Given
+        let viewModel = ChatChannelInfoViewModel(channel: mockGroup(with: 5))
+
+        // When
+        let confirmation = viewModel.leaveConversationConfirmation
+
+        // Then
+        XCTAssertEqual(confirmation.title, L10n.Alert.Actions.leaveGroupTitle)
+        XCTAssertEqual(confirmation.message, L10n.Alert.Actions.leaveGroupMessage)
+        XCTAssertEqual(confirmation.buttonTitle, L10n.Alert.Actions.leaveGroupTitle)
+    }
+
+    func test_chatChannelInfoVM_leaveConversationConfirmation_whenDirectMessage_asksToDeleteConversation() {
+        // Given
+        let viewModel = ChatChannelInfoViewModel(channel: mockDirectMessage())
+
+        // When
+        let confirmation = viewModel.leaveConversationConfirmation
+
+        // Then
+        XCTAssertEqual(confirmation.title, L10n.Alert.Actions.deleteChannelTitle)
+        XCTAssertEqual(confirmation.message, L10n.Alert.Actions.deleteChannelMessage)
+    }
+
+    func test_chatChannelInfoVM_blockUserConfirmation_whenUserNotBlocked_asksToBlock() {
+        // Given
+        let viewModel = ChatChannelInfoViewModel(channel: mockDirectMessage())
+
+        // When
+        let confirmation = viewModel.blockUserConfirmation
+
+        // Then
+        XCTAssertEqual(confirmation.title, L10n.Alert.Actions.blockUser)
+        XCTAssertEqual(confirmation.message, L10n.Message.Actions.UserBlock.confirmationMessage)
+        XCTAssertEqual(confirmation.buttonTitle, L10n.Alert.Actions.blockUser)
+    }
+
+    func test_chatChannelInfoVM_blockUserConfirmation_whenUserBlocked_asksToUnblock() throws {
+        // Given
+        let viewModel = ChatChannelInfoViewModel(channel: mockDirectMessage())
+        let otherParticipant = try XCTUnwrap(
+            viewModel.participants.first { $0.id != chatClient.currentUserId }
+        )
+        viewModel.currentUserController = mockCurrentUserController(blockedUserIds: [otherParticipant.id])
+
+        // When
+        let confirmation = viewModel.blockUserConfirmation
+
+        // Then
+        XCTAssertEqual(confirmation.title, L10n.Alert.Actions.unblockUser)
+        XCTAssertEqual(confirmation.message, L10n.Message.Actions.UserUnblock.confirmationMessage)
+    }
+
+    // MARK: - blockUserTapped
+
+    func test_chatChannelInfoVM_blockUserTapped_whenUserNotBlocked_blocksWithoutError() {
+        // Given
+        let viewModel = ChatChannelInfoViewModel(channel: mockDirectMessage())
+
+        // When
+        viewModel.blockUserTapped()
+
+        // Then
+        XCTAssertFalse(viewModel.errorShown)
+    }
+
+    func test_chatChannelInfoVM_blockUserTapped_whenUserBlocked_unblocksWithoutError() throws {
+        // Given
+        let viewModel = ChatChannelInfoViewModel(channel: mockDirectMessage())
+        let otherParticipant = try XCTUnwrap(
+            viewModel.participants.first { $0.id != chatClient.currentUserId }
+        )
+        viewModel.currentUserController = mockCurrentUserController(blockedUserIds: [otherParticipant.id])
+
+        // When
+        viewModel.blockUserTapped()
+
+        // Then
+        XCTAssertTrue(viewModel.isDMUserBlocked)
+        XCTAssertFalse(viewModel.errorShown)
+    }
+
+    func test_chatChannelInfoVM_blockUserTapped_whenNoParticipants_doesNothing() {
+        // Given
+        let channel = ChatChannel.mockDMChannel(lastActiveMembers: [], memberCount: 0)
+        let viewModel = ChatChannelInfoViewModel(channel: channel)
+
+        // When
+        viewModel.blockUserTapped()
+
+        // Then
+        XCTAssertFalse(viewModel.errorShown)
     }
 
     // MARK: - addUsersTapped
@@ -1105,15 +1336,7 @@ import XCTest
 
     func test_chatChannelInfoVM_isDMUserBlocked_returnsFalse_whenNotBlocked() {
         // Given
-        let members = ChannelInfoMockUtils.setupMockMembers(
-            count: 2,
-            currentUserId: chatClient.currentUserId!
-        )
-        let channel = ChatChannel.mockDMChannel(
-            lastActiveMembers: members,
-            memberCount: 2
-        )
-        let viewModel = ChatChannelInfoViewModel(channel: channel)
+        let viewModel = ChatChannelInfoViewModel(channel: mockDirectMessage())
 
         // Then - no blocked users by default
         XCTAssertFalse(viewModel.isDMUserBlocked)
@@ -1121,15 +1344,7 @@ import XCTest
 
     func test_chatChannelInfoVM_blockUserTitle_returnsBlockUser_whenNotBlocked() {
         // Given
-        let members = ChannelInfoMockUtils.setupMockMembers(
-            count: 2,
-            currentUserId: chatClient.currentUserId!
-        )
-        let channel = ChatChannel.mockDMChannel(
-            lastActiveMembers: members,
-            memberCount: 2
-        )
-        let viewModel = ChatChannelInfoViewModel(channel: channel)
+        let viewModel = ChatChannelInfoViewModel(channel: mockDirectMessage())
 
         // Then
         XCTAssertEqual(viewModel.blockUserTitle, L10n.Alert.Actions.blockUser)
@@ -1137,15 +1352,7 @@ import XCTest
 
     func test_chatChannelInfoVM_blockUserTitle_returnsUnblockUser_whenBlocked() {
         // Given
-        let members = ChannelInfoMockUtils.setupMockMembers(
-            count: 2,
-            currentUserId: chatClient.currentUserId!
-        )
-        let channel = ChatChannel.mockDMChannel(
-            lastActiveMembers: members,
-            memberCount: 2
-        )
-        let viewModel = ChatChannelInfoViewModel(channel: channel)
+        let viewModel = ChatChannelInfoViewModel(channel: mockDirectMessage())
         let otherParticipant = viewModel.participants.first { $0.id != chatClient.currentUserId }!
 
         let currentUserController = CurrentChatUserController_Mock(client: chatClient)
@@ -1229,10 +1436,30 @@ import XCTest
         return channel
     }
 
-    private func mockCurrentUserController(mutedUserIds: [UserId]) -> CurrentChatUserController_Mock {
+    private func channelControllerSpy() -> ChannelControllerSpy {
+        ChannelControllerSpy(
+            channelQuery: .init(cid: .unique),
+            channelListQuery: nil,
+            client: chatClient
+        )
+    }
+
+    private func mockDirectMessage() -> ChatChannel {
+        let members = ChannelInfoMockUtils.setupMockMembers(
+            count: 2,
+            currentUserId: chatClient.currentUserId!
+        )
+        return ChatChannel.mockDMChannel(lastActiveMembers: members, memberCount: 2)
+    }
+
+    private func mockCurrentUserController(
+        mutedUserIds: [UserId] = [],
+        blockedUserIds: [UserId] = []
+    ) -> CurrentChatUserController_Mock {
         let currentUserController = CurrentChatUserController_Mock(client: chatClient)
         currentUserController.currentUser_mock = .mock(
             currentUserId: chatClient.currentUserId!,
+            blockedUserIds: Set(blockedUserIds),
             mutedUsers: Set(mutedUserIds.map { ChatUser.mock(id: $0) })
         )
         return currentUserController
@@ -1246,6 +1473,37 @@ import XCTest
             controller,
             didChangeCurrentUser: .update(controller.currentUser!)
         )
+    }
+}
+
+private class ChannelControllerSpy: ChatChannelController_Mock {
+    var removeMembersUserIds: Set<UserId>?
+    var removeMembersCompletion: (@MainActor (Error?) -> Void)?
+    var deleteChannelCallCount = 0
+    var deleteChannelCompletion: (@MainActor (Error?) -> Void)?
+    var muteChannelCallCount = 0
+    var unmuteChannelCallCount = 0
+
+    override func removeMembers(
+        userIds: Set<UserId>,
+        message: String? = nil,
+        completion: (@MainActor (Error?) -> Void)? = nil
+    ) {
+        removeMembersUserIds = userIds
+        removeMembersCompletion = completion
+    }
+
+    override func deleteChannel(completion: (@MainActor (Error?) -> Void)? = nil) {
+        deleteChannelCallCount += 1
+        deleteChannelCompletion = completion
+    }
+
+    override func muteChannel(expiration: Int? = nil, completion: (@MainActor (Error?) -> Void)? = nil) {
+        muteChannelCallCount += 1
+    }
+
+    override func unmuteChannel(completion: (@MainActor (Error?) -> Void)? = nil) {
+        unmuteChannelCallCount += 1
     }
 }
 
