@@ -1340,7 +1340,7 @@ import XCTest
         colorPalette.textPrimary = .blue
         colorPalette.chatTextIncoming = .orange
         colorPalette.backgroundCoreElevation1 = .cyan
-        var appearance = Appearance()
+        let appearance = Appearance()
         appearance.colorPalette = colorPalette
         streamChat = StreamChat(
             chatClient: chatClient,

@@ -543,7 +543,7 @@ import XCTest
         )
 
         // Then
-        XCTAssert(view is EmptyView)
+        XCTAssertEqual(ObjectIdentifier(type(of: view)), ObjectIdentifier(EmptyView.self))
     }
 
     func test_viewFactory_makeTrailingSwipeActionsView() {
@@ -563,7 +563,7 @@ import XCTest
         )
 
         // Then
-        XCTAssert(view is TrailingSwipeActionsView)
+        XCTAssertEqual(ObjectIdentifier(type(of: view)), ObjectIdentifier(TrailingSwipeActionsView.self))
     }
 
     func test_viewFactory_makeMessageReadIndicatorView() {

@@ -202,7 +202,7 @@ final class MessageList_Tests: StreamTestCase {
     func test_offlineMessageInTheMessageList() throws {
         linkToScenario(withId: 365)
         
-        throw XCTSkip("https://linear.app/stream/issue/IOS-1315")
+        try XCTSkipIf(true, "https://linear.app/stream/issue/IOS-1315")
 
         let message = "test message"
 
@@ -230,7 +230,7 @@ final class MessageList_Tests: StreamTestCase {
     func test_addMessageWhileOffline() throws {
         linkToScenario(withId: 366)
         
-        throw XCTSkip("https://linear.app/stream/issue/IOS-1315")
+        try XCTSkipIf(true, "https://linear.app/stream/issue/IOS-1315")
 
         let message = "test message"
 
@@ -271,7 +271,7 @@ final class MessageList_Tests: StreamTestCase {
     func test_offlineRecoveryWithinSession() throws {
         linkToScenario(withId: 367)
 
-        throw XCTSkip("https://linear.app/stream/issue/IOS-1315")
+        try XCTSkipIf(true, "https://linear.app/stream/issue/IOS-1315")
 
         let message = "test message"
 
@@ -482,7 +482,7 @@ extension MessageList_Tests {
     func test_paginationOnThread() throws {
         linkToScenario(withId: 371)
         
-        throw XCTSkip("https://linear.app/stream/issue/IOS-479")
+        try XCTSkipIf(true, "https://linear.app/stream/issue/IOS-479")
         
         let replyCount = 60
         
@@ -505,7 +505,7 @@ extension MessageList_Tests {
     func test_addingCommandHidesLeftButtons() throws {
         linkToScenario(withId: 372)
         
-        throw XCTSkip("https://linear.app/stream/issue/IOS-231")
+        try XCTSkipIf(true, "https://linear.app/stream/issue/IOS-231")
         
         GIVEN("user opens the channel") {
             userRobot.login().openChannel()
@@ -704,7 +704,7 @@ extension MessageList_Tests {
     func test_threadTypingIndicatorHidden_whenParticipantStopsTyping() throws {
         linkToScenario(withId: 382)
 
-        throw XCTSkip("https://linear.app/stream/issue/IOS-239")
+        try XCTSkipIf(true, "https://linear.app/stream/issue/IOS-239")
 
         GIVEN("user opens the channel") {
             backendRobot.generateChannels(channelsCount: 1, messagesCount: 1)

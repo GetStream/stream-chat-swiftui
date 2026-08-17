@@ -361,7 +361,7 @@ final class QuotedReply_Tests: StreamTestCase {
     func test_quotedReplyInList_whenParticipantAddsQuotedReply_Message_InThread() throws {
         linkToScenario(withId: 9858)
         
-        throw XCTSkip("https://linear.app/stream/issue/IOS-479")
+        try XCTSkipIf(true, "https://linear.app/stream/issue/IOS-479")
 
         let messageCount = 25
         let quotedText = "1"
@@ -399,7 +399,7 @@ final class QuotedReply_Tests: StreamTestCase {
     func test_quotedReplyNotInList_whenUserAddsQuotedReply_InThread() throws {
         linkToScenario(withId: 9859)
         
-        throw XCTSkip("https://linear.app/stream/issue/IOS-479")
+        try XCTSkipIf(true, "https://linear.app/stream/issue/IOS-479")
 
         GIVEN("user opens the channel") {
             backendRobot.generateChannels(
@@ -440,7 +440,7 @@ final class QuotedReply_Tests: StreamTestCase {
     func test_quotedReplyNotInList_whenParticipantAddsQuotedReply_Message_InThread() throws {
         linkToScenario(withId: 9860)
         
-        throw XCTSkip("https://linear.app/stream/issue/IOS-479")
+        try XCTSkipIf(true, "https://linear.app/stream/issue/IOS-479")
         
         let quotedText = "1"
 
@@ -477,7 +477,7 @@ final class QuotedReply_Tests: StreamTestCase {
     func test_quotedReplyNotInList_whenParticipantAddsQuotedReply_File_InThread() throws {
         linkToScenario(withId: 9861)
         
-        throw XCTSkip("https://linear.app/stream/issue/IOS-479")
+        try XCTSkipIf(true, "https://linear.app/stream/issue/IOS-479")
         
         let quotedText = "1"
 
@@ -514,7 +514,7 @@ final class QuotedReply_Tests: StreamTestCase {
     func test_quotedReplyNotInList_whenParticipantAddsQuotedReply_Giphy_InThread() throws {
         linkToScenario(withId: 9862)
         
-        throw XCTSkip("https://linear.app/stream/issue/IOS-479")
+        try XCTSkipIf(true, "https://linear.app/stream/issue/IOS-479")
         
         let quotedText = "1"
 
@@ -551,7 +551,7 @@ final class QuotedReply_Tests: StreamTestCase {
     func test_unreadCount_whenUserSendsInvalidCommand_and_jumpingOnQuotedMessage_InThread() throws {
         linkToScenario(withId: 9863)
         
-        throw XCTSkip("https://linear.app/stream/issue/IOS-479")
+        try XCTSkipIf(true, "https://linear.app/stream/issue/IOS-479")
 
         let invalidCommand = "invalid command"
 
@@ -741,7 +741,7 @@ final class QuotedReply_Tests: StreamTestCase {
     func test_rootMessageShouldOnlyBeVisibleInTheLastPageInThread() throws {
         linkToScenario(withId: 9870)
         
-        throw XCTSkip("https://linear.app/stream/issue/IOS-479")
+        try XCTSkipIf(true, "https://linear.app/stream/issue/IOS-479")
 
         let replyCount = 30
 
@@ -771,7 +771,7 @@ final class QuotedReply_Tests: StreamTestCase {
     func test_rootMessageShouldNotBeVisibleInThreadIfMessageCountEqualToPageSize() throws {
         linkToScenario(withId: 9871)
         
-        throw XCTSkip("https://linear.app/stream/issue/IOS-479")
+        try XCTSkipIf(true, "https://linear.app/stream/issue/IOS-479")
 
         let pageSize = 25
         
@@ -823,7 +823,7 @@ final class QuotedReply_Tests: StreamTestCase {
     func test_quoteReplyRootMessageWhenNotInTheList() throws {
         linkToScenario(withId: 9873)
         
-        throw XCTSkip("https://linear.app/stream/issue/IOS-479")
+        try XCTSkipIf(true, "https://linear.app/stream/issue/IOS-479")
 
         GIVEN("user opens the thread with \(messageCount) replies") {
             backendRobot.generateChannels(

@@ -247,7 +247,10 @@ import XCTest
         let controller = emptyChannelController()
 
         // When
-        let view = emptyChannelViewWithTypingUser(for: controller)
+        let view = emptyChannelViewWithTypingUser(
+            for: controller,
+            viewFactory: DefaultViewFactory.shared
+        )
 
         // Then
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
@@ -263,7 +266,10 @@ import XCTest
         let controller = emptyChannelController()
 
         // When
-        let view = emptyChannelViewWithTypingUser(for: controller)
+        let view = emptyChannelViewWithTypingUser(
+            for: controller,
+            viewFactory: DefaultViewFactory.shared
+        )
 
         // Then
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
@@ -342,7 +348,7 @@ import XCTest
 
     private func emptyChannelViewWithTypingUser<Factory: ViewFactory>(
         for controller: ChatChannelController_Mock,
-        viewFactory: Factory = DefaultViewFactory.shared
+        viewFactory: Factory
     ) -> some SwiftUI.View {
         let viewModel = ChatChannelViewModel(channelController: controller)
         let typingUser: ChatChannelMember = .mock(id: .unique, name: "Martin")
