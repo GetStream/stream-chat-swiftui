@@ -1544,8 +1544,8 @@
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/GetStream/stream-chat-swift.git";
 			requirement = {
-				kind = branch;
-				branch = "fix/audio-type-attachments-support";
+				kind = revision;
+				revision = d1bba90b1fb6d761cb54544525485ad42b9335d0;
 			};
 		};
 		E3A1C01A282BAC66002D1E26 /* XCRemoteSwiftPackageReference "sentry-cocoa" */ = {
