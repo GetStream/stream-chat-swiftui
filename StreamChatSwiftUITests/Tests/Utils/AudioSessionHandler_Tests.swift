@@ -404,6 +404,26 @@ final class AudioSessionHandler_Tests: StreamChatTestCase {
         XCTAssertNil(mockPlayer.loadAssetWasCalledWithURL)
     }
 
+    func test_advanceQueueIfNeeded_whenStoppedURLNotInQueue_leavesIndexUnchanged() {
+        let urls = [
+            URL(fileURLWithPath: "/tmp/a.aac"),
+            URL(fileURLWithPath: "/tmp/b.aac")
+        ]
+        handler.context = AudioPlaybackContext(
+            assetLocation: URL(fileURLWithPath: "/tmp/other.aac"),
+            duration: duration,
+            currentTime: 0,
+            state: .stopped,
+            rate: .zero,
+            isSeeking: false
+        )
+
+        let result = handler.advanceQueueIfNeeded(urls: urls, playingIndex: 0)
+
+        XCTAssertEqual(result, 0)
+        XCTAssertNil(mockPlayer.loadAssetWasCalledWithURL)
+    }
+
     // MARK: - Helpers
 
     private func makeContext(

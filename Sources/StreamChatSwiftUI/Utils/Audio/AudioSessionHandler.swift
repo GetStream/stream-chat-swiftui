@@ -98,7 +98,8 @@ class AudioSessionHandler: ObservableObject, AudioPlayingDelegate {
         if context.state == .playing {
             let index = urls.firstIndex { $0 == context.assetLocation }
             return index != playingIndex ? index : playingIndex
-        } else if context.state == .stopped, let playingIndex {
+        } else if context.state == .stopped, let playingIndex, urls.indices.contains(playingIndex) {
+            guard context.assetLocation == urls[playingIndex] else { return playingIndex }
             if playingIndex < urls.count - 1 {
                 player.loadAsset(from: urls[playingIndex + 1])
             }
