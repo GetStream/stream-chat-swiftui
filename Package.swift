@@ -16,7 +16,7 @@ let package = Package(
         )
     ],
     dependencies: [
-        .package(url: "https://github.com/GetStream/stream-chat-swift.git", revision: "2fdf59fe06f9338a6269ce0f9db1bf8aa4c3271b")
+        .package(url: "https://github.com/GetStream/stream-chat-swift.git", branch: "fix/audio-type-attachments-support")
     ],
     targets: [
         .target(
