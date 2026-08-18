@@ -889,10 +889,10 @@ import SwiftUI
     }
     
     private func cleanupAudioPlayer() {
-        guard utils.composerConfig.isVoiceRecordingEnabled else { return }
-        utils.audioPlayer.seek(to: 0)
-        utils.audioPlayer.updateRate(.normal)
-        utils.audioPlayer.stop()
+        guard let audioPlayer = utils._audioPlayer else { return }
+        audioPlayer.seek(to: 0)
+        audioPlayer.updateRate(.normal)
+        audioPlayer.stop()
         utils._audioPlayer = nil
         utils._audioSessionHandler?.resetPlaybackState()
     }
