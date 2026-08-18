@@ -59,6 +59,7 @@ public struct AudioAttachmentContainerView<Factory: ViewFactory>: View {
 struct AudioAttachmentView: View {
     @Injected(\.colors) var colors
     @Injected(\.fonts) var fonts
+    @Injected(\.images) var images
     @Injected(\.tokens) var tokens
     @Injected(\.utils) var utils
     @Injected(\.chatClient) var chatClient
@@ -169,7 +170,7 @@ struct AudioAttachmentView: View {
     }
 
     private var fileTypeIcon: some View {
-        Image("file-audio", bundle: .streamChatUI)
+        Image(uiImage: images.iconAudio)
             .resizable()
             .aspectRatio(contentMode: .fit)
             .frame(width: 19, height: 24)
