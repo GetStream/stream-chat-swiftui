@@ -3,7 +3,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 # Upcoming
 
-### 🔄 Changed
+### ✅ Added
+- Add native audio attachment playback UI in the message list [#1574](https://github.com/GetStream/stream-chat-swiftui/pull/1574)
+
+### 🐞 Fixed
+- Fix audio playback breaking when switching between audio files and voice recordings [#1574](https://github.com/GetStream/stream-chat-swiftui/pull/1574)
 
 # [5.9.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/5.9.0)
 _August 12, 2026_
