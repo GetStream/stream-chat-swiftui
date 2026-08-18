@@ -8,28 +8,23 @@ import SwiftUI
 /// Displays the audio file attachments of a message.
 public struct AudioAttachmentContainerView<Factory: ViewFactory>: View {
     @Injected(\.tokens) var tokens
+    @Injected(\.utils) var utils
 
     let factory: Factory
-    let message: ChatMessage
-    let width: CGFloat
-    let isFirst: Bool
-    @Binding var scrolledId: String?
+    let options: AudioAttachmentViewOptions
 
     @ObservedObject var handler: AudioSessionHandler
 
-    public init(
-        factory: Factory,
-        message: ChatMessage,
-        width: CGFloat,
-        isFirst: Bool,
-        scrolledId: Binding<String?>
-    ) {
+    public init(factory: Factory, options: AudioAttachmentViewOptions) {
         self.factory = factory
-        self.message = message
-        self.width = width
-        self.isFirst = isFirst
-        _scrolledId = scrolledId
+        self.options = options
         _handler = ObservedObject(wrappedValue: InjectedValues[\.utils].audioSessionHandler)
+    }
+
+    private var message: ChatMessage { options.message }
+
+    private var width: CGFloat {
+        min(options.availableWidth, utils.messageListConfig.attachmentPreviewWidth)
     }
 
     public var body: some View {
@@ -45,7 +40,7 @@ public struct AudioAttachmentContainerView<Factory: ViewFactory>: View {
                     factory.styles.makeMessageAttachmentItemViewModifier(
                         options: MessageAttachmentItemViewModifierOptions(
                             message: message,
-                            isFirst: isFirst,
+                            isFirst: options.isFirst,
                             attachmentType: .audio
                         )
                     )

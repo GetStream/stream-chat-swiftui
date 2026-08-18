@@ -677,14 +677,7 @@ extension ViewFactory {
     public func makeAudioAttachmentView(
         options: AudioAttachmentViewOptions
     ) -> some View {
-        @Injected(\.utils) var utils
-        return AudioAttachmentContainerView(
-            factory: self,
-            message: options.message,
-            width: min(options.availableWidth, utils.messageListConfig.attachmentPreviewWidth),
-            isFirst: options.isFirst,
-            scrolledId: options.scrolledId
-        )
+        AudioAttachmentContainerView(factory: self, options: options)
     }
     
     public func makeCustomAttachmentPickerView(
