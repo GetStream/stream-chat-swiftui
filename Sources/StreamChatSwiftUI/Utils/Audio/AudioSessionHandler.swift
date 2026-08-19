@@ -5,7 +5,7 @@
 import StreamChat
 import SwiftUI
 
-class AudioSessionHandler: ObservableObject, AudioPlayingDelegate {
+@MainActor class AudioSessionHandler: ObservableObject, AudioPlayingDelegate {
     @Injected(\.utils) private var utils
 
     @Published var context: AudioPlaybackContext = .notLoaded
