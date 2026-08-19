@@ -73,6 +73,19 @@ struct ChangeChannelBarsVisibilityModifier: ViewModifier {
     }
 }
 
+/// Isolates a view's layout geometry from ancestor transforms on iOS 17+.
+public struct GeometryIsolationModifier: ViewModifier {
+    public init() {}
+
+    public func body(content: Content) -> some View {
+        if #available(iOS 17, *) {
+            content.geometryGroup()
+        } else {
+            content
+        }
+    }
+}
+
 extension View {
     /// View extension that applies default padding to elements.
     public func standardPadding() -> some View {
@@ -85,6 +98,11 @@ extension View {
 
     public func applyDefaultIconOverlayStyle() -> some View {
         modifier(IconOverImageModifier())
+    }
+
+    /// Isolates this view's layout geometry from ancestor transforms.
+    public func isolatedGeometry() -> some View {
+        modifier(GeometryIsolationModifier())
     }
 }
 

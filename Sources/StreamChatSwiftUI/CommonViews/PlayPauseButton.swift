@@ -15,19 +15,12 @@ public struct PlayPauseButton: View {
     }
 
     public var body: some View {
-        if #available(iOS 17, *) {
-            button.geometryGroup()
-        } else {
-            button
-        }
-    }
-
-    private var button: some View {
         StreamIconButton(role: .secondary, style: .outline, size: .medium, showsPressedState: false, action: onTap) {
             Image(systemName: isPlaying ? "pause.fill" : "play.fill")
                 .font(.system(size: 20))
                 .transaction { $0.animation = nil }
         }
         .accessibilityLabel(Text(isPlaying ? "Pause" : "Play"))
+        .isolatedGeometry()
     }
 }

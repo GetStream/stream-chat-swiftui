@@ -23,14 +23,6 @@ public struct ComposerAttachmentPickerButton<Factory: ViewFactory>: View, Keyboa
     }
 
     public var body: some View {
-        if #available(iOS 17, *) {
-            button.geometryGroup()
-        } else {
-            button
-        }
-    }
-
-    private var button: some View {
         Button {
             withAnimation(.easeInOut(duration: 0.25)) {
                 if pickerTypeState == .expanded(.none) {
@@ -59,6 +51,7 @@ public struct ComposerAttachmentPickerButton<Factory: ViewFactory>: View, Keyboa
                 triggerHapticFeedback(style: .soft)
             }
         }
+        .isolatedGeometry()
     }
 
     private var isExpanded: Bool {
