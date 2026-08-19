@@ -7,8 +7,8 @@ import SwiftUI
 
 /// The actions section shown at the bottom of the channel info screen.
 ///
-/// Contains the mute conversation toggle, the block user button in direct message channels,
-/// and the leave group / delete conversation button, together with their confirmation alerts.
+/// Contains the mute conversation toggle, the block user button in one-on-one direct message
+/// channels, and the leave group / delete conversation button, with their confirmation alerts.
 public struct ChannelInfoActionsView: View {
     @Injected(\.colors) private var colors
     @Injected(\.fonts) private var fonts
@@ -25,9 +25,7 @@ public struct ChannelInfoActionsView: View {
     }
 
     public var body: some View {
-        if viewModel.shouldShowMuteChannelButton
-            || viewModel.shouldShowBlockUserButton
-            || viewModel.shouldShowLeaveConversationButton {
+        if viewModel.shouldShowActionsCard {
             InfoSectionCard {
                 if viewModel.shouldShowMuteChannelButton {
                     ChannelInfoItemView(
@@ -69,9 +67,15 @@ public struct ChannelInfoActionsView: View {
             .background(Color(colors.backgroundCoreSurfaceSubtle))
         }
         .alert(isPresented: $viewModel.blockUserAlertShown) {
-            confirmationAlert(for: viewModel.blockUserConfirmation) {
-                viewModel.blockUserTapped()
-            }
+            let confirmation = viewModel.blockUserConfirmation
+            return Alert(
+                title: Text(confirmation.title),
+                message: confirmation.message.map { Text($0) },
+                primaryButton: .destructive(Text(confirmation.buttonTitle)) {
+                    viewModel.blockUserTapped()
+                },
+                secondaryButton: .cancel()
+            )
         }
     }
 
@@ -80,7 +84,7 @@ public struct ChannelInfoActionsView: View {
             viewModel.leaveGroupAlertShown = true
         } label: {
             HStack(spacing: tokens.spacingMd) {
-                Image(systemName: viewModel.showSingleMemberDMView ? "trash" : "rectangle.portrait.and.arrow.right")
+                Image(uiImage: viewModel.leaveButtonIcon)
                     .customizable()
                     .frame(width: tokens.spacingLg)
                 Text(viewModel.leaveButtonTitle)
@@ -93,21 +97,15 @@ public struct ChannelInfoActionsView: View {
             .background(Color(colors.backgroundCoreSurfaceSubtle))
         }
         .alert(isPresented: $viewModel.leaveGroupAlertShown) {
-            confirmationAlert(for: viewModel.leaveConversationConfirmation) {
-                leaveConversation()
-            }
+            let confirmation = viewModel.leaveConversationConfirmation
+            return Alert(
+                title: Text(confirmation.title),
+                message: confirmation.message.map { Text($0) },
+                primaryButton: .destructive(Text(confirmation.buttonTitle)) {
+                    leaveConversation()
+                },
+                secondaryButton: .cancel()
+            )
         }
-    }
-
-    private func confirmationAlert(
-        for confirmation: ConfirmationPopup,
-        action: @escaping @MainActor () -> Void
-    ) -> Alert {
-        Alert(
-            title: Text(confirmation.title),
-            message: confirmation.message.map { Text($0) },
-            primaryButton: .destructive(Text(confirmation.buttonTitle), action: action),
-            secondaryButton: .cancel()
-        )
     }
 }

@@ -995,6 +995,47 @@ import XCTest
         XCTAssertEqual(leaveAction.confirmationPopup?.buttonTitle, L10n.Alert.Actions.leaveGroupButton)
     }
 
+    // MARK: - shouldShowActionsCard
+
+    func test_chatChannelInfoVM_shouldShowActionsCard_whenAnyActionAvailable_returnsTrue() {
+        // Given - only the leave capability
+        let channel = mockGroup(with: 5, capabilities: [.leaveChannel])
+        let viewModel = ChatChannelInfoViewModel(channel: channel)
+
+        // Then
+        XCTAssertTrue(viewModel.shouldShowActionsCard)
+    }
+
+    func test_chatChannelInfoVM_shouldShowActionsCard_whenNoActionAvailable_returnsFalse() {
+        // Given - a group without mute, block or leave capabilities
+        let channel = mockGroup(with: 5, capabilities: [.sendMessage])
+        let viewModel = ChatChannelInfoViewModel(channel: channel)
+
+        // Then
+        XCTAssertFalse(viewModel.shouldShowActionsCard)
+        XCTAssertFalse(viewModel.shouldShowMuteChannelButton)
+        XCTAssertFalse(viewModel.shouldShowBlockUserButton)
+        XCTAssertFalse(viewModel.shouldShowLeaveConversationButton)
+    }
+
+    // MARK: - leaveButtonIcon
+
+    func test_chatChannelInfoVM_leaveButtonIcon_whenDirectMessage_isTrashIcon() {
+        // Given
+        let viewModel = ChatChannelInfoViewModel(channel: mockDirectMessage())
+
+        // Then
+        XCTAssertEqual(viewModel.leaveButtonIcon, InjectedValues[\.images].trash)
+    }
+
+    func test_chatChannelInfoVM_leaveButtonIcon_whenGroup_isNotTrashIcon() {
+        // Given
+        let viewModel = ChatChannelInfoViewModel(channel: mockGroup(with: 5))
+
+        // Then
+        XCTAssertNotEqual(viewModel.leaveButtonIcon, InjectedValues[\.images].trash)
+    }
+
     // MARK: - leaveConversationTapped
 
     func test_chatChannelInfoVM_leaveConversationTapped_overrideRunsCustomLogic() {
@@ -1408,19 +1449,20 @@ import XCTest
         with memberCount: Int,
         updateCapabilities: Bool = true,
         mutesEnabled: Bool = true,
-        team: TeamId? = nil
+        team: TeamId? = nil,
+        capabilities: Set<ChannelCapability>? = nil
     ) -> ChatChannel {
         let cid: ChannelId = .unique
         let activeMembers = ChannelInfoMockUtils.setupMockMembers(
             count: memberCount,
             currentUserId: chatClient.currentUserId!
         )
-        var capabilities = Set<ChannelCapability>()
+        var defaultCapabilities = Set<ChannelCapability>()
         if updateCapabilities {
-            capabilities.insert(.updateChannel)
-            capabilities.insert(.deleteChannel)
-            capabilities.insert(.leaveChannel)
-            capabilities.insert(.updateChannelMembers)
+            defaultCapabilities.insert(.updateChannel)
+            defaultCapabilities.insert(.deleteChannel)
+            defaultCapabilities.insert(.leaveChannel)
+            defaultCapabilities.insert(.updateChannelMembers)
         }
 
         let channelConfig = ChannelConfig(mutesEnabled: mutesEnabled)
@@ -1428,7 +1470,7 @@ import XCTest
         let channel = ChatChannel.mock(
             cid: cid,
             config: channelConfig,
-            ownCapabilities: capabilities,
+            ownCapabilities: capabilities ?? defaultCapabilities,
             lastActiveMembers: activeMembers,
             team: team,
             memberCount: activeMembers.count

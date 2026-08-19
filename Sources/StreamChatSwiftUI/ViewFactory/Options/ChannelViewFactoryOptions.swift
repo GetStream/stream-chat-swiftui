@@ -313,8 +313,8 @@ public final class MemberAddViewOptions: Sendable {
 public final class ChannelInfoActionsViewOptions: Sendable {
     /// The view model of the channel info screen.
     public let viewModel: ChatChannelInfoViewModel
-    /// Leaves the group, or deletes the conversation in direct message channels, and dismisses
-    /// the channel info screen.
+    /// Leaves the group, or deletes the conversation in one-on-one direct message channels, and
+    /// dismisses the channel info screen.
     ///
     /// Call it from the leave button of a custom actions view. To change what happens when leaving
     /// the conversation, override `leaveConversationTapped` in ``ChatChannelInfoViewModel`` instead.

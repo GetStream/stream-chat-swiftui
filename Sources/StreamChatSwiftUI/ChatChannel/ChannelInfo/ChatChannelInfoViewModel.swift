@@ -66,6 +66,11 @@ import SwiftUI
         }
     }
     
+    /// Whether the actions section of the channel info screen is shown.
+    open var shouldShowActionsCard: Bool {
+        shouldShowMuteChannelButton || shouldShowBlockUserButton || shouldShowLeaveConversationButton
+    }
+
     open var shouldShowMuteChannelButton: Bool {
         channel.ownCapabilities.contains(.muteChannel)
     }
@@ -83,7 +88,7 @@ import SwiftUI
     }
 
     /// The controller of the channel shown in the channel info screen.
-    public var channelController: ChatChannelController!
+    public internal(set) var channelController: ChatChannelController!
     var currentUserController: CurrentChatUserController?
     
     private var memberListController: ChatChannelMemberListController!
@@ -116,6 +121,13 @@ import SwiftUI
         }
     }
 
+    /// The icon of the button that leaves the group, or deletes the one-on-one conversation.
+    open var leaveButtonIcon: UIImage {
+        showSingleMemberDMView
+            ? images.trash
+            : UIImage(systemName: "rectangle.portrait.and.arrow.right") ?? images.trash
+    }
+
     open var leaveConversationDescription: String {
         if showSingleMemberDMView {
             L10n.Alert.Actions.deleteChannelMessage
@@ -124,7 +136,7 @@ import SwiftUI
         }
     }
 
-    /// The confirmation shown before leaving the group, or deleting the conversation.
+    /// The confirmation shown before leaving the group, or deleting the one-on-one conversation.
     open var leaveConversationConfirmation: ConfirmationPopup {
         ConfirmationPopup(
             title: leaveButtonTitle,
@@ -232,7 +244,7 @@ import SwiftUI
         loadAdditionalUsers()
     }
 
-    /// Leaves the group, or deletes the conversation in direct message channels.
+    /// Leaves the group, or deletes the conversation in one-on-one direct message channels.
     ///
     /// Override this method to run additional logic, such as sending a system message,
     /// before or after calling the default implementation.
