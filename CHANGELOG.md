@@ -5,6 +5,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### ✅ Added
 - Add native audio attachment playback UI in the message list [#1574](https://github.com/GetStream/stream-chat-swiftui/pull/1574)
+### ⚡ Performance
+- Improve scrolling performance by caching background observer reads [#1570](https://github.com/GetStream/stream-chat-swiftui/pull/1570)
 
 # [5.9.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/5.9.0)
 _August 12, 2026_
