@@ -2,6 +2,7 @@
 // Copyright © 2026 Stream.io Inc. All rights reserved.
 //
 
+import AVFoundation
 import StreamChat
 import SwiftUI
 
@@ -241,7 +242,7 @@ public struct MediaAttachmentContentView<Factory: ViewFactory>: View {
             guard mediaItem.isVideo,
                   let url = mediaItem.videoAttachment?.payload.videoURL else { return }
             durationTask = Task { @MainActor in
-                guard let duration = await AssetDurationLoader.duration(from: url) else { return }
+                guard let duration = await AVURLAsset(url: url).loadDuration() else { return }
                 videoDuration = duration
             }
         }

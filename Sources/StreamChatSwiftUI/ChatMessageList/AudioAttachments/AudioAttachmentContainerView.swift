@@ -2,6 +2,7 @@
 // Copyright © 2026 Stream.io Inc. All rights reserved.
 //
 
+import AVFoundation
 import StreamChat
 import SwiftUI
 
@@ -139,7 +140,7 @@ struct AudioAttachmentView: View {
         .audioPlaybackStateUpdates(handler: handler, url: url)
         .compatibility.task(id: url) { @MainActor in
             guard knownDuration == nil else { return }
-            loadedDuration = await AssetDurationLoader.duration(from: url)
+            loadedDuration = await AVURLAsset(url: url).loadDuration()
         }
         .accessibilityIdentifier("AudioAttachmentView")
     }
