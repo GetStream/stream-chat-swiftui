@@ -1543,8 +1543,8 @@
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/GetStream/stream-chat-swift.git";
 			requirement = {
-				branch = "patch/improve-sdk-size-immutable-models";
-				kind = branch;
+				kind = revision;
+				revision = e657e5ad01000f5bf4ceff12b0fd9bccc04ff9bf;
 			};
 		};
 		E3A1C01A282BAC66002D1E26 /* XCRemoteSwiftPackageReference "sentry-cocoa" */ = {

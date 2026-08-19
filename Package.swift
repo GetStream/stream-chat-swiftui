@@ -16,7 +16,7 @@ let package = Package(
         )
     ],
     dependencies: [
-        .package(url: "https://github.com/GetStream/stream-chat-swift.git", branch: "patch/improve-sdk-size-immutable-models")
+        .package(url: "https://github.com/GetStream/stream-chat-swift.git", revision: "e657e5ad01000f5bf4ceff12b0fd9bccc04ff9bf")
     ],
     targets: [
         .target(
