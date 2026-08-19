@@ -427,7 +427,7 @@ extension UIImage {
 
 /// Records the requests made by `PhotoAssetLoader` and delivers stubbed results synchronously,
 /// without touching the Photos library.
-private final class PHImageManager_Mock: PHImageManager {
+private final class PHImageManager_Mock: PHImageManager, @unchecked Sendable {
     var requestImageCalls = [(asset: PHAsset, targetSize: CGSize, options: PHImageRequestOptions?)]()
     var cancelledRequestIds = [PHImageRequestID]()
     var requestImageDataOptions: PHImageRequestOptions?

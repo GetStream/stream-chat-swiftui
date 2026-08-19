@@ -148,7 +148,7 @@ struct AppleMessageComposerView<Factory: ViewFactory>: View, KeyboardReadable {
             )
             .offset(y: viewModel.overlayShown ? 0 : popupSize)
             .opacity(viewModel.overlayShown ? 1 : 0)
-            .animation(.easeInOut(duration: 0.25))
+            .animation(.easeInOut(duration: 0.25), value: viewModel.overlayShown)
         }
         .background(
             GeometryReader { proxy in

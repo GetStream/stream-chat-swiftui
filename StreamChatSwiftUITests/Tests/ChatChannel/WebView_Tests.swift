@@ -12,7 +12,7 @@ class WebView_Tests: StreamChatTestCase {
     private let mockURL = Bundle(for: WebView_Tests.self).url(forResource: "mock", withExtension: "html")!
 
     func test_webView_snapshot() throws {
-        throw XCTSkip("Check it out: https://github.com/pointfreeco/swift-snapshot-testing/issues/625")
+        try XCTSkipIf(true, "Check it out: https://github.com/pointfreeco/swift-snapshot-testing/issues/625")
 
         // Given
         let request = URLRequest(url: mockURL)

@@ -132,7 +132,7 @@ extension UserRobot {
     func clearComposer() -> Self {
         if !composer.textView.text.isEmpty {
             let selectAllButton = composer.selectAllButton
-            for i in 0..<5 {
+            for _ in 0..<5 {
                 composer.inputField.tap()
                 if selectAllButton.exists {
                     selectAllButton.safeTap()

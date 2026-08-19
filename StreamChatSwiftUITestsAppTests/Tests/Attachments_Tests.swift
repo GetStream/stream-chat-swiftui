@@ -9,7 +9,7 @@ final class Attachments_Tests: StreamTestCase {
     func test_uploadImage() throws {
         linkToScenario(withId: 310)
         
-        throw XCTSkip("Simulator cannot access photos.")
+        try XCTSkipIf(true, "Simulator cannot access photos.")
 
         GIVEN("user opens the channel") {
             userRobot.login().openChannel()
@@ -39,7 +39,7 @@ final class Attachments_Tests: StreamTestCase {
     func test_participantUploadsVideo() throws {
         linkToScenario(withId: 312)
 
-        throw XCTSkip("Check out CIS-2294")
+        try XCTSkipIf(true, "Check out CIS-2294")
 
         GIVEN("user opens the channel") {
             userRobot.login().openChannel()
@@ -69,7 +69,7 @@ final class Attachments_Tests: StreamTestCase {
     func test_restartImageUpload() throws {
         linkToScenario(withId: 9821)
         
-        throw XCTSkip("https://linear.app/stream/issue/IOS-1315")
+        try XCTSkipIf(true, "https://linear.app/stream/issue/IOS-1315")
 
         GIVEN("user opens the channel") {
             userRobot
