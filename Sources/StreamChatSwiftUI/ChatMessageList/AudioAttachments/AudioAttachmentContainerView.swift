@@ -128,8 +128,6 @@ struct AudioAttachmentView: View {
             playButton
             fileNameAndMetadata
         }
-        .padding(tokens.spacingSm)
-        .frame(minHeight: 64)
         .accessibilityElement(children: isInteractive ? .ignore : .combine)
         .accessibilityLabel(resolvedAccessibilityLabel)
         .accessibilityAddTraits(isInteractive ? [.isButton, .startsMediaSession] : [])
