@@ -16,7 +16,7 @@ let package = Package(
         )
     ],
     dependencies: [
-        .package(url: "https://github.com/GetStream/stream-chat-swift.git", branch: "perf/background-observer-immediate-reads")
+        .package(url: "https://github.com/GetStream/stream-chat-swift.git", revision: "5a0b822148390c4e2963d2260f2a9047a4f79b25")
     ],
     targets: [
         .target(
