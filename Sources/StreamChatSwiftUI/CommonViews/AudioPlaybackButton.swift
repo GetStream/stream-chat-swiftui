@@ -17,16 +17,19 @@ struct AudioPlaybackButton: View {
     var body: some View {
         PlayPauseButton(isPlaying: isPlaying, onTap: onTap)
             .overlay(
-                Group {
-                    if isEnabled {
-                        Circle()
-                            .stroke(colors.chatControlBorder(isSentByCurrentUser: isSentByCurrentUser), lineWidth: 1)
-                    }
-                }
+                Circle()
+                    .stroke(borderColor, lineWidth: 1)
             )
             .opacity(isLoading ? 0 : 1)
             .overlay(isLoading ? ProgressView() : nil)
             .disabled(!isEnabled)
+    }
+
+    private var borderColor: Color {
+        if isEnabled {
+            return colors.chatControlBorder(isSentByCurrentUser: isSentByCurrentUser)
+        }
+        return Color(colors.borderUtilityDisabledOnSurface)
     }
 }
 
