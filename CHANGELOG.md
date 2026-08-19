@@ -3,6 +3,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 # Upcoming
 
+### 🐞 Fixed
+- Fix the voice message play icon disappearing when swiping a message to reply [#1581](https://github.com/GetStream/stream-chat-swiftui/pull/1581)
+- Fix the composer attachment picker icon clipping outside its circle when the keyboard opens or closes [#1581](https://github.com/GetStream/stream-chat-swiftui/pull/1581)
+
 ### ⚡ Performance
 - Improve scrolling performance by caching background observer reads [#1570](https://github.com/GetStream/stream-chat-swiftui/pull/1570)
 
