@@ -1230,9 +1230,9 @@ import XCTest
     private func assertMediaGallerySnapshot(
         orientation: MediaGalleryOrientation,
         count: Int,
-        variants: [SnapshotVariant]? = nil,
+        variants: [SnapshotVariant] = [.defaultLight],
         file: StaticString = #filePath,
-        testName: String = #function,
+        function: String = #function,
         line: UInt = #line
     ) {
         let dimensions: (width: Double, height: Double) = {
@@ -1258,32 +1258,14 @@ import XCTest
         )
 
         let view = testMessageViewContainer(message: message, height: 300)
-
-        if let variants {
-            variants.forEach { variant in
-                assertSnapshot(
-                    matching: view,
-                    as: .image(
-                        perceptualPrecision: precision,
-                        layout: .sizeThatFits,
-                        traits: variant.traits
-                    ),
-                    named: variant.snapshotName,
-                    file: file,
-                    testName: testName,
-                    line: line
-                )
-            }
-        } else {
-            let traits = UITraitCollection(userInterfaceStyle: .light)
-            assertSnapshot(
-                matching: view,
-                as: .image(perceptualPrecision: precision, traits: traits),
-                file: file,
-                testName: testName,
-                line: line
-            )
-        }
+        AssertSnapshot(
+            view,
+            variants: variants,
+            size: CGSize(width: 375, height: 300),
+            line: line,
+            file: file,
+            function: function
+        )
     }
 }
 
