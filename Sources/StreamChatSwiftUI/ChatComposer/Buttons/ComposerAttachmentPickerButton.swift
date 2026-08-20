@@ -51,6 +51,7 @@ public struct ComposerAttachmentPickerButton<Factory: ViewFactory>: View, Keyboa
                 triggerHapticFeedback(style: .soft)
             }
         }
+        .isolatedGeometry()
     }
 
     private var isExpanded: Bool {

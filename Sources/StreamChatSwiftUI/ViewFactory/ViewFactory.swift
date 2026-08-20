@@ -608,7 +608,19 @@ import SwiftUI
     /// - Parameter options: the options for creating the member add view.
     /// - Returns: The view shown in the member add slot.
     func makeMemberAddView(options: MemberAddViewOptions) -> MemberAddViewType
-    
+
+    associatedtype ChannelInfoActionsViewType: View
+    /// Creates the actions section of the channel info screen.
+    ///
+    /// By default it shows the mute conversation toggle, the block user button in one-on-one
+    /// direct message channels and the leave group / delete conversation button, with their
+    /// confirmation alerts.
+    /// Override it to change which actions are shown and how they look. To change what an action
+    /// does, override the corresponding method in ``ChatChannelInfoViewModel``.
+    /// - Parameter options: the options for creating the channel info actions view.
+    /// - Returns: The view shown in the channel info actions slot.
+    func makeChannelInfoActionsView(options: ChannelInfoActionsViewOptions) -> ChannelInfoActionsViewType
+
     associatedtype AttachmentTextViewType: View
     /// Creates a text caption view displayed below attachments inside ``MessageAttachmentsView``.
     /// - Parameter options: Configuration options for the attachment text view.

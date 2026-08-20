@@ -1011,7 +1011,13 @@ extension ViewFactory {
     ) -> some View {
         MemberAddView(loadedUserIds: options.options.loadedUserIds, onConfirm: options.onConfirm)
     }
-    
+
+    public func makeChannelInfoActionsView(
+        options: ChannelInfoActionsViewOptions
+    ) -> some View {
+        ChannelInfoActionsView(options: options)
+    }
+
     public func makeAttachmentTextView(
         options: AttachmentTextViewOptions
     ) -> some View {

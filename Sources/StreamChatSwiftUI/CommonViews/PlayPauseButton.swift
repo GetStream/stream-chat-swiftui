@@ -24,5 +24,6 @@ public struct PlayPauseButton: View {
                 .transaction { $0.animation = nil }
         }
         .accessibilityLabel(Text(isPlaying ? "Pause" : "Play"))
+        .isolatedGeometry()
     }
 }
