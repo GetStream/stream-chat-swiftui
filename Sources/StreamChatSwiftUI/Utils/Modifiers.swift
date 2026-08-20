@@ -74,10 +74,8 @@ struct ChangeChannelBarsVisibilityModifier: ViewModifier {
 }
 
 /// Isolates a view's layout geometry from ancestor transforms on iOS 17+.
-public struct GeometryIsolationModifier: ViewModifier {
-    public init() {}
-
-    public func body(content: Content) -> some View {
+struct GeometryIsolationModifier: ViewModifier {
+    func body(content: Content) -> some View {
         if #available(iOS 17, *) {
             content.geometryGroup()
         } else {
@@ -101,7 +99,7 @@ extension View {
     }
 
     /// Isolates this view's layout geometry from ancestor transforms.
-    public func isolatedGeometry() -> some View {
+    func isolatedGeometry() -> some View {
         modifier(GeometryIsolationModifier())
     }
 }
