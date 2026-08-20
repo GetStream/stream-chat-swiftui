@@ -335,6 +335,18 @@ import XCTest
         assertMediaGallerySnapshot(orientation: .square, count: 5)
     }
 
+    func test_mediaGallery_landscape_5_dark_snapshot() {
+        assertMediaGallerySnapshot(orientation: .landscape, count: 5, variants: [.defaultDark])
+    }
+
+    func test_mediaGallery_portrait_5_dark_snapshot() {
+        assertMediaGallerySnapshot(orientation: .portrait, count: 5, variants: [.defaultDark])
+    }
+
+    func test_mediaGallery_square_5_dark_snapshot() {
+        assertMediaGallerySnapshot(orientation: .square, count: 5, variants: [.defaultDark])
+    }
+
     func test_imageAttachments_failed_snapshot() {
         // Given
         let message = ChatMessage.mock(
@@ -1218,6 +1230,7 @@ import XCTest
     private func assertMediaGallerySnapshot(
         orientation: MediaGalleryOrientation,
         count: Int,
+        variants: [SnapshotVariant]? = nil,
         file: StaticString = #filePath,
         testName: String = #function,
         line: UInt = #line
@@ -1245,13 +1258,32 @@ import XCTest
         )
 
         let view = testMessageViewContainer(message: message, height: 300)
-        assertSnapshot(
-            matching: view,
-            as: .image(perceptualPrecision: precision),
-            file: file,
-            testName: testName,
-            line: line
-        )
+
+        if let variants {
+            variants.forEach { variant in
+                assertSnapshot(
+                    matching: view,
+                    as: .image(
+                        perceptualPrecision: precision,
+                        layout: .sizeThatFits,
+                        traits: variant.traits
+                    ),
+                    named: variant.snapshotName,
+                    file: file,
+                    testName: testName,
+                    line: line
+                )
+            }
+        } else {
+            let traits = UITraitCollection(userInterfaceStyle: .light)
+            assertSnapshot(
+                matching: view,
+                as: .image(perceptualPrecision: precision, traits: traits),
+                file: file,
+                testName: testName,
+                line: line
+            )
+        }
     }
 }
 
