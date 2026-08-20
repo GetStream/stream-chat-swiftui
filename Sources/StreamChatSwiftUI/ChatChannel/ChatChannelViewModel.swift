@@ -47,6 +47,7 @@ import SwiftUI
     private var loadingPreviousMessages: Bool = false
     private var loadingMessagesAround: Bool = false
     private var scrollsToUnreadAfterJumpToMessage = false
+    private var scrollsToLatestAfterLoadingFirstPage = false
     private var disableDateIndicator = false
     private var channelName = ""
     private var onlineIndicatorShown = false
@@ -299,13 +300,14 @@ import SwiftUI
     public func scrollToLastMessage() {
         if channelDataSource.hasLoadedAllNextMessages {
             updateScrolledIdToNewestMessage()
-        } else {
-            channelDataSource.loadFirstPage { [weak self] _ in
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                    self?.scrolledId = self?.messages.first?.messageId
-                    self?.showScrollToLatestButton = false
-                }
-            }
+            showScrollToLatestButton = false
+            return
+        }
+
+        scrollsToLatestAfterLoadingFirstPage = true
+        channelDataSource.loadFirstPage { [weak self] _ in
+            guard let self, self.channelDataSource.hasLoadedAllNextMessages else { return }
+            self.finishScrollingToLatestAfterLoadingFirstPage()
         }
     }
 
@@ -514,7 +516,11 @@ import SwiftUI
             scrolledId = firstUnreadMessageId
         }
         
-        if !showScrollToLatestButton && scrolledId == nil && !loadingNextMessages {
+        if scrollsToLatestAfterLoadingFirstPage {
+            if channelDataSource.hasLoadedAllNextMessages {
+                finishScrollingToLatestAfterLoadingFirstPage()
+            }
+        } else if !showScrollToLatestButton && scrolledId == nil && !loadingNextMessages {
             updateScrolledIdToNewestMessage()
         } else if changes.first?.isInsertion == true && currentUserSentNewMessage {
             if channelDataSource.hasLoadedAllNextMessages {
@@ -904,6 +910,13 @@ import SwiftUI
             scrolledId = nil
         }
         scrolledId = messages.first?.messageId
+    }
+
+    private func finishScrollingToLatestAfterLoadingFirstPage() {
+        guard scrollsToLatestAfterLoadingFirstPage else { return }
+        scrollsToLatestAfterLoadingFirstPage = false
+        updateScrolledIdToNewestMessage()
+        showScrollToLatestButton = false
     }
     
     private func cleanupAudioPlayer() {

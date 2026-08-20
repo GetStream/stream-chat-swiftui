@@ -94,6 +94,45 @@ import XCTest
         XCTAssert(viewModel.scrolledId!.contains(messageId))
     }
 
+    func test_chatChannelVM_scrollToLastMessage_whenFirstPageNotLoaded_scrollsWhenFirstPageArrives() {
+        // Given
+        let midPageMessage = ChatMessage.mock(
+            id: .unique,
+            cid: .unique,
+            text: "Mid page",
+            author: ChatUser.mock(id: chatClient.currentUserId!)
+        )
+        let newestMessage = ChatMessage.mock(
+            id: .unique,
+            cid: .unique,
+            text: "Newest",
+            author: ChatUser.mock(id: chatClient.currentUserId!)
+        )
+        let channelController = makeChannelController(messages: [midPageMessage])
+        channelController.hasLoadedAllNextMessages_mock = false
+        let viewModel = ChatChannelViewModel(channelController: channelController)
+        viewModel.showScrollToLatestButton = true
+
+        // When
+        viewModel.scrollToLastMessage()
+
+        // Then
+        XCTAssertEqual(channelController.loadFirstPageCallCount, 1)
+        XCTAssertNotEqual(viewModel.scrolledId, newestMessage.messageId)
+
+        // When the first page arrives
+        channelController.hasLoadedAllNextMessages_mock = true
+        viewModel.dataSource(
+            channelDataSource: ChatChannelDataSource(controller: channelController),
+            didUpdateMessages: [newestMessage],
+            changes: [.insert(newestMessage, index: .init(item: 0, section: 0))]
+        )
+
+        // Then
+        XCTAssertEqual(viewModel.scrolledId, newestMessage.messageId)
+        XCTAssertFalse(viewModel.showScrollToLatestButton)
+    }
+
     func test_chatChannelVM_messageSentTapped_whenEditingMessage_shouldNotScroll() {
         // Given
         let messageId: String = .unique
@@ -350,18 +389,22 @@ import XCTest
 
     func test_chatChannelVM_newMessagePendingEvent_whenFirstPageNotLoaded_scrollsToNewestMessage() {
         // Given
-        let messageId: String = .unique
-        let message = ChatMessage.mock(
-            id: messageId,
+        let midPageMessage = ChatMessage.mock(
+            id: .unique,
             cid: .unique,
-            text: "Test message",
+            text: "Mid page",
             author: ChatUser.mock(id: chatClient.currentUserId!)
         )
-        let channelController = makeChannelController(messages: [message])
+        let newestMessage = ChatMessage.mock(
+            id: .unique,
+            cid: .unique,
+            text: "Newest",
+            author: ChatUser.mock(id: chatClient.currentUserId!)
+        )
+        let channelController = makeChannelController(messages: [midPageMessage])
         channelController.hasLoadedAllNextMessages_mock = false
         let viewModel = ChatChannelViewModel(channelController: channelController)
         viewModel.showScrollToLatestButton = true
-        let expectation = XCTestExpectation(description: "Should scroll to newest message")
 
         // When
         sendPendingMessageEvent(
@@ -369,14 +412,17 @@ import XCTest
             channelController: channelController,
             message: ChatMessage.mock(parentMessageId: nil, isSentByCurrentUser: true)
         )
+        channelController.hasLoadedAllNextMessages_mock = true
+        viewModel.dataSource(
+            channelDataSource: ChatChannelDataSource(controller: channelController),
+            didUpdateMessages: [newestMessage],
+            changes: [.insert(newestMessage, index: .init(item: 0, section: 0))]
+        )
 
         // Then
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.8) {
-            XCTAssertEqual(viewModel.scrolledId, message.messageId)
-            XCTAssertFalse(viewModel.showScrollToLatestButton)
-            expectation.fulfill()
-        }
-        wait(for: [expectation], timeout: 1.5)
+        XCTAssertEqual(channelController.loadFirstPageCallCount, 1)
+        XCTAssertEqual(viewModel.scrolledId, newestMessage.messageId)
+        XCTAssertFalse(viewModel.showScrollToLatestButton)
     }
 
     func test_chatChannelVM_messageThread() {
