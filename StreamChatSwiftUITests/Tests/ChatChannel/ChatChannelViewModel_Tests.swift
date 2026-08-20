@@ -366,6 +366,32 @@ import XCTest
         XCTAssertEqual(channelController.loadFirstPageCallCount, 0)
     }
 
+    func test_chatChannelVM_newMessagePendingEvent_whenThread_whenReplyHasDifferentParentId_doesNotLoadFirstPage() {
+        // Given
+        let channelController = makeChannelController()
+        let threadRootId: MessageId = .unique
+        let messageController = ChatMessageControllerSUI_Mock.mock(
+            chatClient: chatClient,
+            cid: channelController.cid,
+            messageId: threadRootId
+        )
+        messageController.hasLoadedAllNextReplies_mock = false
+        let viewModel = ChatChannelViewModel(
+            channelController: channelController,
+            messageController: messageController
+        )
+        let message = ChatMessage.mock(
+            parentMessageId: .unique,
+            isSentByCurrentUser: true
+        )
+
+        // When
+        sendPendingMessageEvent(to: viewModel, channelController: channelController, message: message)
+
+        // Then
+        XCTAssertEqual(messageController.loadFirstPageCallCount, 0)
+    }
+
     func test_chatChannelVM_newMessagePendingEvent_whenDifferentChannel_doesNotLoadFirstPage() {
         // Given
         let channelController = makeChannelController()

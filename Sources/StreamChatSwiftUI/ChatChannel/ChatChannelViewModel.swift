@@ -608,7 +608,9 @@ import SwiftUI
         guard pendingEvent.cid == channelController.cid else { return }
 
         let newMessage = pendingEvent.message
-        let isRelevantMessage = isMessageThread ? newMessage.isPartOfThread : !newMessage.isPartOfThread
+        let isRelevantMessage = isMessageThread
+            ? newMessage.parentMessageId == messageController?.messageId
+            : !newMessage.isPartOfThread
         guard newMessage.isSentByCurrentUser, isRelevantMessage else { return }
         guard !channelDataSource.hasLoadedAllNextMessages else { return }
 
