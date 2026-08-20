@@ -75,12 +75,22 @@ public struct MessageAttachmentsView<Factory: ViewFactory>: View {
                     )
                 }
 
-                // Files and audio attachments (audio reuses the file attachment UI until
-                // native audio playback support is available).
-                if messageTypeResolver.hasFileAttachment(message: message)
-                    || messageTypeResolver.hasAudioAttachment(message: message) {
+                // Files
+                if messageTypeResolver.hasFileAttachment(message: message) {
                     factory.makeFileAttachmentView(
                         options: FileAttachmentViewOptions(
+                            message: message,
+                            isFirst: isFirst,
+                            availableWidth: width,
+                            scrolledId: $scrolledId
+                        )
+                    )
+                }
+
+                // Audio files
+                if messageTypeResolver.hasAudioAttachment(message: message) {
+                    factory.makeAudioAttachmentView(
+                        options: AudioAttachmentViewOptions(
                             message: message,
                             isFirst: isFirst,
                             availableWidth: width,

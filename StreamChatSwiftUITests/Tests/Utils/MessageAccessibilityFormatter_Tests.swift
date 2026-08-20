@@ -97,6 +97,50 @@ import XCTest
         )
     }
 
+    // MARK: - Audio file
+
+    func test_audioLabel_fromOtherUser_includesFileNameSenderDurationAndTime() {
+        let message = makeMessage(author: .mock(id: "yoda", name: "Yoda"), isSentByCurrentUser: false)
+
+        XCTAssertEqual(
+            formatter.audioLabel(
+                for: message,
+                metadata: .init(fileName: "Sample.mp3", duration: "8 seconds")
+            ),
+            L10n.Message.Accessibility.audio("Sample.mp3", "Yoda", "8 seconds", expectedTime(for: message))
+        )
+    }
+
+    func test_audioLabel_ownFile_includesFileNameDurationAndTime() {
+        let message = makeMessage(author: .mock(id: Self.currentUserId, name: "Me"), isSentByCurrentUser: true)
+
+        XCTAssertEqual(
+            formatter.audioLabel(
+                for: message,
+                metadata: .init(fileName: "Sample.mp3", duration: "8 seconds")
+            ),
+            L10n.Message.Accessibility.audioOwn("Sample.mp3", "8 seconds", expectedTime(for: message))
+        )
+    }
+
+    func test_audioLabel_whenDurationMissing_omitsDuration() {
+        let message = makeMessage(author: .mock(id: "yoda", name: "Yoda"), isSentByCurrentUser: false)
+
+        XCTAssertEqual(
+            formatter.audioLabel(for: message, metadata: .init(fileName: "Sample.mp3")),
+            L10n.Message.Accessibility.audioWithoutDuration("Sample.mp3", "Yoda", expectedTime(for: message))
+        )
+    }
+
+    func test_audioLabel_ownFile_whenDurationMissing_omitsDuration() {
+        let message = makeMessage(author: .mock(id: Self.currentUserId, name: "Me"), isSentByCurrentUser: true)
+
+        XCTAssertEqual(
+            formatter.audioLabel(for: message, metadata: .init(fileName: "Sample.mp3")),
+            L10n.Message.Accessibility.audioOwnWithoutDuration("Sample.mp3", expectedTime(for: message))
+        )
+    }
+
     // MARK: - Image label
 
     func test_imageLabel_fromOtherUser_withTimestamp() {

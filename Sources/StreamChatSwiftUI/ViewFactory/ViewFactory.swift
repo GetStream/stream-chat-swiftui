@@ -262,6 +262,12 @@ import SwiftUI
     ///  - Returns: view shown in the voice recording slot.
     func makeVoiceRecordingView(options: VoiceRecordingViewOptions) -> VoiceRecordingViewType
 
+    associatedtype AudioAttachmentViewType: View
+    /// Creates a view that displays audio file attachments.
+    /// - Parameter options: the options for creating the audio attachment view.
+    ///  - Returns: view shown in the audio attachment slot.
+    func makeAudioAttachmentView(options: AudioAttachmentViewOptions) -> AudioAttachmentViewType
+
     associatedtype CustomAttachmentViewType: View
     /// Creates custom attachment view.
     /// If support for more than one custom view is needed, just do if-else check inside the view.

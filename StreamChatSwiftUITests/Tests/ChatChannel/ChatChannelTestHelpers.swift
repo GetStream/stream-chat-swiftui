@@ -333,7 +333,7 @@ class ChatChannelTestHelpers {
                     title: "Sample.mp3",
                     audioRemoteURL: audioURL,
                     file: attachmentFile,
-                    extraData: nil
+                    extraData: ["duration": .number(8)]
                 ),
                 downloadingState: nil,
                 uploadingState: nil

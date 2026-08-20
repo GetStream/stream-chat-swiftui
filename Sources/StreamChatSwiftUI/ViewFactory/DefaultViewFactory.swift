@@ -673,6 +673,12 @@ extension ViewFactory {
             scrolledId: options.scrolledId
         )
     }
+
+    public func makeAudioAttachmentView(
+        options: AudioAttachmentViewOptions
+    ) -> some View {
+        AudioAttachmentContainerView(factory: self, options: options)
+    }
     
     public func makeCustomAttachmentPickerView(
         options: CustomAttachmentPickerViewOptions

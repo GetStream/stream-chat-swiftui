@@ -1240,6 +1240,32 @@ import XCTest
         XCTAssertNil(viewModel.highlightedMessageId)
     }
 
+    func test_deinit_stopsAudioPlayerWhenVoiceRecordingIsDisabled() {
+        streamChat?.utils.composerConfig.isVoiceRecordingEnabled = false
+        let mockPlayer = MockAudioPlayer()
+        let handler = AudioSessionHandler()
+        handler.isPlaying = true
+        handler.rate = .double
+        streamChat?.utils._audioPlayer = mockPlayer
+        streamChat?.utils._audioSessionHandler = handler
+
+        autoreleasepool {
+            _ = ChatChannelViewModel(channelController: makeChannelController())
+        }
+
+        let expectation = XCTestExpectation(description: "Audio player cleaned up")
+        DispatchQueue.main.async {
+            XCTAssertEqual(mockPlayer.seekWasCalledWithTime, 0)
+            XCTAssertEqual(mockPlayer.updateRateWasCalledWithRate, .normal)
+            XCTAssertTrue(mockPlayer.stopWasCalled)
+            XCTAssertNil(self.streamChat?.utils._audioPlayer)
+            XCTAssertFalse(handler.isPlaying)
+            XCTAssertEqual(handler.rate, .normal)
+            expectation.fulfill()
+        }
+        wait(for: [expectation], timeout: defaultTimeout)
+    }
+
     // MARK: - private
 
     private func makeChannelController(

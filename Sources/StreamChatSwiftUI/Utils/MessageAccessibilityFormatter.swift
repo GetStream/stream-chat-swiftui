@@ -120,6 +120,24 @@ import StreamChat
         return L10n.Message.Accessibility.voiceRecording(authorName(for: message), duration, time)
     }
 
+    /// The VoiceOver label for an audio file attachment.
+    open func audioLabel(
+        for message: ChatMessage,
+        metadata: AudioAttachmentAccessibilityMetadata
+    ) -> String {
+        let time = sentTime(for: message)
+        let fileName = metadata.fileName
+        guard let duration = metadata.duration else {
+            return message.isSentByCurrentUser
+                ? L10n.Message.Accessibility.audioOwnWithoutDuration(fileName, time)
+                : L10n.Message.Accessibility.audioWithoutDuration(fileName, authorName(for: message), time)
+        }
+        if message.isSentByCurrentUser {
+            return L10n.Message.Accessibility.audioOwn(fileName, duration, time)
+        }
+        return L10n.Message.Accessibility.audio(fileName, authorName(for: message), duration, time)
+    }
+
     /// Prepends the spoken attachment number to a label, e.g.
     /// "Attachment 1. Video from …".
     private func prefixingAttachmentNumber(_ number: Int, to label: String) -> String {
@@ -173,6 +191,19 @@ public struct VoiceRecordingAccessibilityMetadata {
     public var duration: String?
 
     public init(duration: String? = nil) {
+        self.duration = duration
+    }
+}
+
+/// Metadata for building a VoiceOver label for an audio file attachment.
+public struct AudioAttachmentAccessibilityMetadata {
+    /// The audio file name announced to VoiceOver.
+    public var fileName: String
+    /// An already-formatted spoken duration (e.g. "1 minute, 5 seconds"), if available.
+    public var duration: String?
+
+    public init(fileName: String, duration: String? = nil) {
+        self.fileName = fileName
         self.duration = duration
     }
 }

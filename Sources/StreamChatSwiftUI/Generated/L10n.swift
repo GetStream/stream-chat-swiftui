@@ -684,6 +684,22 @@ internal enum L10n {
     internal enum Accessibility {
       /// Message actions
       internal static var actions: String { L10n.tr("Localizable", "message.accessibility.actions") }
+      /// Audio file %1$@ from %2$@, %3$@, at %4$@. Activate to play.
+      internal static func audio(_ p1: Any, _ p2: Any, _ p3: Any, _ p4: Any) -> String {
+        return L10n.tr("Localizable", "message.accessibility.audio", String(describing: p1), String(describing: p2), String(describing: p3), String(describing: p4))
+      }
+      /// Your audio file %1$@, %2$@, at %3$@. Activate to play.
+      internal static func audioOwn(_ p1: Any, _ p2: Any, _ p3: Any) -> String {
+        return L10n.tr("Localizable", "message.accessibility.audio-own", String(describing: p1), String(describing: p2), String(describing: p3))
+      }
+      /// Your audio file %1$@, at %2$@. Activate to play.
+      internal static func audioOwnWithoutDuration(_ p1: Any, _ p2: Any) -> String {
+        return L10n.tr("Localizable", "message.accessibility.audio-own-without-duration", String(describing: p1), String(describing: p2))
+      }
+      /// Audio file %1$@ from %2$@, at %3$@. Activate to play.
+      internal static func audioWithoutDuration(_ p1: Any, _ p2: Any, _ p3: Any) -> String {
+        return L10n.tr("Localizable", "message.accessibility.audio-without-duration", String(describing: p1), String(describing: p2), String(describing: p3))
+      }
       /// Image from %1$@, sent at %2$@. Activate to open.
       internal static func image(_ p1: Any, _ p2: Any) -> String {
         return L10n.tr("Localizable", "message.accessibility.image", String(describing: p1), String(describing: p2))

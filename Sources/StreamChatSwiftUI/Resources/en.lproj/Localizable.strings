@@ -180,6 +180,10 @@
 "message.accessibility.voice-recording-without-duration" = "Voice message from %1$@, at %2$@. Activate to play.";
 "message.accessibility.voice-recording-own" = "Your voice message, %1$@, at %2$@. Activate to play.";
 "message.accessibility.voice-recording-own-without-duration" = "Your voice message, at %1$@. Activate to play.";
+"message.accessibility.audio" = "Audio file %1$@ from %2$@, %3$@, at %4$@. Activate to play.";
+"message.accessibility.audio-without-duration" = "Audio file %1$@ from %2$@, at %3$@. Activate to play.";
+"message.accessibility.audio-own" = "Your audio file %1$@, %2$@, at %3$@. Activate to play.";
+"message.accessibility.audio-own-without-duration" = "Your audio file %1$@, at %2$@. Activate to play.";
 "message.accessibility.playback-speed" = "Playback speed";
 "message.accessibility.video" = "Video from %1$@, sent at %2$@. Activate to play.";
 "message.accessibility.video-with-duration" = "Video, %1$@, from %2$@, sent at %3$@. Activate to play.";

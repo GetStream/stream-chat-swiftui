@@ -183,45 +183,6 @@ class FileAttachmentView_Tests: StreamChatTestCase {
         XCTAssertEqual(fileAttachment.extraData, ["source": .string("web")])
     }
 
-    func test_fileAttachmentsContainer_audioOnlyMessage_snapshot() {
-        let message = ChatMessage.mock(
-            id: .unique,
-            cid: .unique,
-            text: "",
-            author: .mock(id: .unique),
-            attachments: ChatChannelTestHelpers.audioAttachments
-        )
-        let view = FileAttachmentsContainer(
-            factory: DefaultViewFactory.shared,
-            message: message,
-            width: 300,
-            isFirst: true,
-            scrolledId: .constant(nil)
-        )
-        .frame(width: 320, height: 80)
-        AssertSnapshot(view, variants: .onlyUserInterfaceStyles, size: CGSize(width: 320, height: 80))
-    }
-
-    func test_fileAttachmentsContainer_fileAndAudioMessage_snapshot() {
-        let message = ChatMessage.mock(
-            id: .unique,
-            cid: .unique,
-            text: "",
-            author: .mock(id: .unique),
-            attachments: ChatChannelTestHelpers.pdfFileAttachments + ChatChannelTestHelpers.audioAttachments
-        )
-        let size = CGSize(width: 320, height: 160)
-        let view = FileAttachmentsContainer(
-            factory: DefaultViewFactory.shared,
-            message: message,
-            width: 300,
-            isFirst: true,
-            scrolledId: .constant(nil)
-        )
-        .frame(width: size.width, height: size.height)
-        AssertSnapshot(view, variants: .onlyUserInterfaceStyles, size: size)
-    }
-
     // MARK: - Helper Methods
     
     private func createFileAttachment(

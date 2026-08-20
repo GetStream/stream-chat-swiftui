@@ -241,17 +241,9 @@ public struct MediaAttachmentContentView<Factory: ViewFactory>: View {
         .onAppear {
             guard mediaItem.isVideo,
                   let url = mediaItem.videoAttachment?.payload.videoURL else { return }
-            durationTask = Task {
-                let asset = AVURLAsset(url: url)
-                await withCheckedContinuation { continuation in
-                    asset.loadValuesAsynchronously(forKeys: ["duration"]) {
-                        let seconds = asset.duration.seconds
-                        if seconds.isFinite && seconds > 0 {
-                            Task { @MainActor in videoDuration = seconds }
-                        }
-                        continuation.resume()
-                    }
-                }
+            durationTask = Task { @MainActor in
+                guard let duration = await AVURLAsset(url: url).loadDuration() else { return }
+                videoDuration = duration
             }
         }
         .onDisappear {

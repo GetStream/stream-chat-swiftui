@@ -360,6 +360,39 @@ import XCTest
         AssertSnapshot(view, size: size)
     }
 
+    func test_messageViewAttachmentBubble_defaultSingleAudioWithoutCaption_snapshot() {
+        // Given
+        let attachment = AttachmentBubbleSnapshotAttachment.audio
+        let size = attachmentBubbleSnapshotSize(for: attachment, caption: nil)
+
+        // When
+        let view = attachmentBubbleMessageView(
+            factory: DefaultViewFactory.shared,
+            attachment: attachment,
+            caption: nil
+        )
+
+        // Then
+        AssertSnapshot(view, size: size)
+    }
+
+    func test_messageViewAttachmentBubble_defaultSingleAudioWithCaption_snapshot() {
+        // Given
+        let attachment = AttachmentBubbleSnapshotAttachment.audio
+        let caption = "Audio caption"
+        let size = attachmentBubbleSnapshotSize(for: attachment, caption: caption)
+
+        // When
+        let view = attachmentBubbleMessageView(
+            factory: DefaultViewFactory.shared,
+            attachment: attachment,
+            caption: caption
+        )
+
+        // Then
+        AssertSnapshot(view, size: size)
+    }
+
     func test_messageViewAttachmentBubble_customSingleImageWithoutCaption_snapshot() {
         // Given
         let attachment = AttachmentBubbleSnapshotAttachment.image
@@ -411,6 +444,22 @@ import XCTest
     func test_messageViewAttachmentBubble_customSingleFileWithoutCaption_snapshot() {
         // Given
         let attachment = AttachmentBubbleSnapshotAttachment.file
+        let size = attachmentBubbleSnapshotSize(for: attachment, caption: nil)
+
+        // When
+        let view = attachmentBubbleMessageView(
+            factory: CustomAttachmentBubbleFactory(),
+            attachment: attachment,
+            caption: nil
+        )
+
+        // Then
+        AssertSnapshot(view, size: size)
+    }
+
+    func test_messageViewAttachmentBubble_customSingleAudioWithoutCaption_snapshot() {
+        // Given
+        let attachment = AttachmentBubbleSnapshotAttachment.audio
         let size = attachmentBubbleSnapshotSize(for: attachment, caption: nil)
 
         // When
@@ -479,6 +528,23 @@ import XCTest
         // Given
         let attachment = AttachmentBubbleSnapshotAttachment.file
         let caption = "File caption"
+        let size = attachmentBubbleSnapshotSize(for: attachment, caption: caption)
+
+        // When
+        let view = attachmentBubbleMessageView(
+            factory: CustomAttachmentBubbleFactory(),
+            attachment: attachment,
+            caption: caption
+        )
+
+        // Then
+        AssertSnapshot(view, size: size)
+    }
+
+    func test_messageViewAttachmentBubble_customSingleAudioWithCaption_snapshot() {
+        // Given
+        let attachment = AttachmentBubbleSnapshotAttachment.audio
+        let caption = "Audio caption"
         let size = attachmentBubbleSnapshotSize(for: attachment, caption: caption)
 
         // When
@@ -1211,7 +1277,7 @@ import XCTest
             duration: 10,
             waveform: [0, 0.1, 0.4, 0.7, 1.0, 0.8, 0.5, 0.3, 0.6, 0.9]
         )
-        let handler = VoiceRecordingHandler()
+        let handler = AudioSessionHandler()
         handler.isPlaying = true
         handler.context = AudioPlaybackContext(
             assetLocation: url,
@@ -1310,30 +1376,6 @@ import XCTest
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
 
-    func test_audioAttachmentView_snapshot() {
-        // Given
-        let message = ChatMessage.mock(
-            id: .unique,
-            cid: .unique,
-            text: "",
-            author: .mock(id: .unique),
-            attachments: ChatChannelTestHelpers.audioAttachments
-        )
-
-        // When
-        let view = MessageAttachmentsView(
-            factory: DefaultViewFactory.shared,
-            message: message,
-            width: defaultScreenSize.width,
-            isFirst: true,
-            scrolledId: .constant(nil)
-        )
-        .frame(width: defaultScreenSize.width, height: 120)
-
-        // Then
-        AssertSnapshot(view, variants: .onlyUserInterfaceStyles, size: CGSize(width: defaultScreenSize.width, height: 120))
-    }
-    
     func test_linkAttachmentView_customColors_snapshot() {
         // Given
         let colorPalette = Appearance.ColorPalette()
@@ -2033,7 +2075,7 @@ import XCTest
             return CGSize(width: defaultScreenSize.width, height: hasCaption ? 320 : 300)
         case .link:
             return CGSize(width: defaultScreenSize.width, height: 300)
-        case .file, .voice:
+        case .file, .voice, .audio:
             return CGSize(width: defaultScreenSize.width, height: hasCaption ? 220 : 180)
         }
     }
@@ -2051,6 +2093,7 @@ private enum AttachmentBubbleSnapshotAttachment {
     case video
     case voice
     case file
+    case audio
     case link
 
     var attachments: [AnyChatMessageAttachment] {
@@ -2067,6 +2110,8 @@ private enum AttachmentBubbleSnapshotAttachment {
             return ChatChannelTestHelpers.voiceRecordingAttachments
         case .file:
             return ChatChannelTestHelpers.fileAttachments
+        case .audio:
+            return ChatChannelTestHelpers.audioAttachments
         case .link:
             return ChatChannelTestHelpers.linkAttachments
         }

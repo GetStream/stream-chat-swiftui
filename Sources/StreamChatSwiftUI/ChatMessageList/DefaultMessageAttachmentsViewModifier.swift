@@ -71,13 +71,21 @@ struct DefaultMessageAttachmentItemViewModifier: ViewModifier {
     @ViewBuilder
     func body(content: Content) -> some View {
         switch options.attachmentType {
-        case .some(.file), .some(.audio):
+        case .some(.file):
             content.modifier(BubbleModifier(
-                corners: attachmentCorners(isSingleWithoutCaption: options.message.hasSingleAttachment(of: [.file, .audio], captioned: false)),
+                corners: attachmentCorners(isSingleWithoutCaption: options.message.hasSingleAttachment(of: [.file], captioned: false)),
                 backgroundColors: [defaultAttachmentBackgroundColor],
                 borderWidth: 0,
                 cornerRadius: tokens.messageBubbleRadiusAttachment,
                 contentInsets: EdgeInsets()
+            ))
+        case .some(.audio):
+            content.modifier(BubbleModifier(
+                corners: attachmentCorners(isSingleWithoutCaption: options.message.hasSingleAttachment(of: [.audio], captioned: false)),
+                backgroundColors: [defaultAttachmentBackgroundColor],
+                borderWidth: 0,
+                cornerRadius: tokens.messageBubbleRadiusAttachment,
+                contentInsets: playbackAttachmentContentInsets
             ))
         case .some(.voiceRecording):
             // A voice recording quoted without a caption renders flat inside the message bubble.
@@ -87,12 +95,7 @@ struct DefaultMessageAttachmentItemViewModifier: ViewModifier {
                     backgroundColors: [defaultAttachmentBackgroundColor],
                     borderWidth: 0,
                     cornerRadius: tokens.messageBubbleRadiusAttachment,
-                    contentInsets: EdgeInsets(
-                        top: tokens.spacingXs,
-                        leading: tokens.spacingXs,
-                        bottom: tokens.spacingXs,
-                        trailing: tokens.spacingXs
-                    )
+                    contentInsets: playbackAttachmentContentInsets
                 ))
             } else {
                 content
@@ -146,6 +149,15 @@ struct DefaultMessageAttachmentItemViewModifier: ViewModifier {
 
     private var isVoiceRecordingContainerShown: Bool {
         !(options.message.quotedMessage != nil && options.message.text.isEmpty)
+    }
+
+    private var playbackAttachmentContentInsets: EdgeInsets {
+        EdgeInsets(
+            top: tokens.spacingXs,
+            leading: tokens.spacingXs,
+            bottom: tokens.spacingXs,
+            trailing: tokens.spacingXs
+        )
     }
 
     private func attachmentCorners(isSingleWithoutCaption: Bool) -> UIRectCorner {
