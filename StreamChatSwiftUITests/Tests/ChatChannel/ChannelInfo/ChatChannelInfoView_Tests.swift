@@ -5,6 +5,7 @@
 @testable import SnapshotTesting
 @testable import StreamChat
 @testable import StreamChatSwiftUI
+@testable import StreamChatTestTools
 import StreamSwiftTestHelpers
 import SwiftUI
 import XCTest
@@ -516,5 +517,200 @@ import XCTest
 
         // Then - shows group-style layout with member list, not single DM header
         AssertSnapshot(view)
+    }
+
+    func test_chatChannelInfoView_customActionsViewSnapshot() {
+        // Given - a factory providing a custom actions section
+        let members = ChannelInfoMockUtils.setupMockMembers(
+            count: 3,
+            currentUserId: chatClient.currentUserId!,
+            onlineUserIndexes: [0]
+        )
+        let group = ChatChannel.mock(
+            cid: .unique,
+            name: "Test Group",
+            ownCapabilities: [.leaveChannel, .updateChannel, .muteChannel],
+            lastActiveMembers: members,
+            memberCount: members.count
+        )
+
+        // When
+        let view = ChatChannelInfoView(
+            factory: ChannelInfoActionsViewFactory(),
+            channel: group
+        )
+        .applyDefaultSize()
+
+        // Then - the custom actions section replaces the default one
+        AssertSnapshot(view)
+    }
+
+    func test_chatChannelInfoView_customActionsView_leaveConversationInvokesViewModel() throws {
+        // Given
+        let group = ChatChannel.mock(
+            cid: .unique,
+            name: "Test Group",
+            ownCapabilities: [.leaveChannel],
+            lastActiveMembers: ChannelInfoMockUtils.setupMockMembers(
+                count: 3,
+                currentUserId: chatClient.currentUserId!
+            ),
+            memberCount: 3
+        )
+        let viewModel = MockChatChannelInfoViewModel(channel: group)
+        let factory = ChannelInfoActionsViewFactory()
+        showView(ChatChannelInfoView(factory: factory, viewModel: viewModel))
+
+        // When - the leave handler received by the factory is invoked
+        let options = try XCTUnwrap(factory.capturedOptions)
+        options.leaveConversation()
+
+        // Then
+        XCTAssertEqual(viewModel.leaveConversationTappedCallCount, 1)
+    }
+
+    func test_chatChannelInfoView_leaveConversation_whenShownFromMessageList_notifiesChannelDismiss() throws {
+        // Given
+        let factory = ChannelInfoActionsViewFactory()
+        let viewModel = ImmediateLeaveChatChannelInfoViewModel(channel: mockGroup())
+        showView(
+            ChatChannelInfoView(
+                factory: factory,
+                viewModel: viewModel,
+                channel: viewModel.channel,
+                shownFromMessageList: true
+            )
+        )
+        let dismissed = expectation(forNotification: NSNotification.Name(dismissChannel), object: nil)
+
+        // When
+        try XCTUnwrap(factory.capturedOptions).leaveConversation()
+
+        // Then - the channel view behind the info screen is dismissed as well
+        wait(for: [dismissed], timeout: defaultTimeout)
+    }
+
+    func test_chatChannelInfoView_leaveConversation_whenNotShownFromMessageList_doesNotNotifyChannelDismiss() throws {
+        // Given
+        let factory = ChannelInfoActionsViewFactory()
+        let viewModel = ImmediateLeaveChatChannelInfoViewModel(channel: mockGroup())
+        showView(
+            ChatChannelInfoView(
+                factory: factory,
+                viewModel: viewModel,
+                channel: viewModel.channel
+            )
+        )
+        let dismissed = expectation(forNotification: NSNotification.Name(dismissChannel), object: nil)
+        dismissed.isInverted = true
+
+        // When
+        try XCTUnwrap(factory.capturedOptions).leaveConversation()
+
+        // Then - only the info screen is dismissed
+        wait(for: [dismissed], timeout: defaultTimeoutForInversedExpecations)
+    }
+
+    // MARK: - ChannelInfoActionsView
+
+    func test_channelInfoActionsView_groupSnapshot() {
+        // Given
+        let viewModel = ChatChannelInfoViewModel(
+            channel: mockGroup(ownCapabilities: [.leaveChannel, .muteChannel])
+        )
+
+        // When
+        let view = actionsView(for: viewModel)
+            .applySize(CGSize(width: defaultScreenSize.width, height: 150))
+
+        // Then - mute toggle and leave group button
+        AssertSnapshot(view)
+    }
+
+    func test_channelInfoActionsView_directMessageSnapshot() {
+        // Given
+        let viewModel = ChatChannelInfoViewModel(
+            channel: mockDirectMessage(ownCapabilities: [.deleteChannel, .muteChannel])
+        )
+
+        // When
+        let view = actionsView(for: viewModel)
+            .applySize(CGSize(width: defaultScreenSize.width, height: 200))
+
+        // Then - mute toggle, block user and delete conversation button
+        AssertSnapshot(view)
+    }
+
+    // MARK: - Helpers
+
+    private func mockGroup(
+        ownCapabilities: Set<ChannelCapability> = [.leaveChannel, .updateChannel, .muteChannel]
+    ) -> ChatChannel {
+        let members = ChannelInfoMockUtils.setupMockMembers(
+            count: 3,
+            currentUserId: chatClient.currentUserId!,
+            onlineUserIndexes: [0]
+        )
+        return ChatChannel.mock(
+            cid: .unique,
+            name: "Test Group",
+            ownCapabilities: ownCapabilities,
+            lastActiveMembers: members,
+            memberCount: members.count
+        )
+    }
+
+    private func mockDirectMessage(
+        ownCapabilities: Set<ChannelCapability> = [.deleteChannel]
+    ) -> ChatChannel {
+        let members = ChannelInfoMockUtils.setupMockMembers(
+            count: 2,
+            currentUserId: chatClient.currentUserId!
+        )
+        return ChatChannel.mockDMChannel(
+            name: "Direct channel",
+            ownCapabilities: ownCapabilities,
+            lastActiveMembers: members,
+            memberCount: members.count
+        )
+    }
+
+    private func actionsView(for viewModel: ChatChannelInfoViewModel) -> ChannelInfoActionsView {
+        ChannelInfoActionsView(
+            options: ChannelInfoActionsViewOptions(
+                viewModel: viewModel,
+                leaveConversation: {}
+            )
+        )
+    }
+}
+
+class ImmediateLeaveChatChannelInfoViewModel: ChatChannelInfoViewModel {
+    override func leaveConversationTapped(completion: @escaping @MainActor () -> Void) {
+        completion()
+    }
+}
+
+class MockChatChannelInfoViewModel: ChatChannelInfoViewModel {
+    var leaveConversationTappedCallCount = 0
+
+    override func leaveConversationTapped(completion: @escaping @MainActor () -> Void) {
+        leaveConversationTappedCallCount += 1
+    }
+}
+
+class ChannelInfoActionsViewFactory: ViewFactory {
+    @Injected(\.chatClient) var chatClient
+
+    var styles = RegularStyles()
+
+    var capturedOptions: ChannelInfoActionsViewOptions?
+
+    func makeChannelInfoActionsView(options: ChannelInfoActionsViewOptions) -> some SwiftUI.View {
+        capturedOptions = options
+        return Text("Custom actions")
+            .frame(maxWidth: .infinity)
+            .padding()
+            .background(Color.red)
     }
 }
