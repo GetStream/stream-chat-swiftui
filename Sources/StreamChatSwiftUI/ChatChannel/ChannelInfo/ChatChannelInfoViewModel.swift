@@ -28,7 +28,9 @@ import SwiftUI
     @Published public var memberListSheetShown = false
     @Published public var editGroupShown = false
     @Published public var isUploadingGroupAvatar = false
+    /// Whether the confirmation for leaving the group, or deleting the conversation, is shown.
     @Published public var leaveGroupAlertShown = false
+    /// Whether the confirmation for blocking or unblocking the user is shown.
     @Published public var blockUserAlertShown = false
     @Published public var errorShown = false
     @Published public var channelName: String
@@ -64,6 +66,11 @@ import SwiftUI
         }
     }
     
+    /// Whether the actions section of the channel info screen is shown.
+    open var shouldShowActionsCard: Bool {
+        shouldShowMuteChannelButton || shouldShowBlockUserButton || shouldShowLeaveConversationButton
+    }
+
     open var shouldShowMuteChannelButton: Bool {
         channel.ownCapabilities.contains(.muteChannel)
     }
@@ -80,7 +87,8 @@ import SwiftUI
         }
     }
 
-    var channelController: ChatChannelController!
+    /// The controller of the channel shown in the channel info screen.
+    public internal(set) var channelController: ChatChannelController!
     var currentUserController: CurrentChatUserController?
     
     private var memberListController: ChatChannelMemberListController!
@@ -113,12 +121,39 @@ import SwiftUI
         }
     }
 
+    /// The icon of the button that leaves the group, or deletes the one-on-one conversation.
+    open var leaveButtonIcon: UIImage {
+        showSingleMemberDMView
+            ? images.trash
+            : UIImage(systemName: "rectangle.portrait.and.arrow.right") ?? images.trash
+    }
+
     open var leaveConversationDescription: String {
         if showSingleMemberDMView {
             L10n.Alert.Actions.deleteChannelMessage
         } else {
             L10n.Alert.Actions.leaveGroupMessage
         }
+    }
+
+    /// The confirmation shown before leaving the group, or deleting the one-on-one conversation.
+    open var leaveConversationConfirmation: ConfirmationPopup {
+        ConfirmationPopup(
+            title: leaveButtonTitle,
+            message: leaveConversationDescription,
+            buttonTitle: leaveButtonTitle
+        )
+    }
+
+    /// The confirmation shown before blocking or unblocking the user.
+    open var blockUserConfirmation: ConfirmationPopup {
+        ConfirmationPopup(
+            title: blockUserTitle,
+            message: isDMUserBlocked
+                ? L10n.Message.Actions.UserUnblock.confirmationMessage
+                : L10n.Message.Actions.UserBlock.confirmationMessage,
+            buttonTitle: blockUserTitle
+        )
     }
     
     public var notDisplayedParticipantsCount: Int {
@@ -209,7 +244,12 @@ import SwiftUI
         loadAdditionalUsers()
     }
 
-    public func leaveConversationTapped(completion: @escaping @MainActor () -> Void) {
+    /// Leaves the group, or deletes the conversation in one-on-one direct message channels.
+    ///
+    /// Override this method to run additional logic, such as sending a system message,
+    /// before or after calling the default implementation.
+    /// - Parameter completion: Called when the conversation was successfully left or deleted.
+    open func leaveConversationTapped(completion: @escaping @MainActor () -> Void) {
         if !showSingleMemberDMView {
             removeUserFromConversation(completion: completion)
         } else {
@@ -217,7 +257,7 @@ import SwiftUI
         }
     }
 
-    public func blockUserTapped() {
+    open func blockUserTapped() {
         guard let otherUserId = displayedParticipants.first?.id else { return }
         let controller = chatClient.userController(userId: otherUserId)
         if isDMUserBlocked {
@@ -304,7 +344,7 @@ import SwiftUI
         updateMutedParticipants()
     }
 
-    public func addUsersTapped(_ users: [ChatUser]) {
+    open func addUsersTapped(_ users: [ChatUser]) {
         if !users.isEmpty {
             channelController.addMembers(userIds: Set(users.map(\.id)))
         }
