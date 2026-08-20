@@ -215,6 +215,51 @@ extension UserRobot {
     }
 
     @discardableResult
+    func quoteMessage(
+        _ text: String,
+        quotingMessageText quotedText: String,
+        waitForAppearance: Bool = true,
+        file: StaticString = #filePath,
+        line: UInt = #line
+    ) -> Self {
+        var didQuoteMessage = false
+        for _ in 0..<20 {
+            let cellCount = cells.count
+            for index in 0..<cellCount {
+                let cell = cells.element(boundBy: index)
+                guard attributes.text(in: cell).text == quotedText else { continue }
+
+                let messageBubble = attributes.messageBubble(in: cell)
+                guard messageBubble.isHittable else { break }
+
+                messageBubble.waitForHitPoint().press(forDuration: 1)
+                contextMenu.reply.element.wait().safeTap()
+                didQuoteMessage = true
+                break
+            }
+            if didQuoteMessage {
+                break
+            }
+            scrollMessageListUp()
+        }
+
+        XCTAssertTrue(
+            didQuoteMessage,
+            "Message with text '\(quotedText)' was not found",
+            file: file,
+            line: line
+        )
+
+        sendMessage(
+            text,
+            waitForAppearance: waitForAppearance,
+            file: file,
+            line: line
+        )
+        return self
+    }
+
+    @discardableResult
     func openThread(messageCellIndex: Int = 0, waitForThreadIcon: Bool = false) -> Self {
         let messageCell = messageCell(withIndex: messageCellIndex)
         let threadButton = MessageListPage.Attributes.threadReplyCountButton(in: messageCell)
