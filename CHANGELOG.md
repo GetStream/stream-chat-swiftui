@@ -9,6 +9,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Allow overriding the leave conversation, block user and add members actions in `ChatChannelInfoViewModel` [#1573](https://github.com/GetStream/stream-chat-swiftui/pull/1573)
 
 ### 🐞 Fixed
+- Fix sending a message after jumping to a mid-page quoted message not loading the latest messages [#1584](https://github.com/GetStream/stream-chat-swiftui/pull/1584)
+- Fix the scroll-to-bottom button delaying the jump to latest messages after a mid-page jump [#1584](https://github.com/GetStream/stream-chat-swiftui/pull/1584)
 - Fix the voice message play icon disappearing when swiping a message to reply [#1581](https://github.com/GetStream/stream-chat-swiftui/pull/1581)
 - Fix the composer attachment picker icon clipping outside its circle when the keyboard opens or closes [#1581](https://github.com/GetStream/stream-chat-swiftui/pull/1581)
 
