@@ -335,6 +335,18 @@ import XCTest
         assertMediaGallerySnapshot(orientation: .square, count: 5)
     }
 
+    func test_mediaGallery_landscape_5_dark_snapshot() {
+        assertMediaGallerySnapshot(orientation: .landscape, count: 5, variants: [.defaultDark])
+    }
+
+    func test_mediaGallery_portrait_5_dark_snapshot() {
+        assertMediaGallerySnapshot(orientation: .portrait, count: 5, variants: [.defaultDark])
+    }
+
+    func test_mediaGallery_square_5_dark_snapshot() {
+        assertMediaGallerySnapshot(orientation: .square, count: 5, variants: [.defaultDark])
+    }
+
     func test_imageAttachments_failed_snapshot() {
         // Given
         let message = ChatMessage.mock(
@@ -1218,8 +1230,9 @@ import XCTest
     private func assertMediaGallerySnapshot(
         orientation: MediaGalleryOrientation,
         count: Int,
+        variants: [SnapshotVariant] = [.defaultLight],
         file: StaticString = #filePath,
-        testName: String = #function,
+        function: String = #function,
         line: UInt = #line
     ) {
         let dimensions: (width: Double, height: Double) = {
@@ -1245,12 +1258,13 @@ import XCTest
         )
 
         let view = testMessageViewContainer(message: message, height: 300)
-        assertSnapshot(
-            matching: view,
-            as: .image(perceptualPrecision: precision),
+        AssertSnapshot(
+            view,
+            variants: variants,
+            size: CGSize(width: 375, height: 300),
+            line: line,
             file: file,
-            testName: testName,
-            line: line
+            function: function
         )
     }
 }

@@ -238,11 +238,11 @@ public struct MessageMediaAttachmentsContainerView<Factory: ViewFactory>: View {
         ZStack {
             mediaCell(item, width: width, height: height, index: index)
             if remainingCount > 0 {
-                Color.black.opacity(0.4)
+                colors.backgroundCoreScrim.toColor
                     .clipShape(RoundedRectangle(cornerRadius: cornerRadius, style: .continuous))
                     .allowsHitTesting(false)
                 Text("+\(remainingCount)")
-                    .foregroundColor(Color(colors.backgroundCoreElevation0))
+                    .foregroundColor(colors.textOnAccent.toColor)
                     .font(fonts.title)
                     .allowsHitTesting(false)
             }
