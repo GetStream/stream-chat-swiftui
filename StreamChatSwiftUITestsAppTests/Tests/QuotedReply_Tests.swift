@@ -122,6 +122,73 @@ final class QuotedReply_Tests: StreamTestCase {
         }
     }
 
+    func test_messageListScrollsToLatest_whenUserSendsMessageAfterJumpingToQuotedMessage() throws {
+        linkToScenario(withId: 10074)
+
+        let messageCount = 60
+        let quotedText = "30"
+        let newMessage = "New message after jump"
+
+        GIVEN("user opens a channel with \(messageCount) messages") {
+            backendRobot.generateChannels(channelsCount: 1, messagesCount: messageCount)
+            userRobot.login().openChannel()
+        }
+        AND("user quotes a mid-page message") {
+            userRobot.quoteMessage(replyText, quotingMessageText: quotedText)
+        }
+        AND("user closes and reopens the channel") {
+            userRobot
+                .tapOnBackButton()
+                .openChannel()
+        }
+        WHEN("user taps on the quoted message") {
+            userRobot
+                .tapOnQuotedMessage(quotedText, at: 0)
+                .assertScrollToBottomButton(isVisible: true)
+        }
+        AND("user sends a new message") {
+            userRobot.sendMessage(newMessage)
+        }
+        THEN("message list shows the latest message") {
+            userRobot
+                .assertMessage(newMessage)
+                .assertScrollToBottomButton(isVisible: false)
+        }
+    }
+
+    func test_messageListScrollsToLatest_whenUserTapsScrollToBottomAfterJumpingToQuotedMessage() throws {
+        linkToScenario(withId: 10075)
+
+        let messageCount = 60
+        let quotedText = "30"
+
+        GIVEN("user opens a channel with \(messageCount) messages") {
+            backendRobot.generateChannels(channelsCount: 1, messagesCount: messageCount)
+            userRobot.login().openChannel()
+        }
+        AND("user quotes a mid-page message") {
+            userRobot.quoteMessage(replyText, quotingMessageText: quotedText)
+        }
+        AND("user closes and reopens the channel") {
+            userRobot
+                .tapOnBackButton()
+                .openChannel()
+        }
+        WHEN("user taps on the quoted message") {
+            userRobot
+                .tapOnQuotedMessage(quotedText, at: 0)
+                .assertScrollToBottomButton(isVisible: true)
+        }
+        AND("user taps on the scroll to bottom button") {
+            userRobot.tapOnScrollToBottomButton()
+        }
+        THEN("message list shows the latest message") {
+            userRobot
+                .assertMessage(replyText)
+                .assertScrollToBottomButton(isVisible: false)
+        }
+    }
+
     func test_quotedReplyNotInList_whenParticipantAddsQuotedReply_Message() {
         linkToScenario(withId: 1702)
         

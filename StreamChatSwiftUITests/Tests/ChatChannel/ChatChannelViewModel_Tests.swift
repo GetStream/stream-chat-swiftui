@@ -94,6 +94,45 @@ import XCTest
         XCTAssert(viewModel.scrolledId!.contains(messageId))
     }
 
+    func test_chatChannelVM_scrollToLastMessage_whenFirstPageNotLoaded_scrollsWhenFirstPageArrives() {
+        // Given
+        let midPageMessage = ChatMessage.mock(
+            id: .unique,
+            cid: .unique,
+            text: "Mid page",
+            author: ChatUser.mock(id: chatClient.currentUserId!)
+        )
+        let newestMessage = ChatMessage.mock(
+            id: .unique,
+            cid: .unique,
+            text: "Newest",
+            author: ChatUser.mock(id: chatClient.currentUserId!)
+        )
+        let channelController = makeChannelController(messages: [midPageMessage])
+        channelController.hasLoadedAllNextMessages_mock = false
+        let viewModel = ChatChannelViewModel(channelController: channelController)
+        viewModel.showScrollToLatestButton = true
+
+        // When
+        viewModel.scrollToLastMessage()
+
+        // Then
+        XCTAssertEqual(channelController.loadFirstPageCallCount, 1)
+        XCTAssertNotEqual(viewModel.scrolledId, newestMessage.messageId)
+
+        // When the first page arrives
+        channelController.hasLoadedAllNextMessages_mock = true
+        viewModel.dataSource(
+            channelDataSource: ChatChannelDataSource(controller: channelController),
+            didUpdateMessages: [newestMessage],
+            changes: [.insert(newestMessage, index: .init(item: 0, section: 0))]
+        )
+
+        // Then
+        XCTAssertEqual(viewModel.scrolledId, newestMessage.messageId)
+        XCTAssertFalse(viewModel.showScrollToLatestButton)
+    }
+
     func test_chatChannelVM_messageSentTapped_whenEditingMessage_shouldNotScroll() {
         // Given
         let messageId: String = .unique
@@ -225,6 +264,191 @@ import XCTest
 
         // Then
         XCTAssertEqual(viewModel.scrolledId, messages[0].id)
+    }
+
+    func test_chatChannelVM_newMessageSent_whenFirstPageNotLoaded_doesNotScrollToCurrentNewestMessage() {
+        // Given
+        var messages = [ChatMessage]()
+        for i in 0..<5 {
+            let message = ChatMessage.mock(
+                id: .unique,
+                cid: .unique,
+                text: "Test Message \(i)",
+                author: ChatUser.mock(id: chatClient.currentUserId!)
+            )
+            messages.append(message)
+        }
+        let channelController = makeChannelController(messages: messages)
+        channelController.hasLoadedAllNextMessages_mock = false
+        let viewModel = ChatChannelViewModel(channelController: channelController)
+
+        // When
+        viewModel.showScrollToLatestButton = true
+        viewModel.messageSentTapped()
+        viewModel.dataSource(
+            channelDataSource: ChatChannelDataSource(controller: channelController),
+            didUpdateMessages: messages,
+            changes: [
+                .insert(messages[0], index: .init(item: 0, section: 0))
+            ]
+        )
+
+        // Then
+        XCTAssertNotEqual(viewModel.scrolledId, messages[0].id)
+        XCTAssertEqual(channelController.loadFirstPageCallCount, 0)
+    }
+
+    func test_chatChannelVM_newMessagePendingEvent_whenFirstPageNotLoaded_whenMessageSentByCurrentUser_whenMessageNotPartOfThread_thenLoadsFirstPage() {
+        // Given
+        let channelController = makeChannelController()
+        channelController.hasLoadedAllNextMessages_mock = false
+        let viewModel = ChatChannelViewModel(channelController: channelController)
+        let message = ChatMessage.mock(
+            parentMessageId: nil,
+            isSentByCurrentUser: true
+        )
+
+        // When
+        sendPendingMessageEvent(to: viewModel, channelController: channelController, message: message)
+
+        // Then
+        XCTAssertEqual(channelController.loadFirstPageCallCount, 1)
+    }
+
+    func test_chatChannelVM_newMessagePendingEvent_whenFirstPageLoaded_doesNotLoadFirstPage() {
+        // Given
+        let channelController = makeChannelController()
+        channelController.hasLoadedAllNextMessages_mock = true
+        let viewModel = ChatChannelViewModel(channelController: channelController)
+        let message = ChatMessage.mock(
+            parentMessageId: nil,
+            isSentByCurrentUser: true
+        )
+
+        // When
+        sendPendingMessageEvent(to: viewModel, channelController: channelController, message: message)
+
+        // Then
+        XCTAssertEqual(channelController.loadFirstPageCallCount, 0)
+    }
+
+    func test_chatChannelVM_newMessagePendingEvent_whenMessageSentByOtherUser_doesNotLoadFirstPage() {
+        // Given
+        let channelController = makeChannelController()
+        channelController.hasLoadedAllNextMessages_mock = false
+        let viewModel = ChatChannelViewModel(channelController: channelController)
+        let message = ChatMessage.mock(
+            parentMessageId: nil,
+            isSentByCurrentUser: false
+        )
+
+        // When
+        sendPendingMessageEvent(to: viewModel, channelController: channelController, message: message)
+
+        // Then
+        XCTAssertEqual(channelController.loadFirstPageCallCount, 0)
+    }
+
+    func test_chatChannelVM_newMessagePendingEvent_whenMessageIsPartOfThread_doesNotLoadFirstPage() {
+        // Given
+        let channelController = makeChannelController()
+        channelController.hasLoadedAllNextMessages_mock = false
+        let viewModel = ChatChannelViewModel(channelController: channelController)
+        let message = ChatMessage.mock(
+            parentMessageId: .unique,
+            isSentByCurrentUser: true
+        )
+
+        // When
+        sendPendingMessageEvent(to: viewModel, channelController: channelController, message: message)
+
+        // Then
+        XCTAssertEqual(channelController.loadFirstPageCallCount, 0)
+    }
+
+    func test_chatChannelVM_newMessagePendingEvent_whenThread_whenReplyHasDifferentParentId_doesNotLoadFirstPage() {
+        // Given
+        let channelController = makeChannelController()
+        let threadRootId: MessageId = .unique
+        let messageController = ChatMessageControllerSUI_Mock.mock(
+            chatClient: chatClient,
+            cid: channelController.cid,
+            messageId: threadRootId
+        )
+        messageController.hasLoadedAllNextReplies_mock = false
+        let viewModel = ChatChannelViewModel(
+            channelController: channelController,
+            messageController: messageController
+        )
+        let message = ChatMessage.mock(
+            parentMessageId: .unique,
+            isSentByCurrentUser: true
+        )
+
+        // When
+        sendPendingMessageEvent(to: viewModel, channelController: channelController, message: message)
+
+        // Then
+        XCTAssertEqual(messageController.loadFirstPageCallCount, 0)
+    }
+
+    func test_chatChannelVM_newMessagePendingEvent_whenDifferentChannel_doesNotLoadFirstPage() {
+        // Given
+        let channelController = makeChannelController()
+        channelController.hasLoadedAllNextMessages_mock = false
+        let viewModel = ChatChannelViewModel(channelController: channelController)
+        let message = ChatMessage.mock(
+            parentMessageId: nil,
+            isSentByCurrentUser: true
+        )
+
+        // When
+        let pendingEvent = NewMessagePendingEvent(message: message, cid: .unique)
+        viewModel.eventsController(
+            channelController.client.eventsController(),
+            didReceiveEvent: pendingEvent
+        )
+
+        // Then
+        XCTAssertEqual(channelController.loadFirstPageCallCount, 0)
+    }
+
+    func test_chatChannelVM_newMessagePendingEvent_whenFirstPageNotLoaded_scrollsToNewestMessage() {
+        // Given
+        let midPageMessage = ChatMessage.mock(
+            id: .unique,
+            cid: .unique,
+            text: "Mid page",
+            author: ChatUser.mock(id: chatClient.currentUserId!)
+        )
+        let newestMessage = ChatMessage.mock(
+            id: .unique,
+            cid: .unique,
+            text: "Newest",
+            author: ChatUser.mock(id: chatClient.currentUserId!)
+        )
+        let channelController = makeChannelController(messages: [midPageMessage])
+        channelController.hasLoadedAllNextMessages_mock = false
+        let viewModel = ChatChannelViewModel(channelController: channelController)
+        viewModel.showScrollToLatestButton = true
+
+        // When
+        sendPendingMessageEvent(
+            to: viewModel,
+            channelController: channelController,
+            message: ChatMessage.mock(parentMessageId: nil, isSentByCurrentUser: true)
+        )
+        channelController.hasLoadedAllNextMessages_mock = true
+        viewModel.dataSource(
+            channelDataSource: ChatChannelDataSource(controller: channelController),
+            didUpdateMessages: [newestMessage],
+            changes: [.insert(newestMessage, index: .init(item: 0, section: 0))]
+        )
+
+        // Then
+        XCTAssertEqual(channelController.loadFirstPageCallCount, 1)
+        XCTAssertEqual(viewModel.scrolledId, newestMessage.messageId)
+        XCTAssertFalse(viewModel.showScrollToLatestButton)
     }
 
     func test_chatChannelVM_messageThread() {
@@ -1274,6 +1498,19 @@ import XCTest
         ChatChannelTestHelpers.makeChannelController(
             chatClient: chatClient,
             messages: messages
+        )
+    }
+
+    private func sendPendingMessageEvent(
+        to viewModel: ChatChannelViewModel,
+        channelController: ChatChannelController_Mock,
+        message: ChatMessage
+    ) {
+        let cid = channelController.cid ?? message.cid ?? .unique
+        let pendingEvent = NewMessagePendingEvent(message: message, cid: cid)
+        viewModel.eventsController(
+            channelController.client.eventsController(),
+            didReceiveEvent: pendingEvent
         )
     }
 }
