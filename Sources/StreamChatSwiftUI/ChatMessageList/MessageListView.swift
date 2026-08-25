@@ -337,7 +337,9 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
                         )
                     }
                 }
-                .modifier(MessageListScrollEdgeEffectModifier())
+                // The flipped list's logical top edge is the composer edge, where
+                // iOS 27's scroll blur can snapshot media while the viewport resizes.
+                .compatibility.scrollEdgeEffectHidden(true, for: .top)
                 .modifier(ScrollPositionModifier(scrollPosition: loadingNextMessages ? $scrollPosition : .constant(nil)))
                 .background(
                     factory.makeMessageListBackground(
@@ -612,22 +614,6 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
         } else {
             LazyVStack(spacing: 0, content: content)
         }
-    }
-}
-
-private struct MessageListScrollEdgeEffectModifier: ViewModifier {
-    func body(content: Content) -> some View {
-        #if os(iOS)
-        if #available(iOS 27.0, *) {
-            // The flipped list's logical top edge is the composer edge, where
-            // iOS 27's scroll blur can snapshot media while the viewport resizes.
-            content.scrollEdgeEffectHidden(true, for: .top)
-        } else {
-            content
-        }
-        #else
-        content
-        #endif
     }
 }
 
