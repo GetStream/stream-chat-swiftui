@@ -337,6 +337,9 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
                         )
                     }
                 }
+                // The flipped list's logical top edge is the composer edge, where
+                // iOS 27's scroll blur can snapshot media while the viewport resizes.
+                .compatibility.scrollEdgeEffectHidden(true, for: .top)
                 .modifier(ScrollPositionModifier(scrollPosition: loadingNextMessages ? $scrollPosition : .constant(nil)))
                 .background(
                     factory.makeMessageListBackground(
