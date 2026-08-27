@@ -3,6 +3,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 # Upcoming
 
+### 🔄 Changed
+
+# [5.10.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/5.10.0)
+_August 27, 2026_
+
 ### ✅ Added
 - Add native audio attachment playback UI in the message list [#1574](https://github.com/GetStream/stream-chat-swiftui/pull/1574)
 - Add `ViewFactory.makeChannelInfoActionsView` for customizing the actions in the channel info screen [#1573](https://github.com/GetStream/stream-chat-swiftui/pull/1573)
