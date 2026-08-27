@@ -343,11 +343,11 @@ import XCTest
         let moderationDetails = MessageModerationDetails(
             originalText: "Some text",
             action: .bounce,
+            blocklistsMatched: nil,
             textHarms: nil,
             imageHarms: nil,
-            blocklistMatched: nil,
             semanticFilterMatched: nil,
-            platformCircumvented: nil
+            platformCircumvented: false
         )
         let message = ChatMessage.mock(
             id: .unique,
