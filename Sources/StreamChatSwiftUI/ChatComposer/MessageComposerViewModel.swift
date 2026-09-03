@@ -550,6 +550,11 @@ import SwiftUI
             edit(
                 message: editedMessage,
                 attachments: try? convertAddedAssetsToPayloads(),
+                mentionedUserIds: mentionedUserIds,
+                mentionedRoles: mentionedRoles,
+                mentionedGroupIds: mentionedGroupIds,
+                mentionsHere: mentionsHere,
+                mentionsChannel: mentionsChannel,
                 completion: completion
             )
             return
@@ -966,6 +971,11 @@ import SwiftUI
     private func edit(
         message: ChatMessage,
         attachments: [AnyAttachmentPayload]?,
+        mentionedUserIds: [UserId],
+        mentionedRoles: [String],
+        mentionedGroupIds: [String],
+        mentionsHere: Bool,
+        mentionsChannel: Bool,
         completion: @escaping @MainActor () -> Void
     ) {
         guard let channelId = channelController.channel?.cid else {
@@ -978,7 +988,12 @@ import SwiftUI
         
         messageController.editMessage(
             text: adjustedText,
-            attachments: attachments ?? []
+            attachments: attachments ?? [],
+            mentionedUserIds: mentionedUserIds,
+            mentionedHere: mentionsHere,
+            mentionedChannel: mentionsChannel,
+            mentionedGroupIds: mentionedGroupIds,
+            mentionedRoles: mentionedRoles
         ) { [weak self] error in
             if error != nil {
                 self?.isSendingMessage = false
