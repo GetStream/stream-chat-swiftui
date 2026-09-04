@@ -16,7 +16,7 @@ let package = Package(
         )
     ],
     dependencies: [
-        .package(url: "https://github.com/GetStream/stream-chat-swift.git", from: "5.10.0")
+        .package(url: "https://github.com/GetStream/stream-chat-swift.git", branch: "fix/ios-2005-edit-message-mentions")
     ],
     targets: [
         .target(
