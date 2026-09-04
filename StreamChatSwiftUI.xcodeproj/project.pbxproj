@@ -1544,8 +1544,8 @@
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/GetStream/stream-chat-swift.git";
 			requirement = {
-				kind = branch;
-				branch = "fix/ios-2005-edit-message-mentions";
+				kind = revision;
+				revision = dadd0ccc782d5a23ed340bdba0758ed334cdc93c;
 			};
 		};
 		E3A1C01A282BAC66002D1E26 /* XCRemoteSwiftPackageReference "sentry-cocoa" */ = {
