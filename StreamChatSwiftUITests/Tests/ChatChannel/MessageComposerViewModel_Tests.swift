@@ -2761,7 +2761,7 @@ import XCTest
             config: .mock(),
             ownCapabilities: ownCapabilities,
             lastActiveMembers: [],
-            currentlyTypingUsers: [],
+            typingUsers: [],
             lastActiveWatchers: [],
             unreadCount: .noUnread,
             cooldownDuration: cooldownDuration,
