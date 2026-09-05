@@ -3,7 +3,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 # Upcoming
 
-### 🔄 Changed
+### 🐞 Fixed
+- Fix mentions not being persisted when editing a message [#1590](https://github.com/GetStream/stream-chat-swiftui/pull/1590)
 
 # [5.10.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/5.10.0)
 _August 27, 2026_

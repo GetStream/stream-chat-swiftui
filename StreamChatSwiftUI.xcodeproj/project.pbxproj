@@ -1544,8 +1544,8 @@
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/GetStream/stream-chat-swift.git";
 			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 5.10.0;
+				kind = revision;
+				revision = 789071c145519fc9423f298e6905db216864af51;
 			};
 		};
 		E3A1C01A282BAC66002D1E26 /* XCRemoteSwiftPackageReference "sentry-cocoa" */ = {
