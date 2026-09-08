@@ -26,7 +26,7 @@ import XCTest
             .applyDefaultSize()
 
         // Then
-        AssertSnapshot(view)
+        assertSnapshotWithoutVisualEffects(view)
     }
 
     func test_memberAddView_selectedUsersSnapshot() {
@@ -46,7 +46,7 @@ import XCTest
             .applyDefaultSize()
 
         // Then
-        AssertSnapshot(view)
+        assertSnapshotWithoutVisualEffects(view)
     }
 
     func test_memberAddView_alreadyMemberSnapshot() {
@@ -65,6 +65,6 @@ import XCTest
             .applyDefaultSize()
 
         // Then
-        AssertSnapshot(view)
+        assertSnapshotWithoutVisualEffects(view)
     }
 }

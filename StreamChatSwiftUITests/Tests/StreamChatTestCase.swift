@@ -2,6 +2,7 @@
 // Copyright © 2026 Stream.io Inc. All rights reserved.
 //
 
+import SnapshotTesting
 @testable import StreamChat
 @testable import StreamChatCommonUI
 @testable import StreamChatSwiftUI
@@ -84,6 +85,150 @@ import XCTest
         testWindow = window
         hostingController.view.layoutIfNeeded()
         return hostingController
+    }
+}
+
+extension StreamChatTestCase {
+    func assertSnapshotWithoutVisualEffects<View: SwiftUI.View>(
+        _ view: View,
+        variants: [SnapshotVariant] = SnapshotVariant.all,
+        device: ViewImageConfig = .iPhoneX,
+        size: CGSize? = nil,
+        suffix: String? = nil,
+        record: Bool = false,
+        line: UInt = #line,
+        file: StaticString = #filePath,
+        function: String = #function
+    ) {
+        variants.forEach { variant in
+            let snapshotSize = size ?? device.size ?? defaultScreenSize
+            let traits = UITraitCollection(traitsFrom: [device.traits, variant.traits])
+            let image = renderedSnapshot(
+                of: view.environment(\.streamLiquidGlassEffectsEnabled, false),
+                size: snapshotSize,
+                safeAreaInsets: device.safeArea,
+                traits: traits
+            )
+            assertSnapshot(
+                matching: image,
+                as: .image(perceptualPrecision: precision),
+                named: variant.snapshotName + (suffix.map { "." + $0 } ?? ""),
+                record: overrideRecording ?? record,
+                file: file,
+                testName: function,
+                line: line
+            )
+        }
+    }
+
+    func assertSnapshotWithoutVisualEffects<View: SwiftUI.View>(
+        _ view: View,
+        named name: String?,
+        record: Bool = false,
+        line: UInt = #line,
+        file: StaticString = #filePath,
+        function: String = #function
+    ) {
+        let displayScale = UIApplication.shared.connectedScenes
+            .compactMap { ($0 as? UIWindowScene)?.screen.scale }
+            .first ?? 1
+        let traits = UITraitCollection(displayScale: displayScale)
+        let image = renderedSnapshot(
+            of: view.environment(\.streamLiquidGlassEffectsEnabled, false),
+            size: defaultScreenSize,
+            safeAreaInsets: .zero,
+            traits: traits
+        )
+        assertSnapshot(
+            matching: image,
+            as: .image(perceptualPrecision: precision),
+            named: name,
+            record: overrideRecording ?? record,
+            file: file,
+            testName: function,
+            line: line
+        )
+    }
+
+    private func renderedSnapshot<View: SwiftUI.View>(
+        of view: View,
+        size: CGSize,
+        safeAreaInsets: UIEdgeInsets,
+        traits: UITraitCollection
+    ) -> UIImage {
+        testWindow?.isHidden = true
+        testWindow = nil
+
+        let frame = CGRect(origin: .zero, size: size)
+        let window: SnapshotWindow
+        if let windowScene = UIApplication.shared.connectedScenes
+            .compactMap({ $0 as? UIWindowScene })
+            .first(where: { $0.activationState == .foregroundActive }) {
+            window = SnapshotWindow(windowScene: windowScene, frame: frame, safeAreaInsets: safeAreaInsets)
+        } else {
+            window = SnapshotWindow(frame: frame, safeAreaInsets: safeAreaInsets)
+        }
+        defer {
+            window.isHidden = true
+            testWindow = nil
+        }
+
+        let hostingController = UIHostingController(rootView: view)
+        let container = UIViewController()
+        container.view.backgroundColor = .clear
+        container.view.frame = frame
+        container.addChild(hostingController)
+        hostingController.view.frame = container.view.bounds
+        hostingController.view.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        container.view.addSubview(hostingController.view)
+        container.setOverrideTraitCollection(traits, forChild: hostingController)
+        hostingController.didMove(toParent: container)
+
+        window.rootViewController = container
+        window.makeKeyAndVisible()
+        testWindow = window
+
+        container.beginAppearanceTransition(true, animated: false)
+        container.endAppearanceTransition()
+        container.view.setNeedsLayout()
+        container.view.layoutIfNeeded()
+        hostingController.view.setNeedsLayout()
+        hostingController.view.layoutIfNeeded()
+        RunLoop.main.run(until: Date(timeIntervalSinceNow: 0.01))
+        container.view.layoutIfNeeded()
+        hostingController.view.layoutIfNeeded()
+
+        let format = UIGraphicsImageRendererFormat(for: traits)
+        let renderer = UIGraphicsImageRenderer(bounds: frame, format: format)
+        return renderer.image { context in
+            if !window.drawHierarchy(in: frame, afterScreenUpdates: false) {
+                window.layer.render(in: context.cgContext)
+            }
+        }
+    }
+}
+
+private final class SnapshotWindow: UIWindow {
+    private let configuredSafeAreaInsets: UIEdgeInsets
+
+    init(frame: CGRect, safeAreaInsets: UIEdgeInsets) {
+        configuredSafeAreaInsets = safeAreaInsets
+        super.init(frame: frame)
+    }
+
+    init(windowScene: UIWindowScene, frame: CGRect, safeAreaInsets: UIEdgeInsets) {
+        configuredSafeAreaInsets = safeAreaInsets
+        super.init(windowScene: windowScene)
+        self.frame = frame
+    }
+
+    @available(*, unavailable)
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
+    override var safeAreaInsets: UIEdgeInsets {
+        configuredSafeAreaInsets
     }
 }
 

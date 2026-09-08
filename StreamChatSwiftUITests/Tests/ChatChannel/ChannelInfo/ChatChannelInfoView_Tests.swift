@@ -33,7 +33,7 @@ import XCTest
         }.applyDefaultSize()
         
         // Then
-        AssertSnapshot(view)
+        assertSnapshotWithoutVisualEffects(view)
     }
 
     func test_chatChannelInfoView_rtlSnapshot() {
@@ -59,7 +59,7 @@ import XCTest
         .applyDefaultSize()
 
         // Then
-        assertSnapshot(matching: view, as: .image(perceptualPrecision: precision), named: "rtl")
+        assertSnapshotWithoutVisualEffects(view, named: "rtl")
     }
     
     func test_chatChannelInfoView_directChannelOfflineSnapshot() {
@@ -315,7 +315,7 @@ import XCTest
         .applyDefaultSize()
 
         // Then
-        assertSnapshot(matching: navigationView, as: .image(perceptualPrecision: precision))
+        assertSnapshotWithoutVisualEffects(navigationView, named: nil)
     }
 
     func test_chatChannelInfoView_addUsersShownSnapshot() {
