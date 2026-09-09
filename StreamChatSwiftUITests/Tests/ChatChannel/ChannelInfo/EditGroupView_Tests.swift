@@ -22,7 +22,7 @@ import XCTest
             .applyDefaultSize()
 
         // Then
-        AssertSnapshot(view)
+        assertSnapshotWithoutVisualEffects(view)
     }
 
     func test_editGroupView_uploadingSnapshot() {
@@ -47,7 +47,7 @@ import XCTest
             .applyDefaultSize()
 
         // Then
-        AssertSnapshot(view, variants: [.rightToLeftLayout])
+        assertSnapshotWithoutVisualEffects(view, variants: [.rightToLeftLayout])
     }
 
     // MARK: - GroupAvatarPickerSheetView snapshots

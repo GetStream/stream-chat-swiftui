@@ -13,7 +13,7 @@ final class CreatePollView_Tests: StreamChatTestCase {
 
     func test_createPollView_snapshot() {
         let view = makeCreatePollView().applyDefaultSize()
-        AssertSnapshot(view, variants: .onlyUserInterfaceStyles)
+        assertSnapshotWithoutVisualEffects(view, variants: .onlyUserInterfaceStyles)
     }
 
     func test_createPollView_allOptionsDisabledSnapshot() {
@@ -26,7 +26,7 @@ final class CreatePollView_Tests: StreamChatTestCase {
             maxVotesPerPerson: hidden
         )
         let view = makeCreatePollView().applyDefaultSize()
-        AssertSnapshot(view, variants: .onlyUserInterfaceStyles)
+        assertSnapshotWithoutVisualEffects(view, variants: .onlyUserInterfaceStyles)
     }
 
     func test_createPollView_allOptionsEnabledSnapshot() {
@@ -39,7 +39,7 @@ final class CreatePollView_Tests: StreamChatTestCase {
             maxVotesPerPerson: enabled
         )
         let view = makeCreatePollView().applyDefaultSize()
-        AssertSnapshot(view, variants: .onlyUserInterfaceStyles)
+        assertSnapshotWithoutVisualEffects(view, variants: .onlyUserInterfaceStyles)
     }
 
     func test_createPollView_multipleVotesWithoutMaxVotesSnapshot() {
@@ -53,7 +53,7 @@ final class CreatePollView_Tests: StreamChatTestCase {
             maxVotesPerPerson: hidden
         )
         let view = makeCreatePollView().applyDefaultSize()
-        AssertSnapshot(view, variants: .onlyUserInterfaceStyles)
+        assertSnapshotWithoutVisualEffects(view, variants: .onlyUserInterfaceStyles)
     }
 
     func test_createPollView_mixedOptionsSnapshot() {
@@ -68,7 +68,7 @@ final class CreatePollView_Tests: StreamChatTestCase {
             maxVotesPerPerson: enabled
         )
         let view = makeCreatePollView().applyDefaultSize()
-        AssertSnapshot(view, variants: .onlyUserInterfaceStyles)
+        assertSnapshotWithoutVisualEffects(view, variants: .onlyUserInterfaceStyles)
     }
 
     // MARK: - Filled State
@@ -78,7 +78,7 @@ final class CreatePollView_Tests: StreamChatTestCase {
             question: "What's your favorite color?",
             options: ["Red", "Blue", "Green", ""]
         ).applyDefaultSize()
-        AssertSnapshot(view, variants: .onlyUserInterfaceStyles)
+        assertSnapshotWithoutVisualEffects(view, variants: .onlyUserInterfaceStyles)
     }
 
     func test_createPollView_duplicateOptionsSnapshot() {
@@ -86,7 +86,7 @@ final class CreatePollView_Tests: StreamChatTestCase {
             question: "Pick a number",
             options: ["One", "Two", "One", ""]
         ).applyDefaultSize()
-        AssertSnapshot(view, variants: .onlyUserInterfaceStyles)
+        assertSnapshotWithoutVisualEffects(view, variants: .onlyUserInterfaceStyles)
     }
 
     func test_createPollView_manyOptionsSnapshot() {
@@ -94,7 +94,7 @@ final class CreatePollView_Tests: StreamChatTestCase {
             question: "Best programming language?",
             options: ["Swift", "Kotlin", "TypeScript", "Rust", "Go", ""]
         ).applyDefaultSize()
-        AssertSnapshot(view, variants: .onlyUserInterfaceStyles)
+        assertSnapshotWithoutVisualEffects(view, variants: .onlyUserInterfaceStyles)
     }
 
     // MARK: - RTL
@@ -104,7 +104,7 @@ final class CreatePollView_Tests: StreamChatTestCase {
             question: "ما هي مدينتك المفضلة؟",
             options: ["برشلونة", "لشبونة", "أمستردام"]
         ).applyDefaultSize()
-        AssertSnapshot(view, variants: [.rightToLeftLayout])
+        assertSnapshotWithoutVisualEffects(view, variants: [.rightToLeftLayout])
     }
 
     func test_createPollView_duplicateOptionsRightToLeft_snapshot() {
@@ -112,7 +112,7 @@ final class CreatePollView_Tests: StreamChatTestCase {
             question: "اختر رقماً",
             options: ["واحد", "اثنان", "واحد"]
         ).applyDefaultSize()
-        AssertSnapshot(view, variants: [.rightToLeftLayout])
+        assertSnapshotWithoutVisualEffects(view, variants: [.rightToLeftLayout])
     }
 
     // MARK: - Helpers

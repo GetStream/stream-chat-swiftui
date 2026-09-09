@@ -220,7 +220,7 @@ import XCTest
         )
         .applyDefaultSize()
 
-        AssertSnapshot(view, variants: .onlyUserInterfaceStyles)
+        assertSnapshotWithoutVisualEffects(view, variants: .onlyUserInterfaceStyles)
     }
 
     // MARK: - RTL

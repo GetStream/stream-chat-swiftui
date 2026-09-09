@@ -32,7 +32,7 @@ import XCTest
             .applyDefaultSize()
 
         // Then
-        AssertSnapshot(view)
+        assertSnapshotWithoutVisualEffects(view)
     }
 
     func test_memberListView_withMutedMemberSnapshot() {

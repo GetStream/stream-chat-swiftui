@@ -5,6 +5,8 @@
 import SwiftUI
 
 public struct LiquidGlassModifier<BackgroundShape: Shape>: ViewModifier {
+    @Environment(\.streamLiquidGlassEffectsEnabled) private var glassEffectsEnabled
+
     var shape: BackgroundShape
     var isInteractive: Bool
 
@@ -18,7 +20,7 @@ public struct LiquidGlassModifier<BackgroundShape: Shape>: ViewModifier {
 
     public func body(content: Content) -> some View {
         #if swift(>=6.2)
-        if #available(iOS 26.0, *) {
+        if #available(iOS 26.0, *), glassEffectsEnabled {
             content
                 .contentShape(shape)
                 .modifier(BorderModifier(shape: shape))
@@ -33,6 +35,8 @@ public struct LiquidGlassModifier<BackgroundShape: Shape>: ViewModifier {
 }
 
 public struct LiquidGlassBorderlessModifier<BackgroundShape: Shape>: ViewModifier {
+    @Environment(\.streamLiquidGlassEffectsEnabled) private var glassEffectsEnabled
+
     var shape: BackgroundShape
     var isInteractive: Bool
 
@@ -46,7 +50,7 @@ public struct LiquidGlassBorderlessModifier<BackgroundShape: Shape>: ViewModifie
 
     public func body(content: Content) -> some View {
         #if swift(>=6.2)
-        if #available(iOS 26.0, *) {
+        if #available(iOS 26.0, *), glassEffectsEnabled {
             content
                 .contentShape(shape)
                 .clipShape(shape)
