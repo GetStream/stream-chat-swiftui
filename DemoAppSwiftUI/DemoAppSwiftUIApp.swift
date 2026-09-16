@@ -61,6 +61,7 @@ struct RootView: View {
         if notificationsHandler.notificationChannelId != nil {
             ChatChannelListView(
                 viewFactory: DemoAppFactory.shared,
+                viewModel: appState.channelListViewModel,
                 channelListController: channelListController,
                 selectedChannelId: notificationsHandler.notificationChannelId,
                 searchType: channelListSearchType
@@ -68,6 +69,7 @@ struct RootView: View {
         } else {
             ChatChannelListView(
                 viewFactory: DemoAppFactory.shared,
+                viewModel: appState.channelListViewModel,
                 channelListController: channelListController,
                 searchType: channelListSearchType
             )
@@ -89,6 +91,10 @@ struct RootView: View {
     @Published var unreadCount: UnreadCount = .noUnread
 
     private(set) var channelListController: ChatChannelListController?
+    /// Owned here so `channels` can be observed to close the launch interval on the frame
+    /// that shows the rows (see `observeLaunchCompletion`).
+    private(set) var channelListViewModel: ChatChannelListViewModel?
+    private var launchObservation: AnyCancellable?
     private(set) var currentUserController: CurrentChatUserController?
     private var cancellables = Set<AnyCancellable>()
 
@@ -113,6 +119,7 @@ struct RootView: View {
     
     private func didLogout() {
         channelListController = nil
+        channelListViewModel = nil
         currentUserController = nil
     }
     
@@ -127,7 +134,31 @@ struct RootView: View {
     func setChannelQueryIdentifier(_ identifier: ChannelListQueryIdentifier) {
         let query = AppState.channelListQuery(forIdentifier: identifier, chatClient: chatClient)
         channelListController = chatClient.channelListController(query: query)
+        channelListViewModel = ChatChannelListViewModel(
+            channelListController: channelListController,
+            searchType: AppConfiguration.default.channelListSearchType.resolved
+        )
+        observeLaunchCompletion(of: channelListViewModel)
         contentIdentifier = identifier.rawValue
+    }
+
+    /// Closes the launch interval on the frame that renders the first channel rows.
+    ///
+    /// `$channels` emits when the view model receives the list, and SwiftUI commits that
+    /// change in the current run-loop turn. Hopping to the next turn with
+    /// `DispatchQueue.main.async` therefore lands after the rows are committed, and
+    /// `PerfSignpost` then waits for that transaction's completion. Only the first
+    /// non-empty emission counts.
+    private func observeLaunchCompletion(of viewModel: ChatChannelListViewModel?) {
+        guard let viewModel, launchObservation == nil else { return }
+        launchObservation = viewModel.$channels
+            .filter { !$0.isEmpty }
+            .first()
+            .sink { _ in
+                DispatchQueue.main.async {
+                    PerfSignpost.finishLaunchOnNextRenderedFrame(reason: "channel-list")
+                }
+            }
     }
 
     func currentUserController(_ controller: CurrentChatUserController, didChangeCurrentUserUnreadCount: UnreadCount) {
