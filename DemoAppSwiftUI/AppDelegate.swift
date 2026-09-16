@@ -28,6 +28,9 @@ class AppDelegate: NSObject, UIApplicationDelegate {
         _ application: UIApplication,
         didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil
     ) -> Bool {
+        // First statement on purpose: everything after this is inside the launch interval.
+        PerfSignpost.beginLaunch()
+
         /*
          //Customizations, uncomment to customize.
          var colors = ColorPalette()
@@ -80,7 +83,15 @@ class AppDelegate: NSObject, UIApplicationDelegate {
         )
         streamChat = StreamChat(chatClient: chatClient, utils: utils)
         
-        let credentials = UnsecureRepository.shared.loadCurrentUser()
+        var credentials = UnsecureRepository.shared.loadCurrentUser()
+        // No stored session but a full environment triple: log in directly so a first launch
+        // reaches the channel list without a tap. Saved like a real login so the next launch
+        // restores it the ordinary way.
+        let environmentUser = UserCredentials.environmentUser
+        if credentials == nil, let environmentUser {
+            credentials = environmentUser
+            UnsecureRepository.shared.save(user: environmentUser)
+        }
         if let credentials, let token = try? Token(rawValue: credentials.token) {
             chatClient.connectUser(
                 userInfo: .init(
@@ -93,7 +104,9 @@ class AppDelegate: NSObject, UIApplicationDelegate {
             )
         }
 
-        DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
+        // The fixed 2 s logo screen is skipped when the app is driven from the environment,
+        // so it does not sit inside a launch measurement.
+        DispatchQueue.main.asyncAfter(deadline: .now() + (environmentUser == nil ? 2.0 : 0)) {
             withAnimation {
                 if AppState.shared.userState == .launchAnimation {
                     AppState.shared.userState = credentials == nil ? .notLoggedIn : .loggedIn

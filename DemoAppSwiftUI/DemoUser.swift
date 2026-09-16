@@ -4,7 +4,10 @@
 
 import Foundation
 
-public let apiKeyString = "zcgvnykxsfm8"
+/// The API key the app connects with: `CUSTOM_API_KEY` from the environment when set,
+/// otherwise the demo app's key.
+public let apiKeyString = ProcessInfo.processInfo.environment["CUSTOM_API_KEY"] ?? demoApiKeyString
+let demoApiKeyString = "zcgvnykxsfm8"
 public let applicationGroupIdentifier = "group.io.getstream.iOS.ChatDemoAppSwiftUI"
 public let currentUserIdRegisteredForPush = "currentUserIdRegisteredForPush"
 
@@ -35,7 +38,34 @@ extension UserCredentials: Identifiable {
         builtInUsers.filter { $0.id == id }.first
     }
 
-    static let builtInUsers: [UserCredentials] = [
+    /// A user supplied through the environment, for pointing the app at another Stream app.
+    ///
+    /// Present only when `CUSTOM_API_KEY`, `CUSTOM_USER_ID` and `CUSTOM_TOKEN` are all set;
+    /// otherwise the login list is unchanged.
+    static var environmentUser: UserCredentials? {
+        let env = ProcessInfo.processInfo.environment
+        guard let id = env["CUSTOM_USER_ID"], !id.isEmpty,
+              let token = env["CUSTOM_TOKEN"], !token.isEmpty,
+              env["CUSTOM_API_KEY"]?.isEmpty == false else { return nil }
+        return UserCredentials(
+            id: id,
+            name: id,
+            avatarURL: URL(string: "https://getstream.io/random_png/?name=\(id)"),
+            token: token,
+            birthLand: ""
+        )
+    }
+
+    /// The built-in users' tokens are signed with the demo app's secret, so on any other
+    /// key only the environment user is offered.
+    static var builtInUsers: [UserCredentials] {
+        if let environmentUser {
+            return apiKeyString == demoApiKeyString ? [environmentUser] + demoUsers : [environmentUser]
+        }
+        return demoUsers
+    }
+
+    static let demoUsers: [UserCredentials] = [
         (
             "luke_skywalker",
             "Luke Skywalker",

@@ -43,15 +43,27 @@ final class UnsecureRepository: UserRepository {
     }
 
     func loadCurrentUser() -> UserCredentials? {
-        if let savedUser: Data = get(for: .user) {
-            let decoder = JSONDecoder()
-            do {
-                let loadedUser = try decoder.decode(UserCredentials.self, from: savedUser)
-                return loadedUser
-            } catch {
-                log.error("Error while decoding user")
-            }
+        guard let savedUser = encodedCurrentUser() else { return nil }
+        do {
+            return try JSONDecoder().decode(UserCredentials.self, from: savedUser)
+        } catch {
+            log.error("Error while decoding user")
+            return nil
         }
+    }
+
+    /// The stored user, as JSON, from either of the two shapes it can arrive in.
+    ///
+    /// `save(user:)` writes `Data`, which is what the app itself round-trips. A
+    /// value supplied on the command line (`-stream.chat.user '{"id":…}'`) instead
+    /// lands in `NSArgumentDomain` as a `String`, so reading only `Data` silently
+    /// ignores it and the app falls back to the login screen. Accepting both makes
+    /// the app launchable straight into a signed-in state — useful for UI tests and
+    /// for automated performance runs, which clear app storage between iterations
+    /// and would otherwise have to replay the login screen every time.
+    private func encodedCurrentUser() -> Data? {
+        if let data: Data = get(for: .user) { return data }
+        if let json: String = get(for: .user) { return json.data(using: .utf8) }
         return nil
     }
     
