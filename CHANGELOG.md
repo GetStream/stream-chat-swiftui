@@ -3,7 +3,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 # Upcoming
 
-### 🔄 Changed
+### 🐞 Fixed
+- Fix a crash in the message list when SwiftUI renders rows off the main actor [#1597](https://github.com/GetStream/stream-chat-swiftui/pull/1597)
 
 # [5.11.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/5.11.0)
 _September 10, 2026_
