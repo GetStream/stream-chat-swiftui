@@ -20,6 +20,24 @@ import XCTest
         super.tearDown()
         DelayedRenderingViewModifier.isEnabled = true
     }
+
+    func test_messageListView_rowContentCanBeCreatedOffMainActor() async throws {
+        let view = makeMessageListView(channelConfig: ChannelConfig())
+        let message = try XCTUnwrap(view.messages.first)
+        var scrollViewProxy: ScrollViewProxy?
+        showView(ScrollViewReader { proxy in
+            scrollViewProxy = proxy
+            return Color.clear
+        })
+        let reader = try XCTUnwrap(reflectedValue(of: MessageListTestReader.self, in: view.body))
+        let content = reader.makeContent(using: try XCTUnwrap(scrollViewProxy))
+        let rows = try messageListRows(in: content)
+
+        await Task.detached {
+            XCTAssertFalse(Thread.isMainThread)
+            rows.makeRow(for: message)
+        }.value
+    }
     
     func test_messageListView_withReactions() {
         // Given
@@ -880,4 +898,42 @@ import XCTest
             viewModel: viewModel
         )
     }
+}
+
+private protocol MessageListTestReader {
+    @MainActor func makeContent(using proxy: ScrollViewProxy) -> sending Any
+}
+
+extension ScrollViewReader: MessageListTestReader {
+    @MainActor fileprivate func makeContent(using proxy: ScrollViewProxy) -> sending Any {
+        content(proxy)
+    }
+}
+
+private protocol MessageListTestRows {
+    nonisolated func makeRow(for message: ChatMessage)
+}
+
+extension ForEach: MessageListTestRows where Data == [ChatMessage], ID == String, Content: SwiftUI.View {
+    fileprivate nonisolated func makeRow(for message: ChatMessage) {
+        _ = content(message)
+    }
+}
+
+private func messageListRows(in value: sending Any) throws -> sending any MessageListTestRows {
+    try XCTUnwrap(reflectedValue(of: MessageListTestRows.self, in: value))
+}
+
+private func reflectedValue<Value>(of type: Value.Type, in value: Any, depth: Int = 0) -> Value? {
+    if let value = value as? Value {
+        return value
+    }
+    let mirror = Mirror(reflecting: value)
+    guard depth < 50, mirror.displayStyle != .class else { return nil }
+    for child in mirror.children {
+        if let value = reflectedValue(of: type, in: child.value, depth: depth + 1) {
+            return value
+        }
+    }
+    return nil
 }
