@@ -3,6 +3,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 # Upcoming
 
+### 🐞 Fixed
+- Fix a potential crash when rendering the message list [#1598](https://github.com/GetStream/stream-chat-swiftui/pull/1598)
+
 ### 🔄 Changed
 
 # [5.11.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/5.11.0)
