@@ -3,6 +3,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 # Upcoming
 
+### ✅ Added
+- Add support for foldable iPhones [#1600](https://github.com/GetStream/stream-chat-swiftui/pull/1600)
+
+### 🐞 Fixed
+- Fix GIFs not animating on devices with multiple displays [#1600](https://github.com/GetStream/stream-chat-swiftui/pull/1600)
+- Fix composer placeholder not aligned with the cursor in regular width [#1600](https://github.com/GetStream/stream-chat-swiftui/pull/1600)
+
 ### 🔄 Changed
 
 # [5.11.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/5.11.0)
