@@ -291,7 +291,7 @@ public final class MessageDisplayOptions {
     /// | 16+32+8+26 = 82   | up to 264  |   8   |    32    |  16   |
     public static var defaultSpacerWidth: @MainActor (CGFloat) -> (CGFloat) {
         { availableWidth in
-            if isIPad && availableWidth > 500 {
+            if availableWidth > 500 {
                 return (availableWidth * 0.4).rounded()
             } else {
                 @Injected(\.utils) var utils

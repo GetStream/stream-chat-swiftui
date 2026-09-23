@@ -12,6 +12,7 @@ public struct ChatChannelListView<Factory: ViewFactory>: View {
     @Injected(\.utils) private var utils
 
     @StateObject private var viewModel: ChatChannelListViewModel
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
     private let viewFactory: Factory
     private let title: String
@@ -78,28 +79,81 @@ public struct ChatChannelListView<Factory: ViewFactory>: View {
             .sheet(isPresented: $viewModel.channelPopupShown, content: {
                 channelPopup()
             })
-            .if(isIphone || !utils.messageListConfig.iPadSplitViewEnabled, transform: { view in
+            .if(!usesAdaptiveSplitView, transform: { view in
                 view.navigationViewStyle(.stack)
             })
+            .onAppear {
+                viewModel.setSplitViewActive(usesAdaptiveSplitView)
+            }
+            .onChange(of: usesAdaptiveSplitView) { isActive in
+                viewModel.setSplitViewActive(isActive)
+            }
             .accessibilityIdentifier("ChatChannelListView")
     }
 
     @ViewBuilder
     private var containerView: some View {
-        if usesIPadSplitView {
+        if usesAdaptiveSplitView {
             if #available(iOS 16, *) {
-                NavigationSplitView {
-                    content
-                } detail: {
-                    splitViewDetail()
+                GeometryReader { geometry in
+                    let width = sidebarWidth(in: geometry)
+                    NavigationSplitView {
+                        splitViewSidebar(width: width)
+                    } detail: {
+                        if let width {
+                            splitViewDetail()
+                                .navigationSplitViewColumnWidth(min: 0, ideal: geometry.size.width - width)
+                        } else {
+                            splitViewDetail()
+                        }
+                    }
+                    .accentColor(Color(colors.navigationBarTintColor))
+                    .toolbar(
+                        hidesTabBar(in: geometry) ? .hidden : .automatic,
+                        for: .tabBar
+                    )
                 }
-                .accentColor(Color(colors.navigationBarTintColor))
             }
         } else {
             NavigationContainerView(embedInNavigationView: embedInNavigationView) {
                 content
             }
         }
+    }
+
+    @available(iOS 16, *)
+    @ViewBuilder
+    private func splitViewSidebar(width: CGFloat?) -> some View {
+        if let width {
+            content.navigationSplitViewColumnWidth(width)
+        } else {
+            content
+        }
+    }
+
+    private func sidebarWidth(in geometry: GeometryProxy) -> CGFloat? {
+        // Keep the split aligned with the hinge even when the display is flat.
+        divisionRegionFrames(in: geometry).first {
+            $0.height > $0.width
+                && $0.minY <= 0 && $0.maxY >= geometry.size.height
+                && $0.midX > 0 && $0.midX < geometry.size.width
+        }?.midX
+    }
+
+    private func hidesTabBar(in geometry: GeometryProxy) -> Bool {
+        guard handleTabBarVisibility,
+              utils.messageListConfig.handleTabBarVisibility,
+              viewModel.selectedChannel != nil else { return false }
+        return divisionRegionFrames(in: geometry).contains { $0.width > $0.height }
+    }
+
+    private func divisionRegionFrames(in geometry: GeometryProxy) -> [CGRect] {
+        #if compiler(>=6.4)
+        if #available(iOS 27.1, *) {
+            return geometry.reservedRegions(kind: .division, options: .includeInactive).map(\.frame)
+        }
+        #endif
+        return []
     }
 
     private var content: some View {
@@ -112,7 +166,7 @@ public struct ChatChannelListView<Factory: ViewFactory>: View {
                 ChatChannelListContentView(
                     viewFactory: viewFactory,
                     viewModel: viewModel,
-                    channelDestination: usesIPadSplitView ? nil : channelDestination,
+                    channelDestination: usesAdaptiveSplitView ? nil : channelDestination,
                     onItemTap: onItemTap
                 )
             }
@@ -129,7 +183,7 @@ public struct ChatChannelListView<Factory: ViewFactory>: View {
             viewFactory.makeChannelListBackground(options: .init())
         )
         .background(
-            isIphone && handleTabBarVisibility ?
+            !usesAdaptiveSplitView && handleTabBarVisibility ?
                 Color.clear.background(
                     TabBarAccessor(isTabBarHidden: viewModel.hideTabBar)
                 )
@@ -163,8 +217,10 @@ public struct ChatChannelListView<Factory: ViewFactory>: View {
         .navigationBarTitleDisplayMode(utils.channelListConfig.navigationBarDisplayMode)
     }
 
-    private var usesIPadSplitView: Bool {
-        guard embedInNavigationView, isIPad, utils.messageListConfig.iPadSplitViewEnabled else {
+    private var usesAdaptiveSplitView: Bool {
+        guard embedInNavigationView,
+              horizontalSizeClass == .regular,
+              utils.messageListConfig.iPadSplitViewEnabled else {
             return false
         }
 
@@ -217,6 +273,7 @@ public struct ChatChannelListView<Factory: ViewFactory>: View {
             }
         }
         .id(viewModel.selectedChannel?.id)
+        .environment(\.isInChatNavigationSplitView, true)
     }
 }
 
@@ -291,9 +348,6 @@ public struct ChatChannelListContentView<Factory: ViewFactory>: View {
                     trailingSwipeLeftButtonTapped: viewModel.onMoreTapped(channel:),
                     leadingSwipeButtonTapped: { _ in }
                 )
-                .onAppear {
-                    viewModel.preselectChannelIfNeeded()
-                }
             }
 
             viewFactory.makeChannelListStickyFooterView(options: ChannelListStickyFooterViewOptions())

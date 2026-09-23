@@ -33,12 +33,18 @@ import UIKit
 
     /// True, if channel updates were skipped and are applied when selectedChannel is set to nil
     private var skippedChannelUpdates = false
+
+    /// Tracks whether the channel list and selected channel are simultaneously visible.
+    private var isSplitViewActive = isIPad
+
+    /// True until the initial split-view selection has been applied.
+    private var shouldPreselectChannel = isIPad
     
     /// True, if channel updates can be skipped for optimizing view refreshes while showing message list.
     ///
     /// - Important: Only meant for stacked navigation view style.
     private var canSkipChannelUpdates: Bool {
-        guard isIphone || !utils.messageListConfig.iPadSplitViewEnabled else { return false }
+        guard !isSplitViewActive || !utils.messageListConfig.iPadSplitViewEnabled else { return false }
         guard selectedChannel != nil || !searchText.isEmpty else { return false }
         return true
     }
@@ -55,6 +61,9 @@ import UIKit
     @Published public var selectedChannel: ChannelSelectionInfo? {
         willSet {
             hideTabBar = newValue != nil
+            if newValue != nil {
+                shouldPreselectChannel = false
+            }
             if selectedChannel != nil && newValue == nil {
                 // pop happened, apply the queued changes.
                 if skippedChannelUpdates {
@@ -341,8 +350,25 @@ import UIKit
     }
     
     public func preselectChannelIfNeeded() {
-        if isIPad && selectedChannel == nil && utils.messageListConfig.iPadSplitViewEnabled {
-            selectedChannel = channels.first?.channelSelectionInfo
+        guard shouldPreselectChannel,
+              isSplitViewActive,
+              utils.messageListConfig.iPadSplitViewEnabled,
+              let channel = channels.first else { return }
+        selectedChannel = channel.channelSelectionInfo
+    }
+
+    func setSplitViewActive(_ isActive: Bool) {
+        if !isActive {
+            shouldPreselectChannel = false
+        } else if !isSplitViewActive {
+            shouldPreselectChannel = selectedChannel == nil
+        }
+        isSplitViewActive = isActive
+        if isActive && skippedChannelUpdates {
+            skippedChannelUpdates = false
+            updateChannels()
+        } else {
+            preselectChannelIfNeeded()
         }
     }
     
@@ -366,6 +392,7 @@ import UIKit
             updateChannelsIfNeeded()
         } else {
             channels = controller.channels
+            preselectChannelIfNeeded()
         }
     }
 
@@ -585,6 +612,7 @@ import UIKit
 
     private func updateChannels() {
         channels = controller?.channels ?? [ChatChannel]()
+        preselectChannelIfNeeded()
     }
 
     private func handleChannelAppearance() {

@@ -1,0 +1,424 @@
+diff --git a/Sources/StreamChatSwiftUI/StreamSwiftyGif/NSImageView+SwiftyGif.swift b/Sources/StreamChatSwiftUI/StreamSwiftyGif/NSImageView+SwiftyGif.swift
+index 26792b6..886a72c 100755
+--- a/Sources/StreamChatSwiftUI/StreamSwiftyGif/NSImageView+SwiftyGif.swift
++++ b/Sources/StreamChatSwiftUI/StreamSwiftyGif/NSImageView+SwiftyGif.swift
+@@ -225,7 +225,7 @@ extension NSImageView {
+     
+     /// Check if this imageView is currently playing a gif
+     ///
+-    /// - Returns wether the gif is currently playing
++    /// - Returns whether the gif is currently playing
+     func isAnimatingGif() -> Bool{
+         return isPlaying
+     }
+diff --git a/Sources/StreamChatSwiftUI/StreamSwiftyGif/ObjcAssociatedWeakObject.swift b/Sources/StreamChatSwiftUI/StreamSwiftyGif/ObjcAssociatedWeakObject.swift
+index bf99ac2..4eb43de 100644
+--- a/Sources/StreamChatSwiftUI/StreamSwiftyGif/ObjcAssociatedWeakObject.swift
++++ b/Sources/StreamChatSwiftUI/StreamSwiftyGif/ObjcAssociatedWeakObject.swift
+@@ -10,9 +10,6 @@ func objc_getAssociatedWeakObject(_ object: AnyObject, _ key: UnsafeRawPointer)
+ }
+ 
+ func objc_setAssociatedWeakObject(_ object: AnyObject, _ key: UnsafeRawPointer, _ value: AnyObject?) {
+-    weak var weakValue = value
+-    let block: (() -> AnyObject?)? = {
+-        return weakValue
+-    }
++    let block: (() -> AnyObject?)? = { [weak value] in value }
+     objc_setAssociatedObject(object, key, block, .OBJC_ASSOCIATION_COPY)
+ }
+diff --git a/Sources/StreamChatSwiftUI/StreamSwiftyGif/SwiftyGifManager.swift b/Sources/StreamChatSwiftUI/StreamSwiftyGif/SwiftyGifManager.swift
+index 3d0f069..8e39f23 100755
+--- a/Sources/StreamChatSwiftUI/StreamSwiftyGif/SwiftyGifManager.swift
++++ b/Sources/StreamChatSwiftUI/StreamSwiftyGif/SwiftyGifManager.swift
+@@ -17,10 +17,10 @@ typealias PlatformImageView = NSImageView
+ typealias PlatformImageView = UIImageView
+ #endif
+ 
+-class SwiftyGifManager {
++class SwiftyGifManager: @unchecked Sendable {
+     
+     // A convenient default manager if we only have one gif to display here and there
+-    static var defaultManager = SwiftyGifManager(memoryLimit: 50)
++    nonisolated(unsafe) static var defaultManager = SwiftyGifManager(memoryLimit: 50)
+     
+     #if os(macOS)
+     fileprivate var timer: CVDisplayLink?
+@@ -134,14 +134,14 @@ class SwiftyGifManager {
+     
+     /// Check if an imageView is already managed by this manager
+     /// - Parameter imageView: The image view we're searching
+-    /// - Returns : a boolean for wether the imageView was found
++    /// - Returns : a boolean for whether the imageView was found
+     func containsImageView(_ imageView: PlatformImageView) -> Bool{
+         return displayViews.contains(imageView)
+     }
+     
+     /// Check if this manager has cache for an imageView
+     /// - Parameter imageView: The image view we're searching cache for
+-    /// - Returns : a boolean for wether we have cache for the imageView
++    /// - Returns : a boolean for whether we have cache for the imageView
+     func hasCache(_ imageView: PlatformImageView) -> Bool {
+         return imageView.displaying && (imageView.loopCount == -1 || imageView.loopCount >= 5) ? haveCache : false
+     }
+@@ -161,7 +161,7 @@ class SwiftyGifManager {
+         #endif
+         
+         for imageView in displayViews {
+-            queue.sync {
++            StreamConcurrency.onMain {
+                 imageView.image = imageView.currentImage
+             }
+             
+diff --git a/Sources/StreamChatSwiftUI/StreamSwiftyGif/UIImage+SwiftyGif.swift b/Sources/StreamChatSwiftUI/StreamSwiftyGif/UIImage+SwiftyGif.swift
+index 96fe8fe..e341cc0 100755
+--- a/Sources/StreamChatSwiftUI/StreamSwiftyGif/UIImage+SwiftyGif.swift
++++ b/Sources/StreamChatSwiftUI/StreamSwiftyGif/UIImage+SwiftyGif.swift
+@@ -41,7 +41,7 @@ extension UIImage {
+     ///
+     /// - Parameter imageData: The actual image data, can be GIF or some other format
+     /// - Parameter levelOfIntegrity: 0 to 1, 1 meaning no frame skipping
+-    convenience init?(imageData:Data, levelOfIntegrity: GifLevelOfIntegrity = .default) throws {
++    @MainActor convenience init?(imageData:Data, levelOfIntegrity: GifLevelOfIntegrity = .default) throws {
+         do {
+             try self.init(gifData: imageData, levelOfIntegrity: levelOfIntegrity)
+         } catch {
+@@ -53,7 +53,7 @@ extension UIImage {
+     ///
+     /// - Parameter imageName: Filename
+     /// - Parameter levelOfIntegrity: 0 to 1, 1 meaning no frame skipping
+-    convenience init?(imageName: String, levelOfIntegrity: GifLevelOfIntegrity = .default) throws {
++    @MainActor convenience init?(imageName: String, levelOfIntegrity: GifLevelOfIntegrity = .default) throws {
+         self.init()
+ 
+         do {
+@@ -72,7 +72,7 @@ extension UIImage {
+     ///
+     /// - Parameter gifData: The actual gif data
+     /// - Parameter levelOfIntegrity: 0 to 1, 1 meaning no frame skipping
+-    convenience init(gifData:Data, levelOfIntegrity: GifLevelOfIntegrity = .default) throws {
++    @MainActor convenience init(gifData:Data, levelOfIntegrity: GifLevelOfIntegrity = .default) throws {
+         self.init()
+         try setGifFromData(gifData, levelOfIntegrity: levelOfIntegrity)
+     }
+@@ -81,7 +81,7 @@ extension UIImage {
+     ///
+     /// - Parameter gifName: Filename
+     /// - Parameter levelOfIntegrity: 0 to 1, 1 meaning no frame skipping
+-    convenience init(gifName: String, levelOfIntegrity: GifLevelOfIntegrity = .default) throws {
++    @MainActor convenience init(gifName: String, levelOfIntegrity: GifLevelOfIntegrity = .default) throws {
+         self.init()
+         try setGif(gifName, levelOfIntegrity: levelOfIntegrity)
+     }
+@@ -90,7 +90,7 @@ extension UIImage {
+     ///
+     /// - Parameter data: The actual gif data
+     /// - Parameter levelOfIntegrity: 0 to 1, 1 meaning no frame skipping
+-    func setGifFromData(_ data: Data, levelOfIntegrity: GifLevelOfIntegrity) throws {
++    @MainActor func setGifFromData(_ data: Data, levelOfIntegrity: GifLevelOfIntegrity) throws {
+         guard let imageSource = CGImageSourceCreateWithData(data as CFData, nil) else { return }
+         self.imageSource = imageSource
+         imageData = data
+@@ -102,7 +102,7 @@ extension UIImage {
+     /// Set backing data for this gif. Overwrites any existing data.
+     ///
+     /// - Parameter name: Filename
+-    func setGif(_ name: String) throws {
++    @MainActor func setGif(_ name: String) throws {
+         try setGif(name, levelOfIntegrity: .default)
+     }
+     
+@@ -117,7 +117,7 @@ extension UIImage {
+     ///
+     /// - Parameter name: Filename
+     /// - Parameter levelOfIntegrity: 0 to 1, 1 meaning no frame skipping
+-    func setGif(_ name: String, levelOfIntegrity: GifLevelOfIntegrity) throws {
++    @MainActor func setGif(_ name: String, levelOfIntegrity: GifLevelOfIntegrity) throws {
+         if let url = Bundle.main.url(forResource: name,
+                                      withExtension: name.pathExtension() == "gif" ? "" : "gif") {
+             if let data = try? Data(contentsOf: url) {
+@@ -206,7 +206,7 @@ extension UIImage {
+     ///
+     /// - Parameter delaysArray: decoded delay times for this gif
+     /// - Parameter levelOfIntegrity: 0 to 1, 1 meaning no frame skipping
+-    private func calculateFrameDelay(_ delaysArray: [Float], levelOfIntegrity: GifLevelOfIntegrity) {
++    @MainActor private func calculateFrameDelay(_ delaysArray: [Float], levelOfIntegrity: GifLevelOfIntegrity) {
+         let levelOfIntegrity = max(0, min(1, levelOfIntegrity))
+         var delays = delaysArray
+ 
+@@ -288,12 +288,12 @@ extension UIImage {
+ 
+ // MARK: - Properties
+ 
+-private let _imageSourceKey = malloc(4)
+-private let _displayRefreshFactorKey = malloc(4)
+-private let _imageSizeKey = malloc(4)
+-private let _imageCountKey = malloc(4)
+-private let _displayOrderKey = malloc(4)
+-private let _imageDataKey = malloc(4)
++nonisolated(unsafe) private let _imageSourceKey = malloc(4)
++nonisolated(unsafe) private let _displayRefreshFactorKey = malloc(4)
++nonisolated(unsafe) private let _imageSizeKey = malloc(4)
++nonisolated(unsafe) private let _imageCountKey = malloc(4)
++nonisolated(unsafe) private let _displayOrderKey = malloc(4)
++nonisolated(unsafe) private let _imageDataKey = malloc(4)
+ 
+ extension UIImage {
+     
+diff --git a/Sources/StreamChatSwiftUI/StreamSwiftyGif/UIImageView+SwiftyGif.swift b/Sources/StreamChatSwiftUI/StreamSwiftyGif/UIImageView+SwiftyGif.swift
+index 88d6c7d..1d893b2 100755
+--- a/Sources/StreamChatSwiftUI/StreamSwiftyGif/UIImageView+SwiftyGif.swift
++++ b/Sources/StreamChatSwiftUI/StreamSwiftyGif/UIImageView+SwiftyGif.swift
+@@ -121,7 +121,7 @@ extension UIImageView {
+         let loader: UIView? = showLoader ? createLoader(from: customLoader) : nil
+         
+         let task = session.dataTask(with: url) { [weak self] data, _, error in
+-            DispatchQueue.main.async {
++            DispatchQueue.main.async { [weak self] in
+                 loader?.removeFromSuperview()
+                 self?.parseDownloadedGif(url: url,
+                                         data: data,
+@@ -197,13 +197,13 @@ extension UIImageView {
+ extension UIImageView {
+     
+     /// Start displaying the gif for this UIImageView.
+-    private func startDisplay() {
++    nonisolated private func startDisplay() {
+         displaying = true
+         updateCache()
+     }
+     
+     /// Stop displaying the gif for this UIImageView.
+-    private func stopDisplay() {
++    nonisolated private func stopDisplay() {
+         displaying = false
+         updateCache()
+     }
+@@ -220,8 +220,8 @@ extension UIImageView {
+     
+     /// Check if this imageView is currently playing a gif
+     ///
+-    /// - Returns wether the gif is currently playing
+-    func isAnimatingGif() -> Bool{
++    /// - Returns whether the gif is currently playing
++    nonisolated func isAnimatingGif() -> Bool{
+         return isPlaying
+     }
+     
+@@ -252,7 +252,7 @@ extension UIImageView {
+     }
+     
+     /// Update cache for the current imageView.
+-    func updateCache() {
++    nonisolated func updateCache() {
+         guard let animationManager = animationManager else { return }
+         
+         if animationManager.hasCache(self) && !haveCache {
+@@ -265,7 +265,7 @@ extension UIImageView {
+     }
+     
+     /// Update current image displayed. This method is called by the manager.
+-    func updateCurrentImage() {
++    nonisolated func updateCurrentImage() {
+         if displaying {
+             updateFrame()
+             updateIndex()
+@@ -285,7 +285,7 @@ extension UIImageView {
+     }
+     
+     /// Force update frame
+-    private func updateFrame() {
++    nonisolated private func updateFrame() {
+         if haveCache, let image = cache?.object(forKey: displayOrderIndex as AnyObject) as? UIImage {
+             currentImage = image
+         } else {
+@@ -294,12 +294,12 @@ extension UIImageView {
+     }
+     
+     /// Get current frame index
+-    func currentFrameIndex() -> Int{
++    nonisolated func currentFrameIndex() -> Int{
+         return displayOrderIndex
+     }
+     
+     /// Get frame at specific index
+-    func frameAtIndex(index: Int) -> UIImage {
++    nonisolated func frameAtIndex(index: Int) -> UIImage {
+         guard let gifImage = gifImage,
+             let imageSource = gifImage.imageSource,
+             let displayOrder = gifImage.displayOrder, index < displayOrder.count,
+@@ -313,26 +313,30 @@ extension UIImageView {
+     /// Check if the imageView has been discarded and is not in the view hierarchy anymore.
+     ///
+     /// - Returns : A boolean for weather the imageView was discarded
+-    func isDiscarded(_ imageView: UIView?) -> Bool {
+-        return imageView?.superview == nil
++    nonisolated func isDiscarded(_ imageView: UIView?) -> Bool {
++        StreamConcurrency.onMain {
++            return imageView?.superview == nil
++        }
+     }
+     
+     /// Check if the imageView is displayed.
+     ///
+     /// - Returns : A boolean for weather the imageView is displayed
+-    func isDisplayedInScreen(_ imageView: UIView?) -> Bool {
+-        guard !isHidden, let imageView = imageView else  {
+-            return false
++    nonisolated func isDisplayedInScreen(_ imageView: UIView?) -> Bool {
++        StreamConcurrency.onMain {
++            guard !isHidden, let imageView = imageView else  {
++                return false
++            }
++            
++            let screenRect = window?.bounds ?? .zero
++            let viewRect = imageView.convert(bounds, to:nil)
++            let intersectionRect = viewRect.intersection(screenRect)
++            
++            return window != nil && !intersectionRect.isEmpty && !intersectionRect.isNull
+         }
+-        
+-        let screenRect = UIScreen.main.bounds
+-        let viewRect = imageView.convert(bounds, to:nil)
+-        let intersectionRect = viewRect.intersection(screenRect)
+-        
+-        return window != nil && !intersectionRect.isEmpty && !intersectionRect.isNull
+     }
+     
+-    func clear() {
++    nonisolated func clear() {
+         if let gifImage = gifImage {
+             gifImage.clear()
+         }
+@@ -341,11 +345,13 @@ extension UIImageView {
+         currentImage = nil
+         cache?.removeAllObjects()
+         animationManager = nil
+-        image = nil
++        StreamConcurrency.onMain {
++            image = nil
++        }
+     }
+     
+     /// Update loop count and sync factor.
+-    private func updateIndex() {
++    nonisolated private func updateIndex() {
+         guard let gif = self.gifImage,
+             let displayRefreshFactor = gif.displayRefreshFactor,
+             displayRefreshFactor > 0 else {
+@@ -372,7 +378,7 @@ extension UIImageView {
+     }
+     
+     /// Prepare the cache by adding every images of the gif to an NSCache object.
+-    private func prepareCache() {
++    nonisolated private func prepareCache() {
+         guard let cache = self.cache else { return }
+         
+         cache.removeAllObjects()
+@@ -391,66 +397,66 @@ extension UIImageView {
+ 
+ // MARK: - Dynamic properties
+ 
+-private let _gifImageKey = malloc(4)
+-private let _cacheKey = malloc(4)
+-private let _currentImageKey = malloc(4)
+-private let _displayOrderIndexKey = malloc(4)
+-private let _syncFactorKey = malloc(4)
+-private let _haveCacheKey = malloc(4)
+-private let _loopCountKey = malloc(4)
+-private let _displayingKey = malloc(4)
+-private let _isPlayingKey = malloc(4)
+-private let _animationManagerKey = malloc(4)
+-private let _delegateKey = malloc(4)
++nonisolated(unsafe) private let _gifImageKey = malloc(4)
++nonisolated(unsafe) private let _cacheKey = malloc(4)
++nonisolated(unsafe) private let _currentImageKey = malloc(4)
++nonisolated(unsafe) private let _displayOrderIndexKey = malloc(4)
++nonisolated(unsafe) private let _syncFactorKey = malloc(4)
++nonisolated(unsafe) private let _haveCacheKey = malloc(4)
++nonisolated(unsafe) private let _loopCountKey = malloc(4)
++nonisolated(unsafe) private let _displayingKey = malloc(4)
++nonisolated(unsafe) private let _isPlayingKey = malloc(4)
++nonisolated(unsafe) private let _animationManagerKey = malloc(4)
++nonisolated(unsafe) private let _delegateKey = malloc(4)
+ 
+ extension UIImageView {
+     
+-    var gifImage: UIImage? {
++    nonisolated var gifImage: UIImage? {
+         get { return possiblyNil(_gifImageKey) }
+         set { objc_setAssociatedObject(self, _gifImageKey!, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC) }
+     }
+     
+-    var currentImage: UIImage? {
++    nonisolated var currentImage: UIImage? {
+         get { return possiblyNil(_currentImageKey) }
+         set { objc_setAssociatedObject(self, _currentImageKey!, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC) }
+     }
+     
+-    private var displayOrderIndex: Int {
++    nonisolated private var displayOrderIndex: Int {
+         get { return value(_displayOrderIndexKey, 0) }
+         set { objc_setAssociatedObject(self, _displayOrderIndexKey!, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC) }
+     }
+     
+-    private var syncFactor: Int {
++    nonisolated private var syncFactor: Int {
+         get { return value(_syncFactorKey, 0) }
+         set { objc_setAssociatedObject(self, _syncFactorKey!, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC) }
+     }
+     
+-    var loopCount: Int {
++    nonisolated var loopCount: Int {
+         get { return value(_loopCountKey, 0) }
+         set { objc_setAssociatedObject(self, _loopCountKey!, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC) }
+     }
+     
+-    var animationManager: SwiftyGifManager? {
++    nonisolated var animationManager: SwiftyGifManager? {
+         get { return (objc_getAssociatedObject(self, _animationManagerKey!) as? SwiftyGifManager) }
+         set { objc_setAssociatedObject(self, _animationManagerKey!, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC) }
+     }
+     
+-    var delegate: SwiftyGifDelegate? {
++    nonisolated var delegate: SwiftyGifDelegate? {
+         get { return (objc_getAssociatedWeakObject(self, _delegateKey!) as? SwiftyGifDelegate) }
+         set { objc_setAssociatedWeakObject(self, _delegateKey!, newValue) }
+     }
+     
+-    private var haveCache: Bool {
++    nonisolated private var haveCache: Bool {
+         get { return value(_haveCacheKey, false) }
+         set { objc_setAssociatedObject(self, _haveCacheKey!, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC) }
+     }
+     
+-    var displaying: Bool {
++    nonisolated var displaying: Bool {
+         get { return value(_displayingKey, false) }
+         set { objc_setAssociatedObject(self, _displayingKey!, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC) }
+     }
+     
+-    private var isPlaying: Bool {
++    nonisolated private var isPlaying: Bool {
+         get {
+             return value(_isPlayingKey, false)
+         }
+@@ -463,16 +469,16 @@ extension UIImageView {
+         }
+     }
+     
+-    private var cache: NSCache<AnyObject, AnyObject>? {
++    nonisolated private var cache: NSCache<AnyObject, AnyObject>? {
+         get { return (objc_getAssociatedObject(self, _cacheKey!) as? NSCache) }
+         set { objc_setAssociatedObject(self, _cacheKey!, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC) }
+     }
+     
+-    private func value<T>(_ key:UnsafeMutableRawPointer?, _ defaultValue:T) -> T {
++    nonisolated private func value<T>(_ key:UnsafeMutableRawPointer?, _ defaultValue:T) -> T {
+         return (objc_getAssociatedObject(self, key!) as? T) ?? defaultValue
+     }
+     
+-    private func possiblyNil<T>(_ key:UnsafeMutableRawPointer?) -> T? {
++    nonisolated private func possiblyNil<T>(_ key:UnsafeMutableRawPointer?) -> T? {
+         let result = objc_getAssociatedObject(self, key!)
+         
+         if result == nil {
