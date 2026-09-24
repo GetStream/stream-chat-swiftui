@@ -66,17 +66,11 @@ public struct ChannelInfoActionsView: View {
             .foregroundColor(Color(colors.textPrimary))
             .background(Color(colors.backgroundCoreSurfaceSubtle))
         }
-        .alert(isPresented: $viewModel.blockUserAlertShown) {
-            let confirmation = viewModel.blockUserConfirmation
-            return Alert(
-                title: Text(confirmation.title),
-                message: confirmation.message.map { Text($0) },
-                primaryButton: .destructive(Text(confirmation.buttonTitle)) {
-                    viewModel.blockUserTapped()
-                },
-                secondaryButton: .cancel()
-            )
-        }
+        .modifier(ConfirmationAlertModifier(
+            isPresented: $viewModel.blockUserAlertShown,
+            confirmation: viewModel.blockUserConfirmation,
+            onConfirm: viewModel.blockUserTapped
+        ))
     }
 
     private var leaveButton: some View {
@@ -96,16 +90,44 @@ public struct ChannelInfoActionsView: View {
             .foregroundColor(Color(colors.accentError))
             .background(Color(colors.backgroundCoreSurfaceSubtle))
         }
-        .alert(isPresented: $viewModel.leaveGroupAlertShown) {
-            let confirmation = viewModel.leaveConversationConfirmation
-            return Alert(
-                title: Text(confirmation.title),
-                message: confirmation.message.map { Text($0) },
-                primaryButton: .destructive(Text(confirmation.buttonTitle)) {
-                    leaveConversation()
-                },
-                secondaryButton: .cancel()
-            )
+        .modifier(ConfirmationAlertModifier(
+            isPresented: $viewModel.leaveGroupAlertShown,
+            confirmation: viewModel.leaveConversationConfirmation,
+            onConfirm: leaveConversation
+        ))
+    }
+}
+
+// The `Alert` based API doesn't present on some devices (e.g. iPhone Duo), so the
+// action based API is used where available.
+private struct ConfirmationAlertModifier: ViewModifier {
+    @Binding var isPresented: Bool
+    let confirmation: ConfirmationPopup
+    let onConfirm: @MainActor () -> Void
+
+    func body(content: Content) -> some View {
+        if #available(iOS 15, *) {
+            content.alert(confirmation.title, isPresented: $isPresented) {
+                Button(confirmation.buttonTitle, role: .destructive) {
+                    onConfirm()
+                }
+                Button(L10n.Alert.Actions.cancel, role: .cancel) {}
+            } message: {
+                if let message = confirmation.message {
+                    Text(message)
+                }
+            }
+        } else {
+            content.alert(isPresented: $isPresented) {
+                Alert(
+                    title: Text(confirmation.title),
+                    message: confirmation.message.map { Text($0) },
+                    primaryButton: .destructive(Text(confirmation.buttonTitle)) {
+                        onConfirm()
+                    },
+                    secondaryButton: .cancel()
+                )
+            }
         }
     }
 }
