@@ -262,7 +262,7 @@ public struct ChatChannelListView<Factory: ViewFactory>: View {
     @available(iOS 16.0, *)
     @ViewBuilder
     private func splitViewDetail() -> some View {
-        NavigationStack {
+        SplitViewDetailStack(selectionId: viewModel.selectedChannel?.id) {
             if let selectedChannel = viewModel.selectedChannel {
                 channelDestination(selectedChannel)
             } else {
@@ -272,8 +272,63 @@ public struct ChatChannelListView<Factory: ViewFactory>: View {
                 .accessibilityIdentifier("ChatChannelListSplitDetailPlaceholder")
             }
         }
-        .id(viewModel.selectedChannel?.id)
         .environment(\.isInChatNavigationSplitView, true)
+    }
+}
+
+// The split view reuses the detail column's navigation controller when the selection
+// changes, so screens pushed on top of a channel (e.g. channel info) have to be popped.
+@available(iOS 16, *)
+private struct SplitViewDetailStack<Content: View>: View {
+    let selectionId: String?
+    @ViewBuilder let content: () -> Content
+
+    @State private var navigationController = WeakNavigationController()
+
+    var body: some View {
+        NavigationStack {
+            content()
+                .background(NavigationControllerAccessor { navigationController.value = $0 })
+        }
+        .id(selectionId)
+        .onChange(of: selectionId) { _ in
+            navigationController.value?.popToRootViewController(animated: false)
+        }
+    }
+}
+
+@MainActor private final class WeakNavigationController {
+    weak var value: UINavigationController?
+}
+
+private struct NavigationControllerAccessor: UIViewControllerRepresentable {
+    let onResolve: (UINavigationController) -> Void
+
+    func makeUIViewController(context: Context) -> ViewController {
+        ViewController(onResolve: onResolve)
+    }
+
+    func updateUIViewController(_ uiViewController: ViewController, context: Context) {}
+
+    final class ViewController: UIViewController {
+        let onResolve: (UINavigationController) -> Void
+
+        init(onResolve: @escaping (UINavigationController) -> Void) {
+            self.onResolve = onResolve
+            super.init(nibName: nil, bundle: nil)
+        }
+
+        @available(*, unavailable)
+        required init?(coder: NSCoder) {
+            fatalError("init(coder:) has not been implemented")
+        }
+
+        override func viewWillAppear(_ animated: Bool) {
+            super.viewWillAppear(animated)
+            if let navigationController {
+                onResolve(navigationController)
+            }
+        }
     }
 }
 
