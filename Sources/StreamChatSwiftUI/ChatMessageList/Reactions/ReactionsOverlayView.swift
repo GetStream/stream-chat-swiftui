@@ -36,6 +36,7 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
     @State private var snapshotOrigin = CGPoint.zero
     @State private var divisionRegionFrames = [CGRect]()
     @State private var orientationChanged = false
+    @State private var presentationWindowSize: CGSize?
     @State private var moreReactionsShown = false
     @State private var measuredTotalContentHeight: CGFloat = 0
     @State private var measuredActionsContentWidth: CGFloat = 0
@@ -164,10 +165,17 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
             guard geometry.size.width > 0, geometry.size.height > 0 else { return }
             // The overlay passes through transitional frames while it is presented (e.g. while
             // the split view hides its bars) and ignores the safe area, so measure against the
-            // root view the snapshot was taken from, which only changes on rotation or posture changes.
+            // root view the snapshot was taken from.
             let rootView = topVC()?.view
-            if let rootSize = rootView?.bounds.size, rootSize != currentSnapshot.size {
-                orientationChanged = true
+            // Rotation and posture changes resize the window, which invalidates the captured
+            // message frame and snapshot, so the overlay is dismissed instead of being misplaced.
+            if let windowSize = rootView?.window?.bounds.size {
+                if presentationWindowSize == nil {
+                    presentationWindowSize = windowSize
+                } else if windowSize != presentationWindowSize, !orientationChanged {
+                    orientationChanged = true
+                    dismissReactionsOverlay { /* No additional handling. */ }
+                }
             }
             let origin = rootView?.convert(geometry.globalFrame.origin, from: nil) ?? .zero
             snapshotOrigin = origin
