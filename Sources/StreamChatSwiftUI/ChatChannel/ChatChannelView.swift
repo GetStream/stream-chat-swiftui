@@ -15,7 +15,6 @@ public struct ChatChannelView<Factory: ViewFactory>: View, KeyboardReadable {
     @StateObject private var viewModel: ChatChannelViewModel
 
     @Environment(\.presentationMode) var presentationMode
-    @Environment(\.isInChatNavigationSplitView) private var isInChatNavigationSplitView
 
     @State private var messageDisplayInfo: MessageDisplayInfo?
     @State private var keyboardShown = false
@@ -23,6 +22,7 @@ public struct ChatChannelView<Factory: ViewFactory>: View, KeyboardReadable {
     @State private var floatingComposerHeight: CGFloat
     
     private var factory: Factory
+    private let isInSplitView: Bool
 
     public init(
         viewFactory: Factory = DefaultViewFactory.shared,
@@ -30,7 +30,8 @@ public struct ChatChannelView<Factory: ViewFactory>: View, KeyboardReadable {
         channelController: ChatChannelController,
         messageController: ChatMessageController? = nil,
         scrollToMessage: ChatMessage? = nil,
-        composerPlacement: ComposerPlacement = .floating
+        composerPlacement: ComposerPlacement = .floating,
+        isInSplitView: Bool = false
     ) {
         _floatingComposerHeight = State(initialValue: Self.defaultFloatingComposerHeight())
         _viewModel = StateObject(
@@ -41,6 +42,7 @@ public struct ChatChannelView<Factory: ViewFactory>: View, KeyboardReadable {
             )
         )
         factory = viewFactory
+        self.isInSplitView = isInSplitView
     }
 
     public var body: some View {
@@ -299,12 +301,12 @@ public struct ChatChannelView<Factory: ViewFactory>: View, KeyboardReadable {
     }
 
     private var bottomPadding: CGFloat {
-        guard !isInChatNavigationSplitView else { return 0 }
+        guard !isInSplitView else { return 0 }
         return topVC()?.view.safeAreaInsets.bottom ?? 0
     }
 
     private var ignoresBottomSafeArea: Bool {
-        tabBarAvailable && !isInChatNavigationSplitView
+        tabBarAvailable && !isInSplitView
     }
 
     /// Whether bottom safe-area compensation is needed.

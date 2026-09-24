@@ -21,7 +21,6 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
 
     @StateObject var viewModel: ReactionsOverlayViewModel
     @StateObject var messageViewModel: MessageViewModel
-    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
     // MARK: - Animation State
 
@@ -30,12 +29,9 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
 
     // MARK: - Layout State
 
-    @State private var screenSize: CGSize
-    @State private var safeAreaFrame: CGRect
-    @State private var overlayGlobalFrame = CGRect.zero
-    @State private var snapshotOrigin = CGPoint.zero
-    @State private var divisionRegionFrames = [CGRect]()
+    @State private var screenHeight = UIScreen.main.bounds.size.height
     @State private var orientationChanged = false
+    @State private var snapshotOrigin = CGPoint.zero
     @State private var presentationWindowSize: CGSize?
     @State private var moreReactionsShown = false
     @State private var measuredTotalContentHeight: CGFloat = 0
@@ -73,8 +69,6 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
                 channel: channel
             )
         )
-        _screenSize = State(initialValue: currentSnapshot.size)
-        _safeAreaFrame = State(initialValue: CGRect(origin: .zero, size: currentSnapshot.size))
         self.channel = channel
         self.factory = factory
         self.currentSnapshot = currentSnapshot
@@ -92,10 +86,7 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
 
             GeometryReader { reader in
                 Color.clear
-                    .preference(
-                        key: OverlayGeometryPreferenceKey.self,
-                        value: overlayGeometry(reader: reader)
-                    )
+                    .preference(key: OverlayFramePreferenceKey.self, value: reader.frame(in: .global))
                     .contentShape(Rectangle())
                     .onTapGesture {
                         dismissReactionsOverlay { /* No additional handling. */ }
@@ -130,9 +121,9 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
                     .onTapGesture {
                         dismissReactionsOverlay { /* No additional handling. */ }
                     }
-                    messageActionsView
+                    messageActionsView(reader: reader)
                 }
-                .frame(width: overlayContentWidth, alignment: isRightAligned ? .trailing : .leading)
+                .frame(width: overlayContentWidth(reader: reader), alignment: isRightAligned ? .trailing : .leading)
                 .background(
                     GeometryReader { proxy in
                         Color.clear.preference(
@@ -153,38 +144,20 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
                             .padding(.top, topContentSpacing)
                             .padding(.bottom, bottomContentSpacing)
                     }
-                    .frame(width: overlayContentWidth, height: screenSize.height)
-                    .offset(x: contentOffsetX)
+                    .frame(width: overlayContentWidth(reader: reader), height: screenHeight)
+                    .offset(x: contentOffsetX(reader: reader))
                 } else {
                     content
-                        .offset(x: contentOffsetX, y: contentOffsetY)
+                        .offset(x: contentOffsetX(reader: reader), y: contentOffsetY)
                 }
             }
         }
-        .onPreferenceChange(OverlayGeometryPreferenceKey.self) { geometry in
-            guard geometry.size.width > 0, geometry.size.height > 0 else { return }
-            // The overlay passes through transitional frames while it is presented (e.g. while
-            // the split view hides its bars) and ignores the safe area, so measure against the
-            // root view the snapshot was taken from.
-            let rootView = topVC()?.view
-            // Rotation and posture changes resize the window, which invalidates the captured
-            // message frame and snapshot, so the overlay is dismissed instead of being misplaced.
-            if let windowSize = rootView?.window?.bounds.size {
-                if presentationWindowSize == nil {
-                    presentationWindowSize = windowSize
-                } else if windowSize != presentationWindowSize, !orientationChanged {
-                    orientationChanged = true
-                    dismissReactionsOverlay { /* No additional handling. */ }
-                }
+        .onPreferenceChange(OverlayFramePreferenceKey.self) { frame in
+            guard let frame else { return }
+            if frame.height != screenHeight {
+                screenHeight = frame.height
             }
-            let origin = rootView?.convert(geometry.globalFrame.origin, from: nil) ?? .zero
-            snapshotOrigin = origin
-            safeAreaFrame = rootView.map {
-                $0.bounds.inset(by: $0.safeAreaInsets).offsetBy(dx: -origin.x, dy: -origin.y)
-            } ?? CGRect(origin: .zero, size: geometry.size)
-            screenSize = geometry.size
-            overlayGlobalFrame = geometry.globalFrame
-            divisionRegionFrames = geometry.divisionRegionFrames
+            updateSnapshotLayout(overlayFrame: frame)
         }
         .onPreferenceChange(OverlayContentHeightKey.self) { value in
             if value > 0 {
@@ -212,6 +185,11 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
         .accessibilityAction(.escape) {
             dismissReactionsOverlay { /* No additional handling. */ }
         }
+        .onRotate { _ in
+            if isIPad {
+                orientationChanged = true
+            }
+        }
         .sheet(isPresented: $moreReactionsShown) {
             factory.makeMoreReactionsView(options: .init(onEmojiTap: { reactionKey in
                 moreReactionsShown = false
@@ -238,8 +216,6 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
                     // a lighter ring. An opaque blur clamps at the edges instead.
                     .blur(radius: popIn ? 4 : 0, opaque: true)
                     .frame(width: currentSnapshot.size.width, height: currentSnapshot.size.height)
-                    // The snapshot is taken from the root view, so pin it to the root's origin:
-                    // the overlay's own frame moves while the channel hides its bars.
                     .offset(x: -snapshotOrigin.x, y: -snapshotOrigin.y)
                     .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
                     .edgesIgnoringSafeArea(.all)
@@ -298,9 +274,9 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
     // MARK: - Message Actions
 
     @ViewBuilder
-    private var messageActionsView: some View {
+    private func messageActionsView(reader: GeometryProxy) -> some View {
         if messageDisplayInfo.showsMessageActions {
-            let available = availableActionsWidth
+            let available = availableActionsWidth(reader: reader)
             // At large Dynamic Type sizes the actions menu's natural width can exceed the
             // screen. Only then do we constrain it to the available width (letting the row
             // titles truncate), so the common case keeps its natural, unchanged sizing.
@@ -393,9 +369,9 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
 
     /// The width available for the actions menu after accounting for the horizontal insets
     /// applied to it, so it never has to draw past the edges of the screen.
-    private var availableActionsWidth: CGFloat {
+    private func availableActionsWidth(reader: GeometryProxy) -> CGFloat {
         let leadingInset = isRightAligned ? messageHorizontalPadding : messageBubbleLeadingX
-        return max(0, availableContentRect.width - leadingInset - messageHorizontalPadding)
+        return max(0, reader.size.width - leadingInset - messageHorizontalPadding)
     }
 
     /// Width of the content column (reactions, message, actions).
@@ -404,14 +380,13 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
     /// before. Only when the actions menu's natural width would overflow the screen does the
     /// column widen so that the horizontal offset clamp keeps the (now constrained) menu on
     /// screen instead of letting it spill past the edges.
-    private var overlayContentWidth: CGFloat {
-        let available = availableActionsWidth
-        let safeWidth = availableContentRect.width
+    private func overlayContentWidth(reader: GeometryProxy) -> CGFloat {
+        let available = availableActionsWidth(reader: reader)
         guard measuredActionsContentWidth > available, available > 0 else {
-            return min(messageDisplayInfo.frame.width, safeWidth)
+            return messageDisplayInfo.frame.width
         }
         let leadingInset = isRightAligned ? messageHorizontalPadding : messageBubbleLeadingX
-        return min(max(messageDisplayInfo.frame.width, leadingInset + available), safeWidth)
+        return min(max(messageDisplayInfo.frame.width, leadingInset + available), reader.size.width)
     }
 
     // MARK: - Animation
@@ -426,10 +401,10 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
         measuredTotalContentHeight > 0 && measuredTotalContentHeight > allowedTotalContentHeight
     }
     
-    private var allowedTotalContentHeight: CGFloat { screenSize.height - topContentSpacing - bottomContentSpacing }
+    private var allowedTotalContentHeight: CGFloat { screenHeight - topContentSpacing - bottomContentSpacing }
     
-    private var topContentSpacing: CGFloat { availableContentRect.minY + verticalInset + spacing }
-    private var bottomContentSpacing: CGFloat { screenSize.height - availableContentRect.maxY + verticalInset }
+    private var topContentSpacing: CGFloat { topSafeArea + verticalInset + spacing }
+    private var bottomContentSpacing: CGFloat { bottomSafeArea + verticalInset }
     
     private var contentOffsetY: CGFloat {
         let originalMessageMatchingOffsetY = messageDisplayInfo.frame.origin.y - spacing - topReactionsWithPickerHeight
@@ -437,12 +412,15 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
             return originalMessageMatchingOffsetY
         }
         let maxOrigin = originalMessageMatchingOffsetY + measuredTotalContentHeight
-        let bottomClippingAvoidingOffset = min(screenSize.height - bottomContentSpacing - maxOrigin, 0)
+        let bottomClippingAvoidingOffset = min(screenHeight - bottomContentSpacing - maxOrigin, 0)
         return max(topContentSpacing, originalMessageMatchingOffsetY + bottomClippingAvoidingOffset)
     }
 
-    private var contentOffsetX: CGFloat {
-        overlayLayout.contentOffsetX(contentWidth: overlayContentWidth)
+    private func contentOffsetX(reader: GeometryProxy) -> CGFloat {
+        let overlayFrame = reader.frame(in: .global)
+        let originalMessageOriginX = messageDisplayInfo.frame.minX - overlayFrame.minX
+        let maxAllowedOffset = max(0, reader.size.width - overlayContentWidth(reader: reader))
+        return min(max(0, originalMessageOriginX), maxAllowedOffset)
     }
 
     private var topReactionsWithPickerHeight: CGFloat {
@@ -451,104 +429,36 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
     }
 
     private var spacing: CGFloat {
-        let divider: CGFloat = horizontalSizeClass == .regular ? 2 : 1
-        let spacing = (currentSnapshot.size.height - screenSize.height) / divider
+        let divider: CGFloat = isIPad ? 2 : 1
+        // `UIScreen.main` can be another display than the app's on multi-display devices.
+        let windowHeight = presentationWindowSize?.height ?? UIScreen.main.bounds.height
+        let spacing = (windowHeight - screenHeight) / divider
         return spacing > 0 ? spacing : 0
     }
 
-    private var availableContentRect: CGRect {
-        overlayLayout.availableContentRect
-    }
-
-    private var overlayLayout: ReactionsOverlayLayout {
-        let bounds = safeAreaFrame.intersection(CGRect(origin: .zero, size: screenSize))
-        return ReactionsOverlayLayout(
-            bounds: bounds.isNull ? .zero : bounds,
-            messageFrame: messageDisplayInfo.frame.offsetBy(
-                dx: -overlayGlobalFrame.minX,
-                dy: -overlayGlobalFrame.minY
-            ),
-            isRightAligned: isRightAligned,
-            divisionRegionFrames: divisionRegionFrames
-        )
-    }
-
-    private func overlayGeometry(reader: GeometryProxy) -> OverlayGeometry {
-        var divisionRegionFrames = [CGRect]()
-        #if compiler(>=6.4)
-        if #available(iOS 27.1, *) {
-            divisionRegionFrames = reader.reservedRegions(kind: .division).map(\.frame)
+    // The snapshot is taken from the root view, so it is pinned to the root's origin while the
+    // overlay's own frame moves (e.g. while the navigation bar hides). A rotation or posture change
+    // resizes the window and invalidates the captured message frame, so the overlay is dismissed.
+    private func updateSnapshotLayout(overlayFrame: CGRect) {
+        guard let rootView = topVC()?.view else { return }
+        snapshotOrigin = rootView.convert(overlayFrame.origin, from: nil)
+        guard let windowSize = rootView.window?.bounds.size else { return }
+        if presentationWindowSize == nil {
+            presentationWindowSize = windowSize
+        } else if windowSize != presentationWindowSize, !orientationChanged {
+            orientationChanged = true
+            dismissReactionsOverlay { /* No additional handling. */ }
         }
-        #endif
-        return OverlayGeometry(
-            size: reader.size,
-            globalFrame: reader.frame(in: .global),
-            divisionRegionFrames: divisionRegionFrames
-        )
-    }
-}
-
-struct ReactionsOverlayLayout {
-    let bounds: CGRect
-    let messageFrame: CGRect
-    let isRightAligned: Bool
-    let divisionRegionFrames: [CGRect]
-
-    var availableContentRect: CGRect {
-        var availableRect = bounds
-        // The captured frame includes the row's empty space. Its aligned edge identifies
-        // the side containing the bubble even when the row spans both sides of a fold.
-        let messageAnchor = CGPoint(
-            x: isRightAligned ? messageFrame.maxX : messageFrame.minX,
-            y: messageFrame.midY
-        )
-
-        for region in divisionRegionFrames where region.intersects(availableRect) {
-            if region.height >= region.width {
-                if messageAnchor.x < region.midX {
-                    availableRect.size.width = max(0, region.minX - availableRect.minX)
-                } else {
-                    let maxX = availableRect.maxX
-                    availableRect.origin.x = max(availableRect.minX, region.maxX)
-                    availableRect.size.width = max(0, maxX - availableRect.minX)
-                }
-            } else if messageAnchor.y < region.midY {
-                availableRect.size.height = max(0, region.minY - availableRect.minY)
-            } else {
-                let maxY = availableRect.maxY
-                availableRect.origin.y = max(availableRect.minY, region.maxY)
-                availableRect.size.height = max(0, maxY - availableRect.minY)
-            }
-        }
-        return availableRect
-    }
-
-    func contentOffsetX(contentWidth: CGFloat) -> CGFloat {
-        let originalMessageOriginX = isRightAligned ? messageFrame.maxX - contentWidth : messageFrame.minX
-        let availableRect = availableContentRect
-        let minAllowedOffset = availableRect.minX
-        let maxAllowedOffset = max(minAllowedOffset, availableRect.maxX - contentWidth)
-        return min(max(minAllowedOffset, originalMessageOriginX), maxAllowedOffset)
     }
 }
 
 // MARK: - Preference Keys
 
-private struct OverlayGeometry: Equatable {
-    let size: CGSize
-    let globalFrame: CGRect
-    let divisionRegionFrames: [CGRect]
-}
+private struct OverlayFramePreferenceKey: PreferenceKey {
+    static let defaultValue: CGRect? = nil
 
-private struct OverlayGeometryPreferenceKey: PreferenceKey {
-    static let defaultValue = OverlayGeometry(size: .zero, globalFrame: .zero, divisionRegionFrames: [])
-
-    static func reduce(value: inout OverlayGeometry, nextValue: () -> OverlayGeometry) {
-        // Siblings that don't set the preference report the empty default; keep the measured value.
-        let nextValue = nextValue()
-        if nextValue.size.width > 0, nextValue.size.height > 0 {
-            value = nextValue
-        }
+    static func reduce(value: inout CGRect?, nextValue: () -> CGRect?) {
+        value = value ?? nextValue()
     }
 }
 
@@ -563,6 +473,24 @@ private struct ActionsContentWidthKey: PreferenceKey {
     static let defaultValue: CGFloat = 0
     static func reduce(value: inout CGFloat, nextValue: () -> CGFloat) {
         value = max(value, nextValue())
+    }
+}
+
+struct DeviceRotationViewModifier: ViewModifier {
+    let action: (UIDeviceOrientation) -> Void
+
+    func body(content: Content) -> some View {
+        content
+            .onAppear()
+            .onReceive(NotificationCenter.default.publisher(for: UIDevice.orientationDidChangeNotification)) { _ in
+                action(UIDevice.current.orientation)
+            }
+    }
+}
+
+extension View {
+    func onRotate(perform action: @escaping (UIDeviceOrientation) -> Void) -> some View {
+        modifier(DeviceRotationViewModifier(action: action))
     }
 }
 

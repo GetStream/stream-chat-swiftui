@@ -95,65 +95,18 @@ public struct ChatChannelListView<Factory: ViewFactory>: View {
     private var containerView: some View {
         if usesAdaptiveSplitView {
             if #available(iOS 16, *) {
-                GeometryReader { geometry in
-                    let width = sidebarWidth(in: geometry)
-                    NavigationSplitView {
-                        splitViewSidebar(width: width)
-                    } detail: {
-                        if let width {
-                            splitViewDetail()
-                                .navigationSplitViewColumnWidth(min: 0, ideal: geometry.size.width - width)
-                        } else {
-                            splitViewDetail()
-                        }
-                    }
-                    .accentColor(Color(colors.navigationBarTintColor))
-                    .toolbar(
-                        hidesTabBar(in: geometry) ? .hidden : .automatic,
-                        for: .tabBar
-                    )
+                NavigationSplitView {
+                    content
+                } detail: {
+                    splitViewDetail()
                 }
+                .accentColor(Color(colors.navigationBarTintColor))
             }
         } else {
             NavigationContainerView(embedInNavigationView: embedInNavigationView) {
                 content
             }
         }
-    }
-
-    @available(iOS 16, *)
-    @ViewBuilder
-    private func splitViewSidebar(width: CGFloat?) -> some View {
-        if let width {
-            content.navigationSplitViewColumnWidth(width)
-        } else {
-            content
-        }
-    }
-
-    private func sidebarWidth(in geometry: GeometryProxy) -> CGFloat? {
-        // Keep the split aligned with the hinge even when the display is flat.
-        divisionRegionFrames(in: geometry).first {
-            $0.height > $0.width
-                && $0.minY <= 0 && $0.maxY >= geometry.size.height
-                && $0.midX > 0 && $0.midX < geometry.size.width
-        }?.midX
-    }
-
-    private func hidesTabBar(in geometry: GeometryProxy) -> Bool {
-        guard handleTabBarVisibility,
-              utils.messageListConfig.handleTabBarVisibility,
-              viewModel.selectedChannel != nil else { return false }
-        return divisionRegionFrames(in: geometry).contains { $0.width > $0.height }
-    }
-
-    private func divisionRegionFrames(in geometry: GeometryProxy) -> [CGRect] {
-        #if compiler(>=6.4)
-        if #available(iOS 27.1, *) {
-            return geometry.reservedRegions(kind: .division, options: .includeInactive).map(\.frame)
-        }
-        #endif
-        return []
     }
 
     private var content: some View {
@@ -235,6 +188,10 @@ public struct ChatChannelListView<Factory: ViewFactory>: View {
         viewFactory.makeChannelDestination(options: ChannelDestinationOptions())
     }
 
+    private var splitViewChannelDestination: @MainActor (ChannelSelectionInfo) -> Factory.ChannelDestination {
+        viewFactory.makeChannelDestination(options: ChannelDestinationOptions(isInSplitView: true))
+    }
+
     @ViewBuilder
     private func channelPopup() -> some View {
         switch viewModel.channelPopupType {
@@ -262,9 +219,9 @@ public struct ChatChannelListView<Factory: ViewFactory>: View {
     @available(iOS 16.0, *)
     @ViewBuilder
     private func splitViewDetail() -> some View {
-        SplitViewDetailStack(selectionId: viewModel.selectedChannel?.id) {
+        NavigationStack {
             if let selectedChannel = viewModel.selectedChannel {
-                channelDestination(selectedChannel)
+                splitViewChannelDestination(selectedChannel)
             } else {
                 viewFactory.makeMessageListBackground(
                     options: MessageListBackgroundOptions(isInThread: false)
@@ -272,63 +229,7 @@ public struct ChatChannelListView<Factory: ViewFactory>: View {
                 .accessibilityIdentifier("ChatChannelListSplitDetailPlaceholder")
             }
         }
-        .environment(\.isInChatNavigationSplitView, true)
-    }
-}
-
-// The split view reuses the detail column's navigation controller when the selection
-// changes, so screens pushed on top of a channel (e.g. channel info) have to be popped.
-@available(iOS 16, *)
-private struct SplitViewDetailStack<Content: View>: View {
-    let selectionId: String?
-    @ViewBuilder let content: () -> Content
-
-    @State private var navigationController = WeakNavigationController()
-
-    var body: some View {
-        NavigationStack {
-            content()
-                .background(NavigationControllerAccessor { navigationController.value = $0 })
-        }
-        .id(selectionId)
-        .onChange(of: selectionId) { _ in
-            navigationController.value?.popToRootViewController(animated: false)
-        }
-    }
-}
-
-@MainActor private final class WeakNavigationController {
-    weak var value: UINavigationController?
-}
-
-private struct NavigationControllerAccessor: UIViewControllerRepresentable {
-    let onResolve: (UINavigationController) -> Void
-
-    func makeUIViewController(context: Context) -> ViewController {
-        ViewController(onResolve: onResolve)
-    }
-
-    func updateUIViewController(_ uiViewController: ViewController, context: Context) {}
-
-    final class ViewController: UIViewController {
-        let onResolve: (UINavigationController) -> Void
-
-        init(onResolve: @escaping (UINavigationController) -> Void) {
-            self.onResolve = onResolve
-            super.init(nibName: nil, bundle: nil)
-        }
-
-        @available(*, unavailable)
-        required init?(coder: NSCoder) {
-            fatalError("init(coder:) has not been implemented")
-        }
-
-        override func viewWillAppear(_ animated: Bool) {
-            super.viewWillAppear(animated)
-            if let navigationController {
-                onResolve(navigationController)
-            }
-        }
+        .id(viewModel.selectedChannel?.id)
     }
 }
 
