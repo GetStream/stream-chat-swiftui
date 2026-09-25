@@ -278,6 +278,8 @@ struct ChatChannelInfoViewHeaderViewModifier: ViewModifier {
         ToolbarItem(placement: .navigationBarTrailing) {
             if !viewModel.showSingleMemberDMView && viewModel.channel.canUpdateChannel {
                 editButton
+                    // Without a fixed size the toolbar can collapse the button into an overflow menu.
+                    .fixedSize()
             }
         }
     }
