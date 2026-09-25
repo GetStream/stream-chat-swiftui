@@ -19,6 +19,7 @@ public struct ChatChannelInfoView<Factory: ViewFactory>: View, KeyboardReadable 
     private var shownFromMessageList: Bool
 
     @Environment(\.presentationMode) var presentationMode
+    @Environment(\.splitViewSelectedChannelId) private var splitViewSelectedChannelId
 
     public init(
         factory: Factory = DefaultViewFactory.shared,
@@ -94,6 +95,10 @@ public struct ChatChannelInfoView<Factory: ViewFactory>: View, KeyboardReadable 
         }
         .alert(isPresented: $viewModel.errorShown) {
             Alert.defaultErrorAlert
+        }
+        // The split view keeps screens pushed on top of a channel when another channel is selected.
+        .onChange(of: splitViewSelectedChannelId) { _ in
+            presentationMode.wrappedValue.dismiss()
         }
     }
 

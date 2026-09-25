@@ -101,6 +101,7 @@ public struct ChatChannelListView<Factory: ViewFactory>: View {
                     splitViewDetail()
                 }
                 .accentColor(Color(colors.navigationBarTintColor))
+                .environment(\.splitViewSelectedChannelId, viewModel.selectedChannel?.id)
             }
         } else {
             NavigationContainerView(embedInNavigationView: embedInNavigationView) {
@@ -230,6 +231,17 @@ public struct ChatChannelListView<Factory: ViewFactory>: View {
             }
         }
         .id(viewModel.selectedChannel?.id)
+    }
+}
+
+private struct SplitViewSelectedChannelIdKey: EnvironmentKey {
+    static let defaultValue: String? = nil
+}
+
+extension EnvironmentValues {
+    var splitViewSelectedChannelId: String? {
+        get { self[SplitViewSelectedChannelIdKey.self] }
+        set { self[SplitViewSelectedChannelIdKey.self] = newValue }
     }
 }
 
