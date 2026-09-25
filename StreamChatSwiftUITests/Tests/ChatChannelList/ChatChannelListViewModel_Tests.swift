@@ -603,6 +603,31 @@ import XCTest
         XCTAssertEqual(viewModel.channels.count, 2)
     }
 
+    func test_channelDismissed_whenSplitViewActive_thenSelectsAnotherChannel() {
+        let deletedChannel = ChatChannel.mockDMChannel()
+        let otherChannel = ChatChannel.mockDMChannel()
+        let controller = makeChannelListController(channels: [deletedChannel, otherChannel])
+        let viewModel = ChatChannelListViewModel(channelListController: controller)
+        viewModel.setSplitViewActive(true)
+        viewModel.selectedChannel = deletedChannel.channelSelectionInfo
+
+        notifyChannelDismiss()
+
+        XCTAssertEqual(viewModel.selectedChannel?.channel.cid, otherChannel.cid)
+    }
+
+    func test_channelDismissed_whenStackedNavigation_thenClearsSelection() {
+        let channel = ChatChannel.mockDMChannel()
+        let controller = makeChannelListController(channels: [channel, .mockDMChannel()])
+        let viewModel = ChatChannelListViewModel(channelListController: controller)
+        viewModel.setSplitViewActive(false)
+        viewModel.selectedChannel = channel.channelSelectionInfo
+
+        notifyChannelDismiss()
+
+        XCTAssertNil(viewModel.selectedChannel)
+    }
+
     func test_preselectChannel_whenReexpandingFromChannelList() {
         let firstChannel = ChatChannel.mockDMChannel()
         let secondChannel = ChatChannel.mockDMChannel()

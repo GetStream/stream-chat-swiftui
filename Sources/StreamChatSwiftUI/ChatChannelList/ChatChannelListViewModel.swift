@@ -659,7 +659,15 @@ import UIKit
     }
 
     @objc private func dismissPresentedChannel() {
+        let dismissedChannelId = selectedChannel?.channel.cid
         selectedChannel = nil
+        guard isSplitViewActive, utils.messageListConfig.iPadSplitViewEnabled else { return }
+        // Keep the split view's detail showing a channel, e.g. after leaving the selected one.
+        if let nextChannel = channels.first(where: { $0.cid != dismissedChannelId }) {
+            selectedChannel = nextChannel.channelSelectionInfo
+        } else {
+            shouldPreselectChannel = true
+        }
     }
 
     @objc private func handleHideTabBar() {
