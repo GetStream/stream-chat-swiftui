@@ -377,10 +377,8 @@ private struct FloatingComposerContainer<Composer: View>: ViewModifier {
             } else {
                 content
                     .overlay(
-                        VStack {
-                            Spacer()
-                            composer()
-                        }
+                        composer()
+                            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
                     )
             }
         }

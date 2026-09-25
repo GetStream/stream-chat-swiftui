@@ -219,6 +219,40 @@ import XCTest
         XCTAssertEqual(firstLink(in: attributed), detectedURL)
     }
 
+    func test_attributedTextContent_whenMentionsAndLinkDetectionToggledSeparately_appliesOnlyEnabledOne() {
+        // Given
+        let detectedURL = URL(string: "https://getstream.io")!
+        let message = ChatMessage.mock(
+            id: .unique,
+            cid: .unique,
+            text: "Hey @Martin visit https://getstream.io",
+            author: .mock(id: .unique),
+            mentionedUsers: [.mock(id: "martin", name: "Martin")]
+        )
+
+        // When
+        let mentionsOnly = message.attributedTextContent(
+            options: .init(
+                layoutDirection: .leftToRight,
+                linkDetectionEnabled: false,
+                markdownEnabled: false,
+                mentionsEnabled: true
+            )
+        )
+        let linksOnly = message.attributedTextContent(
+            options: .init(
+                layoutDirection: .leftToRight,
+                linkDetectionEnabled: true,
+                markdownEnabled: false,
+                mentionsEnabled: false
+            )
+        )
+
+        // Then
+        XCTAssertEqual(mentionsOnly.runs.compactMap(\.link).map(\.scheme), ["getstream"])
+        XCTAssertEqual(linksOnly.runs.compactMap(\.link), [detectedURL])
+    }
+
     func test_messageViewTextMentionAllTypes_snapshot() {
         // Given
         let textMessage = ChatMessage.mock(

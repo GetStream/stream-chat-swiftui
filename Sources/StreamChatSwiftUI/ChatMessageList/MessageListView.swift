@@ -229,7 +229,7 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
                                 .flippedUpsideDown()
                             }
 
-                            ForEach(messages, id: \.messageId) { message in
+                            mainActorForEach(messages, id: \.messageId) { message in
                                 var index: Int? = messageListDateUtils.indexForMessageDate(message: message, in: messages)
                                 let messageDate: Date? = messageListDateUtils.showMessageDate(for: index, in: messages)
                                 let messageIsFirstUnread = firstUnreadMessageId?.contains(message.id) == true
@@ -614,6 +614,31 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
         } else {
             LazyVStack(spacing: 0, content: content)
         }
+    }
+}
+
+// SwiftUI can invoke ForEach's content off the main actor. Defer it to a view body.
+private nonisolated func mainActorForEach<Data: RandomAccessCollection, ID: Hashable, Content: View>(
+    _ data: Data,
+    id: KeyPath<Data.Element, ID>,
+    @ViewBuilder content: @escaping @MainActor @Sendable (Data.Element) -> Content
+) -> ForEach<Data, ID, MainActorRow<Data.Element, Content>> where Data.Element: Sendable {
+    ForEach(data, id: id) { element in
+        MainActorRow(element: element, content: content)
+    }
+}
+
+private struct MainActorRow<Element: Sendable, Content: View>: View {
+    let element: Element
+    let content: @MainActor @Sendable (Element) -> Content
+
+    nonisolated init(element: Element, content: @escaping @MainActor @Sendable (Element) -> Content) {
+        self.element = element
+        self.content = content
+    }
+
+    var body: some View {
+        content(element)
     }
 }
 

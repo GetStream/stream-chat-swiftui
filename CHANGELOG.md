@@ -4,13 +4,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 # Upcoming
 
 ### ✅ Added
+- Add `ChatMessage.attributedTextContent(options:)` and `ChatMessage.AttributedTextOptions` for fine control of text rendering [#1601](https://github.com/GetStream/stream-chat-swiftui/pull/1601)
 - Add support for foldable iPhones [#1600](https://github.com/GetStream/stream-chat-swiftui/pull/1600)
 
 ### 🐞 Fixed
-- Fix GIFs not animating on devices with multiple displays [#1600](https://github.com/GetStream/stream-chat-swiftui/pull/1600)
-- Fix composer placeholder not aligned with the cursor in regular width [#1600](https://github.com/GetStream/stream-chat-swiftui/pull/1600)
-
-### 🔄 Changed
+- Fix a potential crash when rendering the message list [#1598](https://github.com/GetStream/stream-chat-swiftui/pull/1598)
+- Fix a crash when opening `ChatChannelView` on iOS 18 or eariler when building with Xcode 27 [#1599](https://github.com/GetStream/stream-chat-swiftui/pull/1599)
 
 # [5.11.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/5.11.0)
 _September 10, 2026_
