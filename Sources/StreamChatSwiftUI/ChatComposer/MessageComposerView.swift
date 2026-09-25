@@ -12,6 +12,8 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
     @Injected(\.utils) private var utils
     @Injected(\.tokens) private var tokens
 
+    @Environment(\.verticalSizeClass) private var verticalSizeClass
+
     // Initial popup size, before the keyboard is shown.
     @State private var popupSize: CGFloat = 350
     @State private var composerHeight: CGFloat = 0
@@ -25,6 +27,12 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
 
     /// Height when recording is locked (shows full LockedView with controls).
     private let recordingViewHeight: CGFloat = 112
+
+    // Short landscape screens (e.g. a folded iPhone Duo) can't fit the regular picker below the
+    // navigation bar together with the composer.
+    private var attachmentPickerHeight: CGFloat {
+        verticalSizeClass == .compact ? min(popupSize, 200) : popupSize
+    }
 
     public init(
         viewFactory: Factory,
@@ -198,8 +206,8 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
                     cameraImageAdded: viewModel.cameraImageAdded(_:),
                     askForAssetsAccessPermissions: viewModel.askForPhotosPermission,
                     isDisplayed: viewModel.overlayShown,
-                    height: viewModel.overlayShown ? popupSize : 0,
-                    popupHeight: popupSize,
+                    height: viewModel.overlayShown ? attachmentPickerHeight : 0,
+                    popupHeight: attachmentPickerHeight,
                     selectedAssetIds: viewModel.composerAssets.compactMap {
                         if case .addedAsset(let asset) = $0 { return asset.id }
                         return nil
@@ -221,7 +229,7 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
                     }
                 )
             )
-            .offset(y: viewModel.overlayShown ? 0 : popupSize)
+            .offset(y: viewModel.overlayShown ? 0 : attachmentPickerHeight)
             .opacity(viewModel.overlayShown ? 1 : 0)
             .animation(.easeInOut(duration: 0.25))
         }
