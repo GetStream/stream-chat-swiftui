@@ -111,6 +111,37 @@ public extension ChatMessage {
 
 @available(iOS 15, *)
 extension ChatMessage {
+    /// Options controlling how the message text is converted into an `AttributedString`.
+    @MainActor public final class AttributedTextOptions {
+        /// The layout direction used when formatting the text.
+        public let layoutDirection: LayoutDirection
+        /// The language whose translation is used instead of the original text, if available.
+        public let translationLanguage: TranslationLanguage?
+        /// Whether URLs in the text are detected and turned into links.
+        public let linkDetectionEnabled: Bool
+        /// Whether markdown in the text is rendered.
+        public let markdownEnabled: Bool
+        /// Whether user and channel mentions are turned into links.
+        public let mentionsEnabled: Bool
+
+        /// Creates attributed text options.
+        ///
+        /// Unspecified flags default to the values in `MessageListConfig`.
+        public init(
+            layoutDirection: LayoutDirection,
+            translationLanguage: TranslationLanguage? = nil,
+            linkDetectionEnabled: Bool = InjectedValues[\.utils].messageListConfig.localLinkDetectionEnabled,
+            markdownEnabled: Bool = InjectedValues[\.utils].messageListConfig.markdownSupportEnabled,
+            mentionsEnabled: Bool = InjectedValues[\.utils].messageListConfig.localLinkDetectionEnabled
+        ) {
+            self.layoutDirection = layoutDirection
+            self.translationLanguage = translationLanguage
+            self.linkDetectionEnabled = linkDetectionEnabled
+            self.markdownEnabled = markdownEnabled
+            self.mentionsEnabled = mentionsEnabled
+        }
+    }
+
     /// Returns the message text as a styled `AttributedString` with markdown, mentions, and links applied.
     ///
     /// Behavior is controlled by `MessageListConfig.markdownSupportEnabled`, `MessageListConfig.localLinkDetectionEnabled`,
@@ -119,12 +150,26 @@ extension ChatMessage {
         layoutDirection: LayoutDirection,
         translationLanguage: TranslationLanguage?
     ) -> AttributedString {
+        attributedTextContent(
+            options: .init(
+                layoutDirection: layoutDirection,
+                translationLanguage: translationLanguage
+            )
+        )
+    }
+
+    /// Returns the message text as a styled `AttributedString` using the given options.
+    ///
+    /// Link display is controlled by `MessageDisplayOptions.messageLinkDisplayResolver`.
+    @MainActor public func attributedTextContent(
+        options: AttributedTextOptions
+    ) -> AttributedString {
         @Injected(\.utils) var utils
         @Injected(\.colors) var colors
         @Injected(\.fonts) var fonts
 
         let text: String
-        if let translationLanguage, let translatedText = textContent(for: translationLanguage) {
+        if let translationLanguage = options.translationLanguage, let translatedText = textContent(for: translationLanguage) {
             text = translatedText
         } else {
             text = textContent ?? ""
@@ -139,18 +184,18 @@ extension ChatMessage {
             .foregroundColor(foregroundColor)
             .font(fonts.body)
         var attributedString: AttributedString
-        if utils.messageListConfig.markdownSupportEnabled {
+        if options.markdownEnabled {
             attributedString = utils.markdownFormatter.format(
                 text,
                 attributes: attributes,
-                layoutDirection: layoutDirection
+                layoutDirection: options.layoutDirection
             )
         } else {
             attributedString = AttributedString(text, attributes: attributes)
         }
 
-        // Links and mentions
-        if utils.messageListConfig.localLinkDetectionEnabled {
+        // Mentions
+        if options.mentionsEnabled {
             for user in mentionedUsers {
                 addMentionLink(for: user.name ?? user.id, mentionId: user.id, in: &attributedString)
             }
@@ -166,6 +211,9 @@ extension ChatMessage {
             if mentionedChannel {
                 addMentionLink(for: "channel", mentionId: "channel", in: &attributedString)
             }
+        }
+        // Links
+        if options.linkDetectionEnabled {
             attributedString.addLinks(detectedBy: utils.linkDetector)
         }
 
