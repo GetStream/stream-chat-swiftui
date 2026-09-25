@@ -449,6 +449,25 @@ import XCTest
         AssertSnapshot(view)
     }
 
+    func test_chatChannelInfoView_splitViewSelectionChange_popsInfo() {
+        // Given
+        let selection = SplitViewSelectionDriver()
+        showView(SplitViewSelectionHost(driver: selection) {
+            ChatChannelInfoView(channel: .mockDMChannel(), shownFromMessageList: true)
+        }, size: defaultScreenSize)
+        RunLoop.main.run(until: Date(timeIntervalSinceNow: 0.2))
+        selection.isPushed = true
+        RunLoop.main.run(until: Date(timeIntervalSinceNow: 1))
+        XCTAssertTrue(selection.isPushed)
+
+        // When
+        selection.value = "other-channel"
+        RunLoop.main.run(until: Date(timeIntervalSinceNow: 1))
+
+        // Then
+        XCTAssertFalse(selection.isPushed)
+    }
+
     func test_chatChannelInfoView_smallGroupWithLeaveButtonSnapshot() {
         // Given - a small group (≤5 members) with leaveChannel capability shows the leave button
         let members = ChannelInfoMockUtils.setupMockMembers(
@@ -712,5 +731,24 @@ class ChannelInfoActionsViewFactory: ViewFactory {
             .frame(maxWidth: .infinity)
             .padding()
             .background(Color.red)
+    }
+}
+
+final class SplitViewSelectionDriver: ObservableObject {
+    @Published var value: String?
+    @Published var isPushed = false
+}
+
+/// Pushes the content on a navigation stack, like the split view pushes channel info.
+struct SplitViewSelectionHost<Content: SwiftUI.View>: SwiftUI.View {
+    @ObservedObject var driver: SplitViewSelectionDriver
+    @ViewBuilder let content: () -> Content
+
+    var body: some SwiftUI.View {
+        NavigationView {
+            NavigationLink(isActive: $driver.isPushed, destination: content) { EmptyView() }
+        }
+        .navigationViewStyle(.stack)
+        .environment(\.splitViewSelectedChannelId, driver.value)
     }
 }

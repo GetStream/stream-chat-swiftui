@@ -64,6 +64,7 @@ struct CreateGroupView: View, KeyboardReadable {
             }
         })
         .navigationTitle("Add group members")
+        .modifier(SidebarBackButtonModifier())
         .alert(isPresented: $viewModel.errorShown) {
             Alert.defaultErrorAlert
         }

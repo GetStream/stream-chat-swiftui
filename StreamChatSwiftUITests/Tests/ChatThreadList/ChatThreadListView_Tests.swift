@@ -51,6 +51,31 @@ import XCTest
         AssertSnapshot(view, variants: [.defaultLight, .defaultDark], size: defaultScreenSize)
     }
 
+    func test_chatThreadListView_splitView_preselectsThread() {
+        // Given
+        let viewModel = MockChatThreadListViewModel.withThreads()
+        let sizeClass = ChannelListSizeClassDriver(.regular)
+
+        // When
+        let host = showView(ChannelListSizeClassHost(driver: sizeClass) {
+            ChatThreadListView(viewFactory: DefaultViewFactory.shared, viewModel: viewModel)
+        }, size: CGSize(width: 1000, height: 700))
+        RunLoop.main.run(until: Date(timeIntervalSinceNow: 0.3))
+
+        // Then
+        XCTAssertNotNil(viewModel.selectedThread)
+
+        // When
+        sizeClass.value = .compact
+        host.view.layoutIfNeeded()
+        RunLoop.main.run(until: Date(timeIntervalSinceNow: 0.3))
+        viewModel.selectedThread = nil
+        viewModel.preselectThreadIfNeeded()
+
+        // Then
+        XCTAssertNil(viewModel.selectedThread)
+    }
+
     private func makeView(_ viewModel: MockChatThreadListViewModel) -> some View {
         ChatThreadListView(
             viewFactory: DefaultViewFactory.shared,

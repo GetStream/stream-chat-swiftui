@@ -536,7 +536,130 @@ import XCTest
     }
     
     // MARK: - Optimized Channel List Updates
-    
+
+    func test_preselectChannel_whenAdaptiveSplitViewActive() {
+        let channel = ChatChannel.mockDMChannel()
+        let channelListController = makeChannelListController(channels: [channel])
+        let viewModel = ChatChannelListViewModel(
+            channelListController: channelListController,
+            selectedChannelId: nil
+        )
+
+        viewModel.setSplitViewActive(false)
+        viewModel.preselectChannelIfNeeded()
+        XCTAssertNil(viewModel.selectedChannel)
+
+        viewModel.setSplitViewActive(true)
+        viewModel.preselectChannelIfNeeded()
+        XCTAssertEqual(viewModel.selectedChannel?.channel.cid, channel.cid)
+
+        viewModel.selectedChannel = nil
+        viewModel.preselectChannelIfNeeded()
+        XCTAssertNil(viewModel.selectedChannel)
+    }
+
+    func test_channelListUpdates_whenAdaptiveSplitViewActive_thenUpdatesAreNotSkipped() {
+        let config = MessageListConfig(updateChannelsFromMessageList: false)
+        streamChat = StreamChat(chatClient: chatClient, utils: Utils(messageListConfig: config))
+        let existingChannel = ChatChannel.mockDMChannel()
+        let channelListController = makeChannelListController(channels: [existingChannel])
+        let viewModel = ChatChannelListViewModel(
+            channelListController: channelListController,
+            selectedChannelId: nil
+        )
+        viewModel.setSplitViewActive(true)
+        viewModel.selectedChannel = existingChannel.channelSelectionInfo
+
+        let insertedChannel = ChatChannel.mockDMChannel()
+        channelListController.simulate(
+            channels: [insertedChannel, existingChannel],
+            changes: [.insert(insertedChannel, index: IndexPath(item: 0, section: 0))]
+        )
+
+        XCTAssertEqual(viewModel.channels.count, 2)
+    }
+
+    func test_channelListUpdates_whenSplitViewBecomesActive_thenSkippedUpdatesAreApplied() {
+        let config = MessageListConfig(updateChannelsFromMessageList: false)
+        streamChat = StreamChat(chatClient: chatClient, utils: Utils(messageListConfig: config))
+        let existingChannel = ChatChannel.mockDMChannel()
+        let channelListController = makeChannelListController(channels: [existingChannel])
+        let viewModel = ChatChannelListViewModel(
+            channelListController: channelListController,
+            selectedChannelId: nil
+        )
+        viewModel.setSplitViewActive(false)
+        viewModel.selectedChannel = existingChannel.channelSelectionInfo
+
+        let insertedChannel = ChatChannel.mockDMChannel()
+        channelListController.simulate(
+            channels: [insertedChannel, existingChannel],
+            changes: [.insert(insertedChannel, index: IndexPath(item: 0, section: 0))]
+        )
+        XCTAssertEqual(viewModel.channels.count, 1)
+
+        viewModel.setSplitViewActive(true)
+
+        XCTAssertEqual(viewModel.channels.count, 2)
+    }
+
+    func test_channelDismissed_whenSplitViewActive_thenSelectsAnotherChannel() {
+        let deletedChannel = ChatChannel.mockDMChannel()
+        let otherChannel = ChatChannel.mockDMChannel()
+        let controller = makeChannelListController(channels: [deletedChannel, otherChannel])
+        let viewModel = ChatChannelListViewModel(channelListController: controller)
+        viewModel.setSplitViewActive(true)
+        viewModel.selectedChannel = deletedChannel.channelSelectionInfo
+
+        notifyChannelDismiss()
+
+        XCTAssertEqual(viewModel.selectedChannel?.channel.cid, otherChannel.cid)
+    }
+
+    func test_channelDismissed_whenStackedNavigation_thenClearsSelection() {
+        let channel = ChatChannel.mockDMChannel()
+        let controller = makeChannelListController(channels: [channel, .mockDMChannel()])
+        let viewModel = ChatChannelListViewModel(channelListController: controller)
+        viewModel.setSplitViewActive(false)
+        viewModel.selectedChannel = channel.channelSelectionInfo
+
+        notifyChannelDismiss()
+
+        XCTAssertNil(viewModel.selectedChannel)
+    }
+
+    func test_preselectChannel_whenReexpandingFromChannelList() {
+        let firstChannel = ChatChannel.mockDMChannel()
+        let secondChannel = ChatChannel.mockDMChannel()
+        let controller = makeChannelListController(channels: [firstChannel, secondChannel])
+        let viewModel = ChatChannelListViewModel(channelListController: controller)
+
+        viewModel.setSplitViewActive(true)
+        viewModel.selectedChannel = secondChannel.channelSelectionInfo
+        viewModel.setSplitViewActive(false)
+        viewModel.selectedChannel = nil
+        viewModel.preselectChannelIfNeeded()
+        XCTAssertNil(viewModel.selectedChannel)
+
+        viewModel.setSplitViewActive(true)
+        viewModel.preselectChannelIfNeeded()
+        XCTAssertEqual(viewModel.selectedChannel?.channel.cid, firstChannel.cid)
+    }
+
+    func test_preselectChannel_whenExpandingWithExistingSelection() {
+        let firstChannel = ChatChannel.mockDMChannel()
+        let secondChannel = ChatChannel.mockDMChannel()
+        let controller = makeChannelListController(channels: [firstChannel, secondChannel])
+        let viewModel = ChatChannelListViewModel(channelListController: controller)
+
+        viewModel.setSplitViewActive(false)
+        viewModel.selectedChannel = secondChannel.channelSelectionInfo
+        viewModel.setSplitViewActive(true)
+        viewModel.preselectChannelIfNeeded()
+
+        XCTAssertEqual(viewModel.selectedChannel?.channel.cid, secondChannel.cid)
+    }
+
     func test_channelListOptimizedUpdates_whenStackedViewAndSelection_thenUpdatesSkipped() {
         // Given
         let config = MessageListConfig(updateChannelsFromMessageList: false, iPadSplitViewEnabled: false)
