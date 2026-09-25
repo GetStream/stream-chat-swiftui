@@ -31,7 +31,7 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
     // Short landscape screens (e.g. a folded iPhone Duo) can't fit the regular picker below the
     // navigation bar together with the composer.
     private var attachmentPickerHeight: CGFloat {
-        verticalSizeClass == .compact ? min(popupSize, 200) : popupSize
+        verticalSizeClass == .compact ? min(popupSize, 220) : popupSize
     }
 
     public init(
