@@ -70,12 +70,10 @@ public struct ChatThreadListView<Factory: ViewFactory>: View {
             )
             .modifier(viewFactory.makeThreadListHeaderViewModifier(options: ThreadListHeaderViewModifierOptions(title: title)))
             .modifier(viewFactory.makeThreadListContainerViewModifier(options: ThreadListContainerModifierOptions(viewModel: viewModel)))
+            // A size class change rebuilds the navigation container, so this also runs then.
             .onAppear {
                 viewModel.setSplitViewActive(embedInNavigationView && horizontalSizeClass == .regular)
                 viewModel.viewDidAppear()
-            }
-            .onChange(of: horizontalSizeClass) { sizeClass in
-                viewModel.setSplitViewActive(embedInNavigationView && sizeClass == .regular)
             }
         }
     }

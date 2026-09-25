@@ -22,7 +22,7 @@ public struct ChatChannelView<Factory: ViewFactory>: View, KeyboardReadable {
     @State private var floatingComposerHeight: CGFloat
     
     private var factory: Factory
-    private let isInSplitView: Bool
+    let isInSplitView: Bool
 
     public init(
         viewFactory: Factory = DefaultViewFactory.shared,

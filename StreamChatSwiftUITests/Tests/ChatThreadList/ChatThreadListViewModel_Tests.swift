@@ -156,6 +156,24 @@ import XCTest
         XCTAssertEqual(viewModel.isLoadingMoreThreads, false)
     }
 
+    func test_preselectThread_whenThreadsLoadInSplitView() {
+        let mockThreadListController = ChatThreadListController_Mock.mock(
+            query: .init(watch: true),
+            client: .mock(isLocalStorageEnabled: false)
+        )
+        let viewModel = ChatThreadListViewModel(
+            threadListController: mockThreadListController
+        )
+        viewModel.setSplitViewActive(true)
+        XCTAssertNil(viewModel.selectedThread)
+
+        let thread = ChatThread.mock()
+        mockThreadListController.threads_mock = [thread]
+        viewModel.controller(mockThreadListController, didChangeThreads: [])
+
+        XCTAssertEqual(viewModel.selectedThread?.id, thread.id)
+    }
+
     func test_preselectThread_whenAdaptiveSplitViewActive() {
         let mockThreadListController = ChatThreadListController_Mock.mock(
             query: .init(watch: true),

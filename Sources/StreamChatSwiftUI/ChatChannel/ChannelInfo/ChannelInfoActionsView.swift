@@ -108,9 +108,7 @@ private struct ConfirmationAlertModifier: ViewModifier {
     func body(content: Content) -> some View {
         if #available(iOS 15, *) {
             content.alert(confirmation.title, isPresented: $isPresented) {
-                Button(confirmation.buttonTitle, role: .destructive) {
-                    onConfirm()
-                }
+                Button(confirmation.buttonTitle, role: .destructive, action: onConfirm)
                 Button(L10n.Alert.Actions.cancel, role: .cancel) {}
             } message: {
                 if let message = confirmation.message {

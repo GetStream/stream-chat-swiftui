@@ -579,6 +579,30 @@ import XCTest
         XCTAssertEqual(viewModel.channels.count, 2)
     }
 
+    func test_channelListUpdates_whenSplitViewBecomesActive_thenSkippedUpdatesAreApplied() {
+        let config = MessageListConfig(updateChannelsFromMessageList: false)
+        streamChat = StreamChat(chatClient: chatClient, utils: Utils(messageListConfig: config))
+        let existingChannel = ChatChannel.mockDMChannel()
+        let channelListController = makeChannelListController(channels: [existingChannel])
+        let viewModel = ChatChannelListViewModel(
+            channelListController: channelListController,
+            selectedChannelId: nil
+        )
+        viewModel.setSplitViewActive(false)
+        viewModel.selectedChannel = existingChannel.channelSelectionInfo
+
+        let insertedChannel = ChatChannel.mockDMChannel()
+        channelListController.simulate(
+            channels: [insertedChannel, existingChannel],
+            changes: [.insert(insertedChannel, index: IndexPath(item: 0, section: 0))]
+        )
+        XCTAssertEqual(viewModel.channels.count, 1)
+
+        viewModel.setSplitViewActive(true)
+
+        XCTAssertEqual(viewModel.channels.count, 2)
+    }
+
     func test_preselectChannel_whenReexpandingFromChannelList() {
         let firstChannel = ChatChannel.mockDMChannel()
         let secondChannel = ChatChannel.mockDMChannel()
