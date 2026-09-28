@@ -175,7 +175,8 @@ extension ViewFactory {
             return ChatChannelView(
                 viewFactory: self,
                 channelController: controller,
-                scrollToMessage: selectionInfo.message
+                scrollToMessage: selectionInfo.message,
+                isInSplitView: options.isInSplitView
             )
         }
     }

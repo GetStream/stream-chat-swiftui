@@ -328,7 +328,7 @@ extension UIImageView {
                 return false
             }
             
-            let screenRect = UIScreen.main.bounds
+            let screenRect = window?.bounds ?? .zero
             let viewRect = imageView.convert(bounds, to:nil)
             let intersectionRect = viewRect.intersection(screenRect)
             

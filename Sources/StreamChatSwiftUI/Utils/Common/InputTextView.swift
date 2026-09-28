@@ -28,6 +28,8 @@ class InputTextView: UITextView, AccessibilityView {
     @Injected(\.colors) private var colors
     @Injected(\.utils) private var utils
 
+    private static let horizontalTextInset: CGFloat = 8
+
     private var didRequestInitialVoiceOverFocus = false
     private var lastReportedFittingHeight: CGFloat = 0
 
@@ -120,7 +122,7 @@ class InputTextView: UITextView, AccessibilityView {
 
     open func setUpAppearance() {
         backgroundColor = .clear
-        textContainer.lineFragmentPadding = 8
+        textContainer.lineFragmentPadding = Self.horizontalTextInset
         font = InjectedValues[\.utils].composerConfig.inputFont
         textColor = InjectedValues[\.colors].textPrimary
 
@@ -156,9 +158,10 @@ class InputTextView: UITextView, AccessibilityView {
         placeholderLabel.adjustsFontForContentSizeCategory = true
         placeholderLabel.setContentCompressionResistancePriority(.streamLow, for: .horizontal)
         NSLayoutConstraint.activate([
-            placeholderLabel.leadingAnchor.pin(equalTo: leadingAnchor, constant: directionalLayoutMargins.leading),
-            placeholderLabel.trailingAnchor.pin(equalTo: trailingAnchor, constant: -directionalLayoutMargins.trailing),
-            placeholderLabel.widthAnchor.pin(equalTo: layoutMarginsGuide.widthAnchor),
+            // Match the caret inset: the layout margins vary with the environment (e.g. regular width).
+            placeholderLabel.leadingAnchor.pin(equalTo: leadingAnchor, constant: Self.horizontalTextInset),
+            placeholderLabel.trailingAnchor.pin(equalTo: trailingAnchor, constant: -Self.horizontalTextInset),
+            placeholderLabel.widthAnchor.pin(equalTo: widthAnchor, constant: -2 * Self.horizontalTextInset),
             placeholderLabel.topAnchor.pin(equalTo: topAnchor),
             placeholderLabel.bottomAnchor.pin(lessThanOrEqualTo: bottomAnchor),
             placeholderLabel.centerYAnchor.pin(equalTo: centerYAnchor)

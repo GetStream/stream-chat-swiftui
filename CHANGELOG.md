@@ -5,6 +5,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### ✅ Added
 - Add `ChatMessage.attributedTextContent(options:)` and `ChatMessage.AttributedTextOptions` for fine control of text rendering [#1601](https://github.com/GetStream/stream-chat-swiftui/pull/1601)
+- Add support for foldable iPhones [#1600](https://github.com/GetStream/stream-chat-swiftui/pull/1600)
 
 ### 🐞 Fixed
 - Fix a potential crash when rendering the message list [#1598](https://github.com/GetStream/stream-chat-swiftui/pull/1598)

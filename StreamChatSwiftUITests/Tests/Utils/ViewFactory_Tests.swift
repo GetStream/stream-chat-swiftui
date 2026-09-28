@@ -16,6 +16,20 @@ import XCTest
         author: .mock(id: .unique)
     )
 
+    func test_viewFactory_makeChannelDestination_passesSplitViewState() {
+        // Given
+        let viewFactory = DefaultViewFactory.shared
+        let selection = ChannelSelectionInfo(channel: .mockDMChannel(), message: nil)
+
+        // When
+        let splitView = viewFactory.makeChannelDestination(options: ChannelDestinationOptions(isInSplitView: true))(selection)
+        let stackView = viewFactory.makeChannelDestination(options: ChannelDestinationOptions())(selection)
+
+        // Then
+        XCTAssertTrue(splitView.isInSplitView)
+        XCTAssertFalse(stackView.isInSplitView)
+    }
+
     func test_viewFactory_makeEmptyChannelsView() {
         // Given
         let viewFactory = DefaultViewFactory.shared

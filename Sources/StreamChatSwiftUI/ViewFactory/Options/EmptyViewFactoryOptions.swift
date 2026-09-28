@@ -44,7 +44,12 @@ public final class ChannelListModifierOptions: Sendable {
 
 /// Options for creating the channel destination.
 public final class ChannelDestinationOptions: Sendable {
-    public init() {}
+    /// Whether the channel is shown in the detail column of a split view.
+    public let isInSplitView: Bool
+
+    public init(isInSplitView: Bool = false) {
+        self.isInSplitView = isInSplitView
+    }
 }
 
 /// Options for creating the message thread destination.

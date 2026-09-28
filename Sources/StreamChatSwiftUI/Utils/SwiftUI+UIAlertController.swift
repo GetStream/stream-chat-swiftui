@@ -19,8 +19,8 @@ extension View {
         accept: String,
         action: @escaping () -> Void
     ) -> some View {
-        ZStack {
-            UIAlertControllerView(
+        modifier(
+            TextFieldAlertModifier(
                 isPresented: isPresented,
                 title: title,
                 message: message,
@@ -31,8 +31,62 @@ extension View {
                 accept: accept,
                 action: action
             )
-            .frame(height: 0)
-            self
+        )
+    }
+}
+
+// `UIAlertController` misplaces its text field on some devices (e.g. iPhone Duo), so the
+// SwiftUI alert is used where it supports text fields.
+private struct TextFieldAlertModifier: ViewModifier {
+    @Binding var isPresented: Bool
+    let title: String
+    let message: String
+    @Binding var text: String
+    let placeholder: String
+    let validation: (String) -> Bool
+    let cancel: String
+    let accept: String
+    let action: () -> Void
+
+    @State private var draft = ""
+
+    func body(content: Content) -> some View {
+        if #available(iOS 16, *) {
+            content
+                .alert(title, isPresented: $isPresented) {
+                    TextField(placeholder, text: $draft)
+                    Button(cancel, role: .cancel) {}
+                    Button(accept) {
+                        text = draft.trimmed
+                        action()
+                    }
+                    .disabled(!validation(draft))
+                } message: {
+                    if !message.isEmpty {
+                        Text(message)
+                    }
+                }
+                .onChange(of: isPresented) { presented in
+                    if presented {
+                        draft = text
+                    }
+                }
+        } else {
+            ZStack {
+                UIAlertControllerView(
+                    isPresented: $isPresented,
+                    title: title,
+                    message: message,
+                    text: $text,
+                    placeholder: placeholder,
+                    validation: validation,
+                    cancel: cancel,
+                    accept: accept,
+                    action: action
+                )
+                .frame(height: 0)
+                content
+            }
         }
     }
 }

@@ -17,11 +17,20 @@ import StreamChat
     /// The controller that manages thread list events.
     private var eventsController: EventsController!
 
+    private var isSplitViewActive = isIPad
+    private var shouldPreselectThread = isIPad
+
     /// A boolean value indicating if the initial threads have been loaded.
     public private(set) var hasLoadedThreads = false
 
     /// The current selected thread.
-    @Published public var selectedThread: ThreadSelectionInfo?
+    @Published public var selectedThread: ThreadSelectionInfo? {
+        didSet {
+            if selectedThread != nil {
+                shouldPreselectThread = false
+            }
+        }
+    }
 
     /// The list of threads.
     @Published public var threads = [ChatThread]()
@@ -155,13 +164,20 @@ import StreamChat
         }
     }
 
-    /// Preselects the the thread if needed, for example, when inside an iPad Split View.
+    /// Preselects the thread when the list and detail are simultaneously visible.
     open func preselectThreadIfNeeded() {
-        guard isIPad else { return }
-        guard let firstThread = threads.first else { return }
-        guard selectedThread == nil else { return }
-
+        guard shouldPreselectThread, isSplitViewActive, let firstThread = threads.first else { return }
         selectedThread = .init(thread: firstThread)
+    }
+
+    func setSplitViewActive(_ isActive: Bool) {
+        if !isActive {
+            shouldPreselectThread = false
+        } else if !isSplitViewActive {
+            shouldPreselectThread = selectedThread == nil
+        }
+        isSplitViewActive = isActive
+        preselectThreadIfNeeded()
     }
 
     public func controller(
@@ -169,6 +185,7 @@ import StreamChat
         didChangeThreads changes: [ListChange<ChatThread>]
     ) {
         threads = controller.threads
+        preselectThreadIfNeeded()
     }
 
     public func eventsController(_ controller: EventsController, didReceiveEvent event: any Event) {

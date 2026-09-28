@@ -22,6 +22,7 @@ public struct ChatChannelView<Factory: ViewFactory>: View, KeyboardReadable {
     @State private var floatingComposerHeight: CGFloat
     
     private var factory: Factory
+    let isInSplitView: Bool
 
     public init(
         viewFactory: Factory = DefaultViewFactory.shared,
@@ -29,7 +30,8 @@ public struct ChatChannelView<Factory: ViewFactory>: View, KeyboardReadable {
         channelController: ChatChannelController,
         messageController: ChatMessageController? = nil,
         scrollToMessage: ChatMessage? = nil,
-        composerPlacement: ComposerPlacement = .floating
+        composerPlacement: ComposerPlacement = .floating,
+        isInSplitView: Bool = false
     ) {
         _floatingComposerHeight = State(initialValue: Self.defaultFloatingComposerHeight())
         _viewModel = StateObject(
@@ -40,6 +42,7 @@ public struct ChatChannelView<Factory: ViewFactory>: View, KeyboardReadable {
             )
         )
         factory = viewFactory
+        self.isInSplitView = isInSplitView
     }
 
     public var body: some View {
@@ -237,7 +240,7 @@ public struct ChatChannelView<Factory: ViewFactory>: View, KeyboardReadable {
                 .allowsHitTesting(false)
         )
         .padding(.bottom, contentBottomPadding)
-        .ignoresSafeArea(.container, edges: tabBarAvailable ? .bottom : [])
+        .ignoresSafeArea(.container, edges: ignoresBottomSafeArea ? .bottom : [])
         .alertBanner(isPresented: $viewModel.showAlertBanner)
         .accessibilityElement(children: .contain)
         .accessibilityIdentifier("ChatChannelView")
@@ -298,14 +301,19 @@ public struct ChatChannelView<Factory: ViewFactory>: View, KeyboardReadable {
     }
 
     private var bottomPadding: CGFloat {
-        topVC()?.view.safeAreaInsets.bottom ?? 0
+        guard !isInSplitView else { return 0 }
+        return topVC()?.view.safeAreaInsets.bottom ?? 0
+    }
+
+    private var ignoresBottomSafeArea: Bool {
+        tabBarAvailable && !isInSplitView
     }
 
     /// Whether bottom safe-area compensation is needed.
     /// When the tab bar is visible the bottom safe area is ignored,
     /// so we must add padding manually — unless the keyboard already provides it.
     private var needsBottomSafeAreaPadding: Bool {
-        !keyboardShown && tabBarAvailable
+        !keyboardShown && ignoresBottomSafeArea
     }
 
     /// Whether the floating composer should own the bottom safe-area padding

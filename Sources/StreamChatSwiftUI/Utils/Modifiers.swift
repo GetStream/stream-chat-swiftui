@@ -66,10 +66,21 @@ struct ChangeChannelBarsVisibilityModifier: ViewModifier {
             content
                 .navigationBarHidden(!shouldShow)
                 .toolbar(shouldShow ? .visible : .hidden, for: .tabBar)
+                .toolbar(navigationBarVisibility, for: .navigationBar)
+        } else if #available(iOS 16, *) {
+            content
+                .navigationBarHidden(!shouldShow)
+                .toolbar(navigationBarVisibility, for: .navigationBar)
         } else {
             content
                 .navigationBarHidden(!shouldShow)
         }
+    }
+
+    // `navigationBarHidden` alone is not honored by `NavigationStack` / `NavigationSplitView`.
+    @available(iOS 16, *)
+    private var navigationBarVisibility: Visibility {
+        shouldShow ? .automatic : .hidden
     }
 }
 

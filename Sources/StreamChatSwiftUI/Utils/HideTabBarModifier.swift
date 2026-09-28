@@ -5,10 +5,12 @@
 import SwiftUI
 
 struct HideTabBarModifier: ViewModifier {
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+
     let handleTabBarVisibility: Bool
 
     var shouldHandleTabBarVisibility: Bool {
-        isIphone && handleTabBarVisibility
+        horizontalSizeClass != .regular && handleTabBarVisibility
     }
 
     func body(content: Content) -> some View {

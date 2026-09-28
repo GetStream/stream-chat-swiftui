@@ -61,6 +61,7 @@ struct GroupNameView: View, KeyboardReadable {
             .listStyle(.plain)
         }
         .navigationTitle("Name of Group Chat")
+        .modifier(SidebarBackButtonModifier())
         .alert(isPresented: $viewModel.errorShown) {
             Alert.defaultErrorAlert
         }
@@ -106,6 +107,7 @@ struct GroupControlsView: View {
                             viewFactory: DemoAppFactory.shared,
                             channelController: controller
                         )
+                        .modifier(SidebarBackButtonModifier())
                         .onDisappear {
                             isNewChatShown = false
                         }

@@ -77,9 +77,9 @@ import XCTest
 
     /// Presents a SwiftUI view in a window so lifecycle modifiers (`.onAppear`, `.onChange`) fire.
     @discardableResult
-    func showView<V: View>(_ view: V) -> UIHostingController<V> {
+    func showView<V: View>(_ view: V, size: CGSize = CGSize(width: 200, height: 200)) -> UIHostingController<V> {
         let hostingController = UIHostingController(rootView: view)
-        let window = UIWindow(frame: CGRect(origin: .zero, size: CGSize(width: 200, height: 200)))
+        let window = UIWindow(frame: CGRect(origin: .zero, size: size))
         window.rootViewController = hostingController
         window.makeKeyAndVisible()
         testWindow = window

@@ -15,6 +15,23 @@ import XCTest
         XCTAssertEqual(L10n.Alert.Title.addComment, "Add a Comment")
     }
 
+    func test_textFieldAlert_dismissedWithoutSending_keepsText() {
+        // Given
+        let state = TextFieldAlertState()
+        showView(TextFieldAlertHost(state: state))
+        RunLoop.main.run(until: Date(timeIntervalSinceNow: 0.2))
+
+        // When
+        state.isPresented = true
+        RunLoop.main.run(until: Date(timeIntervalSinceNow: 0.5))
+        state.isPresented = false
+        RunLoop.main.run(until: Date(timeIntervalSinceNow: 0.3))
+
+        // Then
+        XCTAssertEqual(state.text, "Initial")
+        XCTAssertEqual(state.actionCount, 0)
+    }
+
     // MARK: - PollCommentsView
 
     func test_pollCommentsView_multipleComments() {
@@ -375,5 +392,27 @@ import XCTest
                 timeOffset: -86400
             )
         ]
+    }
+}
+
+final class TextFieldAlertState: ObservableObject {
+    @Published var isPresented = false
+    @Published var text = "Initial"
+    var actionCount = 0
+}
+
+struct TextFieldAlertHost: View {
+    @ObservedObject var state: TextFieldAlertState
+
+    var body: some View {
+        Color.clear.uiAlert(
+            title: "Title",
+            isPresented: $state.isPresented,
+            message: "Message",
+            text: $state.text,
+            placeholder: "Placeholder",
+            accept: "Send",
+            action: { state.actionCount += 1 }
+        )
     }
 }

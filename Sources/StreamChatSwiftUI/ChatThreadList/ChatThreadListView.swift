@@ -12,6 +12,7 @@ public struct ChatThreadListView<Factory: ViewFactory>: View {
     @Injected(\.utils) private var utils
 
     @StateObject private var viewModel: ChatThreadListViewModel
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
     private let viewFactory: Factory
     private let title: String
@@ -69,7 +70,9 @@ public struct ChatThreadListView<Factory: ViewFactory>: View {
             )
             .modifier(viewFactory.makeThreadListHeaderViewModifier(options: ThreadListHeaderViewModifierOptions(title: title)))
             .modifier(viewFactory.makeThreadListContainerViewModifier(options: ThreadListContainerModifierOptions(viewModel: viewModel)))
+            // A size class change rebuilds the navigation container, so this also runs then.
             .onAppear {
+                viewModel.setSplitViewActive(embedInNavigationView && horizontalSizeClass == .regular)
                 viewModel.viewDidAppear()
             }
         }

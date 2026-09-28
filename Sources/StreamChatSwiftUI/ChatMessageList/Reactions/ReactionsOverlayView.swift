@@ -31,6 +31,8 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
 
     @State private var screenHeight = UIScreen.main.bounds.size.height
     @State private var orientationChanged = false
+    @State private var snapshotOrigin = CGPoint.zero
+    @State private var presentationWindowSize: CGSize?
     @State private var moreReactionsShown = false
     @State private var measuredTotalContentHeight: CGFloat = 0
     @State private var measuredActionsContentWidth: CGFloat = 0
@@ -83,9 +85,8 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
             backgroundView
 
             GeometryReader { reader in
-                let height = reader.frame(in: .local).height
                 Color.clear
-                    .preference(key: HeightPreferenceKey.self, value: height)
+                    .preference(key: OverlayFramePreferenceKey.self, value: reader.frame(in: .global))
                     .contentShape(Rectangle())
                     .onTapGesture {
                         dismissReactionsOverlay { /* No additional handling. */ }
@@ -151,10 +152,12 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
                 }
             }
         }
-        .onPreferenceChange(HeightPreferenceKey.self) { value in
-            if let value, value != screenHeight {
-                screenHeight = value
+        .onPreferenceChange(OverlayFramePreferenceKey.self) { frame in
+            guard let frame else { return }
+            if frame.height != screenHeight {
+                screenHeight = frame.height
             }
+            updateSnapshotLayout(overlayFrame: frame)
         }
         .onPreferenceChange(OverlayContentHeightKey.self) { value in
             if value > 0 {
@@ -212,8 +215,10 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
                     // which fades its edges and lets the view's background bleed through as
                     // a lighter ring. An opaque blur clamps at the edges instead.
                     .blur(radius: popIn ? 4 : 0, opaque: true)
+                    .frame(width: currentSnapshot.size.width, height: currentSnapshot.size.height)
+                    .offset(x: -snapshotOrigin.x, y: -snapshotOrigin.y)
+                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
                     .edgesIgnoringSafeArea(.all)
-                    .offset(y: overlayOffsetY)
             }
             // The scrim is layered on top of the blur rather than blurred with the snapshot:
             // blurring a translucent color only thins it out along the edges.
@@ -423,21 +428,39 @@ public struct ReactionsOverlayView<Factory: ViewFactory>: View {
         return 48 + tokens.spacingXs
     }
 
-    private var overlayOffsetY: CGFloat {
-        if isIPad && UITabBar.appearance().isHidden == false {
-            return 20
-        }
-        return spacing > 0 ? screenHeight - currentSnapshot.size.height : 0
-    }
-
     private var spacing: CGFloat {
         let divider: CGFloat = isIPad ? 2 : 1
-        let spacing = (UIScreen.main.bounds.height - screenHeight) / divider
+        // `UIScreen.main` can be another display than the app's on multi-display devices.
+        let windowHeight = presentationWindowSize?.height ?? UIScreen.main.bounds.height
+        let spacing = (windowHeight - screenHeight) / divider
         return spacing > 0 ? spacing : 0
+    }
+
+    // The snapshot is taken from the root view, so it is pinned to the root's origin while the
+    // overlay's own frame moves (e.g. while the navigation bar hides). A rotation or posture change
+    // resizes the window and invalidates the captured message frame, so the overlay is dismissed.
+    private func updateSnapshotLayout(overlayFrame: CGRect) {
+        guard let rootView = topVC()?.view else { return }
+        snapshotOrigin = rootView.convert(overlayFrame.origin, from: nil)
+        guard let windowSize = rootView.window?.bounds.size else { return }
+        if presentationWindowSize == nil {
+            presentationWindowSize = windowSize
+        } else if windowSize != presentationWindowSize, !orientationChanged {
+            orientationChanged = true
+            dismissReactionsOverlay { /* No additional handling. */ }
+        }
     }
 }
 
 // MARK: - Preference Keys
+
+private struct OverlayFramePreferenceKey: PreferenceKey {
+    static let defaultValue: CGRect? = nil
+
+    static func reduce(value: inout CGRect?, nextValue: () -> CGRect?) {
+        value = value ?? nextValue()
+    }
+}
 
 private struct OverlayContentHeightKey: PreferenceKey {
     static let defaultValue: CGFloat = 0

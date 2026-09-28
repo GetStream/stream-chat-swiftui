@@ -185,6 +185,32 @@ import XCTest
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
 
+    func test_channelListView_splitView_preselectsAndCollapses() {
+        // Given
+        let controller = makeChannelListController()
+        let viewModel = ChatChannelListViewModel(channelListController: controller)
+        let sizeClass = ChannelListSizeClassDriver(.regular)
+
+        // When
+        let host = showView(ChannelListSizeClassHost(driver: sizeClass) {
+            ChatChannelListView(viewModel: viewModel, channelListController: controller)
+        })
+        RunLoop.main.run(until: Date(timeIntervalSinceNow: 0.3))
+
+        // Then
+        XCTAssertEqual(viewModel.selectedChannel?.channel.cid, controller.channels.first?.cid)
+
+        // When
+        sizeClass.value = .compact
+        host.view.layoutIfNeeded()
+        RunLoop.main.run(until: Date(timeIntervalSinceNow: 0.3))
+
+        // Then
+        viewModel.selectedChannel = nil
+        viewModel.preselectChannelIfNeeded()
+        XCTAssertNil(viewModel.selectedChannel)
+    }
+
     private func makeChannelListController() -> ChatChannelListController_Mock {
         let channelListController = ChatChannelListController_Mock.mock(client: chatClient)
         channelListController.simulateInitial(channels: mockChannels(), state: .initialized)
@@ -224,5 +250,22 @@ class ChannelAvatarViewRegularFactory: ViewFactory {
         Circle()
             .fill(.red)
             .frame(width: options.size, height: options.size)
+    }
+}
+
+final class ChannelListSizeClassDriver: ObservableObject {
+    @Published var value: UserInterfaceSizeClass?
+
+    init(_ value: UserInterfaceSizeClass?) {
+        self.value = value
+    }
+}
+
+struct ChannelListSizeClassHost<Content: View>: View {
+    @ObservedObject var driver: ChannelListSizeClassDriver
+    @ViewBuilder let content: () -> Content
+
+    var body: some View {
+        content().environment(\.horizontalSizeClass, driver.value)
     }
 }
