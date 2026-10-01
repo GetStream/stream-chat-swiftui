@@ -4,6 +4,7 @@
 
 import Combine
 import StreamChatSwiftUI
+import StreamLogsUI
 import SwiftUI
 
 struct AppConfigurationView: View {
@@ -71,6 +72,13 @@ struct AppConfigurationView: View {
                     Text("Attachment Downloads")
                 } footer: {
                     Text("Takes effect on the next app launch. Downloaded files are stored in a StreamAttachmentDownloads subfolder.")
+                }
+                if #available(iOS 16.0, *) {
+                    Section("Logging") {
+                        NavigationLink("Log Settings") {
+                            LogSettingsView()
+                        }
+                    }
                 }
             }
             .navigationBarTitleDisplayMode(.inline)
