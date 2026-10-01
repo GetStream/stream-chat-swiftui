@@ -4,6 +4,7 @@
 
 import StreamChat
 import StreamChatSwiftUI
+import StreamLogsUI
 import SwiftUI
 
 public struct CustomChannelHeader: ToolbarContent {
@@ -131,6 +132,11 @@ struct CustomChannelModifier: ChannelListHeaderViewModifier {
                 }
                 Button("Show Blocked Users") {
                     blockedUsersShown = true
+                }
+                if #available(iOS 16.0, *) {
+                    Button("Show Logs") {
+                        LogViewer.present()
+                    }
                 }
                 
                 Button("Logout", role: .destructive) {
