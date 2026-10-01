@@ -1533,7 +1533,7 @@
 			repositoryURL = "https://github.com/GetStream/stream-core-swift.git";
 			requirement = {
 				kind = revision;
-				revision = dd1caf0352faf4ddf74f84a9a205dd0552f8407b;
+				revision = 9f9a09dbc9874eb0a84e313603e27306da505ce0;
 			};
 		};
 		82543C7B2AD41B0400D5F6CD /* XCRemoteSwiftPackageReference "stream-chat-swift-test-helpers" */ = {
