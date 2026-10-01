@@ -1532,8 +1532,8 @@
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/GetStream/stream-core-swift.git";
 			requirement = {
-				branch = "add/logs-ui";
-				kind = branch;
+				kind = revision;
+				revision = a5c86e231ff77fa483f59aa02f1c9cecd86e47f5;
 			};
 		};
 		82543C7B2AD41B0400D5F6CD /* XCRemoteSwiftPackageReference "stream-chat-swift-test-helpers" */ = {
