@@ -3,8 +3,8 @@
 //
 
 import Combine
+import StreamChatLogsUI
 import StreamChatSwiftUI
-import StreamLogsUI
 import SwiftUI
 
 struct AppConfigurationView: View {

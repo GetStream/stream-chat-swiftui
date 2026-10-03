@@ -4,8 +4,8 @@
 
 import Combine
 import StreamChat
+import StreamChatLogsUI
 import StreamChatSwiftUI
-import StreamLogsUI
 import SwiftUI
 
 @main

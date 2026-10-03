@@ -3,8 +3,8 @@
 //
 
 import StreamChat
+import StreamChatLogsUI
 import StreamChatSwiftUI
-import StreamLogsUI
 import SwiftUI
 
 public struct CustomChannelHeader: ToolbarContent {
