@@ -24,6 +24,21 @@ class MediaLoader_Mock: MediaLoader, @unchecked Sendable {
     var loadVideoPreviewAtURLCalled = false
     var loadVideoPreviewOptions: [VideoLoadOptions] = []
     var loadVideoAssetOptions: [VideoLoadOptions] = []
+    var loadImageTaskHandler: ((URL?, ImageLoadingTask) -> Void)?
+
+    func loadImageTask(
+        url: URL?,
+        options: ImageLoadOptions,
+        completion: @escaping @MainActor (Result<MediaLoaderImage, Error>) -> Void
+    ) -> ImageLoadingTask {
+        let task = ImageLoadingTask()
+        guard let loadImageTaskHandler else {
+            loadImage(url: url, options: options, completion: completion)
+            return task
+        }
+        loadImageTaskHandler(url, task)
+        return task
+    }
 
     func loadImage(
         url: URL?,
