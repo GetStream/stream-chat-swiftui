@@ -56,6 +56,8 @@ final class SlowMode_Tests: StreamTestCase {
     }
 
     func test_newMessageCantBeSent_whenSlowModeIsActiveAndCooldownIsShown() {
+        linkToScenario(withId: 452)
+
         GIVEN("user opens a channel") {
             backendRobot.setCooldown(enabled: true, duration: cooldownDuration)
             userRobot
@@ -76,6 +78,8 @@ final class SlowMode_Tests: StreamTestCase {
     }
 
     func test_aMessageCantBeReplied_whenSlowModeIsActiveAndCooldownIsShown() {
+        linkToScenario(withId: 451)
+
         GIVEN("user opens a channel") {
             backendRobot.setCooldown(enabled: true, duration: cooldownDuration)
             userRobot
@@ -97,6 +101,8 @@ final class SlowMode_Tests: StreamTestCase {
     }
 
     func test_slowModeContinuesActiveAndCooldownIsShownInThreadMessage_whenSlowModeIsActiveAndCooldownIsShownInChannel() {
+        linkToScenario(withId: 449)
+
         GIVEN("user opens a channel") {
             backendRobot.setCooldown(enabled: true, duration: cooldownDuration)
             userRobot
@@ -119,6 +125,8 @@ final class SlowMode_Tests: StreamTestCase {
     }
 
     func test_slowModeIsNotActiveAndCooldownIsNotShown_whenAMessageIsEdited() {
+        linkToScenario(withId: 453)
+
         GIVEN("user opens a channel") {
             backendRobot
                 .generateChannels(channelsCount: 1, messagesCount: 1)
@@ -138,6 +146,8 @@ final class SlowMode_Tests: StreamTestCase {
     }
 
     func test_composerIsDisabledWhenSlowModeIsActive() throws {
+        linkToScenario(withId: 12049)
+
         try XCTSkipIf(true, "Attachment picker button stays enabled while the slow mode cooldown is active")
 
         GIVEN("slow mode is enabled on the channel") {

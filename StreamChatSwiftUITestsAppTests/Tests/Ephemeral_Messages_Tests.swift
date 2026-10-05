@@ -107,6 +107,8 @@ final class Ephemeral_Messages_Tests: StreamTestCase {
     }
 
     func test_userObservesAnimatedGiphy_whenUserAddsGiphyMessage() {
+        linkToScenario(withId: 7812)
+
         GIVEN("user opens a channel") {
             userRobot.login().openChannel()
         }
@@ -121,6 +123,8 @@ final class Ephemeral_Messages_Tests: StreamTestCase {
     }
 
     func test_userObservesAnimatedGiphy_afterAddingGiphyThroughComposerMenu() {
+        linkToScenario(withId: 441)
+
         GIVEN("user opens a channel") {
             userRobot.login().openChannel()
         }
@@ -135,6 +139,8 @@ final class Ephemeral_Messages_Tests: StreamTestCase {
     }
 
     func test_userObservesAnimatedGiphy_whenUserAddsGiphyMessageInThread() {
+        linkToScenario(withId: 11995)
+
         GIVEN("user opens a channel") {
             backendRobot.generateChannels(channelsCount: 1, messagesCount: 1)
             userRobot.login().openChannel()
@@ -150,6 +156,8 @@ final class Ephemeral_Messages_Tests: StreamTestCase {
     }
 
     func test_userObservesAnimatedGiphy_whenParticipantAddsGiphyMessageInThread() {
+        linkToScenario(withId: 11996)
+
         GIVEN("user opens a channel") {
             backendRobot.generateChannels(channelsCount: 1, messagesCount: 1)
             userRobot.login().openChannel()
@@ -165,6 +173,8 @@ final class Ephemeral_Messages_Tests: StreamTestCase {
     }
 
     func test_messageIsNotSent_whenUserCancelsEphemeralMessage() {
+        linkToScenario(withId: 11997)
+
         GIVEN("user opens a channel") {
             userRobot.login().openChannel()
         }
@@ -181,6 +191,8 @@ final class Ephemeral_Messages_Tests: StreamTestCase {
     }
 
     func test_userObservesAnimatedGiphy_whenUserAddsGiphyMessage_AfterShuffling() {
+        linkToScenario(withId: 11998)
+
         GIVEN("user opens a channel") {
             userRobot.login().openChannel()
         }

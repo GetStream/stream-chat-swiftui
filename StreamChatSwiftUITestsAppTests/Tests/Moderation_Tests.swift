@@ -12,6 +12,8 @@ final class Moderation_Tests: StreamTestCase {
     let groupChannelName = "1"
 
     func test_userFlagsMessage() {
+        linkToScenario(withId: 12015)
+
         GIVEN("user opens the channel") {
             userRobot.login().openChannel()
         }
@@ -35,6 +37,8 @@ final class Moderation_Tests: StreamTestCase {
     }
 
     func test_userMutesMessageAuthor() {
+        linkToScenario(withId: 12016)
+
         GIVEN("user opens the channel") {
             userRobot.login().openChannel()
         }
@@ -50,6 +54,8 @@ final class Moderation_Tests: StreamTestCase {
     }
 
     func test_userUnmutesMessageAuthor() {
+        linkToScenario(withId: 12017)
+
         GIVEN("user opens the channel") {
             userRobot.login().openChannel()
         }
@@ -68,6 +74,8 @@ final class Moderation_Tests: StreamTestCase {
     }
 
     func test_userBlocksMessageAuthor() {
+        linkToScenario(withId: 12018)
+
         GIVEN("user opens the channel") {
             userRobot.login().openChannel()
         }
@@ -83,6 +91,8 @@ final class Moderation_Tests: StreamTestCase {
     }
 
     func test_userUnblocksMessageAuthor() {
+        linkToScenario(withId: 12019)
+
         GIVEN("user opens the channel") {
             userRobot.login().openChannel()
         }
@@ -101,6 +111,8 @@ final class Moderation_Tests: StreamTestCase {
     }
 
     func test_userBlocksUserInDirectMessageChannel() {
+        linkToScenario(withId: 12020)
+
         GIVEN("a direct message channel with the participant exists") {
             backendRobot.generateChannels(channelsCount: 1, messagesCount: 2, withDirectMessageChannel: true)
         }
@@ -116,6 +128,8 @@ final class Moderation_Tests: StreamTestCase {
     }
 
     func test_directMessageChannelDisappears_whenUserBlocksParticipant() throws {
+        linkToScenario(withId: 12021)
+
         if #available(iOS 27, *) {
             throw XCTSkip("App crashes in SwiftUI NavigationLink dismiss when going back from a DM channel hidden by the block")
         }
@@ -155,6 +169,8 @@ final class Moderation_Tests: StreamTestCase {
     }
 
     func test_mutedAuthorStaysMuted_whenUserReopensChannel() {
+        linkToScenario(withId: 12022)
+
         GIVEN("user opens the channel") {
             userRobot.login().openChannel()
         }
@@ -177,6 +193,8 @@ final class Moderation_Tests: StreamTestCase {
     }
 
     func test_blockedAuthorStaysBlocked_whenUserReopensChannel() {
+        linkToScenario(withId: 12023)
+
         GIVEN("user opens the channel") {
             userRobot.login().openChannel()
         }

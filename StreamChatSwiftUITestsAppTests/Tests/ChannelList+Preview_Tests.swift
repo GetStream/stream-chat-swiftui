@@ -6,6 +6,8 @@ import XCTest
 
 extension ChannelList_Tests {
     func test_channelPreviewIsUpdated_whenThreadReplyIsSentAlsoInTheChannel() {
+        linkToScenario(withId: 11986)
+
         let channelMessage = "Channel message"
         let threadReply = "Thread reply"
 
@@ -32,6 +34,8 @@ extension ChannelList_Tests {
     }
 
     func test_channelPreviewShowsMessageDeleted_whenTheOnlyMessageInChannelIsDeleted() {
+        linkToScenario(withId: 11987)
+
         GIVEN("user opens the channel") {
             userRobot
                 .login()
@@ -56,6 +60,8 @@ extension ChannelList_Tests {
     }
 
     func test_channelPreviewIsUpdated_whenParticipantEditsPreviewMessage() {
+        linkToScenario(withId: 11988)
+
         let editedMessage = "edited message"
 
         GIVEN("user opens the channel") {
@@ -84,6 +90,8 @@ extension ChannelList_Tests {
 
 extension ChannelList_Tests {
     func test_messageList_and_channelPreview_AreUpdatedWhenChannelTruncatedWithMessage() {
+        linkToScenario(withId: 6476)
+
         let message = "Channel truncated"
 
         GIVEN("user opens the channel") {
@@ -112,6 +120,8 @@ extension ChannelList_Tests {
     }
 
     func test_messageList_and_channelPreview_AreUpdatedWhenChannelTruncatedWithoutMessage() throws {
+        linkToScenario(withId: 11989)
+
         try XCTSkipIf(true, "The channel preview shows a timestamp (31/12/1) for a channel truncated without a message")
 
         GIVEN("user opens the channel") {
@@ -143,6 +153,8 @@ extension ChannelList_Tests {
 
 extension ChannelList_Tests {
     func test_typingIndicatorShownInChannelPreview_whenParticipantTypes() {
+        linkToScenario(withId: 11990)
+
         GIVEN("user opens the channel list") {
             userRobot.login().waitForChannelListToLoad()
         }

@@ -8,6 +8,8 @@ final class UnreadMessages_Tests: StreamTestCase {
     private let sampleText = "Test"
 
     func test_unreadSeparatorIsShown_whenParticipantSendsMessagesWhileUserIsAway() throws {
+        linkToScenario(withId: 12054)
+
         let unreadCount = 2
 
         GIVEN("user opens the channel and sends the message") {
@@ -34,6 +36,8 @@ final class UnreadMessages_Tests: StreamTestCase {
     }
 
     func test_userScrollsToFirstUnreadMessage() throws {
+        linkToScenario(withId: 12055)
+
         try XCTSkipIf(true, "Jump to unread does nothing: ChatChannelViewModel.checkUnreadCount checks channelDataSource.firstUnreadMessageId but assigns the nil channelController.firstUnreadMessageId")
 
         let unreadCount = 25
@@ -68,6 +72,8 @@ final class UnreadMessages_Tests: StreamTestCase {
     }
 
     func test_userMarksMessageAsUnread() throws {
+        linkToScenario(withId: 12056)
+
         let unreadCount = 2
 
         GIVEN("user opens the channel and sends the message") {
@@ -94,6 +100,8 @@ final class UnreadMessages_Tests: StreamTestCase {
     }
 
     func test_userDismissesTheUnreadIndicator() throws {
+        linkToScenario(withId: 12057)
+
         let unreadCount = 25
 
         GIVEN("user opens the channel and sends the message") {
@@ -120,6 +128,8 @@ final class UnreadMessages_Tests: StreamTestCase {
     }
 
     func test_unreadSeparatorShowsUnreadCount() throws {
+        linkToScenario(withId: 12058)
+
         try XCTSkipIf(true, "The unread separator copy has no count: every plural of messageList.newMessages is 'Unread messages'")
 
         let unreadCount = 2
@@ -147,6 +157,8 @@ final class UnreadMessages_Tests: StreamTestCase {
     // MARK: - iOS only
 
     func test_channelUnreadCountIsReset_whenUserReadsTheChannel() throws {
+        linkToScenario(withId: 12059)
+
         let unreadCount = 2
 
         GIVEN("user opens the channel and sends the message") {

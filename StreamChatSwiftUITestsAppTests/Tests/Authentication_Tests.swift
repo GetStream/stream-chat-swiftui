@@ -14,6 +14,8 @@ final class Authentication_Tests: StreamTestCase {
     }
 
     func test_tokenInvalidatesBeforeUserLogsIn() {
+        linkToScenario(withId: 11967)
+
         GIVEN("token is invalid") {
             backendRobot.invalidateToken()
         }
@@ -26,6 +28,8 @@ final class Authentication_Tests: StreamTestCase {
     }
 
     func test_tokenInvalidatesAfterUserLogsIn() {
+        linkToScenario(withId: 11968)
+
         GIVEN("user logs in") {
             userRobot
                 .login()
@@ -43,6 +47,8 @@ final class Authentication_Tests: StreamTestCase {
     }
 
     func test_tokenDateInvalidatesBeforeUserLogsIn() {
+        linkToScenario(withId: 11969)
+
         GIVEN("token is invalid") {
             backendRobot.invalidateTokenDate()
         }
@@ -55,6 +61,8 @@ final class Authentication_Tests: StreamTestCase {
     }
 
     func test_tokenDateInvalidatesAfterUserLogsIn() {
+        linkToScenario(withId: 11970)
+
         GIVEN("user logs in") {
             userRobot
                 .login()
@@ -72,6 +80,8 @@ final class Authentication_Tests: StreamTestCase {
     }
 
     func test_tokenSignatureInvalidatesBeforeUserLogsIn() {
+        linkToScenario(withId: 11971)
+
         GIVEN("token is invalid") {
             backendRobot.invalidateTokenSignature()
         }
@@ -84,6 +94,8 @@ final class Authentication_Tests: StreamTestCase {
     }
 
     func test_tokenSignatureInvalidatesAfterUserLogsIn() {
+        linkToScenario(withId: 11972)
+
         GIVEN("user logs in") {
             userRobot
                 .login()
@@ -101,6 +113,8 @@ final class Authentication_Tests: StreamTestCase {
     }
 
     func test_tokenExpiresBeforeUserLogsIn() {
+        linkToScenario(withId: 11973)
+
         GIVEN("token expires") {
             backendRobot.revokeToken()
         }
@@ -113,6 +127,8 @@ final class Authentication_Tests: StreamTestCase {
     }
 
     func test_tokenExpiresAfterUserLoggedIn() {
+        linkToScenario(withId: 11974)
+
         GIVEN("user logs in") {
             userRobot
                 .login()
@@ -127,6 +143,8 @@ final class Authentication_Tests: StreamTestCase {
     }
 
     func test_tokenExpiresWhenUserIsInBackground() {
+        linkToScenario(withId: 11975)
+
         GIVEN("user logs in") {
             userRobot
                 .setStaysConnectedInBackground(to: .off)
@@ -148,6 +166,8 @@ final class Authentication_Tests: StreamTestCase {
     }
 
     func test_tokenExpiresWhileUserIsOffline() {
+        linkToScenario(withId: 11976)
+
         GIVEN("user logs in") {
             userRobot
                 .setConnectivitySwitchVisibility(to: .on)
@@ -169,6 +189,8 @@ final class Authentication_Tests: StreamTestCase {
     }
 
     func test_tokenGenerationFails() {
+        linkToScenario(withId: 11977)
+
         GIVEN("JWT generation breaks on server side") {
             backendRobot.breakTokenGeneration()
         }

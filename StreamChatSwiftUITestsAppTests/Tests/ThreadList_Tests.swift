@@ -9,6 +9,8 @@ final class ThreadList_Tests: StreamTestCase {
     let replyText = "Reply"
 
     func test_threadListIsEmpty_whenChannelHasNoThreads() {
+        linkToScenario(withId: 12050)
+
         GIVEN("user logs in") {
             userRobot.login().waitForChannelListToLoad()
         }
@@ -21,6 +23,8 @@ final class ThreadList_Tests: StreamTestCase {
     }
 
     func test_threadIsShownOnTheThreadList() {
+        linkToScenario(withId: 12051)
+
         GIVEN("user opens the channel") {
             userRobot.login().openChannel()
         }
@@ -44,6 +48,8 @@ final class ThreadList_Tests: StreamTestCase {
     }
 
     func test_userOpensThreadFromTheThreadList() {
+        linkToScenario(withId: 12052)
+
         GIVEN("user opens the channel") {
             userRobot.login().openChannel()
         }
@@ -71,6 +77,8 @@ final class ThreadList_Tests: StreamTestCase {
     }
 
     func test_threadShowsUnreadBadge_whenParticipantRepliesInThread() {
+        linkToScenario(withId: 12053)
+
         GIVEN("user opens the channel") {
             userRobot.login().openChannel()
         }

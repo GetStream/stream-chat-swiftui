@@ -85,6 +85,8 @@ final class DraftMessages_Tests: StreamTestCase {
     }
 
     func test_updateDraftMessageBeingOffline() {
+        linkToScenario(withId: 11994)
+
         GIVEN("user opens the channel") {
             userRobot
                 .setConnectivitySwitchVisibility(to: .on)

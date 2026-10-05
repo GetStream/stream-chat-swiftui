@@ -89,6 +89,8 @@ final class Attachments_Tests: StreamTestCase {
     }
 
     func test_uploadMultipleImages() {
+        linkToScenario(withId: 11959)
+
         GIVEN("user opens the channel") {
             userRobot.login().openChannel()
         }
@@ -107,6 +109,8 @@ final class Attachments_Tests: StreamTestCase {
     }
 
     func test_deleteImage() {
+        linkToScenario(withId: 11960)
+
         GIVEN("user opens the channel") {
             userRobot.login().openChannel()
         }
@@ -129,6 +133,8 @@ final class Attachments_Tests: StreamTestCase {
     }
 
     func test_uploadFile() {
+        linkToScenario(withId: 11961)
+
         GIVEN("user opens the channel") {
             userRobot.login().openChannel()
         }
@@ -147,6 +153,8 @@ final class Attachments_Tests: StreamTestCase {
     }
 
     func test_uploadMultipleFiles() {
+        linkToScenario(withId: 11962)
+
         GIVEN("user opens the channel") {
             userRobot.login().openChannel()
         }
@@ -165,6 +173,8 @@ final class Attachments_Tests: StreamTestCase {
     }
 
     func test_deleteFile() {
+        linkToScenario(withId: 11963)
+
         GIVEN("user opens the channel") {
             userRobot.login().openChannel()
         }
@@ -187,6 +197,8 @@ final class Attachments_Tests: StreamTestCase {
     }
 
     func test_participantUploadsMultipleImages() {
+        linkToScenario(withId: 11964)
+
         GIVEN("user opens the channel") {
             userRobot.login().openChannel()
         }
@@ -199,6 +211,8 @@ final class Attachments_Tests: StreamTestCase {
     }
 
     func test_userSwipesBetweenImagesInGallery() {
+        linkToScenario(withId: 11965)
+
         GIVEN("user opens the channel") {
             userRobot.login().openChannel()
         }
@@ -222,6 +236,8 @@ final class Attachments_Tests: StreamTestCase {
     }
 
     func test_imageUploadRecovers_whenUserComesBackOnline() throws {
+        linkToScenario(withId: 11966)
+
         GIVEN("user opens the channel") {
             userRobot
                 .setConnectivitySwitchVisibility(to: .on)

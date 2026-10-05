@@ -6,6 +6,8 @@ import XCTest
 
 extension Reactions_Tests {
     func test_userAddsReactionUsingExtendedReactionsPicker() {
+        linkToScenario(withId: 12040)
+
         let message = "test message"
 
         GIVEN("user opens the channel") {
@@ -24,6 +26,8 @@ extension Reactions_Tests {
     }
 
     func test_userRemovesReactionUsingExtendedReactionsPicker() {
+        linkToScenario(withId: 12041)
+
         let message = "test message"
 
         GIVEN("user opens the channel") {
@@ -47,6 +51,8 @@ extension Reactions_Tests {
     }
 
     func test_reactionAuthorsSheetIsShown_whenUserTapsOnReaction() {
+        linkToScenario(withId: 12042)
+
         let message = "test message"
 
         GIVEN("user opens the channel") {
@@ -69,6 +75,8 @@ extension Reactions_Tests {
     }
 
     func test_userAddsReactionWhileOffline() throws {
+        linkToScenario(withId: 12043)
+
         let message = "test message"
 
         GIVEN("user opens the channel") {
@@ -98,6 +106,8 @@ extension Reactions_Tests {
     }
 
     func test_reactionIsAddedByParticipant_toThreadReply() {
+        linkToScenario(withId: 12044)
+
         let message = "message"
         let threadReply = "thread reply"
 

@@ -6,6 +6,8 @@ import XCTest
 
 extension MessageDeliveryStatus_Tests {
     func test_deliveryStatusShownForPreviousMessage_whenNewMessageFailedToBeSent() {
+        linkToScenario(withId: 12003)
+
         GIVEN("user opens the channel") {
             backendRobot.generateChannels(channelsCount: 1, messagesCount: 1)
             userRobot.login().openChannel()

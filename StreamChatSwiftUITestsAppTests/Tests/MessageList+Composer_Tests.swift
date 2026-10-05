@@ -6,6 +6,8 @@ import XCTest
 
 extension MessageList_Tests {
     func test_composerSizeChange() {
+        linkToScenario(withId: 12005)
+
         GIVEN("user opens the channel") {
             userRobot.login().openChannel()
         }
@@ -15,6 +17,8 @@ extension MessageList_Tests {
     }
 
     func test_composerSizeDoesNotChange() {
+        linkToScenario(withId: 12006)
+
         GIVEN("user opens the channel") {
             userRobot.login().openChannel()
         }
@@ -24,6 +28,8 @@ extension MessageList_Tests {
     }
 
     func test_commandsPopupDisappear_whenUserTapsOnMessageList() {
+        linkToScenario(withId: 364)
+
         GIVEN("user opens the channel") {
             backendRobot.generateChannels(channelsCount: 1, messagesCount: 30)
             userRobot.login().openChannel()

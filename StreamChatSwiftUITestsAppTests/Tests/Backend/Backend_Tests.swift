@@ -11,6 +11,8 @@ final class Backend_Tests: StreamTestCase {
     }
 
     func test_message() {
+        linkToScenario(withId: 11978)
+
         let originalMessage = "hi"
         let editedMessage = "hello"
 
@@ -40,6 +42,8 @@ final class Backend_Tests: StreamTestCase {
     }
 
     func test_reaction() {
+        linkToScenario(withId: 11979)
+
         let message = "test"
 
         GIVEN("user opens the channel") {

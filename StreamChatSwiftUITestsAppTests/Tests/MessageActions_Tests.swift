@@ -8,6 +8,8 @@ final class MessageActions_Tests: StreamTestCase {
     let sampleText = "Test"
 
     func test_userCopiesMessage() {
+        linkToScenario(withId: 12004)
+
         GIVEN("user opens the channel") {
             userRobot.login().openChannel()
         }

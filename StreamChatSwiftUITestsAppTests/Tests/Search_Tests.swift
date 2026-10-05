@@ -10,6 +10,8 @@ final class Search_Tests: StreamTestCase {
     let sampleText = "Test"
 
     func test_userSearchesForMessage() {
+        linkToScenario(withId: 12047)
+
         GIVEN("user opens the channel list") {
             userRobot.login().waitForChannelListToLoad()
         }
@@ -26,6 +28,8 @@ final class Search_Tests: StreamTestCase {
     }
 
     func test_userOpensMessageFromSearchResults() {
+        linkToScenario(withId: 12048)
+
         GIVEN("user opens the channel list") {
             userRobot.login().waitForChannelListToLoad()
         }

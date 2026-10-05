@@ -14,6 +14,8 @@ final class Reminders_Tests: StreamTestCase {
     }
 
     func test_reminderSavedForLaterIsShownOnTheMessage() {
+        linkToScenario(withId: 12045)
+
         GIVEN("user opens the channel") {
             userRobot.login().openChannel()
         }
@@ -35,6 +37,8 @@ final class Reminders_Tests: StreamTestCase {
     }
 
     func test_scheduledReminderIsShownOnTheMessage() {
+        linkToScenario(withId: 12046)
+
         GIVEN("user opens the channel") {
             userRobot.login().openChannel()
         }

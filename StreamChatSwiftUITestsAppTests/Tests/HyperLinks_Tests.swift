@@ -8,6 +8,8 @@ final class HyperLinks_Tests: StreamTestCase {
     private let giphyGifLink = "Look at https://giphy.com/gifs/test-gw3IWyGkC0rsazTi"
 
     func test_giphyLinkPreview() {
+        linkToScenario(withId: 11999)
+
         GIVEN("user opens the channel") {
             userRobot.login().openChannel()
         }
@@ -22,6 +24,8 @@ final class HyperLinks_Tests: StreamTestCase {
     }
 
     func test_participantSendsLinkToGiphy() {
+        linkToScenario(withId: 12000)
+
         GIVEN("user opens the channel") {
             userRobot.login().openChannel()
         }
@@ -36,6 +40,8 @@ final class HyperLinks_Tests: StreamTestCase {
     }
 
     func test_messageWithLinkOpensSafari() {
+        linkToScenario(withId: 12001)
+
         GIVEN("user opens the channel") {
             userRobot.login().openChannel()
         }
@@ -50,6 +56,8 @@ final class HyperLinks_Tests: StreamTestCase {
     }
 
     func test_messageWithLinkOpensSafari_whenNoHttpScheme() {
+        linkToScenario(withId: 12002)
+
         GIVEN("user opens the channel") {
             userRobot.login().openChannel()
         }

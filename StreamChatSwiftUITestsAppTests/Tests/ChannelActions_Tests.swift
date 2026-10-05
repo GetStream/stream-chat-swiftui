@@ -6,6 +6,8 @@ import XCTest
 
 final class ChannelActions_Tests: StreamTestCase {
     func test_channelActionsSheetIsShown_whenUserSwipesTheChannel() {
+        linkToScenario(withId: 11980)
+
         GIVEN("user logs in") {
             userRobot.login().waitForChannelListToLoad()
         }
@@ -20,6 +22,8 @@ final class ChannelActions_Tests: StreamTestCase {
     }
 
     func test_userOpensChannelInfoFromTheChannelActionsSheet() {
+        linkToScenario(withId: 11981)
+
         var channelName = ""
 
         GIVEN("user logs in") {
@@ -40,6 +44,8 @@ final class ChannelActions_Tests: StreamTestCase {
     }
 
     func test_userLeavesGroupChannel() {
+        linkToScenario(withId: 11982)
+
         GIVEN("user logs in") {
             userRobot.login().waitForChannelListToLoad()
         }
@@ -58,6 +64,8 @@ final class ChannelActions_Tests: StreamTestCase {
     }
 
     func test_userDeletesGroupChannel() {
+        linkToScenario(withId: 11983)
+
         GIVEN("user logs in") {
             userRobot.login().waitForChannelListToLoad()
         }
@@ -75,6 +83,8 @@ final class ChannelActions_Tests: StreamTestCase {
     }
 
     func test_userMutesChannelFromTheSwipeAction() {
+        linkToScenario(withId: 11984)
+
         GIVEN("user logs in") {
             userRobot.login().waitForChannelListToLoad()
         }
@@ -89,6 +99,8 @@ final class ChannelActions_Tests: StreamTestCase {
     }
 
     func test_userUnmutesChannelFromTheSwipeAction() {
+        linkToScenario(withId: 11985)
+
         GIVEN("user logs in") {
             userRobot.login().waitForChannelListToLoad()
         }

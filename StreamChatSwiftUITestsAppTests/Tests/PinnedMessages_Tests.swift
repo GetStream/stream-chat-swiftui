@@ -8,6 +8,8 @@ final class PinnedMessages_Tests: StreamTestCase {
     let sampleText = "Test"
 
     func test_userPinsMessage() {
+        linkToScenario(withId: 12024)
+
         GIVEN("user opens the channel") {
             userRobot.login().openChannel()
         }
@@ -23,6 +25,8 @@ final class PinnedMessages_Tests: StreamTestCase {
     }
 
     func test_userUnpinsMessage() {
+        linkToScenario(withId: 12025)
+
         GIVEN("user opens the channel") {
             userRobot.login().openChannel()
         }
@@ -44,6 +48,8 @@ final class PinnedMessages_Tests: StreamTestCase {
     }
 
     func test_participantPinsMessage() {
+        linkToScenario(withId: 12026)
+
         GIVEN("user opens the channel") {
             userRobot.login().openChannel()
         }
@@ -62,6 +68,8 @@ final class PinnedMessages_Tests: StreamTestCase {
     }
 
     func test_participantUnpinsMessage() {
+        linkToScenario(withId: 12027)
+
         GIVEN("user opens the channel") {
             userRobot.login().openChannel()
         }
@@ -86,6 +94,8 @@ final class PinnedMessages_Tests: StreamTestCase {
     }
 
     func test_pinnedMessageIsShownOnThePinnedMessagesScreen() {
+        linkToScenario(withId: 12028)
+
         GIVEN("user opens the channel") {
             userRobot.login().openChannel()
         }
@@ -109,6 +119,8 @@ final class PinnedMessages_Tests: StreamTestCase {
     }
 
     func test_unpinnedMessageIsNotShownOnThePinnedMessagesScreen() {
+        linkToScenario(withId: 12029)
+
         GIVEN("user opens the channel") {
             userRobot.login().openChannel()
         }
@@ -137,6 +149,8 @@ final class PinnedMessages_Tests: StreamTestCase {
     }
 
     func test_userOpensMessageFromPinnedMessagesScreen() {
+        linkToScenario(withId: 12030)
+
         GIVEN("user opens the channel") {
             userRobot.login().openChannel()
         }
@@ -163,6 +177,8 @@ final class PinnedMessages_Tests: StreamTestCase {
     }
 
     func test_userPinsThreadReply() {
+        linkToScenario(withId: 12031)
+
         let replyText = "Reply"
 
         GIVEN("user opens the channel") {
