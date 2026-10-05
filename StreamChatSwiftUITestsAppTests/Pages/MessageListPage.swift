@@ -98,8 +98,8 @@ class MessageListPage {
         static var inputField: XCUIElement { app.textViews["ComposerTextInputView"] }
         static var sendButton: XCUIElement { app.buttons["SendMessageButton"] }
         static var confirmButton: XCUIElement { app.buttons["ConfirmEditButton"] }
-        static var attachmentButton: XCUIElement { app.buttons["PickerTypeButtonMedia"] }
-        static var commandButton: XCUIElement { app.buttons["PickerTypeButtonCommands"] }
+        static var attachmentButton: XCUIElement { app.buttons["ComposerAttachmentPickerButton"] }
+        static var commandButton: XCUIElement { app.buttons["attachmentPickerCommands"] }
         static var collapsedComposerButton: XCUIElement { app.buttons["PickerTypeButtonCollapsed"] }
         static var cooldown: XCUIElement { app.staticTexts["SlowModeView"] }
         static var placeholder: XCUIElement { textView.staticTexts.firstMatch }
@@ -332,7 +332,7 @@ class MessageListPage {
             static var unmute: XCUIElement { app.otherElements["messageAction-unmute_message_action"].images.firstMatch }
             static var edit: XCUIElement { app.otherElements["messageAction-edit_message_action"].images.firstMatch }
             static var delete: XCUIElement { app.otherElements["messageAction-delete_message_action"].images.firstMatch }
-            static var hardDelete: XCUIElement { app.otherElements["messageAction-delete_message_action"].images.firstMatch } // FIXME:
+            static var hardDelete: XCUIElement { app.otherElements["messageAction-hard_delete_message_action"].images.firstMatch }
             static var resend: XCUIElement { app.otherElements["messageAction-resend_message_action"].images.firstMatch }
             static var pin: XCUIElement { app.otherElements["messageAction-pin_message_action"].images.firstMatch }
             static var unpin: XCUIElement { app.otherElements["messageAction-unpin_message_action"].images.firstMatch }
@@ -362,7 +362,7 @@ class MessageListPage {
 
     enum ComposerCommands {
         static var cells: XCUIElementQuery {
-            app.otherElements.matching(identifier: "CommandSuggestionView")
+            app.descendants(matching: .any).matching(NSPredicate(format: "identifier BEGINSWITH 'CommandSuggestionView_'"))
         }
 
         static var headerTitle: XCUIElement {
@@ -375,6 +375,10 @@ class MessageListPage {
 
         static var giphyImage: XCUIElement {
             app.images["imageGiphy"].firstMatch
+        }
+
+        static var giphyCommand: XCUIElement {
+            app.descendants(matching: .any)["AttachmentCommandView_/giphy"].firstMatch
         }
     }
 

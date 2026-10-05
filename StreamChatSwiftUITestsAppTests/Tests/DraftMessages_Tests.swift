@@ -83,4 +83,31 @@ final class DraftMessages_Tests: StreamTestCase {
             userRobot.assertComposerText("")
         }
     }
+
+    func test_updateDraftMessageBeingOffline() {
+        GIVEN("user opens the channel") {
+            userRobot
+                .setConnectivitySwitchVisibility(to: .on)
+                .login()
+                .openChannel()
+        }
+        AND("user becomes offline") {
+            userRobot.setConnectivity(to: .off)
+        }
+        WHEN("user inputs some text in the composer") {
+            userRobot.typeText(draftMessage)
+        }
+        AND("user leaves the Channel") {
+            userRobot.tapOnBackButton()
+        }
+        THEN("the draft message is in preview") {
+            userRobot.assertLastMessageInChannelPreview("Draft: \(draftMessage)")
+        }
+        WHEN("user comes back to the channel") {
+            userRobot.openChannel()
+        }
+        THEN("the draft message is in the composer") {
+            userRobot.assertComposerText(draftMessage)
+        }
+    }
 }

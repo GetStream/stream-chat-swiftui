@@ -29,8 +29,6 @@ final class ChannelList_Tests: StreamTestCase {
     func test_participantMessageShownInChannelPreview_whenReturningFromOffline() throws {
         linkToScenario(withId: 349)
         
-        try XCTSkipIf(true, "https://linear.app/stream/issue/IOS-1315")
-
         GIVEN("user opens the channel") {
             userRobot
                 .setConnectivitySwitchVisibility(to: .on)

@@ -51,7 +51,7 @@ final class MessageDeliveryStatus_Tests: StreamTestCase {
     func test_errorIndicatorShown_whenMessageFailedToBeSent() throws {
         linkToScenario(withId: 399)
         
-        try XCTSkipIf(true, "https://linear.app/stream/issue/IOS-1315")
+        try XCTSkipIf(true, "Failed message keeps an invisible (opacity 0) readIndicatorCheckmark in the accessibility tree, so VoiceOver still announces a read status")
 
         GIVEN("user becomes offline") {
             userRobot
@@ -217,7 +217,7 @@ extension MessageDeliveryStatus_Tests {
     func test_errorIndicatorShown_whenMessageFailedToBeSent_andCantBePreviewedInThread() throws {
         linkToScenario(withId: 406)
         
-        try XCTSkipIf(true, "https://linear.app/stream/issue/IOS-1315")
+        try XCTSkipIf(true, "Failed message keeps an invisible (opacity 0) readIndicatorCheckmark in the accessibility tree, so VoiceOver still announces a read status")
 
         GIVEN("user becomes offline") {
             userRobot
@@ -288,7 +288,7 @@ extension MessageDeliveryStatus_Tests {
     func test_errorIndicatorShown_whenThreadReplyFailedToBeSent() throws {
         linkToScenario(withId: 409)
         
-        try XCTSkipIf(true, "https://linear.app/stream/issue/IOS-1315")
+        try XCTSkipIf(true, "Failed message keeps an invisible (opacity 0) readIndicatorCheckmark in the accessibility tree, so VoiceOver still announces a read status")
 
         GIVEN("user becomes offline") {
             backendRobot.generateChannels(channelsCount: 1, messagesCount: 1)
@@ -507,8 +507,6 @@ extension MessageDeliveryStatus_Tests {
     func test_errorIndicatorShown_whenMessageFailedToBeSentAndReadEventsIsDisabled() throws {
         linkToScenario(withId: 418)
         
-        try XCTSkipIf(true, "https://linear.app/stream/issue/IOS-1315")
-
         GIVEN("user becomes offline") {
             backendRobot.setReadEvents(to: false)
             userRobot

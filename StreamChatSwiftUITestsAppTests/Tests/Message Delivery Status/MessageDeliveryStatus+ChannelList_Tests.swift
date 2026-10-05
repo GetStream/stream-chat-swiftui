@@ -54,8 +54,6 @@ final class MessageDeliveryStatus_ChannelList_Tests: StreamTestCase {
     func test_errorIndicatorShownInPreview_whenMessageFailedToBeSent() throws {
         linkToScenario(withId: 426)
         
-        try XCTSkipIf(true, "https://linear.app/stream/issue/IOS-1315")
-
         GIVEN("user opens the channel") {
             userRobot
                 .setConnectivitySwitchVisibility(to: .on)
@@ -168,8 +166,6 @@ extension MessageDeliveryStatus_ChannelList_Tests {
     func test_singleCheckmarkShownForMessageInPreview_whenThreadReplyFailedToBeSent() throws {
         linkToScenario(withId: 431)
         
-        try XCTSkipIf(true, "https://linear.app/stream/issue/IOS-1315")
-
         GIVEN("user opens the channel") {
             userRobot
                 .setConnectivitySwitchVisibility(to: .on)

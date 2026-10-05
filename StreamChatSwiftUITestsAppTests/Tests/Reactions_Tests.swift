@@ -184,8 +184,6 @@ final class Reactions_Tests: StreamTestCase {
     func test_addReactionWhileOffline() throws {
         linkToScenario(withId: 94)
         
-        try XCTSkipIf(true, "https://linear.app/stream/issue/IOS-1315")
-
         let message = "test message"
 
         GIVEN("user opens the channel") {

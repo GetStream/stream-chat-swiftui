@@ -202,8 +202,6 @@ final class MessageList_Tests: StreamTestCase {
     func test_offlineMessageInTheMessageList() throws {
         linkToScenario(withId: 365)
         
-        try XCTSkipIf(true, "https://linear.app/stream/issue/IOS-1315")
-
         let message = "test message"
 
         GIVEN("user opens the channel") {
@@ -230,8 +228,6 @@ final class MessageList_Tests: StreamTestCase {
     func test_addMessageWhileOffline() throws {
         linkToScenario(withId: 366)
         
-        try XCTSkipIf(true, "https://linear.app/stream/issue/IOS-1315")
-
         let message = "test message"
 
         GIVEN("user opens the channel") {
@@ -270,8 +266,6 @@ final class MessageList_Tests: StreamTestCase {
 
     func test_offlineRecoveryWithinSession() throws {
         linkToScenario(withId: 367)
-
-        try XCTSkipIf(true, "https://linear.app/stream/issue/IOS-1315")
 
         let message = "test message"
 

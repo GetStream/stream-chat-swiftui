@@ -11,21 +11,20 @@ struct StartPage: View {
     @State var chatShown = false
     @ObservedObject var appState = AppState.shared
     @ObservedObject var notificationsHandler = NotificationsHandler.shared
-
-    var chatClient: ChatClient = {
-        var config = ChatClientConfig(apiKey: .init(apiKeyString))
-        let client = ChatClient(config: config)
-        return client
-    }()
+    @ObservedObject var settings = TestAppSettings.shared
 
     var body: some View {
         NavigationView {
             ZStack {
-                Button {
-                    connectUser(withCredentials: UserCredentials.mock)
-                    appState.userState = .loggedIn
-                } label: {
-                    Text("Start Chat")
+                VStack(spacing: 32) {
+                    SettingsView()
+                    Button {
+                        connectUser(withCredentials: UserCredentials.mock)
+                        appState.userState = .loggedIn
+                    } label: {
+                        Text("Start Chat")
+                    }
+                    .accessibilityIdentifier("TestApp.Start")
                 }
 
                 if notificationsHandler.notificationChannelId != nil {
@@ -41,13 +40,17 @@ struct StartPage: View {
                     })
                 } else {
                     NavigationLink(isActive: $chatShown, destination: {
-                        LazyView(ChatChannelListView(viewFactory: DemoAppFactory.shared).navigationBarHidden(true))
+                        LazyView(
+                            ChatChannelListView(
+                                viewFactory: DemoAppFactory.shared,
+                                searchType: ProcessInfo.processInfo.arguments.contains("USE_CHANNEL_SEARCH") ? .channels : .messages
+                            ).navigationBarHidden(true)
+                        )
                     }, label: {
                         EmptyView()
                     })
                 }
             }
-            .accessibilityIdentifier("TestApp.Start")
             .navigationTitle("Test UI App")
             .navigationBarHidden(true)
             .onReceive(appState.$userState, perform: { value in
@@ -58,8 +61,12 @@ struct StartPage: View {
     }
 
     private func connectUser(withCredentials credentials: UserCredentials) {
-        let token = try! Token(rawValue: credentials.token)
         LogConfig.level = .debug
+
+        var config = ChatClientConfig(apiKey: .init(apiKeyString))
+        config.isLocalStorageEnabled = settings.isLocalStorageEnabled
+        config.staysConnectedInBackground = settings.staysConnectedInBackground
+        let chatClient = ChatClient(config: config)
         
         let utils = Utils(
             channelListConfig: ChannelListConfig(
@@ -73,7 +80,14 @@ struct StartPage: View {
                 skipEditedMessageLabel: { message in
                     message.extraData["ai_generated"]?.boolValue == true
                 },
-                draftMessagesEnabled: true
+                draftMessagesEnabled: true,
+                supportedMessageActions: { [chatClient] options in
+                    var actions = MessageAction.defaultActions(for: options)
+                    if options.message.isSentByCurrentUser {
+                        actions.append(hardDeleteMessageAction(options: options, chatClient: chatClient))
+                    }
+                    return actions
+                }
             ),
             composerConfig: ComposerConfig(isVoiceRecordingEnabled: true)
         )
@@ -82,7 +96,7 @@ struct StartPage: View {
         chatClient.logout {
             chatClient.connectUser(
                 userInfo: .init(id: credentials.id, name: credentials.name, imageURL: credentials.avatarURL),
-                token: token
+                tokenProvider: mockTokenProvider(for: credentials)
             ) { error in
                 if let error = error {
                     log.error("connecting the user failed \(error)")
@@ -90,7 +104,67 @@ struct StartPage: View {
                 }
             }
         }
+
+        if settings.setConnectivity {
+            StreamChatWrapper.shared.mockConnection(isConnected: settings.isConnected)
+        }
     }
+
+    /// Fetches the token from the mock server when `MOCK_JWT` is set, so the tests can control its validity.
+    private func mockTokenProvider(for credentials: UserCredentials) -> TokenProvider {
+        let staticToken = credentials.token
+        return { completion in
+            guard ProcessInfo.processInfo.arguments.contains("MOCK_JWT"),
+                  let port = ProcessInfo.processInfo.environment["MOCK_SERVER_PORT"],
+                  let url = URL(string: "http://localhost:\(port)/jwt/get?platform=ios") else {
+                completion(Result { try Token(rawValue: staticToken) })
+                return
+            }
+
+            URLSession.shared.dataTask(with: url) { data, response, error in
+                if let error {
+                    completion(.failure(error))
+                    return
+                }
+                guard let response = response as? HTTPURLResponse,
+                      (200...299).contains(response.statusCode),
+                      let data,
+                      let body = String(data: data, encoding: .utf8) else {
+                    completion(.failure(URLError(.badServerResponse)))
+                    return
+                }
+                completion(.success(Token(stringLiteral: body)))
+            }
+            .resume()
+        }
+    }
+}
+
+@MainActor private func hardDeleteMessageAction(
+    options: SupportedMessageActionsOptions,
+    chatClient: ChatClient
+) -> MessageAction {
+    let messageController = chatClient.messageController(cid: options.channel.cid, messageId: options.message.id)
+    return MessageAction(
+        id: "hard_delete_message_action",
+        title: "Hard Delete Message",
+        iconName: "trash",
+        action: {
+            messageController.deleteMessage(hard: true) { error in
+                if let error {
+                    options.onError(error)
+                } else {
+                    options.onFinish(MessageActionInfo(message: options.message, identifier: "hard_delete"))
+                }
+            }
+        },
+        confirmationPopup: ConfirmationPopup(
+            title: "Delete Message",
+            message: "Are you sure you want to permanently delete this message?",
+            buttonTitle: "Delete Message"
+        ),
+        isDestructive: true
+    )
 }
 
 class DemoAppFactory: ViewFactory {
@@ -104,5 +178,13 @@ class DemoAppFactory: ViewFactory {
 
     func makeChannelListHeaderViewModifier(options: ChannelListHeaderViewModifierOptions) -> some ChannelListHeaderViewModifier {
         CustomChannelModifier(title: options.title)
+    }
+
+    func makeChannelHeaderViewModifier(options: ChannelHeaderViewModifierOptions) -> some ChatChannelHeaderViewModifier {
+        ConnectivityChannelHeaderModifier(
+            factory: self,
+            channel: options.channel,
+            shouldShowTypingIndicator: options.shouldShowTypingIndicator
+        )
     }
 }

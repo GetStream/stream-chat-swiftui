@@ -23,6 +23,7 @@ struct ComposerImageAttachmentView: View {
                 RoundedRectangle(cornerRadius: tokens.messageBubbleRadiusAttachment)
                     .strokeBorder(Color(colors.borderCoreOpacitySubtle), lineWidth: 1)
             )
+            .accessibilityIdentifier("ComposerImageAttachmentView")
             .id(attachment.id)
             .dismissButtonOverlayModifier {
                 onDiscardAttachment(attachment.id)
