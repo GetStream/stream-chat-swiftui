@@ -262,6 +262,33 @@ import XCTest
         XCTAssertFalse(makeViewModel(for: message).reactionsShown)
     }
 
+    // MARK: - isHighlighted
+
+    func test_isHighlighted_whenJumpedToThisMessage_returnsTrue() {
+        let message = makeMessage(isSentByCurrentUser: false, text: "Hello there")
+        let viewModel = makeViewModel(for: message)
+
+        XCTAssertTrue(viewModel.isHighlighted(messageId: message.messageId))
+    }
+
+    func test_isHighlighted_whenJumpedToAnotherMessage_returnsFalse() {
+        let viewModel = makeViewModel(for: makeMessage(isSentByCurrentUser: false, text: "Hello there"))
+
+        XCTAssertFalse(viewModel.isHighlighted(messageId: "another-message"))
+        XCTAssertFalse(viewModel.isHighlighted(messageId: nil))
+    }
+
+    func test_isHighlighted_whenHighlightingIsDisabled_returnsFalse() {
+        streamChat = StreamChat(
+            chatClient: chatClient,
+            utils: Utils(messageListConfig: MessageListConfig(highlightMessageWhenJumping: false))
+        )
+        let message = makeMessage(isSentByCurrentUser: false, text: "Hello there")
+        let viewModel = makeViewModel(for: message)
+
+        XCTAssertFalse(viewModel.isHighlighted(messageId: message.messageId))
+    }
+
     // MARK: - Helpers
 
     private func makeMessage(
