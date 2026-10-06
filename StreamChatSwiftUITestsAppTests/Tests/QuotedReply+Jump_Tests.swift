@@ -209,4 +209,43 @@ extension QuotedReply_Tests {
                 .assertMessageIsOnScreen(withText: threadReply)
         }
     }
+
+    func test_jumpToRegularMessageInThread_fromChannelListViaMessageId() {
+        linkToScenario(withId: 12143)
+
+        let replyCount = 10
+        let threadReply = "jump target"
+        let moreReplies = ["thread reply 1", "thread reply 2", "thread reply 3"]
+
+        GIVEN("user opens a channel with a thread") {
+            backendRobot.generateChannels(
+                channelsCount: 1,
+                messagesCount: 1,
+                repliesCount: replyCount,
+                messagesText: parentText
+            )
+            userRobot.login().openChannel()
+        }
+        AND("user sends a regular message in thread") {
+            userRobot.sendMessageInThread(threadReply)
+        }
+        AND("user copies the message id") {
+            userRobot.copyMessageId(threadReply)
+        }
+        AND("user sends some more messages in thread") {
+            for reply in moreReplies {
+                userRobot.sendMessageInThread(reply)
+            }
+        }
+        WHEN("user opens the channel from the channel list with the copied message id") {
+            userRobot
+                .moveToChannelListFromThreadReplies()
+                .openChannelWithCopiedMessageId()
+        }
+        THEN("user jumps to the message in thread") {
+            userRobot
+                .assertThreadIsOpen()
+                .assertMessageIsOnScreen(withText: threadReply)
+        }
+    }
 }

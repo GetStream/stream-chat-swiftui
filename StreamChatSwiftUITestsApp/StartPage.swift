@@ -77,7 +77,10 @@ struct StartPage: View {
         
         let utils = Utils(
             channelListConfig: ChannelListConfig(
-                channelItemMutedStyle: .afterChannelName
+                channelItemMutedStyle: .afterChannelName,
+                supportedMoreChannelActions: { options in
+                    ChannelAction.defaultActions(for: options) + [showChannelWithMessageIdAction(channel: options.channel)]
+                }
             ),
             messageListConfig: MessageListConfig(
                 messageDisplayOptions: .init(showOriginalTranslatedButton: true),
@@ -93,6 +96,7 @@ struct StartPage: View {
                     if options.message.isSentByCurrentUser {
                         actions.append(hardDeleteMessageAction(options: options, chatClient: chatClient))
                     }
+                    actions.append(copyMessageIdAction(options: options))
                     return actions
                 }
             ),

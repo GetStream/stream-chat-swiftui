@@ -14,6 +14,31 @@ extension UserRobot {
     }
 
     @discardableResult
+    func copyMessageId(_ text: String) -> Self {
+        openContextMenu(forMessageWithText: text)
+        MessageListPage.ContextMenu.copyMessageId.element.wait().safeTap()
+        return self
+    }
+
+    /// Opens the channel from the channel list's swipe actions, at the message id that was copied before.
+    @discardableResult
+    func openChannelWithCopiedMessageId(channelCellIndex: Int = 0) -> Self {
+        swipeChannel(channelCellIndex: channelCellIndex)
+        tapOnMoreSwipeAction()
+        ChannelActionsPage.Sheet.showChannelWithMessageId.wait().safeTap()
+
+        let textField = ChannelActionsPage.ShowChannelWithMessageId.textField.wait()
+        let pasteButton = MessageListPage.Composer.pasteButton
+        for _ in 0..<5 {
+            textField.tap()
+            if pasteButton.wait(timeout: XCUIElement.probeTimeout).exists { break }
+        }
+        pasteButton.safeTap()
+        ChannelActionsPage.ShowChannelWithMessageId.showChannelButton.wait().safeTap()
+        return self
+    }
+
+    @discardableResult
     func tapOnRepliedToThreadButton(inMessageWithText text: String) -> Self {
         messageCell(withText: text)
             .buttons

@@ -260,6 +260,7 @@ class MessageListPage {
         case edit
         case delete
         case hardDelete
+        case copyMessageId
         case resend
         case pin
         case unpin
@@ -284,6 +285,8 @@ class MessageListPage {
                 return Element.delete
             case .hardDelete:
                 return Element.hardDelete
+            case .copyMessageId:
+                return Element.copyMessageId
             case .resend:
                 return Element.resend
             case .pin:
@@ -304,6 +307,7 @@ class MessageListPage {
             static var edit: XCUIElement { app.otherElements["messageAction-edit_message_action"].images.firstMatch }
             static var delete: XCUIElement { app.otherElements["messageAction-delete_message_action"].images.firstMatch }
             static var hardDelete: XCUIElement { app.otherElements["messageAction-hard_delete_message_action"].images.firstMatch }
+            static var copyMessageId: XCUIElement { app.otherElements["messageAction-copy_message_id_action"].images.firstMatch }
             static var resend: XCUIElement { app.otherElements["messageAction-resend_message_action"].images.firstMatch }
             static var pin: XCUIElement { app.otherElements["messageAction-pin_message_action"].images.firstMatch }
             static var unpin: XCUIElement { app.otherElements["messageAction-unpin_message_action"].images.firstMatch }

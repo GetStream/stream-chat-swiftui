@@ -32,6 +32,12 @@ enum ChannelActionsPage {
         static var muteChannel: XCUIElement { app.buttons["Mute Channel"] }
         static var deleteGroup: XCUIElement { app.buttons["Delete conversation"] }
         static var confirmDelete: XCUIElement { app.alerts.buttons["Delete"] }
+        static var showChannelWithMessageId: XCUIElement { app.buttons["Show channel with message id"] }
+    }
+
+    enum ShowChannelWithMessageId {
+        static var textField: XCUIElement { app.textFields["MessageIdTextField"] }
+        static var showChannelButton: XCUIElement { app.buttons["ShowChannelWithMessageIdButton"] }
     }
 
     enum ChannelInfo {
