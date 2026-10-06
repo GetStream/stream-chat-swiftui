@@ -3,7 +3,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 # Upcoming
 
-### 🔄 Changed
+### 🐞 Fixed
+- Fix channel list mute actions being shown without the mute channel capability [#1608](https://github.com/GetStream/stream-chat-swiftui/pull/1608)
 
 # [5.12.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/5.12.0)
 _September 28, 2026_
