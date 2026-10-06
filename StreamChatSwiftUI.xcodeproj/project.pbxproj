@@ -1533,7 +1533,7 @@
 			repositoryURL = "https://github.com/GetStream/stream-core-swift.git";
 			requirement = {
 				kind = revision;
-				revision = a2c1f6cd8952422b8d5734c49ac1711f398f0d45;
+				revision = e7ca4b60e012d4bad998847a969899c8de1aefa9;
 			};
 		};
 		82543C7B2AD41B0400D5F6CD /* XCRemoteSwiftPackageReference "stream-chat-swift-test-helpers" */ = {
@@ -1557,7 +1557,7 @@
 			repositoryURL = "https://github.com/GetStream/stream-chat-swift.git";
 			requirement = {
 				kind = revision;
-				revision = cfa7d46d70e406bbc10d64ff6fe6300a3890ec30;
+				revision = 128e2585bfdb24a83af232401b996bbf8fd86155;
 			};
 		};
 		E3A1C01A282BAC66002D1E26 /* XCRemoteSwiftPackageReference "sentry-cocoa" */ = {
