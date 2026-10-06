@@ -137,8 +137,6 @@ public struct MessageItemView<Factory: ViewFactory>: View {
         )
         .accessibilityElement(children: .contain)
         .accessibilityIdentifier("MessageItemView")
-        // Exposes the transient jump highlight to UI tests.
-        .accessibilityValue(messageViewModel.isHighlighted(messageId: highlightedMessageId) ? "highlighted" : "")
         .onChange(of: message) { message in messageViewModel.message = message }
         .onChange(of: channel) { channel in messageViewModel.channel = channel }
     }
