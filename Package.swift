@@ -16,7 +16,7 @@ let package = Package(
         )
     ],
     dependencies: [
-        .package(url: "https://github.com/GetStream/stream-chat-swift.git", branch: "add/e2e-android-parity")
+        .package(url: "https://github.com/GetStream/stream-chat-swift.git", branch: "fix/e2e-redundancy-cleanup")
     ],
     targets: [
         .target(

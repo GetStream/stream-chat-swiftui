@@ -1546,7 +1546,7 @@
 			repositoryURL = "https://github.com/GetStream/stream-chat-swift.git";
 			requirement = {
 				kind = branch;
-				branch = "add/e2e-android-parity";
+				branch = "fix/e2e-redundancy-cleanup";
 			};
 		};
 		E3A1C01A282BAC66002D1E26 /* XCRemoteSwiftPackageReference "sentry-cocoa" */ = {
