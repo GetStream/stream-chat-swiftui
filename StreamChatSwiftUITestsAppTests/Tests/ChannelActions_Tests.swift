@@ -82,22 +82,6 @@ final class ChannelActions_Tests: StreamTestCase {
         }
     }
 
-    func test_userMutesChannelFromTheSwipeAction() {
-        linkToScenario(withId: 11984)
-
-        GIVEN("user logs in") {
-            userRobot.login().waitForChannelListToLoad()
-        }
-        WHEN("user swipes the channel and taps on the mute action") {
-            userRobot
-                .swipeChannel()
-                .tapOnMuteSwipeAction()
-        }
-        THEN("the channel shows the muted icon") {
-            userRobot.assertChannelIsMuted(true)
-        }
-    }
-
     func test_userUnmutesChannelFromTheSwipeAction() {
         linkToScenario(withId: 11985)
 

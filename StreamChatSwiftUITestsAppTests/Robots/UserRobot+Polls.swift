@@ -132,11 +132,4 @@ extension UserRobot {
         XCTAssertFalse(PollsPage.Message.endPollButton.waitForDisappearance().exists, "End poll button is still shown", file: file, line: line)
         return self
     }
-
-    @discardableResult
-    func assertPollComments(count: Int, file: StaticString = #filePath, line: UInt = #line) -> Self {
-        let button = PollsPage.Message.viewCommentsButton(count: count)
-        XCTAssertTrue(button.wait().exists, "Poll comments button for \(count) comment(s) is not shown", file: file, line: line)
-        return self
-    }
 }

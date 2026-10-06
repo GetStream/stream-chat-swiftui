@@ -1490,6 +1490,76 @@ import XCTest
         wait(for: [expectation], timeout: defaultTimeout)
     }
 
+    // MARK: - Message grouping
+
+    func test_groupMessages_whenSameAuthorWithinInterval_onlyNewestMessageShowsAllInfo() {
+        // Given
+        let viewModel = ChatChannelViewModel(channelController: makeChannelController())
+        let oldest = makeGroupingMessage(createdAt: 100)
+        let middle = makeGroupingMessage(createdAt: 110)
+        let newest = makeGroupingMessage(createdAt: 120)
+
+        // When
+        viewModel.messages = [newest, middle, oldest]
+
+        // Then
+        XCTAssertTrue(showsAllInfo(newest, in: viewModel))
+        XCTAssertFalse(showsAllInfo(middle, in: viewModel))
+        XCTAssertFalse(showsAllInfo(oldest, in: viewModel))
+    }
+
+    func test_groupMessages_whenFollowedByErrorMessage_previousMessageShowsAllInfo() {
+        assertGroupIsBroken(byNewerMessageOfType: .error)
+    }
+
+    func test_groupMessages_whenFollowedByEphemeralMessage_previousMessageShowsAllInfo() {
+        assertGroupIsBroken(byNewerMessageOfType: .ephemeral)
+    }
+
+    func test_groupMessages_whenFollowedBySystemMessage_previousMessageShowsAllInfo() {
+        assertGroupIsBroken(byNewerMessageOfType: .system)
+    }
+
+    func test_groupMessages_whenNewestMessageIsHardDeleted_previousMessageShowsAllInfoAgain() {
+        // Given
+        let viewModel = ChatChannelViewModel(channelController: makeChannelController())
+        let oldest = makeGroupingMessage(createdAt: 100)
+        let middle = makeGroupingMessage(createdAt: 110)
+        let newest = makeGroupingMessage(createdAt: 120)
+        viewModel.messages = [newest, middle, oldest]
+        XCTAssertFalse(showsAllInfo(middle, in: viewModel))
+
+        // When
+        viewModel.messages = [middle, oldest]
+
+        // Then
+        XCTAssertTrue(showsAllInfo(middle, in: viewModel))
+        XCTAssertFalse(showsAllInfo(oldest, in: viewModel))
+    }
+
+    func test_groupMessages_whenNewestMessageIsSoftDeleted_onlyDeletedMessageShowsAllInfo() {
+        // Given
+        let viewModel = ChatChannelViewModel(channelController: makeChannelController())
+        let oldest = makeGroupingMessage(createdAt: 100)
+        let middle = makeGroupingMessage(createdAt: 110)
+        let newest = makeGroupingMessage(createdAt: 120)
+        viewModel.messages = [newest, middle, oldest]
+
+        // When
+        let deletedNewest = makeGroupingMessage(
+            id: newest.id,
+            type: .deleted,
+            createdAt: 120,
+            deletedAt: Date(timeIntervalSince1970: 130)
+        )
+        viewModel.messages = [deletedNewest, middle, oldest]
+
+        // Then
+        XCTAssertTrue(showsAllInfo(deletedNewest, in: viewModel))
+        XCTAssertFalse(showsAllInfo(middle, in: viewModel))
+        XCTAssertFalse(showsAllInfo(oldest, in: viewModel))
+    }
+
     // MARK: - private
 
     private func makeChannelController(
@@ -1499,6 +1569,44 @@ import XCTest
             chatClient: chatClient,
             messages: messages
         )
+    }
+
+    private func assertGroupIsBroken(
+        byNewerMessageOfType type: MessageType,
+        file: StaticString = #filePath,
+        line: UInt = #line
+    ) {
+        let viewModel = ChatChannelViewModel(channelController: makeChannelController())
+        let oldest = makeGroupingMessage(createdAt: 100)
+        let previous = makeGroupingMessage(createdAt: 110)
+        let breaking = makeGroupingMessage(type: type, createdAt: 120)
+
+        viewModel.messages = [breaking, previous, oldest]
+
+        XCTAssertTrue(showsAllInfo(previous, in: viewModel), file: file, line: line)
+        XCTAssertFalse(showsAllInfo(oldest, in: viewModel), file: file, line: line)
+    }
+
+    private func makeGroupingMessage(
+        id: MessageId = .unique,
+        type: MessageType = .regular,
+        createdAt: TimeInterval,
+        deletedAt: Date? = nil
+    ) -> ChatMessage {
+        ChatMessage.mock(
+            id: id,
+            cid: .unique,
+            text: "Message \(createdAt)",
+            type: type,
+            author: .mock(id: chatClient.currentUserId!),
+            createdAt: Date(timeIntervalSince1970: createdAt),
+            deletedAt: deletedAt,
+            isSentByCurrentUser: true
+        )
+    }
+
+    private func showsAllInfo(_ message: ChatMessage, in viewModel: ChatChannelViewModel) -> Bool {
+        viewModel.messagesGroupingInfo[message.id]?.contains(firstMessageKey) == true
     }
 
     private func sendPendingMessageEvent(

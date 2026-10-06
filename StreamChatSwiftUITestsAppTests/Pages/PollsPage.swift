@@ -62,10 +62,6 @@ enum PollsPage {
         static var endPollButton: XCUIElement { app.buttons["End Poll"] }
 
         static var endPollConfirmationButton: XCUIElement { app.alerts.buttons["End Poll"] }
-
-        static func viewCommentsButton(count: Int) -> XCUIElement {
-            app.buttons[count == 1 ? "View 1 Comment" : "View \(count) Comments"]
-        }
     }
 
     enum Results {

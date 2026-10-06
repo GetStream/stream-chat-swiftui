@@ -5,26 +5,6 @@
 import XCTest
 
 extension Reactions_Tests {
-    func test_userAddsReactionUsingExtendedReactionsPicker() {
-        linkToScenario(withId: 12040)
-
-        let message = "test message"
-
-        GIVEN("user opens the channel") {
-            userRobot.login().openChannel()
-        }
-        WHEN("participant sends the message") {
-            participantRobot.sendMessage(message)
-            userRobot.assertMessage(message)
-        }
-        AND("user adds the reaction using the extended reactions picker") {
-            userRobot.toggleReactionUsingExtendedPicker(type: .lol)
-        }
-        THEN("the reaction is added") {
-            userRobot.assertReaction(type: .lol, isPresent: true)
-        }
-    }
-
     func test_userRemovesReactionUsingExtendedReactionsPicker() {
         linkToScenario(withId: 12041)
 

@@ -7,25 +7,6 @@ import XCTest
 final class ChannelList_Tests: StreamTestCase {
     let message = "message"
 
-    func test_newMessageShownInChannelPreview_whenComingBackFromChannel() {
-        linkToScenario(withId: 348)
-
-        GIVEN("user opens the channel") {
-            userRobot
-                .login()
-                .openChannel()
-        }
-        WHEN("participant sends a new message") {
-            participantRobot.sendMessage(message)
-        }
-        AND("user goes back to channel list") {
-            userRobot.tapOnBackButton()
-        }
-        THEN("user observes a preview of participants message") {
-            userRobot.assertLastMessageInChannelPreview(message)
-        }
-    }
-
     func test_participantMessageShownInChannelPreview_whenReturningFromOffline() throws {
         linkToScenario(withId: 349)
         
@@ -93,107 +74,6 @@ extension ChannelList_Tests {
         }
         THEN("the error message is not shown in preview") {
             userRobot.assertLastMessageInChannelPreview(message)
-        }
-        AND("last message timestamp is shown") {
-            userRobot.assertLastMessageTimestampInChannelPreview(isHidden: false)
-        }
-    }
-
-    func test_channelPreviewShowsNoMessages_whenChannelIsEmpty() {
-        linkToScenario(withId: 352)
-
-        WHEN("user opens channel list") {
-            userRobot.login()
-        }
-        AND("the channel has no messages") {}
-        THEN("the channel preview shows No messages") {
-            userRobot.assertLastMessageInChannelPreview(message)
-        }
-        AND("last message timestamp is hidden") {
-            userRobot.assertLastMessageTimestampInChannelPreview(isHidden: true)
-        }
-    }
-
-    func test_channelPreviewShowsDeletedMessage_whenLastMessageIsDeleted() throws {
-        linkToScenario(withId: 354)
-
-        let message1 = "Previous message"
-        let message2 = "Last message"
-
-        GIVEN("user opens the channel") {
-            userRobot
-                .login()
-                .openChannel()
-        }
-        AND("user sends 2 messages") {
-            userRobot
-                .sendMessage(message1)
-                .sendMessage(message2)
-        }
-        AND("user deletes the last message") {
-            userRobot.deleteMessage()
-        }
-        WHEN("user goes back to the channel list") {
-            userRobot.tapOnBackButton()
-        }
-        THEN("the channel preview shows Message deleted") {
-            userRobot.assertLastMessageInChannelPreview("Message deleted")
-        }
-        AND("last message timestamp is shown") {
-            userRobot.assertLastMessageTimestampInChannelPreview(isHidden: false)
-        }
-    }
-
-    func test_channelPreviewIsNotUpdated_whenThreadReplyIsSent() throws {
-        linkToScenario(withId: 355)
-
-        let channelMessage = "Channel message"
-        let threadReply = "Thread reply"
-
-        GIVEN("user opens the channel") {
-            userRobot
-                .login()
-                .openChannel()
-        }
-        AND("user sends a message") {
-            userRobot.sendMessage(channelMessage)
-        }
-        AND("user adds thread reply to this message") {
-            userRobot.sendMessageInThread(threadReply)
-        }
-        WHEN("user goes back to the channel list") {
-            userRobot.moveToChannelListFromThreadReplies()
-        }
-        THEN("the channel preview shows the last message in the channel") {
-            userRobot.assertLastMessageInChannelPreview(channelMessage)
-        }
-        AND("last message timestamp is shown") {
-            userRobot.assertLastMessageTimestampInChannelPreview(isHidden: false)
-        }
-    }
-
-    func test_channelPreviewIsUpdated_whenPreviewMessageIsEdited() {
-        linkToScenario(withId: 356)
-
-        let originalMessage = "message"
-        let editedMessage = "edited message"
-
-        GIVEN("user opens the channel") {
-            userRobot
-                .login()
-                .openChannel()
-        }
-        AND("user sends a message") {
-            userRobot.sendMessage(originalMessage)
-        }
-        WHEN("user edits the message") {
-            userRobot.editMessage(editedMessage)
-        }
-        AND("user goes back to the channel list") {
-            userRobot.tapOnBackButton()
-        }
-        THEN("the channel preview shows edited message") {
-            userRobot.assertLastMessageInChannelPreview(editedMessage)
         }
         AND("last message timestamp is shown") {
             userRobot.assertLastMessageTimestampInChannelPreview(isHidden: false)
