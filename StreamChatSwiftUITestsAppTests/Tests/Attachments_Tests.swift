@@ -9,8 +9,6 @@ final class Attachments_Tests: StreamTestCase {
     func test_participantUploadsVideo() throws {
         linkToScenario(withId: 312)
 
-        try XCTSkipIf(true, "Check out CIS-2294")
-
         GIVEN("user opens the channel") {
             userRobot.login().openChannel()
         }
@@ -231,8 +229,6 @@ final class Attachments_Tests: StreamTestCase {
 
     func test_userUploadsVideo() throws {
         linkToScenario(withId: 12101)
-
-        try XCTSkipIf(true, "Mock video asset URL (sample-videos.com) fails TLS, so the fullscreen player shows UnsupportedContentIndicator (likely CIS-2294)")
 
         GIVEN("user opens a channel") {
             userRobot.login().openChannel()
