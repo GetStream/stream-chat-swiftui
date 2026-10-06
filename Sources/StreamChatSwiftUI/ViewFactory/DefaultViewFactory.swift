@@ -73,7 +73,7 @@ extension ViewFactory {
             channelListItem: listItem,
             swipedChannelId: options.swipedChannelId,
             channel: options.channel,
-            numberOfTrailingItems: 2,
+            numberOfTrailingItems: options.channel.ownCapabilities.contains(.muteChannel) ? 2 : 1,
             trailingRightButtonTapped: options.trailingSwipeRightButtonTapped,
             trailingLeftButtonTapped: options.trailingSwipeLeftButtonTapped,
             leadingSwipeButtonTapped: options.leadingSwipeButtonTapped

@@ -30,7 +30,7 @@ extension ChannelAction {
 
         actions.append(viewInfo(for: channel))
 
-        if channel.config.mutesEnabled {
+        if channel.ownCapabilities.contains(.muteChannel) {
             actions.append(muteAction(for: channel, chatClient: chatClient, onDismiss: onDismiss, onError: onError))
         }
 
@@ -63,7 +63,7 @@ extension ChannelAction {
 
         actions.append(viewInfo(for: channel))
 
-        if channel.config.mutesEnabled {
+        if channel.ownCapabilities.contains(.muteChannel) {
             actions.append(muteAction(for: channel, chatClient: chatClient, onDismiss: onDismiss, onError: onError))
         }
 
