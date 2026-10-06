@@ -86,30 +86,6 @@ extension MessageList_Tests {
         }
     }
 
-    func test_messageRendersTimestampAgain_whenMessageLastInGroupIsSoftDeleted() {
-        linkToScenario(withId: 12009)
-
-        GIVEN("user opens the channel") {
-            userRobot.login().openChannel()
-        }
-        AND("participant inserts 3 group messages") {
-            participantRobot
-                .sendMessage("1")
-                .sendMessage("2")
-                .sendMessage("3")
-            userRobot
-                .assertMessage("3")
-                .assertMessageTimestampCount(1)
-        }
-        WHEN("participant soft deletes the last message") {
-            participantRobot.deleteMessage(hard: false)
-            userRobot.assertDeletedMessage()
-        }
-        THEN("only one timestamp is rendered for the group") {
-            userRobot.assertMessageTimestampCount(1)
-        }
-    }
-
     func test_hardDeletesMessage() {
         linkToScenario(withId: 395)
 

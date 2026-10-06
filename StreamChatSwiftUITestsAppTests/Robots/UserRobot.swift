@@ -10,7 +10,6 @@ import XCTest
 final class UserRobot: Robot {
     let composer = MessageListPage.Composer.self
     let contextMenu = MessageListPage.ContextMenu.self
-    let debugAlert = MessageListPage.Alert.Debug.self
 
     @discardableResult
     func login() -> Self {
@@ -475,46 +474,6 @@ extension UserRobot {
         } else {
             typeText("\(text.prefix(3))")
             MessageListPage.ComposerMentions.cells.firstMatch.wait().tap()
-        }
-        return self
-    }
-}
-
-// MARK: Debug menu
-
-extension UserRobot {
-    @discardableResult
-    private func tapOnDebugMenu() -> Self {
-        MessageListPage.NavigationBar.debugMenu.safeTap()
-        return self
-    }
-
-    @discardableResult
-    func addParticipant(withUserId userId: String = "leia_organa") -> Self {
-        tapOnDebugMenu()
-        debugAlert.addMember.firstMatch.safeTap()
-        debugAlert.addMemberTextField.firstMatch
-            .obtainKeyboardFocus()
-            .typeText(userId)
-        debugAlert.addMemberOKButton.firstMatch.safeTap()
-        return self
-    }
-
-    @discardableResult
-    func removeParticipant(withUserId userId: String = "leia_organa") -> Self {
-        tapOnDebugMenu()
-        debugAlert.removeMember.firstMatch.safeTap()
-        debugAlert.selectMember(withUserId: userId).firstMatch.safeTap()
-        return self
-    }
-
-    @discardableResult
-    func truncateChannel(withMessage: Bool) -> Self {
-        tapOnDebugMenu()
-        if withMessage {
-            debugAlert.truncateWithMessage.safeTap()
-        } else {
-            debugAlert.truncateWithoutMessage.safeTap()
         }
         return self
     }

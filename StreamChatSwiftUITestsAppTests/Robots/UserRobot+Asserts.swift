@@ -399,20 +399,6 @@ extension UserRobot {
     }
 
     @discardableResult
-    func assertMessageAuthor(
-        _ author: String,
-        at messageCellIndex: Int? = nil,
-        file: StaticString = #filePath,
-        line: UInt = #line
-    ) -> Self {
-        let messageCell = messageCell(withIndex: messageCellIndex, file: file, line: line)
-        let textView = attributes.author(messageCell: messageCell).wait()
-        let actualAuthor = textView.waitForText(author).text
-        XCTAssertEqual(author, actualAuthor, file: file, line: line)
-        return self
-    }
-
-    @discardableResult
     func assertScrollToBottomButton(
         isVisible: Bool,
         timeout: Double = XCUIElement.waitTimeout,
@@ -533,6 +519,18 @@ extension UserRobot {
     ) -> Self {
         let success = waitForMessageDeliveryStatus(deliveryStatus, at: messageCellIndex, file: file, line: line)
         XCTAssertTrue(success)
+        return self
+    }
+
+    @discardableResult
+    func assertChannelMemberCount(
+        _ memberCount: Int,
+        file: StaticString = #filePath,
+        line: UInt = #line
+    ) -> Self {
+        let expectedText = "\(memberCount) members"
+        let actualText = MessageListPage.NavigationBar.participants.waitForText(expectedText, mustBeEqual: false).text
+        XCTAssertTrue(actualText.hasPrefix(expectedText), "'\(actualText)' does not start with '\(expectedText)'", file: file, line: line)
         return self
     }
 

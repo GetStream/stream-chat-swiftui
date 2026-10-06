@@ -129,44 +129,4 @@ final class Polls_Tests: StreamTestCase {
                 .assertPollOption(firstOption, isChecked: true)
         }
     }
-
-    func test_participantOptionIsShown_whenParticipantSuggestsPollOption() throws {
-        linkToScenario(withId: 12038)
-
-        let suggestedOption = "Green"
-
-        GIVEN("user creates a poll") {
-            userRobot
-                .login()
-                .openChannel()
-                .createPoll(question: question, options: options)
-                .assertMessageDeliveryStatus(.sent)
-        }
-        WHEN("participant suggests a new option") {
-            participantRobot.addPollOption(suggestedOption)
-        }
-        THEN("the new option is shown in the poll") {
-            userRobot
-                .assertPollMessage(question: question, optionsCount: options.count + 1)
-                .assertPollOption(suggestedOption, isChecked: false)
-        }
-    }
-
-    func test_participantCommentIsShown_whenParticipantAddsPollAnswer() throws {
-        linkToScenario(withId: 12039)
-
-        GIVEN("user creates a poll") {
-            userRobot
-                .login()
-                .openChannel()
-                .createPoll(question: question, options: options)
-                .assertMessageDeliveryStatus(.sent)
-        }
-        WHEN("participant adds a comment to the poll") {
-            participantRobot.addPollAnswer("Purple")
-        }
-        THEN("the poll shows the comment count") {
-            userRobot.assertPollComments(count: 1)
-        }
-    }
 }

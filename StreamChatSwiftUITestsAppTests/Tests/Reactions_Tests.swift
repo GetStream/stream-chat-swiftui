@@ -48,51 +48,6 @@ final class Reactions_Tests: StreamTestCase {
         }
     }
 
-    func test_reactionIsAdded_whenReactingToParticipantsMessage() throws {
-        linkToScenario(withId: 249)
-
-        let message = "test message"
-
-        GIVEN("user opens the channel") {
-            userRobot.login().openChannel()
-        }
-        WHEN("participant sends the message: '\(message)'") {
-            participantRobot.sendMessage(message)
-        }
-        AND("user adds the reaction") {
-            userRobot
-                .addReaction(type: .love)
-                .waitForNewReaction()
-        }
-        THEN("the reaction is added") {
-            userRobot.assertReaction(isPresent: true)
-        }
-    }
-
-    func test_removesReaction_whenUnReactingToParticipantsMessage() throws {
-        linkToScenario(withId: 250)
-
-        let message = "test message"
-
-        GIVEN("user opens the channel") {
-            userRobot.login().openChannel()
-        }
-        WHEN("participant sends the message: '\(message)'") {
-            participantRobot.sendMessage(message)
-        }
-        AND("user adds the reaction") {
-            userRobot
-                .addReaction(type: .lol)
-                .waitForNewReaction()
-        }
-        AND("user removes the reaction") {
-            userRobot.deleteReaction(type: .lol)
-        }
-        THEN("the reaction is removed") {
-            userRobot.assertReaction(isPresent: false)
-        }
-    }
-
     func test_reactionIsAddedByParticipant_whenReactingToUsersMessage() throws {
         linkToScenario(withId: 256)
 

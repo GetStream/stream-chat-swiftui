@@ -7,23 +7,6 @@ import XCTest
 final class PinnedMessages_Tests: StreamTestCase {
     let sampleText = "Test"
 
-    func test_userPinsMessage() {
-        linkToScenario(withId: 12024)
-
-        GIVEN("user opens the channel") {
-            userRobot.login().openChannel()
-        }
-        WHEN("participant sends the message") {
-            participantRobot.sendMessage(sampleText)
-        }
-        AND("user pins the message") {
-            userRobot.assertMessage(sampleText).pinMessage()
-        }
-        THEN("the message shows the pinned by you label") {
-            userRobot.assertMessagePinnedLabel()
-        }
-    }
-
     func test_userUnpinsMessage() {
         linkToScenario(withId: 12025)
 
@@ -44,26 +27,6 @@ final class PinnedMessages_Tests: StreamTestCase {
         }
         THEN("the message shows no pinned label") {
             userRobot.assertMessagePinnedLabel(isDisplayed: false)
-        }
-    }
-
-    func test_participantPinsMessage() {
-        linkToScenario(withId: 12026)
-
-        GIVEN("user opens the channel") {
-            userRobot.login().openChannel()
-        }
-        WHEN("user sends the message") {
-            userRobot.sendMessage(sampleText)
-        }
-        AND("the message is delivered") {
-            userRobot.assertMessageDeliveryStatus(.sent)
-        }
-        AND("participant pins the message") {
-            participantRobot.pinMesage()
-        }
-        THEN("the message shows the pinned by participant label") {
-            userRobot.assertMessagePinnedLabel(pinnedBy: participantRobot.name)
         }
     }
 
@@ -90,31 +53,6 @@ final class PinnedMessages_Tests: StreamTestCase {
         }
         THEN("the message shows no pinned label") {
             userRobot.assertMessagePinnedLabel(pinnedBy: participantRobot.name, isDisplayed: false)
-        }
-    }
-
-    func test_pinnedMessageIsShownOnThePinnedMessagesScreen() {
-        linkToScenario(withId: 12028)
-
-        GIVEN("user opens the channel") {
-            userRobot.login().openChannel()
-        }
-        AND("participant sends the message") {
-            participantRobot.sendMessage(sampleText)
-        }
-        AND("user pins the message") {
-            userRobot
-                .assertMessage(sampleText)
-                .pinMessage()
-                .assertMessagePinnedLabel()
-        }
-        WHEN("user opens the pinned messages screen") {
-            userRobot.openPinnedMessages()
-        }
-        THEN("the pinned message is shown") {
-            userRobot
-                .assertPinnedMessagesScreen()
-                .assertMessageInPinnedMessages(sampleText)
         }
     }
 

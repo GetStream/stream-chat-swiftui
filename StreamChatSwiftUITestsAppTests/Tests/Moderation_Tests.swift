@@ -36,23 +36,6 @@ final class Moderation_Tests: StreamTestCase {
         }
     }
 
-    func test_userMutesMessageAuthor() {
-        linkToScenario(withId: 12016)
-
-        GIVEN("user opens the channel") {
-            userRobot.login().openChannel()
-        }
-        AND("participant sends the message") {
-            participantRobot.sendMessage(sampleText)
-        }
-        WHEN("user mutes the message author") {
-            userRobot.muteMessageAuthor(sampleText)
-        }
-        THEN("the message actions offer to unmute the author") {
-            userRobot.assertMuteMessageAuthorOption(sampleText, isAuthorMuted: true)
-        }
-    }
-
     func test_userUnmutesMessageAuthor() {
         linkToScenario(withId: 12017)
 
@@ -70,23 +53,6 @@ final class Moderation_Tests: StreamTestCase {
         }
         THEN("the message actions offer to mute the author again") {
             userRobot.assertMuteMessageAuthorOption(sampleText, isAuthorMuted: false)
-        }
-    }
-
-    func test_userBlocksMessageAuthor() {
-        linkToScenario(withId: 12018)
-
-        GIVEN("user opens the channel") {
-            userRobot.login().openChannel()
-        }
-        AND("participant sends the message") {
-            participantRobot.sendMessage(sampleText)
-        }
-        WHEN("user blocks the message author") {
-            userRobot.blockMessageAuthor(sampleText)
-        }
-        THEN("the message actions offer to unblock the author") {
-            userRobot.assertBlockMessageAuthorOption(sampleText, isAuthorBlocked: true)
         }
     }
 

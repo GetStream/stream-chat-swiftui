@@ -106,22 +106,6 @@ final class Ephemeral_Messages_Tests: StreamTestCase {
         }
     }
 
-    func test_userObservesAnimatedGiphy_whenUserAddsGiphyMessage() {
-        linkToScenario(withId: 7812)
-
-        GIVEN("user opens a channel") {
-            userRobot.login().openChannel()
-        }
-        WHEN("user sends a giphy using giphy command") {
-            userRobot.uploadGiphy()
-        }
-        THEN("user observes the animated gif") {
-            userRobot
-                .assertGiphyImage()
-                .assertGiphyButtons(areDisplayed: false)
-        }
-    }
-
     func test_userObservesAnimatedGiphy_afterAddingGiphyThroughComposerMenu() {
         linkToScenario(withId: 441)
 

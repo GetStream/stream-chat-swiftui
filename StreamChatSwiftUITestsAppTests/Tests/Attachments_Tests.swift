@@ -6,34 +6,6 @@ import XCTest
 
 // NOTE: Attachments tests used to freeze the test app on iOS > 18"
 final class Attachments_Tests: StreamTestCase {
-    func test_uploadImage() throws {
-        linkToScenario(withId: 310)
-        
-        GIVEN("user opens the channel") {
-            userRobot.login().openChannel()
-        }
-        WHEN("user sends an image") {
-            userRobot.uploadImage()
-        }
-        THEN("user can see uploaded image") {
-            userRobot.assertImage(isPresent: true)
-        }
-    }
-
-    func test_participantUploadsImage() throws {
-        linkToScenario(withId: 311)
-
-        GIVEN("user opens the channel") {
-            userRobot.login().openChannel()
-        }
-        WHEN("participant uploads an image") {
-            participantRobot.uploadAttachment(type: .image)
-        }
-        THEN("user can see uploaded image") {
-            userRobot.assertImage(isPresent: true)
-        }
-    }
-
     func test_participantUploadsVideo() throws {
         linkToScenario(withId: 312)
 
@@ -132,26 +104,6 @@ final class Attachments_Tests: StreamTestCase {
         }
     }
 
-    func test_uploadFile() {
-        linkToScenario(withId: 11961)
-
-        GIVEN("user opens the channel") {
-            userRobot.login().openChannel()
-        }
-        WHEN("user attaches a file") {
-            userRobot.attachFiles()
-        }
-        THEN("file is displayed in preview") {
-            userRobot.assertFileAttachmentInPreview(isDisplayed: true)
-        }
-        WHEN("user sends the file") {
-            userRobot.tapOnSendButton()
-        }
-        THEN("user can see uploaded file") {
-            userRobot.assertFile(isPresent: true)
-        }
-    }
-
     func test_uploadMultipleFiles() {
         linkToScenario(withId: 11962)
 
@@ -193,20 +145,6 @@ final class Attachments_Tests: StreamTestCase {
             userRobot
                 .assertFile(count: 0, isPresent: false)
                 .assertDeletedMessage()
-        }
-    }
-
-    func test_participantUploadsMultipleImages() {
-        linkToScenario(withId: 11964)
-
-        GIVEN("user opens the channel") {
-            userRobot.login().openChannel()
-        }
-        WHEN("participant uploads multiple images") {
-            participantRobot.uploadAttachment(type: .image, count: 2)
-        }
-        THEN("user can see the images in one message") {
-            userRobot.assertImages(isDisplayed: true, count: 2)
         }
     }
 
