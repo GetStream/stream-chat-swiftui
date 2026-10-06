@@ -16,7 +16,7 @@ extension UserRobot {
         }
         // Selecting the polls tab presents the poll creation sheet right away.
         PollsPage.attachmentPickerPollsButton.wait().safeTap()
-        let questionField = PollsPage.Creation.questionField.wait(timeout: 10)
+        let questionField = PollsPage.Creation.questionField.wait(timeout: XCUIElement.longWaitTimeout)
         // Toggled before typing, while the keyboard does not cover the setting.
         if multipleAnswers {
             PollsPage.Creation.multipleAnswersSwitch.wait().waitForHitPoint().safeTap()

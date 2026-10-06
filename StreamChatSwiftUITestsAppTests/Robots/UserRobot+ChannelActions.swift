@@ -84,7 +84,7 @@ extension UserRobot {
     @discardableResult
     func assertChannelListIsEmpty(file: StaticString = #filePath, line: UInt = #line) -> Self {
         XCTAssertTrue(
-            ChannelActionsPage.emptyChannelsView.wait(timeout: 10).exists,
+            ChannelActionsPage.emptyChannelsView.wait(timeout: XCUIElement.longWaitTimeout).exists,
             "Empty channel list placeholder is not shown",
             file: file,
             line: line

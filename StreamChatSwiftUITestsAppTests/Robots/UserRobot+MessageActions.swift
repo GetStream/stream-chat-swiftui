@@ -54,7 +54,7 @@ extension UserRobot {
     @discardableResult
     func unmuteMessageAuthor(_ text: String) -> Self {
         openContextMenu(forMessageWithText: text)
-        menuOptions.unmute.wait(timeout: 15).safeTap()
+        menuOptions.unmute.wait(timeout: XCUIElement.longWaitTimeout).safeTap()
         return self
     }
 
@@ -69,7 +69,7 @@ extension UserRobot {
     @discardableResult
     func unblockMessageAuthor(_ text: String) -> Self {
         openContextMenu(forMessageWithText: text)
-        menuOptions.unblock.wait(timeout: 15).safeTap()
+        menuOptions.unblock.wait(timeout: XCUIElement.longWaitTimeout).safeTap()
         MessageListPage.ConfirmationAlert.okButton.wait().safeTap()
         return self
     }
@@ -102,7 +102,7 @@ extension UserRobot {
         composer.inputField.obtainKeyboardFocus()
         for _ in 0..<5 {
             composer.inputField.tap()
-            if pasteButton.wait(timeout: 2).exists { break }
+            if pasteButton.wait(timeout: XCUIElement.probeTimeout).exists { break }
         }
         pasteButton.safeTap()
         return self
@@ -187,7 +187,7 @@ extension UserRobot {
         for _ in 0..<5 {
             openContextMenu(forMessageWithText: messageText)
             contextMenu.actionsView.element.wait()
-            if expected.wait(timeout: 2).exists { break }
+            if expected.wait(timeout: XCUIElement.probeTimeout).exists { break }
             MessageListPage.dismissMessageActions()
         }
         XCTAssertTrue(expected.exists, "Expected message action is not shown", file: file, line: line)
@@ -210,9 +210,9 @@ extension UserRobot {
         messageCell.wait()
         let pinnedLabel = MessageListPage.Annotations.pinnedLabel(in: messageCell)
         if isDisplayed {
-            XCTAssertEqual(expectedLabel, pinnedLabel.wait(timeout: 10).waitForText(expectedLabel).label, file: file, line: line)
+            XCTAssertEqual(expectedLabel, pinnedLabel.wait(timeout: XCUIElement.longWaitTimeout).waitForText(expectedLabel).label, file: file, line: line)
         } else {
-            XCTAssertFalse(pinnedLabel.waitForDisappearance(timeout: 10).exists, "Pinned label is shown", file: file, line: line)
+            XCTAssertFalse(pinnedLabel.waitForDisappearance(timeout: XCUIElement.longWaitTimeout).exists, "Pinned label is shown", file: file, line: line)
         }
         return self
     }
@@ -243,7 +243,7 @@ extension UserRobot {
         line: UInt = #line
     ) -> Self {
         XCTAssertTrue(
-            PinnedMessagesPage.message(withText: text).wait(timeout: 10).exists,
+            PinnedMessagesPage.message(withText: text).wait(timeout: XCUIElement.longWaitTimeout).exists,
             "Message '\(text)' is not shown in pinned messages",
             file: file,
             line: line
@@ -253,7 +253,7 @@ extension UserRobot {
 
     @discardableResult
     func assertPinnedMessagesAreEmpty(file: StaticString = #filePath, line: UInt = #line) -> Self {
-        XCTAssertTrue(PinnedMessagesPage.emptyTitle.wait(timeout: 10).exists, "Pinned messages are not empty", file: file, line: line)
+        XCTAssertTrue(PinnedMessagesPage.emptyTitle.wait(timeout: XCUIElement.longWaitTimeout).exists, "Pinned messages are not empty", file: file, line: line)
         XCTAssertEqual(0, PinnedMessagesPage.messages.count, file: file, line: line)
         return self
     }
@@ -267,9 +267,9 @@ extension UserRobot {
     ) -> Self {
         let channel = ChannelListPage.channel(withName: name)
         if isDisplayed {
-            XCTAssertTrue(channel.wait(timeout: 10).exists, "Channel '\(name)' is not shown", file: file, line: line)
+            XCTAssertTrue(channel.wait(timeout: XCUIElement.longWaitTimeout).exists, "Channel '\(name)' is not shown", file: file, line: line)
         } else {
-            XCTAssertFalse(channel.waitForDisappearance(timeout: 10).exists, "Channel '\(name)' is shown", file: file, line: line)
+            XCTAssertFalse(channel.waitForDisappearance(timeout: XCUIElement.longWaitTimeout).exists, "Channel '\(name)' is shown", file: file, line: line)
         }
         return self
     }
@@ -280,7 +280,7 @@ extension UserRobot {
         file: StaticString = #filePath,
         line: UInt = #line
     ) -> Self {
-        let actualCount = ChannelListPage.channelNames.waitCount(expectedCount, timeout: 10, exact: true).count
+        let actualCount = ChannelListPage.channelNames.waitCount(expectedCount, timeout: XCUIElement.longWaitTimeout, exact: true).count
         XCTAssertEqual(expectedCount, actualCount, file: file, line: line)
         return self
     }
@@ -298,12 +298,12 @@ extension UserRobot {
         let messageCell = messageCell(withIndex: messageCellIndex, file: file, line: line).wait()
         let reminderLabel = MessageListPage.Annotations.reminderLabel(in: messageCell)
         guard isDisplayed else {
-            XCTAssertFalse(reminderLabel.waitForDisappearance(timeout: 10).exists, "Reminder is shown", file: file, line: line)
+            XCTAssertFalse(reminderLabel.waitForDisappearance(timeout: XCUIElement.longWaitTimeout).exists, "Reminder is shown", file: file, line: line)
             return self
         }
 
         let reminderSet = MessageListPage.Annotations.reminderSet
-        let label = reminderLabel.wait(timeout: 10).label
+        let label = reminderLabel.wait(timeout: XCUIElement.longWaitTimeout).label
         if remindAtIsSet {
             XCTAssertTrue(label.hasPrefix("\(reminderSet), in "), "Unexpected reminder label: '\(label)'", file: file, line: line)
         } else {

@@ -11,7 +11,7 @@ extension UserRobot {
     @discardableResult
     func search(_ text: String) -> Self {
         // On older iOS versions the navigation bar search field stays hidden until the list is pulled down.
-        if !SearchPage.field.wait(timeout: 2).exists {
+        if !SearchPage.field.wait(timeout: XCUIElement.probeTimeout).exists {
             ChannelListPage.list.swipeDown()
         }
         SearchPage.field.wait().safeTap()

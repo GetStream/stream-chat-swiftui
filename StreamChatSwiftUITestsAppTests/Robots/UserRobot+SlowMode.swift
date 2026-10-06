@@ -9,7 +9,7 @@ extension UserRobot {
     func assertComposerInputIsDisabled(file: StaticString = #filePath, line: UInt = #line) -> Self {
         MessageListPage.Composer.inputField.wait().safeTap()
         XCTAssertFalse(
-            app.keyboards.firstMatch.waitForExistence(timeout: 2),
+            app.keyboards.firstMatch.waitForExistence(timeout: XCUIElement.probeTimeout),
             "Composer input can be focused",
             file: file,
             line: line
