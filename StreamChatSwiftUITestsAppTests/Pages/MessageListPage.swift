@@ -188,6 +188,11 @@ class MessageListPage {
             messageCell.images["MessageMediaAttachmentsContainerView"]
         }
 
+        static func restartAttachmentUploadButton(in messageCell: XCUIElement) -> XCUIElement {
+            // The media container overrides the retry button's identifier, so it is matched by the retry icon's name.
+            messageCell.buttons.matching(NSPredicate(format: "label == 'arrow.trianglehead.clockwise.rotate.90'")).firstMatch
+        }
+
         static func imagePreloader(in messageCell: XCUIElement) -> XCUIElement {
             messageCell.activityIndicators["MessageMediaAttachmentsContainerView"]
         }

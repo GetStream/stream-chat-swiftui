@@ -17,6 +17,10 @@ enum ComposerAttachmentsPage {
             view.buttons.matching(NSPredicate(format: "label == 'Change in Settings'")).firstMatch
         }
 
+        static var videos: XCUIElementQuery {
+            view.buttons.matching(NSPredicate(format: "label BEGINSWITH 'Video'"))
+        }
+
         static var photos: XCUIElementQuery {
             view.buttons.matching(NSPredicate(format: "label == 'Photo'"))
         }

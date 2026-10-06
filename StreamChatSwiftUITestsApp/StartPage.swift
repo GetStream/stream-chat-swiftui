@@ -25,6 +25,13 @@ struct StartPage: View {
                         Text("Start Chat")
                     }
                     .accessibilityIdentifier("TestApp.Start")
+                    Button {
+                        connectUser(withCredentials: UserCredentials.secondUser)
+                        appState.userState = .loggedIn
+                    } label: {
+                        Text("Start Chat as Han Solo")
+                    }
+                    .accessibilityIdentifier("TestApp.StartAsSecondUser")
                 }
 
                 if notificationsHandler.notificationChannelId != nil {
@@ -93,7 +100,7 @@ struct StartPage: View {
         )
         streamChat = StreamChat(chatClient: chatClient, utils: utils)
 
-        chatClient.logout {
+        let connect = {
             chatClient.connectUser(
                 userInfo: .init(id: credentials.id, name: credentials.name, imageURL: credentials.avatarURL),
                 tokenProvider: mockTokenProvider(for: credentials)
@@ -103,6 +110,12 @@ struct StartPage: View {
                     return
                 }
             }
+        }
+        // Logging out wipes the local storage, which tests that relaunch the app need to keep.
+        if ProcessInfo.processInfo.arguments.contains("KEEP_LOCAL_STORAGE") {
+            connect()
+        } else {
+            chatClient.logout { connect() }
         }
 
         if settings.setConnectivity {

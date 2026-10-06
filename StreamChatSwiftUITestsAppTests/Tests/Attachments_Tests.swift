@@ -197,4 +197,51 @@ final class Attachments_Tests: StreamTestCase {
             userRobot.assertImages(isDisplayed: true)
         }
     }
+
+    func test_restartImageUploadAfterRestartingTheApp() throws {
+        linkToScenario(withId: 12100)
+
+        GIVEN("user opens the channel") {
+            userRobot
+                .setConnectivitySwitchVisibility(to: .on)
+                .login()
+                .openChannel()
+        }
+        WHEN("user sends an image being offline") {
+            userRobot
+                .setConnectivity(to: .off)
+                .uploadImage()
+                .assertImageUploadFailed()
+        }
+        AND("user restarts the app") {
+            app.terminate()
+            app.launchArguments.append("KEEP_LOCAL_STORAGE")
+            app.launch()
+            userRobot
+                .login()
+                .openChannel()
+        }
+        AND("user restarts an image upload being online") {
+            userRobot.restartImageUpload()
+        }
+        THEN("user can see uploaded image") {
+            userRobot.assertImage(isPresent: true)
+        }
+    }
+
+    func test_userUploadsVideo() throws {
+        linkToScenario(withId: 12101)
+
+        try XCTSkipIf(true, "Mock video asset URL (sample-videos.com) fails TLS, so the fullscreen player shows UnsupportedContentIndicator (likely CIS-2294)")
+
+        GIVEN("user opens a channel") {
+            userRobot.login().openChannel()
+        }
+        WHEN("user sends a video") {
+            userRobot.uploadVideo()
+        }
+        THEN("user can see uploaded video") {
+            userRobot.assertVideo(isPresent: true)
+        }
+    }
 }

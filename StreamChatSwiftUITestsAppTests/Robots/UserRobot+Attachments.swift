@@ -174,4 +174,29 @@ extension UserRobot {
         XCTAssertEqual(expected, counter.wait().waitForText(expected).text, file: file, line: line)
         return self
     }
+
+    @discardableResult
+    func restartImageUpload(messageCellIndex: Int? = nil) -> Self {
+        let messageCell = messageCell(withIndex: messageCellIndex)
+        MessageListPage.Attributes.restartAttachmentUploadButton(in: messageCell).wait(timeout: 10).safeTap()
+        return self
+    }
+
+    @discardableResult
+    func assertImageUploadFailed(at messageCellIndex: Int? = nil, file: StaticString = #filePath, line: UInt = #line) -> Self {
+        let messageCell = messageCell(withIndex: messageCellIndex, file: file, line: line)
+        let restartButton = MessageListPage.Attributes.restartAttachmentUploadButton(in: messageCell)
+        XCTAssertTrue(restartButton.wait(timeout: 10).exists, "Image upload did not fail", file: file, line: line)
+        return self
+    }
+
+    @discardableResult
+    func uploadVideo() -> Self {
+        PhotoLibrary.seedVideo()
+        openAttachmentPicker()
+        MessageListPage.AttachmentMenu.photoOrVideoButton.wait().safeTap()
+        ComposerAttachmentsPage.Picker.videos.firstMatch.wait(timeout: 10).safeTap()
+        closeAttachmentPicker()
+        return tapOnSendButton()
+    }
 }
