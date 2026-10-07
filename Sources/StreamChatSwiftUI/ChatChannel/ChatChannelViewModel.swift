@@ -149,6 +149,12 @@ import SwiftUI
     // it should not call markRead() in any scenario.
     public var currentUserMarkedMessageUnread: Bool = false
 
+    // A message the user marked as unread keeps the jump-to-unread button available,
+    // so the message list must not treat the channel as readable.
+    var canMarkReadInMessageList: Bool {
+        canMarkRead && !currentUserMarkedMessageUnread
+    }
+
     @Published public private(set) var channel: ChatChannel?
 
     public var isMessageThread: Bool {
@@ -322,7 +328,9 @@ import SwiftUI
 
     private func jumpToMessage(messageId: String, skipThreadNavigation: Bool) -> Bool {
         if messageId == .unknownMessageId {
-            if firstUnreadMessageId == nil, let lastReadMessageId {
+            // The read state can arrive after `checkUnreadCount` ran, so fall back to the controller's value.
+            if firstUnreadMessageId == nil, let lastReadMessageId = lastReadMessageId ?? channelController.lastReadMessageId {
+                self.lastReadMessageId = lastReadMessageId
                 scrollsToUnreadAfterJumpToMessage = true
                 channelDataSource.loadPageAroundMessageId(lastReadMessageId) { error in
                     if error != nil {

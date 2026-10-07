@@ -1095,6 +1095,57 @@ import XCTest
         XCTAssertNotNil(viewModel.firstUnreadMessageId)
     }
     
+    // MARK: - Unread state
+
+    func test_chatChannelVM_jumpToUnknownMessage_whenReadStateArrivesLate_loadsPageAroundLastReadMessage() {
+        // Given
+        let channelController = makeChannelController(messages: [ChatMessage.mock()])
+        channelController.channel_mock = .mockDMChannel()
+        let viewModel = ChatChannelViewModel(channelController: channelController)
+        channelController.channel_mock = .mockDMChannel(
+            unreadCount: .mock(messages: 25),
+            reads: [.mock(
+                lastReadAt: .distantPast,
+                lastReadMessageId: "last-read-message",
+                unreadMessagesCount: 25,
+                user: .mock(id: chatClient.currentUserId ?? "")
+            )]
+        )
+
+        // When
+        _ = viewModel.jumpToMessage(messageId: .unknownMessageId)
+
+        // Then
+        XCTAssertEqual(channelController.loadPageAroundMessageIdCallCount, 1)
+    }
+
+    func test_chatChannelVM_canMarkReadInMessageList_whenCaughtUp_isTrue() {
+        // Given
+        let channelController = makeChannelController(messages: [ChatMessage.mock()])
+        channelController.channel_mock = .mockDMChannel()
+
+        // When
+        let viewModel = ChatChannelViewModel(channelController: channelController)
+
+        // Then
+        XCTAssertTrue(viewModel.canMarkRead)
+        XCTAssertTrue(viewModel.canMarkReadInMessageList)
+    }
+
+    func test_chatChannelVM_canMarkReadInMessageList_whenUserMarkedMessageUnread_isFalse() {
+        // Given
+        let channelController = makeChannelController(messages: [ChatMessage.mock()])
+        channelController.channel_mock = .mockDMChannel()
+        let viewModel = ChatChannelViewModel(channelController: channelController)
+
+        // When
+        viewModel.currentUserMarkedMessageUnread = true
+
+        // Then
+        XCTAssertTrue(viewModel.canMarkRead)
+        XCTAssertFalse(viewModel.canMarkReadInMessageList)
+    }
+
     // MARK: - currentUserMarkedMessageUnread Tests
     
     func test_chatChannelVM_currentUserMarkedMessageUnread_initialValue() {
