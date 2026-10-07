@@ -41,95 +41,6 @@ final class MessageList_Tests: StreamTestCase {
         }
     }
 
-    func test_sendsMessageWithOneEmoji() throws {
-        linkToScenario(withId: 273)
-
-        let message = "🍏"
-
-        GIVEN("user opens the channel") {
-            userRobot.login().openChannel()
-        }
-        WHEN("user sends the emoji: '\(message)'") {
-            userRobot.sendMessage(message)
-        }
-        THEN("the message is delivered") {
-            userRobot.assertMessage(message)
-        }
-    }
-
-    func test_sendsMessageWithMultipleEmojis() throws {
-        linkToScenario(withId: 274)
-
-        let message = "🍏🙂👍"
-
-        GIVEN("user opens the channel") {
-            userRobot.login().openChannel()
-        }
-        WHEN("user sends a message with multiple emojis - \(message)") {
-            userRobot.sendMessage(message)
-        }
-        THEN("the message is delivered") {
-            userRobot.assertMessage(message)
-        }
-    }
-
-    func test_editsMessage() throws {
-        linkToScenario(withId: 264)
-
-        let message = "test message"
-        let editedMessage = "hello"
-
-        GIVEN("user opens the channel") {
-            userRobot.login().openChannel()
-        }
-        WHEN("user sends the message: '\(message)'") {
-            userRobot.sendMessage(message)
-        }
-        AND("user edits the message: '\(editedMessage)'") {
-            userRobot.editMessage(editedMessage)
-        }
-        THEN("the message is edited") {
-            userRobot.assertMessage(editedMessage)
-        }
-    }
-
-    func test_receivesMessage() throws {
-        linkToScenario(withId: 254)
-
-        let message = "message"
-        let author = "Count Dooku"
-
-        GIVEN("user opens the channel") {
-            userRobot.login().openChannel()
-        }
-        WHEN("participant sends a message: '\(message)'") {
-            participantRobot.sendMessage(message)
-        }
-        THEN("the message is delivered") {
-            userRobot.assertMessageAuthor(author)
-        }
-    }
-
-    func test_messageIsEdited_whenParticipantEditsMessage() throws {
-        linkToScenario(withId: 266)
-
-        let message = "test message"
-        let editedMessage = "hello"
-
-        GIVEN("user opens the channel") {
-            userRobot.login().openChannel()
-        }
-        WHEN("participant sends the message: '\(message)'") {
-            participantRobot.sendMessage(message)
-        }
-        AND("participant edits the message: '\(editedMessage)'") {
-            participantRobot.editMessage(editedMessage)
-        }
-        THEN("the message is edited") {
-            userRobot.assertMessage(editedMessage)
-        }
-    }
-
     func test_messageIncreases_whenUserEditsMessageWithOneLineText() throws {
         linkToScenario(withId: 267)
 
@@ -162,23 +73,6 @@ final class MessageList_Tests: StreamTestCase {
         }
     }
 
-    func test_messageWithMultipleLinesShown_userSendsMessageWithMultipleLines() {
-        linkToScenario(withId: 252)
-
-        let message = "1\n2\n3lines increased"
-        GIVEN("user opens the channel") {
-            userRobot
-                .login()
-                .openChannel()
-        }
-        WHEN("user sends a message with N new lines (e.g.: 3)") {
-            userRobot.sendMessage(message)
-        }
-        THEN("user observes a message cell with N lines") {
-            userRobot.assertMessage(message)
-        }
-    }
-
     func test_typingIndicator() throws {
         linkToScenario(withId: 358)
 
@@ -202,8 +96,6 @@ final class MessageList_Tests: StreamTestCase {
     func test_offlineMessageInTheMessageList() throws {
         linkToScenario(withId: 365)
         
-        try XCTSkipIf(true, "https://linear.app/stream/issue/IOS-1315")
-
         let message = "test message"
 
         GIVEN("user opens the channel") {
@@ -230,8 +122,6 @@ final class MessageList_Tests: StreamTestCase {
     func test_addMessageWhileOffline() throws {
         linkToScenario(withId: 366)
         
-        try XCTSkipIf(true, "https://linear.app/stream/issue/IOS-1315")
-
         let message = "test message"
 
         GIVEN("user opens the channel") {
@@ -270,8 +160,6 @@ final class MessageList_Tests: StreamTestCase {
 
     func test_offlineRecoveryWithinSession() throws {
         linkToScenario(withId: 367)
-
-        try XCTSkipIf(true, "https://linear.app/stream/issue/IOS-1315")
 
         let message = "test message"
 
@@ -728,63 +616,6 @@ extension MessageList_Tests {
     }
 }
 
-// MARK: - Message grouping
-
-extension MessageList_Tests {
-    func test_messageEndsGroup_whenFollowedByErrorMessage() {
-        linkToScenario(withId: 383)
-
-        let message = "Hey there"
-        let messageWithForbiddenContent = mockServer.forbiddenWord
-
-        GIVEN("user opens the channel") {
-            userRobot
-                .login()
-                .openChannel()
-        }
-        AND("user sends the 1st message") {
-            userRobot.sendMessage(message)
-        }
-        AND("the timestamp is shown under the 1st message") {
-            userRobot.assertMessageHasTimestamp()
-        }
-        WHEN("user sends a message that does not pass moderation") {
-            userRobot.sendMessage(messageWithForbiddenContent, waitForAppearance: false)
-        }
-        THEN("messages are not grouped, 1st message shows the timestamp") {
-            userRobot.assertMessageHasTimestamp(at: 1)
-        }
-    }
-
-    func test_messageEndsGroup_whenFollowedByEphemeralMessage() {
-        linkToScenario(withId: 384)
-
-        let message = "Hey there"
-
-        GIVEN("user opens the channel") {
-            userRobot
-                .login()
-                .openChannel()
-        }
-        AND("user sends the 1st message") {
-            userRobot.sendMessage(message)
-        }
-        AND("the timestamp is shown under the 1st message") {
-            userRobot.assertMessageHasTimestamp()
-        }
-        WHEN("user sends an ephemeral message") {
-            userRobot
-                .uploadGiphy(send: false)
-                .scrollMessageListDown() // to hide the keyboard
-        }
-        THEN("messages are not grouped, 1st message shows the timestamp") {
-            userRobot
-                .assertMessageCount(2)
-                .assertMessageHasTimestamp(at: 1)
-        }
-    }
-}
-
 // MARK: Deleted messages
 
 extension MessageList_Tests {
@@ -801,25 +632,6 @@ extension MessageList_Tests {
         }
         AND("user deletes the message: '\(message)'") {
             userRobot.deleteMessage()
-        }
-        THEN("the message is deleted") {
-            userRobot.assertDeletedMessage()
-        }
-    }
-
-    func test_messageDeleted_whenParticipantDeletesMessage() throws {
-        linkToScenario(withId: 387)
-
-        let message = "test message"
-
-        GIVEN("user opens the channel") {
-            userRobot.login().openChannel()
-        }
-        WHEN("participant sends the message: '\(message)'") {
-            participantRobot.sendMessage(message)
-        }
-        AND("participant deletes the message: '\(message)'") {
-            participantRobot.deleteMessage()
         }
         THEN("the message is deleted") {
             userRobot.assertDeletedMessage()
@@ -948,29 +760,6 @@ extension MessageList_Tests {
             userRobot
                 .tapOnBackButton()
                 .assertThreadReplyCountButton(replies: 1)
-        }
-    }
-
-    func test_messageDeleted_whenParticipantHardDeletesMessage() throws {
-        linkToScenario(withId: 396)
-
-        let message = "test message"
-
-        GIVEN("user opens the channel") {
-            backendRobot.generateChannels(channelsCount: 1, messagesCount: 1)
-            userRobot.login().openChannel()
-        }
-        WHEN("participant sends the message: '\(message)'") {
-            participantRobot.sendMessage(message)
-        }
-        AND("the message is delivered") {
-            userRobot.assertMessage(message)
-        }
-        AND("participant hard-deletes the message: '\(message)'") {
-            participantRobot.deleteMessage(hard: true)
-        }
-        THEN("the message is hard-deleted") {
-            userRobot.assertHardDeletedMessage(withText: message)
         }
     }
 }

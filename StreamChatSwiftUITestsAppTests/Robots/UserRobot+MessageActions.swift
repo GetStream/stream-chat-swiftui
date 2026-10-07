@@ -1,0 +1,314 @@
+//
+// Copyright © 2026 Stream.io Inc. All rights reserved.
+//
+
+import Foundation
+import XCTest
+
+private let menuOptions = MessageListPage.ContextMenu.Element.self
+
+// MARK: Actions
+
+extension UserRobot {
+    @discardableResult
+    func openChannel(withName name: String) -> Self {
+        waitForChannelListToLoad()
+        ChannelListPage.channel(withName: name).wait().waitForHitPoint().safeTap()
+        return self
+    }
+
+    @discardableResult
+    func moveToChannelListFromMessageList() -> Self {
+        tapOnBackButton()
+        ChannelListPage.cells.firstMatch.wait()
+        return self
+    }
+
+    @discardableResult
+    func openContextMenu(forMessageWithText text: String) -> Self {
+        let cell = MessageListPage.cell(withText: text).wait()
+        attributes.messageBubble(in: cell).waitForHitPoint().press(forDuration: 1)
+        return self
+    }
+
+    @discardableResult
+    func flagMessage(_ text: String) -> Self {
+        openContextMenu(forMessageWithText: text)
+        menuOptions.flag.wait().safeTap()
+        return self
+    }
+
+    @discardableResult
+    func confirmFlagMessage() -> Self {
+        MessageListPage.ConfirmationAlert.flagButton.wait().safeTap()
+        return self
+    }
+
+    @discardableResult
+    func muteMessageAuthor(_ text: String) -> Self {
+        openContextMenu(forMessageWithText: text)
+        menuOptions.mute.wait().safeTap()
+        return self
+    }
+
+    @discardableResult
+    func unmuteMessageAuthor(_ text: String) -> Self {
+        openContextMenu(forMessageWithText: text)
+        menuOptions.unmute.wait(timeout: XCUIElement.longWaitTimeout).safeTap()
+        return self
+    }
+
+    @discardableResult
+    func blockMessageAuthor(_ text: String) -> Self {
+        openContextMenu(forMessageWithText: text)
+        menuOptions.block.wait().safeTap()
+        MessageListPage.ConfirmationAlert.okButton.wait().safeTap()
+        return self
+    }
+
+    @discardableResult
+    func unblockMessageAuthor(_ text: String) -> Self {
+        openContextMenu(forMessageWithText: text)
+        menuOptions.unblock.wait(timeout: XCUIElement.longWaitTimeout).safeTap()
+        MessageListPage.ConfirmationAlert.okButton.wait().safeTap()
+        return self
+    }
+
+    @discardableResult
+    func pinMessage(messageCellIndex: Int = 0) -> Self {
+        selectOptionFromContextMenu(option: .pin, forMessageAtIndex: messageCellIndex)
+    }
+
+    @discardableResult
+    func pinMessage(_ text: String) -> Self {
+        openContextMenu(forMessageWithText: text)
+        menuOptions.pin.wait().safeTap()
+        return self
+    }
+
+    @discardableResult
+    func unpinMessage(messageCellIndex: Int = 0) -> Self {
+        selectOptionFromContextMenu(option: .unpin, forMessageAtIndex: messageCellIndex)
+    }
+
+    @discardableResult
+    func copyMessage(messageCellIndex: Int = 0) -> Self {
+        selectOptionFromContextMenu(option: .copy, forMessageAtIndex: messageCellIndex)
+    }
+
+    @discardableResult
+    func pasteIntoComposer() -> Self {
+        let pasteButton = composer.pasteButton
+        composer.inputField.obtainKeyboardFocus()
+        for _ in 0..<5 {
+            composer.inputField.tap()
+            if pasteButton.wait(timeout: XCUIElement.probeTimeout).exists { break }
+        }
+        pasteButton.safeTap()
+        return self
+    }
+
+    @discardableResult
+    func openChannelInfo() -> Self {
+        MessageListPage.NavigationBar.chatAvatar.firstMatch.wait().safeTap()
+        return self
+    }
+
+    @discardableResult
+    func openPinnedMessages() -> Self {
+        openChannelInfo()
+        ChannelInfoPage.pinnedMessagesOption.wait().safeTap()
+        return self
+    }
+
+    @discardableResult
+    func openPinnedMessage(withText text: String) -> Self {
+        PinnedMessagesPage.message(withText: text).wait().safeTap()
+        return self
+    }
+}
+
+// MARK: Asserts
+
+extension UserRobot {
+    @discardableResult
+    func assertFlagMessageDialog(
+        isDisplayed: Bool,
+        file: StaticString = #filePath,
+        line: UInt = #line
+    ) -> Self {
+        let alert = MessageListPage.ConfirmationAlert.alert
+        if isDisplayed {
+            XCTAssertTrue(alert.wait().exists, "Flag confirmation is not shown", file: file, line: line)
+            XCTAssertTrue(MessageListPage.ConfirmationAlert.flagButton.exists, file: file, line: line)
+        } else {
+            XCTAssertFalse(alert.waitForDisappearance().exists, "Flag confirmation is still shown", file: file, line: line)
+        }
+        return self
+    }
+
+    /// Opens the message actions and asserts which mute option they offer for the author.
+    @discardableResult
+    func assertMuteMessageAuthorOption(
+        _ messageText: String,
+        isAuthorMuted: Bool,
+        file: StaticString = #filePath,
+        line: UInt = #line
+    ) -> Self {
+        let expected = isAuthorMuted ? menuOptions.unmute : menuOptions.mute
+        let opposite = isAuthorMuted ? menuOptions.mute : menuOptions.unmute
+        assertMessageActionOption(expected, insteadOf: opposite, messageText: messageText, file: file, line: line)
+        return self
+    }
+
+    /// Opens the message actions and asserts which block option they offer for the author.
+    @discardableResult
+    func assertBlockMessageAuthorOption(
+        _ messageText: String,
+        isAuthorBlocked: Bool,
+        file: StaticString = #filePath,
+        line: UInt = #line
+    ) -> Self {
+        let expected = isAuthorBlocked ? menuOptions.unblock : menuOptions.block
+        let opposite = isAuthorBlocked ? menuOptions.block : menuOptions.unblock
+        assertMessageActionOption(expected, insteadOf: opposite, messageText: messageText, file: file, line: line)
+        return self
+    }
+
+    /// The actions are built when the overlay opens, so a state change that has not landed yet
+    /// needs the overlay to be reopened to be reflected.
+    private func assertMessageActionOption(
+        _ expected: XCUIElement,
+        insteadOf opposite: XCUIElement,
+        messageText: String,
+        file: StaticString,
+        line: UInt
+    ) {
+        for _ in 0..<5 {
+            openContextMenu(forMessageWithText: messageText)
+            contextMenu.actionsView.element.wait()
+            if expected.wait(timeout: XCUIElement.probeTimeout).exists { break }
+            MessageListPage.dismissMessageActions()
+        }
+        XCTAssertTrue(expected.exists, "Expected message action is not shown", file: file, line: line)
+        XCTAssertFalse(opposite.exists, "Unexpected message action is shown", file: file, line: line)
+        MessageListPage.dismissMessageActions()
+    }
+
+    @discardableResult
+    func assertMessagePinnedLabel(
+        pinnedBy: String? = nil,
+        isDisplayed: Bool = true,
+        at messageCellIndex: Int = 0,
+        messageText: String? = nil,
+        file: StaticString = #filePath,
+        line: UInt = #line
+    ) -> Self {
+        let expectedLabel = pinnedBy.map { MessageListPage.Annotations.pinnedBy($0) } ?? MessageListPage.Annotations.pinnedByYou
+        let messageCell = messageText.map { MessageListPage.cell(withText: $0) }
+            ?? messageCell(withIndex: messageCellIndex, file: file, line: line)
+        messageCell.wait()
+        let pinnedLabel = MessageListPage.Annotations.pinnedLabel(in: messageCell)
+        if isDisplayed {
+            XCTAssertEqual(expectedLabel, pinnedLabel.wait(timeout: XCUIElement.longWaitTimeout).waitForText(expectedLabel).label, file: file, line: line)
+        } else {
+            XCTAssertFalse(pinnedLabel.waitForDisappearance(timeout: XCUIElement.longWaitTimeout).exists, "Pinned label is shown", file: file, line: line)
+        }
+        return self
+    }
+
+    /// The UI test runner is not allowed to read the app's pasteboard,
+    /// so the copied text is pasted into the composer instead.
+    @discardableResult
+    func assertMessageCopied(
+        _ text: String,
+        file: StaticString = #filePath,
+        line: UInt = #line
+    ) -> Self {
+        pasteIntoComposer()
+        XCTAssertEqual(text, composer.textView.waitForText(text).text, file: file, line: line)
+        return self
+    }
+
+    @discardableResult
+    func assertPinnedMessagesScreen(file: StaticString = #filePath, line: UInt = #line) -> Self {
+        XCTAssertTrue(PinnedMessagesPage.title.wait().exists, "Pinned messages screen is not shown", file: file, line: line)
+        return self
+    }
+
+    @discardableResult
+    func assertMessageInPinnedMessages(
+        _ text: String,
+        file: StaticString = #filePath,
+        line: UInt = #line
+    ) -> Self {
+        XCTAssertTrue(
+            PinnedMessagesPage.message(withText: text).wait(timeout: XCUIElement.longWaitTimeout).exists,
+            "Message '\(text)' is not shown in pinned messages",
+            file: file,
+            line: line
+        )
+        return self
+    }
+
+    @discardableResult
+    func assertPinnedMessagesAreEmpty(file: StaticString = #filePath, line: UInt = #line) -> Self {
+        XCTAssertTrue(PinnedMessagesPage.emptyTitle.wait(timeout: XCUIElement.longWaitTimeout).exists, "Pinned messages are not empty", file: file, line: line)
+        XCTAssertEqual(0, PinnedMessagesPage.messages.count, file: file, line: line)
+        return self
+    }
+
+    @discardableResult
+    func assertChannelWithName(
+        _ name: String,
+        isDisplayed: Bool = true,
+        file: StaticString = #filePath,
+        line: UInt = #line
+    ) -> Self {
+        let channel = ChannelListPage.channel(withName: name)
+        if isDisplayed {
+            XCTAssertTrue(channel.wait(timeout: XCUIElement.longWaitTimeout).exists, "Channel '\(name)' is not shown", file: file, line: line)
+        } else {
+            XCTAssertFalse(channel.waitForDisappearance(timeout: XCUIElement.longWaitTimeout).exists, "Channel '\(name)' is shown", file: file, line: line)
+        }
+        return self
+    }
+
+    @discardableResult
+    func assertExactChannelCount(
+        _ expectedCount: Int,
+        file: StaticString = #filePath,
+        line: UInt = #line
+    ) -> Self {
+        let actualCount = ChannelListPage.channelNames.waitCount(expectedCount, timeout: XCUIElement.longWaitTimeout, exact: true).count
+        XCTAssertEqual(expectedCount, actualCount, file: file, line: line)
+        return self
+    }
+
+    /// `remindAtIsSet` distinguishes a scheduled reminder (shows when it is due) from a
+    /// reminder saved for later (no due date).
+    @discardableResult
+    func assertMessageReminder(
+        isDisplayed: Bool = true,
+        remindAtIsSet: Bool = false,
+        at messageCellIndex: Int = 0,
+        file: StaticString = #filePath,
+        line: UInt = #line
+    ) -> Self {
+        let messageCell = messageCell(withIndex: messageCellIndex, file: file, line: line).wait()
+        let reminderLabel = MessageListPage.Annotations.reminderLabel(in: messageCell)
+        guard isDisplayed else {
+            XCTAssertFalse(reminderLabel.waitForDisappearance(timeout: XCUIElement.longWaitTimeout).exists, "Reminder is shown", file: file, line: line)
+            return self
+        }
+
+        let reminderSet = MessageListPage.Annotations.reminderSet
+        let label = reminderLabel.wait(timeout: XCUIElement.longWaitTimeout).label
+        if remindAtIsSet {
+            XCTAssertTrue(label.hasPrefix("\(reminderSet), in "), "Unexpected reminder label: '\(label)'", file: file, line: line)
+        } else {
+            XCTAssertEqual(reminderSet, label, file: file, line: line)
+        }
+        return self
+    }
+}
