@@ -597,16 +597,18 @@ extension UserRobot {
         file: StaticString = #filePath,
         line: UInt = #line
     ) -> Self {
-        let endTime = Date().timeIntervalSince1970 * 1000 + XCUIElement.waitTimeout * 3000
         let actualCount = MessageListPage.cells.count
         XCTAssertNotEqual(expectedCount, actualCount, file: file, line: line)
 
-        while endTime > Date().timeIntervalSince1970 * 1000 {
+        // Swipe until the first message shows up rather than for a fixed time, which slower simulators don't finish in.
+        // Cells aren't listed in screen order on newer iOS versions, so the first message is looked up by its text.
+        let firstMessage = messageCell(withText: "1")
+        let deadline = Date().addingTimeInterval(XCUIElement.longWaitTimeout * 4)
+        while !(firstMessage.exists && firstMessage.isHittable) && Date() < deadline {
             MessageListPage.list.swipeDown()
         }
 
-        let oldestMessage = MessageListPage.cells.lastMatch!
-        XCTAssertEqual(attributes.text(in: oldestMessage).text, "1", file: file, line: line)
+        XCTAssertTrue(firstMessage.exists && firstMessage.isHittable, "The first message was not loaded", file: file, line: line)
         return self
     }
 
