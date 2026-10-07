@@ -54,14 +54,6 @@ extension UserRobot {
     }
 
     @discardableResult
-    func assertUnreadSeparator(unreadCount: Int, file: StaticString = #filePath, line: UInt = #line) -> Self {
-        assertUnreadSeparator(file: file, line: line)
-        let separator = UnreadMessagesPage.unreadSeparator
-        XCTAssertTrue(separator.label.contains("\(unreadCount)"), "'\(separator.label)' has no unread count", file: file, line: line)
-        return self
-    }
-
-    @discardableResult
     func assertJumpToUnreadButton(
         unreadCount: Int? = nil,
         isDisplayed: Bool = true,
