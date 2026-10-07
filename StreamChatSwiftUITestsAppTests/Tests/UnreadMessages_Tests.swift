@@ -102,7 +102,7 @@ final class UnreadMessages_Tests: StreamTestCase {
     func test_jumpToUnreadButtonShowsUnreadCount_whenUserMarksMessageAsUnread() throws {
         linkToScenario(withId: 12176)
 
-        try XCTSkipIf(true, "The button hides at the bottom of the list after marking a message unread: MessageListView.shouldShowJumpToUnreadButton checks canMarkRead, not currentUserMarkedMessageUnread")
+        try XCTSkipIf(true, "https://linear.app/stream/issue/IOS-2153")
 
         let unreadCount = 25
 
