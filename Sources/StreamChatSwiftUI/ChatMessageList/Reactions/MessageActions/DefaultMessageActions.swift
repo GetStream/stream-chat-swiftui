@@ -159,16 +159,71 @@ public extension MessageAction {
             messageActions.append(deleteAction)
         }
 
-        messageActions.append(
-            contentsOf: authorModerationActions(
-                for: message,
-                channel: channel,
-                chatClient: chatClient,
-                currentUser: { chatClient.currentUserController().currentUser },
-                onFinish: onFinish,
-                onError: onError
-            )
-        )
+        if !message.isSentByCurrentUser {
+            if channel.canFlagMessage {
+                let flagAction = flagMessageAction(
+                    for: message,
+                    channel: channel,
+                    chatClient: chatClient,
+                    onFinish: onFinish,
+                    onError: onError
+                )
+                
+                messageActions.append(flagAction)
+            }
+
+            if channel.config.mutesEnabled {
+                let author = message.author
+                let currentUser = chatClient.currentUserController().currentUser
+                let isMuted = currentUser?.mutedUsers.contains(where: { $0.id == author.id }) ?? false
+                if isMuted {
+                    let unmuteAction = unmuteAction(
+                        for: message,
+                        channel: channel,
+                        chatClient: chatClient,
+                        userToUnmute: author,
+                        onFinish: onFinish,
+                        onError: onError
+                    )
+                    messageActions.append(unmuteAction)
+                } else {
+                    let muteAction = muteAction(
+                        for: message,
+                        channel: channel,
+                        chatClient: chatClient,
+                        userToMute: author,
+                        onFinish: onFinish,
+                        onError: onError
+                    )
+                    messageActions.append(muteAction)
+                }
+            }
+            
+            if InjectedValues[\.utils].messageListConfig.userBlockingEnabled {
+                let blockedUserIds = chatClient.currentUserController().currentUser?.blockedUserIds ?? []
+                if blockedUserIds.contains(message.author.id) {
+                    let unblockAction = unblockUserAction(
+                        for: message,
+                        channel: channel,
+                        chatClient: chatClient,
+                        userToUnblock: message.author,
+                        onFinish: onFinish,
+                        onError: onError
+                    )
+                    messageActions.append(unblockAction)
+                } else {
+                    let blockAction = blockUserAction(
+                        for: message,
+                        channel: channel,
+                        chatClient: chatClient,
+                        userToBlock: message.author,
+                        onFinish: onFinish,
+                        onError: onError
+                    )
+                    messageActions.append(blockAction)
+                }
+            }
+        }
 
         return messageActions
     }
@@ -767,85 +822,6 @@ public extension MessageAction {
         )
 
         messageActions.append(deleteAction)
-
-        return messageActions
-    }
-}
-
-extension MessageAction {
-    @MainActor static func authorModerationActions(
-        for message: ChatMessage,
-        channel: ChatChannel,
-        chatClient: ChatClient,
-        currentUser: () -> CurrentChatUser?,
-        onFinish: @escaping @MainActor (MessageActionInfo) -> Void,
-        onError: @escaping @MainActor (Error) -> Void
-    ) -> [MessageAction] {
-        guard !message.isSentByCurrentUser else { return [] }
-        var messageActions = [MessageAction]()
-
-        if channel.canFlagMessage {
-            let flagAction = flagMessageAction(
-                for: message,
-                channel: channel,
-                chatClient: chatClient,
-                onFinish: onFinish,
-                onError: onError
-            )
-            
-            messageActions.append(flagAction)
-        }
-
-        if channel.config.mutesEnabled {
-            let author = message.author
-            let isMuted = currentUser()?.mutedUsers.contains(where: { $0.id == author.id }) ?? false
-            if isMuted {
-                let unmuteAction = unmuteAction(
-                    for: message,
-                    channel: channel,
-                    chatClient: chatClient,
-                    userToUnmute: author,
-                    onFinish: onFinish,
-                    onError: onError
-                )
-                messageActions.append(unmuteAction)
-            } else {
-                let muteAction = muteAction(
-                    for: message,
-                    channel: channel,
-                    chatClient: chatClient,
-                    userToMute: author,
-                    onFinish: onFinish,
-                    onError: onError
-                )
-                messageActions.append(muteAction)
-            }
-        }
-        
-        if InjectedValues[\.utils].messageListConfig.userBlockingEnabled {
-            let blockedUserIds = currentUser()?.blockedUserIds ?? []
-            if blockedUserIds.contains(message.author.id) {
-                let unblockAction = unblockUserAction(
-                    for: message,
-                    channel: channel,
-                    chatClient: chatClient,
-                    userToUnblock: message.author,
-                    onFinish: onFinish,
-                    onError: onError
-                )
-                messageActions.append(unblockAction)
-            } else {
-                let blockAction = blockUserAction(
-                    for: message,
-                    channel: channel,
-                    chatClient: chatClient,
-                    userToBlock: message.author,
-                    onFinish: onFinish,
-                    onError: onError
-                )
-                messageActions.append(blockAction)
-            }
-        }
 
         return messageActions
     }

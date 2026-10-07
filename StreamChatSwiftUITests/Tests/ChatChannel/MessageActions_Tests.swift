@@ -564,65 +564,65 @@ import XCTest
         XCTAssertFalse(viewModel.reactionsShown)
     }
     
-    func test_messageActions_otherUser_whenAuthorIsMuted_offersUnmute() {
+    func test_messageActions_otherUser_whenAuthorIsMuted_offersUnmute() throws {
         // Given
         let author = ChatUser.mock(id: .unique)
-        let currentUser = makeCurrentUser(mutedUserIds: [author.id])
+        try setCurrentUser(mutedUserIds: [author.id])
 
         // When
-        let actionIds = moderationActionIds(forMessageFrom: author, currentUser: currentUser)
+        let actionIds = moderationActionIds(forMessageFrom: author)
 
         // Then
         XCTAssertTrue(actionIds.contains(MessageActionId.unmute))
         XCTAssertFalse(actionIds.contains(MessageActionId.mute))
     }
 
-    func test_messageActions_otherUser_whenAuthorIsNotMuted_offersMute() {
+    func test_messageActions_otherUser_whenAuthorIsNotMuted_offersMute() throws {
         // Given
         let author = ChatUser.mock(id: .unique)
-        let currentUser = makeCurrentUser(mutedUserIds: [.unique])
+        try setCurrentUser(mutedUserIds: [.unique])
 
         // When
-        let actionIds = moderationActionIds(forMessageFrom: author, currentUser: currentUser)
+        let actionIds = moderationActionIds(forMessageFrom: author)
 
         // Then
         XCTAssertTrue(actionIds.contains(MessageActionId.mute))
         XCTAssertFalse(actionIds.contains(MessageActionId.unmute))
     }
 
-    func test_messageActions_otherUser_whenAuthorIsBlocked_offersUnblock() {
+    func test_messageActions_otherUser_whenAuthorIsBlocked_offersUnblock() throws {
         // Given
         let author = ChatUser.mock(id: .unique)
-        let currentUser = makeCurrentUser(blockedUserIds: [author.id])
+        try setCurrentUser(blockedUserIds: [author.id])
 
         // When
-        let actionIds = moderationActionIds(forMessageFrom: author, currentUser: currentUser)
+        let actionIds = moderationActionIds(forMessageFrom: author)
 
         // Then
         XCTAssertTrue(actionIds.contains(MessageActionId.unblock))
         XCTAssertFalse(actionIds.contains(MessageActionId.block))
     }
 
-    func test_messageActions_otherUser_whenAuthorIsNotBlocked_offersBlock() {
+    func test_messageActions_otherUser_whenAuthorIsNotBlocked_offersBlock() throws {
         // Given
         let author = ChatUser.mock(id: .unique)
-        let currentUser = makeCurrentUser(blockedUserIds: [.unique])
+        try setCurrentUser(blockedUserIds: [.unique])
 
         // When
-        let actionIds = moderationActionIds(forMessageFrom: author, currentUser: currentUser)
+        let actionIds = moderationActionIds(forMessageFrom: author)
 
         // Then
         XCTAssertTrue(actionIds.contains(MessageActionId.block))
         XCTAssertFalse(actionIds.contains(MessageActionId.unblock))
     }
 
-    func test_messageActions_otherUser_whenAuthorIsMutedAndBlocked_offersUnmuteAndUnblock() {
+    func test_messageActions_otherUser_whenAuthorIsMutedAndBlocked_offersUnmuteAndUnblock() throws {
         // Given
         let author = ChatUser.mock(id: .unique)
-        let currentUser = makeCurrentUser(mutedUserIds: [author.id], blockedUserIds: [author.id])
+        try setCurrentUser(mutedUserIds: [author.id], blockedUserIds: [author.id])
 
         // When
-        let actionIds = moderationActionIds(forMessageFrom: author, currentUser: currentUser)
+        let actionIds = moderationActionIds(forMessageFrom: author)
 
         // Then
         XCTAssertEqual(actionIds, [MessageActionId.unmute, MessageActionId.unblock])
@@ -681,32 +681,20 @@ import XCTest
         )
     }
     
-    private func makeCurrentUser(mutedUserIds: [UserId] = [], blockedUserIds: [UserId] = []) -> CurrentChatUser {
-        .mock(
-            currentUserId: chatClient.currentUserId!,
-            blockedUserIds: Set(blockedUserIds),
-            mutedUsers: Set(mutedUserIds.map { ChatUser.mock(id: $0) })
-        )
+    private func setCurrentUser(mutedUserIds: [UserId] = [], blockedUserIds: [UserId] = []) throws {
+        let database = chatClient.databaseContainer
+        try database.createCurrentUser(id: chatClient.currentUserId!)
+        try mutedUserIds.forEach { try database.createUser(id: $0) }
+        try database.writeSynchronously { session in
+            let currentUser = try XCTUnwrap(session.currentUser)
+            currentUser.blockedUserIds = Set(blockedUserIds)
+            currentUser.mutedUsers = Set(mutedUserIds.compactMap { session.user(id: $0) })
+        }
     }
 
-    private func moderationActionIds(forMessageFrom author: ChatUser, currentUser: CurrentChatUser) -> [String] {
-        let channel = mockDMChannel
-        let message = ChatMessage.mock(
-            id: .unique,
-            cid: channel.cid,
-            text: "Test",
-            author: author,
-            isSentByCurrentUser: false
-        )
-        return MessageAction.authorModerationActions(
-            for: message,
-            channel: channel,
-            chatClient: chatClient,
-            currentUser: { currentUser },
-            onFinish: { _ in },
-            onError: { _ in }
-        )
-        .map(\.id)
+    private func moderationActionIds(forMessageFrom author: ChatUser) -> [String] {
+        let moderationActionIds = [MessageActionId.mute, MessageActionId.unmute, MessageActionId.block, MessageActionId.unblock]
+        return defaultActionIds(forMessageFrom: author, channel: mockDMChannel).filter(moderationActionIds.contains)
     }
 
     private func defaultActionIds(forMessageFrom author: ChatUser, channel: ChatChannel) -> [String] {
