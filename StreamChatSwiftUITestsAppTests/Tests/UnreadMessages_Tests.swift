@@ -99,6 +99,36 @@ final class UnreadMessages_Tests: StreamTestCase {
         }
     }
 
+    func test_jumpToUnreadButtonShowsUnreadCount_whenUserMarksMessageAsUnread() throws {
+        linkToScenario(withId: 12176)
+
+        try XCTSkipIf(true, "The button hides at the bottom of the list after marking a message unread: MessageListView.shouldShowJumpToUnreadButton checks canMarkRead, not currentUserMarkedMessageUnread")
+
+        let unreadCount = 25
+
+        GIVEN("user opens the channel and sends the message") {
+            userRobot.login().openChannel().sendMessage(sampleText)
+        }
+        AND("the message is delivered") {
+            userRobot.assertMessageDeliveryStatus(.sent)
+        }
+        AND("participant sends more messages than fit on the screen") {
+            participantRobot.sendMultipleMessages("New", count: unreadCount)
+            userRobot.assertMessageIsShown("New-\(unreadCount)")
+        }
+        WHEN("user marks the first participant message as unread") {
+            userRobot
+                .scrollMessageListUp(untilMessageIsVisible: "New-1")
+                .markMessageAsUnread("New-1")
+        }
+        AND("user scrolls back to the bottom") {
+            userRobot.scrollMessageListDown(untilMessageIsVisible: "New-\(unreadCount)")
+        }
+        THEN("the jump to unread button shows the unread count") {
+            userRobot.assertJumpToUnreadButton(unreadCount: unreadCount)
+        }
+    }
+
     func test_userDismissesTheUnreadIndicator() throws {
         linkToScenario(withId: 12057)
 
