@@ -38,7 +38,7 @@ final class UnreadMessages_Tests: StreamTestCase {
     func test_userScrollsToFirstUnreadMessage() throws {
         linkToScenario(withId: 12055)
 
-        try XCTSkipIf(true, "Jump to unread does nothing: ChatChannelViewModel.checkUnreadCount checks channelDataSource.firstUnreadMessageId but assigns the nil channelController.firstUnreadMessageId")
+        try XCTSkipIf(true, "https://linear.app/stream/issue/IOS-2154")
 
         let unreadCount = 25
 
