@@ -150,6 +150,8 @@ struct PinnedMessageView<Factory: ViewFactory>: View {
             }
         }
         .padding(.all, tokens.spacingMd)
+        .accessibilityElement(children: .contain)
+        .accessibilityIdentifier("PinnedMessageView")
     }
 
     private var previewAttachmentIconImage: UIImage? {

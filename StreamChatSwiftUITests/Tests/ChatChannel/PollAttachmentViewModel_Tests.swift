@@ -301,6 +301,124 @@ import XCTest
         XCTAssertTrue(viewModel.canInteract)
     }
 
+    func test_pollAttachmentViewModel_oneOwnVote_onlyVotedOptionIsVotedByCurrentUser() {
+        // Given
+        let red = PollOption(id: .unique, text: "Red")
+        let blue = PollOption(id: .unique, text: "Blue")
+        let poll = Poll.mock(options: [red, blue], ownVotes: [makePollVote(optionId: red.id)])
+
+        // When
+        let viewModel = PollAttachmentViewModel(message: .mock(), poll: poll, pollController: makePollController())
+
+        // Then
+        XCTAssertTrue(viewModel.optionVotedByCurrentUser(red))
+        XCTAssertFalse(viewModel.optionVotedByCurrentUser(blue))
+    }
+
+    func test_pollAttachmentViewModel_severalOwnVotes_allVotedOptionsAreVotedByCurrentUser() {
+        // Given
+        let red = PollOption(id: .unique, text: "Red")
+        let blue = PollOption(id: .unique, text: "Blue")
+        let green = PollOption(id: .unique, text: "Green")
+        let poll = Poll.mock(
+            enforceUniqueVote: false,
+            options: [red, blue, green],
+            ownVotes: [makePollVote(optionId: red.id), makePollVote(optionId: blue.id)]
+        )
+
+        // When
+        let viewModel = PollAttachmentViewModel(message: .mock(), poll: poll, pollController: makePollController())
+
+        // Then
+        XCTAssertTrue(viewModel.optionVotedByCurrentUser(red))
+        XCTAssertTrue(viewModel.optionVotedByCurrentUser(blue))
+        XCTAssertFalse(viewModel.optionVotedByCurrentUser(green))
+    }
+
+    func test_pollAttachmentViewModel_noOwnVotes_noOptionIsVotedByCurrentUser() {
+        // Given
+        let red = PollOption(id: .unique, text: "Red")
+        let blue = PollOption(id: .unique, text: "Blue")
+        let poll = Poll.mock(options: [red, blue], ownVotes: [])
+
+        // When
+        let viewModel = PollAttachmentViewModel(message: .mock(), poll: poll, pollController: makePollController())
+
+        // Then
+        XCTAssertFalse(viewModel.optionVotedByCurrentUser(red))
+        XCTAssertFalse(viewModel.optionVotedByCurrentUser(blue))
+    }
+
+    func test_pollAttachmentViewModel_pollUpdatedWithOwnVote_optionBecomesVotedByCurrentUser() {
+        // Given
+        let red = PollOption(id: .unique, text: "Red")
+        let pollController = makePollController()
+        let viewModel = PollAttachmentViewModel(
+            message: .mock(),
+            poll: .mock(options: [red], ownVotes: []),
+            pollController: pollController
+        )
+        XCTAssertFalse(viewModel.optionVotedByCurrentUser(red))
+
+        // When
+        let updated = Poll.mock(options: [red], ownVotes: [makePollVote(optionId: red.id)])
+        pollController.delegate?.pollController(pollController, didUpdatePoll: .update(updated))
+
+        // Then
+        XCTAssertTrue(viewModel.optionVotedByCurrentUser(red))
+    }
+
+    func test_pollAttachmentViewModel_pollUpdatedWithoutOwnVote_optionIsNoLongerVotedByCurrentUser() {
+        // Given
+        let red = PollOption(id: .unique, text: "Red")
+        let pollController = makePollController()
+        let viewModel = PollAttachmentViewModel(
+            message: .mock(),
+            poll: .mock(options: [red], ownVotes: [makePollVote(optionId: red.id)]),
+            pollController: pollController
+        )
+        XCTAssertTrue(viewModel.optionVotedByCurrentUser(red))
+
+        // When
+        let updated = Poll.mock(options: [red], ownVotes: [])
+        pollController.delegate?.pollController(pollController, didUpdatePoll: .update(updated))
+
+        // Then
+        XCTAssertFalse(viewModel.optionVotedByCurrentUser(red))
+    }
+
+    func test_pollAttachmentViewModel_severalOwnVotes_currentUserVotesLoadedOnSynchronize() {
+        // Given
+        let votes = [makePollVote(optionId: .unique), makePollVote(optionId: .unique)]
+        let pollController = makePollController()
+        let viewModel = PollAttachmentViewModel(message: .mock(), poll: .unique, pollController: pollController)
+        pollController.ownVotes_simulated = votes
+
+        // When
+        pollController.synchronize_completion?(nil)
+
+        // Then
+        XCTAssertEqual(viewModel.currentUserVotes, votes)
+    }
+
+    func test_pollAttachmentViewModel_removeVote_whenSeveralOwnVotes_removesVote() {
+        // Given
+        let red = PollOption(id: .unique, text: "Red")
+        let blue = PollOption(id: .unique, text: "Blue")
+        let pollController = makePollController()
+        let viewModel = PollAttachmentViewModel(
+            message: .mock(),
+            poll: .mock(options: [red, blue], ownVotes: [makePollVote(optionId: red.id), makePollVote(optionId: blue.id)]),
+            pollController: pollController
+        )
+
+        // When
+        viewModel.removePollVote(for: blue)
+
+        // Then
+        XCTAssertTrue(pollController.removePollVote_called)
+    }
+
     // MARK: - private
     
     private func makePollController() -> PollController_Mock {
@@ -311,13 +429,13 @@ import XCTest
         )
     }
     
-    private func makePollVote() -> PollVote {
+    private func makePollVote(optionId: String = .unique) -> PollVote {
         PollVote(
             id: .unique,
             createdAt: .now,
             updatedAt: .now,
             pollId: .unique,
-            optionId: .unique,
+            optionId: optionId,
             isAnswer: false,
             answerText: nil,
             user: .unique

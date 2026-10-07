@@ -23,6 +23,7 @@ struct ComposerFileAttachmentView: View {
                     .font(fonts.footnoteBold)
                     .lineLimit(1)
                     .foregroundColor(Color(colors.textPrimary))
+                    .accessibilityIdentifier("ComposerFileAttachmentView")
                 Text(url.sizeString)
                     .font(fonts.caption1)
                     .lineLimit(1)

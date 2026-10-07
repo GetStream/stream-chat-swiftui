@@ -176,6 +176,119 @@ import XCTest
         XCTAssertTrue(viewModel.keepsBubbleAccessibilityChildrenFocusable)
     }
 
+    // MARK: - isDeliveryStatusShown
+
+    func test_isDeliveryStatusShown_ownMessageWithReadEventsEnabled_isTrue() {
+        let message = makeMessage(author: .mock(id: Self.currentUserId), isSentByCurrentUser: true)
+
+        XCTAssertTrue(MessageViewModel.isDeliveryStatusShown(for: message, in: makeChannel(readEventsEnabled: true)))
+    }
+
+    func test_isDeliveryStatusShown_ownMessageWithReadEventsDisabled_isFalse() {
+        let message = makeMessage(author: .mock(id: Self.currentUserId), isSentByCurrentUser: true)
+
+        XCTAssertFalse(MessageViewModel.isDeliveryStatusShown(for: message, in: makeChannel(readEventsEnabled: false)))
+    }
+
+    func test_isDeliveryStatusShown_ownMessageReadByParticipantWithReadEventsDisabled_isFalse() {
+        let message = makeMessage(author: .mock(id: Self.currentUserId), isSentByCurrentUser: true)
+        let channel = makeChannel(readEventsEnabled: false, readBy: .mock(id: "yoda"), after: message)
+
+        XCTAssertFalse(MessageViewModel.isDeliveryStatusShown(for: message, in: channel))
+    }
+
+    func test_isDeliveryStatusShown_deletedOwnMessageWithReadEventsDisabled_isFalse() {
+        let message = makeMessage(
+            author: .mock(id: Self.currentUserId),
+            isSentByCurrentUser: true,
+            deletedAt: Date()
+        )
+
+        XCTAssertFalse(MessageViewModel.isDeliveryStatusShown(for: message, in: makeChannel(readEventsEnabled: false)))
+    }
+
+    func test_isDeliveryStatusShown_incomingMessage_isFalse() {
+        let message = makeMessage(isSentByCurrentUser: false)
+
+        XCTAssertFalse(MessageViewModel.isDeliveryStatusShown(for: message, in: makeChannel(readEventsEnabled: true)))
+    }
+
+    func test_accessibilityLabel_ownMessageReadByParticipant_announcesRead() {
+        let message = makeMessage(
+            author: .mock(id: Self.currentUserId, name: "Me"),
+            isSentByCurrentUser: true,
+            text: "Hello there"
+        )
+        let channel = makeChannel(readEventsEnabled: true, readBy: .mock(id: "yoda"), after: message)
+        let viewModel = MessageViewModel(message: message, channel: channel)
+
+        let label = viewModel.accessibilityLabel(showsAllInfo: true)
+
+        XCTAssertTrue(label.hasSuffix(", \(L10n.Message.Accessibility.statusRead)"))
+    }
+
+    func test_accessibilityLabel_ownMessageReadByParticipantWithReadEventsDisabled_omitsStatus() {
+        let message = makeMessage(
+            author: .mock(id: Self.currentUserId, name: "Me"),
+            isSentByCurrentUser: true,
+            text: "Hello there"
+        )
+        let channel = makeChannel(readEventsEnabled: false, readBy: .mock(id: "yoda"), after: message)
+        let viewModel = MessageViewModel(message: message, channel: channel)
+
+        let label = viewModel.accessibilityLabel(showsAllInfo: true)
+
+        XCTAssertFalse(statusStrings.contains { label.contains($0) })
+    }
+
+    // MARK: - reactionsShown
+
+    func test_reactionsShown_incomingMessageWithReactions_isTrue() {
+        let message = ChatMessage.mock(
+            id: .unique,
+            cid: .unique,
+            text: "Hello there",
+            author: .mock(id: "yoda"),
+            reactionScores: [MessageReactionType(rawValue: "love"): 1],
+            isSentByCurrentUser: false
+        )
+
+        XCTAssertTrue(makeViewModel(for: message).reactionsShown)
+    }
+
+    func test_reactionsShown_messageWithoutReactions_isFalse() {
+        let message = makeMessage(isSentByCurrentUser: false, text: "Hello there")
+
+        XCTAssertFalse(makeViewModel(for: message).reactionsShown)
+    }
+
+    // MARK: - isHighlighted
+
+    func test_isHighlighted_whenJumpedToThisMessage_returnsTrue() {
+        let message = makeMessage(isSentByCurrentUser: false, text: "Hello there")
+        let viewModel = makeViewModel(for: message)
+
+        XCTAssertTrue(viewModel.isHighlighted(messageId: message.messageId))
+    }
+
+    func test_isHighlighted_whenJumpedToAnotherMessage_returnsFalse() {
+        let viewModel = makeViewModel(for: makeMessage(isSentByCurrentUser: false, text: "Hello there"))
+
+        XCTAssertFalse(viewModel.isHighlighted(messageId: "another-message"))
+        XCTAssertFalse(viewModel.isHighlighted(messageId: nil))
+    }
+
+    func test_isHighlighted_whenHighlightingIsDisabled_returnsFalse() {
+        streamChat = StreamChat(
+            chatClient: chatClient,
+            utils: Utils(messageListConfig: MessageListConfig(highlightMessageWhenJumping: false))
+        )
+        let message = makeMessage(isSentByCurrentUser: false, text: "Hello there")
+        let viewModel = makeViewModel(for: message)
+
+        XCTAssertFalse(viewModel.isHighlighted(messageId: message.messageId))
+    }
+
     // MARK: - Helpers
 
     private func makeMessage(
@@ -205,6 +318,24 @@ import XCTest
 
     private func makeViewModel(for message: ChatMessage) -> MessageViewModel {
         MessageViewModel(message: message, channel: .mockDMChannel())
+    }
+
+    private func makeChannel(
+        readEventsEnabled: Bool,
+        readBy reader: ChatUser? = nil,
+        after message: ChatMessage? = nil
+    ) -> ChatChannel {
+        let reads: [ChatChannelRead] = reader.map { reader in
+            [
+                .mock(
+                    lastReadAt: (message?.createdAt ?? Date()).addingTimeInterval(10),
+                    lastReadMessageId: message?.id,
+                    unreadMessagesCount: 0,
+                    user: reader
+                )
+            ]
+        } ?? []
+        return .mockDMChannel(config: .mock(readEventsEnabled: readEventsEnabled), reads: reads)
     }
 
     private func expectedLabel(sender: String, content: String, message: ChatMessage) -> String {
