@@ -5,6 +5,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### 🐞 Fixed
 - Fix channel list mute actions being shown without the mute channel capability [#1608](https://github.com/GetStream/stream-chat-swiftui/pull/1608)
+- Fix a crash on Mac Catalyst apps using the Mac idiom ("Optimize for Mac") when rendering a voice recording waveform [#1604](https://github.com/GetStream/stream-chat-swiftui/pull/1604)
 ### 🔄 Changed
 - Cancel image downloads that are no longer needed, for example when media scrolls off-screen [#1605](https://github.com/GetStream/stream-chat-swiftui/pull/1605)
 

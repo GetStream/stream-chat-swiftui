@@ -221,6 +221,21 @@ open class WaveformView: UIView {
 /// Extends the track rect so the visible thumb circle aligns with the waveform edges
 /// rather than being inset by half the thumb image width (which includes the shadow).
 private class WaveformSlider: UISlider {
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        #if targetEnvironment(macCatalyst)
+        // The Mac idiom ("Optimize for Mac") throws on a custom thumb image;
+        // the pad behavioral style keeps the slider customizable there.
+        if #available(macCatalyst 15.0, *) {
+            preferredBehavioralStyle = .pad
+        }
+        #endif
+    }
+
+    required init?(coder: NSCoder) {
+        super.init(coder: coder)
+    }
+
     override func trackRect(forBounds bounds: CGRect) -> CGRect {
         let thumbShadow: CGFloat = 6
         return bounds.insetBy(dx: -thumbShadow, dy: 0)
