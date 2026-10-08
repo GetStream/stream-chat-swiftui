@@ -34,15 +34,16 @@ public final class MediaAttachment: Identifiable, Equatable, Sendable {
         url.absoluteString
     }
 
+    @discardableResult
     @MainActor func generateThumbnail(
         resize: Bool,
         preferredSize: CGSize,
         completion: @escaping @MainActor (Result<UIImage, Error>) -> Void
-    ) {
+    ) -> ImageLoadingTask? {
         let utils = InjectedValues[\.utils]
         if type == .image {
             let imageResize: ImageResize? = resize ? ImageResize(preferredSize) : nil
-            utils.mediaLoader.loadImage(
+            return utils.mediaLoader.loadImageTask(
                 url: url,
                 options: ImageLoadOptions(resize: imageResize)
             ) { result in
@@ -52,7 +53,7 @@ public final class MediaAttachment: Identifiable, Equatable, Sendable {
             guard let videoAttachment else {
                 log.warning("Missing videoAttachment for .video MediaAttachment, skipping thumbnail generation")
                 completion(.failure(ClientError("Missing videoAttachment for .video MediaAttachment")))
-                return
+                return nil
             }
             utils.mediaLoader.loadVideoPreview(
                 with: videoAttachment
@@ -60,6 +61,7 @@ public final class MediaAttachment: Identifiable, Equatable, Sendable {
                 completion(result.map(\.image))
             }
         }
+        return nil
     }
 
     public static func == (lhs: MediaAttachment, rhs: MediaAttachment) -> Bool {
