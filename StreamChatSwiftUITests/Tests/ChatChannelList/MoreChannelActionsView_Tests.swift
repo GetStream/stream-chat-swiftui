@@ -11,7 +11,7 @@ import XCTest
 @MainActor class MoreChannelActionsView_Tests: StreamChatTestCase {
     func test_moreChannelActionsView_snapshot() {
         // Given
-        let channel: ChatChannel = .mockDMChannel(name: "test")
+        let channel: ChatChannel = .mockDMChannel(name: "test", ownCapabilities: [.muteChannel])
         let actions = ChannelAction.defaultActions(
             for: .init(
                 channel: channel,
@@ -36,7 +36,7 @@ import XCTest
 
     func test_moreChannelActionsView_groupChannel_snapshot() {
         // Given
-        let channel: ChatChannel = .mockNonDMChannel(name: "Engineering Team")
+        let channel: ChatChannel = .mockNonDMChannel(name: "Engineering Team", ownCapabilities: [.muteChannel])
         let actions = ChannelAction.defaultActions(
             for: .init(
                 channel: channel,
@@ -62,7 +62,7 @@ import XCTest
     func test_moreChannelActionsView_mutedDMChannel_snapshot() {
         // Given
         let muteDetails = MuteDetails(createdAt: .distantPast, updatedAt: nil, expiresAt: nil)
-        let channel: ChatChannel = .mockDMChannel(name: "test", muteDetails: muteDetails)
+        let channel: ChatChannel = .mockDMChannel(name: "test", ownCapabilities: [.muteChannel], muteDetails: muteDetails)
         let actions = ChannelAction.defaultActions(
             for: .init(
                 channel: channel,
@@ -89,7 +89,7 @@ import XCTest
         // Given
         let cid = ChannelId(type: .messaging, id: "!members-archived-test")
         let membership = ChatChannelMember.mock(id: .unique, archivedAt: .distantPast)
-        let channel: ChatChannel = .mock(cid: cid, name: "test", membership: membership)
+        let channel: ChatChannel = .mock(cid: cid, name: "test", ownCapabilities: [.muteChannel], membership: membership)
         let actions = ChannelAction.defaultActions(
             for: .init(
                 channel: channel,
@@ -116,7 +116,7 @@ import XCTest
         // Given
         let channel: ChatChannel = .mockNonDMChannel(
             name: "Engineering Team",
-            ownCapabilities: [.leaveChannel]
+            ownCapabilities: [.leaveChannel, .muteChannel]
         )
         let actions = ChannelAction.defaultActions(
             for: .init(
