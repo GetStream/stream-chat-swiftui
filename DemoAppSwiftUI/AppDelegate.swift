@@ -65,13 +65,7 @@ class AppDelegate: NSObject, UIApplicationDelegate {
         }
         #endif
 
-        LogConfig.level = StreamRuntimeCheck.logLevel ?? .warning
-        LogConfig.formatters = [
-            PrefixLogFormatter(prefixes: [.info: "ℹ️", .debug: "🛠", .warning: "⚠️", .error: "🚨"])
-        ]
-        if let subsystems = StreamRuntimeCheck.subsystems {
-            LogConfig.subsystems = subsystems
-        }
+        DemoAppLogging.setUp()
         
         let utils = Utils(
             commandsConfig: AppConfiguration.makeCommandsConfig(),

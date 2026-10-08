@@ -40,8 +40,13 @@ class TestRequestDecoder: RequestDecoder, @unchecked Sendable {
     var decodeRequestResponse_response: HTTPURLResponse?
     var decodeRequestResponse_error: Error?
 
-    func decodeRequestResponse<ResponseType>(data: Data?, response: URLResponse?, error: Error?) throws -> ResponseType
-        where ResponseType: Decodable {
+    func decodeRequestResponse<ResponseType>(
+        request: URLRequest,
+        session: URLSession,
+        data: Data?,
+        response: URLResponse?,
+        error: Error?
+    ) throws -> ResponseType where ResponseType: Decodable {
         decodeRequestResponse_data = data
         decodeRequestResponse_response = response as? HTTPURLResponse
         decodeRequestResponse_error = error
