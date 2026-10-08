@@ -147,7 +147,7 @@ import SwiftUI
     // A boolean value indicating if the user marked a message as unread
     // in the current session of the channel. If it is true,
     // it should not call markRead() in any scenario.
-    @Published public var currentUserMarkedMessageUnread: Bool = false
+    public var currentUserMarkedMessageUnread: Bool = false
 
     // A message the user marked as unread keeps the jump-to-unread button available,
     // so the message list must not treat the channel as readable.

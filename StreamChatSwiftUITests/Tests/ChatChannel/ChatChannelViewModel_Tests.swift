@@ -1117,6 +1117,7 @@ import XCTest
 
         // Then
         XCTAssertEqual(channelController.loadPageAroundMessageIdCallCount, 1)
+        XCTAssertEqual(channelController.loadPageAroundMessageId_messageId, "last-read-message")
     }
 
     func test_chatChannelVM_canMarkReadInMessageList_whenCaughtUp_isTrue() {
