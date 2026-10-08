@@ -4,6 +4,7 @@
 
 import Combine
 import StreamChat
+import StreamChatLogsUI
 import StreamChatSwiftUI
 import SwiftUI
 
@@ -112,11 +113,13 @@ struct RootView: View {
     }
     
     private func didLogout() {
+        LogViewer.showsFloatingButton = false
         channelListController = nil
         currentUserController = nil
     }
     
     private func didLogin() {
+        LogViewer.showsFloatingButton = true
         setChannelQueryIdentifier(.initial)
         
         currentUserController = chatClient.currentUserController()

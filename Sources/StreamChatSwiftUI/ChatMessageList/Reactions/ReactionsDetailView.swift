@@ -160,6 +160,7 @@ struct ReactionsDetailView<Factory: ViewFactory>: View {
                 }
             }
             .disabled(!isCurrentUser)
+            .accessibilityIdentifier("ReactionAuthorView")
 
             Spacer()
 

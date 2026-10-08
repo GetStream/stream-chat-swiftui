@@ -91,6 +91,31 @@ public class ChatMessageControllerSUI_Mock: ChatMessageController, @unchecked Se
         updateDraftReply_text = text
     }
 
+    var addReaction_types: [MessageReactionType] = []
+    var addReaction_enforceUnique: Bool?
+
+    override public func addReaction(
+        _ type: MessageReactionType,
+        score: Int = 1,
+        enforceUnique: Bool = false,
+        skipPush: Bool = false,
+        pushEmojiCode: String? = nil,
+        extraData: [String: RawJSON] = [:],
+        completion: (@MainActor (Error?) -> Void)? = nil
+    ) {
+        addReaction_types.append(type)
+        addReaction_enforceUnique = enforceUnique
+    }
+
+    var deleteReaction_types: [MessageReactionType] = []
+
+    override public func deleteReaction(
+        _ type: MessageReactionType,
+        completion: (@MainActor (Error?) -> Void)? = nil
+    ) {
+        deleteReaction_types.append(type)
+    }
+
     var deleteDraftReply_callCount = 0
 
     override public func deleteDraftReply(completion: (@MainActor ((any Error)?) -> Void)? = nil) {

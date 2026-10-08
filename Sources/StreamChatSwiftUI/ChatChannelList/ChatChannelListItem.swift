@@ -158,6 +158,7 @@ public struct ChannelItemMutedIcon: View {
             .frame(height: tokens.iconSizeMd * iconScale)
             .foregroundColor(Color(colors.textTertiary))
             .accessibilityLabel(Text(L10n.Channel.Item.muted))
+            .accessibilityIdentifier("ChannelItemMutedIcon")
     }
 }
 

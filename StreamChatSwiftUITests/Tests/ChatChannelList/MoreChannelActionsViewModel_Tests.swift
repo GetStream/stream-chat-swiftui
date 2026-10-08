@@ -45,12 +45,15 @@ import XCTest
 
     func test_defaultActions_dmChannel_hasCorrectDefaultActions() {
         // Given - default ownCapabilities has no deleteChannel
-        let channel = ChatChannel.mockDMChannel(name: "test")
+        let channel = ChatChannel.mockDMChannel(
+            name: "test",
+            ownCapabilities: [.sendMessage, .uploadFile, .muteChannel]
+        )
 
         // When
         let actions = makeActions(for: channel)
 
-        // Then - viewInfo, muteUser (mutesEnabled=true by default)
+        // Then - viewInfo, muteUser
         XCTAssertEqual(actions.count, 2)
         XCTAssertEqual(actions[0].title, L10n.Alert.Actions.viewInfoTitle)
         XCTAssertEqual(actions[1].title, L10n.Alert.Actions.muteUser)
@@ -85,10 +88,26 @@ import XCTest
         XCTAssertTrue(actions.contains(where: { $0.title == L10n.Alert.Actions.blockUser }))
     }
 
+    func test_defaultActions_dmChannel_withoutMuteCapability_hidesMuteAction() {
+        // Given
+        let channel = ChatChannel.mockDMChannel(name: "test")
+
+        // When
+        let actions = makeActions(for: channel)
+
+        // Then
+        XCTAssertFalse(actions.contains(where: { $0.title == L10n.Alert.Actions.muteUser }))
+        XCTAssertFalse(actions.contains(where: { $0.title == L10n.Alert.Actions.unmuteUser }))
+    }
+
     func test_defaultActions_mutedDMChannel_showsUnmuteUser() {
         // Given
         let muteDetails = MuteDetails(createdAt: .distantPast, updatedAt: nil, expiresAt: nil)
-        let channel = ChatChannel.mockDMChannel(name: "test", muteDetails: muteDetails)
+        let channel = ChatChannel.mockDMChannel(
+            name: "test",
+            ownCapabilities: [.sendMessage, .uploadFile, .muteChannel],
+            muteDetails: muteDetails
+        )
 
         // When
         let actions = makeActions(for: channel)
@@ -116,15 +135,30 @@ import XCTest
 
     func test_defaultActions_groupChannel_hasCorrectDefaultActions() {
         // Given - default ownCapabilities has no deleteChannel or leaveChannel
+        let channel = ChatChannel.mockNonDMChannel(
+            name: "Engineering Team",
+            ownCapabilities: [.sendMessage, .uploadFile, .muteChannel]
+        )
+
+        // When
+        let actions = makeActions(for: channel)
+
+        // Then - viewInfo, muteChannel
+        XCTAssertEqual(actions.count, 2)
+        XCTAssertEqual(actions[0].title, L10n.Alert.Actions.viewInfoTitle)
+        XCTAssertEqual(actions[1].title, L10n.Alert.Actions.muteChannel)
+    }
+
+    func test_defaultActions_groupChannel_withoutMuteCapability_hidesMuteAction() {
+        // Given
         let channel = ChatChannel.mockNonDMChannel(name: "Engineering Team")
 
         // When
         let actions = makeActions(for: channel)
 
-        // Then - viewInfo, muteChannel (mutesEnabled=true by default)
-        XCTAssertEqual(actions.count, 2)
+        // Then
+        XCTAssertEqual(actions.count, 1)
         XCTAssertEqual(actions[0].title, L10n.Alert.Actions.viewInfoTitle)
-        XCTAssertEqual(actions[1].title, L10n.Alert.Actions.muteChannel)
     }
 
     func test_defaultActions_groupChannel_withDeleteCapability_hasDeleteAction() {

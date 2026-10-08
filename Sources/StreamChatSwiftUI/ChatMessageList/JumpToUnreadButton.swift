@@ -61,6 +61,7 @@ struct JumpToUnreadButton: View {
                 .padding(.horizontal, tokens.spacingXs)
                 .padding(.vertical, tokens.spacingXxs)
             }
+            .accessibilityIdentifier("JumpToUnreadButton")
 
             Divider()
 
@@ -71,6 +72,7 @@ struct JumpToUnreadButton: View {
             }
             .frame(width: tokens.buttonVisualHeightSm, height: tokens.buttonVisualHeightSm)
             .accessibilityLabel(Text("Dismiss"))
+            .accessibilityIdentifier("JumpToUnreadDismissButton")
         }
         .padding(tokens.spacingXxs)
         .fixedSize()

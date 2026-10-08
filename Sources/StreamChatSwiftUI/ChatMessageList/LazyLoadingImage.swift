@@ -3,6 +3,7 @@
 //
 
 import StreamChat
+import StreamChatCommonUI
 import SwiftUI
 
 struct LazyLoadingImage: View {
@@ -10,6 +11,7 @@ struct LazyLoadingImage: View {
 
     @State private var image: UIImage?
     @State private var error: Error?
+    @State private var loadingTask: ImageLoadingTask?
 
     let source: MediaAttachment
     let width: CGFloat
@@ -66,6 +68,10 @@ struct LazyLoadingImage: View {
             }
             loadThumbnail()
         }
+        .onDisappear {
+            loadingTask?.cancel()
+            loadingTask = nil
+        }
         .onChange(of: source) { newSource in
             image = nil
             error = nil
@@ -75,7 +81,8 @@ struct LazyLoadingImage: View {
 
     private func loadThumbnail(from attachment: MediaAttachment? = nil) {
         let attachment = attachment ?? source
-        attachment.generateThumbnail(
+        loadingTask?.cancel()
+        loadingTask = attachment.generateThumbnail(
             resize: resize,
             preferredSize: CGSize(width: width, height: height)
         ) { result in
@@ -84,6 +91,7 @@ struct LazyLoadingImage: View {
                 self.image = image
                 onImageLoaded(image)
             case let .failure(error):
+                guard !(error is CancellationError) else { return }
                 self.error = error
             }
         }

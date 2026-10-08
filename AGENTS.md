@@ -182,6 +182,7 @@ Testing policy
 - Add/extend tests in `StreamChatSwiftUITests/Tests/` (mirrors the source directory structure)
 - Test infrastructure (mocks, shared helpers) lives in `StreamChatSwiftUITests/Infrastructure/`
 - Prefer using `AssertSnapshot` from StreamChatTestHelpers instead of using the SnapshotTesting framework directly.
+- Run and record snapshot tests on the **iPhone 17 Pro (iOS 26.2)** simulator to match CI (`IOS_SIMULATOR_DEVICE` in `.github/workflows/smoke-checks.yml`). Other devices or OS versions render differently (e.g. the system search bar) and fail against the reference images.
 - Avoid using `AssertAsync` from StreamChatTestHelpers, instead use `XCTestExpectation` directly whenever possible.
 
 ### E2E tests & runtime UI debugging (mock server)

@@ -10,7 +10,6 @@ import XCTest
 final class UserRobot: Robot {
     let composer = MessageListPage.Composer.self
     let contextMenu = MessageListPage.ContextMenu.self
-    let debugAlert = MessageListPage.Alert.Debug.self
 
     @discardableResult
     func login() -> Self {
@@ -406,8 +405,8 @@ extension UserRobot {
 
     @discardableResult
     func openComposerCommands() -> Self {
-        // swiftformat:disable:next isEmpty
-        if MessageListPage.ComposerCommands.cells.count == 0 {
+        if !MessageListPage.ComposerCommands.giphyCommand.exists {
+            MessageListPage.Composer.attachmentButton.wait().safeTap()
             MessageListPage.Composer.commandButton.wait().safeTap()
         }
         return self
@@ -417,8 +416,9 @@ extension UserRobot {
     func uploadGiphy(text: String = "Test", useComposerCommand: Bool = false, send: Bool = true) -> Self {
         if useComposerCommand {
             openComposerCommands()
-            MessageListPage.ComposerCommands.giphyImage.wait().safeTap()
-            sendMessage("\(text)", waitForAppearance: false)
+            MessageListPage.ComposerCommands.giphyCommand.wait().safeTap()
+            typeText(text)
+            composer.confirmButton.safeTap()
         } else {
             typeText("/giphy")
             typeText(text)
@@ -461,27 +461,8 @@ extension UserRobot {
 
     @discardableResult
     func uploadImage(count: Int = 1, send: Bool = true) -> Self {
-        let firstImageIndex = 1
-        for i in firstImageIndex...count {
-            MessageListPage.Composer.attachmentButton.wait().safeTap()
-            if i == firstImageIndex && SpringBoard.photoAccessPopUp.exists {
-                SpringBoard.photoAccessPopUp.safeTap()
-            }
-            MessageListPage.AttachmentMenu.photoOrVideoButton.wait().safeTap()
-            
-            // Wait for privacy message to appear before proceed on iOS 17, otherwise XCTest crashes
-            if #available(iOS 17.0, *) {
-                app.otherElements["PXGSingleViewContainerView_AX"].wait()
-            }
-            
-            let images = MessageListPage.AttachmentMenu.images.waitCount(1)
-            if images.count < 1 {
-                XCTFail("There are no images.")
-            } else {
-                images.allElementsBoundByIndex[i].safeTap()
-            }
-        }
-        if send { sendMessage("", waitForAppearance: false) }
+        attachImages(count: count)
+        if send { tapOnSendButton() }
         return self
     }
 
@@ -493,46 +474,6 @@ extension UserRobot {
         } else {
             typeText("\(text.prefix(3))")
             MessageListPage.ComposerMentions.cells.firstMatch.wait().tap()
-        }
-        return self
-    }
-}
-
-// MARK: Debug menu
-
-extension UserRobot {
-    @discardableResult
-    private func tapOnDebugMenu() -> Self {
-        MessageListPage.NavigationBar.debugMenu.safeTap()
-        return self
-    }
-
-    @discardableResult
-    func addParticipant(withUserId userId: String = "leia_organa") -> Self {
-        tapOnDebugMenu()
-        debugAlert.addMember.firstMatch.safeTap()
-        debugAlert.addMemberTextField.firstMatch
-            .obtainKeyboardFocus()
-            .typeText(userId)
-        debugAlert.addMemberOKButton.firstMatch.safeTap()
-        return self
-    }
-
-    @discardableResult
-    func removeParticipant(withUserId userId: String = "leia_organa") -> Self {
-        tapOnDebugMenu()
-        debugAlert.removeMember.firstMatch.safeTap()
-        debugAlert.selectMember(withUserId: userId).firstMatch.safeTap()
-        return self
-    }
-
-    @discardableResult
-    func truncateChannel(withMessage: Bool) -> Self {
-        tapOnDebugMenu()
-        if withMessage {
-            debugAlert.truncateWithMessage.safeTap()
-        } else {
-            debugAlert.truncateWithoutMessage.safeTap()
         }
         return self
     }
