@@ -12,15 +12,18 @@ public struct CustomChannelHeader: ToolbarContent {
     @Injected(\.colors) var colors
 
     var title: String
+    var connectionStatus: String
     var currentUserController: CurrentChatUserController
     @Binding var isNewChatShown: Bool
     @Binding var logoutAlertShown: Bool
+    @Binding var threadListShown: Bool
 
     @MainActor
     public var body: some ToolbarContent {
         ToolbarItem(placement: .principal) {
             Text(title)
                 .font(fonts.bodyBold)
+                .accessibilityIdentifier(connectionStatus)
         }
         ToolbarItem(placement: .navigationBarLeading) {
             Button {
@@ -37,6 +40,18 @@ public struct CustomChannelHeader: ToolbarContent {
             .accessibilityAddTraits(.isButton)
             .accessibilityIdentifier("LogoutButton")
         }
+        ToolbarItem(placement: .navigationBarTrailing) {
+            Button {
+                threadListShown = true
+            } label: {
+                Image(systemName: "text.bubble")
+            }
+            .accessibilityLabel("Threads")
+            .accessibilityIdentifier("ThreadListButton")
+        }
+        ToolbarItem(placement: .navigationBarTrailing) {
+            ConnectivitySwitch()
+        }
     }
 }
 
@@ -45,32 +60,46 @@ struct CustomChannelModifier: ChannelListHeaderViewModifier {
 
     var title: String
 
+    @StateObject private var connectionStatus = ConnectionStatusObserver(client: InjectedValues[\.chatClient])
     @State var isNewChatShown = false
     @State var logoutAlertShown = false
+    @State var threadListShown = false
 
     func body(content: Content) -> some View {
         ZStack {
             content.toolbar {
                 CustomChannelHeader(
                     title: title,
+                    connectionStatus: connectionStatus.status.testIdentifier,
                     currentUserController: chatClient.currentUserController(),
                     isNewChatShown: $isNewChatShown,
-                    logoutAlertShown: $logoutAlertShown
+                    logoutAlertShown: $logoutAlertShown,
+                    threadListShown: $threadListShown
                 )
             }
-            .alert(isPresented: $logoutAlertShown) {
-                Alert(
-                    title: Text("Sign out"),
-                    message: Text("Are you sure you want to sign out?"),
-                    primaryButton: .destructive(Text("Sign out")) {
-                        withAnimation {
-                            chatClient.disconnect {}
-                            AppState.shared.userState = .notLoggedIn
-                        }
-                    },
-                    secondaryButton: .cancel()
-                )
-            }
+            .background(
+                NavigationLink(isActive: $threadListShown) {
+                    LazyView(ChatThreadListView(viewFactory: DemoAppFactory.shared, embedInNavigationView: false))
+                } label: {
+                    EmptyView()
+                }
+            )
+            // Attached to its own view: a second `alert` on the same view would replace the channel list alerts.
+            .background(
+                Color.clear.alert(isPresented: $logoutAlertShown) {
+                    Alert(
+                        title: Text("Sign out"),
+                        message: Text("Are you sure you want to sign out?"),
+                        primaryButton: .destructive(Text("Sign out")) {
+                            withAnimation {
+                                chatClient.disconnect {}
+                                AppState.shared.userState = .notLoggedIn
+                            }
+                        },
+                        secondaryButton: .cancel()
+                    )
+                }
+            )
         }
     }
 }

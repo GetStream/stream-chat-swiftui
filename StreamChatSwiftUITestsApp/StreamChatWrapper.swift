@@ -3,12 +3,8 @@
 //
 
 import Foundation
-#if TESTS
 import OHHTTPStubs
 @testable import StreamChat
-#else
-import StreamChat
-#endif
 import StreamChatSwiftUI
 import UIKit
 
@@ -19,7 +15,6 @@ final class StreamChatWrapper {
     static let shared = StreamChatWrapper()
 
     func mockConnection(isConnected: Bool) {
-        #if TESTS
         if isConnected == false {
             // Stub all HTTP requests with No internet connection error
             HTTPStubs.stubRequests(passingTest: { [unowned self] (request) -> Bool in
@@ -44,13 +39,12 @@ final class StreamChatWrapper {
             monitor.update(with: .unavailable)
 
             // Disconnect from websockets
-            client.webSocketClient?.disconnect(source: .systemInitiated)
+            client.webSocketClient?.disconnect(source: .systemInitiated) {}
 
         } else {
             HTTPStubs.removeAllStubs()
             client.setupConnectionRecoveryHandler(with: ChatClient.Environment())
             client.webSocketClient?.connect()
         }
-        #endif
     }
 }
