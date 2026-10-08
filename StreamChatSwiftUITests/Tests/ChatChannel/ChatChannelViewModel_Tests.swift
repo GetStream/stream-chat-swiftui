@@ -1097,29 +1097,6 @@ import XCTest
     
     // MARK: - Unread state
 
-    func test_chatChannelVM_jumpToUnknownMessage_whenReadStateArrivesLate_loadsPageAroundLastReadMessage() {
-        // Given
-        let channelController = makeChannelController(messages: [ChatMessage.mock()])
-        channelController.channel_mock = .mockDMChannel()
-        let viewModel = ChatChannelViewModel(channelController: channelController)
-        channelController.channel_mock = .mockDMChannel(
-            unreadCount: .mock(messages: 25),
-            reads: [.mock(
-                lastReadAt: .distantPast,
-                lastReadMessageId: "last-read-message",
-                unreadMessagesCount: 25,
-                user: .mock(id: chatClient.currentUserId ?? "")
-            )]
-        )
-
-        // When
-        _ = viewModel.jumpToMessage(messageId: .unknownMessageId)
-
-        // Then
-        XCTAssertEqual(channelController.loadPageAroundMessageIdCallCount, 1)
-        XCTAssertEqual(channelController.loadPageAroundMessageId_messageId, "last-read-message")
-    }
-
     func test_chatChannelVM_canMarkReadInMessageList_whenCaughtUp_isTrue() {
         // Given
         let channelController = makeChannelController(messages: [ChatMessage.mock()])

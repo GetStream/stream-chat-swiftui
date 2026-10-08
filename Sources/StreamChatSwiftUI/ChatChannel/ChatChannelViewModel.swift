@@ -328,9 +328,7 @@ import SwiftUI
 
     private func jumpToMessage(messageId: String, skipThreadNavigation: Bool) -> Bool {
         if messageId == .unknownMessageId {
-            // The read state can arrive after `checkUnreadCount` ran, so fall back to the controller's value.
-            if firstUnreadMessageId == nil, let lastReadMessageId = lastReadMessageId ?? channelController.lastReadMessageId {
-                self.lastReadMessageId = lastReadMessageId
+            if firstUnreadMessageId == nil, let lastReadMessageId {
                 scrollsToUnreadAfterJumpToMessage = true
                 channelDataSource.loadPageAroundMessageId(lastReadMessageId) { error in
                     if error != nil {

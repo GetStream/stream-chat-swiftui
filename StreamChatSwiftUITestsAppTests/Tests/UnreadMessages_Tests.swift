@@ -38,7 +38,9 @@ final class UnreadMessages_Tests: StreamTestCase {
     func test_userScrollsToFirstUnreadMessage() throws {
         linkToScenario(withId: 12055)
 
-        let unreadCount = 25
+        try XCTSkipIf(true, "Needs https://github.com/GetStream/stream-chat-test-mock-server/pull/84 (notification.mark_read on /read)")
+
+        let unreadCount = 60
 
         GIVEN("user opens the channel and sends the message") {
             userRobot.login().openChannel().sendMessage(sampleText)
@@ -128,7 +130,7 @@ final class UnreadMessages_Tests: StreamTestCase {
     func test_userDismissesTheUnreadIndicator() throws {
         linkToScenario(withId: 12057)
 
-        let unreadCount = 25
+        let unreadCount = 60
 
         GIVEN("user opens the channel and sends the message") {
             userRobot.login().openChannel().sendMessage(sampleText)

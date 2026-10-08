@@ -5,7 +5,6 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### 🐞 Fixed
 - Fix the jump-to-unread button hiding at the bottom of the list after marking a message as unread [#1610](https://github.com/GetStream/stream-chat-swiftui/pull/1610)
-- Fix tapping the jump-to-unread button doing nothing when the unread messages are not in the first loaded page [#1610](https://github.com/GetStream/stream-chat-swiftui/pull/1610)
 
 ### 🔄 Changed
 - Cancel image downloads that are no longer needed, for example when media scrolls off-screen [#1605](https://github.com/GetStream/stream-chat-swiftui/pull/1605)
