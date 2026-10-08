@@ -239,6 +239,7 @@
 				Tests/ChatChannel/ReactionsDetailView_Tests.swift,
 				Tests/ChatChannel/ReactionsDetailViewModel_Tests.swift,
 				Tests/ChatChannel/ReactionsOverlayView_Tests.swift,
+				Tests/ChatChannel/ReactionsOverlayViewModel_Tests.swift,
 				Tests/ChatChannel/ReactionsView_Tests.swift,
 				Tests/ChatChannel/Suggestions/CommandsHandler_Tests.swift,
 				Tests/ChatChannel/Suggestions/CommandSuggestionsView_Tests.swift,
@@ -301,6 +302,7 @@
 		82EFEAF82F2BA90900B41819 /* Exceptions for "StreamChatSwiftUITestsAppTests" folder in "StreamChatSwiftUITestsAppTests" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
+				Backend.xctestplan,
 				StreamChatSwiftUITestsApp.xctestplan,
 			);
 			target = 8400A350282E6BE30067D3A0 /* StreamChatSwiftUITestsAppTests */;

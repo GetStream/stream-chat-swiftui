@@ -1,0 +1,34 @@
+{
+  "configurations" : [
+    {
+      "id" : "6B0F1E52-3C7A-4D0B-9E55-2F7C1B8A9D41",
+      "name" : "Configuration 1",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "codeCoverage" : false,
+    "preferredScreenCaptureFormat" : "screenshot",
+    "targetForVariableExpansion" : {
+      "containerPath" : "container:StreamChatSwiftUI.xcodeproj",
+      "identifier" : "8402EAC2282BF69900CCA696",
+      "name" : "StreamChatSwiftUITestsApp"
+    }
+  },
+  "testTargets" : [
+    {
+      "selectedTests" : [
+        "Backend_Tests\/test_message()",
+        "Backend_Tests\/test_reaction()"
+      ],
+      "target" : {
+        "containerPath" : "container:StreamChatSwiftUI.xcodeproj",
+        "identifier" : "8400A350282E6BE30067D3A0",
+        "name" : "StreamChatSwiftUITestsAppTests"
+      }
+    }
+  ],
+  "version" : 1
+}

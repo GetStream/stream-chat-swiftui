@@ -186,7 +186,7 @@ struct MessageContainerView<Factory: ViewFactory>: View {
 
     @ViewBuilder
     private var deliveryStatusView: some View {
-        if message.isSentByCurrentUser && channel.config.readEventsEnabled {
+        if MessageViewModel.isDeliveryStatusShown(for: message, in: channel) {
             HStack(spacing: tokens.spacingXxs) {
                 factory.makeMessageReadIndicatorView(
                     options: MessageReadIndicatorViewOptions(

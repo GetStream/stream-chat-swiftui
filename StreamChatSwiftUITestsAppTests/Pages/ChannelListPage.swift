@@ -11,6 +11,8 @@ enum ChannelListPage {
         return app.buttons["LogoutButton"]
     }
 
+    static var loadingView: XCUIElement { app.descendants(matching: .any)["RedactedLoadingView"].firstMatch }
+
     static var cells: XCUIElementQuery {
         app.buttons.matching(NSPredicate(format: "identifier LIKE 'ChatChannelSwipeableListItem'"))
     }

@@ -57,6 +57,7 @@ class ReactionsDetailViewModel: ObservableObject, ChatReactionListControllerDele
     init(
         message: ChatMessage,
         reactionListController: ChatReactionListController? = nil,
+        messageController: ChatMessageController? = nil,
         loadMoreReactionsAction: ((@escaping @MainActor (Error?) -> Void) -> Void)? = nil
     ) {
         self.message = message
@@ -68,7 +69,7 @@ class ReactionsDetailViewModel: ObservableObject, ChatReactionListControllerDele
         }
         self.reactionListController.delegate = self
         self.reactionListController.synchronize()
-        makeMessageController(for: message)
+        makeMessageController(for: message, messageController: messageController)
     }
 
     func remove(reaction: ChatMessageReaction) {
@@ -133,14 +134,14 @@ class ReactionsDetailViewModel: ObservableObject, ChatReactionListControllerDele
         }
     }
 
-    private func makeMessageController(for message: ChatMessage) {
+    private func makeMessageController(for message: ChatMessage, messageController: ChatMessageController?) {
         if let channelId = message.cid {
-            messageController = chatClient.messageController(
+            self.messageController = messageController ?? chatClient.messageController(
                 cid: channelId,
                 messageId: message.id
             )
-            messageController?.synchronize()
-            messageController?.delegate = self
+            self.messageController?.synchronize()
+            self.messageController?.delegate = self
         }
     }
 

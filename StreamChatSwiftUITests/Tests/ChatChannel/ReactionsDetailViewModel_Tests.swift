@@ -829,7 +829,70 @@ import XCTest
         XCTAssertFalse(loadMoreCalled)
     }
 
+    // MARK: - Reaction Toggle
+
+    func test_reactionTapped_whenCurrentUserHasNotReacted_thenAddsReaction() {
+        // Given
+        let like = MessageReactionType(rawValue: "like")
+        let (viewModel, messageController) = makeToggleViewModel(currentUserReactions: [])
+
+        // When
+        viewModel.reactionTapped(like)
+
+        // Then
+        XCTAssertEqual(messageController.addReaction_types, [like])
+        XCTAssertEqual(messageController.deleteReaction_types, [])
+    }
+
+    func test_reactionTapped_whenCurrentUserHasReacted_thenDeletesReaction() {
+        // Given
+        let like = MessageReactionType(rawValue: "like")
+        let (viewModel, messageController) = makeToggleViewModel(currentUserReactions: [like])
+
+        // When
+        viewModel.reactionTapped(like)
+
+        // Then
+        XCTAssertEqual(messageController.deleteReaction_types, [like])
+        XCTAssertEqual(messageController.addReaction_types, [])
+    }
+
+    func test_removeReaction_thenDeletesReactionType() {
+        // Given
+        let like = MessageReactionType(rawValue: "like")
+        let (viewModel, messageController) = makeToggleViewModel(currentUserReactions: [like])
+        let reaction = ChatMessageReaction.mock(type: like, author: .mock(id: currentUserId))
+
+        // When
+        viewModel.remove(reaction: reaction)
+
+        // Then
+        XCTAssertEqual(messageController.deleteReaction_types, [like])
+    }
+
     // MARK: - Test Data
+
+    private func makeToggleViewModel(
+        currentUserReactions: [MessageReactionType]
+    ) -> (ReactionsDetailViewModel, ChatMessageControllerSUI_Mock) {
+        let cid = ChannelId.unique
+        let reactions = Set(currentUserReactions.map {
+            ChatMessageReaction.mock(type: $0, author: .mock(id: currentUserId))
+        })
+        let message = ChatMessage.mock(cid: cid, currentUserReactions: reactions)
+        let messageController = ChatMessageControllerSUI_Mock.mock(
+            chatClient: chatClient,
+            currentUserId: currentUserId,
+            cid: cid,
+            messageId: message.id
+        )
+        let viewModel = ReactionsDetailViewModel(
+            message: message,
+            reactionListController: makeReactionListController(messageId: message.id),
+            messageController: messageController
+        )
+        return (viewModel, messageController)
+    }
 
     private func makeReactionListController(messageId: MessageId) -> ChatReactionListControllerSUI_Mock {
         let query = ReactionListQuery(messageId: messageId)
