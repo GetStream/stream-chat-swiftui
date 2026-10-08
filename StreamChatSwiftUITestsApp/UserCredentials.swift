@@ -29,4 +29,12 @@ extension UserCredentials {
         token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoibHVrZV9za3l3YWxrZXIifQ.b6EiC8dq2AHk0JPfI-6PN-AM9TVzt8JV-qB1N9kchlI",
         birthLand: "Tatooine"
     )
+
+    static let secondUser: UserCredentials = UserCredentials(
+        id: "han_solo",
+        name: "Han Solo",
+        avatarURL: URL(string: "https://vignette.wikia.nocookie.net/starwars/images/e/e2/TFAHanSolo.png")!,
+        token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiaGFuX3NvbG8ifQ.b5lfc4dHWbfxKFF_NdEGd9K25U6ywSp5ImBW_ncO3OA",
+        birthLand: "Corellia"
+    )
 }

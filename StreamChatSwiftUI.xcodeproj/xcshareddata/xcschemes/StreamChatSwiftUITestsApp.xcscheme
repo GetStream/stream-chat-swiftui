@@ -32,6 +32,9 @@
             reference = "container:StreamChatSwiftUITestsAppTests/StreamChatSwiftUITestsApp.xctestplan"
             default = "YES">
          </TestPlanReference>
+         <TestPlanReference
+            reference = "container:StreamChatSwiftUITestsAppTests/Backend.xctestplan">
+         </TestPlanReference>
       </TestPlans>
       <Testables>
          <TestableReference

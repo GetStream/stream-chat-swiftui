@@ -3,6 +3,7 @@
 //
 
 import AVFoundation
+import Combine
 @testable import StreamChat
 @testable import StreamChatSwiftUI
 @testable import StreamChatTestTools
@@ -1241,6 +1242,145 @@ import XCTest
 
         // Then
         XCTAssertEqual(viewModel.cooldownDuration, 0)
+    }
+
+    func test_messageComposerVM_sendMessage_whenOwnMessageIsStored_startsCooldown() {
+        // Given
+        let channelController = makeChannelController()
+        channelController.channel_mock = makeChannelForCooldown(
+            cooldownDuration: 15,
+            lastMessageFromCurrentUser: nil
+        )
+        let viewModel = MessageComposerViewModel(
+            channelController: channelController,
+            messageController: nil
+        )
+        viewModel.text = "Hello"
+
+        // When
+        viewModel.sendMessage()
+        let sentMessage = ChatMessage.mock(
+            cid: channelController.cid ?? .unique,
+            createdAt: Date(),
+            isSentByCurrentUser: true
+        )
+        let updatedChannel = makeChannelForCooldown(
+            cooldownDuration: 15,
+            lastMessageFromCurrentUser: sentMessage
+        )
+        channelController.simulate(channel: updatedChannel, change: .update(updatedChannel), typingUsers: nil)
+
+        // Then
+        XCTAssertEqual(channelController.createNewMessageCallCount, 1)
+        let expectation = XCTestExpectation(description: "Cooldown started")
+        let cancellable = viewModel.$cooldownDuration
+            .first { $0 > 0 }
+            .sink { _ in expectation.fulfill() }
+        wait(for: [expectation], timeout: defaultTimeout)
+        cancellable.cancel()
+        XCTAssertLessThanOrEqual(viewModel.cooldownDuration, 15)
+        guard case .slowMode = viewModel.composerInputState else {
+            return XCTFail("Expected the slow mode input state, got \(viewModel.composerInputState)")
+        }
+    }
+
+    func test_messageComposerVM_sendMessage_whenEditingMessage_doesNotStartCooldown() {
+        // Given
+        let channelController = makeChannelController()
+        let editedMessage = ChatMessage.mock(
+            cid: channelController.cid ?? .unique,
+            text: "Original",
+            createdAt: Date().addingTimeInterval(-60),
+            isSentByCurrentUser: true
+        )
+        channelController.channel_mock = makeChannelForCooldown(
+            cooldownDuration: 15,
+            lastMessageFromCurrentUser: editedMessage
+        )
+        var editedRef: ChatMessage? = editedMessage
+        let viewModel = MessageComposerViewModel(
+            channelController: channelController,
+            messageController: nil,
+            editedMessage: Binding(get: { editedRef }, set: { editedRef = $0 })
+        )
+        viewModel.text = "Edited"
+
+        // When
+        viewModel.sendMessage()
+
+        // Then
+        XCTAssertEqual(channelController.createNewMessageCallCount, 0)
+        XCTAssertEqual(viewModel.cooldownDuration, 0)
+    }
+
+    func test_messageComposerVM_threadComposer_whenChannelHasActiveCooldown_resumesCooldown() {
+        // Given
+        let channelController = makeChannelController()
+        channelController.channel_mock = makeChannelForCooldown(
+            cooldownDuration: 15,
+            lastMessageFromCurrentUser: nil
+        )
+        let parentMessage = ChatMessage.mock(cid: channelController.cid ?? .unique)
+        let messageController = ChatMessageControllerSUI_Mock.mock(
+            chatClient: chatClient,
+            cid: channelController.cid,
+            messageId: parentMessage.id
+        )
+        let viewModel = MessageComposerViewModel(
+            channelController: channelController,
+            messageController: messageController
+        )
+        XCTAssertEqual(viewModel.cooldownDuration, 0)
+
+        // When
+        let lastMessage = ChatMessage.mock(
+            cid: channelController.cid ?? .unique,
+            createdAt: Date().addingTimeInterval(-2),
+            isSentByCurrentUser: true
+        )
+        let updatedChannel = makeChannelForCooldown(
+            cooldownDuration: 15,
+            lastMessageFromCurrentUser: lastMessage
+        )
+        channelController.simulate(channel: updatedChannel, change: .update(updatedChannel), typingUsers: nil)
+
+        // Then
+        let expectation = XCTestExpectation(description: "Cooldown resumed")
+        let cancellable = viewModel.$cooldownDuration
+            .first { $0 > 0 }
+            .sink { _ in expectation.fulfill() }
+        wait(for: [expectation], timeout: defaultTimeout)
+        cancellable.cancel()
+        XCTAssertLessThanOrEqual(viewModel.cooldownDuration, 13)
+    }
+
+    func test_messageComposerVM_composerInputState_whenQuotingMessageDuringCooldown_staysInSlowMode() {
+        // Given
+        let channelController = makeChannelController()
+        let lastMessage = ChatMessage.mock(
+            cid: channelController.cid ?? .unique,
+            createdAt: Date().addingTimeInterval(-1),
+            isSentByCurrentUser: true
+        )
+        channelController.channel_mock = makeChannelForCooldown(
+            cooldownDuration: 15,
+            lastMessageFromCurrentUser: lastMessage
+        )
+        var quotedRef: ChatMessage?
+        let viewModel = MessageComposerViewModel(
+            channelController: channelController,
+            messageController: nil,
+            quotedMessage: Binding(get: { quotedRef }, set: { quotedRef = $0 })
+        )
+        viewModel.checkChannelCooldown()
+
+        // When
+        quotedRef = lastMessage
+
+        // Then
+        guard case .slowMode = viewModel.composerInputState else {
+            return XCTFail("Expected the slow mode input state, got \(viewModel.composerInputState)")
+        }
     }
 
     func test_addedAsset_extraData() {

@@ -254,7 +254,7 @@ import StreamChat
     /// when read events are disabled.
     private var accessibilityDeliveryStatusText: String? {
         guard !utils.messageTypeResolver.isDeleted(message: message) else { return nil }
-        guard message.isSentByCurrentUser, channel.config.readEventsEnabled else { return nil }
+        guard Self.isDeliveryStatusShown(for: message, in: channel) else { return nil }
         let readUsers = channel.readUsers(currentUserId: chatClient.currentUserId, message: message)
         if !readUsers.isEmpty {
             return L10n.Message.Accessibility.statusRead
@@ -266,6 +266,10 @@ import StreamChat
     }
 
     // MARK: - Helpers
+
+    static func isDeliveryStatusShown(for message: ChatMessage, in channel: ChatChannel) -> Bool {
+        message.isSentByCurrentUser && channel.config.readEventsEnabled
+    }
 
     private var messageListConfig: MessageListConfig {
         utils.messageListConfig

@@ -753,6 +753,7 @@ public struct NewMessagesDivider: View {
     public var body: some View {
         MessageListDivider(title: L10n.MessageList.newMessages(count))
             .padding(.vertical, tokens.spacingXs)
+            .accessibilityIdentifier("NewMessagesDivider")
     }
 }
 
