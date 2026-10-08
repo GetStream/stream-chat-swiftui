@@ -6,7 +6,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ### 🔄 Changed
 
 ### 🐞 Fixed
-- Fix a crash on Mac Catalyst apps using the Mac idiom ("Optimize for Mac") when rendering a voice recording waveform
+- Fix a crash on Mac Catalyst apps using the Mac idiom ("Optimize for Mac") when rendering a voice recording waveform [#1604](https://github.com/GetStream/stream-chat-swiftui/pull/1604)
 
 # [5.12.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/5.12.0)
 _September 28, 2026_
