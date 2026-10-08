@@ -111,6 +111,52 @@ import XCTest
         XCTAssertTrue(imageLoader?.loadedURLs.contains(updatedURL) ?? false)
     }
 
+    // MARK: - Cancellation
+
+    func test_lazyLoadingImage_whenDisappears_cancelsImageLoad() throws {
+        // Given
+        let imageLoader = try XCTUnwrap(streamChat?.utils.mediaLoader as? MediaLoader_Mock)
+        let url = URL(string: "https://example.com/disappear.jpg")!
+        let loadStarted = expectation(description: "Load started")
+        let loadCancelled = expectation(description: "Load cancelled")
+        imageLoader.loadImageTaskHandler = { loadURL, task in
+            guard loadURL == url else { return }
+            task.addCancellationHandler { loadCancelled.fulfill() }
+            loadStarted.fulfill()
+        }
+        let isVisible = CurrentValueContainer(true)
+        showView(LazyLoadingImageVisibilityTestView(url: url, isVisible: isVisible))
+        wait(for: [loadStarted], timeout: defaultTimeout)
+
+        // When
+        isVisible.value = false
+
+        // Then
+        wait(for: [loadCancelled], timeout: defaultTimeout)
+    }
+
+    func test_lazyLoadingImage_whenSourceChanges_cancelsPreviousImageLoad() throws {
+        // Given
+        let imageLoader = try XCTUnwrap(streamChat?.utils.mediaLoader as? MediaLoader_Mock)
+        let initialURL = URL(string: "https://example.com/source-change.jpg")!
+        let loadStarted = expectation(description: "Load started")
+        let loadCancelled = expectation(description: "Load cancelled")
+        imageLoader.loadImageTaskHandler = { loadURL, task in
+            guard loadURL == initialURL else { return }
+            task.addCancellationHandler { loadCancelled.fulfill() }
+            loadStarted.fulfill()
+        }
+        let source = CurrentValueContainer(MediaAttachment(url: initialURL, type: .image))
+        showView(LazyLoadingImageSourceChangeTestView(source: source))
+        wait(for: [loadStarted], timeout: defaultTimeout)
+
+        // When
+        source.value = MediaAttachment(url: .localYodaImage, type: .image)
+
+        // Then
+        wait(for: [loadCancelled], timeout: defaultTimeout)
+    }
+
     // MARK: - Generate Thumbnail
 
     func test_mediaAttachment_generateThumbnail_callsMediaLoader() {
@@ -222,6 +268,23 @@ import XCTest
 }
 
 // MARK: - Test Helpers
+
+private struct LazyLoadingImageVisibilityTestView: View {
+    let url: URL
+    @ObservedObject var isVisible: CurrentValueContainer<Bool>
+
+    var body: some View {
+        if isVisible.value {
+            LazyLoadingImage(
+                source: MediaAttachment(url: url, type: .image),
+                width: 80,
+                height: 80,
+                resize: true,
+                showVideoIcon: false
+            )
+        }
+    }
+}
 
 @MainActor
 private class CurrentValueContainer<T>: ObservableObject {
