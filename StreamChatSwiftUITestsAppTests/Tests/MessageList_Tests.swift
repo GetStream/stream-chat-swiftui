@@ -185,6 +185,8 @@ final class MessageList_Tests: StreamTestCase {
     }
     
     func test_emptyViewDismissesKeyboard() throws {
+        linkToScenario(withId: 5396)
+
         GIVEN("user opens the channel") {
             userRobot.login().openChannel()
         }
