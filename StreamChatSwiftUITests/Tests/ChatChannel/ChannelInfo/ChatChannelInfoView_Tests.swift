@@ -758,7 +758,8 @@ import XCTest
         ChannelInfoActionsView(
             options: ChannelInfoActionsViewOptions(
                 viewModel: viewModel,
-                leaveConversation: {}
+                leaveConversation: {},
+                deleteChannel: {}
             )
         )
     }

@@ -61,7 +61,7 @@ import SwiftUI
     }
 
     open var shouldShowLeaveConversationButton: Bool {
-        if showSingleMemberDMView {
+        if isOneToOneDirectMessage {
             channel.ownCapabilities.contains(.deleteChannel)
         } else {
             channel.ownCapabilities.contains(.leaveChannel)
@@ -70,9 +70,9 @@ import SwiftUI
 
     /// Whether the delete channel button is shown in the group info screen.
     ///
-    /// One-on-one direct messages reuse the leave button to delete the conversation.
+    /// One-on-one direct messages, identified by `memberCount`, reuse the leave button to delete the conversation.
     open var shouldShowDeleteChannelButton: Bool {
-        !showSingleMemberDMView && channel.ownCapabilities.contains(.deleteChannel)
+        !isOneToOneDirectMessage && channel.ownCapabilities.contains(.deleteChannel)
     }
     
     /// Whether the actions section of the channel info screen is shown.
@@ -110,6 +110,12 @@ import SwiftUI
         channel.isDirectMessageChannel && participants.count <= 2
     }
 
+    // `participants` only holds the limited `lastActiveMembers` preview, so a multi-person
+    // direct message can look like a one-to-one channel. Delete and leave routing uses the full count.
+    private var isOneToOneDirectMessage: Bool {
+        channel.isDirectMessageChannel && channel.memberCount <= 2
+    }
+
     public var displayedParticipants: [ParticipantInfo] {
         if showSingleMemberDMView,
            let otherParticipant = participants.first(where: { info in
@@ -126,7 +132,7 @@ import SwiftUI
     }
 
     open var leaveButtonTitle: String {
-        if showSingleMemberDMView {
+        if isOneToOneDirectMessage {
             L10n.Alert.Actions.deleteChannelTitle
         } else {
             L10n.Alert.Actions.leaveGroupTitle
@@ -135,13 +141,13 @@ import SwiftUI
 
     /// The icon of the button that leaves the group, or deletes the one-on-one conversation.
     open var leaveButtonIcon: UIImage {
-        showSingleMemberDMView
+        isOneToOneDirectMessage
             ? images.trash
             : UIImage(systemName: "rectangle.portrait.and.arrow.right") ?? images.trash
     }
 
     open var leaveConversationDescription: String {
-        if showSingleMemberDMView {
+        if isOneToOneDirectMessage {
             L10n.Alert.Actions.deleteChannelMessage
         } else {
             L10n.Alert.Actions.leaveGroupMessage
@@ -276,7 +282,7 @@ import SwiftUI
     /// before or after calling the default implementation.
     /// - Parameter completion: Called when the conversation was successfully left or deleted.
     open func leaveConversationTapped(completion: @escaping @MainActor () -> Void) {
-        if !showSingleMemberDMView {
+        if !isOneToOneDirectMessage {
             removeUserFromConversation(completion: completion)
         } else {
             deleteChannelTapped(completion: completion)

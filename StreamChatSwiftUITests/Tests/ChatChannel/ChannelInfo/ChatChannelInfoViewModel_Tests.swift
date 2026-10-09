@@ -1065,6 +1065,26 @@ import XCTest
         XCTAssertTrue(viewModel.shouldShowLeaveConversationButton)
     }
 
+    func test_chatChannelInfoVM_shouldShowDeleteChannelButton_whenMultiPersonDirectMessageHasLimitedMembers_returnsTrue() {
+        // Given - lastActiveMembers is capped, so only two participants are loaded
+        let members = ChannelInfoMockUtils.setupMockMembers(
+            count: 2,
+            currentUserId: chatClient.currentUserId!
+        )
+        let channel = ChatChannel.mockDMChannel(
+            ownCapabilities: [.deleteChannel, .leaveChannel],
+            lastActiveMembers: members,
+            memberCount: 5
+        )
+        let viewModel = ChatChannelInfoViewModel(channel: channel)
+
+        // Then - memberCount keeps this a multi-person direct message
+        XCTAssertTrue(viewModel.showSingleMemberDMView)
+        XCTAssertTrue(viewModel.shouldShowDeleteChannelButton)
+        XCTAssertTrue(viewModel.shouldShowLeaveConversationButton)
+        XCTAssertEqual(viewModel.leaveButtonTitle, L10n.Alert.Actions.leaveGroupTitle)
+    }
+
     // MARK: - leaveButtonIcon
 
     func test_chatChannelInfoVM_leaveButtonIcon_whenDirectMessage_isTrashIcon() {
@@ -1146,6 +1166,29 @@ import XCTest
         // Then
         XCTAssertEqual(completionCallCount, 0)
         XCTAssertTrue(viewModel.errorShown)
+    }
+
+    func test_chatChannelInfoVM_leaveConversationTapped_whenMultiPersonDirectMessageHasLimitedMembers_removesCurrentUser() {
+        // Given
+        let members = ChannelInfoMockUtils.setupMockMembers(
+            count: 2,
+            currentUserId: chatClient.currentUserId!
+        )
+        let channel = ChatChannel.mockDMChannel(
+            ownCapabilities: [.deleteChannel, .leaveChannel],
+            lastActiveMembers: members,
+            memberCount: 5
+        )
+        let viewModel = ChatChannelInfoViewModel(channel: channel)
+        let controller = channelControllerSpy()
+        viewModel.channelController = controller
+
+        // When
+        viewModel.leaveConversationTapped {}
+
+        // Then
+        XCTAssertEqual(controller.removeMembersUserIds, [chatClient.currentUserId!])
+        XCTAssertEqual(controller.deleteChannelCallCount, 0)
     }
 
     func test_chatChannelInfoVM_leaveConversationTapped_whenDirectMessage_deletesChannel() {
