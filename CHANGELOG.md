@@ -3,6 +3,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 # Upcoming
 
+### 🔄 Changed
+
+# [5.13.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/5.13.0)
+_October 09, 2026_
+
 ### 🐞 Fixed
 - Fix channel list mute actions being shown without the mute channel capability [#1608](https://github.com/GetStream/stream-chat-swiftui/pull/1608)
 - Fix a crash on Mac Catalyst apps using the Mac idiom ("Optimize for Mac") when rendering a voice recording waveform [#1611](https://github.com/GetStream/stream-chat-swiftui/pull/1611)
