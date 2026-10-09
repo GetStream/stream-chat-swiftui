@@ -30,6 +30,8 @@ import SwiftUI
     @Published public var isUploadingGroupAvatar = false
     /// Whether the confirmation for leaving the group, or deleting the conversation, is shown.
     @Published public var leaveGroupAlertShown = false
+    /// Whether the confirmation for deleting the group is shown.
+    @Published public var deleteChannelAlertShown = false
     /// Whether the confirmation for blocking or unblocking the user is shown.
     @Published public var blockUserAlertShown = false
     @Published public var errorShown = false
@@ -65,10 +67,20 @@ import SwiftUI
             channel.ownCapabilities.contains(.leaveChannel)
         }
     }
+
+    /// Whether the delete channel button is shown in the group info screen.
+    ///
+    /// One-on-one direct messages reuse the leave button to delete the conversation.
+    open var shouldShowDeleteChannelButton: Bool {
+        !showSingleMemberDMView && channel.ownCapabilities.contains(.deleteChannel)
+    }
     
     /// Whether the actions section of the channel info screen is shown.
     open var shouldShowActionsCard: Bool {
-        shouldShowMuteChannelButton || shouldShowBlockUserButton || shouldShowLeaveConversationButton
+        shouldShowMuteChannelButton
+            || shouldShowBlockUserButton
+            || shouldShowLeaveConversationButton
+            || shouldShowDeleteChannelButton
     }
 
     open var shouldShowMuteChannelButton: Bool {
@@ -142,6 +154,20 @@ import SwiftUI
             title: leaveButtonTitle,
             message: leaveConversationDescription,
             buttonTitle: leaveButtonTitle
+        )
+    }
+
+    /// The title of the button that deletes the group.
+    open var deleteChannelTitle: String {
+        L10n.Alert.Actions.deleteChannelTitle
+    }
+
+    /// The confirmation shown before deleting the group.
+    open var deleteChannelConfirmation: ConfirmationPopup {
+        ConfirmationPopup(
+            title: deleteChannelTitle,
+            message: L10n.Alert.Actions.deleteChannelMessage,
+            buttonTitle: deleteChannelTitle
         )
     }
 
@@ -253,7 +279,22 @@ import SwiftUI
         if !showSingleMemberDMView {
             removeUserFromConversation(completion: completion)
         } else {
-            deleteChannel(completion: completion)
+            deleteChannelTapped(completion: completion)
+        }
+    }
+
+    /// Deletes the channel.
+    ///
+    /// Override this method to run additional logic, such as sending a system message,
+    /// before or after calling the default implementation.
+    /// - Parameter completion: Called when the channel was successfully deleted.
+    open func deleteChannelTapped(completion: @escaping @MainActor () -> Void) {
+        channelController.deleteChannel { [weak self] error in
+            if error != nil {
+                self?.errorShown = true
+            } else {
+                completion()
+            }
         }
     }
 
@@ -356,16 +397,6 @@ import SwiftUI
     private func removeUserFromConversation(completion: @escaping @MainActor () -> Void) {
         guard let userId = chatClient.currentUserId else { return }
         channelController.removeMembers(userIds: [userId]) { [weak self] error in
-            if error != nil {
-                self?.errorShown = true
-            } else {
-                completion()
-            }
-        }
-    }
-
-    private func deleteChannel(completion: @escaping @MainActor () -> Void) {
-        channelController.deleteChannel { [weak self] error in
             if error != nil {
                 self?.errorShown = true
             } else {

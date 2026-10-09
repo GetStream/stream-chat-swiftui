@@ -1016,6 +1016,53 @@ import XCTest
         XCTAssertFalse(viewModel.shouldShowMuteChannelButton)
         XCTAssertFalse(viewModel.shouldShowBlockUserButton)
         XCTAssertFalse(viewModel.shouldShowLeaveConversationButton)
+        XCTAssertFalse(viewModel.shouldShowDeleteChannelButton)
+    }
+
+    func test_chatChannelInfoVM_shouldShowActionsCard_whenOnlyDeleteCapability_returnsTrue() {
+        // Given
+        let channel = mockGroup(with: 5, capabilities: [.deleteChannel])
+        let viewModel = ChatChannelInfoViewModel(channel: channel)
+
+        // Then
+        XCTAssertTrue(viewModel.shouldShowActionsCard)
+        XCTAssertTrue(viewModel.shouldShowDeleteChannelButton)
+        XCTAssertFalse(viewModel.shouldShowLeaveConversationButton)
+    }
+
+    // MARK: - shouldShowDeleteChannelButton
+
+    func test_chatChannelInfoVM_shouldShowDeleteChannelButton_whenGroupHasDeleteCapability_returnsTrue() {
+        // Given
+        let channel = mockGroup(with: 5, capabilities: [.deleteChannel, .leaveChannel])
+        let viewModel = ChatChannelInfoViewModel(channel: channel)
+
+        // Then
+        XCTAssertTrue(viewModel.shouldShowDeleteChannelButton)
+        XCTAssertTrue(viewModel.shouldShowLeaveConversationButton)
+    }
+
+    func test_chatChannelInfoVM_shouldShowDeleteChannelButton_whenGroupLacksDeleteCapability_returnsFalse() {
+        // Given
+        let channel = mockGroup(with: 5, capabilities: [.leaveChannel])
+        let viewModel = ChatChannelInfoViewModel(channel: channel)
+
+        // Then
+        XCTAssertFalse(viewModel.shouldShowDeleteChannelButton)
+    }
+
+    func test_chatChannelInfoVM_shouldShowDeleteChannelButton_whenDirectMessage_returnsFalse() {
+        // Given - one-on-one direct messages delete through the leave button
+        let cidDM = ChannelId(type: .messaging, id: "!members" + .newUniqueId)
+        let channel = ChatChannel.mock(
+            cid: cidDM,
+            ownCapabilities: [.deleteChannel]
+        )
+        let viewModel = ChatChannelInfoViewModel(channel: channel)
+
+        // Then
+        XCTAssertFalse(viewModel.shouldShowDeleteChannelButton)
+        XCTAssertTrue(viewModel.shouldShowLeaveConversationButton)
     }
 
     // MARK: - leaveButtonIcon
@@ -1132,6 +1179,56 @@ import XCTest
         // Then
         XCTAssertEqual(completionCallCount, 0)
         XCTAssertTrue(viewModel.errorShown)
+    }
+
+    // MARK: - deleteChannelTapped
+
+    func test_chatChannelInfoVM_deleteChannelTapped_deletesChannel() {
+        // Given
+        let viewModel = ChatChannelInfoViewModel(channel: mockGroup(with: 5))
+        let controller = channelControllerSpy()
+        viewModel.channelController = controller
+        var completionCallCount = 0
+
+        // When
+        viewModel.deleteChannelTapped { completionCallCount += 1 }
+        controller.deleteChannelCompletion?(nil)
+
+        // Then
+        XCTAssertEqual(controller.deleteChannelCallCount, 1)
+        XCTAssertNil(controller.removeMembersUserIds)
+        XCTAssertEqual(completionCallCount, 1)
+        XCTAssertFalse(viewModel.errorShown)
+    }
+
+    func test_chatChannelInfoVM_deleteChannelTapped_whenDeletingFails_showsError() {
+        // Given
+        let viewModel = ChatChannelInfoViewModel(channel: mockGroup(with: 5))
+        let controller = channelControllerSpy()
+        viewModel.channelController = controller
+        var completionCallCount = 0
+
+        // When
+        viewModel.deleteChannelTapped { completionCallCount += 1 }
+        controller.deleteChannelCompletion?(ClientError.Unknown())
+
+        // Then
+        XCTAssertEqual(completionCallCount, 0)
+        XCTAssertTrue(viewModel.errorShown)
+    }
+
+    func test_chatChannelInfoVM_deleteChannelConfirmation_asksToDeleteConversation() {
+        // Given
+        let viewModel = ChatChannelInfoViewModel(channel: mockGroup(with: 5))
+
+        // When
+        let confirmation = viewModel.deleteChannelConfirmation
+
+        // Then
+        XCTAssertEqual(confirmation.title, L10n.Alert.Actions.deleteChannelTitle)
+        XCTAssertEqual(confirmation.message, L10n.Alert.Actions.deleteChannelMessage)
+        XCTAssertEqual(confirmation.buttonTitle, L10n.Alert.Actions.deleteChannelTitle)
+        XCTAssertEqual(viewModel.deleteChannelTitle, L10n.Alert.Actions.deleteChannelTitle)
     }
 
     // MARK: - muted
