@@ -1095,6 +1095,35 @@ import XCTest
         XCTAssertNotNil(viewModel.firstUnreadMessageId)
     }
     
+    // MARK: - Unread state
+
+    func test_chatChannelVM_canMarkReadInMessageList_whenCaughtUp_isTrue() {
+        // Given
+        let channelController = makeChannelController(messages: [ChatMessage.mock()])
+        channelController.channel_mock = .mockDMChannel()
+
+        // When
+        let viewModel = ChatChannelViewModel(channelController: channelController)
+
+        // Then
+        XCTAssertTrue(viewModel.canMarkRead)
+        XCTAssertTrue(viewModel.canMarkReadInMessageList)
+    }
+
+    func test_chatChannelVM_canMarkReadInMessageList_whenUserMarkedMessageUnread_isFalse() {
+        // Given
+        let channelController = makeChannelController(messages: [ChatMessage.mock()])
+        channelController.channel_mock = .mockDMChannel()
+        let viewModel = ChatChannelViewModel(channelController: channelController)
+
+        // When
+        viewModel.currentUserMarkedMessageUnread = true
+
+        // Then
+        XCTAssertTrue(viewModel.canMarkRead)
+        XCTAssertFalse(viewModel.canMarkReadInMessageList)
+    }
+
     // MARK: - currentUserMarkedMessageUnread Tests
     
     func test_chatChannelVM_currentUserMarkedMessageUnread_initialValue() {

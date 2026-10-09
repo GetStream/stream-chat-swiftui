@@ -149,6 +149,12 @@ import SwiftUI
     // it should not call markRead() in any scenario.
     public var currentUserMarkedMessageUnread: Bool = false
 
+    // A message the user marked as unread keeps the jump-to-unread button available,
+    // so the message list must not treat the channel as readable.
+    var canMarkReadInMessageList: Bool {
+        canMarkRead && !currentUserMarkedMessageUnread
+    }
+
     @Published public private(set) var channel: ChatChannel?
 
     public var isMessageThread: Bool {

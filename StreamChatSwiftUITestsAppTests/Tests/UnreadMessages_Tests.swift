@@ -38,9 +38,7 @@ final class UnreadMessages_Tests: StreamTestCase {
     func test_userScrollsToFirstUnreadMessage() throws {
         linkToScenario(withId: 12055)
 
-        try XCTSkipIf(true, "https://linear.app/stream/issue/IOS-2154")
-
-        let unreadCount = 25
+        let unreadCount = 60
 
         GIVEN("user opens the channel and sends the message") {
             userRobot.login().openChannel().sendMessage(sampleText)
@@ -102,8 +100,6 @@ final class UnreadMessages_Tests: StreamTestCase {
     func test_jumpToUnreadButtonShowsUnreadCount_whenUserMarksMessageAsUnread() throws {
         linkToScenario(withId: 12176)
 
-        try XCTSkipIf(true, "https://linear.app/stream/issue/IOS-2153")
-
         let unreadCount = 25
 
         GIVEN("user opens the channel and sends the message") {
@@ -132,7 +128,7 @@ final class UnreadMessages_Tests: StreamTestCase {
     func test_userDismissesTheUnreadIndicator() throws {
         linkToScenario(withId: 12057)
 
-        let unreadCount = 25
+        let unreadCount = 60
 
         GIVEN("user opens the channel and sends the message") {
             userRobot.login().openChannel().sendMessage(sampleText)
@@ -156,35 +152,6 @@ final class UnreadMessages_Tests: StreamTestCase {
             userRobot.assertJumpToUnreadButton(isDisplayed: false)
         }
     }
-
-    func test_unreadSeparatorShowsUnreadCount() throws {
-        linkToScenario(withId: 12058)
-
-        try XCTSkipIf(true, "The unread separator copy has no count: every plural of messageList.newMessages is 'Unread messages'")
-
-        let unreadCount = 2
-
-        GIVEN("user opens the channel and sends the message") {
-            userRobot.login().openChannel().sendMessage(sampleText)
-        }
-        AND("the message is delivered") {
-            userRobot.assertMessageDeliveryStatus(.sent)
-        }
-        AND("user moves back to the channel list") {
-            userRobot.tapOnBackButton()
-        }
-        WHEN("participant sends new messages") {
-            participantRobot.sendMultipleMessages("New", count: unreadCount)
-        }
-        AND("user reopens the channel") {
-            userRobot.assertChannelUnreadCount(unreadCount).openChannel()
-        }
-        THEN("the unread separator is shown with the unread count") {
-            userRobot.assertUnreadSeparator(unreadCount: unreadCount)
-        }
-    }
-
-    // MARK: - iOS only
 
     func test_channelUnreadCountIsReset_whenUserReadsTheChannel() throws {
         linkToScenario(withId: 12059)
