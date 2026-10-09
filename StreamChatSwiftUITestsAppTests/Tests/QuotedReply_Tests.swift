@@ -123,7 +123,7 @@ final class QuotedReply_Tests: StreamTestCase {
     }
 
     func test_messageListScrollsToLatest_whenUserSendsMessageAfterJumpingToQuotedMessage() throws {
-        linkToScenario(withId: 10074)
+        linkToScenario(withId: 12209)
 
         let messageCount = 60
         let quotedText = "30"
@@ -157,7 +157,7 @@ final class QuotedReply_Tests: StreamTestCase {
     }
 
     func test_messageListScrollsToLatest_whenUserTapsScrollToBottomAfterJumpingToQuotedMessage() throws {
-        linkToScenario(withId: 10075)
+        linkToScenario(withId: 12210)
 
         let messageCount = 60
         let quotedText = "30"
