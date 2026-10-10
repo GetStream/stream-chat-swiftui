@@ -228,17 +228,28 @@ public struct ChatChannelInfoView<Factory: ViewFactory>: View, KeyboardReadable 
         factory.makeChannelInfoActionsView(
             options: ChannelInfoActionsViewOptions(
                 viewModel: viewModel,
-                leaveConversation: leaveConversation
+                leaveConversation: leaveConversation,
+                deleteChannel: deleteChannel
             )
         )
     }
 
     private func leaveConversation() {
         viewModel.leaveConversationTapped {
-            presentationMode.wrappedValue.dismiss()
-            if shownFromMessageList {
-                notifyChannelDismiss()
-            }
+            dismissChannelInfo()
+        }
+    }
+
+    private func deleteChannel() {
+        viewModel.deleteChannelTapped {
+            dismissChannelInfo()
+        }
+    }
+
+    private func dismissChannelInfo() {
+        presentationMode.wrappedValue.dismiss()
+        if shownFromMessageList {
+            notifyChannelDismiss()
         }
     }
 }

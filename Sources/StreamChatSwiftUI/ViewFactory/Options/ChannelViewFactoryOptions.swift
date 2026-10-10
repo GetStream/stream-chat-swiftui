@@ -319,13 +319,20 @@ public final class ChannelInfoActionsViewOptions: Sendable {
     /// Call it from the leave button of a custom actions view. To change what happens when leaving
     /// the conversation, override `leaveConversationTapped` in ``ChatChannelInfoViewModel`` instead.
     public let leaveConversation: @MainActor () -> Void
+    /// Deletes the channel and dismisses the channel info screen.
+    ///
+    /// Call it from the delete button of a custom actions view. To change what happens when deleting
+    /// the channel, override `deleteChannelTapped` in ``ChatChannelInfoViewModel`` instead.
+    public let deleteChannel: @MainActor () -> Void
 
     public init(
         viewModel: ChatChannelInfoViewModel,
-        leaveConversation: @escaping @MainActor () -> Void
+        leaveConversation: @escaping @MainActor () -> Void,
+        deleteChannel: @escaping @MainActor () -> Void = {}
     ) {
         self.viewModel = viewModel
         self.leaveConversation = leaveConversation
+        self.deleteChannel = deleteChannel
     }
 }
 
