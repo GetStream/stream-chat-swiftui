@@ -175,7 +175,7 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
                 get: { viewModel.firstUnreadMessageId },
                 set: { viewModel.firstUnreadMessageId = $0 }
             ),
-            canMarkRead: viewModel.canMarkRead,
+            canMarkRead: viewModel.canMarkReadInMessageList,
             onMessageAppear: viewModel.handleMessageAppear(index:scrollDirection:),
             onScrollToBottom: viewModel.scrollToLastMessage,
             onLongPress: onLongPress,

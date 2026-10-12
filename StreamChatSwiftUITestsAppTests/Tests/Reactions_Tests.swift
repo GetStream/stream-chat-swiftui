@@ -137,7 +137,7 @@ final class Reactions_Tests: StreamTestCase {
     }
 
     func test_addReactionWhileOffline() throws {
-        linkToScenario(withId: 94)
+        linkToScenario(withId: 3416)
         
         let message = "test message"
 

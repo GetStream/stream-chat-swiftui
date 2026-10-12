@@ -322,7 +322,7 @@ import XCTest
         let controller = viewModel.directMessageChannelController(for: participant)
 
         // Then
-        XCTAssertEqual(controller?.channelQuery.channelPayload?.team, "red")
+        XCTAssertEqual(controller?.channelQuery.channelInput?.team, "red")
     }
 
     func test_chatChannelInfoVM_directMessageChannelController_withoutTeam() {
@@ -341,8 +341,8 @@ import XCTest
 
         // Then
         XCTAssertNotNil(controller)
-        XCTAssertNotNil(controller?.channelQuery.channelPayload)
-        XCTAssertNil(controller?.channelQuery.channelPayload?.team)
+        XCTAssertNotNil(controller?.channelQuery.channelInput)
+        XCTAssertNil(controller?.channelQuery.channelInput?.team)
     }
 
     func test_chatChannelInfoVM_participantActions_withMutesDisabled() {
