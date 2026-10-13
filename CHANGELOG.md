@@ -3,13 +3,16 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 # Upcoming
 
+### 🐞 Fixed
+- Show a delete conversation action on group info when the user can delete the channel [#1613](https://github.com/GetStream/stream-chat-swiftui/pull/1613)
+- Fix a crash that could happen when leaving a group or being removed from a channel [#1613](https://github.com/GetStream/stream-chat-swiftui/pull/1613)
+
 ### 🔄 Changed
 
 # [5.13.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/5.13.0)
 _October 09, 2026_
 
 ### 🐞 Fixed
-- Show a delete conversation action on group info when the user can delete the channel [#1613](https://github.com/GetStream/stream-chat-swiftui/pull/1613)
 - Fix channel list mute actions being shown without the mute channel capability [#1608](https://github.com/GetStream/stream-chat-swiftui/pull/1608)
 - Fix a crash on Mac Catalyst apps using the Mac idiom ("Optimize for Mac") when rendering a voice recording waveform [#1611](https://github.com/GetStream/stream-chat-swiftui/pull/1611)
 - Fix the jump-to-unread button hiding at the bottom of the list after marking a message as unread [#1610](https://github.com/GetStream/stream-chat-swiftui/pull/1610)

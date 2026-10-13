@@ -68,7 +68,11 @@ import UIKit
                 // pop happened, apply the queued changes.
                 if skippedChannelUpdates {
                     skippedChannelUpdates = false
-                    updateChannels()
+                    // Applying them synchronously can remove the row (e.g. after leaving the channel)
+                    // while SwiftUI is still dismissing its `NavigationLink`, which crashes.
+                    DispatchQueue.main.async { [weak self] in
+                        self?.updateChannels()
+                    }
                 }
             }
             if newValue == nil {

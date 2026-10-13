@@ -682,10 +682,40 @@ import XCTest
         // Then
         XCTAssertEqual(viewModel.channels.count, 1)
         
-        // When selection is popped, changes are applied
+        // When selection is popped, changes are applied after the pop started
         viewModel.selectedChannel = nil
+        XCTAssertEqual(viewModel.channels.count, 1)
+        waitForMainQueueTurn()
         
         XCTAssertEqual(viewModel.channels.count, 2)
+    }
+
+    func test_channelListOptimizedUpdates_whenChannelRemovedAndDismissed_thenRemovalIsAppliedAfterDismissalStarted() {
+        // Given
+        let config = MessageListConfig(updateChannelsFromMessageList: false, iPadSplitViewEnabled: false)
+        streamChat = StreamChat(chatClient: chatClient, utils: Utils(messageListConfig: config))
+        let leftChannel = ChatChannel.mockDMChannel()
+        let otherChannel = ChatChannel.mockDMChannel()
+        let channelListController = makeChannelListController(channels: [leftChannel, otherChannel])
+        let viewModel = ChatChannelListViewModel(
+            channelListController: channelListController,
+            selectedChannelId: nil
+        )
+        viewModel.selectedChannel = leftChannel.channelSelectionInfo
+        channelListController.simulate(
+            channels: [otherChannel],
+            changes: [.remove(leftChannel, index: IndexPath(item: 0, section: 0))]
+        )
+        XCTAssertEqual(viewModel.channels.count, 2, "Precondition failed: the removal should be skipped while the channel is open")
+
+        // When
+        notifyChannelDismiss()
+
+        // Then
+        XCTAssertNil(viewModel.selectedChannel)
+        XCTAssertEqual(viewModel.channels.count, 2, "The row must stay while SwiftUI dismisses its link")
+        waitForMainQueueTurn()
+        XCTAssertEqual(viewModel.channels.map(\.cid), [otherChannel.cid])
     }
 
     func test_channelListOptimizedUpdates_whenSelectionCleared_resetsSkippedFlagAndDoesNotReapplyOnFurtherAppearances() {
@@ -705,12 +735,14 @@ import XCTest
             changes: [.insert(insertedChannel, index: IndexPath(item: 0, section: 0))]
         )
         XCTAssertEqual(viewModel.channels.count, 1, "Precondition failed: the update should be skipped while a channel is selected")
+        waitForMainQueueTurn()
 
         var emissionCount = 0
         let cancellable = viewModel.$channels.dropFirst().sink { _ in emissionCount += 1 }
 
-        // When: selection is popped, the queued update is applied.
+        // When: selection is popped, the queued update is applied on the next main-queue turn.
         viewModel.selectedChannel = nil
+        waitForMainQueueTurn()
 
         // Then
         XCTAssertEqual(viewModel.channels.count, 2)
@@ -768,6 +800,12 @@ import XCTest
     }
 
     // MARK: - private
+
+    private func waitForMainQueueTurn() {
+        let turn = expectation(description: "Main queue turn")
+        DispatchQueue.main.async { turn.fulfill() }
+        wait(for: [turn], timeout: defaultTimeout)
+    }
 
     private func makeChannelListController(
         channels: [ChatChannel] = []
