@@ -103,4 +103,23 @@ final class ChannelActions_Tests: StreamTestCase {
             userRobot.assertChannelIsMuted(false)
         }
     }
+
+    func test_userGoesBack_whenRemovedFromTheOpenChannel_thenAppDoesNotCrash() {
+        GIVEN("user opens a channel") {
+            userRobot
+                .login()
+                .openChannel()
+        }
+        AND("user is removed from the channel while it is open") {
+            backendRobot.removeMember(withUserId: "luke_skywalker")
+            userRobot.sleep(1.5)
+        }
+        WHEN("user goes back to the channel list") {
+            userRobot.tapOnBackButton()
+        }
+        THEN("the app stays alive and the channel is gone from the channel list") {
+            XCTAssertTrue(app.wait(for: .runningForeground, timeout: 3), "App crashed after going back")
+            userRobot.assertChannelListIsEmpty()
+        }
+    }
 }

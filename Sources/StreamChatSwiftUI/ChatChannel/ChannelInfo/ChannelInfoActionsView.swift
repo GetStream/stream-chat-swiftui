@@ -8,7 +8,7 @@ import SwiftUI
 /// The actions section shown at the bottom of the channel info screen.
 ///
 /// Contains the mute conversation toggle, the block user button in one-on-one direct message
-/// channels, and the leave group / delete conversation button, with their confirmation alerts.
+/// channels, the leave group button, and the delete channel button, with their confirmation alerts.
 public struct ChannelInfoActionsView: View {
     @Injected(\.colors) private var colors
     @Injected(\.fonts) private var fonts
@@ -18,10 +18,12 @@ public struct ChannelInfoActionsView: View {
     @ObservedObject private var viewModel: ChatChannelInfoViewModel
 
     private let leaveConversation: @MainActor () -> Void
+    private let deleteChannel: @MainActor () -> Void
 
     public init(options: ChannelInfoActionsViewOptions) {
         viewModel = options.viewModel
         leaveConversation = options.leaveConversation
+        deleteChannel = options.deleteChannel
     }
 
     public var body: some View {
@@ -44,6 +46,10 @@ public struct ChannelInfoActionsView: View {
 
                 if viewModel.shouldShowLeaveConversationButton {
                     leaveButton
+                }
+
+                if viewModel.shouldShowDeleteChannelButton {
+                    deleteButton
                 }
             }
         }
@@ -74,14 +80,40 @@ public struct ChannelInfoActionsView: View {
     }
 
     private var leaveButton: some View {
+        destructiveActionButton(
+            icon: viewModel.leaveButtonIcon,
+            title: viewModel.leaveButtonTitle,
+            isPresented: $viewModel.leaveGroupAlertShown,
+            confirmation: viewModel.leaveConversationConfirmation,
+            onConfirm: leaveConversation
+        )
+    }
+
+    private var deleteButton: some View {
+        destructiveActionButton(
+            icon: images.trash,
+            title: viewModel.deleteChannelTitle,
+            isPresented: $viewModel.deleteChannelAlertShown,
+            confirmation: viewModel.deleteChannelConfirmation,
+            onConfirm: deleteChannel
+        )
+    }
+
+    private func destructiveActionButton(
+        icon: UIImage,
+        title: String,
+        isPresented: Binding<Bool>,
+        confirmation: ConfirmationPopup,
+        onConfirm: @escaping @MainActor () -> Void
+    ) -> some View {
         Button {
-            viewModel.leaveGroupAlertShown = true
+            isPresented.wrappedValue = true
         } label: {
             HStack(spacing: tokens.spacingMd) {
-                Image(uiImage: viewModel.leaveButtonIcon)
+                Image(uiImage: icon)
                     .customizable()
                     .frame(width: tokens.spacingLg)
-                Text(viewModel.leaveButtonTitle)
+                Text(title)
                 Spacer()
             }
             .padding(.horizontal, tokens.spacingMd)
@@ -91,9 +123,9 @@ public struct ChannelInfoActionsView: View {
             .background(Color(colors.backgroundCoreSurfaceSubtle))
         }
         .modifier(ConfirmationAlertModifier(
-            isPresented: $viewModel.leaveGroupAlertShown,
-            confirmation: viewModel.leaveConversationConfirmation,
-            onConfirm: leaveConversation
+            isPresented: isPresented,
+            confirmation: confirmation,
+            onConfirm: onConfirm
         ))
     }
 }
