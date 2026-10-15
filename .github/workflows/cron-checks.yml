@@ -19,6 +19,7 @@ concurrency:
 
 permissions:
   contents: read
+  actions: read # to download the previous e2e coverage map
 
 env:
   HOMEBREW_NO_INSTALL_CLEANUP: 1 # Disable cleanup for homebrew, we don't need it on CI
@@ -34,6 +35,7 @@ jobs:
           - ios: "26.2"
             device: "iPhone 17 Pro"
             setup_runtime: false
+            coverage: true # builds the map that selects e2e tests on pull requests
           - ios: "17.5"
             device: "iPhone 15 Pro"
             setup_runtime: true
@@ -64,8 +66,14 @@ jobs:
     - name: Launch Allure TestOps
       run: bundle exec fastlane allure_launch cron:true
     - name: Run UI Tests (Debug)
-      run: bundle exec fastlane test_e2e_mock device:"${{ env.IOS_SIMULATOR_DEVICE }}" ${{ env.VERBOSE }}
+      run: bundle exec fastlane test_e2e_mock device:"${{ env.IOS_SIMULATOR_DEVICE }}" coverage:${{ matrix.coverage == true }} ${{ env.VERBOSE }}
       timeout-minutes: 180
+    - uses: actions/upload-artifact@v4
+      if: matrix.coverage && (success() || failure())
+      with:
+        name: e2e-coverage-map
+        path: fastlane/test_output/e2e_coverage_map.json
+        retention-days: 14
     - name: Allure TestOps Upload
       if: success() || failure()
       run: bundle exec fastlane allure_upload launch_id:$LAUNCH_ID
