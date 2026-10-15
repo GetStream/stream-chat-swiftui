@@ -36,9 +36,6 @@ jobs:
             device: "iPhone 17 Pro"
             setup_runtime: false
             coverage: true # builds the map that selects e2e tests on pull requests
-          - ios: "18.5"
-            device: "iPhone 16 Pro"
-            setup_runtime: false
           - ios: "17.5"
             device: "iPhone 15 Pro"
             setup_runtime: true
@@ -104,8 +101,6 @@ jobs:
       matrix:
         include:
           - xcode: 26.2 # swift 6.2
-            os: macos-15
-          - xcode: 16.4 # swift 6.1
             os: macos-15
           - xcode: 16.1 # swift 6.0
             os: macos-14
