@@ -3,6 +3,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 # Upcoming
 
+### 🔄 Changed
+
+# [5.14.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/5.14.0)
+_October 15, 2026_
+
 ### 🐞 Fixed
 - Show a delete conversation action on group info when the user can delete the channel [#1613](https://github.com/GetStream/stream-chat-swiftui/pull/1613)
 - Fix a crash that could happen when leaving a group or being removed from a channel [#1613](https://github.com/GetStream/stream-chat-swiftui/pull/1613)
