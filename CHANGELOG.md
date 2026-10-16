@@ -3,7 +3,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 # Upcoming
 
-### 🔄 Changed
+### 🐞 Fixed
+- Close the channel view when the current user is removed from the channel [#1622](https://github.com/GetStream/stream-chat-swiftui/pull/1622)
 
 # [5.14.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/5.14.0)
 _October 15, 2026_
