@@ -23,6 +23,15 @@ extension UserRobot {
         attributes.reactionButton(in: messageCell).wait().safeTap()
         return self
     }
+
+    @discardableResult
+    func closeReactionAuthors() -> Self {
+        let grabber = MessageListPage.Reactions.authorsSheetGrabber.wait()
+        grabber.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5))
+            .press(forDuration: 0.1, thenDragTo: app.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.98)))
+        MessageListPage.Reactions.authors.firstMatch.waitForDisappearance()
+        return self
+    }
 }
 
 // MARK: Asserts
@@ -47,11 +56,14 @@ extension UserRobot {
     @discardableResult
     func assertReactionAuthor(
         _ authorName: String,
+        isPresent: Bool = true,
         file: StaticString = #filePath,
         line: UInt = #line
     ) -> Self {
-        let author = MessageListPage.Reactions.author(authorName).wait()
-        XCTAssertTrue(author.exists, "Reaction author \(authorName) is not shown", file: file, line: line)
+        let author = MessageListPage.Reactions.author(authorName)
+        _ = isPresent ? author.wait() : author.waitForDisappearance()
+        let errMessage = isPresent ? "Reaction author \(authorName) is not shown" : "Reaction author \(authorName) is shown"
+        XCTAssertEqual(isPresent, author.exists, errMessage, file: file, line: line)
         return self
     }
 }
@@ -64,6 +76,12 @@ extension MessageListPage.Reactions {
     static func extendedPickerReaction(_ type: ReactionType) -> XCUIElement {
         app.buttons.matching(NSPredicate(format: "label == %@", type.emoji)).firstMatch
     }
+
+    static let currentUserAuthorName = "You"
+
+    static var authors: XCUIElementQuery { app.buttons.matching(identifier: "ReactionAuthorView") }
+
+    static var authorsSheetGrabber: XCUIElement { app.buttons["Sheet Grabber"].firstMatch }
 
     static func author(_ name: String) -> XCUIElement {
         app.buttons.matching(NSPredicate(format: "identifier == 'ReactionAuthorView' AND label CONTAINS %@", name)).firstMatch

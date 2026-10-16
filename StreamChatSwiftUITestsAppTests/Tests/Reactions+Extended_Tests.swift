@@ -30,7 +30,7 @@ extension Reactions_Tests {
         }
     }
 
-    func test_reactionAuthorsSheetIsShown_whenUserTapsOnReaction() {
+    func test_reactionAuthorsSheetIsShown_whenUserTapsOnReaction() throws {
         linkToScenario(withId: 12042)
 
         let message = "test message"
@@ -42,6 +42,11 @@ extension Reactions_Tests {
             participantRobot.sendMessage(message)
             userRobot.assertMessage(message)
         }
+        AND("user adds the reaction") {
+            userRobot
+                .addReaction(type: .wow)
+                .assertReaction(type: .wow, isPresent: true)
+        }
         AND("participant adds the reaction") {
             participantRobot.addReaction(type: .love)
             userRobot.assertReaction(type: .love, isPresent: true)
@@ -49,9 +54,27 @@ extension Reactions_Tests {
         WHEN("user taps on the message reaction") {
             userRobot.tapOnMessageReactions()
         }
-        THEN("the reaction authors sheet shows the participant") {
-            userRobot.assertReactionAuthor(participantRobot.name)
+        THEN("the reaction authors sheet shows the participant and the user") {
+            userRobot
+                .assertReactionAuthor(participantRobot.name)
+                .assertReactionAuthor(MessageListPage.Reactions.currentUserAuthorName)
         }
+
+//        Skipped because of https://linear.app/stream/issue/IOS-2191
+//
+//        WHEN("participant removes the reaction") {
+//            userRobot.closeReactionAuthors()
+//            participantRobot.deleteReaction(type: .love)
+//            userRobot.assertReaction(type: .love, isPresent: false)
+//        }
+//        AND("user taps on the message reaction") {
+//            userRobot.tapOnMessageReactions()
+//        }
+//        THEN("the reaction authors sheet shows only the user") {
+//            userRobot
+//                .assertReactionAuthor(MessageListPage.Reactions.currentUserAuthorName)
+//                .assertReactionAuthor(participantRobot.name, isPresent: false)
+//        }
     }
 
     func test_userAddsReactionWhileOffline() throws {

@@ -71,13 +71,16 @@ extension StreamTestCase {
         add(attachment)
     }
 
+    // Without a handler, XCTest dismisses an alert with "Don't Allow", and the denial sticks for later tests.
     private func alertHandler() {
-        let title = "Push Notification Alert"
+        let title = "Permission Alert"
         _ = addUIInterruptionMonitor(withDescription: title) { (alert: XCUIElement) -> Bool in
-            let allowButton = alert.buttons["Allow"]
-            if allowButton.exists {
-                allowButton.tap()
-                return true
+            for label in ["Allow", "Allow Full Access"] {
+                let allowButton = alert.buttons[label]
+                if allowButton.exists {
+                    allowButton.tap()
+                    return true
+                }
             }
             return false
         }

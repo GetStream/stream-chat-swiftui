@@ -65,9 +65,25 @@ extension UserRobot {
     @discardableResult
     func openContextMenu(messageCellIndex: Int = 0) -> Self {
         let messageCell = messageCell(withIndex: messageCellIndex)
-        let messageBubble = attributes.messageBubble(in: messageCell)
-        messageBubble.press(forDuration: 1)
+        longPressMessageBubble(in: messageCell)
         return self
+    }
+
+    // Before iOS 18 the message's long press isn't high priority, so the top reactions take presses
+    // within ~15pt of them and open the reactions sheet instead of the message actions.
+    func longPressMessageBubble(in messageCell: XCUIElement) {
+        let bubble = attributes.messageBubble(in: messageCell)
+        let reactions = attributes.reactionButton(in: messageCell)
+        guard reactions.exists else {
+            bubble.press(forDuration: 1)
+            return
+        }
+
+        let frame = bubble.frame
+        let y = min(max(frame.midY, reactions.frame.maxY + 30), frame.maxY - 4)
+        bubble.coordinate(withNormalizedOffset: .zero)
+            .withOffset(CGVector(dx: frame.width / 2, dy: y - frame.minY))
+            .press(forDuration: 1)
     }
 
     @discardableResult

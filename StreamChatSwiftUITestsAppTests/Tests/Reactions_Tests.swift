@@ -35,16 +35,36 @@ final class Reactions_Tests: StreamTestCase {
         WHEN("user sends the message: '\(message)'") {
             userRobot.sendMessage(message)
         }
+        AND("participant adds the reaction") {
+            participantRobot.addReaction(type: .love)
+            userRobot.assertReaction(type: .love, isPresent: true)
+        }
         AND("user adds the reaction") {
             userRobot
                 .addReaction(type: .wow)
-                .waitForNewReaction()
+                .assertReaction(type: .wow, isPresent: true)
         }
-        AND("user removes the reaction") {
-            userRobot.deleteReaction(type: .wow)
+        AND("user opens the reaction authors") {
+            userRobot.tapOnMessageReactions()
+        }
+        THEN("the reaction authors show the user and the participant") {
+            userRobot
+                .assertReactionAuthor(MessageListPage.Reactions.currentUserAuthorName)
+                .assertReactionAuthor(participantRobot.name)
+        }
+        WHEN("user removes the reaction") {
+            userRobot
+                .closeReactionAuthors()
+                .deleteReaction(type: .wow)
         }
         THEN("the reaction is removed") {
-            userRobot.assertReaction(isPresent: false)
+            userRobot.assertReaction(type: .wow, isPresent: false)
+        }
+        AND("the reaction authors show only the participant") {
+            userRobot
+                .tapOnMessageReactions()
+                .assertReactionAuthor(participantRobot.name)
+                .assertReactionAuthor(MessageListPage.Reactions.currentUserAuthorName, isPresent: false)
         }
     }
 
