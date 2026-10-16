@@ -416,8 +416,9 @@ private_lane :build_e2e_coverage_map do |options|
   )
 end
 
-# The test runner saves a video to the photo library. Granting access up front avoids the system prompt,
-# which can be dismissed as "Don't Allow" when it's not answered in time and then stays denied for every retry.
+# The test runner saves a video to the photo library and the app's media picker reads it. Granting access up front
+# avoids the system prompts, which can be dismissed as "Don't Allow" when they're not answered in time and then
+# stay denied for every retry.
 private_lane :allow_photo_library_access do |options|
   next UI.important('No device is given, photo library access is not granted') unless options[:device]
 
@@ -434,6 +435,7 @@ private_lane :allow_photo_library_access do |options|
 
   sh("xcrun simctl bootstatus #{simulator.udid} -b")
   sh("xcrun simctl privacy #{simulator.udid} grant photos-add io.getstream.iOS.StreamChatSwiftUITestsAppTests.xctrunner")
+  sh("xcrun simctl privacy #{simulator.udid} grant photos io.getstream.iOS.StreamChatSwiftUITestsApp")
 end
 
 private_lane :all_e2e_tests do
