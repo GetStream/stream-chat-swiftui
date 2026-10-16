@@ -610,6 +610,13 @@ import SwiftUI
     }
 
     open func eventsController(_ controller: EventsController, didReceiveEvent event: Event) {
+        if let kickedEvent = event as? ChannelKickedEvent {
+            if kickedEvent.cid == channelController.cid, !isMessageThread {
+                notifyChannelDismiss()
+            }
+            return
+        }
+
         guard let pendingEvent = event as? NewMessagePendingEvent else { return }
         guard pendingEvent.cid == channelController.cid else { return }
 

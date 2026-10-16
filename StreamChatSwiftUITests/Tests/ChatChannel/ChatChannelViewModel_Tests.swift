@@ -413,6 +413,58 @@ import XCTest
         XCTAssertEqual(channelController.loadFirstPageCallCount, 0)
     }
 
+    func test_chatChannelVM_channelKickedEvent_notifiesChannelDismiss() throws {
+        // Given
+        let channelController = makeChannelController()
+        let viewModel = ChatChannelViewModel(channelController: channelController)
+        let dismissed = expectation(forNotification: NSNotification.Name(dismissChannel), object: nil)
+
+        // When
+        let kickedEvent = ChannelKickedEvent(cid: try XCTUnwrap(channelController.cid), createdAt: .unique)
+        viewModel.eventsController(channelController.client.eventsController(), didReceiveEvent: kickedEvent)
+
+        // Then
+        wait(for: [dismissed], timeout: defaultTimeout)
+    }
+
+    func test_chatChannelVM_channelKickedEvent_whenDifferentChannel_doesNotNotifyChannelDismiss() {
+        // Given
+        let channelController = makeChannelController()
+        let viewModel = ChatChannelViewModel(channelController: channelController)
+        let dismissed = expectation(forNotification: NSNotification.Name(dismissChannel), object: nil)
+        dismissed.isInverted = true
+
+        // When
+        let kickedEvent = ChannelKickedEvent(cid: .unique, createdAt: .unique)
+        viewModel.eventsController(channelController.client.eventsController(), didReceiveEvent: kickedEvent)
+
+        // Then
+        wait(for: [dismissed], timeout: defaultTimeoutForInversedExpecations)
+    }
+
+    func test_chatChannelVM_channelKickedEvent_whenThread_doesNotNotifyChannelDismiss() throws {
+        // Given
+        let channelController = makeChannelController()
+        let messageController = ChatMessageControllerSUI_Mock.mock(
+            chatClient: chatClient,
+            cid: channelController.cid,
+            messageId: .unique
+        )
+        let viewModel = ChatChannelViewModel(
+            channelController: channelController,
+            messageController: messageController
+        )
+        let dismissed = expectation(forNotification: NSNotification.Name(dismissChannel), object: nil)
+        dismissed.isInverted = true
+
+        // When
+        let kickedEvent = ChannelKickedEvent(cid: try XCTUnwrap(channelController.cid), createdAt: .unique)
+        viewModel.eventsController(channelController.client.eventsController(), didReceiveEvent: kickedEvent)
+
+        // Then - the channel view model posts it, which dismisses the thread view too
+        wait(for: [dismissed], timeout: defaultTimeoutForInversedExpecations)
+    }
+
     func test_chatChannelVM_newMessagePendingEvent_whenFirstPageNotLoaded_scrollsToNewestMessage() {
         // Given
         let midPageMessage = ChatMessage.mock(
