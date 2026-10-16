@@ -21,6 +21,14 @@ class DemoAppFactory: ViewFactory {
         CustomChannelModifier(title: options.title)
     }
     
+    func makeChannelHeaderViewModifier(options: ChannelHeaderViewModifierOptions) -> some ChatChannelHeaderViewModifier {
+        DebugChannelHeaderModifier(
+            factory: self,
+            channel: options.channel,
+            shouldShowTypingIndicator: options.shouldShowTypingIndicator
+        )
+    }
+
     func supportedMoreChannelActions(
         options: SupportedMoreChannelActionsOptions
     ) -> [ChannelAction] {
