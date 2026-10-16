@@ -27,7 +27,8 @@ extension UserRobot {
     @discardableResult
     func openContextMenu(forMessageWithText text: String) -> Self {
         let cell = MessageListPage.cell(withText: text).wait()
-        attributes.messageBubble(in: cell).waitForHitPoint().press(forDuration: 1)
+        _ = attributes.messageBubble(in: cell).waitForHitPoint()
+        longPressMessageBubble(in: cell)
         return self
     }
 
