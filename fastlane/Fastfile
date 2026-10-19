@@ -368,12 +368,7 @@ lane :select_e2e_tests do |options|
         'StreamChatSwiftUITestsAppTests/Robots',
         'StreamChatSwiftUITestsAppTests/StreamChatSwiftUITestsApp.xctestplan',
         'StreamChatSwiftUITestsAppTests/StreamChatSwiftUITests.swift',
-        'Package.swift',
-        'Package.resolved',
-        xcode_project,
-        '.github/workflows/smoke-checks.yml',
-        'fastlane/Fastfile',
-        'Gemfile.lock'
+        'Package.swift'
       ],
       # Changes to code nearly every test runs (launch, login, channel list) take one test per class; the nightly run covers the rest.
       hot_test_ratio: 0.9,
@@ -578,15 +573,15 @@ end
 lane :impact_analysis do
   {
     e2e: {
-      sources: ['Sources', 'DemoAppSwiftUI', 'StreamChatSwiftUITestsAppTests', 'StreamChatSwiftUITestsApp'],
+      sources: ['Sources', 'DemoAppSwiftUI', 'StreamChatSwiftUITestsAppTests', 'StreamChatSwiftUITestsApp', 'Package.swift'],
       checks: ['Test E2E UI (Debug) Result']
     },
     ui: {
-      sources: ['Sources', 'StreamChatSwiftUITests'],
+      sources: ['Sources', 'StreamChatSwiftUITests', 'Package.swift'],
       checks: ['Test SwiftUI (Debug)', 'Build SDKs (Old Xcode)']
     },
     sample_apps: {
-      sources: ['Sources', 'DemoAppSwiftUI'],
+      sources: ['Sources', 'DemoAppSwiftUI', 'Package.swift'],
       checks: ['Build Demo App']
     },
     ruby: {
