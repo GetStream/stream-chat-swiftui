@@ -203,22 +203,21 @@ lane :test_ui do |options|
 
   update_testplan_on_ci(path: 'StreamChatSwiftUITests/Tests/StreamChatSwiftUI.xctestplan')
 
-  scan_with_retries(
-    scan_options: {
-      project: xcode_project,
-      scheme: 'StreamChatSwiftUI',
-      testplan: 'StreamChatSwiftUI',
-      configuration: 'Debug',
-      clean: is_localhost,
-      derived_data_path: derived_data_path,
-      cloned_source_packages_path: source_packages_path,
-      result_bundle: true,
-      devices: options[:device],
-      build_for_testing: options[:build_for_testing],
-      skip_build: options[:skip_build],
-      fail_build: !record_mode,
-      xcodebuild_formatter: xcodebuild_formatter
-    }
+  scan(
+    project: xcode_project,
+    scheme: 'StreamChatSwiftUI',
+    testplan: 'StreamChatSwiftUI',
+    configuration: 'Debug',
+    clean: is_localhost,
+    derived_data_path: derived_data_path,
+    cloned_source_packages_path: source_packages_path,
+    result_bundle: true,
+    devices: options[:device],
+    build_for_testing: options[:build_for_testing],
+    skip_build: options[:skip_build],
+    number_of_retries: record_mode ? nil : 1,
+    fail_build: !record_mode,
+    xcodebuild_formatter: xcodebuild_formatter
   )
 
   if record_mode && is_ci
