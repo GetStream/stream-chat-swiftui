@@ -83,6 +83,18 @@ final class InputTextView_Tests: StreamChatTestCase {
         XCTAssertEqual(textView.placeholderLabel.textAlignment, .left)
     }
 
+    func test_textAlignment_isReappliedOnlyWhenSemanticContentAttributeChanges() {
+        let textView = makeTextView(placeholder: "@username", text: "")
+        textView.semanticContentAttribute = .forceRightToLeft
+        textView.textAlignment = .center
+
+        textView.semanticContentAttribute = .forceRightToLeft
+        XCTAssertEqual(textView.textAlignment, .center)
+
+        textView.semanticContentAttribute = .forceLeftToRight
+        XCTAssertEqual(textView.textAlignment, .natural)
+    }
+
     // MARK: - Placeholder Sizing
 
     func test_sizeThatFits_whenEmpty_includesMultilinePlaceholderHeight() {
