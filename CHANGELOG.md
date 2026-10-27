@@ -3,7 +3,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 # Upcoming
 
-### 🔄 Changed
+### 🐞 Fixed
+- Fix composer text view scrolling back to the caret on view updates [#1629](https://github.com/GetStream/stream-chat-swiftui/pull/1629)
 
 # [5.15.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/5.15.0)
 _October 22, 2026_
