@@ -37,7 +37,6 @@ jobs:
   sdk_size:
     name: Size Metrics
     runs-on: macos-15
-    if: github.event_name != 'pull_request' || github.event.pull_request.draft == false
     steps:
       - uses: actions/checkout@v3.1.0
 
