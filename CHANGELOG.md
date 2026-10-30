@@ -4,7 +4,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 # Upcoming
 
 ### 🐞 Fixed
-- Fix the navigation bar not coming back after reacting to a message when `ChatChannelView` is hosted in UIKit [#1628](https://github.com/GetStream/stream-chat-swiftui/pull/1628)
+- Fix the navigation bar not coming back after reacting to a message when `ChatChannelView` is hosted in UIKit [#1632](https://github.com/GetStream/stream-chat-swiftui/pull/1632)
 
 ### 🔄 Changed
 
