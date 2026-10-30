@@ -4,7 +4,7 @@ Guidance for AI coding agents (Copilot, Cursor, Aider, Claude, etc.) working in 
 
 This repo hosts Stream's SwiftUI Chat SDK for iOS. It builds on the core client and provides SwiftUI-first chat components (views, view models, modifiers) for messaging apps.
 
-Agents should optimize for clean code, follow Apple's SwiftUI guidelines and Swift best practices, accessibility, and high test coverage when changing code. Avoid doing any source-breaking changes without adding deprecations.
+Agents should prioritize accessibility and high test coverage when changing code. Avoid doing any source-breaking changes without adding deprecations.
 
 ### Tech & toolchain
 
@@ -22,7 +22,7 @@ Agents should optimize for clean code, follow Apple's SwiftUI guidelines and Swi
 
 ### Dependencies
 
-- **StreamChat** and **StreamChatCommonUI** from [`stream-chat-swift`](https://github.com/GetStream/stream-chat-swift) (≥ 5.0.0-beta)
+- **StreamChat** and **StreamChatCommonUI** from [`stream-chat-swift`](https://github.com/GetStream/stream-chat-swift) (version requirement in `Package.swift`)
 - **Vendored libraries** (do not edit directly):
   - `Sources/StreamChatSwiftUI/StreamSwiftyGif/` — vendored SwiftyGif
   - Update these via `make update_swiftygif version=X.Y.Z`
@@ -181,9 +181,9 @@ Testing policy
 
 - Add/extend tests in `StreamChatSwiftUITests/Tests/` (mirrors the source directory structure)
 - Test infrastructure (mocks, shared helpers) lives in `StreamChatSwiftUITests/Infrastructure/`
-- Prefer using `AssertSnapshot` from StreamChatTestHelpers instead of using the SnapshotTesting framework directly.
+- Prefer using `AssertSnapshot` from `StreamSwiftTestHelpers` instead of using the SnapshotTesting framework directly.
 - Run and record snapshot tests on the **iPhone 17 Pro (iOS 26.2)** simulator to match CI (`IOS_SIMULATOR_DEVICE` in `.github/workflows/smoke-checks.yml`). Other devices or OS versions render differently (e.g. the system search bar) and fail against the reference images.
-- Avoid using `AssertAsync` from StreamChatTestHelpers, instead use `XCTestExpectation` directly whenever possible.
+- Avoid using `AssertAsync`; use `XCTestExpectation` directly whenever possible.
 
 ### E2E tests & runtime UI debugging (mock server)
 
@@ -222,7 +222,7 @@ Observing what happens at runtime
 - The default integration branch is `develop`. Feature branches are merged into `develop`.
 - Name branches with a type prefix and a short kebab-case description, e.g. `add/dynamic-search-debounce`, `fix/empty-search-results`, `docs/channel-search`.
 - Prefer prefixes that match the change type: `add/`, `fix/`, `docs/`, etc. Do **not** use personal name prefixes (e.g. `nuno/...`) or ticket IDs (e.g. `ios-1932`, `IOS-1932`) in branch names.
-- Update `CHANGELOG.md` under the `# Upcoming` section when making client-facing changes (follow the Keep a Changelog format with `### Added`, `### Fixed`, `### Changed` subsections).
+- Update `CHANGELOG.md` under the `# Upcoming` section when making client-facing changes (follow the Keep a Changelog format with the file's existing `### ✅ Added`, `### 🐞 Fixed`, `### 🔄 Changed` subsections).
 - Only update `CHANGELOG.md` **after the PR has been opened**, so the entry can include the PR link (e.g. `[#1234](https://github.com/GetStream/stream-chat-swiftui/pull/1234)`). Push the changelog update as a follow-up commit on the same branch.
 - Keep changelog entries as short and high-level as possible. Describe the user-visible outcome in one line and do not explain implementation details, file names, or internal APIs.
 
