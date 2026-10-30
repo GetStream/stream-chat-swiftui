@@ -81,6 +81,7 @@ class InputTextView: UITextView, AccessibilityView {
 
     override open var semanticContentAttribute: UISemanticContentAttribute {
         didSet {
+            guard semanticContentAttribute != oldValue else { return }
             placeholderLabel.semanticContentAttribute = semanticContentAttribute
             applyTextAlignmentForCurrentDirection()
         }

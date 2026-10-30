@@ -4,9 +4,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 # Upcoming
 
 ### 🐞 Fixed
+- Fix composer text view scrolling back to the caret on view updates [#1629](https://github.com/GetStream/stream-chat-swiftui/pull/1629)
 - Fix the navigation bar not coming back after reacting to a message when `ChatChannelView` is hosted in UIKit [#1632](https://github.com/GetStream/stream-chat-swiftui/pull/1632)
-
-### 🔄 Changed
 
 # [5.15.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/5.15.0)
 _October 22, 2026_
