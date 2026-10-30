@@ -78,9 +78,11 @@ struct ChangeChannelBarsVisibilityModifier: ViewModifier {
     }
 
     // `navigationBarHidden` alone is not honored by `NavigationStack` / `NavigationSplitView`.
+    // `.visible` is used instead of `.automatic` because `.automatic` does not bring the bar
+    // back when the view is hosted in a `UIHostingController` inside a `UINavigationController`.
     @available(iOS 16, *)
     private var navigationBarVisibility: Visibility {
-        shouldShow ? .automatic : .hidden
+        shouldShow ? .visible : .hidden
     }
 }
 
