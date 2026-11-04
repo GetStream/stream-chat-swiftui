@@ -8,7 +8,7 @@ extension Compatibility where Content: View {
     @ViewBuilder
     func scrollEdgeEffectHidden(_ hidden: Bool, for edges: Edge.Set) -> some View {
         #if os(iOS) && compiler(>=6.3)
-        if #available(iOS 27.0, *) {
+        if #available(iOS 26.0, *) {
             content.scrollEdgeEffectHidden(hidden, for: edges)
         } else {
             content
