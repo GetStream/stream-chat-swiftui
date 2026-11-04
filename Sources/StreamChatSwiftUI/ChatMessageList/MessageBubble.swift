@@ -170,6 +170,10 @@ public struct BubbleBackgroundShape: Shape {
     var cornerRadius: CGFloat
     var corners: UIRectCorner
 
+    /// The shape is never mirrored, the corners are already resolved for the layout direction.
+    @available(iOS 17.0, *)
+    public var layoutDirectionBehavior: LayoutDirectionBehavior { .fixed }
+
     public func path(in rect: CGRect) -> Path {
         guard cornerRadius > 0 else { return Path(rect) }
         

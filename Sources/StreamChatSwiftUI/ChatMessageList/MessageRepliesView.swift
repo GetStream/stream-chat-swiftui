@@ -120,6 +120,8 @@ public struct MessageRepliesView<Factory: ViewFactory>: View {
                     lineJoin: .round
                 )
             )
+            // Path's LayoutDirectionBehavior is mirrors when deployment target is iOS 17+, RTL is already handled by rotation3DEffect
+            .environment(\.layoutDirection, .leftToRight)
         }
         .frame(width: ThreadConnector.width)
         .rotation3DEffect(
