@@ -3,7 +3,7 @@ description: 'Run bootstrap.sh'
 runs:
   using: "composite"
   steps:
-    - run: echo "IMAGE=${ImageOS}" >> $GITHUB_ENV
+    - run: echo "IMAGE=${ImageOS:-}" >> "$GITHUB_ENV"
       shell: bash
     - uses: ./.github/actions/ruby-cache
     - uses: ./.github/actions/xcode-cache

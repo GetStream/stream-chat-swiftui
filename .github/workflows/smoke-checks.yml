@@ -20,6 +20,10 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
+defaults:
+  run:
+    shell: bash
+
 permissions:
   contents: read
   pull-requests: write
@@ -40,20 +44,21 @@ jobs:
     name: Guard
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4.1.1
+      - uses: actions/checkout@v7
       - uses: ./.github/actions/ci-guard
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
 
   build-test-app-and-frameworks:
     name: Build Test App and Frameworks
-    runs-on: macos-15
+    runs-on:
+      group: stream-macos
     needs: guard
     if: ${{ github.event.inputs.record_snapshots != 'true' }}
     outputs:
       e2e_batches: ${{ steps.select_e2e_tests.outputs.e2e_batches }}
     steps:
-    - uses: actions/checkout@v4.1.1
+    - uses: actions/checkout@v7
       with:
         fetch-depth: 2 # the PR merge commit and its base, to diff them
     - uses: ./.github/actions/ruby-cache
@@ -64,7 +69,7 @@ jobs:
     - name: Select E2E Tests
       id: select_e2e_tests
       run: bundle exec fastlane select_e2e_tests ${{ env.VERBOSE }}
-    - uses: actions/upload-artifact@v4
+    - uses: actions/upload-artifact@v7
       if: success()
       with:
         name: cache-derived-data
@@ -73,10 +78,18 @@ jobs:
           derived_data/Build/**/*.xctestrun
           derived_data/Build/**/*.framework
           derived_data/Build/e2e_selection.json
+    - name: Upload raw Xcode logs
+      if: always()
+      uses: actions/upload-artifact@v7
+      with:
+        name: xcode-logs-${{ github.job }}
+        path: ~/Library/Logs/scan/*.log
+        if-no-files-found: ignore
 
   automated-code-review:
     name: Automated Code Review
-    runs-on: macos-14
+    runs-on:
+      group: stream-macos
     permissions:
       contents: read
       pull-requests: write
@@ -85,7 +98,7 @@ jobs:
     env:
       XCODE_VERSION: "16.1"
     steps:
-    - uses: actions/checkout@v4.1.1
+    - uses: actions/checkout@v7
     - uses: ./.github/actions/bootstrap
       env:
         INSTALL_INTERFACE_ANALYZER: true
@@ -96,26 +109,35 @@ jobs:
 
   build-old-xcode:
     name: Build SDKs (Old Xcode)
-    runs-on: macos-14
+    runs-on:
+      group: stream-macos
     needs: guard
     if: ${{ github.event.inputs.record_snapshots != 'true' }}
     env:
       XCODE_VERSION: "16.1"
     steps:
     - name: Connect Bot
-      uses: webfactory/ssh-agent@v0.7.0
+      uses: webfactory/ssh-agent@v0.10.0
       with:
         ssh-private-key: ${{ secrets.BOT_SSH_PRIVATE_KEY }}
-    - uses: actions/checkout@v3.1.0
+    - uses: actions/checkout@v7
     - uses: ./.github/actions/xcode-cache
     - uses: ./.github/actions/ruby-cache
     - name: Build SwiftUI
       run: bundle exec fastlane test_ui device:"iPhone 16 (18.1)" build_for_testing:true ${{ env.VERBOSE }}
       timeout-minutes: 25
+    - name: Upload raw Xcode logs
+      if: always()
+      uses: actions/upload-artifact@v7
+      with:
+        name: xcode-logs-${{ github.job }}
+        path: ~/Library/Logs/scan/*.log
+        if-no-files-found: ignore
 
   test-ui-debug:
     name: Test SwiftUI (Debug)
-    runs-on: macos-15
+    runs-on:
+      group: stream-macos
     needs: guard
     permissions:
       contents: write # to push the snapshots branch
@@ -123,7 +145,7 @@ jobs:
     env:
       GITHUB_TOKEN: ${{ secrets.CI_BOT_GITHUB_TOKEN }} # to open a PR
     steps:
-    - uses: actions/checkout@v4.1.1
+    - uses: actions/checkout@v7
     - uses: ./.github/actions/bootstrap
       env:
         INSTALL_YEETD: true
@@ -140,10 +162,12 @@ jobs:
     - name: Parse xcresult
       if: failure()
       run: |
-        brew install chargepoint/xcparse/xcparse
+        if [[ ${RUNNER_ENVIRONMENT:-} != self-hosted ]] || ! command -v xcparse >/dev/null; then
+          CI=1 HOMEBREW_NO_AUTO_UPDATE=1 brew install chargepoint/xcparse/xcparse
+        fi
         xcparse logs fastlane/test_output/StreamChatSwiftUI.xcresult fastlane/test_output/logs/
         xcparse screenshots fastlane/test_output/StreamChatSwiftUI.xcresult fastlane/test_output/snapshots --test
-    - uses: actions/upload-artifact@v4
+    - uses: actions/upload-artifact@v7
       if: failure()
       with:
         name: Test Data UI
@@ -152,14 +176,22 @@ jobs:
           fastlane/test_output/logs/*/Diagnostics/**/*.txt
           fastlane/test_output/logs/*/Diagnostics/simctl_diagnostics/DiagnosticReports/*
     - name: Upload Test Coverage
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v7
       with:
         name: test-coverage-${{ github.event.pull_request.number }}
         path: reports/sonarqube-generic-coverage.xml
+    - name: Upload raw Xcode logs
+      if: always()
+      uses: actions/upload-artifact@v7
+      with:
+        name: xcode-logs-${{ github.job }}
+        path: ~/Library/Logs/scan/*.log
+        if-no-files-found: ignore
 
   allure_testops_launch:
     name: Launch Allure TestOps
-    runs-on: macos-15
+    runs-on:
+      group: stream-macos
     if: ${{ github.event.inputs.record_snapshots != 'true' && needs.build-test-app-and-frameworks.outputs.e2e_batches != '[]' }}
     needs:
       - guard
@@ -167,7 +199,7 @@ jobs:
     outputs:
       launch_id: ${{ steps.get_launch_id.outputs.launch_id }}
     steps:
-    - uses: actions/checkout@v4.1.1
+    - uses: actions/checkout@v7
     - uses: ./.github/actions/ruby-cache
     - name: Launch Allure TestOps
       run: bundle exec fastlane allure_launch
@@ -180,7 +212,8 @@ jobs:
 
   test-e2e-debug:
     name: Test E2E UI (Debug)
-    runs-on: macos-15
+    runs-on:
+      group: stream-macos
     if: ${{ github.event.inputs.record_snapshots != 'true' && needs.build-test-app-and-frameworks.outputs.e2e_batches != '[]' }}
     needs:
       - guard
@@ -193,8 +226,8 @@ jobs:
         batch: ${{ fromJson(needs.build-test-app-and-frameworks.outputs.e2e_batches) }}
       fail-fast: false
     steps:
-    - uses: actions/checkout@v4.1.1
-    - uses: actions/download-artifact@v4
+    - uses: actions/checkout@v7
+    - uses: actions/download-artifact@v8
       with:
         name: cache-derived-data
         path: derived_data/Build/
@@ -221,9 +254,11 @@ jobs:
     - name: Parse xcresult
       if: failure()
       run: |
-        brew install chargepoint/xcparse/xcparse
+        if [[ ${RUNNER_ENVIRONMENT:-} != self-hosted ]] || ! command -v xcparse >/dev/null; then
+          CI=1 HOMEBREW_NO_AUTO_UPDATE=1 brew install chargepoint/xcparse/xcparse
+        fi
         xcparse logs fastlane/test_output/StreamChatSwiftUITestsApp.xcresult fastlane/test_output/logs/
-    - uses: actions/upload-artifact@v4
+    - uses: actions/upload-artifact@v7
       if: failure()
       with:
         name: Test Data E2E ${{ matrix.batch }}
@@ -232,6 +267,13 @@ jobs:
           fastlane/stream-chat-test-mock-server/logs/*
           fastlane/test_output/logs/*/Diagnostics/**/*.txt
           fastlane/test_output/logs/*/Diagnostics/simctl_diagnostics/DiagnosticReports/*
+    - name: Upload raw Xcode logs
+      if: always()
+      uses: actions/upload-artifact@v7
+      with:
+        name: xcode-logs-${{ github.job }}-${{ matrix.batch }}
+        path: ~/Library/Logs/scan/*.log
+        if-no-files-found: ignore
 
   # The number of E2E batches depends on the PR, so branch protection requires this job instead of each batch.
   test-e2e-debug-result:
@@ -254,18 +296,20 @@ jobs:
 
   build-apps:
     name: Build Demo App
-    runs-on: macos-15
+    runs-on:
+      group: stream-macos
     if: ${{ github.event.inputs.record_snapshots != 'true' }}
-    needs:
-      - guard
-      - build-test-app-and-frameworks
+    needs: guard
     steps:
-    - uses: actions/checkout@v4.1.1
-    - uses: actions/download-artifact@v4
-      with:
-        name: cache-derived-data
-        path: derived_data/Build/
+    - uses: actions/checkout@v7
     - uses: ./.github/actions/ruby-cache
     - uses: ./.github/actions/xcode-cache
     - name: Build Demo App
       run: bundle exec fastlane build_demo ${{ env.VERBOSE }}
+    - name: Upload raw Xcode logs
+      if: always()
+      uses: actions/upload-artifact@v7
+      with:
+        name: xcode-logs-${{ github.job }}
+        path: ~/Library/Logs/scan/*.log
+        if-no-files-found: ignore
