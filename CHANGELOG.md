@@ -13,6 +13,8 @@ _November 05, 2026_
 - Fix composer text view scrolling back to the caret on view updates [#1629](https://github.com/GetStream/stream-chat-swiftui/pull/1629)
 - Fix the navigation bar not coming back after reacting to a message when `ChatChannelView` is hosted in UIKit [#1632](https://github.com/GetStream/stream-chat-swiftui/pull/1632)
 - Fix messages sometimes not rendering on iOS 26 when reduce transparency is on [#1634](https://github.com/GetStream/stream-chat-swiftui/pull/1634)
+- Fix the last message being hidden behind the composer on iPhone SE [#1635](https://github.com/GetStream/stream-chat-swiftui/pull/1635)
+- Fix extra space above the floating composer on a closed iPhone Duo [#1635](https://github.com/GetStream/stream-chat-swiftui/pull/1635)
 
 # [5.15.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/5.15.0)
 _October 22, 2026_
