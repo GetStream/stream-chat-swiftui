@@ -15,14 +15,17 @@ struct PollCommentsView<Factory: ViewFactory>: View {
 
     @StateObject var viewModel: PollCommentsViewModel
     let factory: Factory
+    let translationLanguage: TranslationLanguage?
 
     init(
         factory: Factory,
         poll: Poll,
         pollController: PollController,
+        translationLanguage: TranslationLanguage? = nil,
         viewModel: PollCommentsViewModel? = nil
     ) {
         self.factory = factory
+        self.translationLanguage = translationLanguage
         _viewModel = StateObject(
             wrappedValue: viewModel ?? PollCommentsViewModel(
                 poll: poll,
@@ -41,7 +44,7 @@ struct PollCommentsView<Factory: ViewFactory>: View {
         ScrollView {
             LazyVStack(spacing: tokens.spacingMd) {
                 ForEach(viewModel.comments) { comment in
-                    if let answer = comment.answerText {
+                    if let answer = comment.answerText(in: translationLanguage) {
                         commentCard(comment: comment, text: answer)
                             .onAppear { viewModel.onAppear(comment: comment) }
                     }

@@ -19,6 +19,10 @@ import SwiftUI
     
     /// The object representing the state of the poll.
     @Published public var poll: Poll
+
+    /// The language to show the poll texts in, when they have a translation to it.
+    /// If `nil`, the original texts are shown.
+    @Published public var translationLanguage: TranslationLanguage?
     
     /// If true, an alert with a text field is shown allowing to suggest new options.
     @Published public var suggestOptionShown = false
@@ -104,17 +108,18 @@ import SwiftUI
         poll.votingVisibility != VotingVisibility.anonymous
     }
     
-    public convenience init(message: ChatMessage, poll: Poll) {
+    public convenience init(message: ChatMessage, poll: Poll, translationLanguage: TranslationLanguage? = nil) {
         let pollController = InjectedValues[\.chatClient].pollController(
             messageId: message.id,
             pollId: poll.id
         )
-        self.init(message: message, poll: poll, pollController: pollController)
+        self.init(message: message, poll: poll, pollController: pollController, translationLanguage: translationLanguage)
     }
     
-    init(message: ChatMessage, poll: Poll, pollController: PollController) {
+    init(message: ChatMessage, poll: Poll, pollController: PollController, translationLanguage: TranslationLanguage? = nil) {
         self.message = message
         self.poll = poll
+        self.translationLanguage = translationLanguage
         createdByCurrentUser = poll.createdBy?.id == InjectedValues[\.chatClient].currentUserId
         self.pollController = pollController
         pollController.delegate = self

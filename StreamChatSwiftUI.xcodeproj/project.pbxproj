@@ -236,6 +236,7 @@
 				Tests/ChatChannel/PollCommentsViewModel_Tests.swift,
 				Tests/ChatChannel/PollOptionAllVotesViewModel_Tests.swift,
 				Tests/ChatChannel/PollResultsView_Tests.swift,
+				Tests/ChatChannel/PollTranslation_Tests.swift,
 				Tests/ChatChannel/QuotedMessageView_Tests.swift,
 				Tests/ChatChannel/ReactionsDetailView_Tests.swift,
 				Tests/ChatChannel/ReactionsDetailViewModel_Tests.swift,
