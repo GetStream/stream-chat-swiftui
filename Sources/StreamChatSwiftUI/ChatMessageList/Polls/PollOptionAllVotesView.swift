@@ -12,9 +12,11 @@ struct PollOptionAllVotesView<Factory: ViewFactory>: View {
 
     @StateObject var viewModel: PollOptionAllVotesViewModel
     let factory: Factory
+    let translationLanguage: TranslationLanguage?
 
-    init(factory: Factory, poll: Poll, option: PollOption) {
+    init(factory: Factory, poll: Poll, option: PollOption, translationLanguage: TranslationLanguage? = nil) {
         self.factory = factory
+        self.translationLanguage = translationLanguage
         _viewModel = StateObject(
             wrappedValue: PollOptionAllVotesViewModel(
                 poll: poll,
@@ -23,8 +25,9 @@ struct PollOptionAllVotesView<Factory: ViewFactory>: View {
         )
     }
 
-    init(factory: Factory, viewModel: PollOptionAllVotesViewModel) {
+    init(factory: Factory, viewModel: PollOptionAllVotesViewModel, translationLanguage: TranslationLanguage? = nil) {
         self.factory = factory
+        self.translationLanguage = translationLanguage
         _viewModel = StateObject(wrappedValue: viewModel)
     }
 
@@ -35,6 +38,7 @@ struct PollOptionAllVotesView<Factory: ViewFactory>: View {
                     factory: factory,
                     poll: viewModel.poll,
                     option: viewModel.option,
+                    translationLanguage: translationLanguage,
                     votes: viewModel.pollVotes,
                     onVoteAppear: viewModel.onAppear(vote:)
                 )
@@ -50,7 +54,7 @@ struct PollOptionAllVotesView<Factory: ViewFactory>: View {
         )
         .toolbarThemed {
             ToolbarItem(placement: .principal) {
-                Text(viewModel.option.text)
+                Text(viewModel.option.text(in: translationLanguage))
                     .font(fonts.bodyBold)
                     .foregroundColor(Color(colors.navigationBarTitle))
             }

@@ -578,4 +578,24 @@ import XCTest
         XCTAssertEqual(resolver.previewThumbnail?.url, giphyURL)
         XCTAssertTrue(resolver.previewThumbnail?.isImage == true)
     }
+
+    // MARK: - Poll translations
+
+    func test_resolver_poll_whenTranslated_usesTranslatedName() {
+        // Given
+        let poll = Poll.mock(
+            name: "What's for lunch?",
+            nameTranslations: [.spanish: "¿Qué hay de almuerzo?"],
+            originalLanguage: .english
+        )
+        let message = ChatMessage.mock(id: .unique, cid: .unique, text: "", author: author, poll: poll)
+
+        // When
+        let translatedResolver = MessageAttachmentPreviewResolver(message: message, translationLanguage: .spanish)
+        let originalResolver = MessageAttachmentPreviewResolver(message: message)
+
+        // Then
+        XCTAssertEqual(translatedResolver.previewDescription, "¿Qué hay de almuerzo?")
+        XCTAssertEqual(originalResolver.previewDescription, "What's for lunch?")
+    }
 }

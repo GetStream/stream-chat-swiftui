@@ -39,6 +39,11 @@ class DemoAppFactory: ViewFactory {
             actions.insert(pinChannel, at: actions.count - 2)
         }
 
+        if channel.canUpdateChannel {
+            let autoTranslation = autoTranslationAction(for: channel, onDismiss: onDismiss, onError: onError)
+            actions.insert(autoTranslation, at: actions.count - 2)
+        }
+
         return actions
     }
     
@@ -146,6 +151,32 @@ class DemoAppFactory: ViewFactory {
             isDestructive: false
         )
         return pinChannel
+    }
+
+    private func autoTranslationAction(
+        for channel: ChatChannel,
+        onDismiss: @escaping @MainActor () -> Void,
+        onError: @escaping @MainActor (Error) -> Void
+    ) -> ChannelAction {
+        ChannelAction(
+            title: channel.isAutoTranslationEnabled ? "Disable Auto Translation" : "Enable Auto Translation",
+            iconName: "character.bubble",
+            action: { [weak self] in
+                guard let self else { return }
+                let channelController = chatClient.channelController(for: channel.cid)
+                channelController.partialChannelUpdate(
+                    extraData: ["auto_translation_enabled": .bool(!channel.isAutoTranslationEnabled)]
+                ) { error in
+                    if let error {
+                        onError(error)
+                    } else {
+                        onDismiss()
+                    }
+                }
+            },
+            confirmationPopup: nil,
+            isDestructive: false
+        )
     }
 }
 

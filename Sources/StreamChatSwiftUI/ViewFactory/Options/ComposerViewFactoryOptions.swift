@@ -500,11 +500,21 @@ public final class PollViewOptions: Sendable {
     public let isFirst: Bool
     /// The available width for the poll view.
     public let availableWidth: CGFloat
+    /// The language to show the poll texts in, when they have a translation to it.
+    /// If `nil`, the original texts are shown.
+    public let translationLanguage: TranslationLanguage?
 
-    public init(message: ChatMessage, poll: Poll, isFirst: Bool, availableWidth: CGFloat) {
+    public init(
+        message: ChatMessage,
+        poll: Poll,
+        isFirst: Bool,
+        availableWidth: CGFloat,
+        translationLanguage: TranslationLanguage? = nil
+    ) {
         self.message = message
         self.poll = poll
         self.isFirst = isFirst
         self.availableWidth = availableWidth
+        self.translationLanguage = translationLanguage
     }
 }

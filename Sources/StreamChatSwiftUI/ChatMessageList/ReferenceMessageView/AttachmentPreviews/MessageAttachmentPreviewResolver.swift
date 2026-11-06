@@ -19,10 +19,12 @@ public struct MessageAttachmentPreviewResolver {
     // MARK: - Initialization
     
     /// Creates an attachment preview resolver from a message.
-    /// - Parameter message: The message to analyze for attachments.
-    public init(message: ChatMessage) {
+    /// - Parameters:
+    ///   - message: The message to analyze for attachments.
+    ///   - translationLanguage: The language to show the poll name in, when it has a translation to it.
+    public init(message: ChatMessage, translationLanguage: TranslationLanguage? = nil) {
         self.message = message
-        self.kind = Self.resolveKind(from: message)
+        self.kind = Self.resolveKind(from: message, translationLanguage: translationLanguage)
     }
     
     // MARK: - Preview Description
@@ -132,7 +134,10 @@ public struct MessageAttachmentPreviewResolver {
     
     // MARK: - Helpers
     
-    private static func resolveKind(from message: ChatMessage) -> MessageAttachmentPreviewKind {
+    private static func resolveKind(
+        from message: ChatMessage,
+        translationLanguage: TranslationLanguage?
+    ) -> MessageAttachmentPreviewKind {
         // Mixed content (multiple attachment types)
         let totalTypeCount = message.attachmentCounts.count
         let totalAttachmentCount = message.attachmentCounts.values.reduce(0, +)
@@ -142,7 +147,7 @@ public struct MessageAttachmentPreviewResolver {
         
         // Poll
         if let poll = message.poll {
-            return .poll(name: poll.name)
+            return .poll(name: poll.name(in: translationLanguage))
         }
         
         // Voice recording
