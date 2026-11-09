@@ -266,6 +266,37 @@ import XCTest
         XCTAssertEqual(viewModel.scrolledId, messages[0].id)
     }
 
+    func test_chatChannelVM_newMessageSent_whenUpdateIsReportedBeforeInsertion_scrollsToNewestMessage() {
+        // Given
+        var messages = [ChatMessage]()
+        for i in 0..<5 {
+            let message = ChatMessage.mock(
+                id: .unique,
+                cid: .unique,
+                text: "Test Message \(i)",
+                author: ChatUser.mock(id: chatClient.currentUserId!)
+            )
+            messages.append(message)
+        }
+        let channelController = makeChannelController(messages: messages)
+        let viewModel = ChatChannelViewModel(channelController: channelController)
+
+        // When
+        viewModel.showScrollToLatestButton = true
+        viewModel.messageSentTapped()
+        viewModel.dataSource(
+            channelDataSource: ChatChannelDataSource(controller: channelController),
+            didUpdateMessages: messages,
+            changes: [
+                .update(messages[4], index: .init(item: 4, section: 0)),
+                .insert(messages[0], index: .init(item: 0, section: 0))
+            ]
+        )
+
+        // Then
+        XCTAssertEqual(viewModel.scrolledId, messages[0].id)
+    }
+
     func test_chatChannelVM_newMessageSent_whenFirstPageNotLoaded_doesNotScrollToCurrentNewestMessage() {
         // Given
         var messages = [ChatMessage]()

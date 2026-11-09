@@ -528,7 +528,7 @@ import SwiftUI
             }
         } else if !showScrollToLatestButton && scrolledId == nil && !loadingNextMessages {
             updateScrolledIdToNewestMessage()
-        } else if changes.first?.isInsertion == true && currentUserSentNewMessage {
+        } else if currentUserSentNewMessage && changes.contains(where: \.isInsertion) {
             if channelDataSource.hasLoadedAllNextMessages {
                 updateScrolledIdToNewestMessage()
             }
