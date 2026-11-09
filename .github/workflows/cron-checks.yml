@@ -47,7 +47,7 @@ jobs:
       XCODE_VERSION: "26.3"
       IOS_SIMULATOR_DEVICE: "${{ matrix.device }} (${{ matrix.ios }})"
     steps:
-    - uses: actions/checkout@v4.1.1
+    - uses: actions/checkout@v7
     - uses: ./.github/actions/bootstrap
       env:
         INSTALL_ALLURE: true
@@ -68,7 +68,7 @@ jobs:
     - name: Run UI Tests (Debug)
       run: bundle exec fastlane test_e2e_mock device:"${{ env.IOS_SIMULATOR_DEVICE }}" coverage:${{ matrix.coverage == true }} ${{ env.VERBOSE }}
       timeout-minutes: 180
-    - uses: actions/upload-artifact@v4
+    - uses: actions/upload-artifact@v7
       if: matrix.coverage && (success() || failure())
       with:
         name: e2e-coverage-map
@@ -85,7 +85,7 @@ jobs:
       run: |
         brew install chargepoint/xcparse/xcparse
         xcparse logs fastlane/test_output/StreamChatSwiftUITestsApp.xcresult fastlane/test_output/logs/
-    - uses: actions/upload-artifact@v4
+    - uses: actions/upload-artifact@v7
       if: failure()
       with:
         name: Test Data E2E (iOS ${{ matrix.ios }})
@@ -107,7 +107,7 @@ jobs:
       fail-fast: false
     runs-on: ${{ matrix.os }}
     steps:
-    - uses: actions/checkout@v4.1.1
+    - uses: actions/checkout@v7
     - uses: ./.github/actions/ruby-cache
     - uses: ./.github/actions/xcode-cache
     - name: Build Demo App
@@ -122,10 +122,10 @@ jobs:
       XCODE_VERSION: "16.1"
     steps:
     - name: Connect Bot
-      uses: webfactory/ssh-agent@v0.7.0
+      uses: webfactory/ssh-agent@v0.10.0
       with:
         ssh-private-key: ${{ secrets.BOT_SSH_PRIVATE_KEY }}
-    - uses: actions/checkout@v3.1.0
+    - uses: actions/checkout@v7
     - uses: ./.github/actions/xcode-cache
     - uses: ./.github/actions/ruby-cache
     - name: Build SwiftUI
@@ -138,7 +138,7 @@ jobs:
     env:
       XCODE_VERSION: "16.1"
     steps:
-    - uses: actions/checkout@v4.1.1
+    - uses: actions/checkout@v7
     - uses: ./.github/actions/bootstrap
     - run: bundle exec fastlane rubocop
     - run: bundle exec fastlane run_swift_format strict:true
@@ -149,11 +149,15 @@ jobs:
     needs: [test-e2e-debug, build-apps, build-old-xcode, automated-code-review]
     if: failure() && github.event_name == 'schedule'
     steps:
-      - uses: 8398a7/action-slack@v3
+      - uses: slackapi/slack-github-action@v4
         with:
-          status: cancelled
-          text: "You shall not pass!"
-          job_name: "${{ github.workflow }}: ${{ github.job }}"
-          fields: repo,commit,author,workflow
-        env:
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_NIGHTLY_CHECKS }}
+          webhook: ${{ secrets.SLACK_WEBHOOK_NIGHTLY_CHECKS }}
+          webhook-type: incoming-webhook
+          errors: true
+          payload: |
+            text: ${{ toJSON('You shall not pass!') }}
+            attachments:
+              - color: danger
+                title: ${{ toJSON(format('{0}: {1} ({2})', github.workflow, github.job, 'cancelled')) }}
+                text: ${{ toJSON(format('Repository: {0} | Commit: {1} | Actor: {2}', github.repository, github.sha, github.actor)) }}
+                footer: ${{ toJSON(format('{0}/{1}/actions/runs/{2}', github.server_url, github.repository, github.run_id)) }}
