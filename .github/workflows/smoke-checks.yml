@@ -76,7 +76,7 @@ jobs:
 
   automated-code-review:
     name: Automated Code Review
-    runs-on: macos-15
+    runs-on: macos-14
     permissions:
       contents: read
       pull-requests: write
@@ -96,7 +96,7 @@ jobs:
 
   build-old-xcode:
     name: Build SDKs (Old Xcode)
-    runs-on: macos-15
+    runs-on: macos-14
     needs: guard
     if: ${{ github.event.inputs.record_snapshots != 'true' }}
     env:
@@ -110,7 +110,7 @@ jobs:
     - uses: ./.github/actions/xcode-cache
     - uses: ./.github/actions/ruby-cache
     - name: Build SwiftUI
-      run: bundle exec fastlane test_ui device:"iPhone 16 (18.5)" build_for_testing:true ${{ env.VERBOSE }}
+      run: bundle exec fastlane test_ui device:"iPhone 16 (18.1)" build_for_testing:true ${{ env.VERBOSE }}
       timeout-minutes: 25
 
   test-ui-debug:
