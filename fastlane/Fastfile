@@ -214,6 +214,7 @@ lane :test_ui do |options|
       cloned_source_packages_path: source_packages_path,
       result_bundle: true,
       devices: options[:device],
+      destination: options[:destination],
       build_for_testing: options[:build_for_testing],
       skip_build: options[:skip_build],
       fail_build: !record_mode,
@@ -503,6 +504,7 @@ lane :build_demo do |options|
     cloned_source_packages_path: source_packages_path,
     build_for_testing: true,
     devices: options[:device],
+    destination: options[:destination],
     xcodebuild_formatter: xcodebuild_formatter
   )
 end
