@@ -215,6 +215,7 @@ lane :test_ui do |options|
       result_bundle: true,
       devices: options[:device],
       destination: options[:destination],
+      skip_detect_devices: !options[:destination].nil?,
       build_for_testing: options[:build_for_testing],
       skip_build: options[:skip_build],
       fail_build: !record_mode,
@@ -505,6 +506,7 @@ lane :build_demo do |options|
     build_for_testing: true,
     devices: options[:device],
     destination: options[:destination],
+    skip_detect_devices: !options[:destination].nil?,
     xcodebuild_formatter: xcodebuild_formatter
   )
 end
