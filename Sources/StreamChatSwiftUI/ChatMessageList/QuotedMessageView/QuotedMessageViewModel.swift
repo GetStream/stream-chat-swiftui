@@ -18,7 +18,7 @@ open class QuotedMessageViewModel {
 
     /// The resolved attachment preview data.
     private lazy var attachmentPreviewResolver: MessageAttachmentPreviewResolver = {
-        MessageAttachmentPreviewResolver(message: message)
+        MessageAttachmentPreviewResolver(message: message, translationLanguage: currentUser?.language)
     }()
 
     // MARK: - Init

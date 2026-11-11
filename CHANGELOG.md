@@ -3,6 +3,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 # Upcoming
 
+### ✅ Added
+- Show translated poll questions, options and answers in the user's language [#1642](https://github.com/GetStream/stream-chat-swiftui/pull/1642)
+
 ### 🐞 Fixed
 - Fix the message list sometimes not scrolling to a sent quoted reply [#1640](https://github.com/GetStream/stream-chat-swiftui/pull/1640)
 - Fix message bubble corners and the thread reply connector being mirrored in right-to-left layouts when the app targets iOS 17+ [#1637](https://github.com/GetStream/stream-chat-swiftui/pull/1637)

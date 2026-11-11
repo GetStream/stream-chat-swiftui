@@ -59,7 +59,7 @@ struct PollResultsView<Factory: ViewFactory>: View {
             Text(L10n.Message.Polls.question)
                 .font(fonts.subheadline)
                 .foregroundColor(Color(colors.textTertiary))
-            Text(viewModel.poll.name)
+            Text(viewModel.poll.name(in: viewModel.translationLanguage))
                 .font(fonts.title3.weight(.semibold))
                 .foregroundColor(Color(colors.textPrimary))
         }
@@ -68,7 +68,7 @@ struct PollResultsView<Factory: ViewFactory>: View {
         .background(Color(colors.backgroundCoreSurfaceCard))
         .cornerRadius(tokens.radiusLg)
         .accessibilityElement(children: .ignore)
-        .accessibilityLabel(PollAccessibility.questionLabel(question: L10n.Message.Polls.question, name: viewModel.poll.name))
+        .accessibilityLabel(PollAccessibility.questionLabel(question: L10n.Message.Polls.question, name: viewModel.poll.name(in: viewModel.translationLanguage)))
         .accessibilityAddTraits(.isHeader)
     }
 
@@ -79,6 +79,7 @@ struct PollResultsView<Factory: ViewFactory>: View {
                     factory: factory,
                     poll: viewModel.poll,
                     option: option,
+                    translationLanguage: viewModel.translationLanguage,
                     optionIndex: index + 1,
                     votes: Array(
                         option.latestVotes
@@ -108,6 +109,7 @@ struct PollOptionResultsView<Factory: ViewFactory>: View {
     let factory: Factory
     var poll: Poll
     var option: PollOption
+    var translationLanguage: TranslationLanguage?
     var optionIndex: Int?
     var votes: [PollVote]
     var hasMostVotes: Bool = false
@@ -138,7 +140,7 @@ struct PollOptionResultsView<Factory: ViewFactory>: View {
                     .foregroundColor(Color(colors.textTertiary))
             }
             HStack(spacing: tokens.spacingMd) {
-                Text(option.text)
+                Text(option.text(in: translationLanguage))
                     .font(fonts.title3.weight(.semibold))
                     .foregroundColor(Color(colors.textPrimary))
                 Spacer()
@@ -156,7 +158,7 @@ struct PollOptionResultsView<Factory: ViewFactory>: View {
     private var optionHeadingAccessibilityLabel: String {
         PollAccessibility.resultsOptionHeadingLabel(
             optionIndex: optionIndex,
-            optionText: option.text,
+            optionText: option.text(in: translationLanguage),
             hasMostVotes: hasMostVotes,
             voteCount: poll.voteCountsByOption?[option.id] ?? 0
         )
@@ -240,7 +242,12 @@ struct PollOptionResultsView<Factory: ViewFactory>: View {
             Divider()
                 .background(Color(colors.borderCoreDefault))
             NavigationLink {
-                PollOptionAllVotesView(factory: factory, poll: poll, option: option)
+                PollOptionAllVotesView(
+                    factory: factory,
+                    poll: poll,
+                    option: option,
+                    translationLanguage: translationLanguage
+                )
             } label: {
                 Text(L10n.Message.Polls.Button.showAll)
                     .font(fonts.body)

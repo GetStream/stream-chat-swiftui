@@ -57,7 +57,7 @@ struct PollAllOptionsView<Factory: ViewFactory>: View {
             Text(L10n.Message.Polls.question)
                 .font(fonts.subheadline)
                 .foregroundColor(Color(colors.textTertiary))
-            Text(viewModel.poll.name)
+            Text(viewModel.poll.name(in: viewModel.translationLanguage))
                 .font(fonts.title3.weight(.semibold))
                 .foregroundColor(Color(colors.textPrimary))
         }

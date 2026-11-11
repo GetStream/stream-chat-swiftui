@@ -69,6 +69,9 @@ class AppDelegate: NSObject, UIApplicationDelegate {
         
         let utils = Utils(
             commandsConfig: AppConfiguration.makeCommandsConfig(),
+            channelListConfig: ChannelListConfig(
+                supportedMoreChannelActions: DemoAppFactory.shared.supportedMoreChannelActions(options:)
+            ),
             messageListConfig: AppConfiguration.makeMessageListConfig(),
             composerConfig: AppConfiguration.makeComposerConfig()
         )

@@ -419,6 +419,22 @@ import XCTest
         XCTAssertTrue(pollController.removePollVote_called)
     }
 
+    func test_pollAttachmentViewModel_translationLanguage() {
+        // Given
+        let pollController = makePollController()
+
+        // When
+        let viewModel = PollAttachmentViewModel(
+            message: .mock(),
+            poll: .unique,
+            pollController: pollController,
+            translationLanguage: .spanish
+        )
+
+        // Then
+        XCTAssertEqual(viewModel.translationLanguage, .spanish)
+    }
+
     // MARK: - private
     
     private func makePollController() -> PollController_Mock {
