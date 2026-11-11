@@ -479,4 +479,72 @@ import XCTest
         XCTAssertFalse(result.contains("📊"))
         XCTAssertTrue(result.contains("Favorite color?"))
     }
+
+    // MARK: - Poll translations
+
+    func test_format_poll_whenTranslated_usesTranslatedName() {
+        // Given
+        let message = ChatMessage.mock(
+            id: .unique,
+            cid: .unique,
+            text: "",
+            poll: .mock(
+                name: "What's for lunch?",
+                createdBy: .mock(id: .unique, name: "Han"),
+                latestVotes: [],
+                nameTranslations: [.spanish: "¿Qué hay de almuerzo?"],
+                originalLanguage: .english
+            )
+        )
+        let channel = ChatChannel.mock(cid: .unique, membership: .mock(id: .unique, language: .spanish))
+
+        // When
+        let result = formatter.format(message, in: channel)
+
+        // Then
+        XCTAssertTrue(result.contains("¿Qué hay de almuerzo?"))
+        XCTAssertFalse(result.contains("What's for lunch?"))
+    }
+
+    func test_formatAttachmentContent_poll_whenTranslated_usesTranslatedName() {
+        // Given
+        let message = ChatMessage.mock(
+            id: .unique,
+            cid: .unique,
+            text: "",
+            poll: .mock(
+                name: "What's for lunch?",
+                nameTranslations: [.spanish: "¿Qué hay de almuerzo?"],
+                originalLanguage: .english
+            )
+        )
+        let channel = ChatChannel.mock(cid: .unique, membership: .mock(id: .unique, language: .spanish))
+
+        // When
+        let result = formatter.formatAttachmentContent(for: message, in: channel)
+
+        // Then
+        XCTAssertEqual(result, "¿Qué hay de almuerzo?")
+    }
+
+    func test_formatAttachmentContent_poll_whenNoTranslationForLanguage_usesOriginalName() {
+        // Given
+        let message = ChatMessage.mock(
+            id: .unique,
+            cid: .unique,
+            text: "",
+            poll: .mock(
+                name: "What's for lunch?",
+                nameTranslations: [.spanish: "¿Qué hay de almuerzo?"],
+                originalLanguage: .english
+            )
+        )
+        let channel = ChatChannel.mock(cid: .unique, membership: .mock(id: .unique, language: .french))
+
+        // When
+        let result = formatter.formatAttachmentContent(for: message, in: channel)
+
+        // Then
+        XCTAssertEqual(result, "What's for lunch?")
+    }
 }

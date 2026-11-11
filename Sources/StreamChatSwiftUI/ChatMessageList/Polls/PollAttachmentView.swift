@@ -16,6 +16,7 @@ public struct PollAttachmentView<Factory: ViewFactory>: View {
     private let message: ChatMessage
     private let isFirst: Bool
     private let width: CGFloat
+    private let translationLanguage: TranslationLanguage?
 
     @StateObject var viewModel: PollAttachmentViewModel
 
@@ -24,16 +25,19 @@ public struct PollAttachmentView<Factory: ViewFactory>: View {
         message: ChatMessage,
         poll: Poll,
         isFirst: Bool,
-        width: CGFloat
+        width: CGFloat,
+        translationLanguage: TranslationLanguage? = nil
     ) {
         self.factory = factory
         self.message = message
         self.isFirst = isFirst
         self.width = width
+        self.translationLanguage = translationLanguage
         _viewModel = StateObject(
             wrappedValue: PollAttachmentViewModel(
                 message: message,
-                poll: poll
+                poll: poll,
+                translationLanguage: translationLanguage
             )
         )
     }
@@ -42,7 +46,7 @@ public struct PollAttachmentView<Factory: ViewFactory>: View {
         VStack(spacing: tokens.spacingLg) {
             VStack(alignment: .leading, spacing: tokens.spacingXxs) {
                 HStack {
-                    Text(poll.name)
+                    Text(poll.name(in: viewModel.translationLanguage))
                         .font(fonts.bodyBold)
                         .foregroundColor(textColor(for: message))
                     Spacer()
@@ -173,7 +177,12 @@ public struct PollAttachmentView<Factory: ViewFactory>: View {
                     }
                     .frame(maxWidth: .infinity)
                     .fullScreenCover(isPresented: $viewModel.allCommentsShown) {
-                        PollCommentsView(factory: factory, poll: viewModel.poll, pollController: viewModel.pollController)
+                        PollCommentsView(
+                            factory: factory,
+                            poll: viewModel.poll,
+                            pollController: viewModel.pollController,
+                            translationLanguage: viewModel.translationLanguage
+                        )
                     }
                 }
             }
@@ -191,6 +200,9 @@ public struct PollAttachmentView<Factory: ViewFactory>: View {
             )
         )
         .frame(width: width)
+        .onChange(of: translationLanguage) { newValue in
+            viewModel.translationLanguage = newValue
+        }
     }
 
     private var outlineButtonRole: StreamButtonRole {
@@ -206,7 +218,7 @@ public struct PollAttachmentView<Factory: ViewFactory>: View {
     }
 
     private var headerAccessibilityLabel: String {
-        PollAccessibility.headerLabel(name: poll.name, subtitle: subtitleText, optionsCount: options.count)
+        PollAccessibility.headerLabel(name: poll.name(in: viewModel.translationLanguage), subtitle: subtitleText, optionsCount: options.count)
     }
 
     private var subtitleText: String {
@@ -260,7 +272,7 @@ struct PollOptionView<Factory: ViewFactory>: View {
             }
             VStack(spacing: tokens.spacingXxs) {
                 HStack(alignment: .top, spacing: tokens.spacingXs) {
-                    Text(option.text)
+                    Text(option.text(in: viewModel.translationLanguage))
                         .font(optionFont)
                         .foregroundColor(textColor(for: message))
                         .padding(.top, tokens.spacingXxxs)
@@ -309,7 +321,7 @@ struct PollOptionView<Factory: ViewFactory>: View {
 
     private var accessibilityLabel: String {
         PollAccessibility.optionLabel(
-            text: option.text,
+            text: option.text(in: viewModel.translationLanguage),
             isSelected: viewModel.optionVotedByCurrentUser(option),
             voteCount: viewModel.poll.voteCountsByOption?[option.id] ?? 0,
             optionIndex: optionIndex,

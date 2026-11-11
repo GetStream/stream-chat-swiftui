@@ -940,7 +940,8 @@ extension ViewFactory {
             message: options.message,
             poll: options.poll,
             isFirst: options.isFirst,
-            width: min(options.availableWidth, utils.messageListConfig.attachmentPreviewWidth)
+            width: min(options.availableWidth, utils.messageListConfig.attachmentPreviewWidth),
+            translationLanguage: options.translationLanguage
         )
     }
 

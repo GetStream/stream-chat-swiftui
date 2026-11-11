@@ -18,7 +18,7 @@ import SwiftUI
             return L10n.Message.deletedMessagePlaceholder
         }
         if let poll = previewMessage.poll {
-            return formatPoll(poll)
+            return formatPoll(poll, in: channel)
         }
         let content = formatContent(for: previewMessage, in: channel)
         if channel.isDirectMessageChannel && channel.memberCount == 2 {
@@ -50,7 +50,7 @@ import SwiftUI
     /// Formats only the attachment content of the message in case it contains attachments.
     open func formatAttachmentContent(for previewMessage: ChatMessage, in channel: ChatChannel) -> String? {
         if let poll = previewMessage.poll {
-            return poll.name
+            return poll.name(in: channel.membership?.language)
         }
         guard let attachment = previewMessage.allAttachments.first, !previewMessage.isDeleted else {
             return nil
@@ -91,7 +91,7 @@ import SwiftUI
     }
 
     /// Formats the poll, including the author's name.
-    private func formatPoll(_ poll: Poll) -> String {
+    private func formatPoll(_ poll: Poll, in channel: ChatChannel) -> String {
         var components = [String]()
         if let latestVoter = poll.latestVotes.first?.user {
             if latestVoter.id == chatClient.currentUserId {
@@ -106,8 +106,9 @@ import SwiftUI
                 components.append(L10n.Channel.Item.pollSomeoneCreated(creator.name ?? creator.id))
             }
         }
-        if !poll.name.isEmpty {
-            components.append(poll.name)
+        let pollName = poll.name(in: channel.membership?.language)
+        if !pollName.isEmpty {
+            components.append(pollName)
         }
         return components.joined(separator: " ")
     }

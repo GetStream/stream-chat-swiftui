@@ -60,7 +60,8 @@ public struct MessageView<Factory: ViewFactory>: View {
                         message: message,
                         poll: poll,
                         isFirst: isFirst,
-                        availableWidth: contentWidth
+                        availableWidth: contentWidth,
+                        translationLanguage: translationLanguage
                     )
                 )
             } else if messageTypeResolver.hasGiphyAttachment(message: message) {
