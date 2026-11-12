@@ -1549,7 +1549,7 @@
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/GetStream/stream-chat-swift.git";
 			requirement = {
-				branch = "add/translated-poll-label";
+				branch = develop;
 				kind = branch;
 			};
 		};
