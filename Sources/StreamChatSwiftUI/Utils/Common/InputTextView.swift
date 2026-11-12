@@ -133,8 +133,6 @@ class InputTextView: UITextView, AccessibilityView {
 
         #if compiler(>=6.2)
         if #available(iOS 26.0, *) {
-            // A bar's scroll pocket, such as a hidden tab bar's, would otherwise
-            // cover the text and the placeholder. It turns opaque with Reduce Transparency.
             topEdgeEffect.isHidden = true
             bottomEdgeEffect.isHidden = true
         }
