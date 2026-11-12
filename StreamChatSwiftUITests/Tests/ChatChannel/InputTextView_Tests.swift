@@ -131,6 +131,24 @@ final class InputTextView_Tests: StreamChatTestCase {
         )
     }
 
+    // MARK: - Scroll Edge Effects
+
+    func test_scrollEdgeEffects_areHidden() throws {
+        #if compiler(>=6.2)
+        guard #available(iOS 26.0, *) else {
+            throw XCTSkip("Scroll edge effects are available from iOS 26")
+        }
+        let container = UIView()
+        let textView = makeTextView(placeholder: "@username", text: "")
+        container.addSubview(textView)
+
+        XCTAssertTrue(textView.topEdgeEffect.isHidden)
+        XCTAssertTrue(textView.bottomEdgeEffect.isHidden)
+        #else
+        throw XCTSkip("Scroll edge effects require the iOS 26 SDK")
+        #endif
+    }
+
     // MARK: - Helpers
 
     private func makeTextView(placeholder: String, text: String) -> InputTextView {
