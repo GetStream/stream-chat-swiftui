@@ -685,6 +685,38 @@ import XCTest
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
 
+    func test_translatedPoll_snapshot() {
+        // Given
+        let poll = Poll.mock(
+            name: "What's for lunch?",
+            voteCountsByOption: ["soup": 2, "pizza": 1],
+            options: [
+                .init(id: "soup", text: "Soup", translations: [.spanish: "Sopa"], originalLanguage: .english),
+                .init(id: "pizza", text: "Pizza", translations: [.spanish: "Pizza"], originalLanguage: .english),
+                .init(id: "salad", text: "Salad", translations: [.spanish: "Ensalada"], originalLanguage: .english)
+            ],
+            nameTranslations: [.spanish: "¿Qué hay de almuerzo?"],
+            originalLanguage: .english
+        )
+        let message = ChatMessage.mock(
+            id: .unique,
+            cid: .unique,
+            text: "",
+            author: .mock(id: .unique),
+            poll: poll
+        )
+        let channel = ChatChannel.mock(
+            cid: .unique,
+            membership: .mock(id: .unique, language: .spanish)
+        )
+
+        // When
+        let view = testMessageViewContainer(message: message, channel: channel, height: 480)
+
+        // Then
+        AssertSnapshot(view)
+    }
+
     func test_translatedText_showOriginalTranslatedButtonDisabled_translatedTextShown_snapshot() {
         // Given
         let message = ChatMessage.mock(

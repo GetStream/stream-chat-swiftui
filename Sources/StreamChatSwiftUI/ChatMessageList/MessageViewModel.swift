@@ -153,6 +153,13 @@ import StreamChat
         return nil
     }
 
+    /// Whether the message is shown translated: its text, or the name or options of its poll.
+    public var isTranslated: Bool {
+        if translatedText != nil { return true }
+        guard !message.isDeleted, let language = channel.membership?.language else { return false }
+        return message.poll?.hasTranslation(for: language) == true
+    }
+
     public var translatedLanguageText: String? {
         guard let localizedName = channel.membership?.language?.localizedName else {
             return nil
@@ -166,7 +173,7 @@ import StreamChat
             || sentInChannelShown
             || repliedToThreadShown
             || hasReminder
-            || translatedText != nil
+            || isTranslated
     }
 
     public var threadRepliesShown: Bool {

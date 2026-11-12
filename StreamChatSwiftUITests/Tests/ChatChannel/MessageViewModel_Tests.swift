@@ -4,6 +4,7 @@
 
 @testable import StreamChat
 @testable import StreamChatSwiftUI
+@testable import StreamChatTestTools
 import XCTest
 
 @MainActor final class MessageViewModel_Tests: StreamChatTestCase {
@@ -289,6 +290,49 @@ import XCTest
         XCTAssertFalse(viewModel.isHighlighted(messageId: message.messageId))
     }
 
+    // MARK: - isTranslated
+
+    func test_isTranslated_whenPollIsTranslated_isTrue() {
+        let viewModel = MessageViewModel(
+            message: makeMessage(isSentByCurrentUser: false, poll: makeTranslatedPoll()),
+            channel: makeChannel(language: .spanish)
+        )
+
+        XCTAssertTrue(viewModel.isTranslated)
+        XCTAssertTrue(viewModel.annotationsShown)
+    }
+
+    func test_isTranslated_whenPollHasNoTranslationToUserLanguage_isFalse() {
+        let viewModel = MessageViewModel(
+            message: makeMessage(isSentByCurrentUser: false, poll: makeTranslatedPoll()),
+            channel: makeChannel(language: .french)
+        )
+
+        XCTAssertFalse(viewModel.isTranslated)
+    }
+
+    func test_isTranslated_whenPollMessageIsDeleted_isFalse() {
+        let viewModel = MessageViewModel(
+            message: makeMessage(isSentByCurrentUser: false, deletedAt: .unique, poll: makeTranslatedPoll()),
+            channel: makeChannel(language: .spanish)
+        )
+
+        XCTAssertFalse(viewModel.isTranslated)
+    }
+
+    func test_isTranslated_whenTextIsTranslated_isTrue() {
+        let message = ChatMessage.mock(
+            id: .unique,
+            cid: .unique,
+            text: "Hello",
+            author: .mock(id: .unique),
+            translations: [.spanish: "Hola"]
+        )
+        let viewModel = MessageViewModel(message: message, channel: makeChannel(language: .spanish))
+
+        XCTAssertTrue(viewModel.isTranslated)
+    }
+
     // MARK: - Helpers
 
     private func makeMessage(
@@ -318,6 +362,14 @@ import XCTest
 
     private func makeViewModel(for message: ChatMessage) -> MessageViewModel {
         MessageViewModel(message: message, channel: .mockDMChannel())
+    }
+
+    private func makeChannel(language: TranslationLanguage) -> ChatChannel {
+        .mock(cid: .unique, membership: .mock(id: .unique, language: language))
+    }
+
+    private func makeTranslatedPoll() -> Poll {
+        .mock(name: "What's for lunch?", nameTranslations: [.spanish: "¿Qué hay de almuerzo?"], originalLanguage: .english)
     }
 
     private func makeChannel(
