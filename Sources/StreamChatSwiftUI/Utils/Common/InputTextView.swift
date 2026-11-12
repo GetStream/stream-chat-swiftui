@@ -130,6 +130,13 @@ class InputTextView: UITextView, AccessibilityView {
         placeholderLabel.font = font
         placeholderLabel.textColor = InjectedValues[\.colors].inputTextPlaceholder
         applyTextAlignmentForCurrentDirection()
+
+        #if compiler(>=6.2)
+        if #available(iOS 26.0, *) {
+            topEdgeEffect.isHidden = true
+            bottomEdgeEffect.isHidden = true
+        }
+        #endif
     }
 
     private func applyTextAlignmentForCurrentDirection() {
