@@ -3,6 +3,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 # Upcoming
 
+### 🔄 Changed
+
+# [5.17.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/5.17.0)
+_November 13, 2026_
+
 ### ✅ Added
 - Show translated poll questions, options and answers in the user's language [#1642](https://github.com/GetStream/stream-chat-swiftui/pull/1642)
 
