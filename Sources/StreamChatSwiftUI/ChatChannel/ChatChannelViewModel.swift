@@ -66,6 +66,9 @@ import SwiftUI
 
     @Published public var showScrollToLatestButton = false {
         didSet {
+            if oldValue != showScrollToLatestButton {
+                ScrollTelemetry.log("VM button \(oldValue) -> \(showScrollToLatestButton)")
+            }
             checkTypingIndicator()
             checkHeaderType()
         }
@@ -304,6 +307,7 @@ import SwiftUI
     }
     
     public func scrollToLastMessage() {
+        ScrollTelemetry.log("VM scrollToLastMessage allNext=\(channelDataSource.hasLoadedAllNextMessages)")
         if channelDataSource.hasLoadedAllNextMessages {
             updateScrolledIdToNewestMessage()
             showScrollToLatestButton = false
@@ -319,6 +323,7 @@ import SwiftUI
 
     /// The user tapped on the message sent button.
     public func messageSentTapped() {
+        ScrollTelemetry.log("VM messageSentTapped")
         currentUserSentNewMessage = true
     }
 
@@ -492,6 +497,12 @@ import SwiftUI
         didUpdateMessages messages: [ChatMessage],
         changes: [ListChange<ChatMessage>]
     ) {
+        ScrollTelemetry.log(
+            "VM update active=\(isActive) changes=\(changes.map { String(String(describing: $0).prefix(6)) }) "
+                + "sent=\(currentUserSentNewMessage) button=\(showScrollToLatestButton) "
+                + "allNext=\(channelDataSource.hasLoadedAllNextMessages) scrolledId=\(ScrollTelemetry.short(scrolledId)) "
+                + "loadingNext=\(loadingNextMessages) count=\(messages.count)"
+        )
         if !isActive {
             return
         }
@@ -527,8 +538,10 @@ import SwiftUI
                 finishScrollingToLatestAfterLoadingFirstPage()
             }
         } else if !showScrollToLatestButton && scrolledId == nil && !loadingNextMessages {
+            ScrollTelemetry.log("VM branch atBottom -> scroll")
             updateScrolledIdToNewestMessage()
         } else if currentUserSentNewMessage && changes.contains(where: \.isInsertion) {
+            ScrollTelemetry.log("VM branch sent -> scroll=\(channelDataSource.hasLoadedAllNextMessages)")
             if channelDataSource.hasLoadedAllNextMessages {
                 updateScrolledIdToNewestMessage()
             }

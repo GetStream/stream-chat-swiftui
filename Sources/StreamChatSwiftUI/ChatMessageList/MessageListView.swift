@@ -207,6 +207,7 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
                             let offset = frame.minY
                             let width = frame.width
                             Color.clear.preference(key: ScrollViewOffsetPreferenceKey.self, value: offset)
+                                .background(ScrollTelemetryProbe())
                             Color.clear.preference(key: WidthPreferenceKey.self, value: width)
                         }
                         // A GeometryReader has a 10-point ideal height inside a
@@ -353,8 +354,15 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
                     }
                 }
                 .onPreferenceChange(ScrollViewOffsetPreferenceKey.self) { value in
+                    ScrollTelemetry.log("PREF raw=\(ScrollTelemetry.format(value))")
                     DispatchQueue.main.async {
                         let offsetValue = value ?? 0
+                        ScrollTelemetry.log(
+                            "PREF handle offset=\(ScrollTelemetry.format(offsetValue)) "
+                                + "stored=\(ScrollTelemetry.format(utils.messageCachingUtils.scrollOffset)) "
+                                + "button=\(showScrollToLatestButton) keyboard=\(keyboardShown) "
+                                + "newest=\(ScrollTelemetry.short(messages.first?.id))"
+                        )
                         let diff = offsetValue - utils.messageCachingUtils.scrollOffset
                         if abs(diff) > 15 {
                             if diff > 0 {
@@ -384,6 +392,7 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
                             }
                         }
                         if messageListConfig.resignsFirstResponderOnScrollDown && keyboardShown && diff < -20 {
+                            ScrollTelemetry.log("RESIGN diff=\(ScrollTelemetry.format(diff))")
                             keyboardShown = false
                             resignFirstResponder()
                         }
@@ -396,8 +405,12 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
                 .frame(maxWidth: .infinity)
                 .clipped()
                 .onChange(of: scrolledId) { scrolledId in
+                    ScrollTelemetry.log(
+                        "ONCHANGE scrolledId=\(ScrollTelemetry.short(scrolledId)) newest=\(ScrollTelemetry.short(messages.first?.id))"
+                    )
                     if let scrolledId {
                         let shouldJump = onJumpToMessage?(scrolledId) ?? false
+                        ScrollTelemetry.log("ONCHANGE shouldJump=\(shouldJump) bottomAnchor=\(messages.first?.id == scrolledId)")
                         if !shouldJump {
                             return
                         }
@@ -427,6 +440,8 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
                     )
                 )
                 .offset(y: -bottomInset)
+                .onAppear { ScrollTelemetry.log("BUTTON appear") }
+                .onDisappear { ScrollTelemetry.log("BUTTON disappear") }
             }
         }
         .onReceive(keyboardDidChangePublisher) { visible in
@@ -873,5 +888,88 @@ private class MessageRenderingUtil {
         }
 
         return skipRendering
+    }
+}
+
+// TEMP TELEMETRY: diagnoses the flaky scroll-to-bottom button on CI. Remove before merging.
+enum ScrollTelemetry {
+    @MainActor private static var isObservingKeyboard = false
+
+    static func log(_ message: String) {
+        NSLog("[ScrollTelemetry] %@", message)
+    }
+
+    static func format(_ value: CGFloat?) -> String {
+        value.map { String(format: "%.1f", $0) } ?? "nil"
+    }
+
+    static func short(_ id: String?) -> String {
+        id.map { String($0.prefix(8)) } ?? "nil"
+    }
+
+    @MainActor static func observeKeyboard() {
+        guard !isObservingKeyboard else { return }
+        isObservingKeyboard = true
+        let notifications: [(Notification.Name, String)] = [
+            (UIResponder.keyboardWillShowNotification, "willShow"),
+            (UIResponder.keyboardDidShowNotification, "didShow"),
+            (UIResponder.keyboardWillHideNotification, "willHide"),
+            (UIResponder.keyboardDidHideNotification, "didHide")
+        ]
+        for (name, label) in notifications {
+            NotificationCenter.default.addObserver(forName: name, object: nil, queue: nil) { notification in
+                let frame = notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? CGRect ?? .zero
+                var message = "KEYBOARD \(label) frame=\(NSCoder.string(for: frame))"
+                if label == "willHide" {
+                    message += " stack:\n" + Thread.callStackSymbols.prefix(40).joined(separator: "\n")
+                }
+                NSLog("[ScrollTelemetry] %@", message)
+            }
+        }
+    }
+}
+
+struct ScrollTelemetryProbe: UIViewRepresentable {
+    func makeUIView(context: Context) -> ProbeView {
+        ProbeView()
+    }
+
+    func updateUIView(_ uiView: ProbeView, context: Context) {}
+
+    final class ProbeView: UIView {
+        private var displayLink: CADisplayLink?
+        private weak var scrollView: UIScrollView?
+        private var lastState = ""
+
+        override func didMoveToWindow() {
+            super.didMoveToWindow()
+            displayLink?.invalidate()
+            displayLink = nil
+            guard window != nil else { return }
+            ScrollTelemetry.observeKeyboard()
+            let displayLink = CADisplayLink(target: self, selector: #selector(tick))
+            displayLink.add(to: .main, forMode: .common)
+            self.displayLink = displayLink
+        }
+
+        @objc private func tick() {
+            if scrollView == nil {
+                var view = superview
+                while let current = view, !(current is UIScrollView) {
+                    view = current.superview
+                }
+                scrollView = view as? UIScrollView
+            }
+            guard let scrollView else { return }
+            let state = "SV offset=\(ScrollTelemetry.format(scrollView.contentOffset.y)) "
+                + "size=\(ScrollTelemetry.format(scrollView.contentSize.height)) "
+                + "bounds=\(ScrollTelemetry.format(scrollView.bounds.height)) "
+                + "inset=\(ScrollTelemetry.format(scrollView.adjustedContentInset.top))/"
+                + "\(ScrollTelemetry.format(scrollView.adjustedContentInset.bottom)) "
+                + "drag=\(scrollView.isDragging) decel=\(scrollView.isDecelerating)"
+            guard state != lastState else { return }
+            lastState = state
+            ScrollTelemetry.log(state)
+        }
     }
 }
