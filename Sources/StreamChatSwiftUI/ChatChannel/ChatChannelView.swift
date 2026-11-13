@@ -84,7 +84,7 @@ public struct ChatChannelView<Factory: ViewFactory>: View, KeyboardReadable {
                             },
                             onJumpToMessage: viewModel.jumpToMessage(messageId:)
                         )
-                        .edgesIgnoringSafeArea(.bottom)
+                        .ignoresSafeArea(.all, edges: composerPlacement == .floating ? .bottom : [])
                         .environment(\.highlightedMessageId, viewModel.highlightedMessageId)
                         .dismissKeyboardOnTap(enabled: true) {
                             hideComposerCommandsAndAttachmentsPicker()
@@ -317,10 +317,9 @@ public struct ChatChannelView<Factory: ViewFactory>: View, KeyboardReadable {
     }
 
     /// Whether the floating composer should own the bottom safe-area padding
-    /// instead of the main content. This happens in threads and during
-    /// pre-iOS 26 snapshot generation, where the content skips its own padding.
+    /// instead of the main content, so the message list reaches the screen bottom.
     private var floatingComposerOwnsBottomPadding: Bool {
-        composerPlacement == .floating && (viewModel.isMessageThread || generatingSnapshot)
+        composerPlacement == .floating
     }
 
     /// Bottom padding for the main content area.
@@ -330,8 +329,8 @@ public struct ChatChannelView<Factory: ViewFactory>: View, KeyboardReadable {
     }
 
     /// Bottom padding for the floating composer overlay.
-    /// In threads and during snapshot generation, the main content skips
-    /// its bottom padding, so the floating composer compensates.
+    /// The main content skips its bottom padding when the composer floats,
+    /// so the floating composer compensates.
     private var floatingComposerBottomPadding: CGFloat {
         guard needsBottomSafeAreaPadding, floatingComposerOwnsBottomPadding else { return 0 }
         return bottomPadding
