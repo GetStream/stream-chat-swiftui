@@ -60,7 +60,7 @@ struct MessageTopView: View {
                 .accessibilityIdentifier("ReminderAnnotation")
             }
 
-            if messageViewModel.translatedText != nil {
+            if messageViewModel.isTranslated {
                 translationAnnotation
             }
         }
