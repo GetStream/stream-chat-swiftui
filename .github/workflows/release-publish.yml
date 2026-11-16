@@ -42,16 +42,21 @@ jobs:
     runs-on: macos-15
     needs: release
     steps:
+      - name: Generate release bot token
+        id: app-token
+        uses: actions/create-github-app-token@v2
+        with:
+          app-id: ${{ vars.IOS_RELEASE_BOT_APP_ID }}
+          private-key: ${{ secrets.IOS_RELEASE_BOT_PRIVATE_KEY }}
+
       - uses: actions/checkout@v4.1.1
         with:
-          token: ${{ secrets.ADMIN_API_TOKEN }}
+          token: ${{ steps.app-token.outputs.token }}
           fetch-depth: 0
 
       - uses: ./.github/actions/ruby-cache
 
       - run: bundle exec fastlane merge_main
-        env:
-          GITHUB_TOKEN: ${{ secrets.ADMIN_API_TOKEN }}
 
       - uses: 8398a7/action-slack@v3
         if: failure()
@@ -60,4 +65,4 @@ jobs:
           text: "⚠️ <!subteam^S030AAHLDLN>, the merge of `main` to `develop` failed on CI. Consider using this command locally: `bundle exec fastlane merge_main`"
           fields: repo,commit,author,workflow
         env:
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_IOS_BOTS }}
