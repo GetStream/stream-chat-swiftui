@@ -30,17 +30,23 @@ jobs:
   deploy:
     runs-on: macos-15
     steps:
-    - name: Connect Bot
-      uses: webfactory/ssh-agent@v0.7.0
-      with:
-        ssh-private-key: ${{ secrets.BOT_SSH_PRIVATE_KEY }}
     - uses: actions/checkout@v4.1.1
       with:
         fetch-depth: 0
+    - name: Generate bot token
+      id: bot-token
+      uses: actions/create-github-app-token@v3
+      with:
+        client-id: ${{ vars.IOS_RELEASE_BOT_CLIENT_ID }}
+        private-key: ${{ secrets.IOS_RELEASE_BOT_PRIVATE_KEY }}
+        owner: ${{ github.repository_owner }}
+        repositories: ios-certificates
+        permission-contents: read
     - uses: ./.github/actions/ruby-cache
     - uses: ./.github/actions/xcode-cache
     - name: Deploy Demo app
       env:
+        MATCH_GIT_TOKEN: ${{ steps.bot-token.outputs.token }}
         MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
         APPSTORE_API_KEY: ${{ secrets.APPSTORE_API_KEY }}
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -52,5 +58,5 @@ jobs:
         text: "You shall not pass!"
         fields: repo,commit,author,workflow
       env:
-        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_IOS_BOTS }}
       if: failure()

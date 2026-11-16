@@ -102,10 +102,6 @@ jobs:
     env:
       XCODE_VERSION: "16.4"
     steps:
-    - name: Connect Bot
-      uses: webfactory/ssh-agent@v0.7.0
-      with:
-        ssh-private-key: ${{ secrets.BOT_SSH_PRIVATE_KEY }}
     - uses: actions/checkout@v3.1.0
     - uses: ./.github/actions/xcode-cache
     - uses: ./.github/actions/ruby-cache
@@ -120,8 +116,6 @@ jobs:
     permissions:
       contents: write # to push the snapshots branch
       pull-requests: write
-    env:
-      GITHUB_TOKEN: ${{ secrets.CI_BOT_GITHUB_TOKEN }} # to open a PR
     steps:
     - uses: actions/checkout@v4.1.1
     - uses: ./.github/actions/bootstrap
@@ -135,7 +129,7 @@ jobs:
       if: ${{ github.event.inputs.record_snapshots != 'true' }}
       run: bundle exec fastlane sonar_upload
       env:
-        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_IOS_BOTS }}
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
     - name: Parse xcresult
       if: failure()
