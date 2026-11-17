@@ -21,10 +21,18 @@ jobs:
     steps:
     - uses: actions/checkout@v4.1.1
     - uses: ./.github/actions/ruby-cache
+    - name: Generate release bot token
+      id: app-token
+      uses: actions/create-github-app-token@v3
+      with:
+        client-id: ${{ vars.IOS_RELEASE_BOT_CLIENT_ID }}
+        private-key: ${{ secrets.IOS_RELEASE_BOT_PRIVATE_KEY }}
+        permission-contents: read
+        permission-pull-requests: write
     - run: bundle exec fastlane copyright
       timeout-minutes: 5
       env:
-        GITHUB_TOKEN: ${{ secrets.CI_BOT_GITHUB_TOKEN }}
+        GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
     - uses: 8398a7/action-slack@v3
       with:
         status: ${{ job.status }}
@@ -32,5 +40,5 @@ jobs:
         job_name: "${{ github.workflow }}: ${{ github.job }}"
         fields: repo,commit,author,workflow
       env:
-        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_IOS_BOTS }}
       if: failure()
