@@ -167,6 +167,49 @@ import XCTest
         AssertSnapshot(view)
     }
 
+    func test_chatChannelInfoView_directChannelScheduledMessagesSnapshot() {
+        // Given
+        let members = ChannelInfoMockUtils.setupMockMembers(
+            count: 2,
+            currentUserId: chatClient.currentUserId!
+        )
+        let channel = ChatChannel.mockDMChannel(
+            name: "Direct channel",
+            ownCapabilities: [.muteChannel, .scheduleMessage],
+            lastActiveMembers: members
+        )
+
+        // When
+        let view = ChatChannelInfoView(channel: channel)
+            .applyDefaultSize()
+
+        // Then
+        AssertSnapshot(view)
+    }
+
+    func test_chatChannelInfoView_groupScheduledMessagesSnapshot() {
+        // Given
+        let members = ChannelInfoMockUtils.setupMockMembers(
+            count: 8,
+            currentUserId: chatClient.currentUserId!,
+            onlineUserIndexes: [0, 1]
+        )
+        let group = ChatChannel.mock(
+            cid: .unique,
+            name: "Test Group",
+            ownCapabilities: [.deleteChannel, .updateChannel, .muteChannel, .scheduleMessage],
+            lastActiveMembers: members,
+            memberCount: members.count
+        )
+
+        // When
+        let view = ChatChannelInfoView(channel: group)
+            .applyDefaultSize()
+
+        // Then
+        AssertSnapshot(view)
+    }
+
     func test_chatChannelInfoView_smallGroupSnapshot() {
         // Given
         let members = ChannelInfoMockUtils.setupMockMembers(

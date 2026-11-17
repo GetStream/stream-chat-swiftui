@@ -322,6 +322,10 @@ internal enum L10n {
       /// Add a group name
       internal static var placeholder: String { L10n.tr("Localizable", "chat-info.rename.placeholder") }
     }
+    internal enum ScheduledMessages {
+      /// Scheduled Messages
+      internal static var title: String { L10n.tr("Localizable", "chat-info.scheduled-messages.title") }
+    }
     internal enum Users {
       /// %@ more
       internal static func loadMore(_ p1: Any) -> String {
