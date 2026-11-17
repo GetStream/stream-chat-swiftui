@@ -27,7 +27,7 @@ xcodebuild_formatter = FastlaneCore::Globals.verbose? ? '' : nil
 
 # These lanes do not build anything, so they can run on Linux.
 lanes_without_xcode = [
-  :sonar_upload, :allure_launch, :allure_upload, :copyright, :merge_main, :pr,
+  :sonar_upload, :allure_launch, :allure_upload, :copyright, :merge_main, :pr, :merge_release, :publish_release,
   :lint_pr, :rubocop, :run_swift_format, :validate_public_interface
 ]
 
