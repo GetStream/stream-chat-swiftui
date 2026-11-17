@@ -547,10 +547,11 @@ extension ViewFactory {
             previewRecording: options.previewRecording,
             showRecordingTip: options.showRecordingTip,
             sendInChannelShown: options.sendInChannelShown,
-            showReplyInChannel: options.showReplyInChannel
+            showReplyInChannel: options.showReplyInChannel,
+            onSendMessageLongPress: options.onSendMessageLongPress
         )
     }
-    
+
     public func makeComposerTextInputView(
         options: ComposerTextInputViewOptions
     ) -> some View {
@@ -578,10 +579,11 @@ extension ViewFactory {
             startRecording: options.startRecording,
             stopRecording: options.stopRecording,
             showRecordingTip: options.showRecordingTip,
-            sendMessage: options.sendMessage
+            sendMessage: options.sendMessage,
+            onSendMessageLongPress: options.onSendMessageLongPress
         )
     }
-    
+
     public func makeTrailingComposerView(
         options: TrailingComposerViewOptions
     ) -> some View {
@@ -595,7 +597,8 @@ extension ViewFactory {
     ) -> some View {
         SendMessageButton(
             enabled: options.enabled,
-            onTap: options.onTap
+            onTap: options.onTap,
+            onLongPress: options.onLongPress
         )
     }
 
@@ -608,7 +611,23 @@ extension ViewFactory {
             accessibilityLabel: options.accessibilityLabel
         )
     }
-    
+
+    public func makeScheduleMessageSheet(
+        options: ScheduleMessageSheetOptions
+    ) -> some View {
+        let actions = InjectedValues[\.utils].composerConfig.supportedScheduleMessageActions(
+            SupportedScheduleMessageActionsOptions(
+                channel: options.channel,
+                onSchedule: options.onSchedule
+            )
+        )
+        return ScheduleMessageSheetView(
+            actions: actions,
+            reachedLimit: options.reachedLimit,
+            onDismiss: options.onDismiss
+        )
+    }
+
     public func makeComposerVoiceRecordingInputView(
         options: ComposerVoiceRecordingInputViewOptions
     ) -> some View {

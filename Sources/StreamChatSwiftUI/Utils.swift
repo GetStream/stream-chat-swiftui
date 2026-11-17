@@ -40,6 +40,8 @@ import StreamChatCommonUI
     public var mediaBadgeDurationFormatter: MediaBadgeDurationFormatter
     public var audioRecordingNameFormatter: AudioRecordingNameFormatter
     public var messageRemindersFormatter: any MessageRemindersFormatter
+    /// A formatter that converts the date a scheduled message is sent at to textual representation.
+    public var scheduledMessageDateFormatter: ScheduledMessageDateFormatter
     public var audioPlayerBuilder: () -> AudioPlaying = { StreamAudioPlayer() }
     public var audioPlayer: AudioPlaying {
         if let _audioPlayer {
@@ -115,6 +117,7 @@ import StreamChatCommonUI
         mediaBadgeDurationFormatter: MediaBadgeDurationFormatter = DefaultMediaBadgeDurationFormatter(),
         audioRecordingNameFormatter: AudioRecordingNameFormatter = DefaultAudioRecordingNameFormatter(),
         messageRemindersFormatter: any MessageRemindersFormatter = DefaultMessageRemindersFormatter(),
+        scheduledMessageDateFormatter: ScheduledMessageDateFormatter = DefaultScheduledMessageDateFormatter(),
         sortReactions: @escaping (MessageReactionType, MessageReactionType) -> Bool = Utils.defaultSortReactions,
         shouldSyncChannelControllerOnAppear: @escaping (ChatChannelController) -> Bool = { _ in true }
     ) {
@@ -150,6 +153,7 @@ import StreamChatCommonUI
         self.mediaBadgeDurationFormatter = mediaBadgeDurationFormatter
         self.audioRecordingNameFormatter = audioRecordingNameFormatter
         self.messageRemindersFormatter = messageRemindersFormatter
+        self.scheduledMessageDateFormatter = scheduledMessageDateFormatter
         self.pollsConfig = pollsConfig
         messageListDateUtils = MessageListDateUtils(messageListConfig: messageListConfig)
     }

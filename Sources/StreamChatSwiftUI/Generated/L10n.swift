@@ -563,6 +563,20 @@ internal enum L10n {
       /// Voice message deleted
       internal static var voiceMessageDeleted: String { L10n.tr("Localizable", "composer.recording.voiceMessageDeleted") }
     }
+    internal enum ScheduleMessage {
+      /// Limit reached (%d max)
+      internal static func limitReached(_ p1: Int) -> String {
+        return L10n.tr("Localizable", "composer.schedule-message.limit-reached", p1)
+      }
+      /// Schedule message
+      internal static var title: String { L10n.tr("Localizable", "composer.schedule-message.title") }
+      internal enum Accessibility {
+        /// Message scheduled for %@
+        internal static func scheduled(_ p1: Any) -> String {
+          return L10n.tr("Localizable", "composer.schedule-message.accessibility.scheduled", String(describing: p1))
+        }
+      }
+    }
     internal enum Suggestions {
       internal enum Commands {
         /// Instant Commands, %d options
@@ -1117,6 +1131,15 @@ internal enum L10n {
       /// Plural format key: "%#@recording@"
       internal static func name(_ p1: Int) -> String {
         return L10n.tr("Localizable", "recording.presentation.name", p1)
+      }
+    }
+  }
+
+  internal enum ScheduledMessage {
+    internal enum Date {
+      /// %@ at %@
+      internal static func dayAtTime(_ p1: Any, _ p2: Any) -> String {
+        return L10n.tr("Localizable", "scheduled-message.date.day-at-time", String(describing: p1), String(describing: p2))
       }
     }
   }

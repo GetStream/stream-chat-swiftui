@@ -118,7 +118,8 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
                         previewRecording: viewModel.previewRecording,
                         showRecordingTip: viewModel.showRecordingTip,
                         sendInChannelShown: viewModel.sendInChannelShown,
-                        showReplyInChannel: $viewModel.showReplyInChannel
+                        showReplyInChannel: $viewModel.showReplyInChannel,
+                        onSendMessageLongPress: onSendMessageLongPress
                     )
                 )
                 .alert(isPresented: $viewModel.attachmentSizeExceeded) {
@@ -304,6 +305,11 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
             text: $viewModel.snackBarText,
             bottomOffset: composerHeight + tokens.spacingMd
         )
+        .sheet(
+            isPresented: $viewModel.scheduleMessageSheetShown,
+            onDismiss: { viewModel.scheduleMessageSheetDismissed() },
+            content: { scheduleMessageSheet }
+        )
         .overlay(
             factory.styles.composerPlacement == .docked ? composerDivider : nil,
             alignment: .top
@@ -365,6 +371,24 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
         return lockCenterY - overlayCenterY
     }
     
+    private var onSendMessageLongPress: (@MainActor () -> Void)? {
+        guard viewModel.canScheduleMessage else { return nil }
+        return { viewModel.showScheduleMessageSheet() }
+    }
+
+    @ViewBuilder private var scheduleMessageSheet: some View {
+        if let channel = viewModel.channelController.channel {
+            factory.makeScheduleMessageSheet(
+                options: ScheduleMessageSheetOptions(
+                    channel: channel,
+                    reachedLimit: viewModel.reachedScheduledMessagesLimit,
+                    onSchedule: { viewModel.scheduleMessage(at: $0) },
+                    onDismiss: { viewModel.scheduleMessageSheetShown = false }
+                )
+            )
+        }
+    }
+
     private var composerDivider: some View {
         Rectangle()
             .frame(width: nil, height: 1, alignment: .top)
@@ -410,6 +434,7 @@ public struct ComposerInputView<Factory: ViewFactory>: View, KeyboardReadable {
     var showRecordingTip: @MainActor () -> Void
     var sendInChannelShown: Bool
     @Binding var showReplyInChannel: Bool
+    var onSendMessageLongPress: (@MainActor () -> Void)?
 
     @State var textHeight: CGFloat = TextSizeConstants.defaultInputViewHeight
     @State var keyboardShown = false
@@ -444,7 +469,8 @@ public struct ComposerInputView<Factory: ViewFactory>: View, KeyboardReadable {
         previewRecording: @escaping @MainActor () -> Void,
         showRecordingTip: @escaping @MainActor () -> Void,
         sendInChannelShown: Bool,
-        showReplyInChannel: Binding<Bool>
+        showReplyInChannel: Binding<Bool>,
+        onSendMessageLongPress: (@MainActor () -> Void)? = nil
     ) {
         self.factory = factory
         self.channelController = channelController
@@ -476,6 +502,7 @@ public struct ComposerInputView<Factory: ViewFactory>: View, KeyboardReadable {
         self.showRecordingTip = showRecordingTip
         self.sendInChannelShown = sendInChannelShown
         _showReplyInChannel = showReplyInChannel
+        self.onSendMessageLongPress = onSendMessageLongPress
     }
 
     var textFieldHeight: CGFloat {
@@ -601,7 +628,8 @@ public struct ComposerInputView<Factory: ViewFactory>: View, KeyboardReadable {
                     startRecording: startRecording,
                     stopRecording: stopRecording,
                     showRecordingTip: showRecordingTip,
-                    sendMessage: sendMessage
+                    sendMessage: sendMessage,
+                    onSendMessageLongPress: onSendMessageLongPress
                 )
             )
             .padding(.trailing, tokens.spacingXs)

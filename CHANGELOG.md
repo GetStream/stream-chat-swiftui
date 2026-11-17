@@ -3,7 +3,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 # Upcoming
 
-### 🔄 Changed
+### ✅ Added
+- Add scheduling a message with a long press on the send button [#1651](https://github.com/GetStream/stream-chat-swiftui/pull/1651)
+
+### 🎭 New Localizations
+- `composer.schedule-message.title`, `composer.schedule-message.limit-reached`, `composer.schedule-message.accessibility.scheduled` — schedule message sheet
+- `scheduled-message.date.day-at-time` — day and time of a scheduled message ("Tomorrow at 9:00 AM")
 
 # [5.17.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/5.17.0)
 _November 13, 2026_

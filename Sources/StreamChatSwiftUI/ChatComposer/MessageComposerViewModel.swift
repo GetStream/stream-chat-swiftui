@@ -138,6 +138,9 @@ import SwiftUI
 
     @Published public var filePickerShown = false
     @Published public var cameraPickerShown = false
+    @Published public var scheduleMessageSheetShown = false
+    /// The limit of scheduled messages that was reached when the schedule message sheet was opened.
+    @Published public private(set) var reachedScheduledMessagesLimit: Int?
     @Published public var errorShown = false
     @Published public var showReplyInChannel = false
     @Published public var suggestions = [String: Any]()
@@ -179,6 +182,9 @@ import SwiftUI
     public var quotedMessage: Binding<ChatMessage?>?
     public var editedMessage: Binding<ChatMessage?>?
     public var willSendMessage: (() -> Void)?
+
+    // An alert can't be presented while the schedule message sheet is dismissing.
+    private var showsErrorAfterScheduleMessageSheet = false
 
     /// When `true`, the next completed recording is automatically sent via `sendMessage()`.
     /// Set by `sendRecording()` and cleared once the send fires or an error occurs.
@@ -621,6 +627,120 @@ import SwiftUI
     /// A Boolean value indicating whether the current user has capability to send messages.
     public var canSendMessage: Bool {
         channelController.channel?.canSendMessage ?? true
+    }
+
+    // MARK: - Scheduling
+
+    /// A Boolean value indicating whether the current user has capability to schedule messages.
+    public var canScheduleMessage: Bool {
+        channelController.channel?.canScheduleMessage ?? false
+    }
+
+    /// Shows the sheet for picking when the message in the composer is sent.
+    open func showScheduleMessageSheet() {
+        channelController.scheduledMessagesUsage { [weak self] result in
+            guard let self else { return }
+            // Without the usage the sheet opens with no limit. Scheduling still checks the limits.
+            let usage = try? result.get()
+            if let usage, let limit = usage.channelLimit, usage.channelCount >= limit {
+                reachedScheduledMessagesLimit = limit
+            } else if let usage, let limit = usage.userLimit, usage.userCount >= limit {
+                reachedScheduledMessagesLimit = limit
+            } else {
+                reachedScheduledMessagesLimit = nil
+            }
+            scheduleMessageSheetShown = true
+        }
+    }
+
+    /// Schedules the message in the composer to be sent at the given date.
+    ///
+    /// The composer keeps its content when the message can't be scheduled.
+    open func scheduleMessage(
+        at date: Date,
+        silent: Bool = false,
+        skipPush: Bool = false,
+        extraData: [String: RawJSON] = [:],
+        completion: (@MainActor () -> Void)? = nil
+    ) {
+        guard !isSendingMessage else { return }
+        isSendingMessage = true
+
+        stopPreviewPlaybackIfNeeded()
+        clearRemovedMentions()
+
+        let handleResult: @MainActor (Result<ScheduledMessage, Error>) -> Void = { [weak self] result in
+            guard let self else { return }
+            switch result {
+            case let .success(scheduledMessage):
+                scheduleMessageSheetShown = false
+                clearInputData()
+                DispatchQueue.main.asyncAfter(deadline: .now() + Self.clearTextDelay) { [weak self] in
+                    self?.quotedMessage?.wrappedValue = nil
+                }
+                let date = utils.scheduledMessageDateFormatter.format(scheduledMessage.scheduledAt)
+                ComposerAccessibilityAnnouncer.announce(L10n.Composer.ScheduleMessage.Accessibility.scheduled(date))
+                completion?()
+            case .failure:
+                failScheduling()
+            }
+        }
+
+        do {
+            let attachments = try convertAddedAssetsToPayloads()
+            if let messageController {
+                messageController.scheduleReply(
+                    text: messageText,
+                    attachments: attachments,
+                    mentionedUserIds: mentionedUsers.map(\.id),
+                    mentionedHere: mentionsHere,
+                    mentionedChannel: mentionsChannel,
+                    mentionedGroupIds: mentionedGroups.map(\.id),
+                    mentionedRoles: Array(mentionedRoles),
+                    showReplyInChannel: showReplyInChannel,
+                    silent: silent,
+                    quotedMessageId: quotedMessage?.wrappedValue?.id,
+                    skipPush: skipPush,
+                    scheduledAt: date,
+                    extraData: extraData,
+                    completion: handleResult
+                )
+            } else {
+                channelController.scheduleMessage(
+                    text: messageText,
+                    silent: silent,
+                    attachments: attachments,
+                    mentionedUserIds: mentionedUsers.map(\.id),
+                    mentionedHere: mentionsHere,
+                    mentionedChannel: mentionsChannel,
+                    mentionedGroupIds: mentionedGroups.map(\.id),
+                    mentionedRoles: Array(mentionedRoles),
+                    quotedMessageId: quotedMessage?.wrappedValue?.id,
+                    skipPush: skipPush,
+                    scheduledAt: date,
+                    extraData: extraData,
+                    completion: handleResult
+                )
+            }
+        } catch {
+            failScheduling()
+        }
+    }
+
+    func scheduleMessageSheetDismissed() {
+        guard showsErrorAfterScheduleMessageSheet else { return }
+        showsErrorAfterScheduleMessageSheet = false
+        errorShown = true
+    }
+
+    private func failScheduling() {
+        isSendingMessage = false
+        if scheduleMessageSheetShown {
+            showsErrorAfterScheduleMessageSheet = true
+            scheduleMessageSheetShown = false
+        } else {
+            errorShown = true
+        }
     }
 
     /// A Boolean value indicating whether the composer has any type of content filled.

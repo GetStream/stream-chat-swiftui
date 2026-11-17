@@ -57,27 +57,28 @@ public struct ActionItemView: View {
     }
 
     private var image: UIImage {
+        UIImage.actionIcon(named: iconName, bundle: bundle) ?? images.imagePlaceholder
+    }
+}
+
+extension UIImage {
+    static func actionIcon(named name: String, bundle: Bundle? = nil) -> UIImage? {
         // Check if it's in a custom bundle.
-        if let bundle, let image = UIImage(named: iconName, in: bundle) {
+        if let bundle, let image = UIImage(named: name, in: bundle) {
             return image
         }
-        
+
         // Check if it's in the app bundle.
-        if let image = UIImage(named: iconName) {
+        if let image = UIImage(named: name) {
             return image
         }
 
         // Support for system images.
-        if let image = UIImage(systemName: iconName) {
+        if let image = UIImage(systemName: name) {
             return image
         }
 
         // Check if it's bundled.
-        if let image = UIImage(named: iconName, in: .streamChatCommonUI) {
-            return image
-        }
-
-        // Default image.
-        return images.imagePlaceholder
+        return UIImage(named: name, in: .streamChatCommonUI)
     }
 }

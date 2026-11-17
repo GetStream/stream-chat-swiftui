@@ -290,6 +290,10 @@
 "composer.suggestions.mentions.accessibility-label" = "%1$@, %2$d of %3$d";
 "composer.suggestions.user.accessibility-label" = "%1$@, user, %2$d of %3$d";
 "composer.command.sent.accessibility-announcement" = "%@ command sent";
+"composer.schedule-message.title" = "Schedule message";
+"composer.schedule-message.limit-reached" = "Limit reached (%d max)";
+"composer.schedule-message.accessibility.scheduled" = "Message scheduled for %@";
+"scheduled-message.date.day-at-time" = "%@ at %@";
 "message.sending.attachment-uploading-failed" = "UPLOADING FAILED";
 "message.sending.attachment-upload-failed" = "Upload failed";
 "message.sending.attachment-retry-upload" = "Retry upload";
