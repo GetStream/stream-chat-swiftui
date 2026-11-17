@@ -313,13 +313,17 @@ public final class SupportedScheduleMessageActionsOptions: Sendable {
     public let channel: ChatChannel
     /// Schedules the message at the given date.
     public let onSchedule: @MainActor (Date) -> Void
+    /// Shows the sheet for picking a custom time.
+    public let onCustomTime: @MainActor () -> Void
 
     public init(
         channel: ChatChannel,
-        onSchedule: @escaping @MainActor (Date) -> Void
+        onSchedule: @escaping @MainActor (Date) -> Void,
+        onCustomTime: @escaping @MainActor () -> Void
     ) {
         self.channel = channel
         self.onSchedule = onSchedule
+        self.onCustomTime = onCustomTime
     }
 }
 
@@ -331,6 +335,8 @@ public final class ScheduleMessageSheetOptions: Sendable {
     public let reachedLimit: Int?
     /// Schedules the message at the given date.
     public let onSchedule: @MainActor (Date) -> Void
+    /// Shows the sheet for picking a custom time.
+    public let onCustomTime: @MainActor () -> Void
     /// Callback when the sheet is dismissed.
     public let onDismiss: @MainActor () -> Void
 
@@ -338,10 +344,64 @@ public final class ScheduleMessageSheetOptions: Sendable {
         channel: ChatChannel,
         reachedLimit: Int?,
         onSchedule: @escaping @MainActor (Date) -> Void,
+        onCustomTime: @escaping @MainActor () -> Void,
         onDismiss: @escaping @MainActor () -> Void
     ) {
         self.channel = channel
         self.reachedLimit = reachedLimit
+        self.onSchedule = onSchedule
+        self.onCustomTime = onCustomTime
+        self.onDismiss = onDismiss
+    }
+}
+
+/// The preview of the message shown in the schedule message custom time sheet.
+public struct ScheduleMessagePreview: Sendable {
+    /// The title, for example "Message to General".
+    public let title: String
+    /// The text of the message, or a description of its attachments.
+    public let subtitle: String
+    /// The icon in front of the subtitle, which tells the type of the attachments.
+    public let icon: MessageAttachmentPreviewIcon?
+    /// The thumbnail of the attachment.
+    public let thumbnail: MessageAttachmentPreviewThumbnail?
+
+    public init(
+        title: String,
+        subtitle: String,
+        icon: MessageAttachmentPreviewIcon? = nil,
+        thumbnail: MessageAttachmentPreviewThumbnail? = nil
+    ) {
+        self.title = title
+        self.subtitle = subtitle
+        self.icon = icon
+        self.thumbnail = thumbnail
+    }
+}
+
+/// Options for creating the sheet for picking a custom time to send a scheduled message at.
+public final class ScheduleMessageCustomTimeSheetOptions: Sendable {
+    /// The channel the message is scheduled in.
+    public let channel: ChatChannel
+    /// How many scheduled messages the current user has, next to the limits of the app.
+    public let usage: ScheduledMessagesUsage?
+    /// The preview of the message.
+    public let preview: ScheduleMessagePreview
+    /// Schedules the message at the given date and completes with the error, if there is one.
+    public let onSchedule: @MainActor (Date, @escaping @MainActor (Error?) -> Void) -> Void
+    /// Callback when the sheet is dismissed.
+    public let onDismiss: @MainActor () -> Void
+
+    public init(
+        channel: ChatChannel,
+        usage: ScheduledMessagesUsage?,
+        preview: ScheduleMessagePreview,
+        onSchedule: @escaping @MainActor (Date, @escaping @MainActor (Error?) -> Void) -> Void,
+        onDismiss: @escaping @MainActor () -> Void
+    ) {
+        self.channel = channel
+        self.usage = usage
+        self.preview = preview
         self.onSchedule = onSchedule
         self.onDismiss = onDismiss
     }

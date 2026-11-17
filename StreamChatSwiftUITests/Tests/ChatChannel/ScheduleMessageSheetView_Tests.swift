@@ -12,10 +12,11 @@ import XCTest
 @MainActor final class ScheduleMessageSheetView_Tests: StreamChatTestCase {
     func test_scheduleMessageSheetView_snapshot() {
         // Given
-        let size = CGSize(width: defaultScreenSize.width, height: 200)
+        let size = CGSize(width: defaultScreenSize.width, height: 250)
         streamChat?.utils.scheduledMessagesConfig.dateFormatter = DefaultScheduledMessageDateFormatter(locale: Locale(identifier: "en_US"))
-        // The Monday action depends on the weekday, so only the actions for tomorrow are shown.
-        let actions = ScheduleMessageAction.defaultActions(for: .init(channel: .mock(cid: .unique), onSchedule: { _ in })).prefix(2)
+        // The Monday action depends on the weekday, so only the actions for tomorrow and the custom time are shown.
+        let allActions = ScheduleMessageAction.defaultActions(for: .init(channel: .mock(cid: .unique), onSchedule: { _ in }, onCustomTime: {}))
+        let actions = allActions.prefix(2) + allActions.suffix(1)
 
         // When
         let view = ScheduleMessageSheetView(actions: Array(actions), reachedLimit: nil, onDismiss: {})

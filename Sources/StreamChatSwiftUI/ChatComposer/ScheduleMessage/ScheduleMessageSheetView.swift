@@ -6,7 +6,6 @@ import SwiftUI
 
 /// The sheet for picking when to send a scheduled message.
 public struct ScheduleMessageSheetView: View {
-    @Injected(\.images) private var images
     @Injected(\.tokens) private var tokens
 
     private let actions: [ScheduleMessageAction]
@@ -37,8 +36,9 @@ public struct ScheduleMessageSheetView: View {
             ForEach(actions) { action in
                 Button(action: action.action) {
                     ListItemView(
-                        icon: UIImage.actionIcon(named: action.iconName) ?? images.imagePlaceholder,
-                        title: action.title
+                        icon: action.icon,
+                        title: action.title,
+                        showsChevron: action.showsChevron
                     )
                 }
                 .accessibilityIdentifier("ScheduleMessageAction-\(action.id)")

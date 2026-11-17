@@ -15,6 +15,8 @@ struct SheetHeaderView: View {
     let title: String
     let onClose: @MainActor () -> Void
     var onConfirm: (@MainActor () -> Void)?
+    var confirmDisabled = false
+    var confirmAccessibilityLabel: String?
 
     var body: some View {
         ZStack {
@@ -38,9 +40,12 @@ struct SheetHeaderView: View {
 
                 if let onConfirm {
                     StreamIconButton(role: .primary, style: .solid, size: .medium, action: onConfirm) {
-                        Image(uiImage: images.confirmCheckmark)
-                            .renderingMode(.template)
+                        Image(uiImage: images.whiteCheckmark)
+                            .customizable()
+                            .frame(width: tokens.iconSizeMd, height: tokens.iconSizeMd)
                     }
+                    .disabled(confirmDisabled)
+                    .accessibilityLabel(Text(confirmAccessibilityLabel ?? L10n.Alert.Actions.ok))
                     .accessibilityIdentifier("SheetHeaderConfirmButton")
                 }
             }

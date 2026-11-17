@@ -374,6 +374,15 @@ import SwiftUI
     /// - Returns: view displayed in the sheet shown after long pressing the send message button.
     func makeScheduleMessageSheet(options: ScheduleMessageSheetOptions) -> ScheduleMessageSheetType
 
+    associatedtype ScheduleMessageCustomTimeSheetType: View
+    /// Creates the sheet for picking a custom date and time to send a scheduled message at.
+    ///
+    /// - Parameter options: the options for creating the schedule message custom time sheet.
+    /// - Returns: view displayed in the sheet shown on top of the schedule message sheet.
+    func makeScheduleMessageCustomTimeSheet(
+        options: ScheduleMessageCustomTimeSheetOptions
+    ) -> ScheduleMessageCustomTimeSheetType
+
     associatedtype ComposerVoiceRecordingInputViewType: View
     /// Creates a unified voice recording input view shown when the composer
     /// is actively recording, locked, or stopped.

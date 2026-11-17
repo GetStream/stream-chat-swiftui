@@ -23,6 +23,8 @@ struct ListItemView: View {
     let icon: UIImage
     /// The title of the row.
     let title: String
+    /// Shows a chevron after the title, for a row that opens another view.
+    var showsChevron = false
 
     var body: some View {
         HStack(spacing: tokens.spacingSm) {
@@ -38,6 +40,11 @@ struct ListItemView: View {
                 .multilineTextAlignment(.leading)
 
             Spacer(minLength: 0)
+
+            if showsChevron {
+                DisclosureIndicatorView()
+                    .accessibilityHidden(true)
+            }
         }
         .padding(.horizontal, tokens.spacingMd)
         .padding(.vertical, tokens.spacingXs)

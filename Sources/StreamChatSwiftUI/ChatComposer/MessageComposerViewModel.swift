@@ -141,7 +141,18 @@ import SwiftUI
     @Published public var scheduleMessageSheetShown = false
     /// The limit of scheduled messages that was reached when the schedule message sheet was opened.
     @Published public private(set) var reachedScheduledMessagesLimit: Int?
-    @Published public var errorShown = false
+    /// A Boolean value indicating whether the sheet for picking a custom time is shown on top of the schedule message sheet.
+    @Published public var scheduleMessageCustomTimeSheetShown = false
+    /// The scheduled messages usage read when the schedule message sheet was opened.
+    @Published public private(set) var scheduledMessagesUsage: ScheduledMessagesUsage?
+    @Published public var errorShown = false {
+        didSet {
+            if !errorShown {
+                scheduleMessageErrorText = nil
+            }
+        }
+    }
+
     @Published public var showReplyInChannel = false
     @Published public var suggestions = [String: Any]()
     @Published public var cooldownDuration: Int = 0
@@ -185,6 +196,9 @@ import SwiftUI
 
     // An alert can't be presented while the schedule message sheet is dismissing.
     private var showsErrorAfterScheduleMessageSheet = false
+    private(set) var scheduleMessageErrorText: String?
+    // Kept while the custom time sheet is shown, because the composer is cleared before the sheet is gone.
+    private(set) var scheduleMessagePreview = ScheduleMessagePreview(title: "", subtitle: "")
 
     /// When `true`, the next completed recording is automatically sent via `sendMessage()`.
     /// Set by `sendRecording()` and cleared once the send fires or an error occurs.
@@ -649,19 +663,44 @@ import SwiftUI
             } else {
                 reachedScheduledMessagesLimit = nil
             }
+            scheduledMessagesUsage = usage
             scheduleMessageSheetShown = true
         }
+    }
+
+    /// Shows the sheet for picking a custom time on top of the schedule message sheet.
+    open func showScheduleMessageCustomTimeSheet() {
+        let resolver = MessageAttachmentPreviewResolver(assets: totalAddedAssets)
+        let text = messageText.trimmingCharacters(in: .whitespacesAndNewlines)
+        let title: String
+        if let repliedMessage = quotedMessage?.wrappedValue ?? messageController?.message {
+            title = L10n.Composer.Quoted.replyTo(repliedMessage.author.name ?? repliedMessage.author.id)
+        } else {
+            let channelName = channelController.channel.flatMap {
+                utils.channelNameFormatter.format(channel: $0, forCurrentUserId: chatClient.currentUserId)
+            }
+            title = L10n.Composer.ScheduleMessage.Preview.messageTo(channelName ?? "")
+        }
+        scheduleMessagePreview = ScheduleMessagePreview(
+            title: title,
+            subtitle: text.isEmpty ? resolver.previewDescription ?? "" : text,
+            icon: resolver.previewIcon,
+            thumbnail: resolver.previewThumbnail
+        )
+        scheduleMessageCustomTimeSheetShown = true
     }
 
     /// Schedules the message in the composer to be sent at the given date.
     ///
     /// The composer keeps its content when the message can't be scheduled.
+    ///
+    /// - Parameter completion: Called with the error when the message can't be scheduled, and with `nil` otherwise.
     open func scheduleMessage(
         at date: Date,
         silent: Bool = false,
         skipPush: Bool = false,
         extraData: [String: RawJSON] = [:],
-        completion: (@MainActor () -> Void)? = nil
+        completion: (@MainActor (Error?) -> Void)? = nil
     ) {
         guard !isSendingMessage else { return }
         isSendingMessage = true
@@ -673,6 +712,7 @@ import SwiftUI
             guard let self else { return }
             switch result {
             case let .success(scheduledMessage):
+                scheduleMessageCustomTimeSheetShown = false
                 scheduleMessageSheetShown = false
                 clearInputData()
                 DispatchQueue.main.asyncAfter(deadline: .now() + Self.clearTextDelay) { [weak self] in
@@ -680,9 +720,10 @@ import SwiftUI
                 }
                 let date = utils.scheduledMessagesConfig.dateFormatter.format(scheduledMessage.scheduledAt)
                 ComposerAccessibilityAnnouncer.announce(L10n.Composer.ScheduleMessage.Accessibility.scheduled(date))
-                completion?()
-            case .failure:
-                failScheduling()
+                completion?(nil)
+            case let .failure(error):
+                failScheduling(error)
+                completion?(error)
             }
         }
 
@@ -723,7 +764,8 @@ import SwiftUI
                 )
             }
         } catch {
-            failScheduling()
+            failScheduling(error)
+            completion?(error)
         }
     }
 
@@ -733,8 +775,13 @@ import SwiftUI
         errorShown = true
     }
 
-    private func failScheduling() {
+    private func failScheduling(_ error: Error) {
         isSendingMessage = false
+        // The custom time sheet stays open and shows the error itself.
+        guard !scheduleMessageCustomTimeSheetShown else { return }
+        scheduleMessageErrorText = channelController.channel.map {
+            ScheduleMessageErrorText.text(for: error, config: $0.config)
+        }
         if scheduleMessageSheetShown {
             showsErrorAfterScheduleMessageSheet = true
             scheduleMessageSheetShown = false

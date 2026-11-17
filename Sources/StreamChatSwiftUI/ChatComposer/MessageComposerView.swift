@@ -138,7 +138,12 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
                     )
                 )
                 .alert(isPresented: $viewModel.errorShown) {
-                    Alert.defaultErrorAlert
+                    guard let text = viewModel.scheduleMessageErrorText else { return Alert.defaultErrorAlert }
+                    return Alert(
+                        title: Text(L10n.Alert.Error.title),
+                        message: Text(text),
+                        dismissButton: .cancel(Text(L10n.Alert.Actions.ok))
+                    )
                 }
                 .opacity(viewModel.recordingState.showsComposer ? 1 : 0)
                 .frame(width: viewModel.recordingState.showsComposer ? nil : 0)
@@ -383,9 +388,21 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
                     channel: channel,
                     reachedLimit: viewModel.reachedScheduledMessagesLimit,
                     onSchedule: { viewModel.scheduleMessage(at: $0) },
+                    onCustomTime: { viewModel.showScheduleMessageCustomTimeSheet() },
                     onDismiss: { viewModel.scheduleMessageSheetShown = false }
                 )
             )
+            .sheet(isPresented: $viewModel.scheduleMessageCustomTimeSheetShown) {
+                factory.makeScheduleMessageCustomTimeSheet(
+                    options: ScheduleMessageCustomTimeSheetOptions(
+                        channel: channel,
+                        usage: viewModel.scheduledMessagesUsage,
+                        preview: viewModel.scheduleMessagePreview,
+                        onSchedule: { viewModel.scheduleMessage(at: $0, completion: $1) },
+                        onDismiss: { viewModel.scheduleMessageCustomTimeSheetShown = false }
+                    )
+                )
+            }
         }
     }
 

@@ -2947,6 +2947,44 @@ import XCTest
         viewModel.scheduleMessageSheetDismissed()
 
         XCTAssertTrue(viewModel.errorShown)
+        XCTAssertEqual(viewModel.scheduleMessageErrorText, "Commands can't be scheduled. Remove the / command to continue.")
+    }
+
+    func test_scheduleMessage_whenTheCustomTimeSheetIsShownAndItFails_keepsTheSheetsAndReportsTheError() {
+        let channelController = makeChannelController()
+        let viewModel = MessageComposerViewModel(channelController: channelController, messageController: nil)
+        viewModel.text = "Later"
+        viewModel.scheduleMessageSheetShown = true
+        viewModel.showScheduleMessageCustomTimeSheet()
+        var reportedError: Error?
+
+        viewModel.scheduleMessage(at: Date().addingTimeInterval(3600)) { reportedError = $0 }
+        channelController.scheduleMessage_completion?(.failure(ClientError.ScheduledMessageHasACommand()))
+
+        XCTAssertTrue(reportedError is ClientError.ScheduledMessageHasACommand, "\(String(describing: reportedError))")
+        XCTAssertEqual(viewModel.scheduleMessagePreview.subtitle, "Later")
+        XCTAssertTrue(viewModel.scheduleMessageSheetShown)
+        XCTAssertTrue(viewModel.scheduleMessageCustomTimeSheetShown)
+        XCTAssertFalse(viewModel.isSendingMessage)
+
+        viewModel.scheduleMessageSheetDismissed()
+
+        XCTAssertFalse(viewModel.errorShown)
+    }
+
+    func test_scheduleMessage_whenTheCustomTimeSheetIsShownAndItIsScheduled_closesBothSheets() {
+        let channelController = makeChannelController()
+        let viewModel = MessageComposerViewModel(channelController: channelController, messageController: nil)
+        viewModel.text = "Later"
+        viewModel.scheduleMessageSheetShown = true
+        viewModel.showScheduleMessageCustomTimeSheet()
+        let date = Date().addingTimeInterval(3600)
+
+        viewModel.scheduleMessage(at: date)
+        channelController.scheduleMessage_completion?(.success(makeScheduledMessage(scheduledAt: date)))
+
+        XCTAssertFalse(viewModel.scheduleMessageSheetShown)
+        XCTAssertFalse(viewModel.scheduleMessageCustomTimeSheetShown)
     }
 
     // MARK: - private

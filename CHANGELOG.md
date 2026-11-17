@@ -5,10 +5,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### ✅ Added
 - Add scheduling a message with a long press on the send button [#1651](https://github.com/GetStream/stream-chat-swiftui/pull/1651)
+- Add picking a custom time when scheduling a message [#1652](https://github.com/GetStream/stream-chat-swiftui/pull/1652)
 
 ### 🎭 New Localizations
 - `composer.schedule-message.title`, `composer.schedule-message.limit-reached`, `composer.schedule-message.accessibility.scheduled` — schedule message sheet
 - `scheduled-message.date.day-at-time` — day and time of a scheduled message ("Tomorrow at 9:00 AM")
+- `composer.schedule-message.custom-time`, `composer.schedule-message.preview.message-to`, `composer.schedule-message.note.count`, `composer.schedule-message.note.time-zone` — custom time sheet
+- `composer.schedule-message.error.*` — errors shown when a message can't be scheduled
 
 # [5.17.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/5.17.0)
 _November 13, 2026_

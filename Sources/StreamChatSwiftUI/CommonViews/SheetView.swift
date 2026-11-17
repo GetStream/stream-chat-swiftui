@@ -30,13 +30,23 @@ struct SheetView<Content: View>: View {
     let onClose: @MainActor () -> Void
     /// Called when the confirm button is tapped. The header has no confirm button when it is `nil`.
     var onConfirm: (@MainActor () -> Void)?
+    /// Disables the confirm button.
+    var confirmDisabled = false
+    /// The accessibility label of the confirm button, which only shows an icon.
+    var confirmAccessibilityLabel: String?
     /// The content below the header, for example a list of `ListItemView` rows.
     @ViewBuilder let content: () -> Content
 
     var body: some View {
         ScrollView {
             VStack(spacing: 0) {
-                SheetHeaderView(title: title, onClose: onClose, onConfirm: onConfirm)
+                SheetHeaderView(
+                    title: title,
+                    onClose: onClose,
+                    onConfirm: onConfirm,
+                    confirmDisabled: confirmDisabled,
+                    confirmAccessibilityLabel: confirmAccessibilityLabel
+                )
                 content()
             }
             .padding(.bottom, tokens.spacingMd)

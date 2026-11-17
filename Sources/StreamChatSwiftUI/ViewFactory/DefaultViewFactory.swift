@@ -618,7 +618,8 @@ extension ViewFactory {
         let actions = InjectedValues[\.utils].scheduledMessagesConfig.supportedScheduleMessageActions(
             SupportedScheduleMessageActionsOptions(
                 channel: options.channel,
-                onSchedule: options.onSchedule
+                onSchedule: options.onSchedule,
+                onCustomTime: options.onCustomTime
             )
         )
         return ScheduleMessageSheetView(
@@ -626,6 +627,12 @@ extension ViewFactory {
             reachedLimit: options.reachedLimit,
             onDismiss: options.onDismiss
         )
+    }
+
+    public func makeScheduleMessageCustomTimeSheet(
+        options: ScheduleMessageCustomTimeSheetOptions
+    ) -> some View {
+        ScheduleMessageCustomTimeSheetView(factory: self, options: options)
     }
 
     public func makeComposerVoiceRecordingInputView(
