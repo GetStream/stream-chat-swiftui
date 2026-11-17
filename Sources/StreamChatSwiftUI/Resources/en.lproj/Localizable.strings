@@ -408,6 +408,32 @@
 "thread.item.replied-to" = "replied to: %@";
 "thread.item.reply" = "reply";
 "thread.item.replies" = "replies";
+"scheduled-messages.title" = "Scheduled messages";
+"scheduled-messages.error.message" = "Couldn't load scheduled messages";
+"scheduled-messages.error.retry" = "Try again";
+"scheduled-messages.item.reply-to" = "Reply to %1$@: %2$@";
+"scheduled-messages.item.send-at" = "Send %@";
+"scheduled-messages.item.sending" = "Sending…";
+"scheduled-messages.item.thread-reply" = "Thread reply: %@";
+"scheduled-messages.item.uploading" = "Uploading…";
+"scheduled-messages.no-content.message" = "Long press the send button in a channel to schedule a message.";
+"scheduled-messages.no-content.title" = "No scheduled messages";
+"scheduled-message.failure.attachment-upload-failed" = "Couldn't upload attachment";
+"scheduled-message.failure.banned" = "You can't send messages in this channel.";
+"scheduled-message.failure.channel-deleted" = "This channel was deleted";
+"scheduled-message.failure.channel-frozen" = "This channel is frozen.";
+"scheduled-message.failure.channel-limit" = "You've reached the limit of scheduled messages in this channel.";
+"scheduled-message.failure.expired" = "Not sent: the service was delayed.";
+"scheduled-message.failure.generic" = "Something went wrong. Try again";
+"scheduled-message.failure.hook-rejected" = "Rejected by the app.";
+"scheduled-message.failure.invalid-message" = "The message no longer meets the app's limits. Edit it.";
+"scheduled-message.failure.moderation-blocked" = "Blocked by moderation.";
+"scheduled-message.failure.no-permission" = "You're no longer allowed to post here.";
+"scheduled-message.failure.pending-not-supported" = "This channel now needs approval. Schedule it again.";
+"scheduled-message.failure.request-failed" = "Couldn't send. Try again";
+"scheduled-message.failure.too-far" = "That's further ahead than your app allows";
+"scheduled-message.failure.too-soon" = "Pick a later time";
+"scheduled-message.failure.user-limit" = "You've reached your limit of scheduled messages.";
 
 // - MARK: Message Annotations
 

@@ -916,6 +916,52 @@ import XCTest
         XCTAssert(view is NewMessagesDivider)
     }
 
+    func test_viewFactory_makeScheduledMessageListEmptyView() {
+        // Given
+        let viewFactory = DefaultViewFactory.shared
+
+        // When
+        let view = viewFactory.makeScheduledMessageListEmptyView(options: ScheduledMessageListEmptyViewOptions())
+
+        // Then
+        XCTAssert(view is ModifiedContent<EmptyContentView, AccessibilityAttachmentModifier>)
+    }
+
+    func test_viewFactory_makeScheduledMessageListErrorView() {
+        // Given
+        let viewFactory = DefaultViewFactory.shared
+
+        // When
+        let view = viewFactory.makeScheduledMessageListErrorView(options: ScheduledMessageListErrorViewOptions(onRetry: {}))
+
+        // Then
+        XCTAssert(view is ModifiedContent<EmptyContentView, AccessibilityAttachmentModifier>)
+    }
+
+    func test_viewFactory_makeScheduledMessageListItem() {
+        // Given
+        let viewFactory = DefaultViewFactory.shared
+
+        // When
+        let view = viewFactory.makeScheduledMessageListItem(
+            options: ScheduledMessageListItemOptions(scheduledMessage: .mock(), channel: nil)
+        )
+
+        // Then
+        XCTAssert(view is ScheduledMessageListItem<DefaultViewFactory>)
+    }
+
+    func test_viewFactory_makeScheduledMessageListLoadingView() {
+        // Given
+        let viewFactory = DefaultViewFactory.shared
+
+        // When
+        let view = viewFactory.makeScheduledMessageListLoadingView(options: ScheduledMessageListLoadingViewOptions())
+
+        // Then
+        XCTAssert(view is ScheduledMessageListLoadingView)
+    }
+
     func test_viewFactory_makeThreadRepliesDividerView() {
         // Given
         let viewFactory = DefaultViewFactory.shared

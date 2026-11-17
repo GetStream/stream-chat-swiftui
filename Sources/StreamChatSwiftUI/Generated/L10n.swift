@@ -1182,6 +1182,75 @@ internal enum L10n {
         return L10n.tr("Localizable", "scheduled-message.date.day-at-time", String(describing: p1), String(describing: p2))
       }
     }
+    internal enum Failure {
+      /// Couldn't upload attachment
+      internal static var attachmentUploadFailed: String { L10n.tr("Localizable", "scheduled-message.failure.attachment-upload-failed") }
+      /// You can't send messages in this channel.
+      internal static var banned: String { L10n.tr("Localizable", "scheduled-message.failure.banned") }
+      /// This channel was deleted
+      internal static var channelDeleted: String { L10n.tr("Localizable", "scheduled-message.failure.channel-deleted") }
+      /// This channel is frozen.
+      internal static var channelFrozen: String { L10n.tr("Localizable", "scheduled-message.failure.channel-frozen") }
+      /// You've reached the limit of scheduled messages in this channel.
+      internal static var channelLimit: String { L10n.tr("Localizable", "scheduled-message.failure.channel-limit") }
+      /// Not sent: the service was delayed.
+      internal static var expired: String { L10n.tr("Localizable", "scheduled-message.failure.expired") }
+      /// Something went wrong. Try again
+      internal static var generic: String { L10n.tr("Localizable", "scheduled-message.failure.generic") }
+      /// Rejected by the app.
+      internal static var hookRejected: String { L10n.tr("Localizable", "scheduled-message.failure.hook-rejected") }
+      /// The message no longer meets the app's limits. Edit it.
+      internal static var invalidMessage: String { L10n.tr("Localizable", "scheduled-message.failure.invalid-message") }
+      /// Blocked by moderation.
+      internal static var moderationBlocked: String { L10n.tr("Localizable", "scheduled-message.failure.moderation-blocked") }
+      /// You're no longer allowed to post here.
+      internal static var noPermission: String { L10n.tr("Localizable", "scheduled-message.failure.no-permission") }
+      /// This channel now needs approval. Schedule it again.
+      internal static var pendingNotSupported: String { L10n.tr("Localizable", "scheduled-message.failure.pending-not-supported") }
+      /// Couldn't send. Try again
+      internal static var requestFailed: String { L10n.tr("Localizable", "scheduled-message.failure.request-failed") }
+      /// That's further ahead than your app allows
+      internal static var tooFar: String { L10n.tr("Localizable", "scheduled-message.failure.too-far") }
+      /// Pick a later time
+      internal static var tooSoon: String { L10n.tr("Localizable", "scheduled-message.failure.too-soon") }
+      /// You've reached your limit of scheduled messages.
+      internal static var userLimit: String { L10n.tr("Localizable", "scheduled-message.failure.user-limit") }
+    }
+  }
+
+  internal enum ScheduledMessages {
+    /// Scheduled messages
+    internal static var title: String { L10n.tr("Localizable", "scheduled-messages.title") }
+    internal enum Error {
+      /// Couldn't load scheduled messages
+      internal static var message: String { L10n.tr("Localizable", "scheduled-messages.error.message") }
+      /// Try again
+      internal static var retry: String { L10n.tr("Localizable", "scheduled-messages.error.retry") }
+    }
+    internal enum Item {
+      /// Reply to %1$@: %2$@
+      internal static func replyTo(_ p1: Any, _ p2: Any) -> String {
+        return L10n.tr("Localizable", "scheduled-messages.item.reply-to", String(describing: p1), String(describing: p2))
+      }
+      /// Send %@
+      internal static func sendAt(_ p1: Any) -> String {
+        return L10n.tr("Localizable", "scheduled-messages.item.send-at", String(describing: p1))
+      }
+      /// Sending…
+      internal static var sending: String { L10n.tr("Localizable", "scheduled-messages.item.sending") }
+      /// Thread reply: %@
+      internal static func threadReply(_ p1: Any) -> String {
+        return L10n.tr("Localizable", "scheduled-messages.item.thread-reply", String(describing: p1))
+      }
+      /// Uploading…
+      internal static var uploading: String { L10n.tr("Localizable", "scheduled-messages.item.uploading") }
+    }
+    internal enum NoContent {
+      /// Long press the send button in a channel to schedule a message.
+      internal static var message: String { L10n.tr("Localizable", "scheduled-messages.no-content.message") }
+      /// No scheduled messages
+      internal static var title: String { L10n.tr("Localizable", "scheduled-messages.no-content.title") }
+    }
   }
 
   internal enum Thread {

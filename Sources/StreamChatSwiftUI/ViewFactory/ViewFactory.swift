@@ -641,6 +641,30 @@ import SwiftUI
     /// - Returns: The view shown in the channel info actions slot.
     func makeChannelInfoActionsView(options: ChannelInfoActionsViewOptions) -> ChannelInfoActionsViewType
 
+    // MARK: - Scheduled Messages
+
+    associatedtype ScheduledMessageListEmptyViewType: View
+    /// Creates the view shown when the current user has no scheduled messages.
+    /// - Parameter options: the options for creating the empty scheduled messages view.
+    func makeScheduledMessageListEmptyView(options: ScheduledMessageListEmptyViewOptions) -> ScheduledMessageListEmptyViewType
+
+    associatedtype ScheduledMessageListErrorViewType: View
+    /// Creates the view shown when loading the scheduled messages failed and there are none to show.
+    /// - Parameter options: the options for creating the view, with the action of the retry button.
+    func makeScheduledMessageListErrorView(options: ScheduledMessageListErrorViewOptions) -> ScheduledMessageListErrorViewType
+
+    associatedtype ScheduledMessageListItemType: View
+    /// Creates a row of the scheduled message list.
+    /// - Parameter options: the options for creating the row, with the scheduled message and its channel.
+    func makeScheduledMessageListItem(options: ScheduledMessageListItemOptions) -> ScheduledMessageListItemType
+
+    associatedtype ScheduledMessageListLoadingViewType: View
+    /// Creates a loading view for the scheduled message list.
+    /// - Parameter options: the options for creating the loading view.
+    func makeScheduledMessageListLoadingView(
+        options: ScheduledMessageListLoadingViewOptions
+    ) -> ScheduledMessageListLoadingViewType
+
     associatedtype AttachmentTextViewType: View
     /// Creates a text caption view displayed below attachments inside ``MessageAttachmentsView``.
     /// - Parameter options: Configuration options for the attachment text view.
