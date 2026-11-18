@@ -576,12 +576,6 @@ internal enum L10n {
       }
       /// Schedule message
       internal static var title: String { L10n.tr("Localizable", "composer.schedule-message.title") }
-      internal enum Accessibility {
-        /// Message scheduled for %@
-        internal static func scheduled(_ p1: Any) -> String {
-          return L10n.tr("Localizable", "composer.schedule-message.accessibility.scheduled", String(describing: p1))
-        }
-      }
       internal enum Error {
         /// You've reached the limit of %d scheduled messages in this channel.
         internal static func channelLimit(_ p1: Int) -> String {
@@ -620,6 +614,30 @@ internal enum L10n {
           return L10n.tr("Localizable", "composer.schedule-message.preview.message-to", String(describing: p1))
         }
       }
+    }
+    internal enum ScheduledMessagesBanner {
+      /// Plural format key: "%#@messages@"
+      internal static func count(_ p1: Int) -> String {
+        return L10n.tr("Localizable", "composer.scheduled-messages-banner.count", p1)
+      }
+      /// %d failed to send
+      internal static func failed(_ p1: Int) -> String {
+        return L10n.tr("Localizable", "composer.scheduled-messages-banner.failed", p1)
+      }
+      /// %1$d of %2$d scheduled messages
+      internal static func limit(_ p1: Int, _ p2: Int) -> String {
+        return L10n.tr("Localizable", "composer.scheduled-messages-banner.limit", p1, p2)
+      }
+      /// Scheduled for %@
+      internal static func scheduledFor(_ p1: Any) -> String {
+        return L10n.tr("Localizable", "composer.scheduled-messages-banner.scheduled-for", String(describing: p1))
+      }
+      /// Scheduled message sent
+      internal static var sent: String { L10n.tr("Localizable", "composer.scheduled-messages-banner.sent") }
+      /// View
+      internal static var view: String { L10n.tr("Localizable", "composer.scheduled-messages-banner.view") }
+      /// View all
+      internal static var viewAll: String { L10n.tr("Localizable", "composer.scheduled-messages-banner.view-all") }
     }
     internal enum Suggestions {
       internal enum Commands {

@@ -22,6 +22,7 @@ import UIKit
     @Injected(\.chatClient) private var chatClient
 
     private let scheduledMessageListController: ScheduledMessageListController
+    private let parentMessageId: MessageId?
     private var hasStartedLoading = false
     private var actionPendingSheetDismissal: (@MainActor () -> Void)?
     private var scheduledMessageToDelete: ScheduledMessage?
@@ -58,10 +59,14 @@ import UIKit
 
     /// Creates a view model for the `ScheduledMessageListView`.
     ///
-    /// - Parameter scheduledMessageListController: A controller providing the scheduled messages. Its query decides
-    /// which ones are listed, for example the ones of a single channel.
-    public init(scheduledMessageListController: ScheduledMessageListController) {
+    /// - Parameters:
+    ///   - scheduledMessageListController: A controller providing the scheduled messages. Its query decides
+    ///   which ones are listed, for example the ones of a single channel.
+    ///   - parentMessageId: The thread whose scheduled replies are listed. All the scheduled messages of the
+    ///   controller are listed when `nil`.
+    public init(scheduledMessageListController: ScheduledMessageListController, parentMessageId: MessageId? = nil) {
         self.scheduledMessageListController = scheduledMessageListController
+        self.parentMessageId = parentMessageId
     }
 
     /// Called when the view appears on screen.
@@ -226,9 +231,9 @@ import UIKit
         // The server returns pending messages before failed ones, so the rows of a first load would move around
         // while its pages arrive. They are shown when every page is loaded.
         guard viewState != .loading else { return }
-        let all = scheduledMessageListController.scheduledMessages.sorted {
-            ($0.scheduledAt, $0.message.text, $0.id) < ($1.scheduledAt, $1.message.text, $1.id)
-        }
+        let all = scheduledMessageListController.scheduledMessages
+            .filter { parentMessageId == nil || $0.message.parentMessageId == parentMessageId }
+            .sorted { ($0.scheduledAt, $0.message.text, $0.id) < ($1.scheduledAt, $1.message.text, $1.id) }
         if !all.isEmpty {
             viewState = .loaded
         } else if viewState == .loaded {

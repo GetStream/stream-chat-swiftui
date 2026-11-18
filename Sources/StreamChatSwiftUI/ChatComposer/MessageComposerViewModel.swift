@@ -185,6 +185,16 @@ import SwiftUI
     
     @Published public var audioRecordingInfo = AudioRecordingInfo.initial
     @Published public var snackBarText: String?
+    /// What the scheduled messages banner above the composer shows, `nil` when there is no banner.
+    @Published public private(set) var scheduledMessagesBannerState: ScheduledMessagesBannerState? {
+        didSet {
+            guard let state = scheduledMessagesBannerState, state != oldValue else { return }
+            ComposerAccessibilityAnnouncer.announce(state.text)
+        }
+    }
+
+    /// A Boolean value indicating whether the scheduled message list opened from the banner is shown.
+    @Published public var scheduledMessageListShown = false
     @Published public private(set) var isSendingMessage = false
 
     public let channelController: ChatChannelController
@@ -199,6 +209,7 @@ import SwiftUI
     private(set) var scheduleMessageErrorText: String?
     // Kept while the custom time sheet is shown, because the composer is cleared before the sheet is gone.
     private(set) var scheduleMessagePreview = ScheduleMessagePreview(title: "", subtitle: "")
+    private var sentScheduledMessageId: MessageId?
 
     /// When `true`, the next completed recording is automatically sent via `sendMessage()`.
     /// Set by `sendRecording()` and cleared once the send fires or an error occurs.
@@ -305,6 +316,7 @@ import SwiftUI
 
         self.eventsController.delegate = self
 
+        scheduledMessagesBannerState = makeScheduledMessagesBannerState()
         listenToCooldownUpdates()
 
         NotificationCenter.default.addObserver(
@@ -711,15 +723,13 @@ import SwiftUI
         let handleResult: @MainActor (Result<ScheduledMessage, Error>) -> Void = { [weak self] result in
             guard let self else { return }
             switch result {
-            case let .success(scheduledMessage):
+            case .success:
                 scheduleMessageCustomTimeSheetShown = false
                 scheduleMessageSheetShown = false
                 clearInputData()
                 DispatchQueue.main.asyncAfter(deadline: .now() + Self.clearTextDelay) { [weak self] in
                     self?.quotedMessage?.wrappedValue = nil
                 }
-                let date = utils.scheduledMessagesConfig.dateFormatter.format(scheduledMessage.scheduledAt)
-                ComposerAccessibilityAnnouncer.announce(L10n.Composer.ScheduleMessage.Accessibility.scheduled(date))
                 completion?(nil)
             case let .failure(error):
                 failScheduling(error)
@@ -840,6 +850,84 @@ import SwiftUI
         messageController != nil
     }
     
+    // MARK: - Scheduled Messages Banner
+
+    /// The thread whose scheduled replies the list opened from the banner shows, `nil` for all the scheduled
+    /// messages of the channel.
+    public var scheduledMessageListParentMessageId: MessageId? {
+        if case .limitReached = scheduledMessagesBannerState {
+            return nil
+        }
+        return messageController?.messageId
+    }
+
+    /// Shows the list of the scheduled messages the banner stands for.
+    open func showScheduledMessageList() {
+        scheduledMessageListShown = true
+    }
+
+    /// The title of the snack bar's action button, `nil` when the snack bar has no action.
+    public var snackBarActionTitle: String? {
+        let showsSentScheduledMessage = sentScheduledMessageId != nil
+            && snackBarText == L10n.Composer.ScheduledMessagesBanner.sent
+        return showsSentScheduledMessage ? L10n.Composer.ScheduledMessagesBanner.view : nil
+    }
+
+    /// Called when the action button of the snack bar is tapped.
+    ///
+    /// By default it scrolls the message list to the scheduled message that was just sent.
+    open func snackBarActionTapped() {
+        guard let messageId = sentScheduledMessageId else { return }
+        let request = JumpToMessageRequest(
+            cid: channelController.cid,
+            parentMessageId: messageController?.messageId,
+            messageId: messageId
+        )
+        NotificationCenter.default.post(name: .jumpToMessageNotification, object: request)
+    }
+
+    private func makeScheduledMessagesBannerState() -> ScheduledMessagesBannerState? {
+        guard let channel = channelController.channel, channel.canScheduleMessage else { return nil }
+        let threadId = messageController?.messageId
+        let scheduledMessages = channel.scheduledMessages.filter {
+            threadId == nil || $0.message.parentMessageId == threadId
+        }
+        let pending = scheduledMessages.filter { $0.status != .failed }
+        if pending.count < scheduledMessages.count {
+            return .failed(count: scheduledMessages.count - pending.count)
+        }
+        // The limit is for the whole channel, also in a thread.
+        let channelCount = channel.scheduledMessages.filter { $0.status != .failed }.count
+        if let limit = channel.config.scheduledMessagesMaxPerChannel, channelCount > 0, channelCount >= limit {
+            return .limitReached(count: channelCount, limit: limit)
+        }
+        if pending.count > 1 {
+            return .multiple(count: pending.count)
+        }
+        return pending.first.map { .single(scheduledAt: $0.scheduledAt) }
+    }
+
+    private func updateScheduledMessagesBannerState() {
+        let state = makeScheduledMessagesBannerState()
+        if state != scheduledMessagesBannerState {
+            scheduledMessagesBannerState = state
+        }
+    }
+
+    private func showSentScheduledMessageSnackBar(for event: ScheduledMessageSentEvent) {
+        let message = event.scheduledMessage.message
+        let isInMessageList: Bool
+        if let threadId = messageController?.messageId {
+            isInMessageList = message.parentMessageId == threadId
+        } else {
+            isInMessageList = message.parentMessageId == nil || message.showReplyInChannel
+        }
+        guard isInMessageList else { return }
+        sentScheduledMessageId = event.messageId
+        snackBarText = L10n.Composer.ScheduledMessagesBanner.sent
+        ComposerAccessibilityAnnouncer.announce(L10n.Composer.ScheduledMessagesBanner.sent)
+    }
+
     public var isDirectChannel: Bool {
         channelController.channel?.isDirectMessageChannel ?? false
     }
@@ -1268,6 +1356,7 @@ import SwiftUI
     
     private func listenToCooldownUpdates() {
         channelController.channelChangePublisher.sink { [weak self] _ in
+            self?.updateScheduledMessagesBannerState()
             guard self?.isSlowModeDisabled == false else { return }
             self?.checkChannelCooldown()
         }
@@ -1410,6 +1499,8 @@ extension MessageComposerViewModel: EventsControllerDelegate {
             if isFromSameThread || isFromSameChannel {
                 fillDraftMessage()
             }
+        } else if let event = event as? ScheduledMessageSentEvent, event.isSentNow, event.cid == channelController.cid {
+            showSentScheduledMessageSnackBar(for: event)
         }
     }
 }

@@ -383,6 +383,15 @@ import SwiftUI
         options: ScheduleMessageCustomTimeSheetOptions
     ) -> ScheduleMessageCustomTimeSheetType
 
+    associatedtype ScheduledMessagesBannerViewType: View
+    /// Creates the banner on the top edge of the composer, with the scheduled messages of the channel or thread.
+    ///
+    /// - Parameter options: the options for creating the banner, with what it shows and what opens the list.
+    /// - Returns: view displayed above the composer while the channel or thread has scheduled messages.
+    func makeScheduledMessagesBannerView(
+        options: ScheduledMessagesBannerViewOptions
+    ) -> ScheduledMessagesBannerViewType
+
     associatedtype ComposerVoiceRecordingInputViewType: View
     /// Creates a unified voice recording input view shown when the composer
     /// is actively recording, locked, or stopped.

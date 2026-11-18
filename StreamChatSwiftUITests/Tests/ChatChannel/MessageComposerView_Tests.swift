@@ -1627,6 +1627,38 @@ import XCTest
         XCTAssertEqual(viewModel.pickerTypeState, .expanded(.media))
     }
 
+    // MARK: - Scheduled Messages Banner
+
+    func test_messageComposerView_scheduledMessagesBanner() {
+        let size = CGSize(width: composerWidth, height: 200)
+
+        AssertSnapshot(makeComposerViewWithScheduledMessages(factory: DefaultViewFactory.shared, size: size), size: size)
+    }
+
+    func test_messageComposerView_scheduledMessagesBanner_liquidGlass() {
+        let size = CGSize(width: composerWidth, height: 200)
+
+        AssertSnapshot(makeComposerViewWithScheduledMessages(factory: LiquidGlassViewFactory(), size: size), size: size)
+    }
+
+    private func makeComposerViewWithScheduledMessages<Factory: ViewFactory>(factory: Factory, size: CGSize) -> some View {
+        let channelController = ChatChannelTestHelpers.makeChannelController(chatClient: chatClient)
+        channelController.channel_mock = .mock(
+            cid: channelController.cid ?? .unique,
+            ownCapabilities: [.sendMessage, .uploadFile, .scheduleMessage],
+            scheduledMessages: [.mock(), .mock(), .mock()]
+        )
+        return MessageComposerView(
+            viewFactory: factory,
+            channelController: channelController,
+            messageController: nil,
+            quotedMessage: .constant(nil),
+            editedMessage: .constant(nil),
+            willSendMessage: {}
+        )
+        .frame(width: size.width, height: size.height, alignment: .bottom)
+    }
+
     // MARK: - Liquid Glass Style
 
     func test_messageComposerView_liquidGlass_snapshot() {
