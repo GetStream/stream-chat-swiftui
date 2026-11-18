@@ -137,7 +137,7 @@ jobs:
       run: bundle exec fastlane test_ui device:"${{ env.IOS_SIMULATOR_DEVICE }}" record:"${{ github.event.inputs.record_snapshots }}" ${{ env.VERBOSE }}
       timeout-minutes: 120
     - name: Run Sonar analysis
-      if: ${{ github.event.inputs.record_snapshots != 'true' }}
+      if: ${{ github.event.inputs.record_snapshots != 'true' && fromJSON(needs.guard.outputs.checks).sonar }}
       run: bundle exec fastlane sonar_upload
       env:
         SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_IOS_BOTS }}
