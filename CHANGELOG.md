@@ -7,13 +7,16 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Add scheduling a message with a long press on the send button [#1651](https://github.com/GetStream/stream-chat-swiftui/pull/1651)
 - Add picking a custom time when scheduling a message [#1652](https://github.com/GetStream/stream-chat-swiftui/pull/1652)
 - Add send now, delete and copy text actions to the scheduled messages list [#1660](https://github.com/GetStream/stream-chat-swiftui/pull/1660)
+- Add a banner above the composer with the scheduled messages of the channel or thread [#1661](https://github.com/GetStream/stream-chat-swiftui/pull/1661)
+- Add an action button to `SnackBarView` [#1661](https://github.com/GetStream/stream-chat-swiftui/pull/1661)
 
 ### 🎭 New Localizations
-- `composer.schedule-message.title`, `composer.schedule-message.limit-reached`, `composer.schedule-message.accessibility.scheduled` — schedule message sheet
+- `composer.schedule-message.title`, `composer.schedule-message.limit-reached` — schedule message sheet
 - `scheduled-message.date.day-at-time` — day and time of a scheduled message ("Tomorrow at 9:00 AM")
 - `composer.schedule-message.custom-time`, `composer.schedule-message.preview.message-to`, `composer.schedule-message.note.count`, `composer.schedule-message.note.time-zone` — custom time sheet
 - `composer.schedule-message.error.*` — errors shown when a message can't be scheduled
 - `scheduled-messages.actions.*`, `scheduled-messages.delete-confirmation.*`, `scheduled-messages.snackbar.*`, `scheduled-messages.item.quote-deleted` — actions of a scheduled message
+- `composer.scheduled-messages-banner.*` — scheduled messages banner and the sent snack bar
 
 # [5.17.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/5.17.0)
 _November 13, 2026_
