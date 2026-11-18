@@ -55,6 +55,17 @@ import UIKit
     /// the sheet.
     @Published public var rescheduledScheduledMessage: ScheduledMessage?
 
+    /// The scheduled message which is edited in the composer under the list.
+    ///
+    /// The composer watches the message, and clears it when the edit ends.
+    @Published public var editedScheduledMessage: ScheduledMessage?
+
+    /// The controller of the channel of `editedScheduledMessage`, which the composer uses.
+    public private(set) var editedScheduledMessageChannelController: ChatChannelController?
+
+    /// The controller of the thread of `editedScheduledMessage`, when it is a reply.
+    public private(set) var editedScheduledMessageThreadController: ChatMessageController?
+
     /// How many scheduled messages the current user has, shown in the reschedule sheet of a failed message, because
     /// rescheduling it adds a pending message. `nil` for other messages.
     @Published public private(set) var rescheduleUsage: ScheduledMessagesUsage?
@@ -175,6 +186,25 @@ import UIKit
             } else {
                 self?.showSnackBar(L10n.Alert.Error.title)
             }
+        }
+    }
+
+    /// A Boolean value indicating whether a scheduled message can be edited. The composer needs the config of the
+    /// channel, so its channel has to be stored locally.
+    open func canEdit(_ scheduledMessage: ScheduledMessage) -> Bool {
+        channels[scheduledMessage.cid] != nil
+    }
+
+    /// Opens the composer for editing a scheduled message. The sheet with the actions is closed first.
+    open func edit(_ scheduledMessage: ScheduledMessage) {
+        performAfterSheetDismissal { [weak self] in
+            guard let self else { return }
+            let cid = scheduledMessage.cid
+            editedScheduledMessageChannelController = chatClient.channelController(for: cid)
+            editedScheduledMessageThreadController = scheduledMessage.message.parentMessageId.map {
+                chatClient.messageController(cid: cid, messageId: $0)
+            }
+            editedScheduledMessage = scheduledMessage
         }
     }
 

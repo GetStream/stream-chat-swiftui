@@ -43,33 +43,22 @@ public struct ScheduledMessageListView<Factory: ViewFactory>: View {
 
     public var body: some View {
         NavigationContainerView(embedInNavigationView: embedInNavigationView) {
-            Group {
-                switch viewModel.viewState {
-                case .loading:
-                    viewFactory.makeScheduledMessageListLoadingView(options: ScheduledMessageListLoadingViewOptions())
-                        .modifier(searchableModifier)
-                case .loaded:
-                    ScrollView {
-                        LazyVStack(spacing: 0) {
-                            ForEach(viewModel.scheduledMessages) { scheduledMessage in
-                                ScheduledMessageListRowView(
-                                    viewFactory: viewFactory,
-                                    scheduledMessage: scheduledMessage,
-                                    channel: viewModel.channels[scheduledMessage.cid],
-                                    onTap: { viewModel.scheduledMessageTapped(scheduledMessage) }
-                                )
-                                Divider()
-                                    .overlay(Color(colors.borderCoreSubtle))
-                            }
-                        }
-                    }
-                    .modifier(searchableModifier)
-                case .failed:
-                    viewFactory.makeScheduledMessageListErrorView(
-                        options: ScheduledMessageListErrorViewOptions(onRetry: viewModel.loadScheduledMessages)
+            VStack(spacing: 0) {
+                content
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                if let scheduledMessage = viewModel.editedScheduledMessage,
+                   let channelController = viewModel.editedScheduledMessageChannelController {
+                    viewFactory.makeMessageComposerViewType(
+                        options: MessageComposerViewTypeOptions(
+                            channelController: channelController,
+                            messageController: viewModel.editedScheduledMessageThreadController,
+                            quotedMessage: .constant(nil),
+                            editedMessage: .constant(nil),
+                            editedScheduledMessage: $viewModel.editedScheduledMessage,
+                            willSendMessage: {}
+                        )
                     )
-                case .empty:
-                    viewFactory.makeScheduledMessageListEmptyView(options: ScheduledMessageListEmptyViewOptions())
+                    .id(scheduledMessage.id)
                 }
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -97,7 +86,41 @@ public struct ScheduledMessageListView<Factory: ViewFactory>: View {
         .accessibilityIdentifier("ScheduledMessageListView")
     }
 
+    @ViewBuilder private var content: some View {
+        switch viewModel.viewState {
+        case .loading:
+            viewFactory.makeScheduledMessageListLoadingView(options: ScheduledMessageListLoadingViewOptions())
+                .modifier(searchableModifier)
+        case .loaded:
+            ScrollView {
+                LazyVStack(spacing: 0) {
+                    ForEach(viewModel.scheduledMessages) { scheduledMessage in
+                        ScheduledMessageListRowView(
+                            viewFactory: viewFactory,
+                            scheduledMessage: scheduledMessage,
+                            channel: viewModel.channels[scheduledMessage.cid],
+                            onTap: { viewModel.scheduledMessageTapped(scheduledMessage) }
+                        )
+                        Divider()
+                            .overlay(Color(colors.borderCoreSubtle))
+                    }
+                }
+            }
+            .modifier(searchableModifier)
+        case .failed:
+            viewFactory.makeScheduledMessageListErrorView(
+                options: ScheduledMessageListErrorViewOptions(onRetry: viewModel.loadScheduledMessages)
+            )
+        case .empty:
+            viewFactory.makeScheduledMessageListEmptyView(options: ScheduledMessageListEmptyViewOptions())
+        }
+    }
+
     private func actionsSheetOptions(for scheduledMessage: ScheduledMessage) -> ScheduledMessageActionsSheetOptions {
+        var onEdit: (@MainActor () -> Void)?
+        if viewModel.canEdit(scheduledMessage) {
+            onEdit = { viewModel.edit(scheduledMessage) }
+        }
         var onReschedule: (@MainActor () -> Void)?
         if viewModel.canReschedule(scheduledMessage) {
             onReschedule = { viewModel.reschedule(scheduledMessage) }
@@ -106,6 +129,7 @@ public struct ScheduledMessageListView<Factory: ViewFactory>: View {
             scheduledMessage: scheduledMessage,
             onCopyText: { viewModel.copyText(of: scheduledMessage) },
             onDelete: { viewModel.delete(scheduledMessage) },
+            onEdit: onEdit,
             onReschedule: onReschedule,
             onSendNow: { viewModel.sendNow(scheduledMessage) },
             onDismiss: { viewModel.selectedScheduledMessage = nil }

@@ -42,6 +42,7 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
         messageController: ChatMessageController? = nil,
         quotedMessage: Binding<ChatMessage?>,
         editedMessage: Binding<ChatMessage?>,
+        editedScheduledMessage: Binding<ScheduledMessage?> = .constant(nil),
         willSendMessage: @escaping () -> Void
     ) {
         factory = viewFactory
@@ -52,6 +53,7 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
                 messageController: messageController,
                 quotedMessage: quotedMessage,
                 editedMessage: editedMessage,
+                editedScheduledMessage: editedScheduledMessage,
                 willSendMessage: willSendMessage
             )
         )
@@ -101,10 +103,12 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
                         addedCustomAttachments: viewModel.addedCustomAttachments,
                         addedVoiceRecordings: viewModel.addedVoiceRecordings,
                         quotedMessage: $quotedMessage,
-                        editedMessage: $editedMessage,
+                        editedMessage: inputEditedMessage,
                         maxMessageLength: channelConfig?.maxMessageLength,
                         cooldownDuration: viewModel.cooldownDuration,
-                        hasContent: viewModel.hasContent,
+                        hasContent: viewModel.isEditingScheduledMessage
+                            ? viewModel.canSaveEditedScheduledMessage
+                            : viewModel.hasContent,
                         canSendMessage: viewModel.canSendMessage,
                         audioRecordingInfo: viewModel.audioRecordingInfo,
                         pendingAudioRecordingURL: viewModel.pendingAudioRecording?.url,
@@ -120,7 +124,8 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
                         showRecordingTip: viewModel.showRecordingTip,
                         sendInChannelShown: viewModel.sendInChannelShown,
                         showReplyInChannel: $viewModel.showReplyInChannel,
-                        onSendMessageLongPress: onSendMessageLongPress
+                        onSendMessageLongPress: onSendMessageLongPress,
+                        editedMessageTitle: viewModel.isEditingScheduledMessage ? L10n.Composer.Title.editScheduled : nil
                     )
                 )
                 .alert(isPresented: $viewModel.attachmentSizeExceeded) {
@@ -328,6 +333,10 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
             onDismiss: { viewModel.scheduleMessageSheetDismissed() },
             content: { scheduleMessageSheet }
         )
+        // A second sheet on the same view is not presented on iOS 14.
+        .background(Color.clear.sheet(isPresented: $viewModel.editedScheduledMessageTimeSheetShown) {
+            editedScheduledMessageTimeSheet
+        })
         .overlay(
             factory.styles.composerPlacement == .docked ? composerDivider : nil,
             alignment: .top
@@ -340,10 +349,15 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
             }
         }
         .onAppear(perform: {
-            viewModel.fillDraftMessage()
+            if viewModel.isEditingScheduledMessage {
+                viewModel.fillEditedScheduledMessage()
+                becomeFirstResponder()
+            } else {
+                viewModel.fillDraftMessage()
+            }
         })
         .onDisappear(perform: {
-            if editedMessage == nil {
+            if editedMessage == nil, !viewModel.isEditingScheduledMessage {
                 viewModel.updateDraftMessage(quotedMessage: quotedMessage)
             }
         })
@@ -420,7 +434,13 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
     }
 
     private var shownScheduledMessagesBannerState: ScheduledMessagesBannerState? {
-        viewModel.showSuggestionsOverlay ? nil : viewModel.scheduledMessagesBannerState
+        if viewModel.showSuggestionsOverlay {
+            return nil
+        }
+        if viewModel.isEditingScheduledMessage {
+            return viewModel.editedScheduledMessageQuotesDeletedMessage ? .quoteDeleted : nil
+        }
+        return viewModel.scheduledMessagesBannerState
     }
 
     @ViewBuilder private var scheduledMessagesBanner: some View {
@@ -428,7 +448,13 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
             factory.makeScheduledMessagesBannerView(
                 options: ScheduledMessagesBannerViewOptions(
                     state: state,
-                    onView: { viewModel.showScheduledMessageList() }
+                    onView: {
+                        if state == .quoteDeleted {
+                            viewModel.removeEditedScheduledMessageQuote()
+                        } else {
+                            viewModel.showScheduledMessageList()
+                        }
+                    }
                 )
             )
             .padding(.horizontal, tokens.spacingMd)
@@ -441,6 +467,32 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
                 }
             )
             .transition(.opacity)
+        }
+    }
+
+    // The edited scheduled message is shown as the edited message, and dismissing it ends the edit.
+    private var inputEditedMessage: Binding<ChatMessage?> {
+        guard let editedScheduledMessage = viewModel.editedScheduledMessage,
+              viewModel.isEditingScheduledMessage else { return $editedMessage }
+        return Binding(
+            get: { editedScheduledMessage.wrappedValue?.message },
+            set: { if $0 == nil { editedScheduledMessage.wrappedValue = nil } }
+        )
+    }
+
+    @ViewBuilder private var editedScheduledMessageTimeSheet: some View {
+        if let channel = viewModel.channelController.channel,
+           let scheduledMessage = viewModel.editedScheduledMessage?.wrappedValue {
+            factory.makeScheduleMessageCustomTimeSheet(
+                options: ScheduleMessageCustomTimeSheetOptions(
+                    channel: channel,
+                    usage: viewModel.scheduledMessagesUsage,
+                    preview: viewModel.scheduleMessagePreview,
+                    scheduledMessage: scheduledMessage,
+                    onSchedule: { viewModel.saveEditedScheduledMessage(scheduledAt: $0, completion: $1) },
+                    onDismiss: { viewModel.editedScheduledMessageTimeSheetShown = false }
+                )
+            )
         }
     }
 
@@ -511,6 +563,7 @@ public struct ComposerInputView<Factory: ViewFactory>: View, KeyboardReadable {
     var sendInChannelShown: Bool
     @Binding var showReplyInChannel: Bool
     var onSendMessageLongPress: (@MainActor () -> Void)?
+    var editedMessageTitle: String?
 
     @State var textHeight: CGFloat = TextSizeConstants.defaultInputViewHeight
     @State var keyboardShown = false
@@ -546,7 +599,8 @@ public struct ComposerInputView<Factory: ViewFactory>: View, KeyboardReadable {
         showRecordingTip: @escaping @MainActor () -> Void,
         sendInChannelShown: Bool,
         showReplyInChannel: Binding<Bool>,
-        onSendMessageLongPress: (@MainActor () -> Void)? = nil
+        onSendMessageLongPress: (@MainActor () -> Void)? = nil,
+        editedMessageTitle: String? = nil
     ) {
         self.factory = factory
         self.channelController = channelController
@@ -579,6 +633,7 @@ public struct ComposerInputView<Factory: ViewFactory>: View, KeyboardReadable {
         self.sendInChannelShown = sendInChannelShown
         _showReplyInChannel = showReplyInChannel
         self.onSendMessageLongPress = onSendMessageLongPress
+        self.editedMessageTitle = editedMessageTitle
     }
 
     var textFieldHeight: CGFloat {
@@ -719,6 +774,7 @@ public struct ComposerInputView<Factory: ViewFactory>: View, KeyboardReadable {
                 factory.makeComposerEditedMessageView(
                     options: .init(
                         editedMessage: editedMessage,
+                        title: editedMessageTitle,
                         onDismiss: {
                             withAnimation {
                                 self.editedMessage.wrappedValue = nil

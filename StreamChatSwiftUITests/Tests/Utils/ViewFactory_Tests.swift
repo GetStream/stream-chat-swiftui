@@ -931,6 +931,7 @@ import XCTest
                 scheduledMessage: .mock(id: "scheduled"),
                 onCopyText: {},
                 onDelete: {},
+                onEdit: {},
                 onReschedule: {},
                 onSendNow: {},
                 onDismiss: {}

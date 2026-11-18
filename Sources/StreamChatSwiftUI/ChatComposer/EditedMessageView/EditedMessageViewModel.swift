@@ -12,6 +12,7 @@ open class EditedMessageViewModel {
     
     /// The edited message.
     private let message: ChatMessage
+    private let customTitle: String?
 
     /// The resolved attachment preview data.
     private lazy var attachmentPreviewResolver: MessageAttachmentPreviewResolver = {
@@ -21,16 +22,19 @@ open class EditedMessageViewModel {
     // MARK: - Init
     
     /// Creates a new edited message view model.
-    /// - Parameter message: The message being edited.
-    public init(message: ChatMessage) {
+    /// - Parameters:
+    ///   - message: The message being edited.
+    ///   - title: The title displayed at the top, "Edit Message" by default.
+    public init(message: ChatMessage, title: String? = nil) {
         self.message = message
+        customTitle = title
     }
     
     // MARK: - Display Properties
     
     /// The title text displayed at the top.
     open var title: String {
-        L10n.Composer.Title.edit
+        customTitle ?? L10n.Composer.Title.edit
     }
 
     /// The subtitle text to display (message preview or attachment description).

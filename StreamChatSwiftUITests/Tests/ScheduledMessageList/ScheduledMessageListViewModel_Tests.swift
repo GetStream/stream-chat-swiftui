@@ -414,6 +414,46 @@ import XCTest
         XCTAssertNil(viewModel.rescheduledScheduledMessage)
     }
 
+    // MARK: - Edit
+
+    func test_edit_opensTheComposerWhenTheActionsSheetIsDismissed() {
+        let cid = ChannelId.unique
+        let scheduledMessage = ScheduledMessage.mock(id: "scheduled", cid: cid)
+        viewModel.scheduledMessageTapped(scheduledMessage)
+
+        viewModel.edit(scheduledMessage)
+
+        XCTAssertNil(viewModel.editedScheduledMessage)
+
+        viewModel.actionsSheetDismissed()
+
+        XCTAssertEqual(viewModel.editedScheduledMessage?.id, "scheduled")
+        XCTAssertEqual(viewModel.editedScheduledMessageChannelController?.cid, cid)
+        XCTAssertNil(viewModel.editedScheduledMessageThreadController)
+    }
+
+    func test_edit_ofAReply_usesTheControllerOfTheThread() {
+        let cid = ChannelId.unique
+        let scheduledMessage = ScheduledMessage.mock(cid: cid, message: .mock(parentMessageId: "parent"))
+
+        viewModel.edit(scheduledMessage)
+
+        XCTAssertEqual(viewModel.editedScheduledMessageChannelController?.cid, cid)
+        XCTAssertEqual(viewModel.editedScheduledMessageThreadController?.cid, cid)
+        XCTAssertEqual(viewModel.editedScheduledMessageThreadController?.messageId, "parent")
+    }
+
+    func test_canEdit_needsTheChannelStoredLocally() {
+        let cid = ChannelId.unique
+        let scheduledMessage = ScheduledMessage.mock(cid: cid)
+
+        XCTAssertFalse(viewModel.canEdit(scheduledMessage))
+
+        viewModel.channels = [cid: .mock(cid: cid)]
+
+        XCTAssertTrue(viewModel.canEdit(scheduledMessage))
+    }
+
     // MARK: - Copy text
 
     func test_copyText_copiesTheTextOfTheMessage() {

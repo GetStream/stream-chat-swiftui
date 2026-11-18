@@ -18,6 +18,8 @@ public final class MessageComposerViewTypeOptions: Sendable {
     public let quotedMessage: Binding<ChatMessage?>
     /// Binding to the edited message.
     public let editedMessage: Binding<ChatMessage?>
+    /// Binding to the edited scheduled message. The composer clears it when the edit ends.
+    public let editedScheduledMessage: Binding<ScheduledMessage?>
     /// Callback invoked before a message is sent.
     public let willSendMessage: @MainActor () -> Void
     
@@ -26,12 +28,14 @@ public final class MessageComposerViewTypeOptions: Sendable {
         messageController: ChatMessageController?,
         quotedMessage: Binding<ChatMessage?>,
         editedMessage: Binding<ChatMessage?>,
+        editedScheduledMessage: Binding<ScheduledMessage?> = .constant(nil),
         willSendMessage: @escaping @MainActor () -> Void
     ) {
         self.channelController = channelController
         self.messageController = messageController
         self.quotedMessage = quotedMessage
         self.editedMessage = editedMessage
+        self.editedScheduledMessage = editedScheduledMessage
         self.willSendMessage = willSendMessage
     }
 }
@@ -82,6 +86,8 @@ public final class ComposerInputViewOptions: @unchecked Sendable {
     public let quotedMessage: Binding<ChatMessage?>
     /// Binding to the edited message.
     public let editedMessage: Binding<ChatMessage?>
+    /// The title shown above the edited message, "Edit Message" when `nil`.
+    public let editedMessageTitle: String?
     /// The maximum message length.
     public let maxMessageLength: Int?
     /// The cooldown duration in seconds.
@@ -151,7 +157,8 @@ public final class ComposerInputViewOptions: @unchecked Sendable {
         showRecordingTip: @escaping @MainActor () -> Void,
         sendInChannelShown: Bool,
         showReplyInChannel: Binding<Bool>,
-        onSendMessageLongPress: (@MainActor () -> Void)? = nil
+        onSendMessageLongPress: (@MainActor () -> Void)? = nil,
+        editedMessageTitle: String? = nil
     ) {
         self.channelController = channelController
         self.text = text
@@ -183,6 +190,7 @@ public final class ComposerInputViewOptions: @unchecked Sendable {
         self.sendInChannelShown = sendInChannelShown
         self.showReplyInChannel = showReplyInChannel
         self.onSendMessageLongPress = onSendMessageLongPress
+        self.editedMessageTitle = editedMessageTitle
     }
 }
 
@@ -582,14 +590,18 @@ public final class EditedMessageHeaderViewOptions: Sendable {
 public final class ComposerEditedMessageViewOptions: Sendable {
     /// The edited message to display.
     public let editedMessage: ChatMessage
+    /// The title shown above the edited message, "Edit Message" by default.
+    public let title: String
     /// The callback when the edited message view is dismissed.
     public let onDismiss: @MainActor () -> Void
 
     public init(
         editedMessage: ChatMessage,
+        title: String? = nil,
         onDismiss: @escaping @MainActor () -> Void
     ) {
         self.editedMessage = editedMessage
+        self.title = title ?? L10n.Composer.Title.edit
         self.onDismiss = onDismiss
     }
 }

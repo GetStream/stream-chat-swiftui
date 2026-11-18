@@ -15,6 +15,8 @@ public enum ScheduledMessagesBannerState: Equatable, Sendable {
     case multiple(count: Int)
     /// One scheduled message is pending, with the date it is sent at.
     case single(scheduledAt: Date)
+    /// The edited scheduled message quotes a message which was deleted. The link removes the quote.
+    case quoteDeleted
 }
 
 extension ScheduledMessagesBannerState {
@@ -29,6 +31,8 @@ extension ScheduledMessagesBannerState {
         case let .single(scheduledAt):
             let formatter = InjectedValues[\.utils].scheduledMessagesConfig.dateFormatter
             return L10n.Composer.ScheduledMessagesBanner.scheduledFor(formatter.format(scheduledAt))
+        case .quoteDeleted:
+            return L10n.Composer.ScheduleMessage.Error.quoteDeleted
         }
     }
 
@@ -38,12 +42,18 @@ extension ScheduledMessagesBannerState {
             return L10n.Composer.ScheduledMessagesBanner.view
         case .failed, .limitReached, .multiple:
             return L10n.Composer.ScheduledMessagesBanner.viewAll
+        case .quoteDeleted:
+            return L10n.Composer.ScheduledMessagesBanner.removeQuote
         }
     }
 
     var isFailed: Bool {
-        if case .failed = self { return true }
-        return false
+        switch self {
+        case .failed, .quoteDeleted:
+            return true
+        case .limitReached, .multiple, .single:
+            return false
+        }
     }
 }
 

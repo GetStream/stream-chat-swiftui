@@ -1641,6 +1641,49 @@ import XCTest
         AssertSnapshot(makeComposerViewWithScheduledMessages(factory: LiquidGlassViewFactory(), size: size), size: size)
     }
 
+    // MARK: - Scheduled Message Edit
+
+    func test_messageComposerView_editingScheduledMessage() {
+        let size = CGSize(width: composerWidth, height: 200)
+
+        AssertSnapshot(
+            makeComposerViewEditingScheduledMessage(.mock(message: .mock(text: "Heads up: the launch moved to Monday")), size: size),
+            size: size
+        )
+    }
+
+    func test_messageComposerView_editingScheduledMessageQuotingADeletedMessage() {
+        let size = CGSize(width: composerWidth, height: 260)
+        let scheduledMessage = ScheduledMessage.mock(
+            message: .mock(text: "Heads up: the launch moved to Monday", quotedMessage: .mock(id: "quoted", deletedAt: Date())),
+            quotedMessageId: "quoted"
+        )
+
+        AssertSnapshot(makeComposerViewEditingScheduledMessage(scheduledMessage, size: size), size: size)
+    }
+
+    private func makeComposerViewEditingScheduledMessage(_ scheduledMessage: ScheduledMessage, size: CGSize) -> some View {
+        let channelController = ChatChannelTestHelpers.makeChannelController(chatClient: chatClient)
+        let editedScheduledMessage = Binding<ScheduledMessage?>.constant(scheduledMessage)
+        let viewModel = MessageComposerViewModel(
+            channelController: channelController,
+            messageController: nil,
+            editedScheduledMessage: editedScheduledMessage
+        )
+        viewModel.attachmentsConverter = SynchronousAttachmentsConverter()
+        viewModel.fillEditedScheduledMessage()
+        return MessageComposerView(
+            viewFactory: DefaultViewFactory.shared,
+            viewModel: viewModel,
+            channelController: channelController,
+            quotedMessage: .constant(nil),
+            editedMessage: .constant(nil),
+            editedScheduledMessage: editedScheduledMessage,
+            willSendMessage: {}
+        )
+        .frame(width: size.width, height: size.height, alignment: .bottom)
+    }
+
     private func makeComposerViewWithScheduledMessages<Factory: ViewFactory>(factory: Factory, size: CGSize) -> some View {
         let channelController = ChatChannelTestHelpers.makeChannelController(chatClient: chatClient)
         channelController.channel_mock = .mock(

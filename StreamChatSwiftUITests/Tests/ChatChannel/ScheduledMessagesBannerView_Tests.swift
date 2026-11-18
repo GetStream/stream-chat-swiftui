@@ -31,12 +31,17 @@ import XCTest
         AssertSnapshot(makeView(.failed(count: 1)), size: size)
     }
 
+    func test_scheduledMessagesBannerView_quoteDeleted() {
+        AssertSnapshot(makeView(.quoteDeleted), size: size)
+    }
+
     func test_scheduledMessagesBannerState_linksToAllMessagesWhenThereAreSeveral() {
         XCTAssertEqual(ScheduledMessagesBannerState.single(scheduledAt: Date()).linkText, "View")
         XCTAssertEqual(ScheduledMessagesBannerState.failed(count: 1).linkText, "View")
         XCTAssertEqual(ScheduledMessagesBannerState.failed(count: 2).linkText, "View all")
         XCTAssertEqual(ScheduledMessagesBannerState.multiple(count: 2).linkText, "View all")
         XCTAssertEqual(ScheduledMessagesBannerState.limitReached(count: 10, limit: 10).linkText, "View all")
+        XCTAssertEqual(ScheduledMessagesBannerState.quoteDeleted.linkText, "Remove quote")
     }
 
     func test_scheduledMessagesBannerState_text() {
@@ -44,6 +49,7 @@ import XCTest
         XCTAssertEqual(ScheduledMessagesBannerState.multiple(count: 3).text, "3 scheduled messages")
         XCTAssertEqual(ScheduledMessagesBannerState.limitReached(count: 10, limit: 10).text, "10 of 10 scheduled messages")
         XCTAssertEqual(ScheduledMessagesBannerState.failed(count: 2).text, "2 failed to send")
+        XCTAssertEqual(ScheduledMessagesBannerState.quoteDeleted.text, "The quoted message was deleted")
     }
 
     // MARK: - Helpers

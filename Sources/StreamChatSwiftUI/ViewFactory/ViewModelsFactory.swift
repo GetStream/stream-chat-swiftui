@@ -69,6 +69,7 @@ import SwiftUI
     ///  - messageController: optional message controller (used in threads).
     ///  - quotedMessage: the quoted message.
     ///  - editedMessage: the edited message.
+    ///  - editedScheduledMessage: the edited scheduled message.
     ///  - willSendMessage: callback called before a message is sent.
     /// - Returns: `MessageComposerViewModel`.
     public static func makeMessageComposerViewModel(
@@ -76,6 +77,7 @@ import SwiftUI
         messageController: ChatMessageController?,
         quotedMessage: Binding<ChatMessage?>?,
         editedMessage: Binding<ChatMessage?>?,
+        editedScheduledMessage: Binding<ScheduledMessage?>? = nil,
         willSendMessage: (() -> Void)?
     ) -> MessageComposerViewModel {
         MessageComposerViewModel(
@@ -83,6 +85,7 @@ import SwiftUI
             messageController: messageController,
             quotedMessage: quotedMessage,
             editedMessage: editedMessage,
+            editedScheduledMessage: editedScheduledMessage,
             willSendMessage: willSendMessage
         )
     }

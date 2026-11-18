@@ -34,6 +34,13 @@ import XCTest
         AssertSnapshot(view, variants: [.defaultLight], size: containerSize)
     }
     
+    func test_editedMessageViewModel_withATitle_showsIt() {
+        let message = ChatMessage.mock(text: "Sounds good!")
+
+        XCTAssertEqual(EditedMessageViewModel(message: message).title, "Edit Message")
+        XCTAssertEqual(EditedMessageViewModel(message: message, title: "Edit scheduled message").title, "Edit scheduled message")
+    }
+
     // MARK: - Edit - Text (Long)
     
     func test_editedMessageView_textLong() {

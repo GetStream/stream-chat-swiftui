@@ -498,6 +498,7 @@ extension ViewFactory {
             messageController: options.messageController,
             quotedMessage: options.quotedMessage,
             editedMessage: options.editedMessage,
+            editedScheduledMessage: options.editedScheduledMessage,
             willSendMessage: options.willSendMessage
         )
     }
@@ -548,7 +549,8 @@ extension ViewFactory {
             showRecordingTip: options.showRecordingTip,
             sendInChannelShown: options.sendInChannelShown,
             showReplyInChannel: options.showReplyInChannel,
-            onSendMessageLongPress: options.onSendMessageLongPress
+            onSendMessageLongPress: options.onSendMessageLongPress,
+            editedMessageTitle: options.editedMessageTitle
         )
     }
 
@@ -891,7 +893,8 @@ extension ViewFactory {
         EditedMessageView(
             factory: self,
             viewModel: EditedMessageViewModel(
-                message: options.editedMessage
+                message: options.editedMessage,
+                title: options.title
             ),
             onDismiss: options.onDismiss
         )
@@ -1080,6 +1083,7 @@ extension ViewFactory {
                 scheduledMessage: options.scheduledMessage,
                 onCopyText: options.onCopyText,
                 onDelete: options.onDelete,
+                onEdit: options.onEdit,
                 onReschedule: options.onReschedule,
                 onSendNow: options.onSendNow
             )
