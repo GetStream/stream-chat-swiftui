@@ -33,15 +33,30 @@ permissions:
   pull-requests: read
 
 jobs:
+  guard:
+    name: Guard
+    runs-on: ubuntu-24.04
+    permissions:
+      actions: write # to cancel skip-ci runs
+      checks: read # to skip checks that passed before
+      contents: read
+      pull-requests: read
+    outputs:
+      checks: ${{ steps.guard.outputs.checks }}
+    steps:
+      - uses: actions/checkout@v4.1.1
+      - id: guard
+        uses: ./.github/actions/ci-guard
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+
   sdk_size:
     name: Size Metrics
     runs-on: macos-15
+    needs: guard
+    if: ${{ fromJSON(needs.guard.outputs.checks).size }}
     steps:
       - uses: actions/checkout@v3.1.0
-
-      - uses: ./.github/actions/ci-guard
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Generate bot token
         id: bot-token
