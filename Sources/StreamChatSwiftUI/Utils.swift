@@ -42,6 +42,12 @@ import StreamChatCommonUI
     public var messageRemindersFormatter: any MessageRemindersFormatter
     /// A formatter that converts the date a scheduled message is sent at to textual representation.
     public var scheduledMessageDateFormatter: ScheduledMessageDateFormatter
+    /// Returns the actions shown in the schedule message sheet, which opens with a long press on the send message button.
+    ///
+    /// - Important: Scheduled messages are disabled by default and need to be requested for your app.
+    /// The sheet is only available once they are enabled.
+    /// See [Enabling scheduled messages](https://getstream.io/chat/docs/ios-swift/scheduled-messages/#enabling-scheduled-messages).
+    public var supportedScheduleMessageActions: @MainActor (SupportedScheduleMessageActionsOptions) -> [ScheduleMessageAction]
     public var audioPlayerBuilder: () -> AudioPlaying = { StreamAudioPlayer() }
     public var audioPlayer: AudioPlaying {
         if let _audioPlayer {
@@ -118,6 +124,7 @@ import StreamChatCommonUI
         audioRecordingNameFormatter: AudioRecordingNameFormatter = DefaultAudioRecordingNameFormatter(),
         messageRemindersFormatter: any MessageRemindersFormatter = DefaultMessageRemindersFormatter(),
         scheduledMessageDateFormatter: ScheduledMessageDateFormatter = DefaultScheduledMessageDateFormatter(),
+        supportedScheduleMessageActions: @escaping @MainActor (SupportedScheduleMessageActionsOptions) -> [ScheduleMessageAction] = ScheduleMessageAction.defaultActions(for:),
         sortReactions: @escaping (MessageReactionType, MessageReactionType) -> Bool = Utils.defaultSortReactions,
         shouldSyncChannelControllerOnAppear: @escaping (ChatChannelController) -> Bool = { _ in true }
     ) {
@@ -154,6 +161,7 @@ import StreamChatCommonUI
         self.audioRecordingNameFormatter = audioRecordingNameFormatter
         self.messageRemindersFormatter = messageRemindersFormatter
         self.scheduledMessageDateFormatter = scheduledMessageDateFormatter
+        self.supportedScheduleMessageActions = supportedScheduleMessageActions
         self.pollsConfig = pollsConfig
         messageListDateUtils = MessageListDateUtils(messageListConfig: messageListConfig)
     }

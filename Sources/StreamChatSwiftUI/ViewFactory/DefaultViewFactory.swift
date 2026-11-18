@@ -615,7 +615,7 @@ extension ViewFactory {
     public func makeScheduleMessageSheet(
         options: ScheduleMessageSheetOptions
     ) -> some View {
-        let actions = InjectedValues[\.utils].composerConfig.supportedScheduleMessageActions(
+        let actions = InjectedValues[\.utils].supportedScheduleMessageActions(
             SupportedScheduleMessageActionsOptions(
                 channel: options.channel,
                 onSchedule: options.onSchedule

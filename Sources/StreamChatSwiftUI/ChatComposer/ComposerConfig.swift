@@ -27,13 +27,6 @@ public final class ComposerConfig {
     /// The default value is 100 MB.
     public var maxAttachmentSize: Int64
 
-    /// Returns the actions shown in the schedule message sheet, which opens with a long press on the send message button.
-    ///
-    /// - Important: Scheduled messages are disabled by default and need to be requested for your app.
-    /// The sheet is only available once they are enabled.
-    /// See [Enabling scheduled messages](https://getstream.io/chat/docs/ios-swift/scheduled-messages/#enabling-scheduled-messages).
-    public var supportedScheduleMessageActions: @MainActor (SupportedScheduleMessageActionsOptions) -> [ScheduleMessageAction]
-
     public init(
         isVoiceRecordingEnabled: Bool = true,
         isVoiceRecordingAutoSendEnabled: Bool = false,
@@ -45,8 +38,7 @@ public final class ComposerConfig {
         maxGalleryAssetsCount: Int? = nil,
         adjustMessageOnSend: @escaping (String) -> (String) = { $0 },
         adjustMessageOnRead: @escaping (String) -> (String) = { $0 },
-        maxAttachmentSize: Int64 = 100 * 1024 * 1024,
-        supportedScheduleMessageActions: @escaping @MainActor (SupportedScheduleMessageActionsOptions) -> [ScheduleMessageAction] = ScheduleMessageAction.defaultActions(for:)
+        maxAttachmentSize: Int64 = 100 * 1024 * 1024
     ) {
         self.inputViewMinHeight = inputViewMinHeight
         self.inputViewMaxHeight = inputViewMaxHeight
@@ -59,7 +51,6 @@ public final class ComposerConfig {
         self.isVoiceRecordingEnabled = isVoiceRecordingEnabled
         self.isVoiceRecordingAutoSendEnabled = isVoiceRecordingAutoSendEnabled
         self.maxAttachmentSize = maxAttachmentSize
-        self.supportedScheduleMessageActions = supportedScheduleMessageActions
     }
 }
 
