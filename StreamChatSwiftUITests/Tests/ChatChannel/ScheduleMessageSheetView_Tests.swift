@@ -13,7 +13,7 @@ import XCTest
     func test_scheduleMessageSheetView_snapshot() {
         // Given
         let size = CGSize(width: defaultScreenSize.width, height: 200)
-        streamChat?.utils.scheduledMessageDateFormatter = DefaultScheduledMessageDateFormatter(locale: Locale(identifier: "en_US"))
+        streamChat?.utils.scheduledMessagesConfig.dateFormatter = DefaultScheduledMessageDateFormatter(locale: Locale(identifier: "en_US"))
         // The Monday action depends on the weekday, so only the actions for tomorrow are shown.
         let actions = ScheduleMessageAction.defaultActions(for: .init(channel: .mock(cid: .unique), onSchedule: { _ in })).prefix(2)
 

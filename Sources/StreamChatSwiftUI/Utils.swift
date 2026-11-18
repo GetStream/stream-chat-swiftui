@@ -32,6 +32,7 @@ import StreamChatCommonUI
     public var messageListConfig: MessageListConfig
     public var composerConfig: ComposerConfig
     public var pollsConfig: PollsConfig
+    public var scheduledMessagesConfig: ScheduledMessagesConfig
     public var shouldSyncChannelControllerOnAppear: (ChatChannelController) -> Bool
     public var snapshotCreator: SnapshotCreator
     public var messageIdBuilder: MessageIdBuilder
@@ -40,14 +41,6 @@ import StreamChatCommonUI
     public var mediaBadgeDurationFormatter: MediaBadgeDurationFormatter
     public var audioRecordingNameFormatter: AudioRecordingNameFormatter
     public var messageRemindersFormatter: any MessageRemindersFormatter
-    /// A formatter that converts the date a scheduled message is sent at to textual representation.
-    public var scheduledMessageDateFormatter: ScheduledMessageDateFormatter
-    /// Returns the actions shown in the schedule message sheet, which opens with a long press on the send message button.
-    ///
-    /// - Important: Scheduled messages are disabled by default and need to be requested for your app.
-    /// The sheet is only available once they are enabled.
-    /// See [Enabling scheduled messages](https://getstream.io/chat/docs/ios-swift/scheduled-messages/#enabling-scheduled-messages).
-    public var supportedScheduleMessageActions: @MainActor (SupportedScheduleMessageActionsOptions) -> [ScheduleMessageAction]
     public var audioPlayerBuilder: () -> AudioPlaying = { StreamAudioPlayer() }
     public var audioPlayer: AudioPlaying {
         if let _audioPlayer {
@@ -115,6 +108,7 @@ import StreamChatCommonUI
         messageListConfig: MessageListConfig = MessageListConfig(),
         composerConfig: ComposerConfig = ComposerConfig(),
         pollsConfig: PollsConfig = PollsConfig(),
+        scheduledMessagesConfig: ScheduledMessagesConfig = ScheduledMessagesConfig(),
         channelNameFormatter: ChannelNameFormatter = DefaultChannelNameFormatter(),
         chatUserNamer: ChatUserNamer = DefaultChatUserNamer(),
         snapshotCreator: SnapshotCreator = DefaultSnapshotCreator(),
@@ -123,8 +117,6 @@ import StreamChatCommonUI
         mediaBadgeDurationFormatter: MediaBadgeDurationFormatter = DefaultMediaBadgeDurationFormatter(),
         audioRecordingNameFormatter: AudioRecordingNameFormatter = DefaultAudioRecordingNameFormatter(),
         messageRemindersFormatter: any MessageRemindersFormatter = DefaultMessageRemindersFormatter(),
-        scheduledMessageDateFormatter: ScheduledMessageDateFormatter = DefaultScheduledMessageDateFormatter(),
-        supportedScheduleMessageActions: @escaping @MainActor (SupportedScheduleMessageActionsOptions) -> [ScheduleMessageAction] = ScheduleMessageAction.defaultActions(for:),
         sortReactions: @escaping (MessageReactionType, MessageReactionType) -> Bool = Utils.defaultSortReactions,
         shouldSyncChannelControllerOnAppear: @escaping (ChatChannelController) -> Bool = { _ in true }
     ) {
@@ -160,9 +152,8 @@ import StreamChatCommonUI
         self.mediaBadgeDurationFormatter = mediaBadgeDurationFormatter
         self.audioRecordingNameFormatter = audioRecordingNameFormatter
         self.messageRemindersFormatter = messageRemindersFormatter
-        self.scheduledMessageDateFormatter = scheduledMessageDateFormatter
-        self.supportedScheduleMessageActions = supportedScheduleMessageActions
         self.pollsConfig = pollsConfig
+        self.scheduledMessagesConfig = scheduledMessagesConfig
         messageListDateUtils = MessageListDateUtils(messageListConfig: messageListConfig)
     }
     

@@ -678,7 +678,7 @@ import SwiftUI
                 DispatchQueue.main.asyncAfter(deadline: .now() + Self.clearTextDelay) { [weak self] in
                     self?.quotedMessage?.wrappedValue = nil
                 }
-                let date = utils.scheduledMessageDateFormatter.format(scheduledMessage.scheduledAt)
+                let date = utils.scheduledMessagesConfig.dateFormatter.format(scheduledMessage.scheduledAt)
                 ComposerAccessibilityAnnouncer.announce(L10n.Composer.ScheduleMessage.Accessibility.scheduled(date))
                 completion?()
             case .failure:

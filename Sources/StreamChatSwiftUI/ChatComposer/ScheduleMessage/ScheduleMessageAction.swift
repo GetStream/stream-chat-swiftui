@@ -34,7 +34,7 @@ extension ScheduleMessageAction {
         for options: SupportedScheduleMessageActionsOptions
     ) -> [ScheduleMessageAction] {
         let calendar = Calendar.current
-        let formatter = InjectedValues[\.utils].scheduledMessageDateFormatter
+        let formatter = InjectedValues[\.utils].scheduledMessagesConfig.dateFormatter
         guard let tomorrow = calendar.date(byAdding: .day, value: 1, to: calendar.startOfDay(for: Date())) else { return [] }
         let tomorrowMorning = calendar.date(bySettingHour: 9, minute: 0, second: 0, of: tomorrow)
         let tomorrowAfternoon = calendar.date(bySettingHour: 13, minute: 0, second: 0, of: tomorrow)
