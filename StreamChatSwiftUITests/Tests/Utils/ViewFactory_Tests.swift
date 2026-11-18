@@ -916,6 +916,31 @@ import XCTest
         XCTAssert(view is NewMessagesDivider)
     }
 
+    func test_viewFactory_makeScheduledMessageActionsSheet() {
+        // Given
+        let viewFactory = DefaultViewFactory.shared
+        var scheduledMessageOfActions: ScheduledMessage?
+        streamChat?.utils.scheduledMessagesConfig.supportedScheduledMessageListActions = { options in
+            scheduledMessageOfActions = options.scheduledMessage
+            return []
+        }
+
+        // When
+        let view = viewFactory.makeScheduledMessageActionsSheet(
+            options: ScheduledMessageActionsSheetOptions(
+                scheduledMessage: .mock(id: "scheduled"),
+                onCopyText: {},
+                onDelete: {},
+                onSendNow: {},
+                onDismiss: {}
+            )
+        )
+
+        // Then
+        XCTAssert(view is ScheduledMessageActionsSheetView)
+        XCTAssertEqual(scheduledMessageOfActions?.id, "scheduled")
+    }
+
     func test_viewFactory_makeScheduledMessageListEmptyView() {
         // Given
         let viewFactory = DefaultViewFactory.shared

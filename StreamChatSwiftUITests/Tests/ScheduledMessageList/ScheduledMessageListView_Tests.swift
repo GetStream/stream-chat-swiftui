@@ -187,6 +187,40 @@ import XCTest
         AssertSnapshot(makeView(), size: defaultScreenSize)
     }
 
+    func test_scheduledMessageListView_quoteDeleted() {
+        load([
+            scheduledMessage(
+                "Heads up: the launch moved to Monday",
+                channelName: "Maya Ross",
+                day: 23,
+                hour: 9,
+                quotedMessage: .mock(text: "When is the launch?", author: .mock(id: .unique, name: "Maya Ross"), deletedAt: Date())
+            ),
+            scheduledMessage("Kickoff notes are in the doc.", channelName: "Growth Squad", day: 26, hour: 9)
+        ])
+
+        AssertSnapshot(makeView(), size: defaultScreenSize)
+    }
+
+    // MARK: - Snack bars
+
+    func test_scheduledMessageListView_stillSendingSnackBar() {
+        let sending = scheduledMessage("Heads up: the launch moved to Monday", channelName: "Maya Ross", day: 23, hour: 9, status: .sending)
+        load([sending])
+
+        viewModel.scheduledMessageTapped(sending)
+
+        AssertSnapshot(makeView(), size: defaultScreenSize)
+    }
+
+    func test_scheduledMessageListView_alreadySentSnackBar() {
+        load([scheduledMessage("Kickoff notes are in the doc.", channelName: "Growth Squad", day: 26, hour: 9)])
+
+        viewModel.snackBarText = L10n.ScheduledMessages.Snackbar.alreadySent
+
+        AssertSnapshot(makeView(), size: defaultScreenSize)
+    }
+
     // MARK: - Helpers
 
     private func makeView() -> some View {

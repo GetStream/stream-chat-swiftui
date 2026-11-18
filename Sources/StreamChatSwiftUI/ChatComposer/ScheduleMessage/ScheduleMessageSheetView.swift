@@ -41,6 +41,7 @@ public struct ScheduleMessageSheetView: View {
                         showsChevron: action.showsChevron
                     )
                 }
+                .buttonStyle(ListItemButtonStyle())
                 .accessibilityIdentifier("ScheduleMessageAction-\(action.id)")
             }
             .disabled(reachedLimit != nil)

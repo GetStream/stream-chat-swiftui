@@ -22,8 +22,8 @@ struct SheetView<Content: View>: View {
 
     @State private var contentHeight: CGFloat?
 
-    /// The title shown in the header.
-    let title: String
+    /// The title shown in the header. Without a title the sheet has no header, only the grabber.
+    let title: String?
     /// The height of `content`, used until the content is measured, so the sheet doesn't open at a different height first.
     let estimatedContentHeight: CGFloat
     /// Called when the close button in the header is tapped.
@@ -40,13 +40,17 @@ struct SheetView<Content: View>: View {
     var body: some View {
         ScrollView {
             VStack(spacing: 0) {
-                SheetHeaderView(
-                    title: title,
-                    onClose: onClose,
-                    onConfirm: onConfirm,
-                    confirmDisabled: confirmDisabled,
-                    confirmAccessibilityLabel: confirmAccessibilityLabel
-                )
+                if let headerTitle {
+                    SheetHeaderView(
+                        title: headerTitle,
+                        onClose: onClose,
+                        onConfirm: onConfirm,
+                        confirmDisabled: confirmDisabled,
+                        confirmAccessibilityLabel: confirmAccessibilityLabel
+                    )
+                } else {
+                    Color.clear.frame(height: tokens.spacingXl)
+                }
                 content()
             }
             .padding(.bottom, tokens.spacingMd)
@@ -64,6 +68,15 @@ struct SheetView<Content: View>: View {
     }
 
     private var estimatedHeight: CGFloat {
-        SheetHeaderView.minHeight + estimatedContentHeight + tokens.spacingMd
+        (headerTitle == nil ? tokens.spacingXl : SheetHeaderView.minHeight) + estimatedContentHeight + tokens.spacingMd
+    }
+
+    // Before iOS 16 a sheet covers the screen and has no grabber, so it keeps the header with the close button.
+    private var headerTitle: String? {
+        if #available(iOS 16.0, *) {
+            title
+        } else {
+            title ?? ""
+        }
     }
 }

@@ -16,7 +16,7 @@ let package = Package(
         )
     ],
     dependencies: [
-        .package(url: "https://github.com/GetStream/stream-chat-swift.git", branch: "add/scheduled-messages-scheduled-list")
+        .package(url: "https://github.com/GetStream/stream-chat-swift.git", branch: "add/scheduled-messages-list-actions")
     ],
     targets: [
         .target(

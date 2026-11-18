@@ -13,21 +13,29 @@ public struct SnackBarView: View {
     @Injected(\.tokens) private var tokens
 
     public let text: String
+    /// A Boolean value indicating whether a spinner is shown in front of the text, for something still in progress.
+    public let showsSpinner: Bool
     public let duration: TimeInterval
     public var onDismiss: (() -> Void)?
 
     public init(
         text: String,
+        showsSpinner: Bool = false,
         duration: TimeInterval = 3,
         onDismiss: (() -> Void)? = nil
     ) {
         self.text = text
+        self.showsSpinner = showsSpinner
         self.duration = duration
         self.onDismiss = onDismiss
     }
 
     public var body: some View {
         HStack(spacing: tokens.spacingXs) {
+            if showsSpinner {
+                LoadingSpinnerView(sizeOnInverseBackground: LoadingSpinnerSize.extraSmall)
+                    .accessibilityHidden(true)
+            }
             Text(text)
                 .font(fonts.subheadline)
                 .fixedSize(horizontal: false, vertical: true)
@@ -63,17 +71,19 @@ extension View {
     /// - Parameters:
     ///   - text: A binding to the text. Set to a non-nil value to show;
     ///     the modifier resets it to `nil` when the snack bar dismisses.
+    ///   - showsSpinner: Whether a spinner is shown in front of the text.
     ///   - duration: How long the snack bar stays visible.
     ///   - bottomOffset: Extra offset from the bottom of this view.
     public func snackBar(
         text: Binding<String?>,
+        showsSpinner: Bool = false,
         duration: TimeInterval = 3,
         bottomOffset: CGFloat = 0
     ) -> some View {
         overlay(
             Group {
                 if let value = text.wrappedValue {
-                    SnackBarView(text: value, duration: duration) {
+                    SnackBarView(text: value, showsSpinner: showsSpinner, duration: duration) {
                         withAnimation {
                             text.wrappedValue = nil
                         }

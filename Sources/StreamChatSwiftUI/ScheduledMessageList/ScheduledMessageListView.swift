@@ -11,13 +11,13 @@ import SwiftUI
 /// a single channel.
 public struct ScheduledMessageListView<Factory: ViewFactory>: View {
     @Injected(\.colors) private var colors
+    @Injected(\.tokens) private var tokens
 
     @StateObject private var viewModel: ScheduledMessageListViewModel
 
     private let viewFactory: Factory
     private let title: String
     private let embedInNavigationView: Bool
-    private let onItemTap: (@MainActor (ScheduledMessage) -> Void)?
 
     /// Creates a scheduled message list view.
     ///
@@ -26,8 +26,6 @@ public struct ScheduledMessageListView<Factory: ViewFactory>: View {
     ///   - viewModel: The view model providing the data. It is created once, when the view first appears.
     ///   - title: A custom title used as the navigation bar title.
     ///   - embedInNavigationView: True, if the scheduled message list view should be embedded in a navigation stack.
-    ///   - onItemTap: Called when a scheduled message is tapped. It is not called for a message which is being sent
-    ///   or whose attachments are uploading. Without it, the rows can't be tapped.
     ///
     /// Changing the instance of the passed in `viewModel` does not have an effect without reloading the scheduled
     /// message list view by assigning a custom identity.
@@ -35,14 +33,12 @@ public struct ScheduledMessageListView<Factory: ViewFactory>: View {
         viewFactory: Factory = DefaultViewFactory.shared,
         viewModel: @autoclosure @escaping () -> ScheduledMessageListViewModel,
         title: String? = nil,
-        embedInNavigationView: Bool = true,
-        onItemTap: (@MainActor (ScheduledMessage) -> Void)? = nil
+        embedInNavigationView: Bool = true
     ) {
         _viewModel = StateObject(wrappedValue: viewModel())
         self.viewFactory = viewFactory
         self.title = title ?? L10n.ScheduledMessages.title
         self.embedInNavigationView = embedInNavigationView
-        self.onItemTap = onItemTap
     }
 
     public var body: some View {
@@ -60,7 +56,7 @@ public struct ScheduledMessageListView<Factory: ViewFactory>: View {
                                     viewFactory: viewFactory,
                                     scheduledMessage: scheduledMessage,
                                     channel: viewModel.channels[scheduledMessage.cid],
-                                    onItemTap: onItemTap
+                                    onTap: { viewModel.scheduledMessageTapped(scheduledMessage) }
                                 )
                                 Divider()
                                     .overlay(Color(colors.borderCoreSubtle))
@@ -82,6 +78,27 @@ public struct ScheduledMessageListView<Factory: ViewFactory>: View {
             .onAppear {
                 viewModel.viewDidAppear()
             }
+            .snackBar(
+                text: $viewModel.snackBarText,
+                showsSpinner: viewModel.snackBarShowsSpinner,
+                bottomOffset: tokens.spacingMd
+            )
+            .sheet(item: $viewModel.selectedScheduledMessage, onDismiss: { viewModel.actionsSheetDismissed() }) { scheduledMessage in
+                viewFactory.makeScheduledMessageActionsSheet(
+                    options: ScheduledMessageActionsSheetOptions(
+                        scheduledMessage: scheduledMessage,
+                        onCopyText: { viewModel.copyText(of: scheduledMessage) },
+                        onDelete: { viewModel.delete(scheduledMessage) },
+                        onSendNow: { viewModel.sendNow(scheduledMessage) },
+                        onDismiss: { viewModel.selectedScheduledMessage = nil }
+                    )
+                )
+            }
+            .modifier(ConfirmationAlertModifier(
+                isPresented: $viewModel.deleteConfirmationShown,
+                confirmation: viewModel.deleteConfirmation,
+                onConfirm: { viewModel.deleteConfirmed() }
+            ))
         }
         .accessibilityIdentifier("ScheduledMessageListView")
     }
@@ -97,18 +114,19 @@ private struct ScheduledMessageListRowView<Factory: ViewFactory>: View {
     let viewFactory: Factory
     let scheduledMessage: ScheduledMessage
     let channel: ChatChannel?
-    let onItemTap: (@MainActor (ScheduledMessage) -> Void)?
+    let onTap: @MainActor () -> Void
 
     var body: some View {
-        if let onItemTap, !scheduledMessage.isInProgress {
-            Button {
-                onItemTap(scheduledMessage)
-            } label: {
+        // Nothing can be done with a message while its attachments are uploading.
+        if scheduledMessage.isUploadingAttachments, scheduledMessage.status != .sending {
+            item()
+        } else {
+            Button(action: onTap) {
                 item()
+                    // The empty parts of a row can't be tapped otherwise.
+                    .contentShape(Rectangle())
             }
             .buttonStyle(.plain)
-        } else {
-            item()
         }
     }
 

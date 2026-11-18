@@ -411,8 +411,13 @@
 "thread.item.reply" = "reply";
 "thread.item.replies" = "replies";
 "scheduled-messages.title" = "Scheduled messages";
+"scheduled-messages.actions.copy-text" = "Copy text";
+"scheduled-messages.actions.send-now" = "Send now";
+"scheduled-messages.delete-confirmation.message" = "This message to %@ won't be sent. This can't be undone.";
+"scheduled-messages.delete-confirmation.title" = "Delete scheduled message?";
 "scheduled-messages.error.message" = "Couldn't load scheduled messages";
 "scheduled-messages.error.retry" = "Try again";
+"scheduled-messages.item.quote-deleted" = "Can't send now. The quote was deleted.";
 "scheduled-messages.item.reply-to" = "Reply to %1$@: %2$@";
 "scheduled-messages.item.send-at" = "Send %@";
 "scheduled-messages.item.sending" = "Sending…";
@@ -420,6 +425,8 @@
 "scheduled-messages.item.uploading" = "Uploading…";
 "scheduled-messages.no-content.message" = "Long press the send button in a channel to schedule a message.";
 "scheduled-messages.no-content.title" = "No scheduled messages";
+"scheduled-messages.snackbar.already-sent" = "Already sent. It's in the channel now.";
+"scheduled-messages.snackbar.still-sending" = "Still sending. Try again in a moment.";
 "scheduled-message.failure.attachment-upload-failed" = "Couldn't upload attachment";
 "scheduled-message.failure.banned" = "You can't send messages in this channel.";
 "scheduled-message.failure.channel-deleted" = "This channel was deleted";

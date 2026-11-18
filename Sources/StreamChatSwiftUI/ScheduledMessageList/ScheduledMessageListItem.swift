@@ -73,6 +73,8 @@ public struct ScheduledMessageListItem<Factory: ViewFactory>: View {
             .inProgress(L10n.ScheduledMessages.Item.sending)
         } else if scheduledMessage.isUploadingAttachments {
             .inProgress(L10n.ScheduledMessages.Item.uploading)
+        } else if scheduledMessage.quotesDeletedMessage {
+            .failed(L10n.ScheduledMessages.Item.quoteDeleted)
         } else {
             nil
         }

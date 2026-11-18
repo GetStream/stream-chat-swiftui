@@ -643,6 +643,11 @@ import SwiftUI
 
     // MARK: - Scheduled Messages
 
+    associatedtype ScheduledMessageActionsSheetType: View
+    /// Creates the sheet with the actions of a scheduled message, shown when the message is tapped in the list.
+    /// - Parameter options: the options for creating the sheet, with the scheduled message and what its actions do.
+    func makeScheduledMessageActionsSheet(options: ScheduledMessageActionsSheetOptions) -> ScheduledMessageActionsSheetType
+
     associatedtype ScheduledMessageListEmptyViewType: View
     /// Creates the view shown when the current user has no scheduled messages.
     /// - Parameter options: the options for creating the empty scheduled messages view.

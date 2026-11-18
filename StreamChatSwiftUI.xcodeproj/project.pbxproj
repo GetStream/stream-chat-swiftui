@@ -285,6 +285,7 @@
 				Tests/CommonViews/StreamAsyncImage_Tests.swift,
 				Tests/CommonViews/StreamButton_Tests.swift,
 				Tests/CommonViews/VideoPlayIndicatorView_Tests.swift,
+				Tests/ScheduledMessageList/ScheduledMessageActionsSheetView_Tests.swift,
 				Tests/ScheduledMessageList/ScheduledMessageListView_Tests.swift,
 				Tests/ScheduledMessageList/ScheduledMessageListViewModel_Tests.swift,
 				Tests/StreamChatTestCase.swift,
@@ -1554,7 +1555,7 @@
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/GetStream/stream-chat-swift.git";
 			requirement = {
-				branch = "add/scheduled-messages-scheduled-list";
+				branch = "add/scheduled-messages-list-actions";
 				kind = branch;
 			};
 		};

@@ -1068,6 +1068,18 @@ extension ViewFactory {
 
     // MARK: Scheduled Messages
 
+    public func makeScheduledMessageActionsSheet(options: ScheduledMessageActionsSheetOptions) -> some View {
+        let actions = InjectedValues[\.utils].scheduledMessagesConfig.supportedScheduledMessageListActions(
+            SupportedScheduledMessageListActionsOptions(
+                scheduledMessage: options.scheduledMessage,
+                onCopyText: options.onCopyText,
+                onDelete: options.onDelete,
+                onSendNow: options.onSendNow
+            )
+        )
+        return ScheduledMessageActionsSheetView(actions: actions, onDismiss: options.onDismiss)
+    }
+
     public func makeScheduledMessageListEmptyView(options: ScheduledMessageListEmptyViewOptions) -> some View {
         EmptyContentView(
             image: InjectedValues[\.images].clock,

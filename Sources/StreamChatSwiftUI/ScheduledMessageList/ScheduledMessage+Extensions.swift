@@ -24,6 +24,22 @@ extension ScheduledMessage {
         status == .sending || isUploadingAttachments
     }
 
+    /// A Boolean value indicating whether the message could not be sent because its channel was deleted.
+    var isChannelDeleted: Bool {
+        if case let .serverFailedPublishing(failure) = failure {
+            failure.reason == .channelDeleted
+        } else {
+            false
+        }
+    }
+
+    /// A Boolean value indicating whether the message quotes a deleted message, which the server refuses to send.
+    ///
+    /// The quoted message is only known when it is stored locally.
+    var quotesDeletedMessage: Bool {
+        message.quotedMessage?.deletedAt != nil
+    }
+
     /// The text of the message, or a description of its attachments when it has no text, prefixed when it is a
     /// thread reply or quotes a message.
     @MainActor var previewText: String {

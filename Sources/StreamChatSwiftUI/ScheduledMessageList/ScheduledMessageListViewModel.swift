@@ -2,8 +2,8 @@
 // Copyright © 2026 Stream.io Inc. All rights reserved.
 //
 
-import Foundation
 import StreamChat
+import UIKit
 
 /// The view model of the `ScheduledMessageListView`.
 @MainActor open class ScheduledMessageListViewModel: ObservableObject, ScheduledMessageListControllerDelegate {
@@ -23,6 +23,8 @@ import StreamChat
 
     private let scheduledMessageListController: ScheduledMessageListController
     private var hasStartedLoading = false
+    private var actionPendingSheetDismissal: (@MainActor () -> Void)?
+    private var scheduledMessageToDelete: ScheduledMessage?
 
     /// The scheduled messages matching `searchText`, sorted by the date they are sent.
     @Published public var scheduledMessages = [ScheduledMessage]()
@@ -39,6 +41,20 @@ import StreamChat
 
     /// What the list shows: the loading view, the scheduled messages, the empty view or the error view.
     @Published public var viewState = ViewState.loading
+
+    /// The scheduled message whose actions are shown in a sheet.
+    ///
+    /// It is kept up to date with the list, and cleared when the message leaves the list or starts sending.
+    @Published public var selectedScheduledMessage: ScheduledMessage?
+
+    /// A Boolean value indicating whether the confirmation for deleting a scheduled message is shown.
+    @Published public var deleteConfirmationShown = false
+
+    /// The text of the snack bar, which tells the outcome of an action when the list does not show it.
+    @Published public var snackBarText: String?
+
+    /// A Boolean value indicating whether the snack bar shows a spinner, for a message which is still sending.
+    @Published public private(set) var snackBarShowsSpinner = false
 
     /// Creates a view model for the `ScheduledMessageListView`.
     ///
@@ -64,6 +80,92 @@ import StreamChat
         updateScheduledMessages()
         scheduledMessageListController.synchronize { [weak self] error in
             self?.didLoadPage(error: error)
+        }
+    }
+
+    // MARK: - Actions
+
+    /// Called when a scheduled message is tapped.
+    ///
+    /// By default it shows the sheet with the actions of the message, which come from
+    /// `ScheduledMessagesConfig.supportedScheduledMessageListActions`. A message which is being sent can't be changed,
+    /// so a snack bar says so, and a message whose attachments are uploading does nothing.
+    open func scheduledMessageTapped(_ scheduledMessage: ScheduledMessage) {
+        if scheduledMessage.status == .sending {
+            showSnackBar(L10n.ScheduledMessages.Snackbar.stillSending, showsSpinner: true)
+        } else if !scheduledMessage.isUploadingAttachments {
+            selectedScheduledMessage = scheduledMessage
+        }
+    }
+
+    /// Called when the sheet with the actions is dismissed. Runs the action that closed the sheet.
+    public func actionsSheetDismissed() {
+        let action = actionPendingSheetDismissal
+        actionPendingSheetDismissal = nil
+        action?()
+    }
+
+    /// Sends a scheduled message right away. The sheet with the actions is closed first.
+    open func sendNow(_ scheduledMessage: ScheduledMessage) {
+        performAfterSheetDismissal { [weak self] in
+            self?.scheduledMessageListController.sendScheduledMessageNow(id: scheduledMessage.id) { error in
+                switch error {
+                case nil, is ClientError.ScheduledMessageDoesNotExist:
+                    // The message is sent, or already left the list.
+                    break
+                case is ClientError.ScheduledMessageQuotesADeletedMessage:
+                    self?.showSnackBar(L10n.ScheduledMessages.Item.quoteDeleted)
+                default:
+                    self?.showSnackBar(L10n.Alert.Error.title)
+                }
+            }
+        }
+    }
+
+    /// Asks for confirmation to delete a scheduled message. The sheet with the actions is closed first.
+    ///
+    /// The message is deleted by `deleteConfirmed()`.
+    open func delete(_ scheduledMessage: ScheduledMessage) {
+        performAfterSheetDismissal { [weak self] in
+            self?.scheduledMessageToDelete = scheduledMessage
+            self?.deleteConfirmationShown = true
+        }
+    }
+
+    /// The confirmation shown before a scheduled message is deleted.
+    open var deleteConfirmation: ConfirmationPopup {
+        let recipient = scheduledMessageToDelete.map {
+            $0.channelName(in: channels[$0.cid], currentUserId: chatClient.currentUserId)
+        }
+        return ConfirmationPopup(
+            title: L10n.ScheduledMessages.DeleteConfirmation.title,
+            message: L10n.ScheduledMessages.DeleteConfirmation.message(recipient ?? ""),
+            buttonTitle: L10n.Alert.Actions.delete
+        )
+    }
+
+    /// Called when deleting a scheduled message is confirmed. Deletes the message, so it is never sent.
+    open func deleteConfirmed() {
+        guard let scheduledMessage = scheduledMessageToDelete else { return }
+        scheduledMessageListController.deleteScheduledMessage(id: scheduledMessage.id) { [weak self] error in
+            guard let error else { return }
+            if ScheduledMessageFailure.ServerRejection.Reason(error: error) == .scheduledMessageSending {
+                self?.showSnackBar(L10n.ScheduledMessages.Snackbar.stillSending, showsSpinner: true)
+            } else if error is ClientError.ScheduledMessageDoesNotExist {
+                // The server no longer has it. A failed message was never sent, so there is nothing to tell.
+                if scheduledMessage.status != .failed {
+                    self?.showSnackBar(L10n.ScheduledMessages.Snackbar.alreadySent)
+                }
+            } else {
+                self?.showSnackBar(L10n.Alert.Error.title)
+            }
+        }
+    }
+
+    /// Copies the text of a scheduled message to the pasteboard. The sheet with the actions is closed first.
+    open func copyText(of scheduledMessage: ScheduledMessage) {
+        performAfterSheetDismissal {
+            UIPasteboard.general.string = scheduledMessage.message.text
         }
     }
 
@@ -93,6 +195,33 @@ import StreamChat
         updateScheduledMessages()
     }
 
+    // Alerts and sheets opened by an action would be dropped while the sheet is still being dismissed.
+    private func performAfterSheetDismissal(_ action: @escaping @MainActor () -> Void) {
+        guard selectedScheduledMessage != nil else {
+            action()
+            return
+        }
+        actionPendingSheetDismissal = action
+        selectedScheduledMessage = nil
+    }
+
+    private func showSnackBar(_ text: String, showsSpinner: Bool = false) {
+        snackBarShowsSpinner = showsSpinner
+        snackBarText = text
+    }
+
+    private func updateSelectedScheduledMessage(from all: [ScheduledMessage]) {
+        guard let selected = selectedScheduledMessage else { return }
+        let current = all.first { $0.id == selected.id }
+        if let current, !current.isInProgress {
+            if current !== selected {
+                selectedScheduledMessage = current
+            }
+        } else {
+            selectedScheduledMessage = nil
+        }
+    }
+
     private func updateScheduledMessages(readingChannels: Bool = true) {
         // The server returns pending messages before failed ones, so the rows of a first load would move around
         // while its pages arrive. They are shown when every page is loaded.
@@ -108,6 +237,7 @@ import StreamChat
         if readingChannels {
             readLocalChannels(Set(all.map(\.cid)))
         }
+        updateSelectedScheduledMessage(from: all)
         let query = searchText.trimmingCharacters(in: .whitespacesAndNewlines)
         scheduledMessages = query.isEmpty ? all : all.filter { scheduledMessage in
             let channelName = scheduledMessage.channelName(

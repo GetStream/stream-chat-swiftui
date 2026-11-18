@@ -36,4 +36,11 @@ final class SnackBarView_Tests: StreamChatTestCase {
 
         AssertSnapshot(view, variants: [.extraExtraExtraLargeLight])
     }
+
+    func test_snackBarView_spinner() {
+        let view = SnackBarView(text: "Still sending. Try again in a moment.", showsSpinner: true)
+            .frame(width: 375)
+
+        AssertSnapshot(view)
+    }
 }
