@@ -33,21 +33,47 @@ import XCTest
 
     // MARK: - Default actions
 
-    func test_defaultActions_forAScheduledMessage_areSendNowAndDelete() {
+    func test_defaultActions_forAScheduledMessage_areRescheduleSendNowAndDelete() {
         let actions = defaultActions(for: .mock(status: .scheduled))
 
-        XCTAssertEqual(actions.map(\.id), [ScheduledMessageListActionId.sendNow, ScheduledMessageListActionId.delete])
-        XCTAssertEqual(actions.map(\.isDestructive), [false, true])
+        XCTAssertEqual(
+            actions.map(\.id),
+            [ScheduledMessageListActionId.reschedule, ScheduledMessageListActionId.sendNow, ScheduledMessageListActionId.delete]
+        )
+        XCTAssertEqual(actions.map(\.isDestructive), [false, false, true])
     }
 
-    func test_defaultActions_forAMessageWaitingToBeScheduled_areSendNowAndDelete() {
+    func test_defaultActions_forAMessageWaitingToBeScheduled_areRescheduleSendNowAndDelete() {
         let actions = defaultActions(for: .mock(status: .preparingToSchedule))
 
-        XCTAssertEqual(actions.map(\.id), [ScheduledMessageListActionId.sendNow, ScheduledMessageListActionId.delete])
+        XCTAssertEqual(
+            actions.map(\.id),
+            [ScheduledMessageListActionId.reschedule, ScheduledMessageListActionId.sendNow, ScheduledMessageListActionId.delete]
+        )
     }
 
-    func test_defaultActions_forAFailedMessage_isDelete() {
-        XCTAssertEqual(defaultActions(for: failedMessage()).map(\.id), [ScheduledMessageListActionId.delete])
+    func test_defaultActions_forAFailedMessage_areRescheduleAndDelete() {
+        XCTAssertEqual(
+            defaultActions(for: failedMessage()).map(\.id),
+            [ScheduledMessageListActionId.reschedule, ScheduledMessageListActionId.delete]
+        )
+    }
+
+    func test_defaultActions_forAMessageTheServerFailedToSend_areRescheduleAndDelete() {
+        let failed = ScheduledMessage.mock(status: .failed, failure: .serverFailedPublishing(.init(reason: .banned)))
+
+        XCTAssertEqual(
+            defaultActions(for: failed).map(\.id),
+            [ScheduledMessageListActionId.reschedule, ScheduledMessageListActionId.delete]
+        )
+    }
+
+    func test_defaultActions_withoutReschedule_leaveItOut() {
+        let scheduled = defaultActions(for: .mock(status: .scheduled), canReschedule: false)
+        let failed = defaultActions(for: failedMessage(), canReschedule: false)
+
+        XCTAssertEqual(scheduled.map(\.id), [ScheduledMessageListActionId.sendNow, ScheduledMessageListActionId.delete])
+        XCTAssertEqual(failed.map(\.id), [ScheduledMessageListActionId.delete])
     }
 
     func test_defaultActions_forAMessageQuotingADeletedMessage_isDelete() {
@@ -72,7 +98,7 @@ import XCTest
         defaultActions(for: .mock(status: .scheduled)).forEach { $0.action() }
         defaultActions(for: channelDeletedMessage(text: "Booking confirmed")).first?.action()
 
-        XCTAssertEqual(performedActions, ["sendNow", "delete", "copyText"])
+        XCTAssertEqual(performedActions, ["reschedule", "sendNow", "delete", "copyText"])
     }
 
     // MARK: - Helpers
@@ -86,12 +112,20 @@ import XCTest
             .frame(width: size.width, height: size.height)
     }
 
-    private func defaultActions(for scheduledMessage: ScheduledMessage) -> [ScheduledMessageListAction] {
-        ScheduledMessageListAction.defaultActions(
+    private func defaultActions(
+        for scheduledMessage: ScheduledMessage,
+        canReschedule: Bool = true
+    ) -> [ScheduledMessageListAction] {
+        var onReschedule: (@MainActor () -> Void)?
+        if canReschedule {
+            onReschedule = { [weak self] in self?.performedActions.append("reschedule") }
+        }
+        return ScheduledMessageListAction.defaultActions(
             for: SupportedScheduledMessageListActionsOptions(
                 scheduledMessage: scheduledMessage,
                 onCopyText: { [weak self] in self?.performedActions.append("copyText") },
                 onDelete: { [weak self] in self?.performedActions.append("delete") },
+                onReschedule: onReschedule,
                 onSendNow: { [weak self] in self?.performedActions.append("sendNow") }
             )
         )

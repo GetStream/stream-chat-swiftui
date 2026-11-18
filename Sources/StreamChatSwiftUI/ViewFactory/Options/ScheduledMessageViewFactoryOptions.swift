@@ -13,6 +13,9 @@ public final class ScheduledMessageActionsSheetOptions: Sendable {
     public let onCopyText: @MainActor () -> Void
     /// Deletes the scheduled message, after asking for confirmation.
     public let onDelete: @MainActor () -> Void
+    /// Opens the sheet for picking a new time. `nil` hides the action, for example when the channel of the message isn't
+    /// stored locally, because the sheet needs its config.
+    public let onReschedule: (@MainActor () -> Void)?
     /// Sends the scheduled message right away.
     public let onSendNow: @MainActor () -> Void
     /// Dismisses the sheet.
@@ -22,12 +25,14 @@ public final class ScheduledMessageActionsSheetOptions: Sendable {
         scheduledMessage: ScheduledMessage,
         onCopyText: @escaping @MainActor () -> Void,
         onDelete: @escaping @MainActor () -> Void,
+        onReschedule: (@MainActor () -> Void)?,
         onSendNow: @escaping @MainActor () -> Void,
         onDismiss: @escaping @MainActor () -> Void
     ) {
         self.scheduledMessage = scheduledMessage
         self.onCopyText = onCopyText
         self.onDelete = onDelete
+        self.onReschedule = onReschedule
         self.onSendNow = onSendNow
         self.onDismiss = onDismiss
     }
@@ -74,6 +79,9 @@ public final class SupportedScheduledMessageListActionsOptions: Sendable {
     public let onCopyText: @MainActor () -> Void
     /// Deletes the scheduled message, after asking for confirmation.
     public let onDelete: @MainActor () -> Void
+    /// Opens the sheet for picking a new time. `nil` hides the action, for example when the channel of the message isn't
+    /// stored locally, because the sheet needs its config.
+    public let onReschedule: (@MainActor () -> Void)?
     /// Sends the scheduled message right away.
     public let onSendNow: @MainActor () -> Void
 
@@ -81,11 +89,13 @@ public final class SupportedScheduledMessageListActionsOptions: Sendable {
         scheduledMessage: ScheduledMessage,
         onCopyText: @escaping @MainActor () -> Void,
         onDelete: @escaping @MainActor () -> Void,
+        onReschedule: (@MainActor () -> Void)?,
         onSendNow: @escaping @MainActor () -> Void
     ) {
         self.scheduledMessage = scheduledMessage
         self.onCopyText = onCopyText
         self.onDelete = onDelete
+        self.onReschedule = onReschedule
         self.onSendNow = onSendNow
     }
 }

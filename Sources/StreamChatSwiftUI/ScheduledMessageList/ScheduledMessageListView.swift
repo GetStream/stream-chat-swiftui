@@ -83,17 +83,11 @@ public struct ScheduledMessageListView<Factory: ViewFactory>: View {
                 showsSpinner: viewModel.snackBarShowsSpinner,
                 bottomOffset: tokens.spacingMd
             )
-            .sheet(item: $viewModel.selectedScheduledMessage, onDismiss: { viewModel.actionsSheetDismissed() }) { scheduledMessage in
-                viewFactory.makeScheduledMessageActionsSheet(
-                    options: ScheduledMessageActionsSheetOptions(
-                        scheduledMessage: scheduledMessage,
-                        onCopyText: { viewModel.copyText(of: scheduledMessage) },
-                        onDelete: { viewModel.delete(scheduledMessage) },
-                        onSendNow: { viewModel.sendNow(scheduledMessage) },
-                        onDismiss: { viewModel.selectedScheduledMessage = nil }
-                    )
-                )
+            .sheet(item: $viewModel.selectedScheduledMessage, onDismiss: { viewModel.actionsSheetDismissed() }) {
+                viewFactory.makeScheduledMessageActionsSheet(options: actionsSheetOptions(for: $0))
             }
+            // A second sheet on the same view is not presented on iOS 14.
+            .background(Color.clear.sheet(item: $viewModel.rescheduledScheduledMessage, content: rescheduleSheet))
             .modifier(ConfirmationAlertModifier(
                 isPresented: $viewModel.deleteConfirmationShown,
                 confirmation: viewModel.deleteConfirmation,
@@ -101,6 +95,36 @@ public struct ScheduledMessageListView<Factory: ViewFactory>: View {
             ))
         }
         .accessibilityIdentifier("ScheduledMessageListView")
+    }
+
+    private func actionsSheetOptions(for scheduledMessage: ScheduledMessage) -> ScheduledMessageActionsSheetOptions {
+        var onReschedule: (@MainActor () -> Void)?
+        if viewModel.canReschedule(scheduledMessage) {
+            onReschedule = { viewModel.reschedule(scheduledMessage) }
+        }
+        return ScheduledMessageActionsSheetOptions(
+            scheduledMessage: scheduledMessage,
+            onCopyText: { viewModel.copyText(of: scheduledMessage) },
+            onDelete: { viewModel.delete(scheduledMessage) },
+            onReschedule: onReschedule,
+            onSendNow: { viewModel.sendNow(scheduledMessage) },
+            onDismiss: { viewModel.selectedScheduledMessage = nil }
+        )
+    }
+
+    @ViewBuilder private func rescheduleSheet(for scheduledMessage: ScheduledMessage) -> some View {
+        if let channel = viewModel.channels[scheduledMessage.cid] {
+            viewFactory.makeScheduleMessageCustomTimeSheet(
+                options: ScheduleMessageCustomTimeSheetOptions(
+                    channel: channel,
+                    usage: viewModel.rescheduleUsage,
+                    preview: viewModel.reschedulePreview(for: scheduledMessage),
+                    scheduledMessage: scheduledMessage,
+                    onSchedule: { viewModel.rescheduleConfirmed(at: $0, completion: $1) },
+                    onDismiss: { viewModel.rescheduledScheduledMessage = nil }
+                )
+            )
+        }
     }
 
     private var searchableModifier: some ViewModifier {

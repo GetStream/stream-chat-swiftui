@@ -1556,7 +1556,7 @@
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/GetStream/stream-chat-swift.git";
 			requirement = {
-				branch = "add/scheduled-messages-confirmation-banner";
+				branch = "add/scheduled-messages-reschedule";
 				kind = branch;
 			};
 		};

@@ -34,14 +34,16 @@ public final class ScheduledMessageListAction: Identifiable, Sendable {
 public enum ScheduledMessageListActionId {
     public static let copyText = "copy_text_scheduled_message_action"
     public static let delete = "delete_scheduled_message_action"
+    public static let reschedule = "reschedule_scheduled_message_action"
     public static let sendNow = "send_now_scheduled_message_action"
 }
 
 extension ScheduledMessageListAction {
-    /// Returns the default actions of a scheduled message: sending it now and deleting it.
+    /// Returns the default actions of a scheduled message: rescheduling it, sending it now and deleting it.
     ///
-    /// A failed message can only be deleted, and so can a message which quotes a deleted message. The text of
-    /// a message whose channel was deleted can be copied as well, unless it has no text.
+    /// A failed message can be rescheduled and deleted. A message which quotes a deleted message can only be deleted.
+    /// The text of a message whose channel was deleted can be copied as well, unless it has no text. Rescheduling is
+    /// left out when `onReschedule` is `nil`.
     @MainActor public static func defaultActions(
         for options: SupportedScheduledMessageListActionsOptions
     ) -> [ScheduledMessageListAction] {
@@ -63,8 +65,19 @@ extension ScheduledMessageListAction {
             )
             return scheduledMessage.message.text.isEmpty ? [delete] : [copyText, delete]
         }
-        if scheduledMessage.status == .failed || scheduledMessage.quotesDeletedMessage {
+        if scheduledMessage.quotesDeletedMessage {
             return [delete]
+        }
+        let reschedule = options.onReschedule.map {
+            ScheduledMessageListAction(
+                id: ScheduledMessageListActionId.reschedule,
+                title: L10n.ScheduledMessages.Actions.reschedule,
+                icon: images.clock,
+                action: $0
+            )
+        }
+        if scheduledMessage.status == .failed {
+            return [reschedule, delete].compactMap { $0 }
         }
         let sendNow = ScheduledMessageListAction(
             id: ScheduledMessageListActionId.sendNow,
@@ -72,6 +85,6 @@ extension ScheduledMessageListAction {
             icon: images.composerSend,
             action: options.onSendNow
         )
-        return [sendNow, delete]
+        return [reschedule, sendNow, delete].compactMap { $0 }
     }
 }

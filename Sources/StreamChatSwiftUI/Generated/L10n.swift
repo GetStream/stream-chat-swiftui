@@ -1246,6 +1246,8 @@ internal enum L10n {
     internal enum Actions {
       /// Copy text
       internal static var copyText: String { L10n.tr("Localizable", "scheduled-messages.actions.copy-text") }
+      /// Reschedule
+      internal static var reschedule: String { L10n.tr("Localizable", "scheduled-messages.actions.reschedule") }
       /// Send now
       internal static var sendNow: String { L10n.tr("Localizable", "scheduled-messages.actions.send-now") }
     }
@@ -1288,6 +1290,10 @@ internal enum L10n {
       internal static var message: String { L10n.tr("Localizable", "scheduled-messages.no-content.message") }
       /// No scheduled messages
       internal static var title: String { L10n.tr("Localizable", "scheduled-messages.no-content.title") }
+    }
+    internal enum Reschedule {
+      /// Reschedule message
+      internal static var title: String { L10n.tr("Localizable", "scheduled-messages.reschedule.title") }
     }
     internal enum Snackbar {
       /// Already sent. It's in the channel now.

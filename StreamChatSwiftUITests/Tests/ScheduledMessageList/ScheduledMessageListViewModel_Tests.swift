@@ -307,6 +307,113 @@ import XCTest
         XCTAssertFalse(viewModel.snackBarShowsSpinner)
     }
 
+    // MARK: - Reschedule
+
+    func test_reschedule_opensTheSheetWhenTheActionsSheetIsDismissed() {
+        let scheduledMessage = ScheduledMessage.mock(id: "scheduled")
+        viewModel.scheduledMessageTapped(scheduledMessage)
+
+        viewModel.reschedule(scheduledMessage)
+
+        XCTAssertNil(viewModel.rescheduledScheduledMessage)
+
+        viewModel.actionsSheetDismissed()
+
+        XCTAssertEqual(viewModel.rescheduledScheduledMessage?.id, "scheduled")
+        XCTAssertNil(viewModel.rescheduleUsage)
+    }
+
+    func test_canReschedule_needsTheChannelStoredLocally() {
+        let cid = ChannelId.unique
+        let scheduledMessage = ScheduledMessage.mock(cid: cid)
+
+        XCTAssertFalse(viewModel.canReschedule(scheduledMessage))
+
+        viewModel.channels = [cid: .mock(cid: cid)]
+
+        XCTAssertTrue(viewModel.canReschedule(scheduledMessage))
+    }
+
+    func test_reschedulePreview_showsTheScheduledTimeAndTheText() {
+        let scheduledAt = Date(timeIntervalSince1970: 1_800_000_000)
+        let scheduledMessage = ScheduledMessage.mock(message: .mock(text: "Booking confirmed"), scheduledAt: scheduledAt)
+
+        let preview = viewModel.reschedulePreview(for: scheduledMessage)
+
+        let date = streamChat?.utils.scheduledMessagesConfig.dateFormatter.format(scheduledAt) ?? ""
+        XCTAssertEqual(preview.title, L10n.Composer.ScheduledMessagesBanner.scheduledFor(date))
+        XCTAssertEqual(preview.subtitle, "Booking confirmed")
+    }
+
+    func test_rescheduleConfirmed_withTheSameTime_closesTheSheetWithoutRescheduling() {
+        let scheduledAt = Date(timeIntervalSince1970: 1_800_000_000)
+        viewModel.rescheduledScheduledMessage = .mock(scheduledAt: scheduledAt)
+        var completionError: Error? = ClientError()
+
+        viewModel.rescheduleConfirmed(at: scheduledAt) { completionError = $0 }
+
+        XCTAssertNil(completionError)
+        XCTAssertNil(viewModel.rescheduledScheduledMessage)
+        XCTAssertEqual(controller.rescheduleMessage_callCount, 0)
+    }
+
+    func test_rescheduleConfirmed_withANewTime_reschedulesAndClosesTheSheet() {
+        let newDate = Date(timeIntervalSince1970: 1_800_003_600)
+        viewModel.rescheduledScheduledMessage = .mock(id: "scheduled", scheduledAt: Date(timeIntervalSince1970: 1_800_000_000))
+        var completed = false
+
+        viewModel.rescheduleConfirmed(at: newDate) { _ in completed = true }
+
+        XCTAssertEqual(controller.rescheduleMessage_id, "scheduled")
+        XCTAssertEqual(controller.rescheduleMessage_scheduledAt, newDate)
+        XCTAssertNotNil(viewModel.rescheduledScheduledMessage)
+
+        controller.rescheduleMessage_completion?(.success(.mock(id: "scheduled", scheduledAt: newDate)))
+
+        XCTAssertTrue(completed)
+        XCTAssertNil(viewModel.rescheduledScheduledMessage)
+    }
+
+    func test_rescheduleConfirmed_ofAFailedMessageWithTheSameTime_reschedules() {
+        let scheduledAt = Date(timeIntervalSince1970: 1_800_000_000)
+        viewModel.rescheduledScheduledMessage = .mock(id: "failed", scheduledAt: scheduledAt, status: .failed)
+
+        viewModel.rescheduleConfirmed(at: scheduledAt) { _ in }
+
+        XCTAssertEqual(controller.rescheduleMessage_id, "failed")
+    }
+
+    func test_rescheduleConfirmed_whenItFails_keepsTheSheetOpenAndReturnsTheError() {
+        viewModel.rescheduledScheduledMessage = .mock(id: "scheduled", scheduledAt: Date(timeIntervalSince1970: 1_800_000_000))
+        var completionError: Error?
+
+        viewModel.rescheduleConfirmed(at: Date(timeIntervalSince1970: 1_800_003_600)) { completionError = $0 }
+        controller.rescheduleMessage_completion?(.failure(ClientError.ScheduledMessageQuotesADeletedMessage()))
+
+        XCTAssertTrue(completionError is ClientError.ScheduledMessageQuotesADeletedMessage)
+        XCTAssertEqual(viewModel.rescheduledScheduledMessage?.id, "scheduled")
+    }
+
+    func test_rescheduledScheduledMessage_whenTheMessageStartsSending_isCleared() {
+        load([.mock(id: "scheduled")])
+        viewModel.rescheduledScheduledMessage = viewModel.scheduledMessages[0]
+
+        controller.scheduledMessages_mock = [.mock(id: "scheduled", status: .sending)]
+        viewModel.controller(controller, didChangeScheduledMessages: [])
+
+        XCTAssertNil(viewModel.rescheduledScheduledMessage)
+    }
+
+    func test_rescheduledScheduledMessage_whenTheMessageIsGone_isCleared() {
+        load([.mock(id: "scheduled"), .mock(id: "other")])
+        viewModel.rescheduledScheduledMessage = viewModel.scheduledMessages[0]
+
+        controller.scheduledMessages_mock = [.mock(id: "other")]
+        viewModel.controller(controller, didChangeScheduledMessages: [])
+
+        XCTAssertNil(viewModel.rescheduledScheduledMessage)
+    }
+
     // MARK: - Copy text
 
     func test_copyText_copiesTheTextOfTheMessage() {

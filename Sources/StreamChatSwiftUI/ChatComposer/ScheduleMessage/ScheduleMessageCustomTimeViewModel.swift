@@ -28,10 +28,13 @@ import StreamChat
     /// - Parameters:
     ///   - channel: The channel the message is scheduled in. Its config has the earliest and the latest time.
     ///   - usage: How many scheduled messages the current user has, next to the limits of the app.
+    ///   - initialDate: The date picked first, for example the current date of a rescheduled message. A date that is too
+    ///   soon is kept, so the sheet shows why it can't be confirmed. Tomorrow at 09:00 when `nil`.
     ///   - onSchedule: Schedules the message at the given date and completes with the error, if there is one.
     public init(
         channel: ChatChannel,
         usage: ScheduledMessagesUsage?,
+        initialDate: Date? = nil,
         onSchedule: @escaping @MainActor (Date, @escaping @MainActor (Error?) -> Void) -> Void
     ) {
         self.channel = channel
@@ -43,7 +46,11 @@ import StreamChat
         let calendar = Calendar.current
         let tomorrow = calendar.date(byAdding: .day, value: 1, to: calendar.startOfDay(for: Date()))
         let tomorrowMorning = tomorrow.flatMap { calendar.date(bySettingHour: 9, minute: 0, second: 0, of: $0) }
-        date = min(max(tomorrowMorning ?? bounds.earliest, bounds.earliest), bounds.latest ?? .distantFuture)
+        if let initialDate {
+            date = min(initialDate, bounds.latest ?? .distantFuture)
+        } else {
+            date = min(max(tomorrowMorning ?? bounds.earliest, bounds.earliest), bounds.latest ?? .distantFuture)
+        }
     }
 
     /// The dates that can be picked.

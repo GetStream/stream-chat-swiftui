@@ -1080,6 +1080,7 @@ extension ViewFactory {
                 scheduledMessage: options.scheduledMessage,
                 onCopyText: options.onCopyText,
                 onDelete: options.onDelete,
+                onReschedule: options.onReschedule,
                 onSendNow: options.onSendNow
             )
         )

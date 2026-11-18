@@ -80,11 +80,49 @@ import XCTest
         XCTAssertFalse(viewModel.canConfirm)
     }
 
+    // MARK: - Reschedule
+
+    func test_scheduleMessageCustomTimeSheetView_whenRescheduling_snapshot() {
+        let preview = ScheduleMessagePreview(title: "Scheduled for Tue, Jan 15 at 09:00", subtitle: "Heads up: the launch moved to Monday.")
+
+        let view = makeView(usage: nil, preview: preview, scheduledMessage: .mock(status: .scheduled))
+
+        AssertSnapshot(view, size: size)
+    }
+
+    func test_scheduleMessageCustomTimeSheetView_whenReschedulingAFailedMessage_snapshot() {
+        let preview = ScheduleMessagePreview(title: "Scheduled for Tue, Jan 15 at 09:00", subtitle: "Heads up: the launch moved to Monday.")
+
+        let view = makeView(usage: usage, preview: preview, scheduledMessage: .mock(status: .failed))
+
+        AssertSnapshot(view, size: size)
+    }
+
+    func test_viewModel_withAnInitialDateThatIsTooSoon_keepsItAndShowsTheTooSoonError() {
+        let now = Date()
+
+        let viewModel = ScheduleMessageCustomTimeViewModel(channel: .mock(cid: .unique), usage: nil, initialDate: now) { _, _ in }
+
+        XCTAssertEqual(viewModel.date, now)
+        XCTAssertEqual(viewModel.errorText, "Pick a time at least 1 minute from now")
+        XCTAssertFalse(viewModel.canConfirm)
+    }
+
+    func test_viewModel_withAnInitialDate_picksIt() {
+        let initialDate = Date().addingTimeInterval(3 * 24 * 3600)
+
+        let viewModel = ScheduleMessageCustomTimeViewModel(channel: .mock(cid: .unique), usage: nil, initialDate: initialDate) { _, _ in }
+
+        XCTAssertEqual(viewModel.date, initialDate)
+        XCTAssertNil(viewModel.errorText)
+    }
+
     // MARK: - private
 
     private func makeView(
         usage: ScheduledMessagesUsage?,
         preview: ScheduleMessagePreview,
+        scheduledMessage: ScheduledMessage? = nil,
         error: Error? = nil
     ) -> some View {
         // The mocked config has no max lead time. A date in a far month keeps today out of the calendar.
@@ -95,6 +133,7 @@ import XCTest
             channel: channel,
             usage: usage,
             preview: preview,
+            scheduledMessage: scheduledMessage,
             onSchedule: { _, completion in completion(error) },
             onDismiss: {}
         )

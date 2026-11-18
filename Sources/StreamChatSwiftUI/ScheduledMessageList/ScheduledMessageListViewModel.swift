@@ -20,6 +20,7 @@ import UIKit
     }
 
     @Injected(\.chatClient) private var chatClient
+    @Injected(\.utils) private var utils
 
     private let scheduledMessageListController: ScheduledMessageListController
     private let parentMessageId: MessageId?
@@ -47,6 +48,16 @@ import UIKit
     ///
     /// It is kept up to date with the list, and cleared when the message leaves the list or starts sending.
     @Published public var selectedScheduledMessage: ScheduledMessage?
+
+    /// The scheduled message whose time is changed in the reschedule sheet.
+    ///
+    /// It is kept up to date with the list, and cleared when the message leaves the list or starts sending, which closes
+    /// the sheet.
+    @Published public var rescheduledScheduledMessage: ScheduledMessage?
+
+    /// How many scheduled messages the current user has, shown in the reschedule sheet of a failed message, because
+    /// rescheduling it adds a pending message. `nil` for other messages.
+    @Published public private(set) var rescheduleUsage: ScheduledMessagesUsage?
 
     /// A Boolean value indicating whether the confirmation for deleting a scheduled message is shown.
     @Published public var deleteConfirmationShown = false
@@ -167,6 +178,66 @@ import UIKit
         }
     }
 
+    /// A Boolean value indicating whether a scheduled message can be rescheduled. The reschedule sheet needs the config
+    /// of the channel, so its channel has to be stored locally.
+    open func canReschedule(_ scheduledMessage: ScheduledMessage) -> Bool {
+        channels[scheduledMessage.cid] != nil
+    }
+
+    /// Opens the sheet for picking a new time for a scheduled message. The sheet with the actions is closed first.
+    open func reschedule(_ scheduledMessage: ScheduledMessage) {
+        performAfterSheetDismissal { [weak self] in
+            guard let self else { return }
+            guard scheduledMessage.status == .failed else {
+                rescheduleUsage = nil
+                rescheduledScheduledMessage = scheduledMessage
+                return
+            }
+            chatClient.channelController(for: scheduledMessage.cid).scheduledMessagesUsage { [weak self] result in
+                self?.rescheduleUsage = try? result.get()
+                self?.rescheduledScheduledMessage = scheduledMessage
+            }
+        }
+    }
+
+    /// The preview of the message in the reschedule sheet: when it is scheduled for, and its text or attachments.
+    open func reschedulePreview(for scheduledMessage: ScheduledMessage) -> ScheduleMessagePreview {
+        let resolver = MessageAttachmentPreviewResolver(message: scheduledMessage.message)
+        let text = scheduledMessage.message.text
+        let date = utils.scheduledMessagesConfig.dateFormatter.format(scheduledMessage.scheduledAt)
+        return ScheduleMessagePreview(
+            title: L10n.Composer.ScheduledMessagesBanner.scheduledFor(date),
+            subtitle: text.isEmpty ? resolver.previewDescription ?? "" : text,
+            icon: resolver.previewIcon,
+            thumbnail: resolver.previewThumbnail
+        )
+    }
+
+    /// Reschedules the message of the reschedule sheet at the given date, and closes the sheet when it succeeds.
+    ///
+    /// Picking the time the message already has closes the sheet without a change. A failed message is scheduled again
+    /// as a new message.
+    open func rescheduleConfirmed(at date: Date, completion: @escaping @MainActor (Error?) -> Void) {
+        guard let scheduledMessage = rescheduledScheduledMessage else {
+            completion(nil)
+            return
+        }
+        let isSameTime = Calendar.current.isDate(date, equalTo: scheduledMessage.scheduledAt, toGranularity: .minute)
+        if scheduledMessage.status != .failed, isSameTime {
+            rescheduledScheduledMessage = nil
+            completion(nil)
+            return
+        }
+        scheduledMessageListController.rescheduleMessage(id: scheduledMessage.id, scheduledAt: date) { [weak self] result in
+            if case let .failure(error) = result {
+                completion(error)
+                return
+            }
+            self?.rescheduledScheduledMessage = nil
+            completion(nil)
+        }
+    }
+
     /// Copies the text of a scheduled message to the pasteboard. The sheet with the actions is closed first.
     open func copyText(of scheduledMessage: ScheduledMessage) {
         performAfterSheetDismissal {
@@ -215,16 +286,22 @@ import UIKit
         snackBarText = text
     }
 
-    private func updateSelectedScheduledMessage(from all: [ScheduledMessage]) {
-        guard let selected = selectedScheduledMessage else { return }
-        let current = all.first { $0.id == selected.id }
-        if let current, !current.isInProgress {
-            if current !== selected {
-                selectedScheduledMessage = current
-            }
-        } else {
-            selectedScheduledMessage = nil
+    private func updateOpenScheduledMessages(from all: [ScheduledMessage]) {
+        let selected = current(selectedScheduledMessage, in: all)
+        if selected !== selectedScheduledMessage {
+            selectedScheduledMessage = selected
         }
+        let rescheduled = current(rescheduledScheduledMessage, in: all)
+        if rescheduled !== rescheduledScheduledMessage {
+            rescheduledScheduledMessage = rescheduled
+        }
+    }
+
+    // A message that left the list or can't be changed right now closes the sheet it is open in.
+    private func current(_ scheduledMessage: ScheduledMessage?, in all: [ScheduledMessage]) -> ScheduledMessage? {
+        guard let scheduledMessage else { return nil }
+        let current = all.first { $0.id == scheduledMessage.id }
+        return current?.isInProgress == false ? current : nil
     }
 
     private func updateScheduledMessages(readingChannels: Bool = true) {
@@ -242,7 +319,7 @@ import UIKit
         if readingChannels {
             readLocalChannels(Set(all.map(\.cid)))
         }
-        updateSelectedScheduledMessage(from: all)
+        updateOpenScheduledMessages(from: all)
         let query = searchText.trimmingCharacters(in: .whitespacesAndNewlines)
         scheduledMessages = query.isEmpty ? all : all.filter { scheduledMessage in
             let channelName = scheduledMessage.channelName(
