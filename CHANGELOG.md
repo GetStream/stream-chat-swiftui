@@ -9,6 +9,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Add send now, delete and copy text actions to the scheduled messages list [#1660](https://github.com/GetStream/stream-chat-swiftui/pull/1660)
 - Add a banner above the composer with the scheduled messages of the channel or thread [#1661](https://github.com/GetStream/stream-chat-swiftui/pull/1661)
 - Add an action button to `SnackBarView` [#1661](https://github.com/GetStream/stream-chat-swiftui/pull/1661)
+- Add rescheduling a scheduled message from the scheduled messages list [#1662](https://github.com/GetStream/stream-chat-swiftui/pull/1662)
 
 ### 🎭 New Localizations
 - `composer.schedule-message.title`, `composer.schedule-message.limit-reached` — schedule message sheet
@@ -17,6 +18,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - `composer.schedule-message.error.*` — errors shown when a message can't be scheduled
 - `scheduled-messages.actions.*`, `scheduled-messages.delete-confirmation.*`, `scheduled-messages.snackbar.*`, `scheduled-messages.item.quote-deleted` — actions of a scheduled message
 - `composer.scheduled-messages-banner.*` — scheduled messages banner and the sent snack bar
+- `scheduled-messages.actions.reschedule`, `scheduled-messages.reschedule.title` — rescheduling a scheduled message
 
 # [5.17.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/5.17.0)
 _November 13, 2026_
