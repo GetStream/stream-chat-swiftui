@@ -76,6 +76,7 @@ import XCTest
 
         viewModel.date = Date()
 
+        XCTAssertTrue(viewModel.dateRange.contains(viewModel.date))
         XCTAssertEqual(viewModel.errorText, "Pick a time at least 1 minute from now")
         XCTAssertFalse(viewModel.canConfirm)
     }
@@ -104,6 +105,7 @@ import XCTest
         let viewModel = ScheduleMessageCustomTimeViewModel(channel: .mock(cid: .unique), usage: nil, initialDate: now) { _, _ in }
 
         XCTAssertEqual(viewModel.date, now)
+        XCTAssertTrue(viewModel.dateRange.contains(now))
         XCTAssertEqual(viewModel.errorText, "Pick a time at least 1 minute from now")
         XCTAssertFalse(viewModel.canConfirm)
     }
@@ -115,6 +117,7 @@ import XCTest
 
         XCTAssertEqual(viewModel.date, initialDate)
         XCTAssertNil(viewModel.errorText)
+        XCTAssertTrue(viewModel.canConfirm)
     }
 
     // MARK: - private

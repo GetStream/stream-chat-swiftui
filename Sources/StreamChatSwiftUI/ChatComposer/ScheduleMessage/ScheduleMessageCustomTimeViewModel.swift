@@ -54,8 +54,11 @@ import StreamChat
     }
 
     /// The dates that can be picked.
+    ///
+    /// It starts at the picked date when that became too soon. The picker would show the earliest time otherwise,
+    /// next to the error about the picked date.
     public var dateRange: ClosedRange<Date> {
-        earliestDate...max(earliestDate, latestDate ?? .distantFuture)
+        min(earliestDate, date)...max(earliestDate, latestDate ?? .distantFuture)
     }
 
     /// The error to show: the picked time is too soon or too far ahead, or the message couldn't be scheduled.
@@ -74,7 +77,10 @@ import StreamChat
 
     /// A Boolean value indicating whether the message can be scheduled at the picked time.
     public var canConfirm: Bool {
-        !scheduling && dateRange.contains(pickedDate) && error.map(ScheduleMessageErrorText.canRetry) != false
+        !scheduling
+            && pickedDate >= earliestDate
+            && pickedDate <= latestDate ?? .distantFuture
+            && error.map(ScheduleMessageErrorText.canRetry) != false
     }
 
     /// Moves the earliest and the latest time to the current time. Call it regularly while the sheet is open.
