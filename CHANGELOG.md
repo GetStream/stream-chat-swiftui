@@ -3,7 +3,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 # Upcoming
 
-### 🔄 Changed
+### 🐞 Fixed
+- Fix the last message being hidden behind the composer on iPhone SE [#1635](https://github.com/GetStream/stream-chat-swiftui/pull/1635)
+- Fix extra space above the floating composer on a closed iPhone Duo [#1635](https://github.com/GetStream/stream-chat-swiftui/pull/1635)
 
 # [5.17.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/5.17.0)
 _November 13, 2026_
