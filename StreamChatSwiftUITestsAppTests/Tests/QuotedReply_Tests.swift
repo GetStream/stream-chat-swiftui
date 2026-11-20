@@ -50,7 +50,7 @@ final class QuotedReply_Tests: StreamTestCase {
         }
         THEN("user observes the quote reply in message list") {
             userRobot.assertQuotedMessage(replyText: replyText, quotedText: quotedText)
-            // On iOS 17 the list stops short of the bottom after sending, so the button can stay visible.
+            // https://linear.app/stream/issue/IOS-2272: on iOS 17 the list stops short of the bottom after sending.
             if #available(iOS 18, *) {
                 userRobot.assertScrollToBottomButton(isVisible: false)
             }
@@ -111,7 +111,7 @@ final class QuotedReply_Tests: StreamTestCase {
         }
         THEN("user observes the quote reply in message list") {
             userRobot.assertQuotedMessage(replyText: replyText, quotedText: quotedText)
-            // On iOS 17 the list stops short of the bottom after sending, so the button can stay visible.
+            // https://linear.app/stream/issue/IOS-2272: on iOS 17 the list stops short of the bottom after sending.
             if #available(iOS 18, *) {
                 userRobot.assertScrollToBottomButton(isVisible: false)
             }

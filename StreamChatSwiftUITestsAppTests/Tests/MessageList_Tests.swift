@@ -221,7 +221,7 @@ extension MessageList_Tests {
         }
         THEN("message list is scrolled down") {
             userRobot.assertMessageIsVisible(newMessage)
-            // On iOS 17 the list stops short of the bottom after sending, so the button can stay visible.
+            // https://linear.app/stream/issue/IOS-2272: on iOS 17 the list stops short of the bottom after sending.
             if #available(iOS 18, *) {
                 userRobot.assertScrollToBottomButton(isVisible: false)
             }
