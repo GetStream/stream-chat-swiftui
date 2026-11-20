@@ -117,4 +117,17 @@ import SwiftUI
             threadListController: threadListController
         )
     }
+
+    /// Creates the `ScheduledMessageListViewModel`.
+    ///
+    /// - Parameters:
+    ///    - scheduledMessageListController: The controller that manages the scheduled messages.
+    /// - Returns: `ScheduledMessageListViewModel`.
+    public static func makeScheduledMessageListViewModel(
+        scheduledMessageListController: ScheduledMessageListController
+    ) -> ScheduledMessageListViewModel {
+        ScheduledMessageListViewModel(
+            scheduledMessageListController: scheduledMessageListController
+        )
+    }
 }
