@@ -15,6 +15,7 @@ struct TrailingInputComposerView<Factory: ViewFactory>: View {
     var stopRecording: @MainActor () -> Void
     var showRecordingTip: @MainActor () -> Void
     var sendMessage: @MainActor () -> Void
+    var onSendMessageLongPress: (@MainActor () -> Void)?
 
     var body: some View {
         switch composerInputState {
@@ -31,7 +32,8 @@ struct TrailingInputComposerView<Factory: ViewFactory>: View {
                 factory.makeSendMessageButton(
                     options: SendMessageButtonOptions(
                         enabled: hasContent,
-                        onTap: sendMessage
+                        onTap: sendMessage,
+                        onLongPress: onSendMessageLongPress
                     )
                 )
             }

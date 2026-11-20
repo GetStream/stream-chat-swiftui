@@ -13,8 +13,7 @@ public struct MessageAttachmentPreviewResolver {
     /// The kind of attachment.
     private let kind: MessageAttachmentPreviewKind
     
-    /// The message being resolved.
-    private let message: ChatMessage
+    private let thumbnail: MessageAttachmentPreviewThumbnail?
     
     // MARK: - Initialization
     
@@ -23,8 +22,30 @@ public struct MessageAttachmentPreviewResolver {
     ///   - message: The message to analyze for attachments.
     ///   - translationLanguage: The language to show the poll name in, when it has a translation to it.
     public init(message: ChatMessage, translationLanguage: TranslationLanguage? = nil) {
-        self.message = message
         self.kind = Self.resolveKind(from: message, translationLanguage: translationLanguage)
+        self.thumbnail = Self.resolveThumbnail(from: message)
+    }
+
+    init(assets: TotalAddedAssets) {
+        let images = assets.mediaAssets.filter { $0.type == .image }
+        let videoCount = assets.mediaAssets.count - images.count
+        // Custom attachments have no type of their own here, they are described as files.
+        let fileCount = assets.fileAssets.count + assets.customAssets.count
+        let counts = [images.count, videoCount, fileCount, assets.voiceAssets.count].filter { $0 > 0 }
+        if counts.count > 1 {
+            kind = .mixed(attachmentsCount: counts.reduce(0, +))
+        } else if let voiceRecording = assets.voiceAssets.first {
+            kind = .voiceRecording(duration: voiceRecording.duration)
+        } else if !images.isEmpty {
+            kind = .photo(count: images.count)
+        } else if videoCount > 0 {
+            kind = .video(count: videoCount)
+        } else if fileCount > 0 {
+            kind = .file(count: fileCount, fileName: assets.fileAssets.first?.url.lastPathComponent)
+        } else {
+            kind = .none
+        }
+        thumbnail = counts == [1] ? images.first.map { .image(url: $0.url) } : nil
     }
     
     // MARK: - Preview Description
@@ -102,6 +123,12 @@ public struct MessageAttachmentPreviewResolver {
     /// The thumbnail for the attachment preview, if available.
     /// Returns nil for mixed attachments or when no preview is available.
     public var previewThumbnail: MessageAttachmentPreviewThumbnail? {
+        thumbnail
+    }
+    
+    // MARK: - Helpers
+    
+    private static func resolveThumbnail(from message: ChatMessage) -> MessageAttachmentPreviewThumbnail? {
         let allAttachmentCount = message.attachmentCounts.values.reduce(0, +)
         if allAttachmentCount > 1 {
             return nil
@@ -131,8 +158,6 @@ public struct MessageAttachmentPreviewResolver {
 
         return nil
     }
-    
-    // MARK: - Helpers
     
     private static func resolveKind(
         from message: ChatMessage,

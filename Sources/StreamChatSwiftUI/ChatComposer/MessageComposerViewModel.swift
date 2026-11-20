@@ -138,7 +138,22 @@ import SwiftUI
 
     @Published public var filePickerShown = false
     @Published public var cameraPickerShown = false
-    @Published public var errorShown = false
+    /// A Boolean value indicating whether the schedule message sheet is shown.
+    @Published public var scheduleMessageSheetShown = false
+    /// The limit of scheduled messages that was reached when the schedule message sheet was opened.
+    @Published public private(set) var reachedScheduledMessagesLimit: Int?
+    /// A Boolean value indicating whether the sheet for picking a custom time is shown on top of the schedule message sheet.
+    @Published public var scheduleMessageCustomTimeSheetShown = false
+    /// The scheduled messages usage read when the schedule message sheet was opened.
+    @Published public private(set) var scheduledMessagesUsage: ScheduledMessagesUsage?
+    @Published public var errorShown = false {
+        didSet {
+            if !errorShown {
+                scheduleMessageErrorText = nil
+            }
+        }
+    }
+
     @Published public var showReplyInChannel = false
     @Published public var suggestions = [String: Any]()
     @Published public var cooldownDuration: Int = 0
@@ -179,6 +194,14 @@ import SwiftUI
     public var quotedMessage: Binding<ChatMessage?>?
     public var editedMessage: Binding<ChatMessage?>?
     public var willSendMessage: (() -> Void)?
+
+    // An alert can't be presented while the schedule message sheet is dismissing.
+    private var showsErrorAfterScheduleMessageSheet = false
+    /// The error shown when a message couldn't be scheduled from the schedule message sheet, `nil` for the default error.
+    public private(set) var scheduleMessageErrorText: String?
+    /// The preview of the message in the custom time sheet. It is kept while the sheet is shown, because the composer is
+    /// cleared before the sheet is gone.
+    public private(set) var scheduleMessagePreview = ScheduleMessagePreview(title: "", subtitle: "")
 
     /// When `true`, the next completed recording is automatically sent via `sendMessage()`.
     /// Set by `sendRecording()` and cleared once the send fires or an error occurs.
@@ -621,6 +644,155 @@ import SwiftUI
     /// A Boolean value indicating whether the current user has capability to send messages.
     public var canSendMessage: Bool {
         channelController.channel?.canSendMessage ?? true
+    }
+
+    // MARK: - Scheduling
+
+    /// A Boolean value indicating whether the current user has capability to schedule messages.
+    public var canScheduleMessage: Bool {
+        channelController.channel?.canScheduleMessage ?? false
+    }
+
+    /// Shows the sheet for picking when the message in the composer is sent.
+    open func showScheduleMessageSheet() {
+        channelController.scheduledMessagesUsage { [weak self] result in
+            guard let self else { return }
+            // Without the usage the sheet opens with no limit. Scheduling still checks the limits.
+            let usage = try? result.get()
+            if let usage, let limit = usage.channelLimit, usage.channelCount >= limit {
+                reachedScheduledMessagesLimit = limit
+            } else if let usage, let limit = usage.userLimit, usage.userCount >= limit {
+                reachedScheduledMessagesLimit = limit
+            } else {
+                reachedScheduledMessagesLimit = nil
+            }
+            scheduledMessagesUsage = usage
+            scheduleMessageSheetShown = true
+        }
+    }
+
+    /// Shows the sheet for picking a custom time on top of the schedule message sheet.
+    open func showScheduleMessageCustomTimeSheet() {
+        let resolver = MessageAttachmentPreviewResolver(assets: totalAddedAssets)
+        let text = messageText.trimmingCharacters(in: .whitespacesAndNewlines)
+        let title: String
+        if let repliedMessage = quotedMessage?.wrappedValue ?? messageController?.message {
+            title = L10n.Composer.Quoted.replyTo(repliedMessage.author.name ?? repliedMessage.author.id)
+        } else {
+            let channelName = channelController.channel.flatMap {
+                utils.channelNameFormatter.format(channel: $0, forCurrentUserId: chatClient.currentUserId)
+            }
+            title = L10n.Composer.ScheduleMessage.Preview.messageTo(channelName ?? "")
+        }
+        scheduleMessagePreview = ScheduleMessagePreview(
+            title: title,
+            subtitle: text.isEmpty ? resolver.previewDescription ?? "" : text,
+            icon: resolver.previewIcon,
+            thumbnail: resolver.previewThumbnail
+        )
+        scheduleMessageCustomTimeSheetShown = true
+    }
+
+    /// Schedules the message in the composer to be sent at the given date.
+    ///
+    /// The composer keeps its content when the message can't be scheduled.
+    ///
+    /// - Parameter completion: Called with the error when the message can't be scheduled, and with `nil` otherwise.
+    open func scheduleMessage(
+        at date: Date,
+        silent: Bool = false,
+        skipPush: Bool = false,
+        extraData: [String: RawJSON] = [:],
+        completion: (@MainActor (Error?) -> Void)? = nil
+    ) {
+        guard !isSendingMessage else { return }
+        isSendingMessage = true
+
+        stopPreviewPlaybackIfNeeded()
+        clearRemovedMentions()
+
+        let handleResult: @MainActor (Result<ScheduledMessage, Error>) -> Void = { [weak self] result in
+            guard let self else { return }
+            switch result {
+            case let .success(scheduledMessage):
+                scheduleMessageCustomTimeSheetShown = false
+                scheduleMessageSheetShown = false
+                clearInputData()
+                DispatchQueue.main.asyncAfter(deadline: .now() + Self.clearTextDelay) { [weak self] in
+                    self?.quotedMessage?.wrappedValue = nil
+                }
+                let date = utils.scheduledMessagesConfig.dateFormatter.format(scheduledMessage.scheduledAt)
+                ComposerAccessibilityAnnouncer.announce(L10n.Composer.ScheduleMessage.Accessibility.scheduled(date))
+                completion?(nil)
+            case let .failure(error):
+                failScheduling(error)
+                completion?(error)
+            }
+        }
+
+        do {
+            let attachments = try convertAddedAssetsToPayloads()
+            if let messageController {
+                messageController.scheduleReply(
+                    text: messageText,
+                    attachments: attachments,
+                    mentionedUserIds: mentionedUsers.map(\.id),
+                    mentionedHere: mentionsHere,
+                    mentionedChannel: mentionsChannel,
+                    mentionedGroupIds: mentionedGroups.map(\.id),
+                    mentionedRoles: Array(mentionedRoles),
+                    showReplyInChannel: showReplyInChannel,
+                    silent: silent,
+                    quotedMessageId: quotedMessage?.wrappedValue?.id,
+                    skipPush: skipPush,
+                    scheduledAt: date,
+                    extraData: extraData,
+                    completion: handleResult
+                )
+            } else {
+                channelController.scheduleMessage(
+                    text: messageText,
+                    silent: silent,
+                    attachments: attachments,
+                    mentionedUserIds: mentionedUsers.map(\.id),
+                    mentionedHere: mentionsHere,
+                    mentionedChannel: mentionsChannel,
+                    mentionedGroupIds: mentionedGroups.map(\.id),
+                    mentionedRoles: Array(mentionedRoles),
+                    quotedMessageId: quotedMessage?.wrappedValue?.id,
+                    skipPush: skipPush,
+                    scheduledAt: date,
+                    extraData: extraData,
+                    completion: handleResult
+                )
+            }
+        } catch {
+            failScheduling(error)
+            completion?(error)
+        }
+    }
+
+    /// Shows the error of a message that couldn't be scheduled from the schedule message sheet. Call it when the sheet is
+    /// dismissed, because an alert can't be presented while the sheet is dismissing.
+    open func scheduleMessageSheetDismissed() {
+        guard showsErrorAfterScheduleMessageSheet else { return }
+        showsErrorAfterScheduleMessageSheet = false
+        errorShown = true
+    }
+
+    private func failScheduling(_ error: Error) {
+        isSendingMessage = false
+        // The custom time sheet stays open and shows the error itself.
+        guard !scheduleMessageCustomTimeSheetShown else { return }
+        scheduleMessageErrorText = channelController.channel.map {
+            ScheduleMessageErrorText.text(for: error, config: $0.config)
+        }
+        if scheduleMessageSheetShown {
+            showsErrorAfterScheduleMessageSheet = true
+            scheduleMessageSheetShown = false
+        } else {
+            errorShown = true
+        }
     }
 
     /// A Boolean value indicating whether the composer has any type of content filled.
