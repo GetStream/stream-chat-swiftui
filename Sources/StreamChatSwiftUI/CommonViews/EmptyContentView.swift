@@ -14,6 +14,8 @@ struct EmptyContentView: View {
     var description: String
     var shouldRotateImage: Bool = false
     var size: CGSize = CGSize(width: 32, height: 32)
+    var actionTitle: String?
+    var action: (@MainActor () -> Void)?
 
     public var body: some View {
         VStack(spacing: 8) {
@@ -36,6 +38,14 @@ struct EmptyContentView: View {
                     .font(fonts.body)
                     .multilineTextAlignment(.center)
                     .foregroundColor(Color(colors.textSecondary))
+                if let actionTitle, let action {
+                    StreamTextButton(role: .secondary, style: .outline, size: .medium) {
+                        action()
+                    } text: {
+                        Text(actionTitle)
+                    }
+                    .padding(.top, 8)
+                }
             }
             .padding(.horizontal, 32)
 

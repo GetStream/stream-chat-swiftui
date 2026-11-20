@@ -36,4 +36,11 @@ final class SnackBarView_Tests: StreamChatTestCase {
 
         AssertSnapshot(view, variants: [.extraExtraExtraLargeLight])
     }
+
+    func test_snackBarView_action() {
+        let view = SnackBarView(text: "Scheduled message sent", actionTitle: "View")
+            .frame(width: 375)
+
+        AssertSnapshot(view)
+    }
 }

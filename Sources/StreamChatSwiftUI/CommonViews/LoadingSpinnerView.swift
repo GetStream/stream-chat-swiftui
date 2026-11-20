@@ -20,10 +20,12 @@ public enum LoadingSpinnerSize: Sendable {
 /// - When ``progress`` is set (0…1) the arc length reflects the value (determinate).
 public struct LoadingSpinnerView: View {
     @Injected(\.colors) private var colors
+    @Injected(\.tokens) private var tokens
 
     let size: CGFloat
     let bordered: Bool
     let progress: Double?
+    let isOnInverseBackground: Bool
 
     @State private var isAnimating = false
 
@@ -36,26 +38,36 @@ public struct LoadingSpinnerView: View {
         self.size = size
         self.bordered = bordered
         self.progress = progress
+        isOnInverseBackground = false
+    }
+
+    init(sizeOnInverseBackground size: CGFloat) {
+        self.size = size
+        bordered = false
+        progress = nil
+        isOnInverseBackground = true
     }
 
     public var body: some View {
         ZStack {
+            if !isOnInverseBackground {
+                Circle()
+                    .fill(Color(colors.backgroundCoreElevation0))
+                    .overlay(
+                        Circle()
+                            .inset(by: -1)
+                            .stroke(colors.backgroundCoreElevation0.toColor, lineWidth: bordered ? 2 : 0)
+                    )
+            }
             Circle()
-                .fill(Color(colors.backgroundCoreElevation0))
-                .overlay(
-                    Circle()
-                        .inset(by: -1)
-                        .stroke(colors.backgroundCoreElevation0.toColor, lineWidth: bordered ? 2 : 0)
-                )
-            Circle()
-                .stroke(Color(colors.borderCoreDefault), lineWidth: strokeWidth)
+                .stroke(trackColor, lineWidth: strokeWidth)
                 .frame(width: spinnerDiameter, height: spinnerDiameter)
 
             if let progress {
                 Circle()
                     .trim(from: 0, to: CGFloat(min(max(progress, 0), 1)))
                     .stroke(
-                        Color(colors.accentPrimary),
+                        arcColor,
                         style: StrokeStyle(lineWidth: strokeWidth, lineCap: .round)
                     )
                     .frame(width: spinnerDiameter, height: spinnerDiameter)
@@ -65,7 +77,7 @@ public struct LoadingSpinnerView: View {
                 Circle()
                     .trim(from: 0, to: 0.25)
                     .stroke(
-                        Color(colors.accentPrimary),
+                        arcColor,
                         style: StrokeStyle(lineWidth: strokeWidth, lineCap: .round)
                     )
                     .frame(width: spinnerDiameter, height: spinnerDiameter)
@@ -82,6 +94,14 @@ public struct LoadingSpinnerView: View {
         .accessibilityIdentifier("LoadingSpinnerView")
     }
 
+    private var trackColor: Color {
+        isOnInverseBackground ? Color(colors.textOnInverse).opacity(0.35) : Color(colors.borderCoreDefault)
+    }
+
+    private var arcColor: Color {
+        Color(isOnInverseBackground ? colors.textOnInverse : colors.accentPrimary)
+    }
+
     /// Diameter of the spinner arc, inset from the badge border.
     private var spinnerDiameter: CGFloat {
         size - 2
@@ -89,6 +109,6 @@ public struct LoadingSpinnerView: View {
 
     /// Stroke width of the arc, scaled proportionally to the badge size.
     private var strokeWidth: CGFloat {
-        max(size * 3.0 / 32.0, 1.5)
+        isOnInverseBackground ? tokens.iconStrokeEmphasis : max(size * 3.0 / 32.0, 1.5)
     }
 }
