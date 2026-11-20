@@ -328,6 +328,9 @@ lane :test_e2e_mock do |options|
     scan_options[:only_testing] = only_testing_batch
   end
 
+  scan_options[:only_testing] = ENV['E2E_ONLY_TESTING'].split(',') if ENV['E2E_ONLY_TESTING']
+  scan_options[:xcargs] = "-test-iterations #{ENV['E2E_TEST_ITERATIONS']} -test-repetition-relaunch-enabled YES" if ENV['E2E_TEST_ITERATIONS']
+
   failed_tests = []
   begin
     scan_with_retries(scan_options: scan_options)
