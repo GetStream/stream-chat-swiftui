@@ -362,6 +362,7 @@ import XCTest
             query: query,
             client: chatClient
         )
+        commentsController.votes_simulated = comments
 
         let viewModel = PollCommentsViewModel(
             pollController: pollController,

@@ -26,7 +26,28 @@ if [ "${GITHUB_ACTIONS:-}" != "true" ]; then
   bundle exec lefthook install
 fi
 
-if [ "${SKIP_SWIFT_BOOTSTRAP:-}" != true ]; then
+OS="$(uname -s)"
+
+# Linux runners only lint the code. SwiftGen has no Linux build.
+if [[ $OS == Linux && ${SKIP_SWIFT_BOOTSTRAP:-} != true ]]; then
+  puts "Install SwiftLint v${SWIFT_LINT_VERSION}"
+  DOWNLOAD_URL="https://github.com/realm/SwiftLint/releases/download/${SWIFT_LINT_VERSION}/swiftlint_linux.zip"
+  DOWNLOAD_PATH="/tmp/swiftlint-${SWIFT_LINT_VERSION}.zip"
+  wget "$DOWNLOAD_URL" -O "$DOWNLOAD_PATH"
+  unzip -o "$DOWNLOAD_PATH" -d "/tmp/swiftlint-${SWIFT_LINT_VERSION}"
+  sudo install -m 755 "/tmp/swiftlint-${SWIFT_LINT_VERSION}/swiftlint" /usr/local/bin/swiftlint
+  swiftlint version
+
+  puts "Install SwiftFormat v${SWIFT_FORMAT_VERSION}"
+  DOWNLOAD_URL="https://github.com/nicklockwood/SwiftFormat/releases/download/${SWIFT_FORMAT_VERSION}/swiftformat_linux.zip"
+  DOWNLOAD_PATH="/tmp/swiftformat-${SWIFT_FORMAT_VERSION}.zip"
+  wget "$DOWNLOAD_URL" -O "$DOWNLOAD_PATH"
+  unzip -o "$DOWNLOAD_PATH" -d "/tmp/swiftformat-${SWIFT_FORMAT_VERSION}"
+  sudo install -m 755 "/tmp/swiftformat-${SWIFT_FORMAT_VERSION}/swiftformat_linux" /usr/local/bin/swiftformat
+  swiftformat --version
+fi
+
+if [[ $OS != Linux && ${SKIP_SWIFT_BOOTSTRAP:-} != true ]]; then
   puts "Install SwiftLint v${SWIFT_LINT_VERSION}"
   DOWNLOAD_URL="https://github.com/realm/SwiftLint/releases/download/${SWIFT_LINT_VERSION}/SwiftLint.pkg"
   DOWNLOAD_PATH="/tmp/SwiftLint-${SWIFT_LINT_VERSION}.pkg"
@@ -61,13 +82,15 @@ fi
 
 if [[ ${INSTALL_SONAR-default} == true ]]; then
   puts "Install sonar scanner v${SONAR_VERSION}"
-  DOWNLOAD_URL="https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-${SONAR_VERSION}-macosx-x64.zip"
+  SONAR_PLATFORM="macosx-x64"
+  if [[ $OS == Linux ]]; then SONAR_PLATFORM="linux-x64"; fi
+  DOWNLOAD_URL="https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-${SONAR_VERSION}-${SONAR_PLATFORM}.zip"
   wget "${DOWNLOAD_URL}" -O ./fastlane/sonar.zip
   cd fastlane
   unzip sonar.zip
   rm sonar.zip
   cd ..
-  mv "fastlane/sonar-scanner-${SONAR_VERSION}-macosx-x64/" fastlane/sonar/
+  mv "fastlane/sonar-scanner-${SONAR_VERSION}-${SONAR_PLATFORM}" fastlane/sonar
   chmod +x ./fastlane/sonar/bin/sonar-scanner
 fi
 
@@ -104,7 +127,11 @@ fi
 if [[ ${INSTALL_INTERFACE_ANALYZER-default} == true ]]; then
   puts "Install interface-analyser v${INTERFACE_ANALYZER_VERSION}"
   FILE="interface-analyser"
-  wget "https://github.com/GetStream/stream-module-interface-analyser/releases/download/v${INTERFACE_ANALYZER_VERSION}/${FILE}"
+  ASSET="$FILE"
+  if [[ $OS == Linux ]]; then
+    ASSET="${FILE}-linux"
+  fi
+  wget "https://github.com/GetStream/stream-module-interface-analyser/releases/download/v${INTERFACE_ANALYZER_VERSION}/${ASSET}" -O "${FILE}"
   chmod +x ${FILE}
   sudo mv ${FILE} /usr/local/bin/
 fi

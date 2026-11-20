@@ -121,10 +121,6 @@ jobs:
     env:
       XCODE_VERSION: "16.4"
     steps:
-    - name: Connect Bot
-      uses: webfactory/ssh-agent@v0.7.0
-      with:
-        ssh-private-key: ${{ secrets.BOT_SSH_PRIVATE_KEY }}
     - uses: actions/checkout@v3.1.0
     - uses: ./.github/actions/xcode-cache
     - uses: ./.github/actions/ruby-cache
@@ -134,12 +130,11 @@ jobs:
 
   automated-code-review:
     name: Automated Code Review
-    runs-on: macos-15
-    env:
-      XCODE_VERSION: "16.1"
+    runs-on: ubuntu-24.04
     steps:
     - uses: actions/checkout@v4.1.1
-    - uses: ./.github/actions/bootstrap
+    - uses: ./.github/actions/ruby-cache
+    - run: ./Scripts/bootstrap.sh
     - run: bundle exec fastlane rubocop
     - run: bundle exec fastlane run_swift_format strict:true
 
