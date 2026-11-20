@@ -19,7 +19,9 @@ import SwiftUI
         if let currentChannelController, channelId == currentChannelController.cid {
             return currentChannelController
         }
-        let controller = chatClient.channelController(for: channelId)
+        var query = ChannelQuery(cid: channelId)
+        query.includeScheduledMessages = true
+        let controller = chatClient.channelController(for: query)
         currentChannelController = controller
         return controller
     }

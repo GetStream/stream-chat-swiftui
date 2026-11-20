@@ -23,6 +23,7 @@ import UIKit
     @Injected(\.utils) private var utils
 
     private let scheduledMessageListController: ScheduledMessageListController
+    private let parentMessageId: MessageId?
     private var hasStartedLoading = false
     private var isLoadingMoreScheduledMessages = false
     private var actionPendingSheetDismissal: (@MainActor () -> Void)?
@@ -69,10 +70,14 @@ import UIKit
 
     /// Creates a view model for the `ScheduledMessageListView`.
     ///
-    /// - Parameter scheduledMessageListController: A controller providing the scheduled messages. Its query decides
-    /// which ones are listed, for example the ones of a single channel.
-    public init(scheduledMessageListController: ScheduledMessageListController) {
+    /// - Parameters:
+    ///   - scheduledMessageListController: A controller providing the scheduled messages. Its query decides
+    ///   which ones are listed, for example the ones of a single channel.
+    ///   - parentMessageId: The thread whose scheduled replies are listed. All the scheduled messages of the
+    ///   controller are listed when `nil`.
+    public init(scheduledMessageListController: ScheduledMessageListController, parentMessageId: MessageId? = nil) {
         self.scheduledMessageListController = scheduledMessageListController
+        self.parentMessageId = parentMessageId
     }
 
     /// Called when the view appears on screen.
@@ -352,6 +357,7 @@ import UIKit
 
     private func updateScheduledMessages() {
         let all = scheduledMessageListController.scheduledMessages
+            .filter { parentMessageId == nil || $0.message.parentMessageId == parentMessageId }
         if !all.isEmpty {
             viewState = .loaded
         } else if viewState == .loaded {

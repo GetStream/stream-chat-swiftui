@@ -50,6 +50,15 @@ struct FloatingComposerHeightPreferenceKey: PreferenceKey {
     }
 }
 
+// The banner on the top edge of the composer overlays the bottom of the message list.
+struct ComposerBannerHeightPreferenceKey: PreferenceKey {
+    static let defaultValue: CGFloat = 0
+
+    static func reduce(value: inout CGFloat, nextValue: () -> CGFloat) {
+        value = max(value, nextValue())
+    }
+}
+
 /// View container that allows injecting another view in its bottom right corner.
 public struct BottomRightView<Content: View>: View {
     var content: () -> Content

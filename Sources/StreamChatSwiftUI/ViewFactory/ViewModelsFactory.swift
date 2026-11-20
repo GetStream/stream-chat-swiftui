@@ -122,12 +122,15 @@ import SwiftUI
     ///
     /// - Parameters:
     ///    - scheduledMessageListController: The controller that manages the scheduled messages.
+    ///    - parentMessageId: The thread whose scheduled replies are listed, `nil` for all the scheduled messages.
     /// - Returns: `ScheduledMessageListViewModel`.
     public static func makeScheduledMessageListViewModel(
-        scheduledMessageListController: ScheduledMessageListController
+        scheduledMessageListController: ScheduledMessageListController,
+        parentMessageId: MessageId? = nil
     ) -> ScheduledMessageListViewModel {
         ScheduledMessageListViewModel(
-            scheduledMessageListController: scheduledMessageListController
+            scheduledMessageListController: scheduledMessageListController,
+            parentMessageId: parentMessageId
         )
     }
 }

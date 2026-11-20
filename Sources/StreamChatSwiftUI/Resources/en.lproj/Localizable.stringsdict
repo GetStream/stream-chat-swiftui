@@ -34,6 +34,22 @@
 			<string>%d unread messages</string>
 		</dict>
 	</dict>
+	<key>composer.scheduled-messages-banner.count</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@messages@</string>
+		<key>messages</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>d</string>
+			<key>one</key>
+			<string>%d scheduled message</string>
+			<key>other</key>
+			<string>%d scheduled messages</string>
+		</dict>
+	</dict>
 	<key>chat-info.members.count</key>
 	<dict>
 		<key>NSStringLocalizedFormatKey</key>
