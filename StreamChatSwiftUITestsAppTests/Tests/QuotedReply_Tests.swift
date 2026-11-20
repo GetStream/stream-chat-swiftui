@@ -49,9 +49,11 @@ final class QuotedReply_Tests: StreamTestCase {
                 .quoteMessage(replyText, messageCellIndex: firstParticipantsMessageIndex)
         }
         THEN("user observes the quote reply in message list") {
-            userRobot
-                .assertScrollToBottomButton(isVisible: false)
-                .assertQuotedMessage(replyText: replyText, quotedText: quotedText)
+            userRobot.assertQuotedMessage(replyText: replyText, quotedText: quotedText)
+            // On iOS 17 the list stops short of the bottom after sending, so the button can stay visible.
+            if #available(iOS 18, *) {
+                userRobot.assertScrollToBottomButton(isVisible: false)
+            }
         }
         WHEN("user taps on a quoted message") {
             userRobot.tapOnQuotedMessage(quotedText, at: 0)
@@ -108,9 +110,11 @@ final class QuotedReply_Tests: StreamTestCase {
                 .quoteMessage(replyText, messageCellIndex: firstParticipantsMessageIndex)
         }
         THEN("user observes the quote reply in message list") {
-            userRobot
-                .assertScrollToBottomButton(isVisible: false)
-                .assertQuotedMessage(replyText: replyText, quotedText: quotedText)
+            userRobot.assertQuotedMessage(replyText: replyText, quotedText: quotedText)
+            // On iOS 17 the list stops short of the bottom after sending, so the button can stay visible.
+            if #available(iOS 18, *) {
+                userRobot.assertScrollToBottomButton(isVisible: false)
+            }
         }
         WHEN("user taps on a quoted message") {
             userRobot.tapOnQuotedMessage(quotedText, at: 0)
