@@ -34,7 +34,8 @@ extension ChannelAction {
             actions.append(muteAction(for: channel, chatClient: chatClient, onDismiss: onDismiss, onError: onError))
         }
 
-        if let otherMember = channel.lastActiveMembers.first(where: { $0.id != chatClient.currentUserId }) {
+        if InjectedValues[\.utils].messageListConfig.userBlockingEnabled,
+           let otherMember = channel.lastActiveMembers.first(where: { $0.id != chatClient.currentUserId }) {
             let blockedIds = chatClient.currentUserController().currentUser?.blockedUserIds ?? []
             actions.append(
                 blockedIds.contains(otherMember.id)
