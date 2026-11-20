@@ -131,6 +131,24 @@ public struct ChatChannelInfoView<Factory: ViewFactory>: View, KeyboardReadable 
                 )
             }
 
+            if viewModel.shouldShowScheduledMessagesButton {
+                NavigatableChatInfoItemView(
+                    icon: images.channelInfoScheduledMessages,
+                    title: L10n.ChatInfo.ScheduledMessages.title
+                ) {
+                    ScheduledMessageListView(
+                        viewFactory: factory,
+                        viewModel: ViewModelsFactory.makeScheduledMessageListViewModel(
+                            scheduledMessageListController: chatClient.scheduledMessageListController(
+                                query: .init(filter: .equal(.cid, to: viewModel.channel.cid))
+                            )
+                        ),
+                        title: L10n.ChatInfo.ScheduledMessages.title,
+                        embedInNavigationView: false
+                    )
+                }
+            }
+
             NavigatableChatInfoItemView(
                 icon: images.imagePlaceholder,
                 title: L10n.ChatInfo.Media.title

@@ -1617,6 +1617,26 @@ import XCTest
         XCTAssertTrue(viewModel.isUploadingGroupAvatar)
     }
 
+    // MARK: - shouldShowScheduledMessagesButton
+
+    func test_chatChannelInfoVM_shouldShowScheduledMessagesButton_whenChannelHasScheduleCapability_returnsTrue() {
+        // Given
+        let channel = mockGroup(with: 5, capabilities: [.scheduleMessage])
+        let viewModel = ChatChannelInfoViewModel(channel: channel)
+
+        // Then
+        XCTAssertTrue(viewModel.shouldShowScheduledMessagesButton)
+    }
+
+    func test_chatChannelInfoVM_shouldShowScheduledMessagesButton_whenChannelLacksScheduleCapability_returnsFalse() {
+        // Given
+        let channel = mockGroup(with: 5, capabilities: [.sendMessage])
+        let viewModel = ChatChannelInfoViewModel(channel: channel)
+
+        // Then
+        XCTAssertFalse(viewModel.shouldShowScheduledMessagesButton)
+    }
+
     // MARK: - private
 
     private func mockGroup(

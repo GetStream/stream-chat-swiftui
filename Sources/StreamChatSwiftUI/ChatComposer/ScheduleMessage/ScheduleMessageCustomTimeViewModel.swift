@@ -38,12 +38,16 @@ import StreamChat
     /// - Parameters:
     ///   - channel: The channel the message is scheduled in. Its config has the earliest and the latest time.
     ///   - usage: How many scheduled messages the current user has, next to the limits of the app.
+    ///   - initialDate: The date picked first, for example the current date of a rescheduled message. A date that is too
+    ///   soon is kept, so the sheet shows why it can't be confirmed. Tomorrow at 09:00 when `nil` or in the past, like the
+    ///   date of a failed message.
     ///   - validate: Checks the message at the given date with the checks the SDK runs on the device before saving it,
     ///   for example with `ChatChannelController.validateForScheduling`, and completes with the error, if there is one.
     ///   - onSchedule: Schedules the message at the given date and closes the sheet, without waiting for the server.
     public init(
         channel: ChatChannel,
         usage: ScheduledMessagesUsage?,
+        initialDate: Date? = nil,
         validate: @escaping @MainActor (Date, @escaping @MainActor (Error?) -> Void) -> Void,
         onSchedule: @escaping @MainActor (Date) -> Void
     ) {
@@ -57,13 +61,20 @@ import StreamChat
         let calendar = Calendar.current
         let tomorrow = calendar.date(byAdding: .day, value: 1, to: calendar.startOfDay(for: Date()))
         let tomorrowMorning = tomorrow.flatMap { calendar.date(bySettingHour: 9, minute: 0, second: 0, of: $0) }
-        date = min(max(tomorrowMorning ?? dateLimits.earliest, dateLimits.earliest), dateLimits.latest ?? .distantFuture)
+        if let initialDate, initialDate > Date() {
+            date = min(initialDate, dateLimits.latest ?? .distantFuture)
+        } else {
+            date = min(max(tomorrowMorning ?? dateLimits.earliest, dateLimits.earliest), dateLimits.latest ?? .distantFuture)
+        }
         validatePickedDate()
     }
 
     /// The dates that can be picked.
+    ///
+    /// It starts at the picked date when that became too soon. The picker would show the earliest time otherwise,
+    /// next to the error about the picked date.
     public var dateRange: ClosedRange<Date> {
-        earliestDate...max(earliestDate, latestDate ?? .distantFuture)
+        min(earliestDate, date)...max(earliestDate, latestDate ?? .distantFuture)
     }
 
     /// The error to show, for example that the picked time is too soon or too far ahead. The SDK checks the message at

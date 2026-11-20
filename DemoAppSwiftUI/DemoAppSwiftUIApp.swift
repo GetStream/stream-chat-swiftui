@@ -47,6 +47,8 @@ struct RootView: View {
                     threadListView()
                         .tabItem { Label("Threads", systemImage: "text.bubble") }
                         .badge(appState.unreadCount.threads)
+                    scheduledListView()
+                        .tabItem { Label("Scheduled", systemImage: "clock") }
                 }
                 .id(appState.contentIdentifier)
             }
@@ -77,6 +79,15 @@ struct RootView: View {
 
     func threadListView() -> ChatThreadListView<DemoAppFactory> {
         ChatThreadListView(viewFactory: DemoAppFactory.shared)
+    }
+
+    func scheduledListView() -> ScheduledMessageListView<DemoAppFactory> {
+        ScheduledMessageListView(
+            viewFactory: DemoAppFactory.shared,
+            viewModel: ViewModelsFactory.makeScheduledMessageListViewModel(
+                scheduledMessageListController: appState.chatClient.scheduledMessageListController()
+            )
+        )
     }
 }
 
