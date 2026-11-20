@@ -547,7 +547,8 @@ extension ViewFactory {
             previewRecording: options.previewRecording,
             showRecordingTip: options.showRecordingTip,
             sendInChannelShown: options.sendInChannelShown,
-            showReplyInChannel: options.showReplyInChannel
+            showReplyInChannel: options.showReplyInChannel,
+            onSendMessageLongPress: options.onSendMessageLongPress
         )
     }
     
@@ -578,7 +579,8 @@ extension ViewFactory {
             startRecording: options.startRecording,
             stopRecording: options.stopRecording,
             showRecordingTip: options.showRecordingTip,
-            sendMessage: options.sendMessage
+            sendMessage: options.sendMessage,
+            onSendMessageLongPress: options.onSendMessageLongPress
         )
     }
     
@@ -595,7 +597,8 @@ extension ViewFactory {
     ) -> some View {
         SendMessageButton(
             enabled: options.enabled,
-            onTap: options.onTap
+            onTap: options.onTap,
+            onLongPress: options.onLongPress
         )
     }
 
@@ -609,6 +612,29 @@ extension ViewFactory {
         )
     }
     
+    public func makeScheduleMessageSheet(
+        options: ScheduleMessageSheetOptions
+    ) -> some View {
+        let actions = InjectedValues[\.utils].scheduledMessagesConfig.supportedScheduleMessageActions(
+            SupportedScheduleMessageActionsOptions(
+                channel: options.channel,
+                onSchedule: options.onSchedule,
+                onCustomTime: options.onCustomTime
+            )
+        )
+        return ScheduleMessageSheetView(
+            actions: actions,
+            reachedLimit: options.reachedLimit,
+            onDismiss: options.onDismiss
+        )
+    }
+
+    public func makeScheduleMessageCustomTimeSheet(
+        options: ScheduleMessageCustomTimeSheetOptions
+    ) -> some View {
+        ScheduleMessageCustomTimeSheetView(factory: self, options: options)
+    }
+
     public func makeComposerVoiceRecordingInputView(
         options: ComposerVoiceRecordingInputViewOptions
     ) -> some View {
