@@ -32,6 +32,7 @@ import StreamChatCommonUI
     public var messageListConfig: MessageListConfig
     public var composerConfig: ComposerConfig
     public var pollsConfig: PollsConfig
+    public var scheduledMessagesConfig: ScheduledMessagesConfig
     public var shouldSyncChannelControllerOnAppear: (ChatChannelController) -> Bool
     public var snapshotCreator: SnapshotCreator
     public var messageIdBuilder: MessageIdBuilder
@@ -107,6 +108,7 @@ import StreamChatCommonUI
         messageListConfig: MessageListConfig = MessageListConfig(),
         composerConfig: ComposerConfig = ComposerConfig(),
         pollsConfig: PollsConfig = PollsConfig(),
+        scheduledMessagesConfig: ScheduledMessagesConfig = ScheduledMessagesConfig(),
         channelNameFormatter: ChannelNameFormatter = DefaultChannelNameFormatter(),
         chatUserNamer: ChatUserNamer = DefaultChatUserNamer(),
         snapshotCreator: SnapshotCreator = DefaultSnapshotCreator(),
@@ -151,6 +153,7 @@ import StreamChatCommonUI
         self.audioRecordingNameFormatter = audioRecordingNameFormatter
         self.messageRemindersFormatter = messageRemindersFormatter
         self.pollsConfig = pollsConfig
+        self.scheduledMessagesConfig = scheduledMessagesConfig
         messageListDateUtils = MessageListDateUtils(messageListConfig: messageListConfig)
     }
     
