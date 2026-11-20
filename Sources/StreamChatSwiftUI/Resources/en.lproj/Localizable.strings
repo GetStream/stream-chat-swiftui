@@ -304,6 +304,7 @@
 "composer.schedule-message.error.too-far" = "That's further ahead than your app allows";
 "composer.schedule-message.error.too-soon" = "Pick a time at least %@ from now";
 "composer.schedule-message.error.user-limit" = "You've reached your limit of %d scheduled messages.";
+"composer.scheduled-messages-banner.scheduled-for" = "Scheduled for %@";
 "message.sending.attachment-uploading-failed" = "UPLOADING FAILED";
 "message.sending.attachment-upload-failed" = "Upload failed";
 "message.sending.attachment-retry-upload" = "Retry upload";
@@ -353,6 +354,8 @@
 "chat-info.pinned-messages.title" = "Pinned Messages";
 "chat-info.pinned-messages.empty-title" = "No pinned messages";
 "chat-info.pinned-messages.empty-desc" = "Long-press an important message and choose Pin to conversation.";
+
+"chat-info.scheduled-messages.title" = "Scheduled Messages";
 
 "chat-info.files.title" = "Files";
 "chat-info.files.empty-title" = "No files";
@@ -407,6 +410,25 @@
 "thread.item.replied-to" = "replied to: %@";
 "thread.item.reply" = "reply";
 "thread.item.replies" = "replies";
+"scheduled-messages.title" = "Scheduled messages";
+"scheduled-messages.actions.copy-text" = "Copy text";
+"scheduled-messages.actions.reschedule" = "Reschedule";
+"scheduled-messages.actions.send-now" = "Send now";
+"scheduled-messages.delete-confirmation.message" = "This message to %@ won't be sent. This can't be undone.";
+"scheduled-messages.delete-confirmation.title" = "Delete scheduled message?";
+"scheduled-messages.error.message" = "Couldn't load scheduled messages";
+"scheduled-messages.error.retry" = "Try again";
+"scheduled-messages.item.quote-deleted" = "Can't send now. The quote was deleted.";
+"scheduled-messages.item.reply-to" = "Reply to %1$@: %2$@";
+"scheduled-messages.item.send-at" = "Send %@";
+"scheduled-messages.item.sending" = "Sending…";
+"scheduled-messages.item.thread-reply" = "Thread reply: %@";
+"scheduled-messages.item.uploading" = "Uploading…";
+"scheduled-messages.no-content.message" = "Long press the send button in a channel to schedule a message.";
+"scheduled-messages.no-content.title" = "No scheduled messages";
+"scheduled-messages.reschedule.title" = "Reschedule message";
+"scheduled-messages.snackbar.already-sent" = "Already sent. It's in the channel now.";
+"scheduled-messages.snackbar.still-sending" = "Still sending. Try again in a moment.";
 
 // - MARK: Message Annotations
 

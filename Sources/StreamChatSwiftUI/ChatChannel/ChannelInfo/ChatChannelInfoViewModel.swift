@@ -87,6 +87,11 @@ import SwiftUI
         channel.ownCapabilities.contains(.muteChannel)
     }
 
+    /// Whether the scheduled messages button is shown in the channel info screen.
+    open var shouldShowScheduledMessagesButton: Bool {
+        channel.canScheduleMessage
+    }
+
     open var canRenameChannel: Bool {
         channel.ownCapabilities.contains(.updateChannel)
     }

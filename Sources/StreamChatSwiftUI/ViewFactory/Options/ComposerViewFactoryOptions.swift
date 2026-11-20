@@ -387,6 +387,8 @@ public final class ScheduleMessageCustomTimeSheetOptions: Sendable {
     public let usage: ScheduledMessagesUsage?
     /// The preview of the message.
     public let preview: ScheduleMessagePreview
+    /// The scheduled message to reschedule. When `nil`, a new message is scheduled.
+    public let scheduledMessage: ScheduledMessage?
     /// Schedules the message at the given date and completes with the error, if there is one.
     public let onSchedule: @MainActor (Date, @escaping @MainActor (Error?) -> Void) -> Void
     /// Callback when the sheet is dismissed.
@@ -396,12 +398,14 @@ public final class ScheduleMessageCustomTimeSheetOptions: Sendable {
         channel: ChatChannel,
         usage: ScheduledMessagesUsage?,
         preview: ScheduleMessagePreview,
+        scheduledMessage: ScheduledMessage? = nil,
         onSchedule: @escaping @MainActor (Date, @escaping @MainActor (Error?) -> Void) -> Void,
         onDismiss: @escaping @MainActor () -> Void
     ) {
         self.channel = channel
         self.usage = usage
         self.preview = preview
+        self.scheduledMessage = scheduledMessage
         self.onSchedule = onSchedule
         self.onDismiss = onDismiss
     }

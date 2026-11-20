@@ -322,6 +322,10 @@ internal enum L10n {
       /// Add a group name
       internal static var placeholder: String { L10n.tr("Localizable", "chat-info.rename.placeholder") }
     }
+    internal enum ScheduledMessages {
+      /// Scheduled Messages
+      internal static var title: String { L10n.tr("Localizable", "chat-info.scheduled-messages.title") }
+    }
     internal enum Users {
       /// %@ more
       internal static func loadMore(_ p1: Any) -> String {
@@ -615,6 +619,12 @@ internal enum L10n {
         internal static func messageTo(_ p1: Any) -> String {
           return L10n.tr("Localizable", "composer.schedule-message.preview.message-to", String(describing: p1))
         }
+      }
+    }
+    internal enum ScheduledMessagesBanner {
+      /// Scheduled for %@
+      internal static func scheduledFor(_ p1: Any) -> String {
+        return L10n.tr("Localizable", "composer.scheduled-messages-banner.scheduled-for", String(describing: p1))
       }
     }
     internal enum Suggestions {
@@ -1172,6 +1182,69 @@ internal enum L10n {
       internal static func name(_ p1: Int) -> String {
         return L10n.tr("Localizable", "recording.presentation.name", p1)
       }
+    }
+  }
+
+  internal enum ScheduledMessages {
+    /// Scheduled messages
+    internal static var title: String { L10n.tr("Localizable", "scheduled-messages.title") }
+    internal enum Actions {
+      /// Copy text
+      internal static var copyText: String { L10n.tr("Localizable", "scheduled-messages.actions.copy-text") }
+      /// Reschedule
+      internal static var reschedule: String { L10n.tr("Localizable", "scheduled-messages.actions.reschedule") }
+      /// Send now
+      internal static var sendNow: String { L10n.tr("Localizable", "scheduled-messages.actions.send-now") }
+    }
+    internal enum DeleteConfirmation {
+      /// This message to %@ won't be sent. This can't be undone.
+      internal static func message(_ p1: Any) -> String {
+        return L10n.tr("Localizable", "scheduled-messages.delete-confirmation.message", String(describing: p1))
+      }
+      /// Delete scheduled message?
+      internal static var title: String { L10n.tr("Localizable", "scheduled-messages.delete-confirmation.title") }
+    }
+    internal enum Error {
+      /// Couldn't load scheduled messages
+      internal static var message: String { L10n.tr("Localizable", "scheduled-messages.error.message") }
+      /// Try again
+      internal static var retry: String { L10n.tr("Localizable", "scheduled-messages.error.retry") }
+    }
+    internal enum Item {
+      /// Can't send now. The quote was deleted.
+      internal static var quoteDeleted: String { L10n.tr("Localizable", "scheduled-messages.item.quote-deleted") }
+      /// Reply to %1$@: %2$@
+      internal static func replyTo(_ p1: Any, _ p2: Any) -> String {
+        return L10n.tr("Localizable", "scheduled-messages.item.reply-to", String(describing: p1), String(describing: p2))
+      }
+      /// Send %@
+      internal static func sendAt(_ p1: Any) -> String {
+        return L10n.tr("Localizable", "scheduled-messages.item.send-at", String(describing: p1))
+      }
+      /// Sending…
+      internal static var sending: String { L10n.tr("Localizable", "scheduled-messages.item.sending") }
+      /// Thread reply: %@
+      internal static func threadReply(_ p1: Any) -> String {
+        return L10n.tr("Localizable", "scheduled-messages.item.thread-reply", String(describing: p1))
+      }
+      /// Uploading…
+      internal static var uploading: String { L10n.tr("Localizable", "scheduled-messages.item.uploading") }
+    }
+    internal enum NoContent {
+      /// Long press the send button in a channel to schedule a message.
+      internal static var message: String { L10n.tr("Localizable", "scheduled-messages.no-content.message") }
+      /// No scheduled messages
+      internal static var title: String { L10n.tr("Localizable", "scheduled-messages.no-content.title") }
+    }
+    internal enum Reschedule {
+      /// Reschedule message
+      internal static var title: String { L10n.tr("Localizable", "scheduled-messages.reschedule.title") }
+    }
+    internal enum Snackbar {
+      /// Already sent. It's in the channel now.
+      internal static var alreadySent: String { L10n.tr("Localizable", "scheduled-messages.snackbar.already-sent") }
+      /// Still sending. Try again in a moment.
+      internal static var stillSending: String { L10n.tr("Localizable", "scheduled-messages.snackbar.still-sending") }
     }
   }
 

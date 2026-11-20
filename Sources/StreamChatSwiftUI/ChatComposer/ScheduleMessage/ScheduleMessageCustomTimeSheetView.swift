@@ -18,6 +18,7 @@ public struct ScheduleMessageCustomTimeSheetView<Factory: ViewFactory>: View {
 
     private let factory: Factory
     private let preview: ScheduleMessagePreview
+    private let title: String
     private let onDismiss: @MainActor () -> Void
     private let timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
 
@@ -33,11 +34,13 @@ public struct ScheduleMessageCustomTimeSheetView<Factory: ViewFactory>: View {
     ) {
         self.factory = factory
         preview = options.preview
+        title = options.scheduledMessage == nil ? L10n.Composer.ScheduleMessage.title : L10n.ScheduledMessages.Reschedule.title
         onDismiss = options.onDismiss
         _viewModel = StateObject(
             wrappedValue: viewModel ?? ScheduleMessageCustomTimeViewModel(
                 channel: options.channel,
                 usage: options.usage,
+                initialDate: options.scheduledMessage?.scheduledAt,
                 onSchedule: options.onSchedule
             )
         )
@@ -45,12 +48,12 @@ public struct ScheduleMessageCustomTimeSheetView<Factory: ViewFactory>: View {
 
     public var body: some View {
         SheetView(
-            title: L10n.Composer.ScheduleMessage.title,
+            title: title,
             estimatedContentHeight: 540,
             onClose: onDismiss,
             onConfirm: { viewModel.confirm() },
             confirmDisabled: !viewModel.canConfirm,
-            confirmAccessibilityLabel: L10n.Composer.ScheduleMessage.title
+            confirmAccessibilityLabel: title
         ) {
             VStack(spacing: tokens.spacingMd) {
                 previewView
