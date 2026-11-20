@@ -822,6 +822,18 @@ import XCTest
         XCTAssertTrue(viewModel.shouldShowBlockUserButton)
     }
 
+    func test_chatChannelInfoVM_shouldShowBlockUserButton_falseForSingleMemberDM_whenUserBlockingDisabled() {
+        // Given
+        streamChat = StreamChat(
+            chatClient: chatClient,
+            utils: .init(messageListConfig: .init(userBlockingEnabled: false))
+        )
+        let viewModel = ChatChannelInfoViewModel(channel: mockDirectMessage())
+
+        // Then
+        XCTAssertFalse(viewModel.shouldShowBlockUserButton)
+    }
+
     func test_chatChannelInfoVM_shouldShowBlockUserButton_falseForMultiPersonDM() {
         // Given - DM channel with 4 members (showSingleMemberDMView == false)
         let members = ChannelInfoMockUtils.setupMockMembers(
@@ -951,6 +963,28 @@ import XCTest
         // Then - 1-on-1 DM shows Block, not Leave Group
         XCTAssertTrue(actions.contains { $0.title == L10n.Alert.Actions.blockUser })
         XCTAssertFalse(actions.contains { $0.title == L10n.Alert.Actions.leaveGroupTitle })
+    }
+
+    func test_chatChannelInfoVM_participantActions_whenUserBlockingDisabled_excludesBlock() {
+        // Given
+        streamChat = StreamChat(
+            chatClient: chatClient,
+            utils: .init(messageListConfig: .init(userBlockingEnabled: false))
+        )
+        let viewModel = ChatChannelInfoViewModel(channel: mockGroup(with: 5))
+        let participant = ParticipantInfo(
+            chatUser: ChatUser.mock(id: .unique),
+            displayName: "Test User",
+            onlineInfoText: "online",
+            isDeactivated: false
+        )
+
+        // When
+        let actions = viewModel.participantActions(for: participant)
+
+        // Then
+        XCTAssertFalse(actions.contains { $0.title == L10n.Alert.Actions.blockUser })
+        XCTAssertFalse(actions.contains { $0.title == L10n.Alert.Actions.unblockUser })
     }
 
     // MARK: - blockParticipantAction properties
