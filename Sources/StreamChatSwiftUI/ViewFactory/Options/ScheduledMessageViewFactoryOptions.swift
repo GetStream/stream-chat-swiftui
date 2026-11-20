@@ -13,8 +13,11 @@ public final class ScheduledMessageActionsSheetOptions: Sendable {
     public let onCopyText: @MainActor () -> Void
     /// Deletes the scheduled message, after asking for confirmation.
     public let onDelete: @MainActor () -> Void
-    /// Opens the sheet for picking a new time. `nil` hides the action, for example when the channel of the message isn't
-    /// stored locally, because the sheet needs its config.
+    /// Opens the composer for editing the scheduled message. `nil` hides the action, for example when the current user
+    /// can't schedule messages in the channel, or the channel isn't stored locally.
+    public let onEdit: (@MainActor () -> Void)?
+    /// Opens the sheet for picking a new time. `nil` hides the action, for example when the current user can't schedule
+    /// messages in the channel, or the channel isn't stored locally.
     public let onReschedule: (@MainActor () -> Void)?
     /// Sends the scheduled message right away.
     public let onSendNow: @MainActor () -> Void
@@ -25,6 +28,7 @@ public final class ScheduledMessageActionsSheetOptions: Sendable {
         scheduledMessage: ScheduledMessage,
         onCopyText: @escaping @MainActor () -> Void,
         onDelete: @escaping @MainActor () -> Void,
+        onEdit: (@MainActor () -> Void)?,
         onReschedule: (@MainActor () -> Void)?,
         onSendNow: @escaping @MainActor () -> Void,
         onDismiss: @escaping @MainActor () -> Void
@@ -32,6 +36,7 @@ public final class ScheduledMessageActionsSheetOptions: Sendable {
         self.scheduledMessage = scheduledMessage
         self.onCopyText = onCopyText
         self.onDelete = onDelete
+        self.onEdit = onEdit
         self.onReschedule = onReschedule
         self.onSendNow = onSendNow
         self.onDismiss = onDismiss
@@ -76,8 +81,11 @@ public final class SupportedScheduledMessageListActionsOptions: Sendable {
     public let onCopyText: @MainActor () -> Void
     /// Deletes the scheduled message, after asking for confirmation.
     public let onDelete: @MainActor () -> Void
-    /// Opens the sheet for picking a new time. `nil` hides the action, for example when the channel of the message isn't
-    /// stored locally, because the sheet needs its config.
+    /// Opens the composer for editing the scheduled message. `nil` hides the action, for example when the current user
+    /// can't schedule messages in the channel, or the channel isn't stored locally.
+    public let onEdit: (@MainActor () -> Void)?
+    /// Opens the sheet for picking a new time. `nil` hides the action, for example when the current user can't schedule
+    /// messages in the channel, or the channel isn't stored locally.
     public let onReschedule: (@MainActor () -> Void)?
     /// Sends the scheduled message right away.
     public let onSendNow: @MainActor () -> Void
@@ -86,12 +94,14 @@ public final class SupportedScheduledMessageListActionsOptions: Sendable {
         scheduledMessage: ScheduledMessage,
         onCopyText: @escaping @MainActor () -> Void,
         onDelete: @escaping @MainActor () -> Void,
+        onEdit: (@MainActor () -> Void)?,
         onReschedule: (@MainActor () -> Void)?,
         onSendNow: @escaping @MainActor () -> Void
     ) {
         self.scheduledMessage = scheduledMessage
         self.onCopyText = onCopyText
         self.onDelete = onDelete
+        self.onEdit = onEdit
         self.onReschedule = onReschedule
         self.onSendNow = onSendNow
     }

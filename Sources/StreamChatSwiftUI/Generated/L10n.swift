@@ -634,6 +634,8 @@ internal enum L10n {
       internal static func limit(_ p1: Int, _ p2: Int) -> String {
         return L10n.tr("Localizable", "composer.scheduled-messages-banner.limit", p1, p2)
       }
+      /// Remove quote
+      internal static var removeQuote: String { L10n.tr("Localizable", "composer.scheduled-messages-banner.remove-quote") }
       /// Scheduled for %@
       internal static func scheduledFor(_ p1: Any) -> String {
         return L10n.tr("Localizable", "composer.scheduled-messages-banner.scheduled-for", String(describing: p1))
@@ -702,6 +704,8 @@ internal enum L10n {
     internal enum Title {
       /// Edit Message
       internal static var edit: String { L10n.tr("Localizable", "composer.title.edit") }
+      /// Edit scheduled message
+      internal static var editScheduled: String { L10n.tr("Localizable", "composer.title.edit-scheduled") }
       /// Reply to Message
       internal static var reply: String { L10n.tr("Localizable", "composer.title.reply") }
       /// Save

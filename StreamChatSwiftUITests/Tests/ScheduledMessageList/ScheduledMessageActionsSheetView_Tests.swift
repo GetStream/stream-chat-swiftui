@@ -33,33 +33,46 @@ import XCTest
 
     // MARK: - Default actions
 
-    func test_defaultActions_forAScheduledMessage_areRescheduleSendNowAndDelete() {
+    func test_defaultActions_forAScheduledMessage_areEditRescheduleSendNowAndDelete() {
         let actions = defaultActions(for: .mock(status: .scheduled))
 
         XCTAssertEqual(
             actions.map(\.id),
-            [ScheduledMessageListActionId.reschedule, ScheduledMessageListActionId.sendNow, ScheduledMessageListActionId.delete]
+            [
+                ScheduledMessageListActionId.edit,
+                ScheduledMessageListActionId.reschedule,
+                ScheduledMessageListActionId.sendNow,
+                ScheduledMessageListActionId.delete
+            ]
         )
-        XCTAssertEqual(actions.map(\.isDestructive), [false, false, true])
+        XCTAssertEqual(actions.map(\.isDestructive), [false, false, false, true])
     }
 
-    func test_defaultActions_forAFailedMessage_areRescheduleAndDelete() {
+    func test_defaultActions_forAFailedMessage_areEditRescheduleAndDelete() {
         XCTAssertEqual(
             defaultActions(for: failedMessage()).map(\.id),
-            [ScheduledMessageListActionId.reschedule, ScheduledMessageListActionId.delete]
+            [ScheduledMessageListActionId.edit, ScheduledMessageListActionId.reschedule, ScheduledMessageListActionId.delete]
         )
     }
 
-    func test_defaultActions_withoutReschedule_leaveItOut() {
-        let scheduled = defaultActions(for: .mock(status: .scheduled), canReschedule: false)
-        let failed = defaultActions(for: failedMessage(), canReschedule: false)
+    func test_defaultActions_withoutEditAndReschedule_leaveThemOut() {
+        let scheduled = defaultActions(for: .mock(status: .scheduled), canEdit: false, canReschedule: false)
+        let failed = defaultActions(for: failedMessage(), canEdit: false, canReschedule: false)
+        let quotesDeleted = defaultActions(for: quotesDeletedMessage(), canEdit: false)
 
         XCTAssertEqual(scheduled.map(\.id), [ScheduledMessageListActionId.sendNow, ScheduledMessageListActionId.delete])
         XCTAssertEqual(failed.map(\.id), [ScheduledMessageListActionId.delete])
+        XCTAssertEqual(quotesDeleted.map(\.id), [ScheduledMessageListActionId.delete])
     }
 
-    func test_defaultActions_forAMessageQuotingADeletedMessageOrUploadingAttachments_isDelete() {
-        let quotesDeleted = ScheduledMessage.mock(message: .mock(quotedMessage: .mock(deletedAt: Date())))
+    func test_defaultActions_forAMessageQuotingADeletedMessage_areEditAndDelete() {
+        XCTAssertEqual(
+            defaultActions(for: quotesDeletedMessage()).map(\.id),
+            [ScheduledMessageListActionId.edit, ScheduledMessageListActionId.delete]
+        )
+    }
+
+    func test_defaultActions_forAMessageUploadingAttachments_isDelete() {
         let uploading = ScheduledMessage.mock(
             message: .mock(attachments: [
                 ChatMessageImageAttachment.mock(id: .unique, localState: .uploading(progress: 0.4)).asAnyAttachment
@@ -67,7 +80,6 @@ import XCTest
             status: .preparingToSchedule
         )
 
-        XCTAssertEqual(defaultActions(for: quotesDeleted).map(\.id), [ScheduledMessageListActionId.delete])
         XCTAssertEqual(defaultActions(for: uploading).map(\.id), [ScheduledMessageListActionId.delete])
     }
 
@@ -87,7 +99,7 @@ import XCTest
         defaultActions(for: .mock(status: .scheduled)).forEach { $0.action() }
         defaultActions(for: channelDeletedMessage(text: "Booking confirmed")).first?.action()
 
-        XCTAssertEqual(performedActions, ["reschedule", "sendNow", "delete", "copyText"])
+        XCTAssertEqual(performedActions, ["edit", "reschedule", "sendNow", "delete", "copyText"])
     }
 
     // MARK: - Helpers
@@ -103,14 +115,17 @@ import XCTest
 
     private func defaultActions(
         for scheduledMessage: ScheduledMessage,
+        canEdit: Bool = true,
         canReschedule: Bool = true
     ) -> [ScheduledMessageListAction] {
+        let onEdit: (@MainActor () -> Void)? = canEdit ? { @MainActor [weak self] in self?.performedActions.append("edit") } : nil
         let onReschedule: (@MainActor () -> Void)? = canReschedule ? { @MainActor [weak self] in self?.performedActions.append("reschedule") } : nil
         return ScheduledMessageListAction.defaultActions(
             for: SupportedScheduledMessageListActionsOptions(
                 scheduledMessage: scheduledMessage,
                 onCopyText: { [weak self] in self?.performedActions.append("copyText") },
                 onDelete: { [weak self] in self?.performedActions.append("delete") },
+                onEdit: onEdit,
                 onReschedule: onReschedule,
                 onSendNow: { [weak self] in self?.performedActions.append("sendNow") }
             )
@@ -119,6 +134,10 @@ import XCTest
 
     private func failedMessage() -> ScheduledMessage {
         .mock(status: .failed, failure: .localDeviceFailedScheduling(.init(reason: .requestFailed)))
+    }
+
+    private func quotesDeletedMessage() -> ScheduledMessage {
+        .mock(message: .mock(quotedMessage: .mock(deletedAt: Date())))
     }
 
     private func channelDeletedMessage(text: String) -> ScheduledMessage {

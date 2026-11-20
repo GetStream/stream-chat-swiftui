@@ -30,9 +30,12 @@ import SwiftUI
 
     @Published public var text = "" {
         didSet {
+            if isEditingScheduledMessage, hasCommand(text), !hasCommand(oldValue) {
+                snackBarText = L10n.Composer.ScheduleMessage.Error.command
+            }
             if text != "" {
                 checkTypingSuggestions()
-                if !isPopulatingDraft {
+                if !isPopulatingDraft, !isEditingScheduledMessage {
                     channelController.sendKeystrokeEvent()
                 }
             } else {
@@ -205,7 +208,24 @@ import SwiftUI
     public let eventsController: EventsController
     public var quotedMessage: Binding<ChatMessage?>?
     public var editedMessage: Binding<ChatMessage?>?
+    /// The scheduled message edited in the composer. The composer clears it when the edit ends.
+    ///
+    /// Set it before the composer appears, which fills the composer with the message once, so each edit needs its own
+    /// composer.
+    public var editedScheduledMessage: Binding<ScheduledMessage?>?
     public var willSendMessage: (() -> Void)?
+
+    /// A Boolean value indicating whether the edited scheduled message was sent while it was edited, which disables
+    /// saving it.
+    @Published public private(set) var editedScheduledMessageWasSent = false
+    /// A Boolean value indicating whether the sheet for picking a new time for the edited scheduled message is shown.
+    /// A failed message whose time has passed needs a new time.
+    @Published public var editedScheduledMessageTimeSheetShown = false
+    // The quote of the edited scheduled message, `nil` once it is removed.
+    @Published private var editedScheduledMessageQuotedMessageId: MessageId?
+    // Set once the composer is filled with the edited scheduled message. It stays set after the edit ends, so the
+    // composer is filled once and never saves or deletes a draft.
+    private(set) var isFilledWithEditedScheduledMessage = false
 
     // An alert can't be presented while the schedule message sheet is dismissing.
     private var showsErrorAfterScheduleMessageSheet = false
@@ -232,6 +252,7 @@ import SwiftUI
         channelController.channel?.config.pollsEnabled == true
             && channelController.channel?.canSendPoll == true
             && messageController == nil
+            && !isEditingScheduledMessage
     }
 
     lazy var audioRecorder: AudioRecording = {
@@ -249,7 +270,7 @@ import SwiftUI
     private var isPopulatingDraft = false
 
     private var isSlowModeDisabled: Bool {
-        channelController.channel?.ownCapabilities.contains("skip-slow-mode") == true
+        channelController.channel?.ownCapabilities.contains("skip-slow-mode") == true || isEditingScheduledMessage
     }
     
     private var cancellables = Set<AnyCancellable>()
@@ -262,7 +283,8 @@ import SwiftUI
         )
 
     public var instantCommands: [CommandHandler] {
-        commandsHandler.commands
+        guard !isEditingScheduledMessage else { return [] }
+        return commandsHandler.commands
             .compactMap { $0 as? InstantCommandsHandler }
             .first?
             .commands ?? []
@@ -438,7 +460,7 @@ import SwiftUI
         isSilent: Bool = false,
         extraData: [String: RawJSON] = [:]
     ) {
-        guard utils.messageListConfig.draftMessagesEnabled && hasContent else {
+        guard utils.messageListConfig.draftMessagesEnabled && hasContent && !isFilledWithEditedScheduledMessage else {
             return
         }
         let mentionedUserIds = mentionedUsers.map(\.id)
@@ -523,6 +545,10 @@ import SwiftUI
         extraData: [String: RawJSON] = [:],
         completion: (@MainActor () -> Void)? = nil
     ) {
+        if isEditingScheduledMessage {
+            saveEditedScheduledMessage()
+            return
+        }
         guard !isSendingMessage else { return }
         isSendingMessage = true
 
@@ -664,7 +690,7 @@ import SwiftUI
 
     /// A Boolean value indicating whether the current user has capability to schedule messages.
     public var canScheduleMessage: Bool {
-        channelController.channel?.canScheduleMessage ?? false
+        !isEditingScheduledMessage && channelController.channel?.canScheduleMessage == true
     }
 
     /// Shows the sheet for picking when the message in the composer is sent.
@@ -797,7 +823,7 @@ import SwiftUI
     private func failScheduling(_ error: Error) {
         isSendingMessage = false
         // The custom time sheet stays open and shows the error itself.
-        guard !scheduleMessageCustomTimeSheetShown else { return }
+        guard !scheduleMessageCustomTimeSheetShown, !editedScheduledMessageTimeSheetShown else { return }
         scheduleMessageErrorText = channelController.channel.map {
             ScheduleMessageErrorText.text(for: error, config: $0.config)
         }
@@ -832,12 +858,17 @@ import SwiftUI
     public var composerInputState: MessageComposerInputState {
         MessageComposerInputState(
             cooldownDuration: cooldownDuration,
-            isEditingMessage: editedMessage?.wrappedValue != nil,
+            isEditingMessage: editedMessage?.wrappedValue != nil || isEditingScheduledMessage,
             isInstantCommandActive: composerCommand?.displayInfo?.isInstant == true,
             isVoiceRecordingEnabled: utils.composerConfig.isVoiceRecordingEnabled,
-            hasContent: hasContent,
+            hasContent: hasSubmittableContent,
             canSendMessage: canSendMessage
         )
+    }
+
+    // The check button of an edited scheduled message is enabled only when the message can be saved.
+    var hasSubmittableContent: Bool {
+        isEditingScheduledMessage ? canSaveEditedScheduledMessage : hasContent
     }
 
     /// Whether the voice recording gesture overlay should be active.
@@ -858,7 +889,180 @@ import SwiftUI
     public var sendInChannelShown: Bool {
         messageController != nil
     }
-    
+
+    // MARK: - Scheduled Message Edit
+
+    /// A Boolean value indicating whether the composer edits a scheduled message.
+    public var isEditingScheduledMessage: Bool {
+        editedScheduledMessage?.wrappedValue != nil
+    }
+
+    /// A Boolean value indicating whether the edited scheduled message quotes a message which was deleted. It can't be
+    /// saved until the quote is removed with `removeEditedScheduledMessageQuote()`.
+    public var editedScheduledMessageQuotesDeletedMessage: Bool {
+        editedScheduledMessageQuotedMessageId != nil && editedScheduledMessage?.wrappedValue?.quotesDeletedMessage == true
+    }
+
+    /// A Boolean value indicating whether the edited scheduled message can be saved.
+    ///
+    /// It can't while it is sending, after it was sent, while it quotes a deleted message, or when its text is a
+    /// command in a channel with commands.
+    public var canSaveEditedScheduledMessage: Bool {
+        guard let scheduledMessage = editedScheduledMessage?.wrappedValue else { return false }
+        return hasContent
+            && !editedScheduledMessageWasSent
+            && scheduledMessage.status != .sending
+            && !editedScheduledMessageQuotesDeletedMessage
+            && !hasCommand(text)
+    }
+
+    /// Fills the composer with the content of the edited scheduled message, once, so the changes are kept when the
+    /// composer appears again.
+    public func fillEditedScheduledMessage() {
+        guard !isFilledWithEditedScheduledMessage, let scheduledMessage = editedScheduledMessage?.wrappedValue else { return }
+        isFilledWithEditedScheduledMessage = true
+        let message = scheduledMessage.message
+        text = message.text
+        mentionedUsers = message.mentionedUsers
+        mentionedRoles = Set(message.mentionedRoles)
+        mentionedGroups = Array(message.mentionedGroups)
+        mentionsHere = message.mentionedHere
+        mentionsChannel = message.mentionedChannel
+        showReplyInChannel = message.showReplyInChannel
+        selectedRangeLocation = message.text.count
+        editedScheduledMessageQuotedMessageId = scheduledMessage.quotedMessageId
+        attachmentsConverter.attachmentsToAssets(message.allAttachments) { [weak self] assets in
+            self?.updateComposerAssets(assets)
+        }
+    }
+
+    /// Removes the quote from the edited scheduled message, for example when the quoted message was deleted.
+    open func removeEditedScheduledMessageQuote() {
+        editedScheduledMessageQuotedMessageId = nil
+    }
+
+    /// Saves the edited scheduled message, and ends the edit when it succeeds.
+    ///
+    /// A failed message whose time has passed, such as one the server failed to send, needs a new time, so without
+    /// `scheduledAt` the sheet for picking one opens instead. Its time is kept otherwise.
+    ///
+    /// - Parameter completion: Called with the error when the message can't be saved, and with `nil` otherwise.
+    open func saveEditedScheduledMessage(
+        scheduledAt: Date? = nil,
+        completion: (@MainActor (Error?) -> Void)? = nil
+    ) {
+        guard let scheduledMessage = editedScheduledMessage?.wrappedValue,
+              canSaveEditedScheduledMessage,
+              !isSendingMessage else {
+            // The message was sent or started sending while the time sheet was open. The composer shows why.
+            editedScheduledMessageTimeSheetShown = false
+            completion?(nil)
+            return
+        }
+        if scheduledAt == nil, scheduledMessage.status == .failed, scheduledMessage.scheduledAt <= Date() {
+            showEditedScheduledMessageTimeSheet(for: scheduledMessage)
+            return
+        }
+        isSendingMessage = true
+        stopPreviewPlaybackIfNeeded()
+        clearRemovedMentions()
+
+        let handleResult: @MainActor (Result<ScheduledMessage, Error>) -> Void = { [weak self] result in
+            guard let self else { return }
+            switch result {
+            case .success:
+                editedScheduledMessageTimeSheetShown = false
+                clearInputData()
+                editedScheduledMessage?.wrappedValue = nil
+                completion?(nil)
+            case let .failure(error):
+                failScheduling(error)
+                completion?(error)
+            }
+        }
+
+        let message = scheduledMessage.message
+        do {
+            let attachments = try convertAddedAssetsToPayloads()
+            if let messageController {
+                messageController.updateScheduledReply(
+                    id: scheduledMessage.id,
+                    text: messageText,
+                    attachments: attachments,
+                    mentionedUserIds: mentionedUsers.map(\.id),
+                    mentionedHere: mentionsHere,
+                    mentionedChannel: mentionsChannel,
+                    mentionedGroupIds: mentionedGroups.map(\.id),
+                    mentionedRoles: Array(mentionedRoles),
+                    showReplyInChannel: showReplyInChannel,
+                    silent: message.isSilent,
+                    quotedMessageId: editedScheduledMessageQuotedMessageId,
+                    scheduledAt: scheduledAt,
+                    extraData: message.extraData,
+                    completion: handleResult
+                )
+            } else {
+                channelController.updateScheduledMessage(
+                    id: scheduledMessage.id,
+                    text: messageText,
+                    silent: message.isSilent,
+                    attachments: attachments,
+                    mentionedUserIds: mentionedUsers.map(\.id),
+                    mentionedHere: mentionsHere,
+                    mentionedChannel: mentionsChannel,
+                    mentionedGroupIds: mentionedGroups.map(\.id),
+                    mentionedRoles: Array(mentionedRoles),
+                    quotedMessageId: editedScheduledMessageQuotedMessageId,
+                    scheduledAt: scheduledAt,
+                    extraData: message.extraData,
+                    completion: handleResult
+                )
+            }
+        } catch {
+            failScheduling(error)
+            completion?(error)
+        }
+    }
+
+    private func showEditedScheduledMessageTimeSheet(for scheduledMessage: ScheduledMessage) {
+        channelController.scheduledMessagesUsage { [weak self] result in
+            guard let self else { return }
+            // Without the usage the sheet opens with no limit. Saving still checks the limits.
+            scheduledMessagesUsage = try? result.get()
+            let resolver = MessageAttachmentPreviewResolver(assets: totalAddedAssets)
+            let text = messageText.trimmingCharacters(in: .whitespacesAndNewlines)
+            let date = utils.scheduledMessagesConfig.dateFormatter.format(scheduledMessage.scheduledAt)
+            scheduleMessagePreview = ScheduleMessagePreview(
+                title: L10n.Composer.ScheduledMessagesBanner.scheduledFor(date),
+                subtitle: text.isEmpty ? resolver.previewDescription ?? "" : text,
+                icon: resolver.previewIcon,
+                thumbnail: resolver.previewThumbnail
+            )
+            editedScheduledMessageTimeSheetShown = true
+        }
+    }
+
+    private func editedScheduledMessageEventReceived(_ event: any Event, id: String) {
+        switch event {
+        case let event as ScheduledMessageSentEvent where event.scheduledMessage.id == id:
+            editedScheduledMessageWasSent = true
+            snackBarText = L10n.ScheduledMessages.Snackbar.alreadySent
+        case let event as ScheduledMessageDeletedEvent where event.scheduledMessage.id == id:
+            editedScheduledMessage?.wrappedValue = nil
+        case let event as ScheduledMessageUpdatedEvent where event.scheduledMessage.id == id:
+            editedScheduledMessage?.wrappedValue = event.scheduledMessage
+        case let event as ScheduledMessageFailedEvent where event.scheduledMessage.id == id:
+            editedScheduledMessage?.wrappedValue = event.scheduledMessage
+        default:
+            break
+        }
+    }
+
+    // The server never schedules a slash command in a channel with commands.
+    private func hasCommand(_ text: String) -> Bool {
+        text.hasPrefix("/") && channelController.channel?.config.commands.isEmpty == false
+    }
+
     // MARK: - Scheduled Messages Banner
 
     /// The thread whose scheduled replies the list opened from the banner shows, `nil` for all the scheduled
@@ -896,7 +1100,7 @@ import SwiftUI
     }
 
     private func makeScheduledMessagesBannerState() -> ScheduledMessagesBannerState? {
-        guard let channel = channelController.channel, channel.canScheduleMessage else { return nil }
+        guard !isEditingScheduledMessage, let channel = channelController.channel, channel.canScheduleMessage else { return nil }
         let threadId = messageController?.messageId
         let scheduledMessages = channel.scheduledMessages.filter {
             threadId == nil || $0.message.parentMessageId == threadId
@@ -1152,7 +1356,7 @@ import SwiftUI
 
     /// Checks if the previous value of the content in the composer was not empty and the current value is empty.
     private func shouldDeleteDraftMessage(oldValue: any Collection) -> Bool {
-        !oldValue.isEmpty && !hasContent
+        !isFilledWithEditedScheduledMessage && !oldValue.isEmpty && !hasContent
     }
 
     private func fetchAssets() {
@@ -1320,10 +1524,13 @@ import SwiftUI
             showTypingSuggestions()
             return
         }
-        composerCommand = commandsHandler.canHandleCommand(
+        let command = commandsHandler.canHandleCommand(
             in: text,
             caretLocation: selectedRangeLocation
         )
+        // A scheduled message can't have a command, so only mentions are suggested.
+        let isCommand = text.hasPrefix(utils.commandsConfig.instantCommandsSymbol)
+        composerCommand = isEditingScheduledMessage && isCommand ? nil : command
         
         showTypingSuggestions()
     }
@@ -1504,7 +1711,9 @@ import SwiftUI
 
 extension MessageComposerViewModel: EventsControllerDelegate {
     public func eventsController(_ controller: EventsController, didReceiveEvent event: any Event) {
-        if let event = event as? DraftUpdatedEvent {
+        if let scheduledMessageId = editedScheduledMessage?.wrappedValue?.id {
+            editedScheduledMessageEventReceived(event, id: scheduledMessageId)
+        } else if let event = event as? DraftUpdatedEvent {
             let isFromSameThread = messageController?.messageId == event.draftMessage.threadId
             let isFromSameChannel = channelController.cid == event.cid && messageController == nil
             if isFromSameThread || isFromSameChannel {
