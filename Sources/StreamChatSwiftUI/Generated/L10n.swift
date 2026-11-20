@@ -622,10 +622,28 @@ internal enum L10n {
       }
     }
     internal enum ScheduledMessagesBanner {
+      /// Plural format key: "%#@messages@"
+      internal static func count(_ p1: Int) -> String {
+        return L10n.tr("Localizable", "composer.scheduled-messages-banner.count", p1)
+      }
+      /// %d failed to send
+      internal static func failed(_ p1: Int) -> String {
+        return L10n.tr("Localizable", "composer.scheduled-messages-banner.failed", p1)
+      }
+      /// %1$d of %2$d scheduled messages
+      internal static func limit(_ p1: Int, _ p2: Int) -> String {
+        return L10n.tr("Localizable", "composer.scheduled-messages-banner.limit", p1, p2)
+      }
       /// Scheduled for %@
       internal static func scheduledFor(_ p1: Any) -> String {
         return L10n.tr("Localizable", "composer.scheduled-messages-banner.scheduled-for", String(describing: p1))
       }
+      /// Scheduled message sent
+      internal static var sent: String { L10n.tr("Localizable", "composer.scheduled-messages-banner.sent") }
+      /// View
+      internal static var view: String { L10n.tr("Localizable", "composer.scheduled-messages-banner.view") }
+      /// View all
+      internal static var viewAll: String { L10n.tr("Localizable", "composer.scheduled-messages-banner.view-all") }
     }
     internal enum Suggestions {
       internal enum Commands {

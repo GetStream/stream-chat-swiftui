@@ -239,6 +239,13 @@ import SwiftUI
             object: nil
         )
         
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(onJumpToMessage(_:)),
+            name: .jumpToMessageNotification,
+            object: nil
+        )
+
         if messageController == nil {
             NotificationCenter.default.addObserver(
                 self,
@@ -271,6 +278,19 @@ import SwiftUI
         threadMessageShown = true
         if let replyId = notification.userInfo?[MessageRepliesConstants.threadMessageReplyId] as? String {
             messageCachingUtils.jumpToReplyId = replyId
+        }
+    }
+
+    @objc
+    private func onJumpToMessage(_ notification: Notification) {
+        guard let request = notification.object as? JumpToMessageRequest,
+              request.cid == channelController.cid,
+              request.parentMessageId == messageController?.messageId else { return }
+        if request.messageId == messages.first?.messageId {
+            scrollToLastMessage()
+            highlightMessage(withId: request.messageId)
+        } else {
+            _ = jumpToMessage(messageId: request.messageId)
         }
     }
 
@@ -401,7 +421,7 @@ import SwiftUI
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) { [weak self] in
             self?.highlightedMessageId = messageId
         }
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.7) { [weak self] in
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.1) { [weak self] in
             withAnimation {
                 self?.highlightedMessageId = nil
             }
@@ -1014,12 +1034,22 @@ public enum ChannelHeaderType {
 let firstMessageKey = "firstMessage"
 let lastMessageKey = "lastMessage"
 
+struct JumpToMessageRequest {
+    let cid: ChannelId?
+    // `nil` for the message list of the channel.
+    let parentMessageId: MessageId?
+    let messageId: MessageId
+}
+
 extension Notification.Name {
     /// A notification for notifying when an error occured and an alert banner should be shown at the top of the message list.
     static let showChannelAlertBannerNotification = Notification.Name("showChannelAlertBannerNotification")
     
     /// A notification for showing a snack bar at the bottom of the channel. The `object` should be a `String` with the text.
     static let showChannelSnackBarNotification = Notification.Name("showChannelSnackBarNotification")
+
+    /// A notification for scrolling a message list to a message and highlighting it. The `object` should be a `JumpToMessageRequest`.
+    static let jumpToMessageNotification = Notification.Name("jumpToMessageNotification")
     
     /// A notification for notifying when message dismissed a sheet.
     static let messageSheetHiddenNotification = Notification.Name("messageSheetHiddenNotification")
