@@ -2974,7 +2974,229 @@ import XCTest
         XCTAssertFalse(viewModel.errorShown)
     }
 
+    // MARK: - Scheduled Messages Banner
+
+    func test_scheduledMessagesBannerState_withoutScheduledMessages_isNil() {
+        let viewModel = makeBannerViewModel(scheduledMessages: [])
+
+        XCTAssertNil(viewModel.scheduledMessagesBannerState)
+    }
+
+    func test_scheduledMessagesBannerState_withOnePendingMessage_showsItsDate() {
+        let date = Date().addingTimeInterval(3600)
+        let viewModel = makeBannerViewModel(scheduledMessages: [.mock(scheduledAt: date, status: .preparingToSchedule)])
+
+        XCTAssertEqual(viewModel.scheduledMessagesBannerState, .single(scheduledAt: date))
+    }
+
+    func test_scheduledMessagesBannerState_withSeveralPendingMessages_countsThemWithTheThreadReplies() {
+        let viewModel = makeBannerViewModel(scheduledMessages: [
+            .mock(status: .scheduled),
+            .mock(status: .sending),
+            .mock(message: .mock(parentMessageId: .unique), status: .scheduled)
+        ])
+
+        XCTAssertEqual(viewModel.scheduledMessagesBannerState, .multiple(count: 3))
+    }
+
+    func test_scheduledMessagesBannerState_withFailedMessages_showsTheFailedCount() {
+        let viewModel = makeBannerViewModel(limit: 2, scheduledMessages: [
+            .mock(status: .scheduled),
+            .mock(status: .scheduled),
+            .mock(status: .failed)
+        ])
+
+        XCTAssertEqual(viewModel.scheduledMessagesBannerState, .failed(count: 1))
+    }
+
+    func test_scheduledMessagesBannerState_whenTheChannelLimitIsReached_showsTheLimit() {
+        let viewModel = makeBannerViewModel(limit: 2, scheduledMessages: [.mock(status: .scheduled), .mock(status: .scheduled)])
+
+        XCTAssertEqual(viewModel.scheduledMessagesBannerState, .limitReached(count: 2, limit: 2))
+    }
+
+    func test_scheduledMessagesBannerState_whenTheUserCannotSchedule_isNil() {
+        let viewModel = makeBannerViewModel(ownCapabilities: [.sendMessage], scheduledMessages: [.mock(status: .scheduled)])
+
+        XCTAssertNil(viewModel.scheduledMessagesBannerState)
+    }
+
+    func test_scheduledMessagesBannerState_inAThread_countsTheRepliesOfTheThread() {
+        let messageController = makeScheduleReplyController()
+        let date = Date().addingTimeInterval(3600)
+        let viewModel = makeBannerViewModel(
+            messageController: messageController,
+            scheduledMessages: [
+                .mock(status: .scheduled),
+                .mock(message: .mock(parentMessageId: .unique), status: .failed),
+                .mock(message: .mock(parentMessageId: messageController.messageId), scheduledAt: date, status: .scheduled)
+            ]
+        )
+
+        XCTAssertEqual(viewModel.scheduledMessagesBannerState, .single(scheduledAt: date))
+        XCTAssertEqual(viewModel.scheduledMessageListParentMessageId, messageController.messageId)
+    }
+
+    func test_scheduledMessagesBannerState_inAThread_whenTheChannelLimitIsReached_showsTheChannel() {
+        let messageController = makeScheduleReplyController()
+        let viewModel = makeBannerViewModel(
+            limit: 2,
+            messageController: messageController,
+            scheduledMessages: [
+                .mock(status: .scheduled),
+                .mock(message: .mock(parentMessageId: messageController.messageId), status: .scheduled)
+            ]
+        )
+
+        XCTAssertEqual(viewModel.scheduledMessagesBannerState, .limitReached(count: 2, limit: 2))
+        XCTAssertNil(viewModel.scheduledMessageListParentMessageId)
+    }
+
+    func test_scheduledMessagesBannerState_followsTheChannel() {
+        let channelController = makeChannelController()
+        let viewModel = makeBannerViewModel(channelController: channelController, scheduledMessages: [])
+        let channel = makeBannerChannel(scheduledMessages: [.mock(status: .scheduled), .mock(status: .scheduled)])
+
+        channelController.simulate(channel: channel, change: .update(channel), typingUsers: nil)
+
+        XCTAssertEqual(viewModel.scheduledMessagesBannerState, .multiple(count: 2))
+    }
+
+    // MARK: - Scheduled Message Sent Now
+
+    func test_scheduledMessageSentNow_showsTheSnackBarWithAnAction() {
+        let channelController = makeChannelController()
+        let viewModel = makeBannerViewModel(channelController: channelController, scheduledMessages: [])
+
+        viewModel.eventsController(viewModel.eventsController, didReceiveEvent: makeSentEvent(cid: channelController.cid))
+
+        XCTAssertEqual(viewModel.snackBarText, L10n.Composer.ScheduledMessagesBanner.sent)
+        XCTAssertEqual(viewModel.snackBarActionTitle, L10n.Composer.ScheduledMessagesBanner.view)
+    }
+
+    func test_scheduledMessageSentByTheServerAtItsDate_showsNoSnackBar() {
+        let channelController = makeChannelController()
+        let viewModel = makeBannerViewModel(channelController: channelController, scheduledMessages: [])
+
+        viewModel.eventsController(
+            viewModel.eventsController,
+            didReceiveEvent: makeSentEvent(cid: channelController.cid, sentNow: false)
+        )
+
+        XCTAssertNil(viewModel.snackBarText)
+    }
+
+    func test_scheduledMessageSentNow_inAnotherChannel_showsNoSnackBar() {
+        let viewModel = makeBannerViewModel(scheduledMessages: [])
+
+        viewModel.eventsController(viewModel.eventsController, didReceiveEvent: makeSentEvent(cid: .unique))
+
+        XCTAssertNil(viewModel.snackBarText)
+    }
+
+    func test_scheduledReplySentNow_showsTheSnackBarInItsThreadOnly() {
+        let channelController = makeChannelController()
+        let messageController = makeScheduleReplyController()
+        let channelViewModel = makeBannerViewModel(channelController: channelController, scheduledMessages: [])
+        let threadViewModel = makeBannerViewModel(
+            channelController: channelController,
+            messageController: messageController,
+            scheduledMessages: []
+        )
+        let otherThreadViewModel = makeBannerViewModel(
+            channelController: channelController,
+            messageController: makeScheduleReplyController(),
+            scheduledMessages: []
+        )
+        let event = makeSentEvent(cid: channelController.cid, parentMessageId: messageController.messageId)
+
+        for viewModel in [channelViewModel, threadViewModel, otherThreadViewModel] {
+            viewModel.eventsController(viewModel.eventsController, didReceiveEvent: event)
+        }
+
+        XCTAssertNil(channelViewModel.snackBarText)
+        XCTAssertEqual(threadViewModel.snackBarText, L10n.Composer.ScheduledMessagesBanner.sent)
+        XCTAssertNil(otherThreadViewModel.snackBarText)
+    }
+
+    func test_snackBarAction_isNotShownForAnotherSnackBar() {
+        let channelController = makeChannelController()
+        let viewModel = makeBannerViewModel(channelController: channelController, scheduledMessages: [])
+        viewModel.eventsController(viewModel.eventsController, didReceiveEvent: makeSentEvent(cid: channelController.cid))
+
+        viewModel.snackBarText = "Muted"
+
+        XCTAssertNil(viewModel.snackBarActionTitle)
+    }
+
+    func test_snackBarActionTapped_asksTheMessageListToJumpToTheSentMessage() {
+        let channelController = makeChannelController()
+        let messageController = makeScheduleReplyController()
+        let viewModel = makeBannerViewModel(
+            channelController: channelController,
+            messageController: messageController,
+            scheduledMessages: []
+        )
+        let event = makeSentEvent(cid: channelController.cid, parentMessageId: messageController.messageId)
+        viewModel.eventsController(viewModel.eventsController, didReceiveEvent: event)
+        let jumped = expectation(forNotification: .jumpToMessageNotification, object: nil) { notification in
+            let request = notification.object as? JumpToMessageRequest
+            return request?.cid == channelController.cid
+                && request?.parentMessageId == messageController.messageId
+                && request?.messageId == event.messageId
+        }
+
+        viewModel.snackBarActionTapped()
+
+        wait(for: [jumped], timeout: defaultTimeout)
+    }
+
     // MARK: - private
+
+    private func makeBannerChannel(
+        cid: ChannelId = .unique,
+        limit: Int? = nil,
+        ownCapabilities: Set<ChannelCapability> = [.sendMessage, .scheduleMessage],
+        scheduledMessages: [ScheduledMessage]
+    ) -> ChatChannel {
+        .mock(
+            cid: cid,
+            config: .mock(scheduledMessagesMaxPerChannel: limit),
+            ownCapabilities: ownCapabilities,
+            scheduledMessages: scheduledMessages
+        )
+    }
+
+    private func makeBannerViewModel(
+        channelController: ChatChannelController_Mock? = nil,
+        limit: Int? = nil,
+        ownCapabilities: Set<ChannelCapability> = [.sendMessage, .scheduleMessage],
+        messageController: ChatMessageController? = nil,
+        scheduledMessages: [ScheduledMessage]
+    ) -> MessageComposerViewModel {
+        let channelController = channelController ?? makeChannelController()
+        channelController.channel_mock = makeBannerChannel(
+            cid: channelController.cid ?? .unique,
+            limit: limit,
+            ownCapabilities: ownCapabilities,
+            scheduledMessages: scheduledMessages
+        )
+        return MessageComposerViewModel(channelController: channelController, messageController: messageController)
+    }
+
+    private func makeSentEvent(
+        cid: ChannelId?,
+        parentMessageId: MessageId? = nil,
+        sentNow: Bool = true
+    ) -> ScheduledMessageSentEvent {
+        let id = String.unique
+        return ScheduledMessageSentEvent(
+            scheduledMessage: .mock(id: id, cid: cid ?? .unique, message: .mock(id: id, parentMessageId: parentMessageId)),
+            messageId: id,
+            sentNow: sentNow,
+            createdAt: Date()
+        )
+    }
 
     private func makeScheduleReplyController() -> ChatMessageController_Mock {
         ChatMessageController_Mock(

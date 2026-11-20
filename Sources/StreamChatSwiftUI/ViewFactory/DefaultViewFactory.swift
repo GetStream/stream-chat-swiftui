@@ -635,6 +635,12 @@ extension ViewFactory {
         ScheduleMessageCustomTimeSheetView(factory: self, options: options)
     }
 
+    public func makeScheduledMessagesBannerView(
+        options: ScheduledMessagesBannerViewOptions
+    ) -> some View {
+        ScheduledMessagesBannerView(state: options.state, onView: options.onView)
+    }
+
     public func makeComposerVoiceRecordingInputView(
         options: ComposerVoiceRecordingInputViewOptions
     ) -> some View {

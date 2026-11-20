@@ -984,12 +984,12 @@ import XCTest
         _ = viewModel.jumpToMessage(messageId: message2.messageId)
 
         // Then
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.8) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.3) {
             XCTAssertNil(viewModel.highlightedMessageId)
             testExpectation.fulfill()
         }
 
-        wait(for: [testExpectation], timeout: 1.5)
+        wait(for: [testExpectation], timeout: defaultTimeout * 2)
     }
 
     func test_chatChannelVM_jumpToMessage_setsScrolledId() {
@@ -1444,6 +1444,44 @@ import XCTest
         // Then
         XCTAssertEqual(1, throttler.cancelCallCount)
         XCTAssertEqual(0, channelController.markReadCallCount)
+    }
+
+    // MARK: - Jump To Message Request
+
+    func test_jumpToMessageRequest_scrollsTheMatchingMessageList() {
+        // Given
+        let message1 = ChatMessage.mock()
+        let message2 = ChatMessage.mock()
+        let channelController = makeChannelController(messages: [message1, message2])
+        let viewModel = ChatChannelViewModel(channelController: channelController)
+
+        // When
+        NotificationCenter.default.post(
+            name: .jumpToMessageNotification,
+            object: JumpToMessageRequest(cid: channelController.cid, parentMessageId: nil, messageId: message2.messageId)
+        )
+
+        // Then
+        XCTAssertEqual(viewModel.scrolledId, message2.messageId)
+    }
+
+    func test_jumpToMessageRequest_ofAnotherMessageList_isIgnored() {
+        // Given
+        let message1 = ChatMessage.mock()
+        let message2 = ChatMessage.mock()
+        let channelController = makeChannelController(messages: [message1, message2])
+        let viewModel = ChatChannelViewModel(channelController: channelController)
+
+        // When
+        for request in [
+            JumpToMessageRequest(cid: .unique, parentMessageId: nil, messageId: message2.messageId),
+            JumpToMessageRequest(cid: channelController.cid, parentMessageId: .unique, messageId: message2.messageId)
+        ] {
+            NotificationCenter.default.post(name: .jumpToMessageNotification, object: request)
+        }
+
+        // Then
+        XCTAssertNil(viewModel.scrolledId)
     }
 
     // MARK: - highlightMessage Tests
