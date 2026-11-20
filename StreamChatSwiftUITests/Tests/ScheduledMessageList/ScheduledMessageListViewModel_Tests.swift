@@ -499,6 +499,74 @@ import XCTest
         XCTAssertNil(viewModel.rescheduledScheduledMessage)
     }
 
+    // MARK: - Edit
+
+    func test_canEdit_whenTheChannelIsNotStored_isTrue() {
+        XCTAssertTrue(viewModel.canEdit(.mock(id: "scheduled")))
+    }
+
+    func test_canEdit_whileAnotherMessageIsEdited_isFalse() {
+        viewModel.editedScheduledMessage = .mock(id: "edited")
+
+        XCTAssertFalse(viewModel.canEdit(.mock(id: "scheduled")))
+    }
+
+    func test_edit_opensTheComposerWhenTheActionsSheetIsDismissed() {
+        channelController.channel_mock = .mock(cid: .unique)
+        load([.mock(id: "scheduled")])
+        let scheduledMessage = viewModel.scheduledMessages[0]
+        viewModel.scheduledMessageTapped(scheduledMessage)
+
+        viewModel.edit(scheduledMessage)
+
+        XCTAssertNil(viewModel.editedScheduledMessage)
+
+        viewModel.actionsSheetDismissed()
+
+        XCTAssertEqual(viewModel.editedScheduledMessage?.id, "scheduled")
+        XCTAssertTrue(viewModel.editedScheduledMessageChannelController === channelController)
+        XCTAssertNil(viewModel.editedScheduledMessageThreadController)
+        XCTAssertEqual(channelController.synchronize_callCount, 0)
+    }
+
+    func test_edit_ofAReply_usesTheControllerOfTheThread() {
+        let cid = ChannelId.unique
+        channelController.channel_mock = .mock(cid: cid)
+        load([.mock(cid: cid, message: .mock(parentMessageId: "parent"))])
+
+        viewModel.edit(viewModel.scheduledMessages[0])
+
+        XCTAssertTrue(viewModel.editedScheduledMessageChannelController === channelController)
+        XCTAssertEqual(viewModel.editedScheduledMessageThreadController?.cid, cid)
+        XCTAssertEqual(viewModel.editedScheduledMessageThreadController?.messageId, "parent")
+    }
+
+    func test_edit_whenTheChannelIsNotStored_loadsItBeforeOpeningTheComposer() {
+        load([.mock(id: "scheduled")])
+
+        viewModel.edit(viewModel.scheduledMessages[0])
+
+        XCTAssertEqual(channelController.synchronize_callCount, 1)
+        XCTAssertNil(viewModel.editedScheduledMessage)
+
+        channelController.channel_mock = .mock(cid: .unique, ownCapabilities: [.scheduleMessage])
+        channelController.synchronize_completion?(nil)
+
+        XCTAssertEqual(viewModel.editedScheduledMessage?.id, "scheduled")
+        XCTAssertTrue(viewModel.editedScheduledMessageChannelController === channelController)
+    }
+
+    func test_edit_whenTheLoadedChannelDoesNotAllowScheduling_showsTheGenericError() {
+        load([.mock(id: "scheduled")])
+
+        viewModel.edit(viewModel.scheduledMessages[0])
+        channelController.channel_mock = .mock(cid: .unique, ownCapabilities: [.sendMessage])
+        channelController.synchronize_completion?(nil)
+
+        XCTAssertEqual(viewModel.snackBarText, L10n.Alert.Error.title)
+        XCTAssertNil(viewModel.editedScheduledMessage)
+    }
+
     // MARK: - Copy text
 
     func test_copyText_copiesTheTextOfTheMessage() {

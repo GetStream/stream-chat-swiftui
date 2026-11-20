@@ -195,6 +195,7 @@
 "message.accessibility.video-own-with-duration-without-timestamp" = "Your video, %1$@. Activate to play.";
 
 "composer.title.edit" = "Edit Message";
+"composer.title.edit-scheduled" = "Edit scheduled message";
 "composer.title.reply" = "Reply to Message";
 "composer.title.save" = "Save";
 "composer.placeholder.message" = "Message";
@@ -308,6 +309,7 @@
 "composer.schedule-message.error.user-limit" = "You've reached your limit of %d scheduled messages.";
 "composer.scheduled-messages-banner.failed" = "%d failed to send";
 "composer.scheduled-messages-banner.limit" = "%1$d of %2$d scheduled messages";
+"composer.scheduled-messages-banner.remove-quote" = "Remove quote";
 "composer.scheduled-messages-banner.scheduled-for" = "Scheduled for %@";
 "composer.scheduled-messages-banner.sent" = "Scheduled message sent";
 "composer.scheduled-messages-banner.view" = "View";

@@ -15,6 +15,8 @@ public enum ScheduledMessagesBannerState: Equatable, Sendable {
     case multiple(count: Int)
     /// One scheduled message is pending, with the date it is sent at.
     case single(scheduledAt: Date)
+    /// The edited scheduled message quotes a message which was deleted. The link removes the quote.
+    case quoteDeleted
 }
 
 extension ScheduledMessagesBannerState {
@@ -29,6 +31,8 @@ extension ScheduledMessagesBannerState {
         case let .single(scheduledAt):
             let formatter = InjectedValues[\.utils].scheduledMessagesConfig.dateFormatter
             return L10n.Composer.ScheduledMessagesBanner.scheduledFor(formatter.format(scheduledAt))
+        case .quoteDeleted:
+            return L10n.Composer.ScheduleMessage.Error.quoteDeleted
         }
     }
 
@@ -38,17 +42,23 @@ extension ScheduledMessagesBannerState {
             return L10n.Composer.ScheduledMessagesBanner.view
         case .failed, .limitReached, .multiple:
             return L10n.Composer.ScheduledMessagesBanner.viewAll
+        case .quoteDeleted:
+            return L10n.Composer.ScheduledMessagesBanner.removeQuote
         }
     }
 
     var isFailed: Bool {
-        if case .failed = self { return true }
-        return false
+        switch self {
+        case .failed, .quoteDeleted:
+            return true
+        case .limitReached, .multiple, .single:
+            return false
+        }
     }
 }
 
 /// A banner on the top edge of the composer with the scheduled messages of the channel or thread, which opens
-/// the scheduled message list.
+/// the scheduled message list. While a scheduled message is edited, it shows that its quoted message was deleted.
 ///
 /// Part of the design system, where it is the `Chat / Mobile / Scheduled Messages Banner` component.
 ///
@@ -63,7 +73,7 @@ public struct ScheduledMessagesBannerView: View {
 
     /// What the banner shows.
     public let state: ScheduledMessagesBannerState
-    /// Opens the scheduled message list.
+    /// Opens the scheduled message list, or removes the quote of the edited scheduled message for `.quoteDeleted`.
     public let onView: @MainActor () -> Void
 
     public init(state: ScheduledMessagesBannerState, onView: @escaping @MainActor () -> Void) {
