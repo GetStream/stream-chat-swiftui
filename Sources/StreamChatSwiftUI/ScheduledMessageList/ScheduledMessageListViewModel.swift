@@ -164,26 +164,29 @@ import UIKit
         }
     }
 
-    /// The channel of a scheduled message, when it is stored locally.
-    open func channel(of scheduledMessage: ScheduledMessage) -> ChatChannel? {
-        scheduledMessageListController.dataStore.channel(cid: scheduledMessage.cid)
+    func channel(of scheduledMessage: ScheduledMessage) -> ChatChannel? {
+        chatClient.channelController(for: scheduledMessage.cid).channel
     }
 
     /// Opens the sheet for picking a new time for a scheduled message. The sheet with the actions is closed first.
+    ///
+    /// A channel which is not stored locally is loaded first. When loading it fails, a snack bar shows the error.
     open func reschedule(_ scheduledMessage: ScheduledMessage) {
         performAfterSheetDismissal { [weak self] in
-            // The message may have been sent or deleted while the sheet with the actions was closing.
-            guard let self, let scheduledMessage = current(scheduledMessage, in: scheduledMessageListController.scheduledMessages) else {
-                return
-            }
-            guard scheduledMessage.status == .failed else {
-                rescheduleUsage = nil
-                rescheduledScheduledMessage = scheduledMessage
-                return
-            }
-            chatClient.channelController(for: scheduledMessage.cid).scheduledMessagesUsage { [weak self] result in
-                self?.rescheduleUsage = try? result.get()
-                self?.rescheduledScheduledMessage = scheduledMessage
+            self?.loadChannelIfNeeded(for: scheduledMessage.cid) { [weak self] controller in
+                // The message may have been sent or deleted while the sheet was closing or the channel was loading.
+                guard let self, let scheduledMessage = current(scheduledMessage, in: scheduledMessageListController.scheduledMessages) else {
+                    return
+                }
+                guard scheduledMessage.status == .failed else {
+                    rescheduleUsage = nil
+                    rescheduledScheduledMessage = scheduledMessage
+                    return
+                }
+                controller.scheduledMessagesUsage { [weak self] result in
+                    self?.rescheduleUsage = try? result.get()
+                    self?.rescheduledScheduledMessage = scheduledMessage
+                }
             }
         }
     }
@@ -243,6 +246,21 @@ import UIKit
     }
 
     // MARK: - Private
+
+    private func loadChannelIfNeeded(for cid: ChannelId, then action: @escaping @MainActor (ChatChannelController) -> Void) {
+        let controller = chatClient.channelController(for: cid)
+        guard controller.channel == nil else {
+            action(controller)
+            return
+        }
+        controller.synchronize { [weak self] error in
+            guard error == nil, controller.channel != nil else {
+                self?.showSnackBar(L10n.Alert.Error.title)
+                return
+            }
+            action(controller)
+        }
+    }
 
     private func didLoadPage(error: Error?) {
         if error == nil, !scheduledMessageListController.hasLoadedAllScheduledMessages {

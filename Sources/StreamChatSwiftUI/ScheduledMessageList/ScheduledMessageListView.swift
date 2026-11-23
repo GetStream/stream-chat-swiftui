@@ -96,15 +96,11 @@ public struct ScheduledMessageListView<Factory: ViewFactory>: View {
     }
 
     private func actionsSheetOptions(for scheduledMessage: ScheduledMessage) -> ScheduledMessageActionsSheetOptions {
-        // The reschedule sheet needs the config of the channel, so the channel has to be stored locally.
-        let onReschedule: (@MainActor () -> Void)? = viewModel.channel(of: scheduledMessage) == nil
-            ? nil
-            : { @MainActor in viewModel.reschedule(scheduledMessage) }
-        return ScheduledMessageActionsSheetOptions(
+        ScheduledMessageActionsSheetOptions(
             scheduledMessage: scheduledMessage,
             onCopyText: { viewModel.copyText(of: scheduledMessage) },
             onDelete: { viewModel.delete(scheduledMessage) },
-            onReschedule: onReschedule,
+            onReschedule: { viewModel.reschedule(scheduledMessage) },
             onSendNow: { viewModel.sendNow(scheduledMessage) },
             onDismiss: { viewModel.selectedScheduledMessage = nil }
         )

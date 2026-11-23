@@ -259,19 +259,33 @@ import XCTest
 
     // MARK: - Reschedule
 
-    func test_reschedule_opensTheSheetWhenTheActionsSheetIsDismissed() {
+    func test_reschedule_loadsTheChannelWhenTheActionsSheetIsDismissed() {
         load([.mock(id: "scheduled")])
         let scheduledMessage = viewModel.scheduledMessages[0]
         viewModel.scheduledMessageTapped(scheduledMessage)
 
         viewModel.reschedule(scheduledMessage)
 
-        XCTAssertNil(viewModel.rescheduledScheduledMessage)
+        XCTAssertNil(chatClient.mockAPIClient.request_endpoint)
 
         viewModel.actionsSheetDismissed()
 
-        XCTAssertEqual(viewModel.rescheduledScheduledMessage?.id, "scheduled")
-        XCTAssertNil(viewModel.rescheduleUsage)
+        XCTAssertTrue(chatClient.mockAPIClient.request_endpoint?.payloadType == ChannelPayload.self)
+        XCTAssertNil(viewModel.rescheduledScheduledMessage)
+    }
+
+    func test_reschedule_whenTheChannelFailsToLoad_showsTheGenericError() {
+        load([.mock(id: "scheduled")])
+        let snackBarShown = expectation(description: "snack bar shown")
+        let cancellable = viewModel.$snackBarText.compactMap { $0 }.sink { _ in snackBarShown.fulfill() }
+
+        viewModel.reschedule(viewModel.scheduledMessages[0])
+        chatClient.mockAPIClient.test_simulateResponse(Result<ChannelPayload, Error>.failure(TestError()))
+
+        wait(for: [snackBarShown], timeout: defaultTimeout)
+        XCTAssertEqual(viewModel.snackBarText, L10n.Alert.Error.title)
+        XCTAssertNil(viewModel.rescheduledScheduledMessage)
+        cancellable.cancel()
     }
 
     func test_reschedulePreview_showsTheScheduledTimeAndTheText() {
