@@ -2,12 +2,16 @@
 // Copyright © 2026 Stream.io Inc. All rights reserved.
 //
 
+import Combine
 import Foundation
 import StreamChat
 
 /// The view model of the sheet for picking a custom time to send a scheduled message at.
 @MainActor open class ScheduleMessageCustomTimeViewModel: ObservableObject {
     /// The picked date and time.
+    ///
+    /// A picked time at or before the earliest time moves to a minute after it. The date picker picks the earliest time
+    /// when today is tapped after the time it shows has passed.
     @Published public var date: Date
     /// The earliest time the message can be scheduled for.
     @Published public private(set) var earliestDate: Date
@@ -23,6 +27,7 @@ import StreamChat
     public let usage: ScheduledMessagesUsage?
 
     private let onSchedule: @MainActor (Date, @escaping @MainActor (Error?) -> Void) -> Void
+    private var cancellables = Set<AnyCancellable>()
 
     /// Creates the view model.
     /// - Parameters:
@@ -44,6 +49,15 @@ import StreamChat
         let tomorrow = calendar.date(byAdding: .day, value: 1, to: calendar.startOfDay(for: Date()))
         let tomorrowMorning = tomorrow.flatMap { calendar.date(bySettingHour: 9, minute: 0, second: 0, of: $0) }
         date = min(max(tomorrowMorning ?? dateLimits.earliest, dateLimits.earliest), dateLimits.latest ?? .distantFuture)
+        $date
+            .dropFirst()
+            // The date picker keeps showing the time of the tapped day. A date set after it handled the tap redraws it.
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] _ in
+                guard let self, pickedDate <= earliestDate else { return }
+                date = earliestDate.addingTimeInterval(60)
+            }
+            .store(in: &cancellables)
     }
 
     /// The dates that can be picked.

@@ -62,14 +62,35 @@ import XCTest
         AssertSnapshot(view, size: size)
     }
 
-    // The shown month would have today in it, so this state has no snapshot.
-    func test_viewModel_whenThePickedTimeIsNow_showsTheTooSoonErrorAndDisablesConfirm() {
+    // The date picker picks the earliest time when today is tapped after the time it shows has passed.
+    func test_viewModel_whenTheEarliestTimeIsPicked_movesTheTimeToAMinuteAfterIt() {
         let viewModel = ScheduleMessageCustomTimeViewModel(channel: .mock(cid: .unique), usage: usage) { _, _ in }
+        let dateMoved = expectation(description: "date moved")
+        let cancellable = viewModel.$date
+            .first { $0 == viewModel.earliestDate.addingTimeInterval(60) }
+            .sink { _ in dateMoved.fulfill() }
+
+        viewModel.date = viewModel.earliestDate
+
+        wait(for: [dateMoved], timeout: defaultTimeout)
+        XCTAssertNil(viewModel.errorText)
+        XCTAssertTrue(viewModel.canConfirm)
+        cancellable.cancel()
+    }
+
+    func test_viewModel_whenThePickedTimeIsNow_movesTheTimeToAMinuteAfterTheEarliestTime() {
+        let viewModel = ScheduleMessageCustomTimeViewModel(channel: .mock(cid: .unique), usage: usage) { _, _ in }
+        let dateMoved = expectation(description: "date moved")
+        let cancellable = viewModel.$date
+            .first { $0 == viewModel.earliestDate.addingTimeInterval(60) }
+            .sink { _ in dateMoved.fulfill() }
 
         viewModel.date = Date()
 
-        XCTAssertEqual(viewModel.errorText, "Pick a time at least 1 minute from now")
-        XCTAssertFalse(viewModel.canConfirm)
+        wait(for: [dateMoved], timeout: defaultTimeout)
+        XCTAssertNil(viewModel.errorText)
+        XCTAssertTrue(viewModel.canConfirm)
+        cancellable.cancel()
     }
 
     // MARK: - private
