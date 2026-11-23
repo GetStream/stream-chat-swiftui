@@ -165,7 +165,7 @@ import UIKit
     }
 
     func channel(of scheduledMessage: ScheduledMessage) -> ChatChannel? {
-        chatClient.channelController(for: scheduledMessage.cid).channel
+        utils.channelControllerFactory.makeChannelController(for: scheduledMessage.cid).channel
     }
 
     /// Opens the sheet for picking a new time for a scheduled message. The sheet with the actions is closed first.
@@ -248,7 +248,7 @@ import UIKit
     // MARK: - Private
 
     private func loadChannelIfNeeded(for cid: ChannelId, then action: @escaping @MainActor (ChatChannelController) -> Void) {
-        let controller = chatClient.channelController(for: cid)
+        let controller = utils.channelControllerFactory.makeChannelController(for: cid)
         guard controller.channel == nil else {
             action(controller)
             return

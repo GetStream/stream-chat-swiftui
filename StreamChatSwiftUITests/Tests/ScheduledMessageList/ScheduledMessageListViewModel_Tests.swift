@@ -8,11 +8,16 @@
 import XCTest
 
 @MainActor final class ScheduledMessageListViewModel_Tests: StreamChatTestCase {
+    private var channelController: ChatChannelController_Mock!
     private var controller: ScheduledMessageListController_Mock!
     private var viewModel: ScheduledMessageListViewModel!
 
     override func setUp() {
         super.setUp()
+        channelController = .mock(client: chatClient)
+        let channelControllerFactory = ChannelControllerFactory_Mock()
+        channelControllerFactory.channelController = channelController
+        streamChat?.utils.channelControllerFactory = channelControllerFactory
         controller = .mock(client: chatClient)
         // A loaded state and mocked scheduled messages keep the controller away from the database.
         controller.state_mock = .localDataFetched
@@ -23,6 +28,7 @@ import XCTest
     override func tearDown() {
         viewModel = nil
         controller = nil
+        channelController = nil
         super.tearDown()
     }
 
@@ -259,33 +265,45 @@ import XCTest
 
     // MARK: - Reschedule
 
-    func test_reschedule_loadsTheChannelWhenTheActionsSheetIsDismissed() {
+    func test_reschedule_opensTheSheetWhenTheActionsSheetIsDismissed() {
+        channelController.channel_mock = .mock(cid: .unique)
         load([.mock(id: "scheduled")])
         let scheduledMessage = viewModel.scheduledMessages[0]
         viewModel.scheduledMessageTapped(scheduledMessage)
 
         viewModel.reschedule(scheduledMessage)
 
-        XCTAssertNil(chatClient.mockAPIClient.request_endpoint)
+        XCTAssertNil(viewModel.rescheduledScheduledMessage)
 
         viewModel.actionsSheetDismissed()
 
-        XCTAssertTrue(chatClient.mockAPIClient.request_endpoint?.payloadType == ChannelPayload.self)
+        XCTAssertEqual(viewModel.rescheduledScheduledMessage?.id, "scheduled")
+        XCTAssertNil(viewModel.rescheduleUsage)
+        XCTAssertEqual(channelController.synchronize_callCount, 0)
+    }
+
+    func test_reschedule_whenTheChannelIsNotStored_loadsItBeforeOpeningTheSheet() {
+        load([.mock(id: "scheduled")])
+
+        viewModel.reschedule(viewModel.scheduledMessages[0])
+
+        XCTAssertEqual(channelController.synchronize_callCount, 1)
         XCTAssertNil(viewModel.rescheduledScheduledMessage)
+
+        channelController.channel_mock = .mock(cid: .unique)
+        channelController.synchronize_completion?(nil)
+
+        XCTAssertEqual(viewModel.rescheduledScheduledMessage?.id, "scheduled")
     }
 
     func test_reschedule_whenTheChannelFailsToLoad_showsTheGenericError() {
         load([.mock(id: "scheduled")])
-        let snackBarShown = expectation(description: "snack bar shown")
-        let cancellable = viewModel.$snackBarText.compactMap { $0 }.sink { _ in snackBarShown.fulfill() }
 
         viewModel.reschedule(viewModel.scheduledMessages[0])
-        chatClient.mockAPIClient.test_simulateResponse(Result<ChannelPayload, Error>.failure(TestError()))
+        channelController.synchronize_completion?(TestError())
 
-        wait(for: [snackBarShown], timeout: defaultTimeout)
         XCTAssertEqual(viewModel.snackBarText, L10n.Alert.Error.title)
         XCTAssertNil(viewModel.rescheduledScheduledMessage)
-        cancellable.cancel()
     }
 
     func test_reschedulePreview_showsTheScheduledTimeAndTheText() {
@@ -393,5 +411,13 @@ import XCTest
         viewModel.delete(scheduledMessage)
         viewModel.deleteConfirmed()
         controller.deleteScheduledMessage_completion?(error)
+    }
+}
+
+private final class ChannelControllerFactory_Mock: ChannelControllerFactory {
+    var channelController: ChatChannelController?
+
+    override func makeChannelController(for channelId: ChannelId) -> ChatChannelController {
+        channelController ?? super.makeChannelController(for: channelId)
     }
 }
