@@ -42,6 +42,7 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
     @State private var scrollDirection = ScrollDirection.up
     @State private var unreadMessagesBannerShown = false
     @State private var unreadButtonDismissed = false
+    @State private var bottomAnchorScroll = BottomAnchorScroll.idle
 
     private var messageRenderingUtil = MessageRenderingUtil.shared
     private var skipRenderingMessageIds = [String]()
@@ -390,6 +391,9 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
                         if offsetValue > 5 {
                             onMessageAppear(0, .down)
                         }
+                        if bottomAnchorScroll == .scrolling && offsetValue > -1 {
+                            bottomAnchorScroll = .landed
+                        }
                     }
                 }
                 .flippedUpsideDown()
@@ -401,11 +405,31 @@ public struct MessageListView<Factory: ViewFactory>: View, KeyboardReadable {
                         if !shouldJump {
                             return
                         }
+                        bottomAnchorScroll = messages.first?.id == scrolledId && utils.messageCachingUtils.scrollOffset < -20
+                            ? .scrolling
+                            : .idle
                         withAnimation {
                             if messages.first?.id == scrolledId {
                                 scrollView.scrollTo(bottomAnchorId, anchor: .bottom)
                             } else {
                                 scrollView.scrollTo(scrolledId, anchor: messageListConfig.scrollingAnchor)
+                            }
+                        }
+                    }
+                }
+                .onChange(of: bottomAnchorScroll) { state in
+                    guard state == .landed else { return }
+                    bottomAnchorScroll = .idle
+                    // The lazy stack can size the newest rows in the frame where the scroll
+                    // lands. SwiftUI then shifts the offset by their height and may drop the
+                    // offset update that hides the button. The task runs after the offset
+                    // handlers already queued on the main queue.
+                    Task { @MainActor in
+                        scrollView.scrollTo(bottomAnchorId, anchor: .bottom)
+                        utils.messageCachingUtils.scrollOffset = 0
+                        if showScrollToLatestButton {
+                            withAnimation(.easeIn(duration: 0.12)) {
+                                showScrollToLatestButton = false
                             }
                         }
                     }
@@ -696,6 +720,12 @@ struct TopAlignedFillModifier: ViewModifier {
     func body(content: Content) -> some View {
         content.frame(minHeight: minHeight, alignment: .bottom)
     }
+}
+
+private enum BottomAnchorScroll {
+    case idle
+    case scrolling
+    case landed
 }
 
 public enum ScrollDirection {
