@@ -330,6 +330,53 @@ import XCTest
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
 
+    // MARK: - Tab Bar Tests
+
+    func test_chatChannelView_inTabBar_regularStyle_snapshot() {
+        // Given
+        let controller = ChatChannelController_Mock.mock(
+            channelQuery: .init(cid: .unique),
+            channelListQuery: nil,
+            client: chatClient
+        )
+        let channel = ChatChannel.mock(cid: .unique, name: "Test channel")
+        let messages = (0..<15).map { index in
+            ChatMessage.mock(
+                id: .unique,
+                cid: channel.cid,
+                text: "Test \(index)",
+                author: .mock(id: .unique, name: "Martin")
+            )
+        }
+        controller.simulateInitial(channel: channel, messages: messages, state: .remoteDataFetched)
+        let leftoverTabBarInset: CGFloat = 83
+
+        // When
+        let channelViewController = UIHostingController(
+            rootView: ChatChannelView(
+                viewFactory: DefaultViewFactory.shared,
+                channelController: controller
+            )
+        )
+        // ChatChannelView ignores the bottom safe area when it is shown in a tab bar controller.
+        // A hidden tab bar can leave its bottom inset behind (83pt on iPhone SE), which is taller
+        // than the docked composer and must not push the message list underneath the composer.
+        channelViewController.additionalSafeAreaInsets.bottom = leftoverTabBarInset
+        let tabBarController = UITabBarController()
+        tabBarController.viewControllers = [channelViewController]
+        if #available(iOS 18.0, *) {
+            tabBarController.setTabBarHidden(true, animated: false)
+        } else {
+            tabBarController.tabBar.isHidden = true
+        }
+
+        // Then
+        AssertSnapshot(
+            tabBarController,
+            screenSize: ViewImageConfig.iPhoneSe.size ?? defaultScreenSize
+        )
+    }
+
     // MARK: - Helpers
 
     private func emptyChannelController() -> ChatChannelController_Mock {

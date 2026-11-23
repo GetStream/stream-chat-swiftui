@@ -5,6 +5,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### 🐞 Fixed
 - Fix block user actions showing in the channel list and channel info when `MessageListConfig.userBlockingEnabled` is `false` [#1672](https://github.com/GetStream/stream-chat-swiftui/pull/1672)
+- Fix the last message being hidden behind the composer on iPhone SE [#1635](https://github.com/GetStream/stream-chat-swiftui/pull/1635)
+- Fix extra space above the floating composer on a closed iPhone Duo [#1635](https://github.com/GetStream/stream-chat-swiftui/pull/1635)
 
 # [5.17.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/5.17.0)
 _November 13, 2026_
