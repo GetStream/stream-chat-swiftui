@@ -48,7 +48,7 @@ import SwiftUI
     @Published public var selectedParticipant: ParticipantInfo?
     
     open var shouldShowBlockUserButton: Bool {
-        showSingleMemberDMView
+        utils.messageListConfig.userBlockingEnabled && showSingleMemberDMView
     }
 
     public var isDMUserBlocked: Bool {
@@ -519,12 +519,14 @@ import SwiftUI
             }
         }
         
-        let blockAction = blockParticipantAction(
-            participant: participant,
-            onDismiss: handleParticipantActionDismiss,
-            onError: handleParticipantActionError
-        )
-        actions.append(blockAction)
+        if utils.messageListConfig.userBlockingEnabled {
+            let blockAction = blockParticipantAction(
+                participant: participant,
+                onDismiss: handleParticipantActionDismiss,
+                onError: handleParticipantActionError
+            )
+            actions.append(blockAction)
+        }
 
         if channel.canUpdateChannelMembers {
             let removeUserAction = removeUserAction(
