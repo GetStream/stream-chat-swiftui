@@ -18,7 +18,6 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
     // Initial popup size, before the keyboard is shown.
     @State private var popupSize: CGFloat = 350
     @State private var composerHeight: CGFloat = 0
-    @State private var scheduledMessagesBannerHeight: CGFloat = 0
     @State private var keyboardShown = false
     @State private var editedMessageWillShow = false
 
@@ -303,23 +302,26 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
             .offset(y: -composerHeight),
             alignment: .bottom
         )
+        // The snack bar sits above the banner. Both hang from the top edge, because an offset by the measured
+        // composer height lags behind the composer's animations.
         .overlay(
-            scheduledMessagesBanner
-                .animation(.easeInOut(duration: 0.2), value: shownScheduledMessagesBannerState)
-                .offset(y: -composerHeight),
-            alignment: .bottom
+            VStack(spacing: 0) {
+                Color.clear
+                    .frame(height: 0)
+                    .snackBar(
+                        text: $viewModel.snackBarText,
+                        icon: viewModel.snackBarShowsErrorIcon ? images.snackBarError : nil,
+                        actionTitle: viewModel.snackBarActionTitle,
+                        onAction: { viewModel.snackBarActionTapped() },
+                        bottomOffset: tokens.spacingMd
+                    )
+                scheduledMessagesBanner
+            }
+            .animation(.easeInOut(duration: 0.2), value: shownScheduledMessagesBannerState)
+            .alignmentGuide(.top) { $0[.bottom] },
+            alignment: .top
         )
-        .onPreferenceChange(ComposerBannerHeightPreferenceKey.self) { value in
-            scheduledMessagesBannerHeight = value
-        }
         .background(scheduledMessageListLink)
-        .snackBar(
-            text: $viewModel.snackBarText,
-            icon: viewModel.snackBarShowsErrorIcon ? images.snackBarError : nil,
-            actionTitle: viewModel.snackBarActionTitle,
-            onAction: { viewModel.snackBarActionTapped() },
-            bottomOffset: composerHeight + scheduledMessagesBannerHeight + tokens.spacingMd
-        )
         .sheet(isPresented: $viewModel.scheduleMessageSheetShown) {
             scheduleMessageSheet
         }
