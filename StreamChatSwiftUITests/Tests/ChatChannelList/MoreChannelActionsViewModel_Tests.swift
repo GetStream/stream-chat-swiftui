@@ -88,6 +88,25 @@ import XCTest
         XCTAssertTrue(actions.contains(where: { $0.title == L10n.Alert.Actions.blockUser }))
     }
 
+    func test_defaultActions_dmChannel_whenUserBlockingDisabled_hidesBlockAction() {
+        // Given
+        streamChat = StreamChat(
+            chatClient: chatClient,
+            utils: .init(messageListConfig: .init(userBlockingEnabled: false))
+        )
+        let channel = ChatChannel.mockDMChannel(
+            name: "test",
+            lastActiveMembers: [.mock(id: .unique, isOnline: true)]
+        )
+
+        // When
+        let actions = makeActions(for: channel)
+
+        // Then
+        XCTAssertFalse(actions.contains(where: { $0.title == L10n.Alert.Actions.blockUser }))
+        XCTAssertFalse(actions.contains(where: { $0.title == L10n.Alert.Actions.unblockUser }))
+    }
+
     func test_defaultActions_dmChannel_withoutMuteCapability_hidesMuteAction() {
         // Given
         let channel = ChatChannel.mockDMChannel(name: "test")

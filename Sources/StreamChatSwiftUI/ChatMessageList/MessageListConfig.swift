@@ -109,6 +109,9 @@ import SwiftUI
     ///
     /// When `nil`, video attachment caching is disabled. This is the default.
     public let videoAttachmentCachingPolicy: VideoAttachmentCachingPolicy?
+    /// Whether users can block and unblock other users.
+    ///
+    /// When `false`, the block and unblock actions are hidden in message actions, channel list actions and the channel info screen.
     public let userBlockingEnabled: Bool
 
     /// A boolean to enable hiding the commands overlay when tapping the message list.
