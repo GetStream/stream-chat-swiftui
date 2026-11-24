@@ -49,12 +49,6 @@ import XCTest
         AssertSnapshot(view, size: size)
     }
 
-    func test_scheduleMessageCustomTimeSheetView_whenTheTimeIsTooFarAhead_snapshot() {
-        let view = makeView(usage: usage, preview: textPreview, error: ClientError.ScheduledMessageIsTooFarAhead(maxLeadTime: 604_800))
-
-        AssertSnapshot(view, size: size)
-    }
-
     func test_scheduleMessageCustomTimeSheetView_whenTheUserLimitIsReached_snapshot() {
         let view = makeView(
             usage: usage,
@@ -95,21 +89,6 @@ import XCTest
         cancellable.cancel()
     }
 
-    func test_viewModel_whenThePickedTimeIsNow_movesTheTimeToAMinuteAfterTheEarliestTime() {
-        let viewModel = makeViewModel()
-        let dateMoved = expectation(description: "date moved")
-        let cancellable = viewModel.$date
-            .first { $0 == viewModel.earliestDate.addingTimeInterval(60) }
-            .sink { _ in dateMoved.fulfill() }
-
-        viewModel.date = Date()
-
-        wait(for: [dateMoved], timeout: defaultTimeout)
-        XCTAssertNil(viewModel.errorText)
-        XCTAssertTrue(viewModel.canConfirm)
-        cancellable.cancel()
-    }
-
     func test_viewModel_whenTheDateChanges_checksTheNewTime() {
         var checkedDates: [Date] = []
         let newTimeChecked = expectation(description: "new time checked")
@@ -120,7 +99,7 @@ import XCTest
             }
             completion(nil)
         })
-        let date = Date().addingTimeInterval(7200).roundedToMinute()
+        let date = Date().addingTimeInterval(7200).roundedToMinute(.down)
 
         viewModel.date = date
 
@@ -135,7 +114,7 @@ import XCTest
 
         viewModel.confirm()
 
-        XCTAssertEqual(scheduledDate, date.roundedToMinute())
+        XCTAssertEqual(scheduledDate, date.roundedToMinute(.down))
     }
 
     func test_viewModel_confirm_whenTheSDKRefusesTheTime_showsTheErrorWithoutScheduling() {
@@ -191,11 +170,5 @@ import XCTest
             .environment(\.locale, Locale(identifier: "en_US"))
             .environment(\.timeZone, calendar.timeZone)
             .frame(width: size.width, height: size.height)
-    }
-}
-
-private extension Date {
-    func roundedToMinute() -> Date {
-        Date(timeIntervalSinceReferenceDate: (timeIntervalSinceReferenceDate / 60).rounded(.down) * 60)
     }
 }

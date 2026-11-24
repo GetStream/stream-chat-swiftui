@@ -52,7 +52,7 @@ struct LongPressButton<Label: View>: View {
     }
 
     private var longPressGesture: some Gesture {
-        LongPressGesture(minimumDuration: 0.5)
+        LongPressGesture()
             .updating($isPressing) { value, state, _ in
                 state = value
             }

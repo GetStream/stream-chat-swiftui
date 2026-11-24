@@ -19,7 +19,6 @@ public struct ScheduleMessageCustomTimeSheetView<Factory: ViewFactory>: View {
     private let factory: Factory
     private let preview: ScheduleMessagePreview
     private let onDismiss: @MainActor () -> Void
-    private let timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
 
     /// Creates the sheet.
     /// - Parameters:
@@ -50,8 +49,7 @@ public struct ScheduleMessageCustomTimeSheetView<Factory: ViewFactory>: View {
             estimatedContentHeight: 540,
             onClose: onDismiss,
             onConfirm: { viewModel.confirm() },
-            confirmDisabled: !viewModel.canConfirm,
-            confirmAccessibilityLabel: L10n.Composer.ScheduleMessage.title
+            confirmDisabled: !viewModel.canConfirm
         ) {
             VStack(spacing: tokens.spacingMd) {
                 previewView
@@ -60,7 +58,7 @@ public struct ScheduleMessageCustomTimeSheetView<Factory: ViewFactory>: View {
                         .accessibilityIdentifier("ScheduleMessageCustomTimeError")
                 }
                 DatePicker(
-                    "",
+                    L10n.Composer.ScheduleMessage.title,
                     selection: $viewModel.date,
                     in: viewModel.dateRange,
                     displayedComponents: [.date, .hourAndMinute]
@@ -77,7 +75,6 @@ public struct ScheduleMessageCustomTimeSheetView<Factory: ViewFactory>: View {
             .padding(.horizontal, tokens.spacingMd)
             .padding(.top, tokens.spacingXs)
         }
-        .onReceive(timer) { _ in viewModel.updateDateLimits() }
         .accessibilityIdentifier("ScheduleMessageCustomTimeSheetView")
     }
 

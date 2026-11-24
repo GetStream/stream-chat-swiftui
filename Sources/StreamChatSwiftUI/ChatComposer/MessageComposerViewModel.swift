@@ -140,14 +140,11 @@ import SwiftUI
     @Published public var cameraPickerShown = false
     /// A Boolean value indicating whether the schedule message sheet is shown.
     @Published public var scheduleMessageSheetShown = false
-    /// The limit of scheduled messages that was reached when the schedule message sheet was opened.
-    @Published public private(set) var reachedScheduledMessagesLimit: Int?
     /// A Boolean value indicating whether the sheet for picking a custom time is shown on top of the schedule message sheet.
     @Published public var scheduleMessageCustomTimeSheetShown = false
     /// The scheduled messages usage read when the schedule message sheet was opened.
     @Published public private(set) var scheduledMessagesUsage: ScheduledMessagesUsage?
     @Published public var errorShown = false
-
     @Published public var showReplyInChannel = false
     @Published public var suggestions = [String: Any]()
     @Published public var cooldownDuration: Int = 0
@@ -673,17 +670,21 @@ import SwiftUI
         channelController.scheduledMessagesUsage { [weak self] result in
             guard let self else { return }
             // Without the usage the sheet opens with no limit. Scheduling still checks the limits.
-            let usage = try? result.get()
-            if let usage, let limit = usage.channelLimit, usage.channelCount >= limit {
-                reachedScheduledMessagesLimit = limit
-            } else if let usage, let limit = usage.userLimit, usage.userCount >= limit {
-                reachedScheduledMessagesLimit = limit
-            } else {
-                reachedScheduledMessagesLimit = nil
-            }
-            scheduledMessagesUsage = usage
+            scheduledMessagesUsage = try? result.get()
             scheduleMessageSheetShown = true
         }
+    }
+
+    /// The limit of scheduled messages that was reached when the schedule message sheet was opened.
+    public var reachedScheduledMessagesLimit: Int? {
+        guard let usage = scheduledMessagesUsage else { return nil }
+        if let limit = usage.channelLimit, usage.channelCount >= limit {
+            return limit
+        }
+        if let limit = usage.userLimit, usage.userCount >= limit {
+            return limit
+        }
+        return nil
     }
 
     /// Shows the sheet for picking a custom time on top of the schedule message sheet.
@@ -723,7 +724,8 @@ import SwiftUI
     ///
     /// The message is saved on the device first, so the sheets close and the composer is cleared without waiting for
     /// the server. A message the server fails to schedule stays with the scheduled messages of the channel as failed.
-    /// Without a connection, it is scheduled once connected. The snack bar shows why a message couldn't be saved.
+    /// Without a connection, it is scheduled once connected, or sent right away when its time has passed. The snack bar
+    /// shows why a message couldn't be saved.
     open func scheduleMessage(
         at date: Date,
         silent: Bool = false,

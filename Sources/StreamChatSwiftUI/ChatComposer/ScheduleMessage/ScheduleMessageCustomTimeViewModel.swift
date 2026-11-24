@@ -13,10 +13,8 @@ import StreamChat
     /// A picked time at or before the earliest time moves to a minute after it. The date picker picks the earliest time
     /// when today is tapped after the time it shows has passed.
     @Published public var date: Date
-    /// The earliest time the message can be scheduled for.
-    @Published public private(set) var earliestDate: Date
-    /// The latest time the message can be scheduled for. `nil` when the app has no maximum lead time.
-    @Published public private(set) var latestDate: Date?
+    @Published private(set) var earliestDate: Date
+    @Published private(set) var latestDate: Date?
 
     @Published private var validationError: Error?
 
@@ -66,6 +64,10 @@ import StreamChat
                 validatePickedDate()
             }
             .store(in: &cancellables)
+        Timer.publish(every: 1, on: .main, in: .common)
+            .autoconnect()
+            .sink { [weak self] _ in self?.updateDateLimits() }
+            .store(in: &cancellables)
         validatePickedDate()
     }
 
@@ -85,18 +87,13 @@ import StreamChat
         validationError == nil
     }
 
-    /// Moves the earliest and the latest time to the current time, and checks the picked time again when they move.
-    /// Call it regularly while the sheet is open.
-    open func updateDateLimits() {
+    // Moves the earliest and the latest time to the current time, and checks the picked time again when they move.
+    private func updateDateLimits() {
         let dateLimits = Self.dateLimits(for: channel.config)
         // The limits change once a minute, the view doesn't need an update in between.
         guard dateLimits.earliest != earliestDate || dateLimits.latest != latestDate else { return }
-        if dateLimits.earliest != earliestDate {
-            earliestDate = dateLimits.earliest
-        }
-        if dateLimits.latest != latestDate {
-            latestDate = dateLimits.latest
-        }
+        earliestDate = dateLimits.earliest
+        latestDate = dateLimits.latest
         validatePickedDate()
     }
 
@@ -130,20 +127,16 @@ import StreamChat
         date.roundedToMinute(.down)
     }
 
-    private static func minLeadTime(for config: ChannelConfig) -> TimeInterval {
-        config.scheduledMessagesMinLeadTime ?? 60
-    }
-
     private static func dateLimits(for config: ChannelConfig) -> (earliest: Date, latest: Date?) {
         let now = Date()
         return (
-            now.addingTimeInterval(minLeadTime(for: config)).roundedToMinute(.up),
+            now.addingTimeInterval(config.scheduledMessagesMinLeadTime ?? 60).roundedToMinute(.up),
             config.scheduledMessagesMaxLeadTime.map { now.addingTimeInterval($0).roundedToMinute(.down) }
         )
     }
 }
 
-private extension Date {
+extension Date {
     func roundedToMinute(_ rule: FloatingPointRoundingRule) -> Date {
         Date(timeIntervalSinceReferenceDate: (timeIntervalSinceReferenceDate / 60).rounded(rule) * 60)
     }
