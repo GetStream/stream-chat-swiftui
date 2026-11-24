@@ -428,7 +428,7 @@
 "scheduled-messages.no-content.message" = "Long press the send button in a channel to schedule a message.";
 "scheduled-messages.no-content.title" = "No scheduled messages";
 "scheduled-messages.reschedule.title" = "Reschedule message";
-"scheduled-messages.snackbar.already-sent" = "Already sent. It's in the channel now.";
+"scheduled-messages.snackbar.already-sent" = "This message was already sent";
 "scheduled-messages.snackbar.still-sending" = "Still sending. Try again in a moment.";
 
 // - MARK: Message Annotations

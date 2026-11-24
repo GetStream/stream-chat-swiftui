@@ -1243,7 +1243,7 @@ internal enum L10n {
       internal static var title: String { L10n.tr("Localizable", "scheduled-messages.reschedule.title") }
     }
     internal enum Snackbar {
-      /// Already sent. It's in the channel now.
+      /// This message was already sent
       internal static var alreadySent: String { L10n.tr("Localizable", "scheduled-messages.snackbar.already-sent") }
       /// Still sending. Try again in a moment.
       internal static var stillSending: String { L10n.tr("Localizable", "scheduled-messages.snackbar.still-sending") }

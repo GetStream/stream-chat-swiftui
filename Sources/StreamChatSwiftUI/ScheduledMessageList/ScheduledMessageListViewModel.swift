@@ -62,6 +62,9 @@ import UIKit
     /// A Boolean value indicating whether the snack bar shows a spinner, for a message which is still sending.
     @Published public private(set) var snackBarShowsSpinner = false
 
+    /// A Boolean value indicating whether the snack bar shows the error icon, for an action that failed.
+    @Published public private(set) var snackBarShowsErrorIcon = false
+
     /// Creates a view model for the `ScheduledMessageListView`.
     ///
     /// - Parameter scheduledMessageListController: A controller providing the scheduled messages. Its query decides
@@ -120,9 +123,9 @@ import UIKit
                     // The message is sent, or already left the list.
                     break
                 case is ClientError.ScheduledMessageQuotesADeletedMessage:
-                    self?.showSnackBar(L10n.ScheduledMessages.Item.quoteDeleted)
+                    self?.showSnackBar(L10n.ScheduledMessages.Item.quoteDeleted, showsErrorIcon: true)
                 default:
-                    self?.showSnackBar(L10n.Alert.Error.title)
+                    self?.showSnackBar(L10n.Alert.Error.title, showsErrorIcon: true)
                 }
             }
         }
@@ -156,10 +159,10 @@ import UIKit
             if error is ClientError.ScheduledMessageIsBeingSent {
                 self?.showSnackBar(L10n.ScheduledMessages.Snackbar.stillSending, showsSpinner: true)
             } else if error is ClientError.ScheduledMessageAlreadySent {
-                self?.showSnackBar(L10n.ScheduledMessages.Snackbar.alreadySent)
+                self?.showSnackBar(L10n.ScheduledMessages.Snackbar.alreadySent, showsErrorIcon: true)
             } else if !(error is ClientError.ScheduledMessageDoesNotExist) {
                 // A message deleted on another device only leaves the list.
-                self?.showSnackBar(L10n.Alert.Error.title)
+                self?.showSnackBar(L10n.Alert.Error.title, showsErrorIcon: true)
             }
         }
     }
@@ -223,7 +226,7 @@ import UIKit
         scheduledMessageListController.rescheduleMessage(id: scheduledMessage.id, scheduledAt: date) { [weak self] result in
             if case let .failure(error) = result {
                 if error is ClientError.ScheduledMessageAlreadySent {
-                    self?.showSnackBar(L10n.ScheduledMessages.Snackbar.alreadySent)
+                    self?.showSnackBar(L10n.ScheduledMessages.Snackbar.alreadySent, showsErrorIcon: true)
                 } else if !(error is ClientError.ScheduledMessageDoesNotExist) {
                     completion(error)
                     return
@@ -260,7 +263,7 @@ import UIKit
         }
         controller.synchronize { [weak self] error in
             guard error == nil, controller.channel != nil else {
-                self?.showSnackBar(L10n.Alert.Error.title)
+                self?.showSnackBar(L10n.Alert.Error.title, showsErrorIcon: true)
                 return
             }
             action(controller)
@@ -281,7 +284,7 @@ import UIKit
         viewState = error == nil ? .empty : .failed
         updateScheduledMessages()
         if error != nil, viewState == .loaded {
-            showSnackBar(L10n.ScheduledMessages.Error.message)
+            showSnackBar(L10n.ScheduledMessages.Error.message, showsErrorIcon: true)
         }
     }
 
@@ -295,8 +298,9 @@ import UIKit
         selectedScheduledMessage = nil
     }
 
-    private func showSnackBar(_ text: String, showsSpinner: Bool = false) {
+    private func showSnackBar(_ text: String, showsSpinner: Bool = false, showsErrorIcon: Bool = false) {
         snackBarShowsSpinner = showsSpinner
+        snackBarShowsErrorIcon = showsErrorIcon
         snackBarText = text
     }
 

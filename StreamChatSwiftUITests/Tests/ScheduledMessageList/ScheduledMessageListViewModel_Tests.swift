@@ -233,6 +233,7 @@ import XCTest
 
         XCTAssertEqual(viewModel.snackBarText, L10n.ScheduledMessages.Snackbar.stillSending)
         XCTAssertTrue(viewModel.snackBarShowsSpinner)
+        XCTAssertFalse(viewModel.snackBarShowsErrorIcon)
     }
 
     func test_delete_whenTheMessageWasAlreadySent_showsTheAlreadySentSnackBar() {
@@ -240,6 +241,7 @@ import XCTest
 
         XCTAssertEqual(viewModel.snackBarText, L10n.ScheduledMessages.Snackbar.alreadySent)
         XCTAssertFalse(viewModel.snackBarShowsSpinner)
+        XCTAssertTrue(viewModel.snackBarShowsErrorIcon)
     }
 
     func test_delete_whenTheMessageWasDeletedElsewhere_showsNothing() {

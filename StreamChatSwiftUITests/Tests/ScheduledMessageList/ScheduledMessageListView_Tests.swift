@@ -211,6 +211,18 @@ import XCTest
         AssertSnapshot(makeView(), size: defaultScreenSize)
     }
 
+    func test_scheduledMessageListView_alreadySentSnackBar() {
+        let sent = scheduledMessage("Heads up: the launch moved to Monday", channelName: "Maya Ross", day: 23, hour: 9)
+        load([sent])
+
+        viewModel.delete(sent)
+        viewModel.deleteConfirmationShown = false
+        viewModel.deleteConfirmed()
+        controller.deleteScheduledMessage_completion?(ClientError.ScheduledMessageAlreadySent(id: sent.id))
+
+        AssertSnapshot(makeView(), size: defaultScreenSize)
+    }
+
     // MARK: - Helpers
 
     private func makeView() -> some View {

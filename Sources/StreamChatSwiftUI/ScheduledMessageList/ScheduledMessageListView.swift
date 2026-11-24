@@ -11,6 +11,7 @@ import SwiftUI
 /// a single channel.
 public struct ScheduledMessageListView<Factory: ViewFactory>: View {
     @Injected(\.colors) private var colors
+    @Injected(\.images) private var images
     @Injected(\.tokens) private var tokens
 
     @StateObject private var viewModel: ScheduledMessageListViewModel
@@ -79,6 +80,7 @@ public struct ScheduledMessageListView<Factory: ViewFactory>: View {
             }
             .snackBar(
                 text: $viewModel.snackBarText,
+                icon: viewModel.snackBarShowsErrorIcon ? images.snackBarError : nil,
                 showsSpinner: viewModel.snackBarShowsSpinner,
                 bottomOffset: tokens.spacingMd
             )
