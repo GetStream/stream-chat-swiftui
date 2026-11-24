@@ -3440,7 +3440,7 @@ import XCTest
 
         XCTAssertTrue(viewModel.editedScheduledMessageWasSent)
         XCTAssertFalse(viewModel.canSaveEditedScheduledMessage)
-        XCTAssertEqual(viewModel.snackBarText, L10n.ScheduledMessages.Snackbar.alreadySent)
+        XCTAssertEqual(viewModel.snackBarText, L10n.Composer.ScheduleMessage.Error.alreadySent)
         XCTAssertTrue(viewModel.snackBarShowsErrorIcon)
         XCTAssertNotNil(editedScheduledMessage.value)
     }

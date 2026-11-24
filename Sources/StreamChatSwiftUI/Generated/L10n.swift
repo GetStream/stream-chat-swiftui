@@ -583,6 +583,8 @@ internal enum L10n {
         }
       }
       internal enum Error {
+        /// This message was already sent
+        internal static var alreadySent: String { L10n.tr("Localizable", "composer.schedule-message.error.already-sent") }
         /// You've reached the limit of %d scheduled messages in this channel.
         internal static func channelLimit(_ p1: Int) -> String {
           return L10n.tr("Localizable", "composer.schedule-message.error.channel-limit", p1)
@@ -1217,6 +1219,8 @@ internal enum L10n {
     internal enum Actions {
       /// Copy text
       internal static var copyText: String { L10n.tr("Localizable", "scheduled-messages.actions.copy-text") }
+      /// Edit message
+      internal static var edit: String { L10n.tr("Localizable", "scheduled-messages.actions.edit") }
       /// Reschedule
       internal static var reschedule: String { L10n.tr("Localizable", "scheduled-messages.actions.reschedule") }
       /// Send now

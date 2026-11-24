@@ -298,6 +298,7 @@
 "composer.schedule-message.preview.message-to" = "Message to %@";
 "composer.schedule-message.note.count" = "%1$d of %2$d scheduled in this channel";
 "composer.schedule-message.note.time-zone" = "Sent in your time zone (%@)";
+"composer.schedule-message.error.already-sent" = "This message was already sent";
 "composer.schedule-message.error.channel-limit" = "You've reached the limit of %d scheduled messages in this channel.";
 "composer.schedule-message.error.command" = "Commands can't be scheduled. Remove the / command to continue.";
 "composer.schedule-message.error.command-snack-bar" = "Commands can't be scheduled";
@@ -421,6 +422,7 @@
 "thread.item.replies" = "replies";
 "scheduled-messages.title" = "Scheduled messages";
 "scheduled-messages.actions.copy-text" = "Copy text";
+"scheduled-messages.actions.edit" = "Edit message";
 "scheduled-messages.actions.reschedule" = "Reschedule";
 "scheduled-messages.actions.send-now" = "Send now";
 "scheduled-messages.delete-confirmation.message" = "This message to %@ won't be sent. This can't be undone.";

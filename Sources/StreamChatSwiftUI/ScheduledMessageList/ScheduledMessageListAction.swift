@@ -83,7 +83,7 @@ extension ScheduledMessageListAction {
         let edit = options.onEdit.map {
             ScheduledMessageListAction(
                 id: ScheduledMessageListActionId.edit,
-                title: L10n.Message.Actions.edit,
+                title: L10n.ScheduledMessages.Actions.edit,
                 icon: images.messageActionEdit,
                 action: $0
             )

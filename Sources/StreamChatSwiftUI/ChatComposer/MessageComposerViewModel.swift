@@ -1059,7 +1059,7 @@ import SwiftUI
         switch event {
         case let event as ScheduledMessageSentEvent where event.scheduledMessage.id == id:
             editedScheduledMessageWasSent = true
-            showErrorSnackBar(L10n.ScheduledMessages.Snackbar.alreadySent)
+            showErrorSnackBar(L10n.Composer.ScheduleMessage.Error.alreadySent)
         case let event as ScheduledMessageDeletedEvent where event.scheduledMessage.id == id:
             editedScheduledMessage?.wrappedValue = nil
         case let event as ScheduledMessageUpdatedEvent where event.scheduledMessage.id == id:

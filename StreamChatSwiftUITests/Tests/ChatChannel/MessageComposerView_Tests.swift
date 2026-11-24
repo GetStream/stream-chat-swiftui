@@ -1629,6 +1629,31 @@ import XCTest
 
     // MARK: - Scheduled Message Edit
 
+    func test_messageComposerView_editingScheduledMessage() {
+        let size = CGSize(width: composerWidth, height: 160)
+        let editedScheduledMessage = Binding<ScheduledMessage?>.constant(.mock(
+            message: .mock(text: "Heads up: the launch moved to Monday")
+        ))
+        let channelController = ChatChannelTestHelpers.makeChannelController(chatClient: chatClient)
+        let viewModel = MessageComposerViewModel(channelController: channelController, messageController: nil)
+        viewModel.editedScheduledMessage = editedScheduledMessage
+        viewModel.attachmentsConverter = SynchronousAttachmentsConverter()
+        viewModel.fillEditedScheduledMessage()
+
+        let view = MessageComposerView(
+            viewFactory: DefaultViewFactory.shared,
+            viewModel: viewModel,
+            channelController: channelController,
+            quotedMessage: .constant(nil),
+            editedMessage: .constant(nil),
+            editedScheduledMessage: editedScheduledMessage,
+            willSendMessage: {}
+        )
+        .frame(width: size.width, height: size.height, alignment: .bottom)
+
+        AssertSnapshot(view, size: size)
+    }
+
     func test_messageComposerView_editingScheduledMessageQuotingADeletedMessage() {
         let size = CGSize(width: composerWidth, height: 260)
         let editedScheduledMessage = Binding<ScheduledMessage?>.constant(.mock(
