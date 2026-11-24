@@ -1549,8 +1549,8 @@
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/GetStream/stream-chat-swift.git";
 			requirement = {
-				branch = "add/scheduled-messages-5-reschedule-failed";
-				kind = branch;
+				kind = revision;
+				revision = 645d83da2daa863c23fa3f3469dbbbb89e4a8f52;
 			};
 		};
 		E3A1C01A282BAC66002D1E26 /* XCRemoteSwiftPackageReference "sentry-cocoa" */ = {
