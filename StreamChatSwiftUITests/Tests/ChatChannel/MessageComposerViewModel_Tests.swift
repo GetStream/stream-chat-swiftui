@@ -3356,6 +3356,33 @@ import XCTest
         XCTAssertFalse(viewModel.isSendingMessage)
     }
 
+    func test_sendMessage_whenTheMessageWasAlreadySent_cantBeSavedAndShowsASnackBar() {
+        let channelController = makeChannelController()
+        let (viewModel, editedScheduledMessage, _) = makeScheduledEditViewModel(channelController: channelController)
+        viewModel.text = "Edited"
+
+        viewModel.sendMessage()
+        channelController.updateScheduledMessage_completion?(.failure(ClientError.ScheduledMessageAlreadySent(id: "scheduled")))
+
+        XCTAssertTrue(viewModel.editedScheduledMessageWasSent)
+        XCTAssertEqual(viewModel.snackBarText, L10n.ScheduledMessages.Snackbar.alreadySent)
+        XCTAssertFalse(viewModel.errorShown)
+        XCTAssertNotNil(editedScheduledMessage.value)
+    }
+
+    func test_sendMessage_whenTheMessageWasDeleted_endsTheEdit() {
+        let channelController = makeChannelController()
+        let (viewModel, editedScheduledMessage, _) = makeScheduledEditViewModel(channelController: channelController)
+        viewModel.text = "Edited"
+
+        viewModel.sendMessage()
+        channelController.updateScheduledMessage_completion?(.failure(ClientError.ScheduledMessageDoesNotExist(id: "scheduled")))
+
+        XCTAssertNil(editedScheduledMessage.value)
+        XCTAssertFalse(viewModel.errorShown)
+        XCTAssertFalse(viewModel.isSendingMessage)
+    }
+
     func test_sendMessage_ofAFailedMessageWhoseTimePassed_asksForANewTimeFirst() {
         let channelController = makeChannelController()
         let (viewModel, _, _) = makeScheduledEditViewModel(

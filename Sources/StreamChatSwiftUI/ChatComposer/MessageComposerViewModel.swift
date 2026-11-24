@@ -1000,6 +1000,17 @@ import SwiftUI
                 clearInputData()
                 editedScheduledMessage?.wrappedValue = nil
                 completion?(nil)
+            case let .failure(error) where error is ClientError.ScheduledMessageAlreadySent || error is ClientError.ScheduledMessageDoesNotExist:
+                // It was sent or deleted meanwhile, like the events of the server tell.
+                isSendingMessage = false
+                editedScheduledMessageTimeSheetShown = false
+                if error is ClientError.ScheduledMessageAlreadySent {
+                    editedScheduledMessageWasSent = true
+                    snackBarText = L10n.ScheduledMessages.Snackbar.alreadySent
+                } else {
+                    editedScheduledMessage?.wrappedValue = nil
+                }
+                completion?(nil)
             case let .failure(error):
                 failScheduling(error)
                 completion?(error)
