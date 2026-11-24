@@ -84,6 +84,7 @@ public struct ScheduledMessageListView<Factory: ViewFactory>: View {
                 showsSpinner: viewModel.snackBarShowsSpinner,
                 bottomOffset: tokens.spacingMd
             )
+            .modifier(HiddenTabBarSafeAreaModifier())
             .sheet(item: $viewModel.selectedScheduledMessage, onDismiss: { viewModel.actionsSheetDismissed() }) {
                 viewFactory.makeScheduledMessageActionsSheet(options: actionsSheetOptions(for: $0))
             }
@@ -144,5 +145,27 @@ private struct ScheduledMessageListRowView<Factory: ViewFactory>: View {
             .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
+    }
+}
+
+// Opened from a channel, the list still gets the bottom safe area of the tab bar, which the channel list hides through
+// UIKit. Like `ChatChannelView`, the bottom is laid out from the window's safe area then, except above the keyboard.
+private struct HiddenTabBarSafeAreaModifier: ViewModifier, KeyboardReadable {
+    @State private var isTabBarHidden = false
+    @State private var keyboardShown = false
+
+    func body(content: Content) -> some View {
+        content
+            .padding(.bottom, isTabBarHidden && !keyboardShown ? topVC()?.view.safeAreaInsets.bottom ?? 0 : 0)
+            .ignoresSafeArea(.container, edges: isTabBarHidden ? .bottom : [])
+            .background(
+                TabBarAccessor { tabBar in
+                    isTabBarHidden = tabBar.isHidden
+                }
+                .allowsHitTesting(false)
+            )
+            .onReceive(keyboardWillChangePublisher) { visible in
+                keyboardShown = visible
+            }
     }
 }
