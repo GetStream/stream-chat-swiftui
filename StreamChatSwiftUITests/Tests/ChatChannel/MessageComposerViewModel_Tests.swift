@@ -3342,7 +3342,7 @@ import XCTest
         XCTAssertEqual(messageController.updateScheduledReply_showReplyInChannel, true)
     }
 
-    func test_sendMessage_whenSavingFails_keepsTheContentAndShowsTheError() {
+    func test_sendMessage_whenSavingFails_keepsTheContentAndShowsTheErrorInTheSnackBar() {
         let channelController = makeChannelController()
         let (viewModel, editedScheduledMessage, _) = makeScheduledEditViewModel(channelController: channelController)
         viewModel.text = "Edited"
@@ -3352,8 +3352,22 @@ import XCTest
 
         XCTAssertEqual(viewModel.text, "Edited")
         XCTAssertNotNil(editedScheduledMessage.value)
-        XCTAssertTrue(viewModel.errorShown)
+        XCTAssertEqual(viewModel.snackBarText, L10n.Composer.ScheduleMessage.Error.command)
+        XCTAssertFalse(viewModel.errorShown)
         XCTAssertFalse(viewModel.isSendingMessage)
+    }
+
+    func test_sendMessage_whenOffline_endsTheEdit() {
+        let channelController = makeChannelController()
+        let (viewModel, editedScheduledMessage, _) = makeScheduledEditViewModel(channelController: channelController)
+        viewModel.text = "Edited"
+
+        viewModel.sendMessage()
+        channelController.updateScheduledMessage_completion?(.failure(ClientError.ConnectionError()))
+
+        XCTAssertNil(editedScheduledMessage.value)
+        XCTAssertNil(viewModel.snackBarText)
+        XCTAssertFalse(viewModel.errorShown)
     }
 
     func test_sendMessage_whenTheMessageWasAlreadySent_cantBeSavedAndShowsASnackBar() {
@@ -3412,19 +3426,20 @@ import XCTest
         XCTAssertEqual(channelController.updateScheduledMessage_scheduledAt, date)
     }
 
-    func test_scheduledMessageEdit_withACommandInAChannelWithCommands_cantBeSavedAndShowsASnackBar() {
+    func test_scheduledMessageEdit_whenTheSDKRefusesACommand_cantBeSavedAndShowsASnackBar() {
         let channelController = makeChannelController()
-        channelController.channel_mock = .mock(
-            cid: channelController.cid ?? .unique,
-            config: .mock(commands: [.init(name: "giphy", description: "", set: "", args: "")])
-        )
         let (viewModel, _, _) = makeScheduledEditViewModel(channelController: channelController)
+        channelController.validateForScheduling_error = ClientError.ScheduledMessageHasACommand()
 
         viewModel.text = "/giphy launch day"
 
+        XCTAssertEqual(channelController.validateForScheduling_text, "/giphy launch day")
+        XCTAssertNotNil(channelController.validateForScheduling_scheduledMessageId)
+        XCTAssertEqual(channelController.validateForScheduling_scheduledMessageId, viewModel.editedScheduledMessage?.wrappedValue?.id)
         XCTAssertFalse(viewModel.canSaveEditedScheduledMessage)
         XCTAssertEqual(viewModel.snackBarText, L10n.Composer.ScheduleMessage.Error.command)
 
+        channelController.validateForScheduling_error = nil
         viewModel.text = "Launch day"
 
         XCTAssertTrue(viewModel.canSaveEditedScheduledMessage)
@@ -3436,11 +3451,14 @@ import XCTest
             scheduledMessage: .mock(message: .mock(text: "Hello", quotedMessage: .mock(id: "quoted", deletedAt: Date())), quotedMessageId: "quoted"),
             channelController: channelController
         )
+        channelController.validateForScheduling_error = ClientError.ScheduledMessageQuotesADeletedMessage()
         viewModel.fillEditedScheduledMessage()
 
+        XCTAssertEqual(channelController.validateForScheduling_quotedMessageId, "quoted")
         XCTAssertTrue(viewModel.editedScheduledMessageQuotesDeletedMessage)
         XCTAssertFalse(viewModel.canSaveEditedScheduledMessage)
 
+        channelController.validateForScheduling_error = nil
         viewModel.removeEditedScheduledMessageQuote()
         viewModel.sendMessage()
 

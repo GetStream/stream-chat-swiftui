@@ -1636,6 +1636,7 @@ import XCTest
             quotedMessageId: "quoted"
         ))
         let channelController = ChatChannelTestHelpers.makeChannelController(chatClient: chatClient)
+        channelController.validateForScheduling_error = ClientError.ScheduledMessageQuotesADeletedMessage()
         let viewModel = MessageComposerViewModel(channelController: channelController, messageController: nil)
         viewModel.editedScheduledMessage = editedScheduledMessage
         viewModel.attachmentsConverter = SynchronousAttachmentsConverter()

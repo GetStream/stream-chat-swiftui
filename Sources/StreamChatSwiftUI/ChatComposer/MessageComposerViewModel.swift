@@ -30,8 +30,8 @@ import SwiftUI
 
     @Published public var text = "" {
         didSet {
-            if isEditingScheduledMessage, hasCommand(text), !hasCommand(oldValue) {
-                snackBarText = L10n.Composer.ScheduleMessage.Error.command
+            if isEditingScheduledMessage {
+                validateEditedScheduledMessage()
             }
             if text != "" {
                 checkTypingSuggestions()
@@ -222,6 +222,8 @@ import SwiftUI
     @Published public var editedScheduledMessageTimeSheetShown = false
     // The quote of the edited scheduled message, `nil` once it is removed.
     @Published private var editedScheduledMessageQuotedMessageId: MessageId?
+    // Why the SDK refuses to save the edited scheduled message, `nil` when it can be saved.
+    @Published private var editedScheduledMessageValidationError: Error?
     // Set once the composer is filled with the edited scheduled message. It stays set after the edit ends, so the
     // composer is filled once and never saves or deletes a draft.
     private(set) var isFilledWithEditedScheduledMessage = false
@@ -925,20 +927,19 @@ import SwiftUI
     /// A Boolean value indicating whether the edited scheduled message quotes a message which was deleted. It can't be
     /// saved until the quote is removed with `removeEditedScheduledMessageQuote()`.
     public var editedScheduledMessageQuotesDeletedMessage: Bool {
-        editedScheduledMessageQuotedMessageId != nil && editedScheduledMessage?.wrappedValue?.quotesDeletedMessage == true
+        editedScheduledMessageValidationError is ClientError.ScheduledMessageQuotesADeletedMessage
     }
 
     /// A Boolean value indicating whether the edited scheduled message can be saved.
     ///
-    /// It can't while it is sending, after it was sent, while it quotes a deleted message, or when its text is a
-    /// command in a channel with commands.
+    /// It can't while it is sending, after it was sent, or when the SDK refuses it, for example while it quotes a
+    /// deleted message or when its text is a command in a channel with commands.
     public var canSaveEditedScheduledMessage: Bool {
         guard let scheduledMessage = editedScheduledMessage?.wrappedValue else { return false }
         return hasContent
             && !editedScheduledMessageWasSent
             && scheduledMessage.status != .sending
-            && !editedScheduledMessageQuotesDeletedMessage
-            && !hasCommand(text)
+            && editedScheduledMessageValidationError == nil
     }
 
     /// Fills the composer with the content of the edited scheduled message, once, so the changes are kept when the
@@ -946,6 +947,7 @@ import SwiftUI
     public func fillEditedScheduledMessage() {
         guard !isFilledWithEditedScheduledMessage, let scheduledMessage = editedScheduledMessage?.wrappedValue else { return }
         isFilledWithEditedScheduledMessage = true
+        editedScheduledMessageValidationError = nil
         let message = scheduledMessage.message
         text = message.text
         mentionedUsers = message.mentionedUsers
@@ -956,6 +958,7 @@ import SwiftUI
         showReplyInChannel = message.showReplyInChannel
         selectedRangeLocation = message.text.count
         editedScheduledMessageQuotedMessageId = scheduledMessage.quotedMessageId
+        validateEditedScheduledMessage()
         attachmentsConverter.attachmentsToAssets(message.allAttachments) { [weak self] assets in
             self?.updateComposerAssets(assets)
         }
@@ -964,6 +967,7 @@ import SwiftUI
     /// Removes the quote from the edited scheduled message, for example when the quoted message was deleted.
     open func removeEditedScheduledMessageQuote() {
         editedScheduledMessageQuotedMessageId = nil
+        validateEditedScheduledMessage()
     }
 
     /// Saves the edited scheduled message, and ends the edit when it succeeds.
@@ -995,7 +999,8 @@ import SwiftUI
         let handleResult: @MainActor (Result<ScheduledMessage, Error>) -> Void = { [weak self] result in
             guard let self else { return }
             switch result {
-            case .success:
+            // Without a connection, the changes are saved once connected.
+            case .success, .failure(is ClientError.ConnectionError):
                 editedScheduledMessageTimeSheetShown = false
                 clearInputData()
                 editedScheduledMessage?.wrappedValue = nil
@@ -1094,9 +1099,21 @@ import SwiftUI
         }
     }
 
-    // The server never schedules a slash command in a channel with commands.
-    private func hasCommand(_ text: String) -> Bool {
-        text.hasPrefix("/") && channelController.channel?.config.commands.isEmpty == false
+    // The SDK checks the edit like saving it, so saving is disabled with the reason shown before any request.
+    private func validateEditedScheduledMessage() {
+        guard let id = editedScheduledMessage?.wrappedValue?.id else { return }
+        channelController.validateForScheduling(
+            text: messageText,
+            quotedMessageId: editedScheduledMessageQuotedMessageId,
+            editing: id
+        ) { [weak self] error in
+            guard let self else { return }
+            let isCommand = error is ClientError.ScheduledMessageHasACommand
+            if isCommand, !(editedScheduledMessageValidationError is ClientError.ScheduledMessageHasACommand) {
+                snackBarText = L10n.Composer.ScheduleMessage.Error.command
+            }
+            editedScheduledMessageValidationError = error
+        }
     }
 
     // MARK: - Scheduled Messages Banner
