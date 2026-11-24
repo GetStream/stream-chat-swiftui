@@ -53,9 +53,9 @@ extension ScheduledMessageListAction {
     /// Returns the default actions of a scheduled message: editing it, rescheduling it, sending it now and deleting it.
     ///
     /// A failed message can be edited, rescheduled and deleted. A message whose attachments are uploading can only be
-    /// deleted. A message which quotes a deleted message can be edited, which removes the quote, and deleted. The text of
-    /// a message whose channel was deleted can be copied, and the message deleted. Editing is left out when `onEdit` is
-    /// `nil`, and rescheduling when `onReschedule` is `nil`.
+    /// deleted. A message which quotes a deleted message can be edited, where Remove quote takes the quote out, and
+    /// deleted. The text of a message whose channel was deleted can be copied as well, unless it has no text. Editing is
+    /// left out when `onEdit` is `nil`, and rescheduling when `onReschedule` is `nil`.
     @MainActor public static func defaultActions(
         for options: SupportedScheduledMessageListActionsOptions
     ) -> [ScheduledMessageListAction] {

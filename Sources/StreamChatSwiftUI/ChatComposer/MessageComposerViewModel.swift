@@ -224,6 +224,7 @@ import SwiftUI
     @Published private var editedScheduledMessageQuotedMessageId: MessageId?
     // Why the SDK refuses to save the edited scheduled message, `nil` when it can be saved.
     @Published private var editedScheduledMessageValidationError: Error?
+    @Published private var isLoadingEditedScheduledMessageAttachments = false
     // Set once the composer is filled with the edited scheduled message. It stays set after the edit ends, so the
     // composer is filled once and never saves or deletes a draft.
     private(set) var isFilledWithEditedScheduledMessage = false
@@ -941,6 +942,8 @@ import SwiftUI
             && !editedScheduledMessageWasSent
             && scheduledMessage.status != .sending
             && editedScheduledMessageValidationError == nil
+            // Saving replaces the attachments, so it waits until the ones of the message are in the composer.
+            && !isLoadingEditedScheduledMessageAttachments
     }
 
     /// Fills the composer with the content of the edited scheduled message, once, so the changes are kept when the
@@ -948,7 +951,6 @@ import SwiftUI
     public func fillEditedScheduledMessage() {
         guard !isFilledWithEditedScheduledMessage, let scheduledMessage = editedScheduledMessage?.wrappedValue else { return }
         isFilledWithEditedScheduledMessage = true
-        editedScheduledMessageValidationError = nil
         let message = scheduledMessage.message
         text = message.text
         mentionedUsers = message.mentionedUsers
@@ -960,8 +962,10 @@ import SwiftUI
         selectedRangeLocation = message.text.count
         editedScheduledMessageQuotedMessageId = scheduledMessage.quotedMessageId
         validateEditedScheduledMessage()
+        isLoadingEditedScheduledMessageAttachments = true
         attachmentsConverter.attachmentsToAssets(message.allAttachments) { [weak self] assets in
             self?.updateComposerAssets(assets)
+            self?.isLoadingEditedScheduledMessageAttachments = false
         }
     }
 
@@ -971,11 +975,13 @@ import SwiftUI
         validateEditedScheduledMessage()
     }
 
-    /// Saves the edited scheduled message and ends the edit, without waiting for the server.
+    /// Saves the edited scheduled message and ends the edit, without waiting for the server. The SDK checks the edit on
+    /// the device first, and an edit it refuses stays open with the reason in the snack bar.
     ///
-    /// A failed message whose time has passed, such as one the server failed to send, needs a new time, so without
+    /// A message the server failed to send, or a failed one whose time has passed, needs a new time, so without
     /// `scheduledAt` the sheet for picking one opens instead. Its time is kept otherwise. Changes the server fails to save
-    /// show the message as failed in the scheduled message list.
+    /// show the message as failed in the scheduled message list. A message that was already sent or deleted meanwhile is
+    /// removed from it.
     open func saveEditedScheduledMessage(scheduledAt: Date? = nil) {
         guard let scheduledMessage = editedScheduledMessage?.wrappedValue,
               canSaveEditedScheduledMessage,
@@ -984,11 +990,33 @@ import SwiftUI
             editedScheduledMessageTimeSheetShown = false
             return
         }
-        if scheduledAt == nil, scheduledMessage.status == .failed, scheduledMessage.scheduledAt <= Date() {
+        let serverFailed = if case .serverFailedPublishing = scheduledMessage.failure { true } else { false }
+        if scheduledAt == nil, scheduledMessage.status == .failed, serverFailed || scheduledMessage.scheduledAt <= Date() {
             showEditedScheduledMessageTimeSheet(for: scheduledMessage)
             return
         }
         isSendingMessage = true
+        channelController.validateForScheduling(
+            text: messageText,
+            quotedMessageId: editedScheduledMessageQuotedMessageId,
+            scheduledAt: scheduledAt,
+            editing: scheduledMessage.id
+        ) { [weak self] error in
+            guard let self else { return }
+            guard let error else {
+                updateEditedScheduledMessage(scheduledMessage, scheduledAt: scheduledAt)
+                return
+            }
+            isSendingMessage = false
+            editedScheduledMessageTimeSheetShown = false
+            showScheduleMessageError(error)
+            if error is ClientError.ScheduledMessageDoesNotExist {
+                editedScheduledMessage?.wrappedValue = nil
+            }
+        }
+    }
+
+    private func updateEditedScheduledMessage(_ scheduledMessage: ScheduledMessage, scheduledAt: Date?) {
         stopPreviewPlaybackIfNeeded()
         clearRemovedMentions()
         let attachments: [AnyAttachmentPayload]
@@ -1084,7 +1112,10 @@ import SwiftUI
                !(editedScheduledMessageValidationError is ClientError.ScheduledMessageHasACommand) {
                 showScheduleMessageError(error)
             }
-            editedScheduledMessageValidationError = error
+            // A failed message at the limit can still be saved, and the time sheet shows the limit.
+            let isLimit = error is ClientError.ScheduledMessagesChannelLimitReached
+                || error is ClientError.ScheduledMessagesUserLimitReached
+            editedScheduledMessageValidationError = isLimit ? nil : error
         }
     }
 
