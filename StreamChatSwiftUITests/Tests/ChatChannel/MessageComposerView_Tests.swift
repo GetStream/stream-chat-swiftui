@@ -1656,6 +1656,33 @@ import XCTest
         AssertSnapshot(view, size: size)
     }
 
+    func test_messageComposerView_editingScheduledMessageWithACommand() {
+        let size = CGSize(width: composerWidth, height: 320)
+        let editedScheduledMessage = Binding<ScheduledMessage?>.constant(.mock(
+            message: .mock(text: "Heads up: the launch moved to Monday")
+        ))
+        let channelController = ChatChannelTestHelpers.makeChannelController(chatClient: chatClient)
+        let viewModel = MessageComposerViewModel(channelController: channelController, messageController: nil)
+        viewModel.editedScheduledMessage = editedScheduledMessage
+        viewModel.attachmentsConverter = SynchronousAttachmentsConverter()
+        viewModel.fillEditedScheduledMessage()
+        channelController.validateForScheduling_error = ClientError.ScheduledMessageHasACommand()
+        viewModel.text = "/"
+
+        let view = MessageComposerView(
+            viewFactory: DefaultViewFactory.shared,
+            viewModel: viewModel,
+            channelController: channelController,
+            quotedMessage: .constant(nil),
+            editedMessage: .constant(nil),
+            editedScheduledMessage: editedScheduledMessage,
+            willSendMessage: {}
+        )
+        .frame(width: size.width, height: size.height, alignment: .bottom)
+
+        AssertSnapshot(view, size: size)
+    }
+
     // MARK: - Liquid Glass Style
 
     func test_messageComposerView_liquidGlass_snapshot() {

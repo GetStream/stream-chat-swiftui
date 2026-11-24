@@ -3352,7 +3352,8 @@ import XCTest
 
         XCTAssertEqual(viewModel.text, "Edited")
         XCTAssertNotNil(editedScheduledMessage.value)
-        XCTAssertEqual(viewModel.snackBarText, L10n.Composer.ScheduleMessage.Error.command)
+        XCTAssertEqual(viewModel.snackBarText, L10n.Composer.ScheduleMessage.Error.commandSnackBar)
+        XCTAssertTrue(viewModel.snackBarShowsErrorIcon)
         XCTAssertFalse(viewModel.errorShown)
         XCTAssertFalse(viewModel.isSendingMessage)
     }
@@ -3380,6 +3381,7 @@ import XCTest
 
         XCTAssertTrue(viewModel.editedScheduledMessageWasSent)
         XCTAssertEqual(viewModel.snackBarText, L10n.ScheduledMessages.Snackbar.alreadySent)
+        XCTAssertTrue(viewModel.snackBarShowsErrorIcon)
         XCTAssertFalse(viewModel.errorShown)
         XCTAssertNotNil(editedScheduledMessage.value)
     }
@@ -3437,7 +3439,8 @@ import XCTest
         XCTAssertNotNil(channelController.validateForScheduling_scheduledMessageId)
         XCTAssertEqual(channelController.validateForScheduling_scheduledMessageId, viewModel.editedScheduledMessage?.wrappedValue?.id)
         XCTAssertFalse(viewModel.canSaveEditedScheduledMessage)
-        XCTAssertEqual(viewModel.snackBarText, L10n.Composer.ScheduleMessage.Error.command)
+        XCTAssertEqual(viewModel.snackBarText, L10n.Composer.ScheduleMessage.Error.commandSnackBar)
+        XCTAssertTrue(viewModel.snackBarShowsErrorIcon)
 
         channelController.validateForScheduling_error = nil
         viewModel.text = "Launch day"
@@ -3480,6 +3483,7 @@ import XCTest
         XCTAssertTrue(viewModel.editedScheduledMessageWasSent)
         XCTAssertFalse(viewModel.canSaveEditedScheduledMessage)
         XCTAssertEqual(viewModel.snackBarText, L10n.ScheduledMessages.Snackbar.alreadySent)
+        XCTAssertTrue(viewModel.snackBarShowsErrorIcon)
         XCTAssertNotNil(editedScheduledMessage.value)
     }
 

@@ -1011,7 +1011,7 @@ import SwiftUI
                 editedScheduledMessageTimeSheetShown = false
                 if error is ClientError.ScheduledMessageAlreadySent {
                     editedScheduledMessageWasSent = true
-                    snackBarText = L10n.ScheduledMessages.Snackbar.alreadySent
+                    showErrorSnackBar(L10n.ScheduledMessages.Snackbar.alreadySent)
                 } else {
                     editedScheduledMessage?.wrappedValue = nil
                 }
@@ -1087,7 +1087,7 @@ import SwiftUI
         switch event {
         case let event as ScheduledMessageSentEvent where event.scheduledMessage.id == id:
             editedScheduledMessageWasSent = true
-            snackBarText = L10n.ScheduledMessages.Snackbar.alreadySent
+            showErrorSnackBar(L10n.ScheduledMessages.Snackbar.alreadySent)
         case let event as ScheduledMessageDeletedEvent where event.scheduledMessage.id == id:
             editedScheduledMessage?.wrappedValue = nil
         case let event as ScheduledMessageUpdatedEvent where event.scheduledMessage.id == id:
@@ -1108,9 +1108,9 @@ import SwiftUI
             editing: id
         ) { [weak self] error in
             guard let self else { return }
-            let isCommand = error is ClientError.ScheduledMessageHasACommand
-            if isCommand, !(editedScheduledMessageValidationError is ClientError.ScheduledMessageHasACommand) {
-                snackBarText = L10n.Composer.ScheduleMessage.Error.command
+            if let error, error is ClientError.ScheduledMessageHasACommand,
+               !(editedScheduledMessageValidationError is ClientError.ScheduledMessageHasACommand) {
+                showScheduleMessageError(error)
             }
             editedScheduledMessageValidationError = error
         }
