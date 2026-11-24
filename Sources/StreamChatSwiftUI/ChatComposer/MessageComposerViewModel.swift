@@ -197,6 +197,8 @@ import SwiftUI
 
     // An alert can't be presented while the schedule message sheet is dismissing.
     private var showsErrorAfterScheduleMessageSheet = false
+    // Kept until the message is scheduled, so scheduling again after a failure updates the same scheduled message.
+    private var scheduledMessageId: MessageId?
     /// The error shown when a message couldn't be scheduled from the schedule message sheet, `nil` for the default error.
     public private(set) var scheduleMessageErrorText: String?
     /// The preview of the message in the custom time sheet. It is kept while the sheet is shown, because the composer is
@@ -710,6 +712,8 @@ import SwiftUI
 
         stopPreviewPlaybackIfNeeded()
         clearRemovedMentions()
+        let messageId = scheduledMessageId ?? UUID().uuidString.lowercased()
+        scheduledMessageId = messageId
 
         let handleResult: @MainActor (Result<ScheduledMessage, Error>) -> Void = { [weak self] result in
             guard let self else { return }
@@ -734,6 +738,7 @@ import SwiftUI
             let attachments = try convertAddedAssetsToPayloads()
             if let messageController {
                 messageController.scheduleReply(
+                    messageId: messageId,
                     text: messageText,
                     attachments: attachments,
                     mentionedUserIds: mentionedUsers.map(\.id),
@@ -751,6 +756,7 @@ import SwiftUI
                 )
             } else {
                 channelController.scheduleMessage(
+                    messageId: messageId,
                     text: messageText,
                     silent: silent,
                     attachments: attachments,
@@ -1179,6 +1185,7 @@ import SwiftUI
     }
     
     public func clearInputData() {
+        scheduledMessageId = nil
         composerAssets = []
         addedVoiceRecordings = []
         addedCustomAttachments = []

@@ -2974,6 +2974,38 @@ import XCTest
         XCTAssertFalse(viewModel.errorShown)
     }
 
+    func test_scheduleMessage_afterAFailure_schedulesTheSameMessageAgain() {
+        let channelController = makeChannelController()
+        let viewModel = MessageComposerViewModel(channelController: channelController, messageController: nil)
+        viewModel.text = "Later"
+        viewModel.scheduleMessage(at: Date().addingTimeInterval(3600))
+        let messageId = channelController.scheduleMessage_messageId
+        channelController.scheduleMessage_completion?(.failure(ClientError()))
+
+        viewModel.scheduleMessage(at: Date().addingTimeInterval(7200))
+
+        XCTAssertNotNil(messageId)
+        XCTAssertEqual(channelController.scheduleMessage_messageId, messageId)
+    }
+
+    func test_scheduleMessage_afterItIsScheduled_schedulesANewMessage() {
+        let channelController = makeChannelController()
+        let viewModel = MessageComposerViewModel(channelController: channelController, messageController: nil)
+        viewModel.text = "Later"
+        viewModel.scheduleMessage(at: Date().addingTimeInterval(3600))
+        let messageId = channelController.scheduleMessage_messageId
+        channelController.scheduleMessage_completion?(.success(.mock()))
+        let sendingFinished = expectation(description: "sending finished")
+        let cancellable = viewModel.$isSendingMessage.first { !$0 }.sink { _ in sendingFinished.fulfill() }
+        wait(for: [sendingFinished], timeout: defaultTimeout)
+        cancellable.cancel()
+        viewModel.text = "Even later"
+
+        viewModel.scheduleMessage(at: Date().addingTimeInterval(7200))
+
+        XCTAssertNotEqual(channelController.scheduleMessage_messageId, messageId)
+    }
+
     // MARK: - private
 
     private func makeScheduleReplyController() -> ChatMessageController_Mock {
