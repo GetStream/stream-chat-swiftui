@@ -327,32 +327,34 @@ import XCTest
         XCTAssertEqual(preview.subtitle, "Booking confirmed")
     }
 
+    func test_validateReschedule_checksTheMessageAtTheDateWithItsChannelController() {
+        channelController.validateForScheduling_error = ClientError.ScheduledMessageIsTooFarAhead(maxLeadTime: 3600)
+        var error: Error?
+
+        viewModel.validateReschedule(of: .mock(id: "scheduled"), at: Date(timeIntervalSince1970: 1_800_000_000)) { error = $0 }
+
+        XCTAssertEqual(channelController.validateForScheduling_scheduledMessageId, "scheduled")
+        XCTAssertTrue(error is ClientError.ScheduledMessageIsTooFarAhead, "\(String(describing: error))")
+    }
+
     func test_rescheduleConfirmed_withTheSameTime_closesTheSheetWithoutRescheduling() {
         let scheduledAt = Date(timeIntervalSince1970: 1_800_000_000)
         viewModel.rescheduledScheduledMessage = .mock(scheduledAt: scheduledAt)
-        var completionError: Error? = ClientError()
 
-        viewModel.rescheduleConfirmed(at: scheduledAt) { completionError = $0 }
+        viewModel.rescheduleConfirmed(at: scheduledAt)
 
-        XCTAssertNil(completionError)
         XCTAssertNil(viewModel.rescheduledScheduledMessage)
         XCTAssertEqual(controller.rescheduleMessage_callCount, 0)
     }
 
-    func test_rescheduleConfirmed_withANewTime_reschedulesAndClosesTheSheet() {
+    func test_rescheduleConfirmed_withANewTime_reschedulesAndClosesTheSheetWithoutWaitingForTheServer() {
         let newDate = Date(timeIntervalSince1970: 1_800_003_600)
         viewModel.rescheduledScheduledMessage = .mock(id: "scheduled", scheduledAt: Date(timeIntervalSince1970: 1_800_000_000))
-        var completed = false
 
-        viewModel.rescheduleConfirmed(at: newDate) { _ in completed = true }
+        viewModel.rescheduleConfirmed(at: newDate)
 
         XCTAssertEqual(controller.rescheduleMessage_id, "scheduled")
         XCTAssertEqual(controller.rescheduleMessage_scheduledAt, newDate)
-        XCTAssertNotNil(viewModel.rescheduledScheduledMessage)
-
-        controller.rescheduleMessage_completion?(.success(.mock(id: "scheduled", scheduledAt: newDate)))
-
-        XCTAssertTrue(completed)
         XCTAssertNil(viewModel.rescheduledScheduledMessage)
     }
 
@@ -360,44 +362,28 @@ import XCTest
         let scheduledAt = Date(timeIntervalSince1970: 1_800_000_000)
         viewModel.rescheduledScheduledMessage = .mock(id: "failed", scheduledAt: scheduledAt, status: .failed)
 
-        viewModel.rescheduleConfirmed(at: scheduledAt) { _ in }
+        viewModel.rescheduleConfirmed(at: scheduledAt)
 
         XCTAssertEqual(controller.rescheduleMessage_id, "failed")
     }
 
-    func test_rescheduleConfirmed_whenItFails_keepsTheSheetOpenAndReturnsTheError() {
+    func test_rescheduleConfirmed_whenTheServerFails_showsNoSnackBar() {
         viewModel.rescheduledScheduledMessage = .mock(id: "scheduled", scheduledAt: Date(timeIntervalSince1970: 1_800_000_000))
-        var completionError: Error?
 
-        viewModel.rescheduleConfirmed(at: Date(timeIntervalSince1970: 1_800_003_600)) { completionError = $0 }
+        viewModel.rescheduleConfirmed(at: Date(timeIntervalSince1970: 1_800_003_600))
         controller.rescheduleMessage_completion?(.failure(ClientError.ScheduledMessageQuotesADeletedMessage()))
 
-        XCTAssertTrue(completionError is ClientError.ScheduledMessageQuotesADeletedMessage)
-        XCTAssertEqual(viewModel.rescheduledScheduledMessage?.id, "scheduled")
+        XCTAssertNil(viewModel.snackBarText)
     }
 
-    func test_rescheduleConfirmed_whenTheMessageWasAlreadySent_closesTheSheetAndShowsTheAlreadySentSnackBar() {
+    func test_rescheduleConfirmed_whenTheMessageWasAlreadySent_showsTheAlreadySentSnackBar() {
         viewModel.rescheduledScheduledMessage = .mock(id: "scheduled", scheduledAt: Date(timeIntervalSince1970: 1_800_000_000))
-        var completed = false
 
-        viewModel.rescheduleConfirmed(at: Date(timeIntervalSince1970: 1_800_003_600)) { completed = $0 == nil }
+        viewModel.rescheduleConfirmed(at: Date(timeIntervalSince1970: 1_800_003_600))
         controller.rescheduleMessage_completion?(.failure(ClientError.ScheduledMessageAlreadySent(id: "scheduled")))
 
-        XCTAssertTrue(completed)
-        XCTAssertNil(viewModel.rescheduledScheduledMessage)
         XCTAssertEqual(viewModel.snackBarText, L10n.ScheduledMessages.Snackbar.alreadySent)
-    }
-
-    func test_rescheduleConfirmed_whenTheMessageWasDeletedElsewhere_closesTheSheet() {
-        viewModel.rescheduledScheduledMessage = .mock(id: "scheduled", scheduledAt: Date(timeIntervalSince1970: 1_800_000_000))
-        var completed = false
-
-        viewModel.rescheduleConfirmed(at: Date(timeIntervalSince1970: 1_800_003_600)) { completed = $0 == nil }
-        controller.rescheduleMessage_completion?(.failure(ClientError.ScheduledMessageDoesNotExist(id: "scheduled")))
-
-        XCTAssertTrue(completed)
-        XCTAssertNil(viewModel.rescheduledScheduledMessage)
-        XCTAssertNil(viewModel.snackBarText)
+        XCTAssertTrue(viewModel.snackBarShowsErrorIcon)
     }
 
     func test_rescheduledScheduledMessage_whenTheMessageStartsSending_isCleared() {

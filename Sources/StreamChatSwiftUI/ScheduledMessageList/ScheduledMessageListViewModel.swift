@@ -207,33 +207,36 @@ import UIKit
         )
     }
 
-    /// Reschedules the message of the reschedule sheet at the given date, and closes the sheet when it succeeds or the
-    /// message was sent or deleted meanwhile.
+    /// Checks a scheduled message at the given date with the checks the SDK runs on the device before rescheduling it,
+    /// and completes with the error, if there is one.
+    open func validateReschedule(
+        of scheduledMessage: ScheduledMessage,
+        at date: Date,
+        completion: @escaping @MainActor (Error?) -> Void
+    ) {
+        utils.channelControllerFactory.makeChannelController(for: scheduledMessage.cid).validateForScheduling(
+            scheduledAt: date,
+            editing: scheduledMessage.id,
+            completion: completion
+        )
+    }
+
+    /// Reschedules the message of the reschedule sheet at the given date and closes the sheet, without waiting for the
+    /// server.
     ///
     /// Picking the time the message already has closes the sheet without a change. A failed message is scheduled again
-    /// as a new message.
-    open func rescheduleConfirmed(at date: Date, completion: @escaping @MainActor (Error?) -> Void) {
-        guard let scheduledMessage = rescheduledScheduledMessage else {
-            completion(nil)
-            return
-        }
+    /// as a new message. A message the server fails to reschedule is shown as failed in the list.
+    open func rescheduleConfirmed(at date: Date) {
+        guard let scheduledMessage = rescheduledScheduledMessage else { return }
+        rescheduledScheduledMessage = nil
         let isSameTime = Calendar.current.isDate(date, equalTo: scheduledMessage.scheduledAt, toGranularity: .minute)
         if scheduledMessage.status != .failed, isSameTime {
-            rescheduledScheduledMessage = nil
-            completion(nil)
             return
         }
         scheduledMessageListController.rescheduleMessage(id: scheduledMessage.id, scheduledAt: date) { [weak self] result in
-            if case let .failure(error) = result {
-                if error is ClientError.ScheduledMessageAlreadySent {
-                    self?.showSnackBar(L10n.ScheduledMessages.Snackbar.alreadySent, showsErrorIcon: true)
-                } else if !(error is ClientError.ScheduledMessageDoesNotExist) {
-                    completion(error)
-                    return
-                }
+            if case let .failure(error) = result, error is ClientError.ScheduledMessageAlreadySent {
+                self?.showSnackBar(L10n.ScheduledMessages.Snackbar.alreadySent, showsErrorIcon: true)
             }
-            self?.rescheduledScheduledMessage = nil
-            completion(nil)
         }
     }
 

@@ -116,7 +116,8 @@ public struct ScheduledMessageListView<Factory: ViewFactory>: View {
                     usage: viewModel.rescheduleUsage,
                     preview: viewModel.reschedulePreview(for: scheduledMessage),
                     scheduledMessage: scheduledMessage,
-                    onSchedule: { viewModel.rescheduleConfirmed(at: $0, completion: $1) },
+                    validate: { viewModel.validateReschedule(of: scheduledMessage, at: $0, completion: $1) },
+                    onSchedule: { viewModel.rescheduleConfirmed(at: $0) },
                     onDismiss: { viewModel.rescheduledScheduledMessage = nil }
                 )
             )
