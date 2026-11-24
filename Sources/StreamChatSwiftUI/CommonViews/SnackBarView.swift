@@ -14,6 +14,8 @@ public struct SnackBarView: View {
     @Injected(\.tokens) private var tokens
 
     public let text: String
+    /// The icon shown in front of the text, such as `images.snackBarError` for an error. There is no icon when `nil`.
+    public let icon: UIImage?
     /// A Boolean value indicating whether a spinner is shown in front of the text, for something still in progress.
     public let showsSpinner: Bool
     public let duration: TimeInterval
@@ -25,6 +27,7 @@ public struct SnackBarView: View {
 
     public init(
         text: String,
+        icon: UIImage? = nil,
         showsSpinner: Bool = false,
         duration: TimeInterval = 3,
         onDismiss: (() -> Void)? = nil,
@@ -32,6 +35,7 @@ public struct SnackBarView: View {
         onAction: (() -> Void)? = nil
     ) {
         self.text = text
+        self.icon = icon
         self.showsSpinner = showsSpinner
         self.duration = duration
         self.onDismiss = onDismiss
@@ -43,6 +47,15 @@ public struct SnackBarView: View {
         HStack(spacing: tokens.spacingXs) {
             if showsSpinner {
                 LoadingSpinnerView(sizeOnInverseBackground: LoadingSpinnerSize.extraSmall)
+                    .frame(width: tokens.iconSizeMd, height: tokens.iconSizeMd)
+                    .padding(.leading, -tokens.spacingXxs)
+                    .accessibilityHidden(true)
+            }
+            if let icon {
+                Image(uiImage: icon)
+                    .renderingMode(.template)
+                    .resizable()
+                    .scaledToFit()
                     .frame(width: tokens.iconSizeMd, height: tokens.iconSizeMd)
                     .padding(.leading, -tokens.spacingXxs)
                     .accessibilityHidden(true)
@@ -100,6 +113,7 @@ extension View {
     /// - Parameters:
     ///   - text: A binding to the text. Set to a non-nil value to show;
     ///     the modifier resets it to `nil` when the snack bar dismisses.
+    ///   - icon: The icon shown in front of the text. There is no icon when `nil`.
     ///   - showsSpinner: Whether a spinner is shown in front of the text.
     ///   - duration: How long the snack bar stays visible. With an action and VoiceOver running, it stays at least
     ///     10 seconds.
@@ -108,6 +122,7 @@ extension View {
     ///   - bottomOffset: Extra offset from the bottom of this view.
     public func snackBar(
         text: Binding<String?>,
+        icon: UIImage? = nil,
         showsSpinner: Bool = false,
         duration: TimeInterval = 3,
         actionTitle: String? = nil,
@@ -119,6 +134,7 @@ extension View {
                 if let value = text.wrappedValue {
                     SnackBarView(
                         text: value,
+                        icon: icon,
                         showsSpinner: showsSpinner,
                         duration: duration,
                         onDismiss: {
