@@ -19,7 +19,7 @@ env:
 
 jobs:
   sonar:
-    runs-on: ubuntu-24.04
+    runs-on: { group: github-public-amd64 }
     steps:
     - uses: actions/checkout@v4.1.1
 
