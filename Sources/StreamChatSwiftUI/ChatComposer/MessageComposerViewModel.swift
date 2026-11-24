@@ -180,6 +180,13 @@ import SwiftUI
     
     @Published public var audioRecordingInfo = AudioRecordingInfo.initial
     @Published public var snackBarText: String?
+    /// A Boolean value indicating whether the snack bar shows the error icon, for an error.
+    public var snackBarShowsErrorIcon: Bool {
+        snackBarText != nil && snackBarText == errorSnackBarText
+    }
+
+    // A snack bar shown later for something else replaces the text, so it has no icon.
+    private var errorSnackBarText: String?
     @Published public private(set) var isSendingMessage = false
 
     public let channelController: ChatChannelController
@@ -797,8 +804,15 @@ import SwiftUI
     }
 
     private func showScheduleMessageError(_ error: Error) {
-        snackBarText = channelController.channel.map { ScheduleMessageErrorText.text(for: error, config: $0.config) }
-            ?? L10n.Composer.ScheduleMessage.Error.generic
+        let text = error is ClientError.ScheduledMessageHasACommand
+            ? L10n.Composer.ScheduleMessage.Error.commandSnackBar
+            : channelController.channel.map { ScheduleMessageErrorText.text(for: error, config: $0.config) }
+        showErrorSnackBar(text ?? L10n.Composer.ScheduleMessage.Error.generic)
+    }
+
+    private func showErrorSnackBar(_ text: String) {
+        errorSnackBarText = text
+        snackBarText = text
     }
 
     /// A Boolean value indicating whether the composer has any type of content filled.

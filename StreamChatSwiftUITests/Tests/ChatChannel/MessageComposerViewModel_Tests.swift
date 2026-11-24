@@ -2858,7 +2858,20 @@ import XCTest
         viewModel.showScheduleMessageSheet()
 
         XCTAssertFalse(viewModel.scheduleMessageSheetShown)
-        XCTAssertEqual(viewModel.snackBarText, "Commands can't be scheduled. Remove the / command to continue.")
+        XCTAssertEqual(viewModel.snackBarText, "Commands can't be scheduled")
+        XCTAssertTrue(viewModel.snackBarShowsErrorIcon)
+    }
+
+    func test_snackBarShowsErrorIcon_whenAnotherSnackBarReplacesTheError_isFalse() {
+        let channelController = makeChannelController()
+        channelController.validateForScheduling_error = ClientError.ScheduledMessageHasACommand()
+        let viewModel = MessageComposerViewModel(channelController: channelController, messageController: nil)
+        viewModel.text = "/giphy hello"
+        viewModel.showScheduleMessageSheet()
+
+        viewModel.snackBarText = "Muted"
+
+        XCTAssertFalse(viewModel.snackBarShowsErrorIcon)
     }
 
     func test_showScheduleMessageSheet_whenTheChannelLimitIsReached_showsTheSheetWithTheLimit() {
@@ -2961,7 +2974,8 @@ import XCTest
         XCTAssertFalse(viewModel.isSendingMessage)
         XCTAssertFalse(viewModel.scheduleMessageSheetShown)
         XCTAssertFalse(viewModel.errorShown)
-        XCTAssertEqual(viewModel.snackBarText, "Commands can't be scheduled. Remove the / command to continue.")
+        XCTAssertEqual(viewModel.snackBarText, "Commands can't be scheduled")
+        XCTAssertTrue(viewModel.snackBarShowsErrorIcon)
     }
 
     func test_scheduleMessage_whenOffline_clearsTheInputAndClosesBothSheets() {

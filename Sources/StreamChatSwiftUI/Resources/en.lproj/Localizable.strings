@@ -299,6 +299,7 @@
 "composer.schedule-message.note.time-zone" = "Sent in your time zone (%@)";
 "composer.schedule-message.error.channel-limit" = "You've reached the limit of %d scheduled messages in this channel.";
 "composer.schedule-message.error.command" = "Commands can't be scheduled. Remove the / command to continue.";
+"composer.schedule-message.error.command-snack-bar" = "Commands can't be scheduled";
 "composer.schedule-message.error.generic" = "Couldn't schedule message. Try again";
 "composer.schedule-message.error.quote-deleted" = "The quoted message was deleted";
 "composer.schedule-message.error.too-far" = "That's further ahead than your app allows";

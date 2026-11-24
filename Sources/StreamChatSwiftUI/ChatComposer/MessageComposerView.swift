@@ -9,6 +9,7 @@ import SwiftUI
 public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable {
     @Injected(\.colors) private var colors
     @Injected(\.fonts) private var fonts
+    @Injected(\.images) private var images
     @Injected(\.utils) private var utils
     @Injected(\.tokens) private var tokens
 
@@ -303,6 +304,7 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
         )
         .snackBar(
             text: $viewModel.snackBarText,
+            icon: viewModel.snackBarShowsErrorIcon ? images.snackBarError : nil,
             bottomOffset: composerHeight + tokens.spacingMd
         )
         .sheet(isPresented: $viewModel.scheduleMessageSheetShown) {

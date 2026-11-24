@@ -585,6 +585,8 @@ internal enum L10n {
         }
         /// Commands can't be scheduled. Remove the / command to continue.
         internal static var command: String { L10n.tr("Localizable", "composer.schedule-message.error.command") }
+        /// Commands can't be scheduled
+        internal static var commandSnackBar: String { L10n.tr("Localizable", "composer.schedule-message.error.command-snack-bar") }
         /// Couldn't schedule message. Try again
         internal static var generic: String { L10n.tr("Localizable", "composer.schedule-message.error.generic") }
         /// The quoted message was deleted
