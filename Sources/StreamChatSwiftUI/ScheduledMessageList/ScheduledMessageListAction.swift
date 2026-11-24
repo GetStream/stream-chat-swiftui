@@ -9,12 +9,22 @@ import UIKit
 public final class ScheduledMessageListAction: Identifiable, Sendable {
     /// The id of the action. The default actions use the ids of ``ScheduledMessageListActionId``.
     public let id: String
+    /// The title of the action.
     public let title: String
+    /// The icon before the title.
     public let icon: UIImage
     /// A Boolean value indicating whether the action removes something, which shows it in the error color.
     public let isDestructive: Bool
+    /// Runs the action.
     public let action: @MainActor () -> Void
 
+    /// Creates an action.
+    /// - Parameters:
+    ///   - id: The id of the action.
+    ///   - title: The title of the action.
+    ///   - icon: The icon before the title.
+    ///   - destructive: Whether the action removes something, which shows it in the error color.
+    ///   - action: Runs the action.
     public init(
         id: String,
         title: String,

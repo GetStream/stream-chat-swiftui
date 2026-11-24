@@ -13,8 +13,8 @@ public final class ScheduledMessageActionsSheetOptions: Sendable {
     public let onCopyText: @MainActor () -> Void
     /// Deletes the scheduled message, after asking for confirmation.
     public let onDelete: @MainActor () -> Void
-    /// Opens the sheet for picking a new time. `nil` hides the action, for example when the channel of the message isn't
-    /// stored locally, because the sheet needs its config.
+    /// Opens the sheet for picking a new time. `nil` hides the action, for example when the current user can't schedule
+    /// messages in the channel.
     public let onReschedule: (@MainActor () -> Void)?
     /// Sends the scheduled message right away.
     public let onSendNow: @MainActor () -> Void
@@ -76,8 +76,8 @@ public final class SupportedScheduledMessageListActionsOptions: Sendable {
     public let onCopyText: @MainActor () -> Void
     /// Deletes the scheduled message, after asking for confirmation.
     public let onDelete: @MainActor () -> Void
-    /// Opens the sheet for picking a new time. `nil` hides the action, for example when the channel of the message isn't
-    /// stored locally, because the sheet needs its config.
+    /// Opens the sheet for picking a new time. `nil` hides the action, for example when the current user can't schedule
+    /// messages in the channel.
     public let onReschedule: (@MainActor () -> Void)?
     /// Sends the scheduled message right away.
     public let onSendNow: @MainActor () -> Void

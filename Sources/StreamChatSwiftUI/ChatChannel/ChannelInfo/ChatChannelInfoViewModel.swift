@@ -87,9 +87,10 @@ import SwiftUI
         channel.ownCapabilities.contains(.muteChannel)
     }
 
-    /// Whether the scheduled messages button is shown in the channel info screen.
+    /// Whether the scheduled messages button is shown in the channel info screen. It also shows while the channel has
+    /// scheduled messages, so failed ones stay reachable, for example in a frozen channel.
     open var shouldShowScheduledMessagesButton: Bool {
-        channel.canScheduleMessage
+        channel.canScheduleMessage || !channel.scheduledMessages.isEmpty
     }
 
     open var canRenameChannel: Bool {

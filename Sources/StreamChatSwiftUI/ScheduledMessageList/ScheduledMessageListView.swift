@@ -73,7 +73,7 @@ public struct ScheduledMessageListView<Factory: ViewFactory>: View {
                 }
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .background(Color(colors.backgroundCoreApp).edgesIgnoringSafeArea(.bottom))
+            .background(Color(colors.backgroundCoreApp).ignoresSafeArea(edges: .bottom))
             .modifier(ChatThreadListHeaderViewModifier(title: title))
             .onAppear {
                 viewModel.viewDidAppear()
@@ -99,11 +99,15 @@ public struct ScheduledMessageListView<Factory: ViewFactory>: View {
     }
 
     private func actionsSheetOptions(for scheduledMessage: ScheduledMessage) -> ScheduledMessageActionsSheetOptions {
-        ScheduledMessageActionsSheetOptions(
+        // Rescheduling needs the capability to schedule messages. A channel which is not stored locally is checked when
+        // it is loaded.
+        let canSchedule = viewModel.channel(of: scheduledMessage)?.canScheduleMessage != false
+        let onReschedule: (@MainActor () -> Void)? = canSchedule ? { @MainActor in viewModel.reschedule(scheduledMessage) } : nil
+        return ScheduledMessageActionsSheetOptions(
             scheduledMessage: scheduledMessage,
             onCopyText: { viewModel.copyText(of: scheduledMessage) },
             onDelete: { viewModel.delete(scheduledMessage) },
-            onReschedule: { viewModel.reschedule(scheduledMessage) },
+            onReschedule: onReschedule,
             onSendNow: { viewModel.sendNow(scheduledMessage) },
             onDismiss: { viewModel.selectedScheduledMessage = nil }
         )

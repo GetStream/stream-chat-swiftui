@@ -241,6 +241,16 @@ import XCTest
         XCTAssertEqual(controller.deleteScheduledMessage_callCount, 0)
     }
 
+    func test_deleteConfirmation_whenTheMessageIsGone_isClosed() {
+        load([.mock(id: "scheduled"), .mock(id: "other")])
+        viewModel.delete(viewModel.scheduledMessages[0])
+
+        controller.scheduledMessages_mock = [.mock(id: "other")]
+        viewModel.controller(controller, didChangeScheduledMessages: [])
+
+        XCTAssertFalse(viewModel.deleteConfirmationShown)
+    }
+
     func test_deleteConfirmed_deletesTheMessage() {
         viewModel.delete(.mock(id: "scheduled"))
 
@@ -325,10 +335,21 @@ import XCTest
         XCTAssertEqual(channelController.synchronize_callCount, 1)
         XCTAssertNil(viewModel.rescheduledScheduledMessage)
 
-        channelController.channel_mock = .mock(cid: .unique)
+        channelController.channel_mock = .mock(cid: .unique, ownCapabilities: [.scheduleMessage])
         channelController.synchronize_completion?(nil)
 
         XCTAssertEqual(viewModel.rescheduledScheduledMessage?.id, "scheduled")
+    }
+
+    func test_reschedule_whenTheLoadedChannelDoesNotAllowScheduling_showsTheGenericError() {
+        load([.mock(id: "scheduled")])
+
+        viewModel.reschedule(viewModel.scheduledMessages[0])
+        channelController.channel_mock = .mock(cid: .unique, ownCapabilities: [.sendMessage])
+        channelController.synchronize_completion?(nil)
+
+        XCTAssertNil(viewModel.rescheduledScheduledMessage)
+        XCTAssertEqual(viewModel.snackBarText, L10n.Alert.Error.title)
     }
 
     func test_reschedule_whenTheChannelFailsToLoad_showsTheGenericError() {

@@ -62,7 +62,7 @@ public struct ScheduledMessageListItem: View {
     }
 }
 
-enum ScheduledMessageListItemStatus: Equatable {
+enum ScheduledMessageListItemStatus {
     case failed(String)
     case inProgress(String)
 }

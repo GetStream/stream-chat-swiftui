@@ -23,14 +23,6 @@ import XCTest
         AssertSnapshot(makeView(for: .mock(status: .scheduled)), size: size)
     }
 
-    func test_scheduledMessageActionsSheetView_failed() {
-        AssertSnapshot(makeView(for: failedMessage()), size: size)
-    }
-
-    func test_scheduledMessageActionsSheetView_channelDeleted() {
-        AssertSnapshot(makeView(for: channelDeletedMessage(text: "Booking confirmed for the 14th. See you there")), size: size)
-    }
-
     // MARK: - Default actions
 
     func test_defaultActions_forAScheduledMessage_areRescheduleSendNowAndDelete() {

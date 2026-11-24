@@ -46,7 +46,7 @@ struct ScheduledMessageListItemContentView<Avatar: View>: View {
                 }
             }
         }
-        .padding(.horizontal, tokens.spacingXxs + tokens.spacingMd)
+        .padding(.horizontal, tokens.spacingLg)
         .padding(.vertical, tokens.spacingMd)
         .frame(maxWidth: .infinity, alignment: .leading)
     }

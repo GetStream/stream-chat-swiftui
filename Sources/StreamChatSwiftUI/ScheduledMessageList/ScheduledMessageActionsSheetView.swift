@@ -32,7 +32,7 @@ public struct ScheduledMessageActionsSheetView: View {
         ) {
             ForEach(actions) { action in
                 Button(action: action.action) {
-                    ListItemView(icon: action.icon, title: action.title, isDestructive: action.isDestructive)
+                    ListItemView(icon: action.icon, title: action.title, destructive: action.isDestructive)
                 }
                 .buttonStyle(ListItemButtonStyle())
                 .accessibilityIdentifier("ScheduledMessageListAction-\(action.id)")

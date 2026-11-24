@@ -1637,6 +1637,15 @@ import XCTest
         XCTAssertFalse(viewModel.shouldShowScheduledMessagesButton)
     }
 
+    func test_chatChannelInfoVM_shouldShowScheduledMessagesButton_whenChannelLacksScheduleCapabilityButHasScheduledMessages_returnsTrue() {
+        // Given
+        let channel = ChatChannel.mock(cid: .unique, ownCapabilities: [.sendMessage], scheduledMessages: [.mock(status: .failed)])
+        let viewModel = ChatChannelInfoViewModel(channel: channel)
+
+        // Then
+        XCTAssertTrue(viewModel.shouldShowScheduledMessagesButton)
+    }
+
     // MARK: - private
 
     private func mockGroup(

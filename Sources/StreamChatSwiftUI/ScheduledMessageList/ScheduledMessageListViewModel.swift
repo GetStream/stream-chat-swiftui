@@ -126,7 +126,7 @@ import UIKit
                     // The message already left the list.
                     break
                 case is ClientError.ConnectionError:
-                    // It is sent once connected, and the row shows it waiting meanwhile.
+                    // It is sent once connected.
                     break
                 case is ClientError.ScheduledMessageQuotesADeletedMessage:
                     self?.showSnackBar(L10n.ScheduledMessages.Snackbar.quoteDeleted, showsErrorIcon: true)
@@ -271,7 +271,8 @@ import UIKit
             return
         }
         controller.synchronize { [weak self] error in
-            guard error == nil, controller.channel != nil else {
+            // The actions sheet only knows whether a channel which is stored locally allows scheduling messages.
+            guard error == nil, controller.channel?.canScheduleMessage == true else {
                 self?.showSnackBar(L10n.Alert.Error.title, showsErrorIcon: true)
                 return
             }
@@ -321,6 +322,9 @@ import UIKit
         let rescheduled = current(rescheduledScheduledMessage, in: all)
         if rescheduled !== rescheduledScheduledMessage {
             rescheduledScheduledMessage = rescheduled
+        }
+        if deleteConfirmationShown, let scheduledMessageToDelete, !all.contains(where: { $0.id == scheduledMessageToDelete.id }) {
+            deleteConfirmationShown = false
         }
     }
 
