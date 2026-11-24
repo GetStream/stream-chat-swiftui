@@ -4,9 +4,14 @@
 
 import SwiftUI
 
+/// An inline notification, from the `Core / Mobile / Notification` component: an icon, a title and an optional
+/// description on a tinted background.
 struct NotificationView: View {
+    /// The look of the notification.
     enum Style {
+        /// An error, on the error background.
         case error
+        /// Information, on the brand background.
         case info
     }
 
@@ -15,8 +20,11 @@ struct NotificationView: View {
     @Injected(\.images) private var images
     @Injected(\.tokens) private var tokens
 
+    /// The look of the notification.
     let style: Style
+    /// The title, in bold.
     let title: String
+    /// The text under the title.
     var description: String?
 
     var body: some View {
@@ -25,6 +33,7 @@ struct NotificationView: View {
                 .customizable()
                 .frame(width: tokens.iconSizeMd, height: tokens.iconSizeMd)
                 .foregroundColor(Color(style == .error ? colors.accentError : colors.accentPrimary))
+                .accessibilityHidden(true)
 
             VStack(alignment: .leading, spacing: tokens.spacingXxxs) {
                 Text(title)

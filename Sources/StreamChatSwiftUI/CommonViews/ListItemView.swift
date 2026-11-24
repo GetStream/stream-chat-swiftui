@@ -4,27 +4,34 @@
 
 import SwiftUI
 
+/// A row of a list or a sheet, from the `Core / Mobile / List Item` component: an icon, a title and an optional
+/// chevron. Disabled, it draws everything in the disabled text color.
 struct ListItemView: View {
     @Environment(\.isEnabled) private var isEnabled
     @Injected(\.colors) private var colors
     @Injected(\.fonts) private var fonts
     @Injected(\.tokens) private var tokens
 
+    /// The icon before the title.
     let icon: UIImage
+    /// The title of the row.
     let title: String
+    /// Whether a chevron after the title shows that the row opens another screen.
     var showsChevron = false
-    var isDestructive = false
+    /// Whether the row is drawn in the error color, for an action that deletes something.
+    var destructive = false
 
     var body: some View {
         HStack(spacing: tokens.spacingSm) {
             Image(uiImage: icon)
                 .customizable()
                 .frame(width: tokens.iconSizeMd, height: tokens.iconSizeMd)
-                .foregroundColor(Color(color(isDestructive ? colors.accentError : colors.textSecondary)))
+                .foregroundColor(Color(color(destructive ? colors.accentError : colors.textSecondary)))
+                .accessibilityHidden(true)
 
             Text(title)
                 .font(fonts.body)
-                .foregroundColor(Color(color(isDestructive ? colors.accentError : colors.textPrimary)))
+                .foregroundColor(Color(color(destructive ? colors.accentError : colors.textPrimary)))
                 // A button centers the lines of its label otherwise.
                 .multilineTextAlignment(.leading)
 
@@ -47,6 +54,7 @@ struct ListItemView: View {
     }
 }
 
+/// The button style of a `ListItemView`, which highlights the row while it is pressed.
 struct ListItemButtonStyle: ButtonStyle {
     @Injected(\.colors) private var colors
     @Injected(\.tokens) private var tokens
