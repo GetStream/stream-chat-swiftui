@@ -5,6 +5,7 @@
 import SwiftUI
 
 struct ListItemView: View {
+    @Environment(\.isEnabled) private var isEnabled
     @Injected(\.colors) private var colors
     @Injected(\.fonts) private var fonts
     @Injected(\.tokens) private var tokens
@@ -19,18 +20,19 @@ struct ListItemView: View {
             Image(uiImage: icon)
                 .customizable()
                 .frame(width: tokens.iconSizeMd, height: tokens.iconSizeMd)
-                .foregroundColor(Color(isDestructive ? colors.accentError : colors.textSecondary))
+                .foregroundColor(Color(color(isDestructive ? colors.accentError : colors.textSecondary)))
 
             Text(title)
                 .font(fonts.body)
-                .foregroundColor(Color(isDestructive ? colors.accentError : colors.textPrimary))
+                .foregroundColor(Color(color(isDestructive ? colors.accentError : colors.textPrimary)))
                 // A button centers the lines of its label otherwise.
                 .multilineTextAlignment(.leading)
 
             Spacer(minLength: 0)
 
             if showsChevron {
-                DisclosureIndicatorView()
+                Image(systemName: "chevron.forward")
+                    .foregroundColor(Color(color(colors.textSecondary)))
                     .accessibilityHidden(true)
             }
         }
@@ -38,6 +40,10 @@ struct ListItemView: View {
         .padding(.vertical, tokens.spacingXs)
         .frame(minHeight: tokens.buttonHitTargetMinHeight)
         .contentShape(Rectangle())
+    }
+
+    private func color(_ enabledColor: UIColor) -> UIColor {
+        isEnabled ? enabledColor : colors.textDisabled
     }
 }
 

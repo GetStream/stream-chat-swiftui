@@ -32,6 +32,7 @@ struct SheetHeaderView: View {
                 StreamIconButton(role: .secondary, style: .outline, size: .medium, action: onClose) {
                     Image(uiImage: images.close)
                         .renderingMode(.template)
+                        .frame(width: tokens.iconSizeMd, height: tokens.iconSizeMd)
                 }
                 .accessibilityLabel(Text(L10n.Alert.Actions.cancel))
                 .accessibilityIdentifier("SheetHeaderCloseButton")
@@ -50,7 +51,7 @@ struct SheetHeaderView: View {
                 }
             }
         }
-        .padding(.horizontal, tokens.spacingSm)
+        .padding(.horizontal, tokens.spacingMd)
         // Keeps a title that wraps at large text sizes away from the drag indicator.
         .padding(.vertical, tokens.spacingSm)
         .frame(maxWidth: .infinity, minHeight: Self.minHeight)

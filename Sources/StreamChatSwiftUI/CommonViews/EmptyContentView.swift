@@ -43,6 +43,7 @@ struct EmptyContentView: View {
                         action()
                     } text: {
                         Text(actionTitle)
+                            .font(fonts.bodyBold)
                     }
                     .padding(.top, 8)
                 }
