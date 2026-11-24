@@ -6,8 +6,8 @@ import SwiftUI
 
 /// A floating snack bar that displays a transient message.
 ///
-/// The snack bar automatically triggers `onDismiss` after `duration` seconds, or after at least 10 seconds
-/// when it has an action and VoiceOver is running. Tapping the action also triggers it.
+/// The snack bar automatically triggers `onDismiss` after `duration` seconds, 2 seconds later when it has an action,
+/// or after at least 10 seconds when it has an action and VoiceOver is running. Tapping the action also triggers it.
 public struct SnackBarView: View {
     @Injected(\.colors) private var colors
     @Injected(\.fonts) private var fonts
@@ -29,7 +29,7 @@ public struct SnackBarView: View {
         text: String,
         icon: UIImage? = nil,
         showsSpinner: Bool = false,
-        duration: TimeInterval = 3,
+        duration: TimeInterval = 5,
         onDismiss: (() -> Void)? = nil,
         actionTitle: String? = nil,
         onAction: (() -> Void)? = nil
@@ -92,8 +92,13 @@ public struct SnackBarView: View {
             y: tokens.lightElevation3.y
         )
         .onAppear {
-            // Reaching the action with VoiceOver takes longer than tapping it.
-            let visibleDuration = actionTitle != nil && UIAccessibility.isVoiceOverRunning ? max(duration, 10) : duration
+            let visibleDuration: TimeInterval
+            if actionTitle == nil {
+                visibleDuration = duration
+            } else {
+                // Reaching the action with VoiceOver takes longer than tapping it.
+                visibleDuration = UIAccessibility.isVoiceOverRunning ? max(duration + 2, 10) : duration + 2
+            }
             DispatchQueue.main.asyncAfter(deadline: .now() + visibleDuration) {
                 onDismiss?()
             }
@@ -109,14 +114,14 @@ public struct SnackBarView: View {
 extension View {
     /// Presents a floating snack bar above this view.
     ///
-    /// The snack bar auto-dismisses after `duration` seconds.
+    /// The snack bar auto-dismisses after `duration` seconds, 2 seconds later when it has an action.
     /// - Parameters:
     ///   - text: A binding to the text. Set to a non-nil value to show;
     ///     the modifier resets it to `nil` when the snack bar dismisses.
     ///   - icon: The icon shown in front of the text. There is no icon when `nil`.
     ///   - showsSpinner: Whether a spinner is shown in front of the text.
-    ///   - duration: How long the snack bar stays visible. With an action and VoiceOver running, it stays at least
-    ///     10 seconds.
+    ///   - duration: How long the snack bar stays visible. With an action, it stays 2 seconds longer, and with
+    ///     VoiceOver running at least 10 seconds.
     ///   - actionTitle: The title of the action button. There is no button when `nil`.
     ///   - onAction: Called when the action button is tapped, before the snack bar is dismissed.
     ///   - bottomOffset: Extra offset from the bottom of this view.
@@ -124,7 +129,7 @@ extension View {
         text: Binding<String?>,
         icon: UIImage? = nil,
         showsSpinner: Bool = false,
-        duration: TimeInterval = 3,
+        duration: TimeInterval = 5,
         actionTitle: String? = nil,
         onAction: (() -> Void)? = nil,
         bottomOffset: CGFloat = 0
