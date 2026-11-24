@@ -487,7 +487,8 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
                     usage: viewModel.scheduledMessagesUsage,
                     preview: viewModel.scheduleMessagePreview,
                     scheduledMessage: scheduledMessage,
-                    onSchedule: { viewModel.saveEditedScheduledMessage(scheduledAt: $0, completion: $1) },
+                    validate: { viewModel.validateForScheduling(at: $0, completion: $1) },
+                    onSchedule: { viewModel.saveEditedScheduledMessage(scheduledAt: $0) },
                     onDismiss: { viewModel.editedScheduledMessageTimeSheetShown = false }
                 )
             )

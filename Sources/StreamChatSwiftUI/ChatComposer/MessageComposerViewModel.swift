@@ -752,13 +752,14 @@ import SwiftUI
         scheduleMessageCustomTimeSheetShown = true
     }
 
-    /// Checks the message in the composer at the given date with the checks the SDK runs on the device before
-    /// scheduling it, and completes with the error, if there is one.
+    /// Checks the message in the composer, or the edited scheduled message, at the given date with the checks the SDK
+    /// runs on the device before saving it, and completes with the error, if there is one.
     open func validateForScheduling(at date: Date, completion: @escaping @MainActor (Error?) -> Void) {
         channelController.validateForScheduling(
             text: messageText,
-            quotedMessageId: quotedMessage?.wrappedValue?.id,
+            quotedMessageId: isEditingScheduledMessage ? editedScheduledMessageQuotedMessageId : quotedMessage?.wrappedValue?.id,
             scheduledAt: date,
+            editing: editedScheduledMessage?.wrappedValue?.id,
             completion: completion
         )
     }
@@ -970,22 +971,17 @@ import SwiftUI
         validateEditedScheduledMessage()
     }
 
-    /// Saves the edited scheduled message, and ends the edit when it succeeds.
+    /// Saves the edited scheduled message and ends the edit, without waiting for the server.
     ///
     /// A failed message whose time has passed, such as one the server failed to send, needs a new time, so without
-    /// `scheduledAt` the sheet for picking one opens instead. Its time is kept otherwise.
-    ///
-    /// - Parameter completion: Called with the error when the message can't be saved, and with `nil` otherwise.
-    open func saveEditedScheduledMessage(
-        scheduledAt: Date? = nil,
-        completion: (@MainActor (Error?) -> Void)? = nil
-    ) {
+    /// `scheduledAt` the sheet for picking one opens instead. Its time is kept otherwise. Changes the server fails to save
+    /// show the message as failed in the scheduled message list.
+    open func saveEditedScheduledMessage(scheduledAt: Date? = nil) {
         guard let scheduledMessage = editedScheduledMessage?.wrappedValue,
               canSaveEditedScheduledMessage,
               !isSendingMessage else {
             // The message was sent or started sending while the time sheet was open. The composer shows why.
             editedScheduledMessageTimeSheetShown = false
-            completion?(nil)
             return
         }
         if scheduledAt == nil, scheduledMessage.status == .failed, scheduledMessage.scheduledAt <= Date() {
@@ -995,74 +991,50 @@ import SwiftUI
         isSendingMessage = true
         stopPreviewPlaybackIfNeeded()
         clearRemovedMentions()
-
-        let handleResult: @MainActor (Result<ScheduledMessage, Error>) -> Void = { [weak self] result in
-            guard let self else { return }
-            switch result {
-            // Without a connection, the changes are saved once connected.
-            case .success, .failure(is ClientError.ConnectionError):
-                editedScheduledMessageTimeSheetShown = false
-                clearInputData()
-                editedScheduledMessage?.wrappedValue = nil
-                completion?(nil)
-            case let .failure(error) where error is ClientError.ScheduledMessageAlreadySent || error is ClientError.ScheduledMessageDoesNotExist:
-                // It was sent or deleted meanwhile, like the events of the server tell.
-                isSendingMessage = false
-                editedScheduledMessageTimeSheetShown = false
-                if error is ClientError.ScheduledMessageAlreadySent {
-                    editedScheduledMessageWasSent = true
-                    showErrorSnackBar(L10n.ScheduledMessages.Snackbar.alreadySent)
-                } else {
-                    editedScheduledMessage?.wrappedValue = nil
-                }
-                completion?(nil)
-            case let .failure(error):
-                failScheduling(error)
-                completion?(error)
-            }
+        let attachments: [AnyAttachmentPayload]
+        do {
+            attachments = try convertAddedAssetsToPayloads()
+        } catch {
+            failScheduling(error)
+            return
         }
 
         let message = scheduledMessage.message
-        do {
-            let attachments = try convertAddedAssetsToPayloads()
-            if let messageController {
-                messageController.updateScheduledReply(
-                    id: scheduledMessage.id,
-                    text: messageText,
-                    attachments: attachments,
-                    mentionedUserIds: mentionedUsers.map(\.id),
-                    mentionedHere: mentionsHere,
-                    mentionedChannel: mentionsChannel,
-                    mentionedGroupIds: mentionedGroups.map(\.id),
-                    mentionedRoles: Array(mentionedRoles),
-                    showReplyInChannel: showReplyInChannel,
-                    silent: message.isSilent,
-                    quotedMessageId: editedScheduledMessageQuotedMessageId,
-                    scheduledAt: scheduledAt,
-                    extraData: message.extraData,
-                    completion: handleResult
-                )
-            } else {
-                channelController.updateScheduledMessage(
-                    id: scheduledMessage.id,
-                    text: messageText,
-                    silent: message.isSilent,
-                    attachments: attachments,
-                    mentionedUserIds: mentionedUsers.map(\.id),
-                    mentionedHere: mentionsHere,
-                    mentionedChannel: mentionsChannel,
-                    mentionedGroupIds: mentionedGroups.map(\.id),
-                    mentionedRoles: Array(mentionedRoles),
-                    quotedMessageId: editedScheduledMessageQuotedMessageId,
-                    scheduledAt: scheduledAt,
-                    extraData: message.extraData,
-                    completion: handleResult
-                )
-            }
-        } catch {
-            failScheduling(error)
-            completion?(error)
+        if let messageController {
+            messageController.updateScheduledReply(
+                id: scheduledMessage.id,
+                text: messageText,
+                attachments: attachments,
+                mentionedUserIds: mentionedUsers.map(\.id),
+                mentionedHere: mentionsHere,
+                mentionedChannel: mentionsChannel,
+                mentionedGroupIds: mentionedGroups.map(\.id),
+                mentionedRoles: Array(mentionedRoles),
+                showReplyInChannel: showReplyInChannel,
+                silent: message.isSilent,
+                quotedMessageId: editedScheduledMessageQuotedMessageId,
+                scheduledAt: scheduledAt,
+                extraData: message.extraData
+            )
+        } else {
+            channelController.updateScheduledMessage(
+                id: scheduledMessage.id,
+                text: messageText,
+                silent: message.isSilent,
+                attachments: attachments,
+                mentionedUserIds: mentionedUsers.map(\.id),
+                mentionedHere: mentionsHere,
+                mentionedChannel: mentionsChannel,
+                mentionedGroupIds: mentionedGroups.map(\.id),
+                mentionedRoles: Array(mentionedRoles),
+                quotedMessageId: editedScheduledMessageQuotedMessageId,
+                scheduledAt: scheduledAt,
+                extraData: message.extraData
+            )
         }
+        editedScheduledMessageTimeSheetShown = false
+        clearInputData()
+        editedScheduledMessage?.wrappedValue = nil
     }
 
     private func showEditedScheduledMessageTimeSheet(for scheduledMessage: ScheduledMessage) {
