@@ -290,7 +290,7 @@ import SwiftUI
             scrollToLastMessage()
             highlightMessage(withId: request.messageId)
         } else {
-            _ = jumpToMessage(messageId: request.messageId)
+            _ = jumpToMessage(messageId: request.messageId, skipThreadNavigation: true)
         }
     }
 

@@ -3089,6 +3089,12 @@ import XCTest
         XCTAssertNil(viewModel.scheduledMessagesBannerState)
     }
 
+    func test_scheduledMessagesBannerState_whenTheUserCannotSchedule_showsTheFailedMessages() {
+        let viewModel = makeBannerViewModel(ownCapabilities: [], scheduledMessages: [.mock(status: .failed)])
+
+        XCTAssertEqual(viewModel.scheduledMessagesBannerState, .failed(count: 1))
+    }
+
     func test_scheduledMessagesBannerState_inAThread_countsTheRepliesOfTheThread() {
         let messageController = makeScheduleReplyController()
         let date = Date().addingTimeInterval(3600)

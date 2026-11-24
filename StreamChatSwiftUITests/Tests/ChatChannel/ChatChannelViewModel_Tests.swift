@@ -1448,21 +1448,26 @@ import XCTest
 
     // MARK: - Jump To Message Request
 
-    func test_jumpToMessageRequest_scrollsTheMatchingMessageList() {
+    func test_jumpToMessageRequest_ofTheNewestMessage_highlightsIt() {
         // Given
         let message1 = ChatMessage.mock()
         let message2 = ChatMessage.mock()
         let channelController = makeChannelController(messages: [message1, message2])
         let viewModel = ChatChannelViewModel(channelController: channelController)
+        let highlighted = expectation(description: "highlighted")
+        let cancellable = viewModel.$highlightedMessageId
+            .first { $0 == message1.messageId }
+            .sink { _ in highlighted.fulfill() }
 
         // When
         NotificationCenter.default.post(
             name: .jumpToMessageNotification,
-            object: JumpToMessageRequest(cid: channelController.cid, parentMessageId: nil, messageId: message2.messageId)
+            object: JumpToMessageRequest(cid: channelController.cid, parentMessageId: nil, messageId: message1.messageId)
         )
 
         // Then
-        XCTAssertEqual(viewModel.scrolledId, message2.messageId)
+        wait(for: [highlighted], timeout: defaultTimeout)
+        cancellable.cancel()
     }
 
     func test_jumpToMessageRequest_ofAnotherMessageList_isIgnored() {

@@ -92,7 +92,7 @@ import UIKit
 
     /// Loads the first page of the scheduled messages. Call it again to retry after a failure.
     public func loadScheduledMessages() {
-        viewState = scheduledMessageListController.scheduledMessages.isEmpty ? .loading : .loaded
+        viewState = listedScheduledMessages.isEmpty ? .loading : .loaded
         updateScheduledMessages()
         scheduledMessageListController.synchronize { [weak self] error in
             self?.didLoadFirstPage(error: error)
@@ -355,9 +355,15 @@ import UIKit
         return current?.status == .sending ? nil : current
     }
 
+    // The scheduled replies of the thread, or all the scheduled messages without a thread.
+    private var listedScheduledMessages: [ScheduledMessage] {
+        scheduledMessageListController.scheduledMessages.filter {
+            parentMessageId == nil || $0.message.parentMessageId == parentMessageId
+        }
+    }
+
     private func updateScheduledMessages() {
-        let all = scheduledMessageListController.scheduledMessages
-            .filter { parentMessageId == nil || $0.message.parentMessageId == parentMessageId }
+        let all = listedScheduledMessages
         if !all.isEmpty {
             viewState = .loaded
         } else if viewState == .loaded {

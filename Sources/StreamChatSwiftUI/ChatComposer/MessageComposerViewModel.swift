@@ -887,7 +887,7 @@ import SwiftUI
 
     /// The thread whose scheduled replies the list opened from the banner shows, `nil` for all the scheduled
     /// messages of the channel.
-    public var scheduledMessageListParentMessageId: MessageId? {
+    var scheduledMessageListParentMessageId: MessageId? {
         if case .limitReached = scheduledMessagesBannerState {
             return nil
         }
@@ -900,7 +900,7 @@ import SwiftUI
     }
 
     /// The title of the snack bar's action button, `nil` when the snack bar has no action.
-    public var snackBarActionTitle: String? {
+    var snackBarActionTitle: String? {
         let showsSentScheduledMessage = sentScheduledMessageId != nil
             && snackBarText == L10n.Composer.ScheduledMessagesBanner.sent
         return showsSentScheduledMessage ? L10n.Composer.ScheduledMessagesBanner.view : nil
@@ -920,7 +920,7 @@ import SwiftUI
     }
 
     private func makeScheduledMessagesBannerState() -> ScheduledMessagesBannerState? {
-        guard let channel = channelController.channel, channel.canScheduleMessage else { return nil }
+        guard let channel = channelController.channel else { return nil }
         let threadId = messageController?.messageId
         let scheduledMessages = channel.scheduledMessages.filter {
             threadId == nil || $0.message.parentMessageId == threadId
@@ -929,6 +929,8 @@ import SwiftUI
         if pending.count < scheduledMessages.count {
             return .failed(count: scheduledMessages.count - pending.count)
         }
+        // Failed messages show without the capability too, for example in a frozen channel, so they stay reachable.
+        guard channel.canScheduleMessage else { return nil }
         // The limit is for the whole channel, also in a thread.
         let channelCount = channel.scheduledMessages.filter { $0.status != .failed }.count
         if let limit = channel.config.scheduledMessagesMaxPerChannel, channelCount > 0, channelCount >= limit {

@@ -9,7 +9,7 @@ import SwiftUI
 public enum ScheduledMessagesBannerState: Equatable, Sendable {
     /// Scheduled messages failed to send.
     case failed(count: Int)
-    /// The channel has as many pending scheduled messages as it allows.
+    /// The current user has as many pending scheduled messages in the channel as the app allows.
     case limitReached(count: Int, limit: Int)
     /// More than one scheduled message is pending.
     case multiple(count: Int)
