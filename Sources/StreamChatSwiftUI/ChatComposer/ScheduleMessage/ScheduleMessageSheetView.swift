@@ -45,7 +45,6 @@ public struct ScheduleMessageSheetView: View {
                 .accessibilityIdentifier("ScheduleMessageAction-\(action.id)")
             }
             .disabled(reachedLimit != nil)
-            .opacity(reachedLimit == nil ? 1 : 0.4)
         }
         .accessibilityIdentifier("ScheduleMessageSheetView")
     }

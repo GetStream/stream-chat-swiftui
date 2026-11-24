@@ -2939,6 +2939,22 @@ import XCTest
         XCTAssertEqual(messageController.scheduleReply_scheduledAt, date)
     }
 
+    func test_showScheduleMessageCustomTimeSheet_withAQuotedMessage_previewsTheReply() {
+        let quoted = ChatMessage.mock(id: .unique, cid: .unique, text: "Quoted", author: .mock(id: .unique, name: "Alex Ross"))
+        let viewModel = MessageComposerViewModel(
+            channelController: makeChannelController(),
+            messageController: nil,
+            quotedMessage: .constant(quoted)
+        )
+        viewModel.text = "@Maya Ross, can you check the final plan?"
+
+        viewModel.showScheduleMessageCustomTimeSheet()
+
+        XCTAssertEqual(viewModel.scheduleMessagePreview.title, L10n.Composer.Quoted.replyTo("Alex Ross"))
+        XCTAssertEqual(viewModel.scheduleMessagePreview.subtitle, "@Maya Ross, can you check the final plan?")
+        XCTAssertTrue(viewModel.scheduleMessageCustomTimeSheetShown)
+    }
+
     func test_scheduleMessage_clearsTheInputAndClosesBothSheetsWithoutWaitingForTheServer() {
         let channelController = makeChannelController()
         let viewModel = MessageComposerViewModel(channelController: channelController, messageController: nil)
