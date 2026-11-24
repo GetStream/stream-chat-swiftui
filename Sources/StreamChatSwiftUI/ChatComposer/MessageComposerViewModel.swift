@@ -146,13 +146,7 @@ import SwiftUI
     @Published public var scheduleMessageCustomTimeSheetShown = false
     /// The scheduled messages usage read when the schedule message sheet was opened.
     @Published public private(set) var scheduledMessagesUsage: ScheduledMessagesUsage?
-    @Published public var errorShown = false {
-        didSet {
-            if !errorShown {
-                scheduleMessageErrorText = nil
-            }
-        }
-    }
+    @Published public var errorShown = false
 
     @Published public var showReplyInChannel = false
     @Published public var suggestions = [String: Any]()
@@ -195,12 +189,8 @@ import SwiftUI
     public var editedMessage: Binding<ChatMessage?>?
     public var willSendMessage: (() -> Void)?
 
-    // An alert can't be presented while the schedule message sheet is dismissing.
-    private var showsErrorAfterScheduleMessageSheet = false
     // Kept until the message is scheduled, so scheduling again after a failure updates the same scheduled message.
     private var scheduledMessageId: MessageId?
-    /// The error shown when a message couldn't be scheduled from the schedule message sheet, `nil` for the default error.
-    public private(set) var scheduleMessageErrorText: String?
     /// The preview of the message in the custom time sheet. It is kept while the sheet is shown, because the composer is
     /// cleared before the sheet is gone.
     public private(set) var scheduleMessagePreview = ScheduleMessagePreview(title: "", subtitle: "")
@@ -656,7 +646,25 @@ import SwiftUI
     }
 
     /// Shows the sheet for picking when the message in the composer is sent.
+    ///
+    /// A message which can't be scheduled, for example a slash command, shows why in the snack bar instead. A reached
+    /// limit shows the sheet with its options disabled.
     open func showScheduleMessageSheet() {
+        channelController.validateForScheduling(
+            text: messageText,
+            quotedMessageId: quotedMessage?.wrappedValue?.id
+        ) { [weak self] error in
+            guard let self else { return }
+            switch error {
+            case nil, is ClientError.ScheduledMessagesChannelLimitReached, is ClientError.ScheduledMessagesUserLimitReached:
+                showScheduleMessageSheetWithUsage()
+            case let error?:
+                showScheduleMessageError(error)
+            }
+        }
+    }
+
+    private func showScheduleMessageSheetWithUsage() {
         channelController.scheduledMessagesUsage { [weak self] result in
             guard let self else { return }
             // Without the usage the sheet opens with no limit. Scheduling still checks the limits.
@@ -697,7 +705,8 @@ import SwiftUI
 
     /// Schedules the message in the composer to be sent at the given date.
     ///
-    /// The composer keeps its content when the message can't be scheduled.
+    /// The composer keeps its content when the message can't be scheduled. Without a connection, the message is scheduled
+    /// once connected, so the composer is cleared.
     ///
     /// - Parameter completion: Called with the error when the message can't be scheduled, and with `nil` otherwise.
     open func scheduleMessage(
@@ -718,15 +727,16 @@ import SwiftUI
         let handleResult: @MainActor (Result<ScheduledMessage, Error>) -> Void = { [weak self] result in
             guard let self else { return }
             switch result {
-            case let .success(scheduledMessage):
+            // Without a connection, the message is scheduled once connected.
+            case .success, .failure(is ClientError.ConnectionError):
                 scheduleMessageCustomTimeSheetShown = false
                 scheduleMessageSheetShown = false
                 clearInputData()
                 DispatchQueue.main.asyncAfter(deadline: .now() + Self.clearTextDelay) { [weak self] in
                     self?.quotedMessage?.wrappedValue = nil
                 }
-                let date = utils.scheduledMessagesConfig.dateFormatter.format(scheduledMessage.scheduledAt)
-                ComposerAccessibilityAnnouncer.announce(L10n.Composer.ScheduleMessage.Accessibility.scheduled(date))
+                let scheduledAt = utils.scheduledMessagesConfig.dateFormatter.format((try? result.get())?.scheduledAt ?? date)
+                ComposerAccessibilityAnnouncer.announce(L10n.Composer.ScheduleMessage.Accessibility.scheduled(scheduledAt))
                 completion?(nil)
             case let .failure(error):
                 failScheduling(error)
@@ -778,27 +788,17 @@ import SwiftUI
         }
     }
 
-    /// Shows the error of a message that couldn't be scheduled from the schedule message sheet. Call it when the sheet is
-    /// dismissed, because an alert can't be presented while the sheet is dismissing.
-    open func scheduleMessageSheetDismissed() {
-        guard showsErrorAfterScheduleMessageSheet else { return }
-        showsErrorAfterScheduleMessageSheet = false
-        errorShown = true
-    }
-
     private func failScheduling(_ error: Error) {
         isSendingMessage = false
         // The custom time sheet stays open and shows the error itself.
         guard !scheduleMessageCustomTimeSheetShown else { return }
-        scheduleMessageErrorText = channelController.channel.map {
-            ScheduleMessageErrorText.text(for: error, config: $0.config)
-        }
-        if scheduleMessageSheetShown {
-            showsErrorAfterScheduleMessageSheet = true
-            scheduleMessageSheetShown = false
-        } else {
-            errorShown = true
-        }
+        scheduleMessageSheetShown = false
+        showScheduleMessageError(error)
+    }
+
+    private func showScheduleMessageError(_ error: Error) {
+        snackBarText = channelController.channel.map { ScheduleMessageErrorText.text(for: error, config: $0.config) }
+            ?? L10n.Composer.ScheduleMessage.Error.generic
     }
 
     /// A Boolean value indicating whether the composer has any type of content filled.

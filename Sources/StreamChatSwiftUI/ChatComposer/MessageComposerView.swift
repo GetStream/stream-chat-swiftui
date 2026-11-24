@@ -138,12 +138,7 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
                     )
                 )
                 .alert(isPresented: $viewModel.errorShown) {
-                    guard let text = viewModel.scheduleMessageErrorText else { return Alert.defaultErrorAlert }
-                    return Alert(
-                        title: Text(L10n.Alert.Error.title),
-                        message: Text(text),
-                        dismissButton: .cancel(Text(L10n.Alert.Actions.ok))
-                    )
+                    Alert.defaultErrorAlert
                 }
                 .opacity(viewModel.recordingState.showsComposer ? 1 : 0)
                 .frame(width: viewModel.recordingState.showsComposer ? nil : 0)
@@ -310,11 +305,9 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
             text: $viewModel.snackBarText,
             bottomOffset: composerHeight + tokens.spacingMd
         )
-        .sheet(
-            isPresented: $viewModel.scheduleMessageSheetShown,
-            onDismiss: { viewModel.scheduleMessageSheetDismissed() },
-            content: { scheduleMessageSheet }
-        )
+        .sheet(isPresented: $viewModel.scheduleMessageSheetShown) {
+            scheduleMessageSheet
+        }
         .overlay(
             factory.styles.composerPlacement == .docked ? composerDivider : nil,
             alignment: .top
