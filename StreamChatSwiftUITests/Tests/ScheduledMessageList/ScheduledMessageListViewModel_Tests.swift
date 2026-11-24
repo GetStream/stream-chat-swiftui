@@ -53,6 +53,21 @@ import XCTest
         XCTAssertEqual(controller.loadMoreScheduledMessages_callCount, 1)
     }
 
+    func test_scheduledMessages_areSortedByDateThenAlphabeticallyWithFailedOnesInBetween() {
+        let date = Date(timeIntervalSince1970: 200)
+        let banana = ScheduledMessage.mock(id: "banana", message: .mock(text: "Banana"), scheduledAt: date)
+        let apple = ScheduledMessage.mock(id: "apple", message: .mock(text: "apple"), scheduledAt: date)
+        let failed = ScheduledMessage.mock(id: "failed", scheduledAt: Date(timeIntervalSince1970: 150), status: .failed)
+        let earlier = ScheduledMessage.mock(id: "earlier", scheduledAt: Date(timeIntervalSince1970: 100))
+
+        viewModel.viewDidAppear()
+        controller.scheduledMessages_mock = [banana, apple, failed, earlier]
+        controller.hasLoadedAllScheduledMessages_mock = true
+        controller.synchronize_completion?(nil)
+
+        XCTAssertEqual(viewModel.scheduledMessages.map(\.id), ["earlier", "failed", "apple", "banana"])
+    }
+
     func test_viewDidAppear_whenCalledAgain_doesNotLoadAgain() {
         viewModel.viewDidAppear()
         viewModel.viewDidAppear()
@@ -186,7 +201,7 @@ import XCTest
 
         controller.sendScheduledMessageNow_completion?(ClientError.ScheduledMessageQuotesADeletedMessage())
 
-        XCTAssertEqual(viewModel.snackBarText, L10n.ScheduledMessages.Item.quoteDeleted)
+        XCTAssertEqual(viewModel.snackBarText, L10n.ScheduledMessages.Snackbar.quoteDeleted)
         XCTAssertFalse(viewModel.snackBarShowsSpinner)
     }
 
@@ -251,7 +266,7 @@ import XCTest
 
         XCTAssertEqual(viewModel.snackBarText, L10n.ScheduledMessages.Snackbar.alreadySent)
         XCTAssertFalse(viewModel.snackBarShowsSpinner)
-        XCTAssertTrue(viewModel.snackBarShowsErrorIcon)
+        XCTAssertFalse(viewModel.snackBarShowsErrorIcon)
     }
 
     func test_delete_whenTheMessageWasDeletedElsewhere_showsNothing() {
@@ -393,7 +408,7 @@ import XCTest
         controller.rescheduleMessage_completion?(.failure(ClientError.ScheduledMessageAlreadySent(id: "scheduled")))
 
         XCTAssertEqual(viewModel.snackBarText, L10n.ScheduledMessages.Snackbar.alreadySent)
-        XCTAssertTrue(viewModel.snackBarShowsErrorIcon)
+        XCTAssertFalse(viewModel.snackBarShowsErrorIcon)
     }
 
     func test_rescheduledScheduledMessage_whenTheMessageStartsSending_isCleared() {

@@ -86,7 +86,8 @@ struct RootView: View {
             viewFactory: DemoAppFactory.shared,
             viewModel: ViewModelsFactory.makeScheduledMessageListViewModel(
                 scheduledMessageListController: appState.chatClient.scheduledMessageListController()
-            )
+            ),
+            title: "Scheduled"
         )
     }
 }

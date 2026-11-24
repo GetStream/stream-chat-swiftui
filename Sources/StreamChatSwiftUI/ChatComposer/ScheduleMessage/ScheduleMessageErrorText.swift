@@ -6,11 +6,13 @@ import Foundation
 import StreamChat
 
 enum ScheduleMessageErrorText {
-    static func text(for error: Error, config: ChannelConfig) -> String {
+    static func text(for error: Error, config: ChannelConfig, editing: Bool = false) -> String {
         let texts = L10n.Composer.ScheduleMessage.Error.self
         switch error {
         case is ClientError.ScheduledMessageHasACommand:
             return texts.command
+        case is ClientError.ScheduledMessageIsTooSoon where editing:
+            return texts.tooSoonEdit
         case is ClientError.ScheduledMessageIsTooSoon:
             let formatter = DateComponentsFormatter()
             formatter.allowedUnits = [.day, .hour, .minute]

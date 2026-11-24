@@ -129,7 +129,7 @@ import UIKit
                     // It is sent once connected, and the row shows it waiting meanwhile.
                     break
                 case is ClientError.ScheduledMessageQuotesADeletedMessage:
-                    self?.showSnackBar(L10n.ScheduledMessages.Item.quoteDeleted, showsErrorIcon: true)
+                    self?.showSnackBar(L10n.ScheduledMessages.Snackbar.quoteDeleted, showsErrorIcon: true)
                 default:
                     self?.showSnackBar(L10n.Alert.Error.title, showsErrorIcon: true)
                 }
@@ -165,7 +165,7 @@ import UIKit
             if error is ClientError.ScheduledMessageIsBeingSent {
                 self?.showSnackBar(L10n.ScheduledMessages.Snackbar.stillSending, showsSpinner: true)
             } else if error is ClientError.ScheduledMessageAlreadySent {
-                self?.showSnackBar(L10n.ScheduledMessages.Snackbar.alreadySent, showsErrorIcon: true)
+                self?.showSnackBar(L10n.ScheduledMessages.Snackbar.alreadySent)
             } else if !(error is ClientError.ScheduledMessageDoesNotExist) {
                 // A message deleted on another device only leaves the list.
                 self?.showSnackBar(L10n.Alert.Error.title, showsErrorIcon: true)
@@ -241,7 +241,7 @@ import UIKit
         }
         scheduledMessageListController.rescheduleMessage(id: scheduledMessage.id, scheduledAt: date) { [weak self] result in
             if case let .failure(error) = result, error is ClientError.ScheduledMessageAlreadySent {
-                self?.showSnackBar(L10n.ScheduledMessages.Snackbar.alreadySent, showsErrorIcon: true)
+                self?.showSnackBar(L10n.ScheduledMessages.Snackbar.alreadySent)
             }
         }
     }
@@ -335,8 +335,13 @@ import UIKit
         // The server returns pending messages before failed ones, so the rows of a first load would move around
         // while its pages arrive. They are shown when every page is loaded.
         guard viewState != .loading else { return }
-        let all = scheduledMessageListController.scheduledMessages
-            .sorted { ($0.scheduledAt, $0.message.text, $0.id) < ($1.scheduledAt, $1.message.text, $1.id) }
+        let all = scheduledMessageListController.scheduledMessages.sorted { first, second in
+            if first.scheduledAt != second.scheduledAt {
+                return first.scheduledAt < second.scheduledAt
+            }
+            let textOrder = first.message.text.localizedStandardCompare(second.message.text)
+            return textOrder == .orderedSame ? first.id < second.id : textOrder == .orderedAscending
+        }
         if !all.isEmpty {
             viewState = .loaded
         } else if viewState == .loaded {

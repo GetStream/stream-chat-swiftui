@@ -31,6 +31,7 @@ import StreamChat
     /// How many scheduled messages the current user has, next to the limits of the app.
     public let usage: ScheduledMessagesUsage?
 
+    private let isRescheduling: Bool
     private let validate: @MainActor (Date, @escaping @MainActor (Error?) -> Void) -> Void
     private let onSchedule: @MainActor (Date) -> Void
 
@@ -38,21 +39,22 @@ import StreamChat
     /// - Parameters:
     ///   - channel: The channel the message is scheduled in. Its config has the earliest and the latest time.
     ///   - usage: How many scheduled messages the current user has, next to the limits of the app.
-    ///   - initialDate: The date picked first, for example the current date of a rescheduled message. A date that is too
-    ///   soon is kept, so the sheet shows why it can't be confirmed. Tomorrow at 09:00 when `nil` or in the past, like the
-    ///   date of a failed message.
+    ///   - scheduledMessage: The scheduled message that is rescheduled, `nil` for a new message. Its date is picked first. A
+    ///   date that is too soon is kept, so the sheet shows why it can't be confirmed. Tomorrow at 09:00 is picked first for a
+    ///   new message or a date in the past, like the date of a failed message.
     ///   - validate: Checks the message at the given date with the checks the SDK runs on the device before saving it,
     ///   for example with `ChatChannelController.validateForScheduling`, and completes with the error, if there is one.
     ///   - onSchedule: Schedules the message at the given date and closes the sheet, without waiting for the server.
     public init(
         channel: ChatChannel,
         usage: ScheduledMessagesUsage?,
-        initialDate: Date? = nil,
+        scheduledMessage: ScheduledMessage? = nil,
         validate: @escaping @MainActor (Date, @escaping @MainActor (Error?) -> Void) -> Void,
         onSchedule: @escaping @MainActor (Date) -> Void
     ) {
         self.channel = channel
         self.usage = usage
+        isRescheduling = scheduledMessage != nil
         self.validate = validate
         self.onSchedule = onSchedule
         let dateLimits = Self.dateLimits(for: channel.config)
@@ -61,7 +63,7 @@ import StreamChat
         let calendar = Calendar.current
         let tomorrow = calendar.date(byAdding: .day, value: 1, to: calendar.startOfDay(for: Date()))
         let tomorrowMorning = tomorrow.flatMap { calendar.date(bySettingHour: 9, minute: 0, second: 0, of: $0) }
-        if let initialDate, initialDate > Date() {
+        if let initialDate = scheduledMessage?.scheduledAt, initialDate > Date() {
             date = min(initialDate, dateLimits.latest ?? .distantFuture)
         } else {
             date = min(max(tomorrowMorning ?? dateLimits.earliest, dateLimits.earliest), dateLimits.latest ?? .distantFuture)
@@ -80,7 +82,7 @@ import StreamChat
     /// The error to show, for example that the picked time is too soon or too far ahead. The SDK checks the message at
     /// the picked time on the device, like before saving it.
     public var errorText: String? {
-        validationError.map { ScheduleMessageErrorText.text(for: $0, config: channel.config) }
+        validationError.map { ScheduleMessageErrorText.text(for: $0, config: channel.config, editing: isRescheduling) }
     }
 
     /// A Boolean value indicating whether the message can be scheduled at the picked time.

@@ -141,32 +141,32 @@ import XCTest
         AssertSnapshot(view, size: size)
     }
 
-    func test_viewModel_withAnInitialDateThatIsTooSoon_keepsItAndShowsTheTooSoonError() {
+    func test_viewModel_whenReschedulingToATimeThatIsTooSoon_keepsItAndShowsTheEditError() {
         let soon = Date().addingTimeInterval(30)
 
-        let viewModel = makeViewModel(initialDate: soon, validate: { _, completion in
+        let viewModel = makeViewModel(scheduledMessage: .mock(scheduledAt: soon), validate: { _, completion in
             completion(ClientError.ScheduledMessageIsTooSoon(minLeadTime: 60))
         })
 
         XCTAssertEqual(viewModel.date, soon)
         XCTAssertTrue(viewModel.dateRange.contains(soon))
-        XCTAssertEqual(viewModel.errorText, "Pick a time at least 1 minute from now")
+        XCTAssertEqual(viewModel.errorText, "Pick a later time. Editing can't send a message right away.")
         XCTAssertFalse(viewModel.canConfirm)
     }
 
-    func test_viewModel_withAPastInitialDate_picksTheDefaultDate() {
-        let viewModel = makeViewModel(initialDate: Date().addingTimeInterval(-3600))
+    func test_viewModel_whenReschedulingAMessageWhoseTimePassed_picksTheDefaultDate() {
+        let viewModel = makeViewModel(scheduledMessage: .mock(scheduledAt: Date().addingTimeInterval(-3600)))
 
         XCTAssertGreaterThan(viewModel.date, Date())
         XCTAssertNil(viewModel.errorText)
     }
 
-    func test_viewModel_withAnInitialDate_picksIt() {
-        let initialDate = Date().addingTimeInterval(3 * 24 * 3600)
+    func test_viewModel_whenRescheduling_picksTheDateOfTheMessage() {
+        let scheduledAt = Date().addingTimeInterval(3 * 24 * 3600)
 
-        let viewModel = makeViewModel(initialDate: initialDate)
+        let viewModel = makeViewModel(scheduledMessage: .mock(scheduledAt: scheduledAt))
 
-        XCTAssertEqual(viewModel.date, initialDate)
+        XCTAssertEqual(viewModel.date, scheduledAt)
         XCTAssertNil(viewModel.errorText)
         XCTAssertTrue(viewModel.canConfirm)
     }
@@ -174,14 +174,14 @@ import XCTest
     // MARK: - private
 
     private func makeViewModel(
-        initialDate: Date? = nil,
+        scheduledMessage: ScheduledMessage? = nil,
         validate: @escaping @MainActor (Date, @escaping @MainActor (Error?) -> Void) -> Void = { _, completion in completion(nil) },
         onSchedule: @escaping @MainActor (Date) -> Void = { _ in }
     ) -> ScheduleMessageCustomTimeViewModel {
         ScheduleMessageCustomTimeViewModel(
             channel: .mock(cid: .unique),
             usage: usage,
-            initialDate: initialDate,
+            scheduledMessage: scheduledMessage,
             validate: validate,
             onSchedule: onSchedule
         )

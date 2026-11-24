@@ -39,7 +39,7 @@ public struct ScheduleMessageCustomTimeSheetView<Factory: ViewFactory>: View {
             wrappedValue: viewModel ?? ScheduleMessageCustomTimeViewModel(
                 channel: options.channel,
                 usage: options.usage,
-                initialDate: options.scheduledMessage?.scheduledAt,
+                scheduledMessage: options.scheduledMessage,
                 validate: options.validate,
                 onSchedule: options.onSchedule
             )

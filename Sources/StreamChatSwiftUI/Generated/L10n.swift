@@ -601,6 +601,8 @@ internal enum L10n {
         internal static func tooSoon(_ p1: Any) -> String {
           return L10n.tr("Localizable", "composer.schedule-message.error.too-soon", String(describing: p1))
         }
+        /// Pick a later time. Editing can't send a message right away.
+        internal static var tooSoonEdit: String { L10n.tr("Localizable", "composer.schedule-message.error.too-soon-edit") }
         /// You've reached your limit of %d scheduled messages.
         internal static func userLimit(_ p1: Int) -> String {
           return L10n.tr("Localizable", "composer.schedule-message.error.user-limit", p1)
@@ -1213,7 +1215,7 @@ internal enum L10n {
       internal static var retry: String { L10n.tr("Localizable", "scheduled-messages.error.retry") }
     }
     internal enum Item {
-      /// Can't send now. The quote was deleted.
+      /// The quoted message was deleted. Edit it to remove the quote.
       internal static var quoteDeleted: String { L10n.tr("Localizable", "scheduled-messages.item.quote-deleted") }
       /// Reply to %1$@: %2$@
       internal static func replyTo(_ p1: Any, _ p2: Any) -> String {
@@ -1243,8 +1245,10 @@ internal enum L10n {
       internal static var title: String { L10n.tr("Localizable", "scheduled-messages.reschedule.title") }
     }
     internal enum Snackbar {
-      /// This message was already sent
+      /// Already sent. It's in the channel now.
       internal static var alreadySent: String { L10n.tr("Localizable", "scheduled-messages.snackbar.already-sent") }
+      /// Can't send now. The quote was deleted.
+      internal static var quoteDeleted: String { L10n.tr("Localizable", "scheduled-messages.snackbar.quote-deleted") }
       /// Scheduled message sent
       internal static var sent: String { L10n.tr("Localizable", "scheduled-messages.snackbar.sent") }
       /// Still sending. Try again in a moment.
