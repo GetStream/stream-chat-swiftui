@@ -116,7 +116,7 @@ import UIKit
         performAfterSheetDismissal { [weak self] in
             self?.scheduledMessageListController.sendScheduledMessageNow(id: scheduledMessage.id) { error in
                 switch error {
-                case nil, is ClientError.ScheduledMessageDoesNotExist:
+                case nil, is ClientError.ScheduledMessageAlreadySent, is ClientError.ScheduledMessageDoesNotExist:
                     // The message is sent, or already left the list.
                     break
                 case is ClientError.ScheduledMessageQuotesADeletedMessage:
@@ -204,7 +204,8 @@ import UIKit
         )
     }
 
-    /// Reschedules the message of the reschedule sheet at the given date, and closes the sheet when it succeeds.
+    /// Reschedules the message of the reschedule sheet at the given date, and closes the sheet when it succeeds or the
+    /// message was sent or deleted meanwhile.
     ///
     /// Picking the time the message already has closes the sheet without a change. A failed message is scheduled again
     /// as a new message.
@@ -221,8 +222,12 @@ import UIKit
         }
         scheduledMessageListController.rescheduleMessage(id: scheduledMessage.id, scheduledAt: date) { [weak self] result in
             if case let .failure(error) = result {
-                completion(error)
-                return
+                if error is ClientError.ScheduledMessageAlreadySent {
+                    self?.showSnackBar(L10n.ScheduledMessages.Snackbar.alreadySent)
+                } else if !(error is ClientError.ScheduledMessageDoesNotExist) {
+                    completion(error)
+                    return
+                }
             }
             self?.rescheduledScheduledMessage = nil
             completion(nil)

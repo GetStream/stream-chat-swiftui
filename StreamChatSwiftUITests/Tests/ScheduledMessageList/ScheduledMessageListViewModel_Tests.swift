@@ -188,6 +188,14 @@ import XCTest
         XCTAssertNil(viewModel.snackBarText)
     }
 
+    func test_sendNow_whenTheMessageWasAlreadySent_showsNothing() {
+        viewModel.sendNow(.mock(id: "scheduled"))
+
+        controller.sendScheduledMessageNow_completion?(ClientError.ScheduledMessageAlreadySent(id: "scheduled"))
+
+        XCTAssertNil(viewModel.snackBarText)
+    }
+
     func test_sendNow_whenItFails_showsTheGenericError() {
         viewModel.sendNow(.mock())
 
@@ -364,6 +372,30 @@ import XCTest
 
         XCTAssertTrue(completionError is ClientError.ScheduledMessageQuotesADeletedMessage)
         XCTAssertEqual(viewModel.rescheduledScheduledMessage?.id, "scheduled")
+    }
+
+    func test_rescheduleConfirmed_whenTheMessageWasAlreadySent_closesTheSheetAndShowsTheAlreadySentSnackBar() {
+        viewModel.rescheduledScheduledMessage = .mock(id: "scheduled", scheduledAt: Date(timeIntervalSince1970: 1_800_000_000))
+        var completed = false
+
+        viewModel.rescheduleConfirmed(at: Date(timeIntervalSince1970: 1_800_003_600)) { completed = $0 == nil }
+        controller.rescheduleMessage_completion?(.failure(ClientError.ScheduledMessageAlreadySent(id: "scheduled")))
+
+        XCTAssertTrue(completed)
+        XCTAssertNil(viewModel.rescheduledScheduledMessage)
+        XCTAssertEqual(viewModel.snackBarText, L10n.ScheduledMessages.Snackbar.alreadySent)
+    }
+
+    func test_rescheduleConfirmed_whenTheMessageWasDeletedElsewhere_closesTheSheet() {
+        viewModel.rescheduledScheduledMessage = .mock(id: "scheduled", scheduledAt: Date(timeIntervalSince1970: 1_800_000_000))
+        var completed = false
+
+        viewModel.rescheduleConfirmed(at: Date(timeIntervalSince1970: 1_800_003_600)) { completed = $0 == nil }
+        controller.rescheduleMessage_completion?(.failure(ClientError.ScheduledMessageDoesNotExist(id: "scheduled")))
+
+        XCTAssertTrue(completed)
+        XCTAssertNil(viewModel.rescheduledScheduledMessage)
+        XCTAssertNil(viewModel.snackBarText)
     }
 
     func test_rescheduledScheduledMessage_whenTheMessageStartsSending_isCleared() {
