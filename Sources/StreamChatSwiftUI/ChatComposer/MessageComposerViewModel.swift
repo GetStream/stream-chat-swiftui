@@ -196,8 +196,6 @@ import SwiftUI
     public var editedMessage: Binding<ChatMessage?>?
     public var willSendMessage: (() -> Void)?
 
-    // Kept until the message is scheduled, so scheduling again after a failure updates the same scheduled message.
-    private var scheduledMessageId: MessageId?
     /// The preview of the message in the custom time sheet. It is kept while the sheet is shown, because the composer is
     /// cleared before the sheet is gone.
     public private(set) var scheduleMessagePreview = ScheduleMessagePreview(title: "", subtitle: "")
@@ -710,95 +708,98 @@ import SwiftUI
         scheduleMessageCustomTimeSheetShown = true
     }
 
+    /// Checks the message in the composer at the given date with the checks the SDK runs on the device before
+    /// scheduling it, and completes with the error, if there is one.
+    open func validateForScheduling(at date: Date, completion: @escaping @MainActor (Error?) -> Void) {
+        channelController.validateForScheduling(
+            text: messageText,
+            quotedMessageId: quotedMessage?.wrappedValue?.id,
+            scheduledAt: date,
+            completion: completion
+        )
+    }
+
     /// Schedules the message in the composer to be sent at the given date.
     ///
-    /// The composer keeps its content when the message can't be scheduled. Without a connection, the message is scheduled
-    /// once connected, so the composer is cleared.
-    ///
-    /// - Parameter completion: Called with the error when the message can't be scheduled, and with `nil` otherwise.
+    /// The message is saved on the device first, so the sheets close and the composer is cleared without waiting for
+    /// the server. A message the server fails to schedule stays with the scheduled messages of the channel as failed.
+    /// Without a connection, it is scheduled once connected. The snack bar shows why a message couldn't be saved.
     open func scheduleMessage(
         at date: Date,
         silent: Bool = false,
         skipPush: Bool = false,
-        extraData: [String: RawJSON] = [:],
-        completion: (@MainActor (Error?) -> Void)? = nil
+        extraData: [String: RawJSON] = [:]
     ) {
         guard !isSendingMessage else { return }
         isSendingMessage = true
 
         stopPreviewPlaybackIfNeeded()
         clearRemovedMentions()
-        let messageId = scheduledMessageId ?? UUID().uuidString.lowercased()
-        scheduledMessageId = messageId
-
-        let handleResult: @MainActor (Result<ScheduledMessage, Error>) -> Void = { [weak self] result in
-            guard let self else { return }
-            switch result {
-            // Without a connection, the message is scheduled once connected.
-            case .success, .failure(is ClientError.ConnectionError):
-                scheduleMessageCustomTimeSheetShown = false
-                scheduleMessageSheetShown = false
-                clearInputData()
-                DispatchQueue.main.asyncAfter(deadline: .now() + Self.clearTextDelay) { [weak self] in
-                    self?.quotedMessage?.wrappedValue = nil
-                }
-                let scheduledAt = utils.scheduledMessagesConfig.dateFormatter.format((try? result.get())?.scheduledAt ?? date)
-                ComposerAccessibilityAnnouncer.announce(L10n.Composer.ScheduleMessage.Accessibility.scheduled(scheduledAt))
-                completion?(nil)
-            case let .failure(error):
-                failScheduling(error)
-                completion?(error)
-            }
-        }
-
+        let attachments: [AnyAttachmentPayload]
         do {
-            let attachments = try convertAddedAssetsToPayloads()
-            if let messageController {
-                messageController.scheduleReply(
-                    messageId: messageId,
-                    text: messageText,
-                    attachments: attachments,
-                    mentionedUserIds: mentionedUsers.map(\.id),
-                    mentionedHere: mentionsHere,
-                    mentionedChannel: mentionsChannel,
-                    mentionedGroupIds: mentionedGroups.map(\.id),
-                    mentionedRoles: Array(mentionedRoles),
-                    showReplyInChannel: showReplyInChannel,
-                    silent: silent,
-                    quotedMessageId: quotedMessage?.wrappedValue?.id,
-                    skipPush: skipPush,
-                    scheduledAt: date,
-                    extraData: extraData,
-                    completion: handleResult
-                )
-            } else {
-                channelController.scheduleMessage(
-                    messageId: messageId,
-                    text: messageText,
-                    silent: silent,
-                    attachments: attachments,
-                    mentionedUserIds: mentionedUsers.map(\.id),
-                    mentionedHere: mentionsHere,
-                    mentionedChannel: mentionsChannel,
-                    mentionedGroupIds: mentionedGroups.map(\.id),
-                    mentionedRoles: Array(mentionedRoles),
-                    quotedMessageId: quotedMessage?.wrappedValue?.id,
-                    skipPush: skipPush,
-                    scheduledAt: date,
-                    extraData: extraData,
-                    completion: handleResult
-                )
-            }
+            attachments = try convertAddedAssetsToPayloads()
         } catch {
             failScheduling(error)
-            completion?(error)
+            return
         }
+
+        let messageId = UUID().uuidString.lowercased()
+        let handleResult: @MainActor (Result<ScheduledMessage, Error>) -> Void = { [weak self] result in
+            // A message saved on the device stays with the scheduled messages of the channel as failed.
+            guard let self, case let .failure(error) = result, !(error is ClientError.ConnectionError),
+                  channelController.channel?.scheduledMessages.contains(where: { $0.id == messageId }) != true else { return }
+            showScheduleMessageError(error)
+        }
+        if let messageController {
+            messageController.scheduleReply(
+                messageId: messageId,
+                text: messageText,
+                attachments: attachments,
+                mentionedUserIds: mentionedUsers.map(\.id),
+                mentionedHere: mentionsHere,
+                mentionedChannel: mentionsChannel,
+                mentionedGroupIds: mentionedGroups.map(\.id),
+                mentionedRoles: Array(mentionedRoles),
+                showReplyInChannel: showReplyInChannel,
+                silent: silent,
+                quotedMessageId: quotedMessage?.wrappedValue?.id,
+                skipPush: skipPush,
+                scheduledAt: date,
+                extraData: extraData,
+                completion: handleResult
+            )
+        } else {
+            channelController.scheduleMessage(
+                messageId: messageId,
+                text: messageText,
+                silent: silent,
+                attachments: attachments,
+                mentionedUserIds: mentionedUsers.map(\.id),
+                mentionedHere: mentionsHere,
+                mentionedChannel: mentionsChannel,
+                mentionedGroupIds: mentionedGroups.map(\.id),
+                mentionedRoles: Array(mentionedRoles),
+                quotedMessageId: quotedMessage?.wrappedValue?.id,
+                skipPush: skipPush,
+                scheduledAt: date,
+                extraData: extraData,
+                completion: handleResult
+            )
+        }
+
+        scheduleMessageCustomTimeSheetShown = false
+        scheduleMessageSheetShown = false
+        clearInputData()
+        DispatchQueue.main.asyncAfter(deadline: .now() + Self.clearTextDelay) { [weak self] in
+            self?.quotedMessage?.wrappedValue = nil
+        }
+        let scheduledAt = utils.scheduledMessagesConfig.dateFormatter.format(date)
+        ComposerAccessibilityAnnouncer.announce(L10n.Composer.ScheduleMessage.Accessibility.scheduled(scheduledAt))
     }
 
     private func failScheduling(_ error: Error) {
         isSendingMessage = false
-        // The custom time sheet stays open and shows the error itself.
-        guard !scheduleMessageCustomTimeSheetShown else { return }
+        scheduleMessageCustomTimeSheetShown = false
         scheduleMessageSheetShown = false
         showScheduleMessageError(error)
     }
@@ -1199,7 +1200,6 @@ import SwiftUI
     }
     
     public func clearInputData() {
-        scheduledMessageId = nil
         composerAssets = []
         addedVoiceRecordings = []
         addedCustomAttachments = []

@@ -387,8 +387,11 @@ public final class ScheduleMessageCustomTimeSheetOptions: Sendable {
     public let usage: ScheduledMessagesUsage?
     /// The preview of the message.
     public let preview: ScheduleMessagePreview
-    /// Schedules the message at the given date and completes with the error, if there is one.
-    public let onSchedule: @MainActor (Date, @escaping @MainActor (Error?) -> Void) -> Void
+    /// Checks the message at the given date with the checks the SDK runs on the device before saving it, for example
+    /// with `ChatChannelController.validateForScheduling`, and completes with the error, if there is one.
+    public let validate: @MainActor (Date, @escaping @MainActor (Error?) -> Void) -> Void
+    /// Schedules the message at the given date and closes the sheet, without waiting for the server.
+    public let onSchedule: @MainActor (Date) -> Void
     /// Callback when the sheet is dismissed.
     public let onDismiss: @MainActor () -> Void
 
@@ -396,12 +399,14 @@ public final class ScheduleMessageCustomTimeSheetOptions: Sendable {
         channel: ChatChannel,
         usage: ScheduledMessagesUsage?,
         preview: ScheduleMessagePreview,
-        onSchedule: @escaping @MainActor (Date, @escaping @MainActor (Error?) -> Void) -> Void,
+        validate: @escaping @MainActor (Date, @escaping @MainActor (Error?) -> Void) -> Void,
+        onSchedule: @escaping @MainActor (Date) -> Void,
         onDismiss: @escaping @MainActor () -> Void
     ) {
         self.channel = channel
         self.usage = usage
         self.preview = preview
+        self.validate = validate
         self.onSchedule = onSchedule
         self.onDismiss = onDismiss
     }

@@ -11,6 +11,11 @@ enum ScheduleMessageErrorText {
         switch error {
         case is ClientError.ScheduledMessageHasACommand:
             return texts.command
+        case is ClientError.ScheduledMessageIsTooSoon:
+            let formatter = DateComponentsFormatter()
+            formatter.allowedUnits = [.day, .hour, .minute]
+            formatter.unitsStyle = .full
+            return texts.tooSoon(formatter.string(from: config.scheduledMessagesMinLeadTime ?? 60) ?? "")
         case is ClientError.ScheduledMessageIsTooFarAhead:
             return texts.tooFar
         case is ClientError.ScheduledMessageQuotesADeletedMessage:
@@ -21,19 +26,6 @@ enum ScheduleMessageErrorText {
             return config.scheduledMessagesMaxPerUser.map { texts.userLimit($0) } ?? texts.generic
         default:
             return texts.generic
-        }
-    }
-
-    // Scheduling again can't fix these while the sheet is open, because the message and the limits stay the same.
-    static func canRetry(_ error: Error) -> Bool {
-        switch error {
-        case is ClientError.ScheduledMessageHasACommand,
-             is ClientError.ScheduledMessageQuotesADeletedMessage,
-             is ClientError.ScheduledMessagesChannelLimitReached,
-             is ClientError.ScheduledMessagesUserLimitReached:
-            false
-        default:
-            true
         }
     }
 }

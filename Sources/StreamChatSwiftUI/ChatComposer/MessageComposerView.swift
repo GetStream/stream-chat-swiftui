@@ -387,15 +387,14 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
                     onDismiss: { viewModel.scheduleMessageSheetShown = false }
                 )
             )
-            // A message scheduled from a row is still on its way.
-            .disabled(viewModel.isSendingMessage)
             .sheet(isPresented: $viewModel.scheduleMessageCustomTimeSheetShown) {
                 factory.makeScheduleMessageCustomTimeSheet(
                     options: ScheduleMessageCustomTimeSheetOptions(
                         channel: channel,
                         usage: viewModel.scheduledMessagesUsage,
                         preview: viewModel.scheduleMessagePreview,
-                        onSchedule: { viewModel.scheduleMessage(at: $0, completion: $1) },
+                        validate: { viewModel.validateForScheduling(at: $0, completion: $1) },
+                        onSchedule: { viewModel.scheduleMessage(at: $0) },
                         onDismiss: { viewModel.scheduleMessageCustomTimeSheetShown = false }
                     )
                 )
