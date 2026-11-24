@@ -161,12 +161,22 @@ import XCTest
 
     // MARK: - Send now
 
-    func test_sendNow_sendsTheMessageNow() {
+    func test_sendNow_sendsTheMessageNowAndShowsTheSentSnackBar() {
         viewModel.sendNow(.mock(id: "scheduled"))
 
         XCTAssertEqual(controller.sendScheduledMessageNow_id, "scheduled")
+        XCTAssertNil(viewModel.snackBarText)
 
         controller.sendScheduledMessageNow_completion?(nil)
+
+        XCTAssertEqual(viewModel.snackBarText, L10n.ScheduledMessages.Snackbar.sent)
+        XCTAssertFalse(viewModel.snackBarShowsErrorIcon)
+    }
+
+    func test_sendNow_whenOffline_showsNothing() {
+        viewModel.sendNow(.mock(id: "scheduled"))
+
+        controller.sendScheduledMessageNow_completion?(ClientError.ConnectionError())
 
         XCTAssertNil(viewModel.snackBarText)
     }

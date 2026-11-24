@@ -223,6 +223,19 @@ import XCTest
         AssertSnapshot(makeView(), size: defaultScreenSize)
     }
 
+    func test_scheduledMessageListView_sentSnackBar() {
+        let kickoff = scheduledMessage("Kickoff notes are in the doc.", channelName: "Growth Squad", day: 26, hour: 9)
+        let sent = scheduledMessage("Heads up: the launch moved to Monday", channelName: "Maya Ross", day: 23, hour: 9)
+        load([kickoff, sent])
+
+        viewModel.sendNow(sent)
+        controller.scheduledMessages_mock = [kickoff]
+        viewModel.controller(controller, didChangeScheduledMessages: [])
+        controller.sendScheduledMessageNow_completion?(nil)
+
+        AssertSnapshot(makeView(), size: defaultScreenSize)
+    }
+
     // MARK: - Helpers
 
     private func makeView() -> some View {

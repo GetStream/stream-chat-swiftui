@@ -429,6 +429,7 @@
 "scheduled-messages.no-content.title" = "No scheduled messages";
 "scheduled-messages.reschedule.title" = "Reschedule message";
 "scheduled-messages.snackbar.already-sent" = "This message was already sent";
+"scheduled-messages.snackbar.sent" = "Scheduled message sent";
 "scheduled-messages.snackbar.still-sending" = "Still sending. Try again in a moment.";
 
 // - MARK: Message Annotations

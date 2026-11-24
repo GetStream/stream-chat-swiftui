@@ -114,13 +114,19 @@ import UIKit
         action?()
     }
 
-    /// Sends a scheduled message right away. The sheet with the actions is closed first.
+    /// Sends a scheduled message right away. The sheet with the actions is closed first, and a snack bar tells when it
+    /// was sent.
     open func sendNow(_ scheduledMessage: ScheduledMessage) {
         performAfterSheetDismissal { [weak self] in
             self?.scheduledMessageListController.sendScheduledMessageNow(id: scheduledMessage.id) { error in
                 switch error {
-                case nil, is ClientError.ScheduledMessageAlreadySent, is ClientError.ScheduledMessageDoesNotExist:
-                    // The message is sent, or already left the list.
+                case nil:
+                    self?.showSnackBar(L10n.ScheduledMessages.Snackbar.sent)
+                case is ClientError.ScheduledMessageAlreadySent, is ClientError.ScheduledMessageDoesNotExist:
+                    // The message already left the list.
+                    break
+                case is ClientError.ConnectionError:
+                    // It is sent once connected, and the row shows it waiting meanwhile.
                     break
                 case is ClientError.ScheduledMessageQuotesADeletedMessage:
                     self?.showSnackBar(L10n.ScheduledMessages.Item.quoteDeleted, showsErrorIcon: true)

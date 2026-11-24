@@ -1245,6 +1245,8 @@ internal enum L10n {
     internal enum Snackbar {
       /// This message was already sent
       internal static var alreadySent: String { L10n.tr("Localizable", "scheduled-messages.snackbar.already-sent") }
+      /// Scheduled message sent
+      internal static var sent: String { L10n.tr("Localizable", "scheduled-messages.snackbar.sent") }
       /// Still sending. Try again in a moment.
       internal static var stillSending: String { L10n.tr("Localizable", "scheduled-messages.snackbar.still-sending") }
     }
