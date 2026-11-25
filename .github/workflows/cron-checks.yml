@@ -40,7 +40,7 @@ jobs:
             device: "iPhone 15 Pro"
             setup_runtime: true
       fail-fast: false
-    runs-on: macos-15
+    runs-on: { group: scaleway-macos }
     env:
       GITHUB_EVENT: ${{ toJson(github.event) }}
       ALLURE_TOKEN: ${{ secrets.ALLURE_TOKEN }}
@@ -105,7 +105,7 @@ jobs:
           - xcode: 16.4 # swift 6.1
             os: macos-15
       fail-fast: false
-    runs-on: ${{ matrix.os }}
+    runs-on: { group: scaleway-macos }
     steps:
     - uses: actions/checkout@v4.1.1
     - uses: ./.github/actions/ruby-cache
@@ -117,7 +117,7 @@ jobs:
 
   build-old-xcode:
     name: Build SDKs (Old Xcode)
-    runs-on: macos-15
+    runs-on: { group: scaleway-macos }
     env:
       XCODE_VERSION: "16.4"
     steps:
