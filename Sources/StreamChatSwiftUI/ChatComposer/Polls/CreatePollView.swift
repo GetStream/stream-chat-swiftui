@@ -432,6 +432,7 @@ private struct CreatePollOptionRow<DecoratedField: View>: View {
                         Image(systemName: "minus.circle")
                             .font(.system(size: tokens.iconSizeSm))
                             .foregroundColor(Color(colors.textTertiary))
+                            .frame(width: tokens.iconSizeSm, height: tokens.iconSizeSm)
                             .padding(.trailing, tokens.spacingMd)
                             .frame(minWidth: minHeight, minHeight: minHeight, alignment: .trailing)
                             .contentShape(Rectangle())
