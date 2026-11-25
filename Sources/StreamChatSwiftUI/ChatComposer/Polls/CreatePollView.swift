@@ -409,6 +409,8 @@ private struct CreatePollOptionRow<DecoratedField: View>: View {
     let onAccessibilityMove: (AccessibilityAdjustmentDirection) -> Bool
     @ViewBuilder var decorate: (TextField<Text>) -> DecoratedField
 
+    private let minHeight: CGFloat = 48
+
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             HStack(spacing: tokens.spacingXs) {
@@ -424,18 +426,23 @@ private struct CreatePollOptionRow<DecoratedField: View>: View {
                 .font(fonts.body)
                 .foregroundColor(Color(colors.inputTextDefault))
                 .multilineTextAlignment(.leading)
+                .padding(.vertical, tokens.spacingSm)
                 if showsDeleteButton {
                     Button(action: onDelete) {
                         Image(systemName: "minus.circle")
                             .font(.system(size: tokens.iconSizeSm))
                             .foregroundColor(Color(colors.textTertiary))
+                            .frame(width: tokens.iconSizeSm, height: tokens.iconSizeSm)
+                            .padding(.trailing, tokens.spacingMd)
+                            .frame(minWidth: minHeight, minHeight: minHeight, alignment: .trailing)
+                            .contentShape(Rectangle())
                     }
-                    .frame(width: tokens.iconSizeSm, height: tokens.iconSizeSm)
+                    .buttonStyle(.borderless)
                 }
             }
-            .padding(.horizontal, tokens.spacingMd)
-            .padding(.vertical, tokens.spacingSm)
-            .frame(minHeight: 48)
+            .padding(.leading, tokens.spacingMd)
+            .padding(.trailing, showsDeleteButton ? 0 : tokens.spacingMd)
+            .frame(minHeight: minHeight)
 
             duplicateErrorLabel
         }

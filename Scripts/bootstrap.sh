@@ -73,8 +73,9 @@ if [[ $OS != Linux && ${SKIP_SWIFT_BOOTSTRAP:-} != true ]]; then
   BIN_PATH="/usr/local/bin/swiftgen"
   wget "$DOWNLOAD_URL" -O "$DOWNLOAD_PATH"
   sudo rm -rf "$INSTALL_DIR"
-  sudo mkdir -p "$INSTALL_DIR"
+  sudo install -d -m 755 /usr/local/lib "$INSTALL_DIR"
   sudo unzip -o "$DOWNLOAD_PATH" -d "$INSTALL_DIR"
+  sudo chmod -R a+rX "$INSTALL_DIR"
   sudo sudo rm -f "$BIN_PATH"
   sudo sudo ln -s "$INSTALL_DIR/bin/swiftgen" "$BIN_PATH"
   swiftgen --version
