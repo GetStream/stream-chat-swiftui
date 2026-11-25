@@ -14,8 +14,8 @@ struct SheetView<Content: View>: View {
 
     @State private var contentHeight: CGFloat?
 
-    /// The title of the header. Without a title, the sheet has no header from iOS 16 on, where it has a grabber.
-    let title: String?
+    /// The title of the header. With an empty title, the sheet has no header from iOS 16 on, where it has a grabber.
+    let title: String
     /// The height used until the content is measured, so the sheet doesn't open at a different height first.
     let estimatedContentHeight: CGFloat
     /// Called when the close button is tapped.
@@ -30,8 +30,8 @@ struct SheetView<Content: View>: View {
     var body: some View {
         ScrollView {
             VStack(spacing: 0) {
-                if let headerTitle {
-                    header(title: headerTitle)
+                if showsHeader {
+                    header
                 } else {
                     Color.clear.frame(height: tokens.spacingXl)
                 }
@@ -51,7 +51,7 @@ struct SheetView<Content: View>: View {
         .compatibility.presentationDragIndicatorVisible()
     }
 
-    private func header(title: String) -> some View {
+    private var header: some View {
         ZStack {
             Text(title)
                 .font(fonts.bodyBold)
@@ -95,15 +95,16 @@ struct SheetView<Content: View>: View {
     }
 
     private var estimatedHeight: CGFloat {
-        (headerTitle == nil ? tokens.spacingXl : headerMinHeight) + estimatedContentHeight + tokens.spacingMd
+        (showsHeader ? headerMinHeight : tokens.spacingXl) + estimatedContentHeight + tokens.spacingMd
     }
 
-    // Before iOS 16 a sheet covers the screen and has no grabber, so it keeps the header with the close button.
-    private var headerTitle: String? {
+    // The presentation detents API is not available before iOS 16, so the sheet covers the screen without a grabber
+    // and keeps the header with the close button.
+    private var showsHeader: Bool {
         if #available(iOS 16.0, *) {
-            title
+            !title.isEmpty
         } else {
-            title ?? ""
+            true
         }
     }
 }
