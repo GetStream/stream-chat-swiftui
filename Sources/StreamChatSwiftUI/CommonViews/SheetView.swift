@@ -7,8 +7,6 @@ import SwiftUI
 /// A sheet as tall as its content, from the `Core / iOS / Sheet` component. Its header has a close button, a title and
 /// an optional confirm button.
 struct SheetView<Content: View>: View {
-    private static var headerMinHeight: CGFloat { 72 }
-
     @Injected(\.colors) private var colors
     @Injected(\.fonts) private var fonts
     @Injected(\.images) private var images
@@ -89,11 +87,15 @@ struct SheetView<Content: View>: View {
         .padding(.horizontal, tokens.spacingMd)
         // Keeps a title that wraps at large text sizes away from the drag indicator.
         .padding(.vertical, tokens.spacingSm)
-        .frame(maxWidth: .infinity, minHeight: Self.headerMinHeight)
+        .frame(maxWidth: .infinity, minHeight: headerMinHeight)
+    }
+
+    private var headerMinHeight: CGFloat {
+        tokens.buttonHitTargetMinHeight + 2 * tokens.spacingSm
     }
 
     private var estimatedHeight: CGFloat {
-        (headerTitle == nil ? tokens.spacingXl : Self.headerMinHeight) + estimatedContentHeight + tokens.spacingMd
+        (headerTitle == nil ? tokens.spacingXl : headerMinHeight) + estimatedContentHeight + tokens.spacingMd
     }
 
     // Before iOS 16 a sheet covers the screen and has no grabber, so it keeps the header with the close button.

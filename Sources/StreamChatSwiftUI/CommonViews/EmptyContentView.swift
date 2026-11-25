@@ -8,6 +8,7 @@ import SwiftUI
 struct EmptyContentView: View {
     @Injected(\.fonts) private var fonts
     @Injected(\.colors) private var colors
+    @Injected(\.tokens) private var tokens
 
     var image: UIImage
     var title: String?
@@ -45,7 +46,7 @@ struct EmptyContentView: View {
                         Text(actionTitle)
                             .font(fonts.bodyBold)
                     }
-                    .padding(.top, 8)
+                    .padding(.top, tokens.spacingXs)
                 }
             }
             .padding(.horizontal, 32)
