@@ -310,6 +310,22 @@ import XCTest
 
     // MARK: - Reschedule
 
+    func test_canReschedule_whenTheChannelIsNotStored_isTrue() {
+        XCTAssertTrue(viewModel.canReschedule(.mock(id: "scheduled")))
+    }
+
+    func test_canReschedule_whenTheChannelAllowsScheduling_isTrue() {
+        channelController.channel_mock = .mock(cid: .unique, ownCapabilities: [.scheduleMessage])
+
+        XCTAssertTrue(viewModel.canReschedule(.mock(id: "scheduled")))
+    }
+
+    func test_canReschedule_whenTheChannelDoesNotAllowScheduling_isFalse() {
+        channelController.channel_mock = .mock(cid: .unique, ownCapabilities: [.sendMessage])
+
+        XCTAssertFalse(viewModel.canReschedule(.mock(id: "scheduled")))
+    }
+
     func test_reschedule_opensTheSheetWhenTheActionsSheetIsDismissed() {
         channelController.channel_mock = .mock(cid: .unique)
         load([.mock(id: "scheduled")])

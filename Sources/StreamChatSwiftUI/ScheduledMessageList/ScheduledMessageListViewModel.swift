@@ -177,6 +177,12 @@ import UIKit
         utils.channelControllerFactory.makeChannelController(for: scheduledMessage.cid).channel
     }
 
+    // A channel which is not stored locally allows it. Rescheduling loads the channel and shows an error when it doesn't
+    // allow scheduling messages.
+    func canReschedule(_ scheduledMessage: ScheduledMessage) -> Bool {
+        channel(of: scheduledMessage).map(\.canScheduleMessage) ?? true
+    }
+
     /// Opens the sheet for picking a new time for a scheduled message. The sheet with the actions is closed first.
     ///
     /// A channel which is not stored locally is loaded first. When loading it fails, a snack bar shows the error.

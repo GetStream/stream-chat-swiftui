@@ -99,10 +99,9 @@ public struct ScheduledMessageListView<Factory: ViewFactory>: View {
     }
 
     private func actionsSheetOptions(for scheduledMessage: ScheduledMessage) -> ScheduledMessageActionsSheetOptions {
-        // Rescheduling needs the capability to schedule messages. A channel which is not stored locally is checked when
-        // it is loaded.
-        let canSchedule = viewModel.channel(of: scheduledMessage)?.canScheduleMessage != false
-        let onReschedule: (@MainActor () -> Void)? = canSchedule ? { @MainActor in viewModel.reschedule(scheduledMessage) } : nil
+        let onReschedule: (@MainActor () -> Void)? = viewModel.canReschedule(scheduledMessage)
+            ? { @MainActor in viewModel.reschedule(scheduledMessage) }
+            : nil
         return ScheduledMessageActionsSheetOptions(
             scheduledMessage: scheduledMessage,
             onCopyText: { viewModel.copyText(of: scheduledMessage) },
