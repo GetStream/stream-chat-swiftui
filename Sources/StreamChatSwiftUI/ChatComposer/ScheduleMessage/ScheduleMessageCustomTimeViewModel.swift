@@ -12,7 +12,15 @@ import StreamChat
     ///
     /// A picked time at or before the earliest time moves to a minute after it. The date picker picks the earliest time
     /// when today is tapped after the time it shows has passed.
-    @Published public var date: Date
+    @Published public var date: Date {
+        didSet {
+            // The date picker keeps showing the time of the tapped day. A date set after it handled the tap redraws it.
+            DispatchQueue.main.async { [weak self] in
+                self?.didPickDate()
+            }
+        }
+    }
+
     @Published private(set) var earliestDate: Date
     @Published private(set) var latestDate: Date?
 
@@ -25,7 +33,6 @@ import StreamChat
 
     private let validate: @MainActor (Date, @escaping @MainActor (Error?) -> Void) -> Void
     private let onSchedule: @MainActor (Date) -> Void
-    private var cancellables = Set<AnyCancellable>()
 
     /// Creates the view model.
     /// - Parameters:
@@ -51,23 +58,6 @@ import StreamChat
         let tomorrow = calendar.date(byAdding: .day, value: 1, to: calendar.startOfDay(for: Date()))
         let tomorrowMorning = tomorrow.flatMap { calendar.date(bySettingHour: 9, minute: 0, second: 0, of: $0) }
         date = min(max(tomorrowMorning ?? dateLimits.earliest, dateLimits.earliest), dateLimits.latest ?? .distantFuture)
-        $date
-            .dropFirst()
-            // The date picker keeps showing the time of the tapped day. A date set after it handled the tap redraws it.
-            .receive(on: DispatchQueue.main)
-            .sink { [weak self] _ in
-                guard let self else { return }
-                guard pickedDate > earliestDate else {
-                    date = earliestDate.addingTimeInterval(60)
-                    return
-                }
-                validatePickedDate()
-            }
-            .store(in: &cancellables)
-        Timer.publish(every: 1, on: .main, in: .common)
-            .autoconnect()
-            .sink { [weak self] _ in self?.updateDateLimits() }
-            .store(in: &cancellables)
         validatePickedDate()
     }
 
@@ -87,14 +77,22 @@ import StreamChat
         validationError == nil
     }
 
-    // Moves the earliest and the latest time to the current time, and checks the picked time again when they move.
+    private func didPickDate() {
+        updateDateLimits()
+        guard pickedDate > earliestDate else {
+            date = earliestDate.addingTimeInterval(60)
+            return
+        }
+        validatePickedDate()
+    }
+
+    // Moves the earliest and the latest time to the current time.
     private func updateDateLimits() {
         let dateLimits = Self.dateLimits(for: channel.config)
         // The limits change once a minute, the view doesn't need an update in between.
         guard dateLimits.earliest != earliestDate || dateLimits.latest != latestDate else { return }
         earliestDate = dateLimits.earliest
         latestDate = dateLimits.latest
-        validatePickedDate()
     }
 
     /// Schedules the message at the picked time, unless the SDK refuses it, for example when the time became too soon
