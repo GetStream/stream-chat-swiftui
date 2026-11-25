@@ -26,7 +26,7 @@ public struct ScheduledMessageActionsSheetView: View {
 
     public var body: some View {
         SheetView(
-            title: nil,
+            title: "",
             estimatedContentHeight: CGFloat(actions.count) * tokens.buttonHitTargetMinHeight,
             onClose: onDismiss
         ) {
