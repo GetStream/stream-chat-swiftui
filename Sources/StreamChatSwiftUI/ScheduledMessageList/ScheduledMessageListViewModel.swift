@@ -208,12 +208,13 @@ import UIKit
         performAfterSheetDismissal { [weak self] in
             self?.loadChannelIfNeeded(for: scheduledMessage.cid) { [weak self] controller in
                 // The message may have been sent or deleted while the sheet was closing or the channel was loading.
-                guard let self, let scheduledMessage = current(scheduledMessage, in: scheduledMessageListController.scheduledMessages) else {
+                guard let self,
+                      let scheduledMessage = self.current(scheduledMessage, in: self.scheduledMessageListController.scheduledMessages) else {
                     return
                 }
                 guard scheduledMessage.status == .failed else {
-                    rescheduleUsage = nil
-                    rescheduledScheduledMessage = scheduledMessage
+                    self.rescheduleUsage = nil
+                    self.rescheduledScheduledMessage = scheduledMessage
                     return
                 }
                 controller.scheduledMessagesUsage { [weak self] result in
