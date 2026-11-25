@@ -32,17 +32,20 @@ private struct ScheduledMessageListSkeletonRow: View {
     @Injected(\.tokens) private var tokens
     @ScaledMetric(relativeTo: .subheadline) private var captionBarHeight: CGFloat = 12
     @ScaledMetric(relativeTo: .body) private var bodyBarHeight: CGFloat = 16
+    @ScaledMetric(relativeTo: .subheadline) private var sendAtBarWidth: CGFloat = 120
+    @ScaledMetric(relativeTo: .subheadline) private var channelNameBarWidth: CGFloat = 96
+    @ScaledMetric(relativeTo: .body) private var previewBarWidth: CGFloat = 260
 
     var body: some View {
         VStack(alignment: .leading, spacing: tokens.spacingMd) {
-            bar(width: 120, height: captionBarHeight)
+            bar(width: sendAtBarWidth, height: captionBarHeight)
             HStack(alignment: .top, spacing: tokens.spacingSm) {
                 Circle()
                     .fill(fillColor)
                     .frame(width: AvatarSize.extraLarge, height: AvatarSize.extraLarge)
                 VStack(alignment: .leading, spacing: tokens.spacingXs) {
-                    bar(width: 96, height: captionBarHeight)
-                    bar(width: 260, height: bodyBarHeight)
+                    bar(width: channelNameBarWidth, height: captionBarHeight)
+                    bar(width: previewBarWidth, height: bodyBarHeight)
                 }
             }
         }
