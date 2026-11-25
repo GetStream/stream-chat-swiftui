@@ -35,20 +35,13 @@ import XCTest
     func test_scheduledMessageListView_withScheduledMessages() {
         let mayaRoss = directMessageChannel(with: "Maya Ross")
         let sdkDesign = groupChannel(name: "SDK Design")
-        // Loaded in another order than they are sent, with two messages at the same time.
+        // The controller's order: pending messages first, then failed ones.
         load(
             [
-                scheduledMessage("Kickoff notes are in the doc. Please read them.", channelName: "Growth Squad", day: 26, hour: 9),
-                scheduledMessage("", channel: sdkDesign, day: 23, hour: 13, attachments: [imageAttachment()]),
+                scheduledMessage("Agreed, let's go with that one.", channelName: "Product Leadership", day: 23, hour: 9),
                 scheduledMessage("Heads up: the launch moved to Monday", channel: mayaRoss, day: 23, hour: 9),
-                scheduledMessage(
-                    "Booking confirmed for the 14th. See you there",
-                    channelName: "Amsterdam Office",
-                    day: 22,
-                    hour: 9,
-                    status: .failed,
-                    failure: .serverFailedPublishing(.init(reason: .channelDeleted))
-                ),
+                scheduledMessage("", channel: sdkDesign, day: 23, hour: 13, attachments: [imageAttachment()]),
+                scheduledMessage("Kickoff notes are in the doc. Please read them.", channelName: "Growth Squad", day: 26, hour: 9),
                 scheduledMessage(
                     "Can you review the venue shortlist before lunch?",
                     channel: mayaRoss,
@@ -57,7 +50,14 @@ import XCTest
                     status: .failed,
                     failure: .localDeviceFailedScheduling(.init(reason: .requestFailed))
                 ),
-                scheduledMessage("Agreed, let's go with that one.", channelName: "Product Leadership", day: 23, hour: 9)
+                scheduledMessage(
+                    "Booking confirmed for the 14th. See you there",
+                    channelName: "Amsterdam Office",
+                    day: 22,
+                    hour: 9,
+                    status: .failed,
+                    failure: .serverFailedPublishing(.init(reason: .channelDeleted))
+                )
             ]
         )
 

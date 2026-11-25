@@ -24,10 +24,12 @@ import UIKit
 
     private let scheduledMessageListController: ScheduledMessageListController
     private var hasStartedLoading = false
+    private var isLoadingMoreScheduledMessages = false
     private var actionPendingSheetDismissal: (@MainActor () -> Void)?
     private var scheduledMessageToDelete: ScheduledMessage?
 
-    /// The scheduled messages matching `searchText`, sorted by the date they are sent.
+    /// The scheduled messages matching `searchText`, in the order of the controller: pending ones first, then failed ones,
+    /// each by the time they are sent. Search covers the loaded pages.
     @Published public var scheduledMessages = [ScheduledMessage]()
 
     /// The text the scheduled messages are searched for: in the message text, the channel name and the names of the attachments.
@@ -83,12 +85,28 @@ import UIKit
         loadScheduledMessages()
     }
 
-    /// Loads all the scheduled messages, page by page. Call it again to retry after a failure.
+    /// Loads the first page of the scheduled messages. Call it again to retry after a failure.
     public func loadScheduledMessages() {
         viewState = scheduledMessageListController.scheduledMessages.isEmpty ? .loading : .loaded
         updateScheduledMessages()
         scheduledMessageListController.synchronize { [weak self] error in
-            self?.didLoadPage(error: error)
+            self?.didLoadFirstPage(error: error)
+        }
+    }
+
+    /// Called when the scheduled message at the given index of `scheduledMessages` appears on screen.
+    ///
+    /// By default it loads the next page when the message is near the end of the list.
+    public func didAppearScheduledMessage(at index: Int) {
+        guard index >= scheduledMessages.count - 5,
+              !isLoadingMoreScheduledMessages,
+              !scheduledMessageListController.hasLoadedAllScheduledMessages else { return }
+        isLoadingMoreScheduledMessages = true
+        scheduledMessageListController.loadMoreScheduledMessages { [weak self] result in
+            self?.isLoadingMoreScheduledMessages = false
+            if case .failure = result {
+                self?.showSnackBar(L10n.ScheduledMessages.Error.message, showsErrorIcon: true)
+            }
         }
     }
 
@@ -286,17 +304,7 @@ import UIKit
         }
     }
 
-    private func didLoadPage(error: Error?) {
-        if error == nil, !scheduledMessageListController.hasLoadedAllScheduledMessages {
-            scheduledMessageListController.loadMoreScheduledMessages { [weak self] result in
-                if case let .failure(error) = result {
-                    self?.didLoadPage(error: error)
-                } else {
-                    self?.didLoadPage(error: nil)
-                }
-            }
-            return
-        }
+    private func didLoadFirstPage(error: Error?) {
         viewState = error == nil ? .empty : .failed
         updateScheduledMessages()
         if error != nil, viewState == .loaded {
@@ -342,16 +350,7 @@ import UIKit
     }
 
     private func updateScheduledMessages() {
-        // The server returns pending messages before failed ones, so the rows of a first load would move around
-        // while its pages arrive. They are shown when every page is loaded.
-        guard viewState != .loading else { return }
-        let all = scheduledMessageListController.scheduledMessages.sorted { first, second in
-            if first.scheduledAt != second.scheduledAt {
-                return first.scheduledAt < second.scheduledAt
-            }
-            let textOrder = first.message.text.localizedStandardCompare(second.message.text)
-            return textOrder == .orderedSame ? first.id < second.id : textOrder == .orderedAscending
-        }
+        let all = scheduledMessageListController.scheduledMessages
         if !all.isEmpty {
             viewState = .loaded
         } else if viewState == .loaded {

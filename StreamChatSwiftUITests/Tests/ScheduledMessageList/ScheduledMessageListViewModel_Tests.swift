@@ -32,40 +32,23 @@ import XCTest
         super.tearDown()
     }
 
-    func test_viewDidAppear_loadsAllPagesBeforeShowingTheScheduledMessages() {
-        let later = ScheduledMessage.mock(id: "later", scheduledAt: Date(timeIntervalSince1970: 200))
-        let earlier = ScheduledMessage.mock(id: "earlier", scheduledAt: Date(timeIntervalSince1970: 100))
-
+    func test_viewDidAppear_showsTheFirstPage() {
         viewModel.viewDidAppear()
-        controller.scheduledMessages_mock = [later]
+        controller.scheduledMessages_mock = [.mock(id: "first")]
         controller.synchronize_completion?(nil)
-
-        XCTAssertEqual(viewModel.viewState, .loading)
-        XCTAssertEqual(viewModel.scheduledMessages, [])
-        XCTAssertEqual(controller.loadMoreScheduledMessages_callCount, 1)
-
-        controller.scheduledMessages_mock = [later, earlier]
-        controller.hasLoadedAllScheduledMessages_mock = true
-        controller.loadMoreScheduledMessages_completion?(.success([earlier]))
 
         XCTAssertEqual(viewModel.viewState, .loaded)
-        XCTAssertEqual(viewModel.scheduledMessages.map(\.id), ["earlier", "later"])
-        XCTAssertEqual(controller.loadMoreScheduledMessages_callCount, 1)
+        XCTAssertEqual(viewModel.scheduledMessages.map(\.id), ["first"])
+        XCTAssertEqual(controller.loadMoreScheduledMessages_callCount, 0)
     }
 
-    func test_scheduledMessages_areSortedByDateThenAlphabeticallyWithFailedOnesInBetween() {
-        let date = Date(timeIntervalSince1970: 200)
-        let banana = ScheduledMessage.mock(id: "banana", message: .mock(text: "Banana"), scheduledAt: date)
-        let apple = ScheduledMessage.mock(id: "apple", message: .mock(text: "apple"), scheduledAt: date)
-        let failed = ScheduledMessage.mock(id: "failed", scheduledAt: Date(timeIntervalSince1970: 150), status: .failed)
-        let earlier = ScheduledMessage.mock(id: "earlier", scheduledAt: Date(timeIntervalSince1970: 100))
+    func test_scheduledMessages_keepTheOrderOfTheController() {
+        let pending = ScheduledMessage.mock(id: "pending", scheduledAt: Date(timeIntervalSince1970: 200))
+        let failed = ScheduledMessage.mock(id: "failed", scheduledAt: Date(timeIntervalSince1970: 100), status: .failed)
 
-        viewModel.viewDidAppear()
-        controller.scheduledMessages_mock = [banana, apple, failed, earlier]
-        controller.hasLoadedAllScheduledMessages_mock = true
-        controller.synchronize_completion?(nil)
+        load([pending, failed])
 
-        XCTAssertEqual(viewModel.scheduledMessages.map(\.id), ["earlier", "failed", "apple", "banana"])
+        XCTAssertEqual(viewModel.scheduledMessages.map(\.id), ["pending", "failed"])
     }
 
     func test_viewDidAppear_whenCalledAgain_doesNotLoadAgain() {
@@ -87,15 +70,45 @@ import XCTest
         XCTAssertEqual(controller.synchronize_callCount, 2)
     }
 
-    func test_whenALaterPageFails_showsTheLoadedScheduledMessages() {
-        viewModel.viewDidAppear()
-        controller.scheduledMessages_mock = [.mock(id: "first")]
-        controller.synchronize_completion?(nil)
+    // MARK: - Pagination
+
+    func test_didAppearScheduledMessage_nearTheEnd_loadsTheNextPage() {
+        loadFirstPage(count: 10)
+
+        viewModel.didAppearScheduledMessage(at: 5)
+        viewModel.didAppearScheduledMessage(at: 6)
+
+        XCTAssertEqual(controller.loadMoreScheduledMessages_callCount, 1)
+    }
+
+    func test_didAppearScheduledMessage_awayFromTheEnd_doesNotLoad() {
+        loadFirstPage(count: 10)
+
+        viewModel.didAppearScheduledMessage(at: 4)
+
+        XCTAssertEqual(controller.loadMoreScheduledMessages_callCount, 0)
+    }
+
+    func test_didAppearScheduledMessage_whenAllAreLoaded_doesNotLoad() {
+        load((0..<10).map { ScheduledMessage.mock(id: "\($0)") })
+
+        viewModel.didAppearScheduledMessage(at: 9)
+
+        XCTAssertEqual(controller.loadMoreScheduledMessages_callCount, 0)
+    }
+
+    func test_didAppearScheduledMessage_whenTheNextPageFails_showsTheErrorAndLoadsItAgainLater() {
+        loadFirstPage(count: 10)
+
+        viewModel.didAppearScheduledMessage(at: 9)
         controller.loadMoreScheduledMessages_completion?(.failure(ClientError()))
 
         XCTAssertEqual(viewModel.viewState, .loaded)
-        XCTAssertEqual(viewModel.scheduledMessages.map(\.id), ["first"])
         XCTAssertEqual(viewModel.snackBarText, L10n.ScheduledMessages.Error.message)
+
+        viewModel.didAppearScheduledMessage(at: 9)
+
+        XCTAssertEqual(controller.loadMoreScheduledMessages_callCount, 2)
     }
 
     // MARK: - Tapping a scheduled message
@@ -485,6 +498,13 @@ import XCTest
     private func load(_ scheduledMessages: [ScheduledMessage]) {
         controller.scheduledMessages_mock = scheduledMessages
         controller.hasLoadedAllScheduledMessages_mock = true
+        viewModel.viewDidAppear()
+        controller.synchronize_completion?(nil)
+    }
+
+    private func loadFirstPage(count: Int) {
+        controller.scheduledMessages_mock = (0..<count).map { ScheduledMessage.mock(id: "\($0)") }
+        controller.hasLoadedAllScheduledMessages_mock = false
         viewModel.viewDidAppear()
         controller.synchronize_completion?(nil)
     }

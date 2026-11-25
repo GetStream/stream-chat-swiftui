@@ -58,6 +58,11 @@ public struct ScheduledMessageListView<Factory: ViewFactory>: View {
                                     scheduledMessage: scheduledMessage,
                                     onTap: { viewModel.scheduledMessageTapped(scheduledMessage) }
                                 )
+                                .onAppear {
+                                    if let index = viewModel.scheduledMessages.firstIndex(where: { $0.id == scheduledMessage.id }) {
+                                        viewModel.didAppearScheduledMessage(at: index)
+                                    }
+                                }
                                 Divider()
                                     .overlay(Color(colors.borderCoreSubtle))
                             }
