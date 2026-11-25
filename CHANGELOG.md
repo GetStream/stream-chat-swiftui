@@ -9,48 +9,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ### 🎭 New Localizations
 Add localizable keys for scheduled messages:
 - `chat-info.scheduled-messages.title`
-- `composer.schedule-message.accessibility.scheduled`
-- `composer.schedule-message.custom-time`
-- `composer.schedule-message.error.channel-limit`
-- `composer.schedule-message.error.command`
-- `composer.schedule-message.error.generic`
-- `composer.schedule-message.error.quote-deleted`
-- `composer.schedule-message.error.too-far`
-- `composer.schedule-message.error.too-soon`
-- `composer.schedule-message.error.user-limit`
-- `composer.schedule-message.limit-reached`
-- `composer.schedule-message.note.count`
-- `composer.schedule-message.note.time-zone`
-- `composer.schedule-message.preview.message-to`
-- `composer.schedule-message.title`
-- `composer.scheduled-messages-banner.count`
-- `composer.scheduled-messages-banner.failed`
-- `composer.scheduled-messages-banner.limit`
-- `composer.scheduled-messages-banner.remove-quote`
-- `composer.scheduled-messages-banner.scheduled-for`
-- `composer.scheduled-messages-banner.sent`
-- `composer.scheduled-messages-banner.view`
-- `composer.scheduled-messages-banner.view-all`
+- `composer.schedule-message.*`
+- `composer.scheduled-messages-banner.*`
 - `composer.title.edit-scheduled`
-- `scheduled-messages.actions.copy-text`
-- `scheduled-messages.actions.reschedule`
-- `scheduled-messages.actions.send-now`
-- `scheduled-messages.delete-confirmation.message`
-- `scheduled-messages.delete-confirmation.title`
-- `scheduled-messages.error.message`
-- `scheduled-messages.error.retry`
-- `scheduled-messages.item.quote-deleted`
-- `scheduled-messages.item.reply-to`
-- `scheduled-messages.item.send-at`
-- `scheduled-messages.item.sending`
-- `scheduled-messages.item.thread-reply`
-- `scheduled-messages.item.uploading`
-- `scheduled-messages.no-content.message`
-- `scheduled-messages.no-content.title`
-- `scheduled-messages.reschedule.title`
-- `scheduled-messages.snackbar.already-sent`
-- `scheduled-messages.snackbar.still-sending`
-- `scheduled-messages.title`
+- `scheduled-messages.*`
 
 # [5.18.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/5.18.0)
 _November 25, 2026_
