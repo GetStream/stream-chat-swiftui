@@ -56,7 +56,7 @@ When editing near other packages (e.g., StreamChat or StreamChatUI), prefer exte
 
 ### New files & target membership
 
-When creating new source or resource files, add them to the correct Xcode target(s). Update the project (e.g. `project.pbxproj`) so each new file is included in the appropriate target's "Compile Sources" (or "Copy Bundle Resources" for assets). Match the target(s) used by sibling files in the same directory (e.g. `Sources/StreamChatSwiftUI/` → StreamChatSwiftUI target; `StreamChatSwiftUITests/` → StreamChatSwiftUITests target). Omitting target membership will cause build failures or unused files.
+Each top-level folder (`Sources/`, `StreamChatSwiftUITests/`, `DemoAppSwiftUI/`, `StreamChatSwiftUITestsApp/`, `StreamChatSwiftUITestsAppTests/`) is a synchronized folder owned by its target (`Sources/` → StreamChatSwiftUI, `StreamChatSwiftUITests/` → StreamChatSwiftUITests). Adding, moving or deleting a file there needs no `project.pbxproj` change. Edit the project only to keep a file out of its folder's target (such as `Info.plist`) or to share a file with another target. StreamChatSwiftUITests sets `EXCLUDED_SOURCE_FILE_NAMES = *.png` so the snapshot images in `__Snapshots__` folders stay out of its test bundle.
 
 ### Local setup (SPM)
 
