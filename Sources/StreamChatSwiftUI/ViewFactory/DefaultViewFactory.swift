@@ -1066,6 +1066,48 @@ extension ViewFactory {
         )
     }
 
+    // MARK: Scheduled Messages
+
+    public func makeScheduledMessageActionsSheet(options: ScheduledMessageActionsSheetOptions) -> some View {
+        let actions = InjectedValues[\.utils].scheduledMessagesConfig.supportedScheduledMessageListActions(
+            SupportedScheduledMessageListActionsOptions(
+                scheduledMessage: options.scheduledMessage,
+                onCopyText: options.onCopyText,
+                onDelete: options.onDelete,
+                onReschedule: options.onReschedule,
+                onSendNow: options.onSendNow
+            )
+        )
+        return ScheduledMessageActionsSheetView(actions: actions, onDismiss: options.onDismiss)
+    }
+
+    public func makeScheduledMessageListEmptyView(options: ScheduledMessageListEmptyViewOptions) -> some View {
+        EmptyContentView(
+            image: InjectedValues[\.images].noScheduledMessages,
+            title: L10n.ScheduledMessages.NoContent.title,
+            description: L10n.ScheduledMessages.NoContent.message
+        )
+        .accessibilityIdentifier("ScheduledMessageListEmptyView")
+    }
+
+    public func makeScheduledMessageListErrorView(options: ScheduledMessageListErrorViewOptions) -> some View {
+        EmptyContentView(
+            image: InjectedValues[\.images].scheduledMessagesLoadError,
+            description: L10n.ScheduledMessages.Error.message,
+            actionTitle: L10n.ScheduledMessages.Error.retry,
+            action: options.onRetry
+        )
+        .accessibilityIdentifier("ScheduledMessageListErrorView")
+    }
+
+    public func makeScheduledMessageListItem(options: ScheduledMessageListItemOptions) -> some View {
+        ScheduledMessageListItem(scheduledMessage: options.scheduledMessage)
+    }
+
+    public func makeScheduledMessageListLoadingView(options: ScheduledMessageListLoadingViewOptions) -> some View {
+        ScheduledMessageListLoadingView()
+    }
+
     // MARK: - Deprecated
 
     @available(*, deprecated, message: "Override `makeMediaViewer(options:)` for a custom full-screen video player, or `makeMediaViewerToolbarModifier`/`makeMediaViewerFooterView` to customize just the toolbar/bottom bar. Will be removed in a future major release.")

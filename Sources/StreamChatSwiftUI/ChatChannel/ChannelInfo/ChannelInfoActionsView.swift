@@ -132,7 +132,7 @@ public struct ChannelInfoActionsView: View {
 
 // The `Alert` based API doesn't present on some devices (e.g. iPhone Duo), so the
 // action based API is used where available.
-private struct ConfirmationAlertModifier: ViewModifier {
+struct ConfirmationAlertModifier: ViewModifier {
     @Binding var isPresented: Bool
     let confirmation: ConfirmationPopup
     let onConfirm: @MainActor () -> Void

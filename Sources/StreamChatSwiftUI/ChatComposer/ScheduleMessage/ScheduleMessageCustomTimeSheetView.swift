@@ -18,6 +18,7 @@ public struct ScheduleMessageCustomTimeSheetView<Factory: ViewFactory>: View {
 
     private let factory: Factory
     private let preview: ScheduleMessagePreview
+    private let title: String
     private let onDismiss: @MainActor () -> Void
 
     /// Creates the sheet.
@@ -32,11 +33,13 @@ public struct ScheduleMessageCustomTimeSheetView<Factory: ViewFactory>: View {
     ) {
         self.factory = factory
         preview = options.preview
+        title = options.scheduledMessage == nil ? L10n.Composer.ScheduleMessage.title : L10n.ScheduledMessages.Reschedule.title
         onDismiss = options.onDismiss
         _viewModel = StateObject(
             wrappedValue: viewModel ?? ScheduleMessageCustomTimeViewModel(
                 channel: options.channel,
                 usage: options.usage,
+                scheduledMessage: options.scheduledMessage,
                 validate: options.validate,
                 onSchedule: options.onSchedule
             )
@@ -45,7 +48,7 @@ public struct ScheduleMessageCustomTimeSheetView<Factory: ViewFactory>: View {
 
     public var body: some View {
         SheetView(
-            title: L10n.Composer.ScheduleMessage.title,
+            title: title,
             estimatedContentHeight: 540,
             onClose: onDismiss,
             onConfirm: { viewModel.confirm() },
@@ -58,7 +61,7 @@ public struct ScheduleMessageCustomTimeSheetView<Factory: ViewFactory>: View {
                         .accessibilityIdentifier("ScheduleMessageCustomTimeError")
                 }
                 DatePicker(
-                    L10n.Composer.ScheduleMessage.title,
+                    title,
                     selection: $viewModel.date,
                     in: viewModel.dateRange,
                     displayedComponents: [.date, .hourAndMinute]

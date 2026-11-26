@@ -12,14 +12,25 @@ import StreamChatCommonUI
     /// A formatter that converts the date a scheduled message is sent at to textual representation.
     public var dateFormatter: ScheduledMessageDateFormatter
 
+    /// A formatter that converts the failure of a scheduled message to textual representation.
+    public var failureFormatter: ScheduledMessageFailureFormatter
+
     /// Returns the actions shown in the schedule message sheet, which opens with a long press on the send message button.
     public var supportedScheduleMessageActions: @MainActor (SupportedScheduleMessageActionsOptions) -> [ScheduleMessageAction]
 
+    /// Returns the actions shown in the sheet of a scheduled message, which opens when the message is tapped in the
+    /// scheduled message list.
+    public var supportedScheduledMessageListActions: @MainActor (SupportedScheduledMessageListActionsOptions) -> [ScheduledMessageListAction]
+
     public init(
         dateFormatter: ScheduledMessageDateFormatter = DefaultScheduledMessageDateFormatter(),
-        supportedScheduleMessageActions: @escaping @MainActor (SupportedScheduleMessageActionsOptions) -> [ScheduleMessageAction] = ScheduleMessageAction.defaultActions(for:)
+        failureFormatter: ScheduledMessageFailureFormatter = DefaultScheduledMessageFailureFormatter(),
+        supportedScheduleMessageActions: @escaping @MainActor (SupportedScheduleMessageActionsOptions) -> [ScheduleMessageAction] = ScheduleMessageAction.defaultActions(for:),
+        supportedScheduledMessageListActions: @escaping @MainActor (SupportedScheduledMessageListActionsOptions) -> [ScheduledMessageListAction] = ScheduledMessageListAction.defaultActions(for:)
     ) {
         self.dateFormatter = dateFormatter
+        self.failureFormatter = failureFormatter
         self.supportedScheduleMessageActions = supportedScheduleMessageActions
+        self.supportedScheduledMessageListActions = supportedScheduledMessageListActions
     }
 }

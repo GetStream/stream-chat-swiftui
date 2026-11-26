@@ -641,6 +641,35 @@ import SwiftUI
     /// - Returns: The view shown in the channel info actions slot.
     func makeChannelInfoActionsView(options: ChannelInfoActionsViewOptions) -> ChannelInfoActionsViewType
 
+    // MARK: - Scheduled Messages
+
+    associatedtype ScheduledMessageActionsSheetType: View
+    /// Creates the sheet with the actions of a scheduled message, shown when the message is tapped in the list.
+    /// - Parameter options: the options for creating the sheet, with the scheduled message and what its actions do.
+    func makeScheduledMessageActionsSheet(options: ScheduledMessageActionsSheetOptions) -> ScheduledMessageActionsSheetType
+
+    associatedtype ScheduledMessageListEmptyViewType: View
+    /// Creates the view shown when the current user has no scheduled messages.
+    /// - Parameter options: the options for creating the empty scheduled messages view.
+    func makeScheduledMessageListEmptyView(options: ScheduledMessageListEmptyViewOptions) -> ScheduledMessageListEmptyViewType
+
+    associatedtype ScheduledMessageListErrorViewType: View
+    /// Creates the view shown when loading the scheduled messages failed and there are none to show.
+    /// - Parameter options: the options for creating the view, with the action of the retry button.
+    func makeScheduledMessageListErrorView(options: ScheduledMessageListErrorViewOptions) -> ScheduledMessageListErrorViewType
+
+    associatedtype ScheduledMessageListItemType: View
+    /// Creates a row of the scheduled message list.
+    /// - Parameter options: the options for creating the row, with the scheduled message.
+    func makeScheduledMessageListItem(options: ScheduledMessageListItemOptions) -> ScheduledMessageListItemType
+
+    associatedtype ScheduledMessageListLoadingViewType: View
+    /// Creates a loading view for the scheduled message list.
+    /// - Parameter options: the options for creating the loading view.
+    func makeScheduledMessageListLoadingView(
+        options: ScheduledMessageListLoadingViewOptions
+    ) -> ScheduledMessageListLoadingViewType
+
     associatedtype AttachmentTextViewType: View
     /// Creates a text caption view displayed below attachments inside ``MessageAttachmentsView``.
     /// - Parameter options: Configuration options for the attachment text view.
