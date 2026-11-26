@@ -13,24 +13,30 @@ public struct SendMessageButton: View {
 
     var enabled: Bool
     var onTap: () -> Void
+    var onLongPress: (() -> Void)?
 
-    public init(enabled: Bool, onTap: @escaping () -> Void) {
+    public init(
+        enabled: Bool,
+        onTap: @escaping () -> Void,
+        onLongPress: (() -> Void)? = nil
+    ) {
         self.enabled = enabled
         self.onTap = onTap
+        self.onLongPress = onLongPress
     }
 
     public var body: some View {
-        StreamIconButton(
-            role: .primary,
-            style: .solid,
-            size: .small,
-            action: onTap
+        LongPressButton(
+            action: onTap,
+            longPressAction: onLongPress,
+            longPressActionName: L10n.Composer.ScheduleMessage.title
         ) {
             Image(uiImage: images.composerSend)
                 .renderingMode(.template)
                 .frame(width: tokens.iconSizeMd, height: tokens.iconSizeMd)
                 .scaleEffect(x: layoutDirection == .rightToLeft ? -1 : 1, y: 1)
         }
+        .buttonStyle(StreamButtonStyle(role: .primary, style: .solid, size: .small, isIconOnly: true))
         .disabled(!enabled)
         .accessibilityLabel(Text(L10n.Composer.Placeholder.message))
         .accessibilityIdentifier("SendMessageButton")

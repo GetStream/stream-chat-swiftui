@@ -118,6 +118,8 @@ public final class ComposerInputViewOptions: @unchecked Sendable {
     public let sendInChannelShown: Bool
     /// Binding to whether to show reply in channel.
     public let showReplyInChannel: Binding<Bool>
+    /// Called when the send message button is long pressed. When `nil`, the button has no long press.
+    public let onSendMessageLongPress: (@MainActor () -> Void)?
     
     public init(
         channelController: ChatChannelController,
@@ -148,7 +150,8 @@ public final class ComposerInputViewOptions: @unchecked Sendable {
         previewRecording: @escaping @MainActor () -> Void,
         showRecordingTip: @escaping @MainActor () -> Void,
         sendInChannelShown: Bool,
-        showReplyInChannel: Binding<Bool>
+        showReplyInChannel: Binding<Bool>,
+        onSendMessageLongPress: (@MainActor () -> Void)? = nil
     ) {
         self.channelController = channelController
         self.text = text
@@ -179,6 +182,7 @@ public final class ComposerInputViewOptions: @unchecked Sendable {
         self.showRecordingTip = showRecordingTip
         self.sendInChannelShown = sendInChannelShown
         self.showReplyInChannel = showReplyInChannel
+        self.onSendMessageLongPress = onSendMessageLongPress
     }
 }
 
@@ -240,6 +244,8 @@ public final class ComposerInputTrailingViewOptions: @unchecked Sendable {
     public let showRecordingTip: @MainActor () -> Void
     /// The closure for sending a message.
     public let sendMessage: @MainActor () -> Void
+    /// Called when the send message button is long pressed. When `nil`, the button has no long press.
+    public let onSendMessageLongPress: (@MainActor () -> Void)?
 
     public init(
         text: Binding<String>,
@@ -249,7 +255,8 @@ public final class ComposerInputTrailingViewOptions: @unchecked Sendable {
         startRecording: @escaping @MainActor () -> Void,
         stopRecording: @escaping @MainActor () -> Void,
         showRecordingTip: @escaping @MainActor () -> Void,
-        sendMessage: @escaping @MainActor () -> Void
+        sendMessage: @escaping @MainActor () -> Void,
+        onSendMessageLongPress: (@MainActor () -> Void)? = nil
     ) {
         _text = text
         _recordingState = recordingState
@@ -259,6 +266,7 @@ public final class ComposerInputTrailingViewOptions: @unchecked Sendable {
         self.stopRecording = stopRecording
         self.showRecordingTip = showRecordingTip
         self.sendMessage = sendMessage
+        self.onSendMessageLongPress = onSendMessageLongPress
     }
 }
 
@@ -283,13 +291,124 @@ public final class SendMessageButtonOptions: Sendable {
     public let enabled: Bool
     /// Callback when the button is tapped.
     public let onTap: @MainActor @Sendable () -> Void
+    /// Callback when the button is long pressed. When `nil`, the button has no long press.
+    public let onLongPress: (@MainActor @Sendable () -> Void)?
 
     public init(
         enabled: Bool,
-        onTap: @escaping @MainActor @Sendable () -> Void
+        onTap: @escaping @MainActor @Sendable () -> Void,
+        onLongPress: (@MainActor @Sendable () -> Void)? = nil
     ) {
         self.enabled = enabled
         self.onTap = onTap
+        self.onLongPress = onLongPress
+    }
+}
+
+// MARK: - Schedule Message Options
+
+/// Options for creating the list of actions in the schedule message sheet.
+public final class SupportedScheduleMessageActionsOptions: Sendable {
+    /// The channel the message is scheduled in.
+    public let channel: ChatChannel
+    /// Schedules the message at the given date.
+    public let onSchedule: @MainActor (Date) -> Void
+    /// Shows the sheet for picking a custom time.
+    public let onCustomTime: @MainActor () -> Void
+
+    public init(
+        channel: ChatChannel,
+        onSchedule: @escaping @MainActor (Date) -> Void,
+        onCustomTime: @escaping @MainActor () -> Void
+    ) {
+        self.channel = channel
+        self.onSchedule = onSchedule
+        self.onCustomTime = onCustomTime
+    }
+}
+
+/// Options for creating the schedule message sheet.
+public final class ScheduleMessageSheetOptions: Sendable {
+    /// The channel the message is scheduled in.
+    public let channel: ChatChannel
+    /// The limit of scheduled messages that was reached. When `nil`, a message can be scheduled.
+    public let reachedLimit: Int?
+    /// Schedules the message at the given date.
+    public let onSchedule: @MainActor (Date) -> Void
+    /// Shows the sheet for picking a custom time.
+    public let onCustomTime: @MainActor () -> Void
+    /// Callback when the sheet is dismissed.
+    public let onDismiss: @MainActor () -> Void
+
+    public init(
+        channel: ChatChannel,
+        reachedLimit: Int?,
+        onSchedule: @escaping @MainActor (Date) -> Void,
+        onCustomTime: @escaping @MainActor () -> Void,
+        onDismiss: @escaping @MainActor () -> Void
+    ) {
+        self.channel = channel
+        self.reachedLimit = reachedLimit
+        self.onSchedule = onSchedule
+        self.onCustomTime = onCustomTime
+        self.onDismiss = onDismiss
+    }
+}
+
+/// The preview of the message shown in the schedule message custom time sheet.
+public struct ScheduleMessagePreview: Sendable {
+    /// The title, for example "Message to General".
+    public let title: String
+    /// The text of the message, or a description of its attachments.
+    public let subtitle: String
+    /// The icon in front of the subtitle, which tells the type of the attachments.
+    public let icon: MessageAttachmentPreviewIcon?
+    /// The thumbnail of the attachment.
+    public let thumbnail: MessageAttachmentPreviewThumbnail?
+
+    public init(
+        title: String,
+        subtitle: String,
+        icon: MessageAttachmentPreviewIcon? = nil,
+        thumbnail: MessageAttachmentPreviewThumbnail? = nil
+    ) {
+        self.title = title
+        self.subtitle = subtitle
+        self.icon = icon
+        self.thumbnail = thumbnail
+    }
+}
+
+/// Options for creating the sheet for picking a custom time to send a scheduled message at.
+public final class ScheduleMessageCustomTimeSheetOptions: Sendable {
+    /// The channel the message is scheduled in.
+    public let channel: ChatChannel
+    /// How many scheduled messages the current user has, next to the limits of the app.
+    public let usage: ScheduledMessagesUsage?
+    /// The preview of the message.
+    public let preview: ScheduleMessagePreview
+    /// Checks the message at the given date with the checks the SDK runs on the device before saving it, for example
+    /// with `ChatChannelController.validateForScheduling`, and completes with the error, if there is one.
+    public let validate: @MainActor (Date, @escaping @MainActor (Error?) -> Void) -> Void
+    /// Schedules the message at the given date and closes the sheet, without waiting for the server.
+    public let onSchedule: @MainActor (Date) -> Void
+    /// Callback when the sheet is dismissed.
+    public let onDismiss: @MainActor () -> Void
+
+    public init(
+        channel: ChatChannel,
+        usage: ScheduledMessagesUsage?,
+        preview: ScheduleMessagePreview,
+        validate: @escaping @MainActor (Date, @escaping @MainActor (Error?) -> Void) -> Void,
+        onSchedule: @escaping @MainActor (Date) -> Void,
+        onDismiss: @escaping @MainActor () -> Void
+    ) {
+        self.channel = channel
+        self.usage = usage
+        self.preview = preview
+        self.validate = validate
+        self.onSchedule = onSchedule
+        self.onDismiss = onDismiss
     }
 }
 

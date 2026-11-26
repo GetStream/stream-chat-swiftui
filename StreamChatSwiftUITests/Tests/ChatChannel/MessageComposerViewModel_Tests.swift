@@ -2820,7 +2820,238 @@ import XCTest
         XCTAssertFalse(MessageComposerViewModel.haveSameContent(current, refetched))
     }
 
+    // MARK: - Scheduled Messages
+
+    func test_canScheduleMessage_followsTheChannelCapability() {
+        let channelController = makeChannelController()
+        let viewModel = MessageComposerViewModel(channelController: channelController, messageController: nil)
+
+        channelController.channel_mock = .mock(cid: .unique, ownCapabilities: [.sendMessage])
+        XCTAssertFalse(viewModel.canScheduleMessage)
+
+        channelController.channel_mock = .mock(cid: .unique, ownCapabilities: [.sendMessage, .scheduleMessage])
+        XCTAssertTrue(viewModel.canScheduleMessage)
+    }
+
+    func test_showScheduleMessageSheet_showsTheSheetWithoutALimit() {
+        let channelController = makeChannelController()
+        channelController.scheduledMessagesUsage_result = .success(
+            .init(channelCount: 9, channelLimit: 10, userCount: 99, userLimit: 100)
+        )
+        let viewModel = MessageComposerViewModel(channelController: channelController, messageController: nil)
+        viewModel.text = "Later"
+
+        viewModel.showScheduleMessageSheet()
+
+        XCTAssertEqual(channelController.validateForScheduling_text, "Later")
+        XCTAssertNil(channelController.validateForScheduling_scheduledMessageId)
+        XCTAssertTrue(viewModel.scheduleMessageSheetShown)
+        XCTAssertNil(viewModel.reachedScheduledMessagesLimit)
+    }
+
+    func test_showScheduleMessageSheet_whenTheMessageCantBeScheduled_showsWhyInsteadOfTheSheet() {
+        let channelController = makeChannelController()
+        channelController.validateForScheduling_error = ClientError.ScheduledMessageHasACommand()
+        let viewModel = MessageComposerViewModel(channelController: channelController, messageController: nil)
+        viewModel.text = "/giphy hello"
+
+        viewModel.showScheduleMessageSheet()
+
+        XCTAssertFalse(viewModel.scheduleMessageSheetShown)
+        XCTAssertEqual(viewModel.snackBarText, "Commands can't be scheduled")
+        XCTAssertTrue(viewModel.snackBarShowsErrorIcon)
+    }
+
+    func test_snackBarShowsErrorIcon_whenAnotherSnackBarReplacesTheError_isFalse() {
+        let channelController = makeChannelController()
+        channelController.validateForScheduling_error = ClientError.ScheduledMessageHasACommand()
+        let viewModel = MessageComposerViewModel(channelController: channelController, messageController: nil)
+        viewModel.text = "/giphy hello"
+        viewModel.showScheduleMessageSheet()
+
+        viewModel.snackBarText = "Muted"
+
+        XCTAssertFalse(viewModel.snackBarShowsErrorIcon)
+    }
+
+    func test_showScheduleMessageSheet_whenTheChannelLimitIsReached_showsTheSheetWithTheLimit() {
+        let channelController = makeChannelController()
+        channelController.validateForScheduling_error = ClientError.ScheduledMessagesChannelLimitReached(limit: 10)
+        channelController.scheduledMessagesUsage_result = .success(
+            .init(channelCount: 10, channelLimit: 10, userCount: 10, userLimit: 100)
+        )
+        let viewModel = MessageComposerViewModel(channelController: channelController, messageController: nil)
+
+        viewModel.showScheduleMessageSheet()
+
+        XCTAssertTrue(viewModel.scheduleMessageSheetShown)
+        XCTAssertEqual(viewModel.reachedScheduledMessagesLimit, 10)
+    }
+
+    func test_showScheduleMessageSheet_whenTheUserLimitIsReached_showsTheSheetWithTheLimit() {
+        let channelController = makeChannelController()
+        channelController.scheduledMessagesUsage_result = .success(
+            .init(channelCount: 1, channelLimit: 10, userCount: 100, userLimit: 100)
+        )
+        let viewModel = MessageComposerViewModel(channelController: channelController, messageController: nil)
+
+        viewModel.showScheduleMessageSheet()
+
+        XCTAssertTrue(viewModel.scheduleMessageSheetShown)
+        XCTAssertEqual(viewModel.reachedScheduledMessagesLimit, 100)
+    }
+
+    func test_scheduleMessage_schedulesTheMessageWithoutSendingIt() {
+        let channelController = makeChannelController()
+        var willSendMessageCallCount = 0
+        let viewModel = MessageComposerViewModel(
+            channelController: channelController,
+            messageController: nil,
+            willSendMessage: { willSendMessageCallCount += 1 }
+        )
+        viewModel.text = "Later"
+        let date = Date().addingTimeInterval(3600)
+
+        viewModel.scheduleMessage(at: date)
+        viewModel.scheduleMessage(at: date)
+
+        XCTAssertEqual(channelController.scheduleMessageCallCount, 1)
+        XCTAssertEqual(channelController.scheduleMessage_text, "Later")
+        XCTAssertEqual(channelController.scheduleMessage_scheduledAt, date)
+        XCTAssertEqual(channelController.createNewMessageCallCount, 0)
+        XCTAssertEqual(willSendMessageCallCount, 0)
+    }
+
+    func test_scheduleMessage_inAThread_schedulesAReply() {
+        let channelController = makeChannelController()
+        let messageController = makeScheduleReplyController()
+        let viewModel = MessageComposerViewModel(channelController: channelController, messageController: messageController)
+        viewModel.text = "Later"
+        viewModel.showReplyInChannel = true
+        let date = Date().addingTimeInterval(3600)
+
+        viewModel.scheduleMessage(at: date)
+
+        XCTAssertEqual(channelController.scheduleMessageCallCount, 0)
+        XCTAssertEqual(messageController.scheduleReplyCallCount, 1)
+        XCTAssertEqual(messageController.scheduleReply_text, "Later")
+        XCTAssertEqual(messageController.scheduleReply_showReplyInChannel, true)
+        XCTAssertEqual(messageController.scheduleReply_scheduledAt, date)
+    }
+
+    func test_showScheduleMessageCustomTimeSheet_withAQuotedMessage_previewsTheReply() {
+        let quoted = ChatMessage.mock(id: .unique, cid: .unique, text: "Quoted", author: .mock(id: .unique, name: "Alex Ross"))
+        let viewModel = MessageComposerViewModel(
+            channelController: makeChannelController(),
+            messageController: nil,
+            quotedMessage: .constant(quoted)
+        )
+        viewModel.text = "@Maya Ross, can you check the final plan?"
+
+        viewModel.showScheduleMessageCustomTimeSheet()
+
+        XCTAssertEqual(viewModel.scheduleMessagePreview.title, L10n.Composer.Quoted.replyTo("Alex Ross"))
+        XCTAssertEqual(viewModel.scheduleMessagePreview.subtitle, "@Maya Ross, can you check the final plan?")
+        XCTAssertTrue(viewModel.scheduleMessageCustomTimeSheetShown)
+    }
+
+    func test_scheduleMessage_clearsTheInputAndClosesBothSheetsWithoutWaitingForTheServer() {
+        let channelController = makeChannelController()
+        let viewModel = MessageComposerViewModel(channelController: channelController, messageController: nil)
+        viewModel.text = "Later"
+        viewModel.composerAssets.append(.addedFile(mockURL))
+        viewModel.scheduleMessageSheetShown = true
+        viewModel.showScheduleMessageCustomTimeSheet()
+
+        viewModel.scheduleMessage(at: Date().addingTimeInterval(3600))
+
+        XCTAssertEqual(channelController.scheduleMessageCallCount, 1)
+        XCTAssertTrue(viewModel.composerAssets.isEmpty)
+        XCTAssertFalse(viewModel.scheduleMessageSheetShown)
+        XCTAssertFalse(viewModel.scheduleMessageCustomTimeSheetShown)
+        XCTAssertFalse(viewModel.errorShown)
+    }
+
+    func test_scheduleMessage_whenTheMessageIsNotSaved_showsTheErrorInTheSnackBar() {
+        let channelController = makeChannelController()
+        let viewModel = MessageComposerViewModel(channelController: channelController, messageController: nil)
+        viewModel.text = "Later"
+
+        viewModel.scheduleMessage(at: Date().addingTimeInterval(3600))
+        channelController.scheduleMessage_completion?(.failure(ClientError.ScheduledMessageHasACommand()))
+
+        XCTAssertFalse(viewModel.errorShown)
+        XCTAssertEqual(viewModel.snackBarText, "Commands can't be scheduled")
+        XCTAssertTrue(viewModel.snackBarShowsErrorIcon)
+    }
+
+    func test_scheduleMessage_whenTheServerFailsToScheduleTheSavedMessage_showsNoSnackBar() throws {
+        let channelController = makeChannelController()
+        let viewModel = MessageComposerViewModel(channelController: channelController, messageController: nil)
+        viewModel.text = "Later"
+        viewModel.scheduleMessage(at: Date().addingTimeInterval(3600))
+        let messageId = try XCTUnwrap(channelController.scheduleMessage_messageId)
+        channelController.channel_mock = .mock(
+            cid: channelController.cid ?? .unique,
+            scheduledMessages: [.mock(id: messageId, status: .failed)]
+        )
+
+        channelController.scheduleMessage_completion?(.failure(ClientError()))
+
+        XCTAssertNil(viewModel.snackBarText)
+    }
+
+    func test_scheduleMessage_whenOffline_showsNoSnackBar() {
+        let channelController = makeChannelController()
+        let viewModel = MessageComposerViewModel(channelController: channelController, messageController: nil)
+        viewModel.text = "Later"
+
+        viewModel.scheduleMessage(at: Date().addingTimeInterval(3600))
+        channelController.scheduleMessage_completion?(.failure(ClientError.ConnectionError()))
+
+        XCTAssertNil(viewModel.snackBarText)
+    }
+
+    func test_validateForScheduling_checksTheMessageInTheComposer() {
+        let channelController = makeChannelController()
+        channelController.validateForScheduling_error = ClientError.ScheduledMessageIsTooFarAhead(maxLeadTime: 3600)
+        let viewModel = MessageComposerViewModel(channelController: channelController, messageController: nil)
+        viewModel.text = "Later"
+        var error: Error?
+
+        viewModel.validateForScheduling(at: Date().addingTimeInterval(7200)) { error = $0 }
+
+        XCTAssertEqual(channelController.validateForScheduling_text, "Later")
+        XCTAssertTrue(error is ClientError.ScheduledMessageIsTooFarAhead, "\(String(describing: error))")
+    }
+
+    func test_scheduleMessage_afterItIsScheduled_schedulesANewMessage() {
+        let channelController = makeChannelController()
+        let viewModel = MessageComposerViewModel(channelController: channelController, messageController: nil)
+        viewModel.text = "Later"
+        viewModel.scheduleMessage(at: Date().addingTimeInterval(3600))
+        let messageId = channelController.scheduleMessage_messageId
+        let sendingFinished = expectation(description: "sending finished")
+        let cancellable = viewModel.$isSendingMessage.first { !$0 }.sink { _ in sendingFinished.fulfill() }
+        wait(for: [sendingFinished], timeout: defaultTimeout)
+        cancellable.cancel()
+        viewModel.text = "Even later"
+
+        viewModel.scheduleMessage(at: Date().addingTimeInterval(7200))
+
+        XCTAssertNotEqual(channelController.scheduleMessage_messageId, messageId)
+    }
+
     // MARK: - private
+
+    private func makeScheduleReplyController() -> ChatMessageController_Mock {
+        ChatMessageController_Mock(
+            client: chatClient,
+            cid: .unique,
+            messageId: .unique,
+            replyPaginationHandler: chatClient.makeMessagesPaginationStateHandler()
+        )
+    }
 
     private func makeComposerDraftsViewModel(
         channelController: ChatChannelController,

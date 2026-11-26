@@ -563,6 +563,62 @@ internal enum L10n {
       /// Voice message deleted
       internal static var voiceMessageDeleted: String { L10n.tr("Localizable", "composer.recording.voiceMessageDeleted") }
     }
+    internal enum ScheduleMessage {
+      /// Custom time
+      internal static var customTime: String { L10n.tr("Localizable", "composer.schedule-message.custom-time") }
+      /// Limit reached (%d max)
+      internal static func limitReached(_ p1: Int) -> String {
+        return L10n.tr("Localizable", "composer.schedule-message.limit-reached", p1)
+      }
+      /// Schedule message
+      internal static var title: String { L10n.tr("Localizable", "composer.schedule-message.title") }
+      internal enum Accessibility {
+        /// Message scheduled for %@
+        internal static func scheduled(_ p1: Any) -> String {
+          return L10n.tr("Localizable", "composer.schedule-message.accessibility.scheduled", String(describing: p1))
+        }
+      }
+      internal enum Error {
+        /// You've reached the limit of %d scheduled messages in this channel.
+        internal static func channelLimit(_ p1: Int) -> String {
+          return L10n.tr("Localizable", "composer.schedule-message.error.channel-limit", p1)
+        }
+        /// Commands can't be scheduled. Remove the / command to continue.
+        internal static var command: String { L10n.tr("Localizable", "composer.schedule-message.error.command") }
+        /// Commands can't be scheduled
+        internal static var commandSnackBar: String { L10n.tr("Localizable", "composer.schedule-message.error.command-snack-bar") }
+        /// Couldn't schedule message. Try again
+        internal static var generic: String { L10n.tr("Localizable", "composer.schedule-message.error.generic") }
+        /// The quoted message was deleted
+        internal static var quoteDeleted: String { L10n.tr("Localizable", "composer.schedule-message.error.quote-deleted") }
+        /// That's further ahead than your app allows
+        internal static var tooFar: String { L10n.tr("Localizable", "composer.schedule-message.error.too-far") }
+        /// Pick a time at least %@ from now
+        internal static func tooSoon(_ p1: Any) -> String {
+          return L10n.tr("Localizable", "composer.schedule-message.error.too-soon", String(describing: p1))
+        }
+        /// You've reached your limit of %d scheduled messages.
+        internal static func userLimit(_ p1: Int) -> String {
+          return L10n.tr("Localizable", "composer.schedule-message.error.user-limit", p1)
+        }
+      }
+      internal enum Note {
+        /// %1$d of %2$d scheduled in this channel
+        internal static func count(_ p1: Int, _ p2: Int) -> String {
+          return L10n.tr("Localizable", "composer.schedule-message.note.count", p1, p2)
+        }
+        /// Sent in your time zone (%@)
+        internal static func timeZone(_ p1: Any) -> String {
+          return L10n.tr("Localizable", "composer.schedule-message.note.time-zone", String(describing: p1))
+        }
+      }
+      internal enum Preview {
+        /// Message to %@
+        internal static func messageTo(_ p1: Any) -> String {
+          return L10n.tr("Localizable", "composer.schedule-message.preview.message-to", String(describing: p1))
+        }
+      }
+    }
     internal enum Suggestions {
       internal enum Commands {
         /// Instant Commands, %d options

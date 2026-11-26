@@ -363,6 +363,26 @@ import SwiftUI
     /// - Returns: view displayed in the confirm edit button slot.
     func makeConfirmEditButton(options: ConfirmEditButtonOptions) -> ConfirmEditButtonType
     
+    associatedtype ScheduleMessageSheetType: View
+    /// Creates the sheet for picking when to send a scheduled message.
+    ///
+    /// - Important: Scheduled messages are disabled by default and need to be requested for your app.
+    /// The sheet is only available once they are enabled.
+    /// See [Enabling scheduled messages](https://getstream.io/chat/docs/ios-swift/scheduled-messages/#enabling-scheduled-messages).
+    ///
+    /// - Parameter options: the options for creating the schedule message sheet.
+    /// - Returns: view displayed in the sheet shown after long pressing the send message button.
+    func makeScheduleMessageSheet(options: ScheduleMessageSheetOptions) -> ScheduleMessageSheetType
+
+    associatedtype ScheduleMessageCustomTimeSheetType: View
+    /// Creates the sheet for picking a custom date and time to send a scheduled message at.
+    ///
+    /// - Parameter options: the options for creating the schedule message custom time sheet.
+    /// - Returns: view displayed in the sheet shown on top of the schedule message sheet.
+    func makeScheduleMessageCustomTimeSheet(
+        options: ScheduleMessageCustomTimeSheetOptions
+    ) -> ScheduleMessageCustomTimeSheetType
+
     associatedtype ComposerVoiceRecordingInputViewType: View
     /// Creates a unified voice recording input view shown when the composer
     /// is actively recording, locked, or stopped.
