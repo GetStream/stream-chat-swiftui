@@ -8,12 +8,15 @@ import SwiftUI
 struct EmptyContentView: View {
     @Injected(\.fonts) private var fonts
     @Injected(\.colors) private var colors
+    @Injected(\.tokens) private var tokens
 
     var image: UIImage
     var title: String?
     var description: String
     var shouldRotateImage: Bool = false
     var size: CGSize = CGSize(width: 32, height: 32)
+    var actionTitle: String?
+    var action: (@MainActor () -> Void)?
 
     public var body: some View {
         VStack(spacing: 8) {
@@ -36,6 +39,15 @@ struct EmptyContentView: View {
                     .font(fonts.body)
                     .multilineTextAlignment(.center)
                     .foregroundColor(Color(colors.textSecondary))
+                if let actionTitle, let action {
+                    StreamTextButton(role: .secondary, style: .outline, size: .medium) {
+                        action()
+                    } text: {
+                        Text(actionTitle)
+                            .font(fonts.bodyBold)
+                    }
+                    .padding(.top, tokens.spacingXs)
+                }
             }
             .padding(.horizontal, 32)
 

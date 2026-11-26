@@ -9,6 +9,8 @@ import XCTest
 
 @MainActor
 final class SnackBarView_Tests: StreamChatTestCase {
+    @Injected(\.images) private var images
+
     func test_snackBarView_default() {
         let view = SnackBarView(text: "Muted Elena Barros")
             .frame(width: 375)
@@ -35,5 +37,19 @@ final class SnackBarView_Tests: StreamChatTestCase {
             .frame(width: 375)
 
         AssertSnapshot(view, variants: [.extraExtraExtraLargeLight])
+    }
+
+    func test_snackBarView_action() {
+        let view = SnackBarView(text: "Scheduled message sent", actionTitle: "View")
+            .frame(width: 375)
+
+        AssertSnapshot(view)
+    }
+
+    func test_snackBarView_icon() {
+        let view = SnackBarView(text: "Commands can't be scheduled", icon: images.snackBarError)
+            .frame(width: 375)
+
+        AssertSnapshot(view)
     }
 }
