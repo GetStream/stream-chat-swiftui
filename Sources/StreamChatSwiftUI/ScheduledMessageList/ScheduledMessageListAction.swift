@@ -44,16 +44,18 @@ public final class ScheduledMessageListAction: Identifiable, Sendable {
 public enum ScheduledMessageListActionId {
     public static let copyText = "copy_text_scheduled_message_action"
     public static let delete = "delete_scheduled_message_action"
+    public static let edit = "edit_scheduled_message_action"
     public static let reschedule = "reschedule_scheduled_message_action"
     public static let sendNow = "send_now_scheduled_message_action"
 }
 
 extension ScheduledMessageListAction {
-    /// Returns the default actions of a scheduled message: rescheduling it, sending it now and deleting it.
+    /// Returns the default actions of a scheduled message: editing it, rescheduling it, sending it now and deleting it.
     ///
-    /// A failed message can be rescheduled and deleted. A message whose attachments are uploading, or which quotes a
-    /// deleted message, can only be deleted. The text of a message whose channel was deleted can be copied as well,
-    /// unless it has no text. Rescheduling is left out when `onReschedule` is `nil`.
+    /// A failed message can be edited, rescheduled and deleted. A message whose attachments are uploading can only be
+    /// deleted. A message which quotes a deleted message can be edited, where Remove quote takes the quote out, and
+    /// deleted. The text of a message whose channel was deleted can be copied as well, unless it has no text. Editing is
+    /// left out when `onEdit` is `nil`, and rescheduling when `onReschedule` is `nil`.
     @MainActor public static func defaultActions(
         for options: SupportedScheduledMessageListActionsOptions
     ) -> [ScheduledMessageListAction] {
@@ -78,8 +80,16 @@ extension ScheduledMessageListAction {
             )
             return scheduledMessage.message.text.isEmpty ? [delete] : [copyText, delete]
         }
+        let edit = options.onEdit.map {
+            ScheduledMessageListAction(
+                id: ScheduledMessageListActionId.edit,
+                title: L10n.ScheduledMessages.Actions.edit,
+                icon: images.messageActionEdit,
+                action: $0
+            )
+        }
         if scheduledMessage.quotesDeletedMessage {
-            return [delete]
+            return [edit, delete].compactMap { $0 }
         }
         let reschedule = options.onReschedule.map {
             ScheduledMessageListAction(
@@ -90,7 +100,7 @@ extension ScheduledMessageListAction {
             )
         }
         if scheduledMessage.status == .failed {
-            return [reschedule, delete].compactMap { $0 }
+            return [edit, reschedule, delete].compactMap { $0 }
         }
         let sendNow = ScheduledMessageListAction(
             id: ScheduledMessageListActionId.sendNow,
@@ -98,6 +108,6 @@ extension ScheduledMessageListAction {
             icon: images.composerSend,
             action: options.onSendNow
         )
-        return [reschedule, sendNow, delete].compactMap { $0 }
+        return [edit, reschedule, sendNow, delete].compactMap { $0 }
     }
 }

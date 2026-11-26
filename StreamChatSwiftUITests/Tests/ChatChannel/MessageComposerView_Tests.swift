@@ -1627,6 +1627,60 @@ import XCTest
         XCTAssertEqual(viewModel.pickerTypeState, .expanded(.media))
     }
 
+    // MARK: - Scheduled Message Edit
+
+    func test_messageComposerView_editingScheduledMessage() {
+        let size = CGSize(width: composerWidth, height: 160)
+        let editedScheduledMessage = Binding<ScheduledMessage?>.constant(.mock(
+            message: .mock(text: "Heads up: the launch moved to Monday")
+        ))
+        let channelController = ChatChannelTestHelpers.makeChannelController(chatClient: chatClient)
+        let viewModel = MessageComposerViewModel(channelController: channelController, messageController: nil)
+        viewModel.editedScheduledMessage = editedScheduledMessage
+        viewModel.attachmentsConverter = SynchronousAttachmentsConverter()
+        viewModel.fillEditedScheduledMessage()
+
+        let view = MessageComposerView(
+            viewFactory: DefaultViewFactory.shared,
+            viewModel: viewModel,
+            channelController: channelController,
+            quotedMessage: .constant(nil),
+            editedMessage: .constant(nil),
+            editedScheduledMessage: editedScheduledMessage,
+            willSendMessage: {}
+        )
+        .frame(width: size.width, height: size.height, alignment: .bottom)
+
+        AssertSnapshot(view, size: size)
+    }
+
+    func test_messageComposerView_editingScheduledMessageQuotingADeletedMessage() {
+        let size = CGSize(width: composerWidth, height: 260)
+        let editedScheduledMessage = Binding<ScheduledMessage?>.constant(.mock(
+            message: .mock(text: "Heads up: the launch moved to Monday", quotedMessage: .mock(id: "quoted", deletedAt: Date())),
+            quotedMessageId: "quoted"
+        ))
+        let channelController = ChatChannelTestHelpers.makeChannelController(chatClient: chatClient)
+        channelController.validateForScheduling_error = ClientError.ScheduledMessageQuotesADeletedMessage()
+        let viewModel = MessageComposerViewModel(channelController: channelController, messageController: nil)
+        viewModel.editedScheduledMessage = editedScheduledMessage
+        viewModel.attachmentsConverter = SynchronousAttachmentsConverter()
+        viewModel.fillEditedScheduledMessage()
+
+        let view = MessageComposerView(
+            viewFactory: DefaultViewFactory.shared,
+            viewModel: viewModel,
+            channelController: channelController,
+            quotedMessage: .constant(nil),
+            editedMessage: .constant(nil),
+            editedScheduledMessage: editedScheduledMessage,
+            willSendMessage: {}
+        )
+        .frame(width: size.width, height: size.height, alignment: .bottom)
+
+        AssertSnapshot(view, size: size)
+    }
+
     // MARK: - Liquid Glass Style
 
     func test_messageComposerView_liquidGlass_snapshot() {

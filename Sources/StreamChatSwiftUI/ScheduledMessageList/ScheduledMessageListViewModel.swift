@@ -52,6 +52,17 @@ import UIKit
     /// the sheet.
     @Published public var rescheduledScheduledMessage: ScheduledMessage?
 
+    /// The scheduled message which is edited in the composer under the list.
+    ///
+    /// The composer watches the message, and clears it when the edit ends.
+    @Published public var editedScheduledMessage: ScheduledMessage?
+
+    /// The controller of the channel of `editedScheduledMessage`, which the composer uses.
+    public private(set) var editedScheduledMessageChannelController: ChatChannelController?
+
+    /// The controller of the thread of `editedScheduledMessage`, when it is a reply.
+    public private(set) var editedScheduledMessageThreadController: ChatMessageController?
+
     /// How many scheduled messages the current user has, shown in the reschedule sheet of a failed message, because
     /// rescheduling it adds a pending message. `nil` for other messages.
     @Published public private(set) var rescheduleUsage: ScheduledMessagesUsage?
@@ -196,6 +207,26 @@ import UIKit
         }
     }
 
+    /// Opens the composer for editing a scheduled message. The sheet with the actions is closed first.
+    ///
+    /// A channel which is not stored locally is loaded first. When loading it fails, a snack bar shows the error.
+    open func edit(_ scheduledMessage: ScheduledMessage) {
+        performAfterSheetDismissal { [weak self] in
+            self?.loadChannelIfNeeded(for: scheduledMessage.cid) { [weak self] controller in
+                // The message may have been sent or deleted while the sheet was closing or the channel was loading.
+                guard let self,
+                      let scheduledMessage = self.current(scheduledMessage, in: self.scheduledMessageListController.scheduledMessages) else {
+                    return
+                }
+                self.editedScheduledMessageChannelController = controller
+                self.editedScheduledMessageThreadController = scheduledMessage.message.parentMessageId.map {
+                    self.chatClient.messageController(cid: scheduledMessage.cid, messageId: $0)
+                }
+                self.editedScheduledMessage = scheduledMessage
+            }
+        }
+    }
+
     func channel(of scheduledMessage: ScheduledMessage) -> ChatChannel? {
         utils.channelControllerFactory.makeChannelController(for: scheduledMessage.cid).channel
     }
@@ -204,6 +235,11 @@ import UIKit
     // allow scheduling messages.
     func canReschedule(_ scheduledMessage: ScheduledMessage) -> Bool {
         channel(of: scheduledMessage).map(\.canScheduleMessage) ?? true
+    }
+
+    // Editing needs the capability that rescheduling needs. Another edit would replace the open one and lose its changes.
+    func canEdit(_ scheduledMessage: ScheduledMessage) -> Bool {
+        canReschedule(scheduledMessage) && editedScheduledMessage == nil
     }
 
     /// Opens the sheet for picking a new time for a scheduled message. The sheet with the actions is closed first.

@@ -3,7 +3,16 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 # Upcoming
 
-### 🔄 Changed
+### ✅ Added
+- Add scheduled messages UI components: schedule a message from the composer, and see, edit, reschedule, send or delete scheduled messages [#1667](https://github.com/GetStream/stream-chat-swiftui/pull/1667) [#1669](https://github.com/GetStream/stream-chat-swiftui/pull/1669) [#1673](https://github.com/GetStream/stream-chat-swiftui/pull/1673) [#1674](https://github.com/GetStream/stream-chat-swiftui/pull/1674) [#1676](https://github.com/GetStream/stream-chat-swiftui/pull/1676)
+
+### 🎭 New Localizations
+Add localizable keys for scheduled messages:
+- `chat-info.scheduled-messages.title`
+- `composer.schedule-message.*`
+- `composer.scheduled-messages-banner.*`
+- `composer.title.edit-scheduled`
+- `scheduled-messages.*`
 
 # [5.18.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/5.18.0)
 _November 25, 2026_
