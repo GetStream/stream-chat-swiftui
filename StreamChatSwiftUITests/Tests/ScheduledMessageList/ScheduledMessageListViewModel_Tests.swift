@@ -51,6 +51,34 @@ import XCTest
         XCTAssertEqual(viewModel.scheduledMessages.map(\.id), ["pending", "failed"])
     }
 
+    func test_viewDidAppear_withAParentMessage_listsTheScheduledRepliesOfTheThread() {
+        viewModel = ScheduledMessageListViewModel(scheduledMessageListController: controller, parentMessageId: "parent")
+        controller.scheduledMessages_mock = [
+            .mock(id: "channel"),
+            .mock(id: "reply", message: .mock(parentMessageId: "parent")),
+            .mock(id: "other-reply", message: .mock(parentMessageId: "other-parent"))
+        ]
+        controller.hasLoadedAllScheduledMessages_mock = true
+
+        viewModel.viewDidAppear()
+        controller.synchronize_completion?(nil)
+
+        XCTAssertEqual(viewModel.viewState, .loaded)
+        XCTAssertEqual(viewModel.scheduledMessages.map(\.id), ["reply"])
+    }
+
+    func test_viewDidAppear_withAParentMessage_whenTheThreadHasNoScheduledReplies_isEmpty() {
+        viewModel = ScheduledMessageListViewModel(scheduledMessageListController: controller, parentMessageId: "parent")
+        controller.scheduledMessages_mock = [.mock(id: "channel")]
+        controller.hasLoadedAllScheduledMessages_mock = true
+
+        viewModel.viewDidAppear()
+        controller.synchronize_completion?(nil)
+
+        XCTAssertEqual(viewModel.viewState, .empty)
+        XCTAssertEqual(viewModel.scheduledMessages, [])
+    }
+
     func test_viewDidAppear_whenCalledAgain_doesNotLoadAgain() {
         viewModel.viewDidAppear()
         viewModel.viewDidAppear()

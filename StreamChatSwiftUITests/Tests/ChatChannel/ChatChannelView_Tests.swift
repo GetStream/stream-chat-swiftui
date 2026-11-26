@@ -330,7 +330,44 @@ import XCTest
         assertSnapshot(matching: view, as: .image(perceptualPrecision: precision))
     }
 
+    // MARK: - Scheduled Messages Banner
+
+    func test_chatChannelView_scheduledMessagesBanner() {
+        AssertSnapshot(makeChannelViewWithScheduledMessages(viewFactory: DefaultViewFactory.shared))
+    }
+
+    func test_chatChannelView_scheduledMessagesBanner_liquidGlass() {
+        AssertSnapshot(makeChannelViewWithScheduledMessages(viewFactory: LiquidGlassViewFactory()))
+    }
+
     // MARK: - Helpers
+
+    private func makeChannelViewWithScheduledMessages<Factory: ViewFactory>(viewFactory: Factory) -> some SwiftUI.View {
+        let controller = ChatChannelController_Mock.mock(
+            channelQuery: .init(cid: .unique),
+            channelListQuery: nil,
+            client: chatClient
+        )
+        let channel = ChatChannel.mock(
+            cid: .unique,
+            name: "Test channel",
+            ownCapabilities: [.sendMessage, .uploadFile, .scheduleMessage],
+            scheduledMessages: [.mock(), .mock(), .mock()]
+        )
+        let messages = (0..<15).map { index in
+            ChatMessage.mock(id: .unique, cid: channel.cid, text: "Test \(index)", author: .mock(id: .unique, name: "Martin"))
+        }
+        controller.simulateInitial(channel: channel, messages: messages, state: .remoteDataFetched)
+
+        return NavigationView {
+            ScrollView {
+                ChatChannelView(viewFactory: viewFactory, channelController: controller)
+                    .frame(width: defaultScreenSize.width, height: defaultScreenSize.height - 64)
+            }
+            .navigationBarTitleDisplayMode(.inline)
+        }
+        .applyDefaultSize()
+    }
 
     private func emptyChannelController() -> ChatChannelController_Mock {
         let controller = ChatChannelController_Mock.mock(

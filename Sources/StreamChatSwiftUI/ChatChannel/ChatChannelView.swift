@@ -20,6 +20,7 @@ public struct ChatChannelView<Factory: ViewFactory>: View, KeyboardReadable {
     @State private var keyboardShown = false
     @State private var tabBarAvailable: Bool = false
     @State private var floatingComposerHeight: CGFloat
+    @State private var composerBannerHeight: CGFloat = 0
     
     private var factory: Factory
     let isInSplitView: Bool
@@ -62,7 +63,7 @@ public struct ChatChannelView<Factory: ViewFactory>: View, KeyboardReadable {
                             listId: viewModel.listId,
                             isMessageThread: viewModel.isMessageThread,
                             shouldShowTypingIndicator: viewModel.shouldShowInlineTypingIndicator,
-                            bottomInset: composerPlacement == .floating ? floatingComposerHeight - (keyboardShown ? bottomPadding : 0) : 0,
+                            bottomInset: messageListBottomInset,
                             scrollPosition: $viewModel.scrollPosition,
                             loadingNextMessages: viewModel.loadingNextMessages,
                             firstUnreadMessageId: $viewModel.firstUnreadMessageId,
@@ -209,6 +210,9 @@ public struct ChatChannelView<Factory: ViewFactory>: View, KeyboardReadable {
             guard composerPlacement == .floating, value > 0 else { return }
             floatingComposerHeight = value + bottomPadding
         }
+        .onPreferenceChange(ComposerBannerHeightPreferenceKey.self) { value in
+            composerBannerHeight = value
+        }
         .navigationBarTitleDisplayMode(utils.messageListConfig.navigationBarDisplayMode)
         .onReceive(keyboardWillChangePublisher, perform: { visible in
             keyboardShown = visible
@@ -288,8 +292,13 @@ public struct ChatChannelView<Factory: ViewFactory>: View, KeyboardReadable {
     /// above the floating composer. Unlike the message list, the empty state does
     /// not ignore the bottom safe area, so only the composer's own height counts.
     private var emptyChannelTypingIndicatorBottomPadding: CGFloat {
-        guard composerPlacement == .floating else { return 0 }
-        return floatingComposerBottomPadding + max(0, floatingComposerHeight - bottomPadding)
+        guard composerPlacement == .floating else { return composerBannerHeight }
+        return floatingComposerBottomPadding + max(0, floatingComposerHeight - bottomPadding) + composerBannerHeight
+    }
+
+    private var messageListBottomInset: CGFloat {
+        let composerInset = composerPlacement == .floating ? floatingComposerHeight - (keyboardShown ? bottomPadding : 0) : 0
+        return composerInset + composerBannerHeight
     }
 
     private var generatingSnapshot: Bool {

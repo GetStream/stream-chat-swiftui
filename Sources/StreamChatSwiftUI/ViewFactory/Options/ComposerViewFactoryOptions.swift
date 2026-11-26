@@ -416,6 +416,19 @@ public final class ScheduleMessageCustomTimeSheetOptions: Sendable {
     }
 }
 
+/// Options for creating the scheduled messages banner above the composer.
+public final class ScheduledMessagesBannerViewOptions: Sendable {
+    /// What the banner shows.
+    public let state: ScheduledMessagesBannerState
+    /// Opens the scheduled message list.
+    public let onView: @MainActor () -> Void
+
+    public init(state: ScheduledMessagesBannerState, onView: @escaping @MainActor () -> Void) {
+        self.state = state
+        self.onView = onView
+    }
+}
+
 public final class ConfirmEditButtonOptions: Sendable {
     /// Whether the confirm edit button is enabled.
     public let enabled: Bool

@@ -306,7 +306,12 @@
 "composer.schedule-message.error.too-soon" = "Pick a time at least %@ from now";
 "composer.schedule-message.error.too-soon-edit" = "Pick a later time. Editing can't send a message right away.";
 "composer.schedule-message.error.user-limit" = "You've reached your limit of %d scheduled messages.";
+"composer.scheduled-messages-banner.failed" = "%d failed to send";
+"composer.scheduled-messages-banner.limit" = "%1$d of %2$d scheduled messages";
 "composer.scheduled-messages-banner.scheduled-for" = "Scheduled for %@";
+"composer.scheduled-messages-banner.sent" = "Scheduled message sent";
+"composer.scheduled-messages-banner.view" = "View";
+"composer.scheduled-messages-banner.view-all" = "View all";
 "message.sending.attachment-uploading-failed" = "UPLOADING FAILED";
 "message.sending.attachment-upload-failed" = "Upload failed";
 "message.sending.attachment-retry-upload" = "Retry upload";

@@ -23,6 +23,7 @@ import UIKit
     @Injected(\.utils) private var utils
 
     private let scheduledMessageListController: ScheduledMessageListController
+    private let parentMessageId: MessageId?
     private var hasStartedLoading = false
     private var isLoadingMoreScheduledMessages = false
     private var actionPendingSheetDismissal: (@MainActor () -> Void)?
@@ -69,10 +70,14 @@ import UIKit
 
     /// Creates a view model for the `ScheduledMessageListView`.
     ///
-    /// - Parameter scheduledMessageListController: A controller providing the scheduled messages. Its query decides
-    /// which ones are listed, for example the ones of a single channel.
-    public init(scheduledMessageListController: ScheduledMessageListController) {
+    /// - Parameters:
+    ///   - scheduledMessageListController: A controller providing the scheduled messages. Its query decides
+    ///   which ones are listed, for example the ones of a single channel.
+    ///   - parentMessageId: The thread whose scheduled replies are listed. All the scheduled messages of the
+    ///   controller are listed when `nil`.
+    public init(scheduledMessageListController: ScheduledMessageListController, parentMessageId: MessageId? = nil) {
         self.scheduledMessageListController = scheduledMessageListController
+        self.parentMessageId = parentMessageId
     }
 
     /// Called when the view appears on screen.
@@ -87,7 +92,7 @@ import UIKit
 
     /// Loads the first page of the scheduled messages. Call it again to retry after a failure.
     public func loadScheduledMessages() {
-        viewState = scheduledMessageListController.scheduledMessages.isEmpty ? .loading : .loaded
+        viewState = listedScheduledMessages.isEmpty ? .loading : .loaded
         updateScheduledMessages()
         scheduledMessageListController.synchronize { [weak self] error in
             self?.didLoadFirstPage(error: error)
@@ -350,8 +355,15 @@ import UIKit
         return current?.status == .sending ? nil : current
     }
 
+    // The scheduled replies of the thread, or all the scheduled messages without a thread.
+    private var listedScheduledMessages: [ScheduledMessage] {
+        scheduledMessageListController.scheduledMessages.filter {
+            parentMessageId == nil || $0.message.parentMessageId == parentMessageId
+        }
+    }
+
     private func updateScheduledMessages() {
-        let all = scheduledMessageListController.scheduledMessages
+        let all = listedScheduledMessages
         if !all.isEmpty {
             viewState = .loaded
         } else if viewState == .loaded {

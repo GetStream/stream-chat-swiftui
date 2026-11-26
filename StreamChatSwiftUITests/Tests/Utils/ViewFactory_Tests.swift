@@ -942,6 +942,19 @@ import XCTest
         XCTAssertEqual(scheduledMessageOfActions?.id, "scheduled")
     }
 
+    func test_viewFactory_makeScheduledMessagesBannerView() {
+        // Given
+        let viewFactory = DefaultViewFactory.shared
+
+        // When
+        let view = viewFactory.makeScheduledMessagesBannerView(
+            options: ScheduledMessagesBannerViewOptions(state: .multiple(count: 2), onView: {})
+        )
+
+        // Then
+        XCTAssert(view is ScheduledMessagesBannerView)
+    }
+
     func test_viewFactory_makeScheduledMessageListEmptyView() {
         // Given
         let viewFactory = DefaultViewFactory.shared

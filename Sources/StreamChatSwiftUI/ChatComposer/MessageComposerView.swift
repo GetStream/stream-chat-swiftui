@@ -302,11 +302,26 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
             .offset(y: -composerHeight),
             alignment: .bottom
         )
-        .snackBar(
-            text: $viewModel.snackBarText,
-            icon: viewModel.snackBarShowsErrorIcon ? images.snackBarError : nil,
-            bottomOffset: composerHeight + tokens.spacingMd
+        // The snack bar sits above the banner. Both hang from the top edge, because an offset by the measured
+        // composer height lags behind the composer's animations.
+        .overlay(
+            VStack(spacing: 0) {
+                Color.clear
+                    .frame(height: 0)
+                    .snackBar(
+                        text: $viewModel.snackBarText,
+                        icon: viewModel.snackBarShowsErrorIcon ? images.snackBarError : nil,
+                        actionTitle: viewModel.snackBarActionTitle,
+                        onAction: { viewModel.snackBarActionTapped() },
+                        bottomOffset: tokens.spacingMd
+                    )
+                scheduledMessagesBanner
+            }
+            .animation(.easeInOut(duration: 0.2), value: shownScheduledMessagesBannerState)
+            .alignmentGuide(.top) { $0[.bottom] },
+            alignment: .top
         )
+        .background(scheduledMessageListLink)
         .sheet(isPresented: $viewModel.scheduleMessageSheetShown) {
             scheduleMessageSheet
         }
@@ -400,6 +415,55 @@ public struct MessageComposerView<Factory: ViewFactory>: View, KeyboardReadable 
                 )
             }
         }
+    }
+
+    private var shownScheduledMessagesBannerState: ScheduledMessagesBannerState? {
+        // The voice recording lock floats where the banner is.
+        viewModel.showSuggestionsOverlay || showsRecordingOverlay ? nil : viewModel.scheduledMessagesBannerState
+    }
+
+    @ViewBuilder private var scheduledMessagesBanner: some View {
+        if let state = shownScheduledMessagesBannerState {
+            factory.makeScheduledMessagesBannerView(
+                options: ScheduledMessagesBannerViewOptions(
+                    state: state,
+                    onView: { viewModel.showScheduledMessageList() }
+                )
+            )
+            // VoiceOver reads overlays last, but the banner is above the input.
+            .accessibilitySortPriority(1)
+            .padding(.horizontal, tokens.spacingMd)
+            .padding(.top, tokens.spacingXs)
+            // The floating composer has the same padding above its input.
+            .padding(.bottom, factory.styles.composerPlacement == .docked ? tokens.spacingMd : 0)
+            .background(
+                GeometryReader { proxy in
+                    Color.clear.preference(key: ComposerBannerHeightPreferenceKey.self, value: proxy.size.height)
+                }
+            )
+            .transition(.opacity)
+        }
+    }
+
+    private var scheduledMessageListLink: some View {
+        NavigationLink(isActive: $viewModel.scheduledMessageListShown) {
+            if let cid = viewModel.channelController.cid {
+                ScheduledMessageListView(
+                    viewFactory: factory,
+                    viewModel: ViewModelsFactory.makeScheduledMessageListViewModel(
+                        scheduledMessageListController: viewModel.channelController.client.scheduledMessageListController(
+                            query: .init(filter: .equal(.cid, to: cid))
+                        ),
+                        parentMessageId: viewModel.scheduledMessageListParentMessageId
+                    ),
+                    embedInNavigationView: false
+                )
+            }
+        } label: {
+            EmptyView()
+        }
+        .opacity(0)
+        .accessibilityHidden(true)
     }
 
     private var composerDivider: some View {
